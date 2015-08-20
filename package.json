@@ -1,0 +1,24 @@
+{
+  "name": "tsb",
+  "version": "1.0.0",
+  "description": "TypeScript Builder",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/basarat/tsb.git"
+  },
+  "keywords": [
+    "TypeScript",
+    "IDE",
+    "Builder"
+  ],
+  "author": "basaratali@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/basarat/tsb/issues"
+  },
+  "homepage": "https://github.com/basarat/tsb#readme"
+}
