@@ -1,5 +1,5 @@
 # TypeScript Builder 🌹
-![TypeScript Builder](https://raw.githubusercontent.com/basarat/ped/master/resources/icon.png)
+![TypeScript Builder](https://raw.githubusercontent.com/basarat/tsb/master/resources/icon.png)
 
 Gives complete dev environment/editor for TypeScript all the way down to *deployment* that is: 
 
