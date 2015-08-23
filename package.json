@@ -1,7 +1,7 @@
 {
   "name": "tsb",
   "version": "1.0.1",
-  "description": "TypeScript Builder",
+  "description": "Programmer's Editor",
   "main": "src/server.js",
   "bin": {
     "tsb": "./src/server.js"
@@ -35,13 +35,14 @@
     "layoutjs": "^1.0.2",
     "material-ui": "^0.10.4",
     "normalize.css": "^3.0.3",
-    "ntypescript": "1.201508132343.1",
+    "ntypescript": "1.201508200635.1",
     "radium": "^0.13.7",
     "react": "^0.13.3",
     "react-tap-event-plugin": "^0.1.7"
   },
   "devDependencies": {
     "css-loader": "^0.16.0",
+    "csx": "^1.0.3",
     "http-proxy": "^1.11.1",
     "style-loader": "^0.12.3",
     "webpack": "^1.11.0",

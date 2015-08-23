@@ -19,6 +19,7 @@
         "!./node_modules/**/*"
     ],
     "files": [
+        "./app/tabs/tab.ts",
         "./common/utils.ts",
         "./server.ts",
         "./server/cookies.ts",
@@ -28,11 +29,17 @@
         "./typings/express/express.d.ts",
         "./typings/mime/mime.d.ts",
         "./typings/node/node.d.ts",
+        "./typings/radium/radium.d.ts",
         "./typings/react/react.d.ts",
         "./typings/serve-static/serve-static.d.ts",
         "./typings/tsd.d.ts",
         "./app/main.tsx",
-        "./app/material-ui.tsx",
-        "./app/rootComponent.tsx"
+        "./app/root.tsx",
+        "./app/styles/styles.tsx",
+        "./app/styles/theme.tsx",
+        "./app/tabs/codeTab.tsx",
+        "./app/tabs/dashboardTab.tsx",
+        "./app/tabs/tabsContainer.tsx",
+        "./app/ui.tsx"
     ]
 }
