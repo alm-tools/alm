@@ -30,7 +30,7 @@ export class Root extends BaseComponent<{}, {}>{
     render() {
         return <div>
                 <AppBar
-                    title="Programmer's Editor"
+                    title="TypeScript Builder"
                     iconClassNameRight="muidocs-icon-navigation-expand-more"
                     onLeftIconButtonTouchTap={this.toggle}
                 />
