@@ -14,16 +14,18 @@ export class DashBoard extends React.Component<Props, State>  {
 
         };
     }
-    
-    render(){
+
+    render() {
         return <div>
             Dashboard to go here
-        </div>;
+            </div>;
     }
 }
 
 
-export var DashboardTab: tab.Tab = {
-    Component: DashBoard,
-    getTitle: () => 'Dashboard'
+export class DashboardTab implements tab.TabInstance {
+    constructor(public url: string) {
+    }
+    Component = DashBoard;
+    getTitle = () => `${this.url}`;
 }

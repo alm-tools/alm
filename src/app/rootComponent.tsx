@@ -1,6 +1,5 @@
 import * as React from "react";
 import {BaseComponent, RaisedButton, AppBar, MenuItem, LeftNav} from "./material-ui";
-import * as layout  from "layoutjs";
 
 
 let menuItems = [

@@ -3,13 +3,15 @@ import * as React from "react";
 import {csx, Tabs} from "../ui";
 import * as tab from "./tab";
 import {DashboardTab} from "./dashboardTab";
+import * as commands from "../commands/commands";
 
 export interface Props {
 
 }
 
 export interface State {
-    tabs: tab.Tab[];
+    selected?: string;
+    tabs?: tab.TabInstance[];
 }
 
 @ui.Radium
@@ -18,23 +20,32 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
     constructor(props: Props) {
         super(props);
 
-        let dashboard: tab.Tab = DashboardTab;
+        let dashboard1: tab.TabInstance = new DashboardTab('foo');
+        let dashboard2: tab.TabInstance = new DashboardTab('bar');;
 
         this.state = {
-            tabs: [dashboard, dashboard]
+            selected: dashboard2.url,
+            tabs: [dashboard1, dashboard2]
         };
     }
 
     refs: { [string: string]: any; }
 
+    componentDidMount() {
+        commands.nextTab.on(() => {
+            console.log('next tab');
+        });
+        commands.prevTab.on(() => {
+            console.log('previous tab');
+        });
+    }
 
     render() {
-
-        let tabs = this.state.tabs.map((T, index) => <ui.Tab key={index} label={T.getTitle() }>
+        let tabs = this.state.tabs.map((T, index) => <ui.Tab key={index} label={T.getTitle()} value={T.url}>
             <T.Component/>
-            </ui.Tab>);
+        </ui.Tab>);
 
-        return <Tabs initialSelectedIndex={0}>
+        return <Tabs valueLink={{value:this.state.selected}}>
                 {tabs}
             </Tabs>;
     }

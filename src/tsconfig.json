@@ -19,6 +19,8 @@
         "!./node_modules/**/*"
     ],
     "files": [
+        "./app/commands/commands.ts",
+        "./app/commands/events.ts",
         "./app/tabs/tab.ts",
         "./common/utils.ts",
         "./server.ts",
@@ -27,7 +29,9 @@
         "./server/errorCodes.ts",
         "./typings/cookie-parser/cookie-parser.d.ts",
         "./typings/express/express.d.ts",
+        "./typings/globals.d.ts",
         "./typings/mime/mime.d.ts",
+        "./typings/mousetrap/mousetrap.d.ts",
         "./typings/node/node.d.ts",
         "./typings/radium/radium.d.ts",
         "./typings/react/react.d.ts",

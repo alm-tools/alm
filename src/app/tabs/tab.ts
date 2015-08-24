@@ -12,9 +12,10 @@ export interface TabComponentClass {
     new <P extends ComponentProps>(p: P): ui.React.Component<P, any>;
 }
 
-export interface Tab {
+export interface TabInstance {
     Component: TabComponentClass;
     getTitle(): string;
+    url: string;
 }
 
 /** If no filepath is provided `cwd` is used */

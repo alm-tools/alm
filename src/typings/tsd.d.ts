@@ -5,3 +5,4 @@
 /// <reference path="serve-static/serve-static.d.ts" />
 /// <reference path="cookie-parser/cookie-parser.d.ts" />
 /// <reference path="react/react.d.ts" />
+/// <reference path="mousetrap/mousetrap.d.ts" />
