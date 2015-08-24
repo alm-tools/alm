@@ -47,15 +47,15 @@ export class Tabs extends React.Component<Prop,State>{
         
         let selectedIndex = this.props.selectedIndex;
         let titles = this.props.titles.map((t, i) =>
-            <span 
+            <span
+            key={`tabHeader ${i}`}
             style={[styleTabHeader.base, i == selectedIndex ? styleTabHeaderActive : {}]}
             onClick={()=>this.onTabClicked(i)}>
             {t}
             </span>
         );
         
-        let childToShow:any;
-        React.Children.forEach(this.props.children, (c, i) => i == selectedIndex ? (childToShow = c) : c);
+        
         
         return (
             <div style={[csx.vertical]}>
@@ -63,7 +63,7 @@ export class Tabs extends React.Component<Prop,State>{
                     {titles}
                 </span>
                 <div style={[csx.flexRoot]}>
-                    {childToShow}
+                    {this.props.children}
                 </div>
             </div>
         );

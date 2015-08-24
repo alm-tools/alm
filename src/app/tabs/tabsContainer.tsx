@@ -60,11 +60,16 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
 
     render() {
         let tabTitles = this.state.tabs.map(t=> t.getTitle());
-        let tabs = this.state.tabs.map(T=> <T.Component/>);
+        let tabs = this.state.tabs.map((T,i)=> {
+            let style = (this.state.selected == i ? {} : { display: 'none' });
+            return (<div style={style}>
+                <T.Component key={T.url} url={T.url} />
+            </div>);
+        });
+        
         return (
             <Tabs selectedIndex={this.state.selected} titles={tabTitles} onTabClicked={this.onTabClicked}>
-                <span>a</span>
-                <span>b</span>
+                {tabs}
             </Tabs>
         );
     }
