@@ -1,16 +1,34 @@
 import * as ui from "../ui";
 import * as React from "react";
-import {csx, Tabs} from "../ui";
 import * as tab from "./tab";
 import {DashboardTab} from "./dashboardTab";
 import * as commands from "../commands/commands";
+
+import {Tabs} from "./framework/tabs";
+
+function loopAroundNext(currentIndex: number, length: number) {
+    if ((++currentIndex) == length) {
+        return 0;
+    }
+    else {
+        return currentIndex;
+    }
+}
+function loopAroundPrev(currentIndex: number, length: number) {
+    if ((--currentIndex) == -1) {
+        return length - 1;
+    }
+    else {
+        return currentIndex;
+    }
+}
 
 export interface Props {
 
 }
 
 export interface State {
-    selected?: string;
+    selected?: number;
     tabs?: tab.TabInstance[];
 }
 
@@ -24,7 +42,7 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
         let dashboard2: tab.TabInstance = new DashboardTab('bar');;
 
         this.state = {
-            selected: dashboard2.url,
+            selected: 0,
             tabs: [dashboard1, dashboard2]
         };
     }
@@ -33,21 +51,25 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
 
     componentDidMount() {
         commands.nextTab.on(() => {
-            console.log('next tab');
+            this.setState({ selected: loopAroundNext(this.state.selected, this.state.tabs.length) });
         });
         commands.prevTab.on(() => {
-            console.log('previous tab');
+            this.setState({ selected: loopAroundPrev(this.state.selected, this.state.tabs.length) });
         });
     }
 
     render() {
-        let tabs = this.state.tabs.map((T, index) => <ui.Tab key={index} label={T.getTitle()}>
-            <T.Component/>
-        </ui.Tab>);
-
-        return <Tabs>
-                {tabs}
-            </Tabs>;
+        let tabTitles = this.state.tabs.map(t=> t.getTitle());
+        let tabs = this.state.tabs.map(T=> <T.Component/>);
+        return (
+            <Tabs selectedIndex={this.state.selected} titles={tabTitles} onTabClicked={this.onTabClicked}>
+                <span>a</span>
+                <span>b</span>
+            </Tabs>
+        );
     }
-
+    
+    onTabClicked = (index)=>{
+        this.setState({ selected: index });
+    }
 }

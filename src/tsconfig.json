@@ -45,6 +45,7 @@
         "./app/styles/theme.tsx",
         "./app/tabs/codeTab.tsx",
         "./app/tabs/dashboardTab.tsx",
+        "./app/tabs/framework/tabs.tsx",
         "./app/tabs/tabsContainer.tsx",
         "./app/ui.tsx"
     ]

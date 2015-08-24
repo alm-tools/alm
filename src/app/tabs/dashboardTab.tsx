@@ -17,7 +17,7 @@ export class DashBoard extends React.Component<Props, State>  {
 
     render() {
         return <div>
-            Dashboard to go here
+            Dashboard to go here : {this.props.url}
             </div>;
     }
 }
