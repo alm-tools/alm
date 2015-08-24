@@ -41,11 +41,11 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     render() {
-        let tabs = this.state.tabs.map((T, index) => <ui.Tab key={index} label={T.getTitle()} value={T.url}>
+        let tabs = this.state.tabs.map((T, index) => <ui.Tab key={index} label={T.getTitle()}>
             <T.Component/>
         </ui.Tab>);
 
-        return <Tabs valueLink={{value:this.state.selected}}>
+        return <Tabs>
                 {tabs}
             </Tabs>;
     }
