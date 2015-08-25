@@ -5,6 +5,7 @@
 import * as ui from "../ui";
 
 export interface ComponentProps {
+    key: string;
     url: string;
 }
 

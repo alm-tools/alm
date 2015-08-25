@@ -55,7 +55,12 @@ export class Tabs extends React.Component<Prop,State>{
             </span>
         );
         
-        
+        let children = React.Children.map(this.props.children,(c,i)=>{
+            let style = (selectedIndex == i ? {} : { display: 'none' });
+            return <div style={style}>
+                {c}
+            </div>
+        });
         
         return (
             <div style={[csx.vertical]}>
@@ -63,7 +68,7 @@ export class Tabs extends React.Component<Prop,State>{
                     {titles}
                 </span>
                 <div style={[csx.flexRoot]}>
-                    {this.props.children}
+                    {children}
                 </div>
             </div>
         );
