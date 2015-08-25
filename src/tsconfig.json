@@ -40,7 +40,6 @@
         "./app/main.tsx",
         "./app/material-ui.tsx",
         "./app/root.tsx",
-        "./app/rootComponent.tsx",
         "./app/styles/styles.tsx",
         "./app/styles/theme.tsx",
         "./app/tabs/codeTab.tsx",

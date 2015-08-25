@@ -2,12 +2,29 @@ export interface Listener<T> {
     (event: T): any;
 }
 
+interface Disposable {
+    dispose();
+}
+
+export class CompositeDisposible implements Disposable {
+    private disposibles: Disposable[] = [];
+    add(disposible: Disposable) {
+        this.disposibles.push(disposible);
+    }
+    dispose() {
+        this.disposibles.forEach(d=> d.dispose());
+    }
+}
+
 /** passes through events as they happen. You will not get events from before you start listening */
 export class TypedEvent<T> {
     private listeners: Listener<T>[] = [];
 
-    on(listener: Listener<T>) {
+    on(listener: Listener<T>): Disposable {
         this.listeners.push(listener);
+        return {
+            dispose: () => this.off(listener)
+        };
     }
 
     off(listener: Listener<T>) {
@@ -23,7 +40,7 @@ export class TypedEvent<T> {
 /** single event listener queue */
 export class SingleListenerQueue<T> {
     private listener: Listener<T> = null;
-    private pending:T[] = [];
+    private pending: T[] = [];
 
     pendingCount = () => this.pending.length;
 
