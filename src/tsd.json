@@ -31,6 +31,9 @@
     },
     "mkdirp/mkdirp.d.ts": {
       "commit": "a1226afe5c4ab96610e088d970eb4f8537b1d116"
+    },
+    "chokidar/chokidar.d.ts": {
+      "commit": "a1226afe5c4ab96610e088d970eb4f8537b1d116"
     }
   }
 }

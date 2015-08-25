@@ -7,3 +7,4 @@
  * it will list the files again, writing only at the end...and only if something changed
  */
 
+import chokidar = require('chokidar');

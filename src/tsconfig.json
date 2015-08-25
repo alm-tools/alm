@@ -31,6 +31,7 @@
         "./server/devtime.ts",
         "./server/errorCodes.ts",
         "./server/utils/fsu.ts",
+        "./typings/chokidar/chokidar.d.ts",
         "./typings/colors/colors.d.ts",
         "./typings/cookie-parser/cookie-parser.d.ts",
         "./typings/express/express.d.ts",
