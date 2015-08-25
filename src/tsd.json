@@ -25,6 +25,12 @@
     },
     "mousetrap/mousetrap.d.ts": {
       "commit": "af81415504b4edce8dac8446d96857f8018c6e9f"
+    },
+    "colors/colors.d.ts": {
+      "commit": "a1226afe5c4ab96610e088d970eb4f8537b1d116"
+    },
+    "mkdirp/mkdirp.d.ts": {
+      "commit": "a1226afe5c4ab96610e088d970eb4f8537b1d116"
     }
   }
 }
