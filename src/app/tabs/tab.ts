@@ -12,8 +12,9 @@ export interface TabComponentClass {
     new <P extends ComponentProps>(p: P): ui.React.Component<P, any>;
 }
 
+/** Once we have a tab instance it should be considered immutable */
 export interface TabInstance {
-    Component: TabComponentClass;
+    getElement(): JSX.Element;
     getTitle(): string;
     url: string;
 }
