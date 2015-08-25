@@ -29,11 +29,13 @@ export class Root extends BaseComponent<{}, {}>{
 
     render() {
         return <div>
-                <AppBar
-                    title="TypeScript Builder"
-                    iconClassNameRight="muidocs-icon-navigation-expand-more"
-                    onLeftIconButtonTouchTap={this.toggle}
-                />
+                {
+                //     <AppBar
+                //     title="TypeScript Builder"
+                //     iconClassNameRight="muidocs-icon-navigation-expand-more"
+                //     onLeftIconButtonTouchTap={this.toggle}
+                // />
+                }
                 <LeftNav ref="leftNav" docked={false} menuItems={menuItems} />
 
                 <TabsContainer/>
