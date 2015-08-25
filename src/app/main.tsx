@@ -1,11 +1,22 @@
 import {Root} from "./root";
 import * as commands from "./commands/commands";
 import * as React from "react";
+var Modal = require('react-modal');
 
 // Normalize css 
 require('normalize.css');
 
 document.addEventListener('DOMContentLoaded', () => {
-    React.render(<Root />, document.getElementById('app'));
+    // The main app element    
+    var appElement = document.getElementById('app'); 
+    
+    // Register a modal location
+    Modal.setAppElement(appElement);
+    Modal.injectCSS();
+    
+    // Render the main app
+    React.render(<Root />, appElement);
+    
+    // Register commands
     commands.register();
 });

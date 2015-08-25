@@ -2,6 +2,7 @@ import * as React from "react";
 import {BaseComponent, RaisedButton, AppBar, MenuItem, LeftNav} from "./ui";
 import * as csx from "csx";
 import {TabsContainer} from "./tabs/tabsContainer";
+import * as commands from "./commands/commands";
 
 let menuItems = [
     { route: 'get-started', text: 'Get Started' },
@@ -25,6 +26,15 @@ export class Root extends BaseComponent<{}, {}>{
 
     toggle = () => {
         this.refs.leftNav.toggle();
+    }
+    
+    componentDidMount(){
+        commands.findFile.on(()=>{
+            console.log('find file');
+        });
+        commands.findCommand.on(()=>{
+            console.log('find command');
+        });
     }
 
     render() {
