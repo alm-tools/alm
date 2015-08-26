@@ -299,12 +299,14 @@ export class Parent extends RequesterResponder {
 export class Child extends RequesterResponder {
 
     protected getProcess = () => process;
+    private connected = true;
 
     constructor() {
         super();
 
         // Keep alive
         this.keepAlive();
+        process.on('exit', () => this.connected = false);
 
         // Start listening
         process.on('message', (message: Message<any>) => {
@@ -321,7 +323,7 @@ export class Child extends RequesterResponder {
     private keepAlive() {
         setInterval(() => {
             // We have been orphaned
-            if (!(<any>process).connected) {
+            if (!this.connected) {
                 process.exit(orphanExitCode);
             }
         }, 1000);
