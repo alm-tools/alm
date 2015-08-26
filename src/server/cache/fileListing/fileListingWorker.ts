@@ -11,9 +11,9 @@ import * as fsu from "../../utils/fsu";
 import * as constants from "../../../common/constants";
 import {EOL} from "os";
 
-export function processAllFiles(query:{}):Promise<string[]> {
+export function processAllFiles(query: { filePath: string }): Promise<string[]> {
     let listing: string[] = [];
-    listing = glob.sync('**');
+    listing = glob.sync('**', { cwd: query.filePath });
     return Promise.resolve(listing);
 }
 
@@ -21,7 +21,7 @@ export function processAllFiles(query:{}):Promise<string[]> {
 import * as wl from "../../utils/workerLib";
 // Initiate the child logic
 var child = new wl.Child();
-child.registerAllFunctionsExportedFromAsResponders({processAllFiles});
+child.registerAllFunctionsExportedFromAsResponders({ processAllFiles });
 
 // other research 
 // https://github.com/coolaj86/node-walk
