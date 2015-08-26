@@ -1,6 +1,4 @@
 /**
- * This file will start working as soon as you import it
- * 
  * It will list out all the files into listings.txt
  * 
  * It will watch the file system for changes, and if there are any changes, 
@@ -9,19 +7,17 @@
 
 import chokidar = require('chokidar');
 import glob = require('glob');
-import * as fsu from "../utils/fsu";
-import * as constants from "../../common/constants";
+import * as fsu from "../../utils/fsu";
+import * as constants from "../../../common/constants";
 import {EOL} from "os";
 
-function processAllFiles() {
+export function processAllFiles(query:{}):Promise<string[]> {
     let listing: string[] = [];
-    function updateFileListing() {
-        fsu.writeFile(constants.cacheDir + '/listing.txt',listing.join(EOL));
-    }
-    
     listing = glob.sync('**');
-    updateFileListing();
+    return Promise.resolve(listing);
 }
+
+
 
 // other research 
 // https://github.com/coolaj86/node-walk

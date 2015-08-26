@@ -229,12 +229,12 @@ export class Parent extends RequesterResponder {
     private stopped = false;
 
     /** start worker */
-    startWorker(childJsPath: string, terminalError: (e: Error) => any, customArguments: string[]) {
+    startWorker(childJsPath: string, terminalError: (e: Error) => any, customArguments: string[] = []) {
         try {
             this.child = spawn(this.node, [
             // '--debug', // Uncomment if you want to debug the child process
                 childJsPath
-            ].concat(customArguments), { cwd: path.dirname(childJsPath), env: { ATOM_SHELL_INTERNAL_RUN_AS_NODE: '1' }, stdio: ['ipc'] });
+            ].concat(customArguments), { cwd: path.dirname(childJsPath), env: {}, stdio: ['ipc'] });
 
             this.child.on('error', (err) => {
                 if (err.code === "ENOENT" && err.path === this.node) {
