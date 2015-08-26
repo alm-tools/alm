@@ -34,6 +34,9 @@
     },
     "chokidar/chokidar.d.ts": {
       "commit": "a1226afe5c4ab96610e088d970eb4f8537b1d116"
+    },
+    "glob/glob.d.ts": {
+      "commit": "eb835aa72f45eee4246b1de8beeffe2010c689e6"
     }
   }
 }

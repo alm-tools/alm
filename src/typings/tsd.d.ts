@@ -9,3 +9,4 @@
 /// <reference path="colors/colors.d.ts" />
 /// <reference path="mkdirp/mkdirp.d.ts" />
 /// <reference path="chokidar/chokidar.d.ts" />
+/// <reference path="glob/glob.d.ts" />
