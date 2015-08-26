@@ -40,6 +40,12 @@
     },
     "minimatch/minimatch.d.ts": {
       "commit": "eb835aa72f45eee4246b1de8beeffe2010c689e6"
+    },
+    "socket.io/socket.io.d.ts": {
+      "commit": "eb835aa72f45eee4246b1de8beeffe2010c689e6"
+    },
+    "socket.io-client/socket.io-client.d.ts": {
+      "commit": "eb835aa72f45eee4246b1de8beeffe2010c689e6"
     }
   }
 }

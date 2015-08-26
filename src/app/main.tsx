@@ -1,6 +1,7 @@
 import {Root} from "./root";
 import * as commands from "./commands/commands";
 import * as React from "react";
+import {socket} from "./socket/socket";
 var Modal = require('react-modal');
 
 // Normalize css 
@@ -19,4 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Register commands
     commands.register();
+    
+    socket.on('news', function(data) {
+        console.log(data);
+        socket.emit('my other event', { my: 'data' });
+    });
 });
