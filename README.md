@@ -25,3 +25,4 @@ Now open it in your favorite browser (pssst `chrome`) at the URL mentioned in yo
 * Works the same on the *server* as your local file system. Remote editing FTW!
 * Heck..you can check in the IDE as a `devDependency`!
 * Like cloud9 ... but on your server!
+* [...more reasons](https://github.com/basarat/tsb/blob/master/docs/contributing/why.md)
