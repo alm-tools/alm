@@ -1,7 +1,7 @@
 import * as wl from "../../utils/workerLib";
 
 var parent = new wl.Parent();
-parent.startWorker(__dirname + './fileListingWorker.js', showError, []);
+parent.startWorker(__dirname + '/fileListingWorker.js', showError, []);
 
 function showError(error: Error) {
     if (error) {

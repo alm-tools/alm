@@ -27,7 +27,7 @@
         "./server.ts",
         "./server/cache/cache.ts",
         "./server/cache/fileListing/fileListingWorker.ts",
-        "./server/cache/fileListing/fileListingWorkerClient.ts",
+        "./server/cache/fileListing/fileListingWorkerParent.ts",
         "./server/cookies.ts",
         "./server/devtime.ts",
         "./server/errorCodes.ts",

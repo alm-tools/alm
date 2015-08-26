@@ -18,6 +18,10 @@ export function processAllFiles(query:{}):Promise<string[]> {
 }
 
 
+import * as wl from "../../utils/workerLib";
+// Initiate the child logic
+var child = new wl.Child();
+child.registerAllFunctionsExportedFromAsResponders({processAllFiles});
 
 // other research 
 // https://github.com/coolaj86/node-walk
