@@ -8,9 +8,19 @@
  */
 
 import chokidar = require('chokidar');
+import glob = require('glob');
+import * as fsu from "../utils/fsu";
+import * as constants from "../../common/constants";
+import {EOL} from "os";
 
-function processAllFiles(){
+function processAllFiles() {
+    let listing: string[] = [];
+    function updateFileListing() {
+        fsu.writeFile(constants.cacheDir + '/listing.txt',listing.join(EOL));
+    }
     
+    listing = glob.sync('**');
+    updateFileListing();
 }
 
 // other research 

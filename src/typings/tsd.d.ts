@@ -10,3 +10,4 @@
 /// <reference path="mkdirp/mkdirp.d.ts" />
 /// <reference path="chokidar/chokidar.d.ts" />
 /// <reference path="glob/glob.d.ts" />
+/// <reference path="minimatch/minimatch.d.ts" />
