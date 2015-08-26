@@ -1,5 +1,5 @@
 Some reasons that didn't make the cut for the home page : 
- * Cause it was fun to do, and demos a lot of Tech in combination and I keep getting questions about how to do these in a neat workflow: `TypeScript`,`webpack`,`react`,`radium`. 
+ * Cause it was fun to do, and demos a lot of Tech in combination and I keep getting questions about how to do these in a neat workflow: `TypeScript`,`webpack`,`react`,`radium`. Checkout [contributing](./README.md) for technical details.
 
 # atom-typescript
  * We did some previous work on atom-typescript : Now atom is a *seriously* great project, but doing the kind of stuff we wanted to do was *too much modification of atom for a single plugin* e.g. : 
