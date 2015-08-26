@@ -25,7 +25,7 @@ setup(app);
 app.use(express.static(publicPath, {}));
 
 // Setup a socket server
-import {register} from "./server/socketServer";
+import {register} from "./server/socket/socketServer";
 register(server);
 
 // Start listening
