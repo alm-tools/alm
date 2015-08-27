@@ -69,7 +69,7 @@ export class RequesterResponder {
                 }
             });
         } catch (err) {
-            console.log('terminal error:', err);
+            console.log('Socket : terminal error in listening', err);
         }
     }
 
