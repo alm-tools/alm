@@ -12,10 +12,7 @@ export class Server {
 }
 
 class ServerInstance extends RequesterResponder {
-    protected getSocket = () => ({
-        emit: (message) => this.socket.emit('message', message),
-        on: this.socket.on.bind(this.socket)
-    });
+    protected getSocket = () => this.socket;
 
     constructor(private socket: SocketIO.Socket, responderModule: any) {
         super();

@@ -43,7 +43,7 @@ export class RequesterResponder {
     protected getSocket: {
         (): {
             on?: Function;
-            emit?: <T>(message: Message<T>) => any
+            emit?: <T>(messageType: string, message: Message<T>) => any
         }
     }
     = () => { throw new Error('getSocket is abstract'); return null; }
@@ -138,7 +138,7 @@ export class RequesterResponder {
         // Send data to worker
         this.pendingRequests.push(message);
         this.pendingRequestsChanged(this.pendingRequests);
-        this.getSocket().emit({ message: message, id: id, data: data, request: true });
+        this.getSocket().emit('message', { message: message, id: id, data: data, request: true });
         console.log('sent!');
         return defer.promise;
     }
@@ -214,7 +214,7 @@ export class RequesterResponder {
 
         responsePromise
             .then((response) => {
-                this.getSocket().emit({
+                this.getSocket().emit('message', {
                     message: message,
                     /** Note: to process a request we just pass the id as we recieve it */
                     id: parsed.id,
@@ -224,7 +224,7 @@ export class RequesterResponder {
                 });
             })
             .catch((error) => {
-                this.getSocket().emit({
+                this.getSocket().emit('message', {
                     message: message,
                     /** Note: to process a request we just pass the id as we recieve it */
                     id: parsed.id,
