@@ -1,5 +1,5 @@
 import {Client} from "../../socketLib/socketLibClient";
-import * as service from "../../server/socket/service";
+import {service} from "../../server/socket/serviceContract";
 
 let client = new Client();
 export let echo = client.sendToSocket(service.echo);

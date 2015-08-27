@@ -33,6 +33,7 @@
         "./server/devtime.ts",
         "./server/errorCodes.ts",
         "./server/socket/service.ts",
+        "./server/socket/serviceContract.ts",
         "./server/socket/socketServer.ts",
         "./server/utils/fsu.ts",
         "./server/utils/workerLib.ts",
