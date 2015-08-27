@@ -5,6 +5,7 @@ import * as csx from "csx";
 import {TabsContainer} from "./tabs/tabsContainer";
 import * as commands from "./commands/commands";
 var Modal = require('react-modal');
+import * as styles from "./styles/styles";
 
 let menuItems = [
     { route: 'get-started', text: 'Get Started' },
@@ -66,7 +67,7 @@ export class Root extends BaseComponent<{}, State>{
                     <div style={[csx.horizontal]}>
                       <h4>Omni Search</h4>
                       <div style={[csx.flex]}></div>
-                      <div>Press <code>esc</code> to close</div>
+                      <div style={[styles.userTip]}>Press <code style={styles.keyStroke}>esc</code> to close</div>
                     </div>
                       
                       <div>I am a modal</div>

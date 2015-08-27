@@ -1,3 +1,5 @@
+import csx = require('csx');
+
 export var tabHeaderContainer = {
     background: 'grey'
 }
@@ -22,3 +24,14 @@ export var tabHeaderActive = {
     color: "#6edeef",
     borderLeft: '6px solid #6edeef',
 };
+
+export var userTip = {
+    fontSize: '.9em'
+}
+
+export var keyStroke = csx.extend(userTip,{
+    background:'grey',
+    color: 'white',
+    padding: '2px',
+    borderRadius: '5px'
+});
