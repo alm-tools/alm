@@ -36,8 +36,3 @@ server.listen(port, function(e) {
     }
     console.log(`Dashboard at http://localhost:${port}`);
 });
-
-// import * as fslw from "./server/cache/fileListing/fileListingWorkerParent";
-// fslw.processAllFiles({filePath:process.cwd()}).then((res)=>{
-//     console.log(res);
-// });

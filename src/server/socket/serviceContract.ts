@@ -4,7 +4,8 @@ import * as _service from "./service";
 
 // the types are picked up from the top level type annotation
 export let service: typeof _service = {
-    echo: null
+    echo: null,
+    getAllFiles: null,
 };
 
 // make sure the `name` is present on each field (which is all that is used at runtime from the client)

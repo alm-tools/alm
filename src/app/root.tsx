@@ -6,6 +6,7 @@ import {TabsContainer} from "./tabs/tabsContainer";
 import * as commands from "./commands/commands";
 var Modal = require('react-modal');
 import * as styles from "./styles/styles";
+import {getAllFiles} from "./socket/socketClient";
 
 let menuItems = [
     { route: 'get-started', text: 'Get Started' },
@@ -28,27 +29,30 @@ export class Root extends BaseComponent<{}, State>{
 
     constructor(props: {}) {
         super(props);
-        
+
         this.state = {};
     }
 
-    refs: { 
-        [string: string]: any; 
-        leftNav: any; 
+    refs: {
+        [string: string]: any;
+        leftNav: any;
         omniSearch: any;
         omniSearchInput: any;
-     }
+    }
 
     toggle = () => {
         this.refs.leftNav.toggle();
     }
-    
-    componentDidMount(){
-        commands.findFile.on(()=>{
+
+    componentDidMount() {
+        commands.findFile.on(() => {
             console.log('find file');
             this.openOmniSearch();
+            getAllFiles({}).then((res) => {
+                console.log(res);
+            });
         });
-        commands.findCommand.on(()=>{
+        commands.findCommand.on(() => {
             console.log('find command');
             this.openOmniSearch();
         });

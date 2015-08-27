@@ -3,3 +3,4 @@ import {service} from "../../server/socket/serviceContract";
 
 let client = new Client();
 export let echo = client.sendToSocket(service.echo);
+export let getAllFiles = client.sendToSocket(service.getAllFiles);
