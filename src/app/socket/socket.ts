@@ -1,3 +1,5 @@
-var origin = `${window.location.protocol}//${window.location.hostname}${(window.location.port ? ':' + window.location.port: '')}`;
-export var socket = io.connect(origin);
+import {Client} from "../../server/socket/socketLibClient";
+import * as service from "../../socket/service";
 
+let client = new Client();
+export let echo = client.sendToSocket(service.echo);

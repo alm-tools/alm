@@ -1,8 +1,12 @@
-// This code is designed to be used by both the parent and the child
-import childprocess = require('child_process');
-var exec = childprocess.exec;
-var spawn = childprocess.spawn;
-import path = require('path');
+// This code is designed to be used by both the server and the client
+// Very similar to workerlib but designed to work with socket.io
+// The client is the requestor (hence parent like) and the server is the responder (hence child like)
+// client == parent
+// server == child
+
+// Lets get the types straight: 
+type ServerSocket = SocketIO.Server;
+type ClientSocket = SocketIOClient.Socket;
 
 // Parent makes queries<T>
 // Child responds<T>
@@ -33,17 +37,41 @@ function createId(): string {
     });
 }
 
-/** Used by parent and child for keepalive */
-var orphanExitCode = 100;
-
-class RequesterResponder {
+export class RequesterResponder {
 
     /** Must be implemented in children */
-    protected getProcess: {
-        (): { send?: <T>(message: Message<T>) => any }
+    protected getSocket: {
+        (): {
+            on?: Function;
+            emit?: <T>(message: Message<T>) => any
+        }
     }
-    = () => { throw new Error('getProcess is abstract'); return null; }
+    = () => { throw new Error('getSocket is abstract'); return null; }
 
+
+    startListening() {
+        try {
+            if (!this.getSocket()) {
+                console.log('You started listening without a socket!');
+                return;
+            }
+            let socket = this.getSocket();
+
+            socket.on('error', (err) => {
+            });
+
+            socket.on('message', (message: Message<any>) => {
+                if (message.request) {
+                    this.processRequest(message);
+                }
+                else {
+                    this.processResponse(message);
+                }
+            });
+        } catch (err) {
+            console.log('terminal error:', err);
+        }
+    }
 
     ///////////////////////////////// REQUESTOR /////////////////////////
 
@@ -57,7 +85,7 @@ class RequesterResponder {
     private pendingRequests: string[] = [];
     public pendingRequestsChanged = (pending: string[]) => null;
 
-    /** process a message from the child */
+    /** process a message from the server */
     protected processResponse(m: any) {
         var parsed: Message<any> = m;
 
@@ -65,10 +93,10 @@ class RequesterResponder {
         this.pendingRequestsChanged(this.pendingRequests);
 
         if (!parsed.message || !parsed.id) {
-            console.log('PARENT ERR: Invalid JSON data from child:', m);
+            console.log('SERVER ERR: Invalid JSON data from server:', m);
         }
         else if (!this.currentListeners[parsed.message] || !this.currentListeners[parsed.message][parsed.id]) {
-            console.log('PARENT ERR: No one was listening:', parsed.message, parsed.data);
+            console.log('SERVER ERR: No one was listening:', parsed.message, parsed.data);
         }
         else { // Alright nothing *weird* happened
             if (parsed.error) {
@@ -85,18 +113,18 @@ class RequesterResponder {
             if (this.currentLastOfType[parsed.message]) {
                 let last = this.currentLastOfType[parsed.message];
                 delete this.currentLastOfType[parsed.message];
-                let lastPromise = this.sendToIpcHeart(last.data, parsed.message);
+                let lastPromise = this.sendToServerHeart(last.data, parsed.message);
                 lastPromise.then((res) => last.defer.resolve(res), (rej) => last.defer.reject(rej));
             }
         }
     }
 
-    private sendToIpcHeart = (data, message) => {
+    private sendToServerHeart = (data, message) => {
 
-        // If we don't have a child exit
-        if (!this.getProcess()) {
-            console.log('PARENT ERR: no child when you tried to send :', message);
-            return <any>Promise.reject(new Error("No worker active to recieve message: " + message));
+        // If we don't have a server exit
+        if (!this.getSocket()) {
+            console.log('SEND ERR: no server when you tried to send :', message);
+            return <any>Promise.reject(new Error("No socket active to recieve message: " + message));
         }
 
         // Initialize if this is the first call of this type
@@ -110,7 +138,8 @@ class RequesterResponder {
         // Send data to worker
         this.pendingRequests.push(message);
         this.pendingRequestsChanged(this.pendingRequests);
-        this.getProcess().send({ message: message, id: id, data: data, request: true });
+        this.getSocket().emit({ message: message, id: id, data: data, request: true });
+        console.log('sent!');
         return defer.promise;
     }
 
@@ -119,28 +148,28 @@ class RequesterResponder {
      * and returns a function that will execute this function by name using IPC
      * (will only work if the process on the other side has this function as a registered responder)
      */
-    sendToIpc<Query, Response>(func: QRFunction<Query, Response>): QRFunction<Query, Response> {
+    sendToSocket<Query, Response>(func: QRFunction<Query, Response>): QRFunction<Query, Response> {
         var message = func.name;
-        return (data) => this.sendToIpcHeart(data, message);
+        return (data) => this.sendToServerHeart(data, message);
     }
 
     /**
      * If there are more than one pending then we only want the last one as they come in.
      * All others will get the default value
      */
-    sendToIpcOnlyLast<Query, Response>(func: QRFunction<Query, Response>, defaultResponse: Response): QRFunction<Query, Response> {
+    sendToSocketOnlyLast<Query, Response>(func: QRFunction<Query, Response>, defaultResponse: Response): QRFunction<Query, Response> {
         return (data) => {
             var message = func.name;
 
             // If we don't have a child exit
-            if (!this.getProcess()) {
-                console.log('PARENT ERR: no child when you tried to send :', message);
+            if (!this.getSocket()) {
+                console.log('SEND ERR: no socket when you tried to send :', message);
                 return <any>Promise.reject(new Error("No worker active to recieve message: " + message));
             }
 
             // Allow if this is the only call of this type
             if (!Object.keys(this.currentListeners[message] || {}).length) {
-                return this.sendToIpcHeart(data, message);
+                return this.sendToServerHeart(data, message);
             }
             else {
                 // Note:
@@ -185,7 +214,7 @@ class RequesterResponder {
 
         responsePromise
             .then((response) => {
-                this.getProcess().send({
+                this.getSocket().emit({
                     message: message,
                     /** Note: to process a request we just pass the id as we recieve it */
                     id: parsed.id,
@@ -195,7 +224,7 @@ class RequesterResponder {
                 });
             })
             .catch((error) => {
-                this.getProcess().send({
+                this.getSocket().emit({
                     message: message,
                     /** Note: to process a request we just pass the id as we recieve it */
                     id: parsed.id,
@@ -214,118 +243,5 @@ class RequesterResponder {
         Object.keys(aModule)
             .filter((funcName) => typeof aModule[funcName] == 'function')
             .forEach((funcName) => this.addToResponders(aModule[funcName]));
-    }
-}
-
-/** The parent */
-export class Parent extends RequesterResponder {
-
-    private child: childprocess.ChildProcess;
-    private node = process.execPath;
-
-    /** If we get this error then the situation if fairly hopeless */
-    private gotENOENTonSpawnNode = false;
-    protected getProcess = () => this.child;
-    private stopped = false;
-
-    /** start worker */
-    startWorker(childJsPath: string, terminalError: (e: Error) => any, customArguments: string[] = []) {
-        try {
-            this.child = spawn(this.node, [
-            // '--debug', // Uncomment if you want to debug the child process
-                childJsPath
-            ].concat(customArguments), { cwd: path.dirname(childJsPath), env: {}, stdio: ['ipc'] });
-
-            this.child.on('error', (err) => {
-                if (err.code === "ENOENT" && err.path === this.node) {
-                    this.gotENOENTonSpawnNode = true;
-                }
-                console.log('CHILD ERR ONERROR:', err.message, err.stack, err);
-                this.child = null;
-            });
-
-            this.child.on('message', (message: Message<any>) => {
-                if (message.request) {
-                    this.processRequest(message);
-                }
-                else {
-                    this.processResponse(message);
-                }
-            });
-
-            this.child.stderr.on('data', (err) => {
-                console.log("CHILD ERR STDERR:", err.toString());
-            });
-            this.child.on('close', (code) => {
-                if (this.stopped) {
-                    return;
-                }
-
-                // Handle process dropping
-
-                // If orphaned then Definitely restart
-                if (code === orphanExitCode) {
-                    this.startWorker(childJsPath, terminalError, customArguments);
-                }
-                // If we got ENOENT. Restarting will not help.
-                else if (this.gotENOENTonSpawnNode) {
-                    terminalError(new Error('gotENOENTonSpawnNode'));
-                }
-                // We haven't found a reson to not start worker yet
-                else {
-                    console.log("ts worker restarting. Don't know why it stopped with code:", code);
-                    this.startWorker(childJsPath, terminalError, customArguments);
-                }
-            });
-        } catch (err) {
-            terminalError(err);
-        }
-    }
-
-    /** stop worker */
-    stopWorker() {
-        this.stopped = true;
-        if (!this.child) return;
-        try {
-            this.child.kill('SIGTERM');
-        }
-        catch (ex) {
-            console.error('failed to kill worker child');
-        }
-        this.child = null;
-    }
-}
-
-export class Child extends RequesterResponder {
-
-    protected getProcess = () => process;
-    private connected = true;
-
-    constructor() {
-        super();
-
-        // Keep alive
-        this.keepAlive();
-        process.on('exit', () => this.connected = false);
-
-        // Start listening
-        process.on('message', (message: Message<any>) => {
-            if (message.request) {
-                this.processRequest(message);
-            }
-            else {
-                this.processResponse(message);
-            }
-        });
-    }
-
-    /** keep the child process alive while its connected and die otherwise */
-    private keepAlive() {
-        setInterval(() => {
-            // We have been orphaned
-            if (!this.connected) {
-                process.exit(orphanExitCode);
-            }
-        }, 1000);
     }
 }
