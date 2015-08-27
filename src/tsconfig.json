@@ -62,6 +62,7 @@
         "./typings/v8promise.d.ts",
         "./app/main.tsx",
         "./app/material-ui.tsx",
+        "./app/omniSearch.tsx",
         "./app/root.tsx",
         "./app/styles/styles.tsx",
         "./app/styles/theme.tsx",

@@ -33,6 +33,7 @@
     "chokidar": "^1.0.5",
     "colors": "^1.1.2",
     "cookie-parser": "^1.3.5",
+    "csx": "^1.0.4",
     "express": "4.13.0",
     "glob": "^5.0.14",
     "layoutjs": "^1.0.2",
@@ -51,6 +52,7 @@
     "css-loader": "^0.16.0",
     "csx": "^1.0.3",
     "http-proxy": "^1.11.1",
+    "react-modal": "^0.3.0",
     "style-loader": "^0.12.3",
     "webpack": "^1.11.0",
     "webpack-dev-server": "^1.10.1"

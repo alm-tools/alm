@@ -19,7 +19,7 @@ export let {RaisedButton, AppBar, IconButton, MenuItem, LeftNav, Tabs, Tab, Dial
 // http://material-ui.com/#/get-started : 
 // Please note that since v0.8.0, you also need to define a theme for components to start working.
 let ThemeManager = new mui.Styles.ThemeManager();
-ThemeManager.setTheme(theme.DarkTheme);
+ThemeManager.setTheme(theme.LightTheme);
 function getChildContext() {
     return {
         muiTheme: ThemeManager.getCurrentTheme()

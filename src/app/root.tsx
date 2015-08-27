@@ -4,6 +4,7 @@ import * as ui from "./ui";
 import * as csx from "csx";
 import {TabsContainer} from "./tabs/tabsContainer";
 import * as commands from "./commands/commands";
+var Modal = require('react-modal');
 import * as styles from "./styles/styles";
 
 let menuItems = [
@@ -12,13 +13,14 @@ let menuItems = [
     { route: 'components', text: 'Components' },
     { type: MenuItem.Types.SUBHEADER, text: 'Resources' },
     {
-        type: MenuItem.Types.divNK,
+        type: MenuItem.Types.LINK,
         payload: 'https://github.com/basarat/ped',
         text: 'GitHub'
     },
 ];
 
 export interface State {
+    isOmniSearchOpen?: boolean
 }
 
 @ui.Radium
@@ -71,94 +73,102 @@ export class Root extends BaseComponent<{}, State>{
                 }
                 <LeftNav ref="leftNav" docked={false} menuItems={menuItems} />
                 
-                <Dialog
-                    ref="omniSearch"
-                    title="Omni Search"
-                    autoDetectWindowHeight={true} autoScrollBodyContent={true}
-                    actions={OmniSearchPanelActions}>
-                    <div style={[csx.vertical]}>
-                      <TextField ref="omniSearchInput" floatingLabelText="Filter"/>
-                      <div style={[csx.vertical,{overflow:'auto'}]}>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                          <div>result</div>
-                      </div>
-                  </div>
-                </Dialog>
+                <Modal
+                      isOpen={this.state.isOmniSearchOpen}
+                      onRequestClose={this.closeOmniSearch}>
+                        <div style={[csx.vertical]}>
+                            <div style={[csx.horizontal]}>
+                                <h4>Omni Search</h4>
+                                <div style={[csx.flex]}></div>
+                                <div style={[styles.userTip]}>Press <code style={styles.keyStroke}>esc</code> to close</div>
+                            </div>
+                          
+                            <TextField ref="omniSearchInput" floatingLabelText="Filter"/>
+                            
+                            <div style={[csx.vertical,csx.flex,{overflow:'auto'}]}>
+                                <div style={[csx.vertical]}>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                     <div>result</div>
+                                 </div>
+                                
+                            </div>
+                        </div>
+                </Modal>
 
                 <TabsContainer/>
             </div>;
     }
     
     openOmniSearch = () => {
-        this.refs.omniSearch.show();
+        this.setState({ isOmniSearchOpen: true });
         this.refs.omniSearchInput.focus();
     };
     closeOmniSearch = ()=>{
-        this.refs.omniSearch.dismiss();
+        this.setState({ isOmniSearchOpen: false });
     };
 }
