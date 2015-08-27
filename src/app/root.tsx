@@ -1,5 +1,5 @@
 import * as React from "react";
-import {BaseComponent, RaisedButton, AppBar, MenuItem, LeftNav} from "./ui";
+import {BaseComponent, RaisedButton, AppBar, MenuItem, LeftNav, TextField} from "./ui";
 import * as ui from "./ui";
 import * as csx from "csx";
 import {TabsContainer} from "./tabs/tabsContainer";
@@ -62,22 +62,21 @@ export class Root extends BaseComponent<{}, State>{
                 <Modal
                       style={[csx.vertical]}
                       isOpen={this.state.isOmniSearchOpen}
-                      onRequestClose={this.closeOmniSearch}
-                    >
-                    <div style={[csx.horizontal]}>
-                      <h4>Omni Search</h4>
-                      <div style={[csx.flex]}></div>
-                      <div style={[styles.userTip]}>Press <code style={styles.keyStroke}>esc</code> to close</div>
-                    </div>
+                      onRequestClose={this.closeOmniSearch}>
                       
-                      <div>I am a modal</div>
-                      <form>
-                        <input />
-                        <button>tab navigation</button>
-                        <button>stays</button>
-                        <button>inside</button>
-                        <button>the modal</button>
-                      </form>
+                        <div style={[csx.horizontal]}>
+                            <h4>Omni Search</h4>
+                            <div style={[csx.flex]}></div>
+                            <div style={[styles.userTip]}>Press <code style={styles.keyStroke}>esc</code> to close</div>
+                        </div>
+                      
+                        <div style={[csx.vertical]}>
+                            <input/>
+                            {
+                                // TODO: add tabs here
+                            }
+                        </div>
+                        
                 </Modal>
 
                 <TabsContainer/>
