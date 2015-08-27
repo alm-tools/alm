@@ -1,5 +1,6 @@
 import * as React from "react";
 import {BaseComponent, RaisedButton, AppBar, MenuItem, LeftNav} from "./ui";
+import * as ui from "./ui";
 import * as csx from "csx";
 import {TabsContainer} from "./tabs/tabsContainer";
 import * as commands from "./commands/commands";
@@ -21,6 +22,7 @@ export interface State {
     isOmniSearchOpen?: boolean
 }
 
+@ui.Radium
 export class Root extends BaseComponent<{}, State>{
 
     constructor(props: {}) {
@@ -57,11 +59,16 @@ export class Root extends BaseComponent<{}, State>{
                 }
                 <LeftNav ref="leftNav" docked={false} menuItems={menuItems} />
                 <Modal
+                      style={[csx.vertical]}
                       isOpen={this.state.isOmniSearchOpen}
                       onRequestClose={this.closeOmniSearch}
                     >
-                      <h2>Hello</h2>
-                      <button onClick={this.closeOmniSearch}>close</button>
+                    <div style={[csx.horizontal]}>
+                      <h4>Omni Search</h4>
+                      <div style={[csx.flex]}></div>
+                      <div>Press <code>esc</code> to close</div>
+                    </div>
+                      
                       <div>I am a modal</div>
                       <form>
                         <input />
@@ -70,7 +77,7 @@ export class Root extends BaseComponent<{}, State>{
                         <button>inside</button>
                         <button>the modal</button>
                       </form>
-                    </Modal>
+                </Modal>
 
                 <TabsContainer/>
             </div>;

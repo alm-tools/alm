@@ -3,31 +3,7 @@
 import React = require('react');
 import * as ui from "../../ui";
 import * as csx from "csx";
-
-var styleTabHeaderContainer = {
-    background: 'grey'
-}
-
-var styleTabHeader = {
-    base: {
-        fontFamily:'Roboto, sans-serif',
-        paddingLeft: '10px',
-        paddingRight: '10px',
-        paddingTop: '5px',
-        paddingBottom: '5px',
-        background: "rgb(66, 66, 66)",
-        color: "rgb(150,150,150)",
-        borderLeft: '6px solid rgb(88, 88, 88)',
-        cursor: 'pointer',
-        userSelect: 'none',
-        transition: "color .5s, border-left .5s"
-    },
-};
-
-var styleTabHeaderActive = {
-    color: "#6edeef",
-    borderLeft: '6px solid #6edeef',
-};
+import {tabHeaderContainer,tabHeader,tabHeaderActive} from "../../styles/styles";
 
 export interface Prop {
     selectedIndex: number;
@@ -49,7 +25,7 @@ export class Tabs extends React.Component<Prop,State>{
         let titles = this.props.titles.map((t, i) =>
             <span
             key={`tabHeader ${i}`}
-            style={[styleTabHeader.base, i == selectedIndex ? styleTabHeaderActive : {}]}
+            style={[tabHeader.base, i == selectedIndex ? tabHeaderActive : {}]}
             onClick={()=>this.onTabClicked(i)}>
             {t}
             </span>
@@ -64,7 +40,7 @@ export class Tabs extends React.Component<Prop,State>{
         
         return (
             <div style={[csx.vertical]}>
-                <span style={[csx.horizontal, styleTabHeaderContainer]}>
+                <span style={[csx.horizontal, tabHeaderContainer]}>
                     {titles}
                 </span>
                 <div style={[csx.flexRoot]}>
