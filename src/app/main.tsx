@@ -1,7 +1,7 @@
 import {Root} from "./root";
 import * as commands from "./commands/commands";
 import * as React from "react";
-import {echo} from "./socket/socket";
+import {echo} from "./socket/socketClient";
 var Modal = require('react-modal');
 
 // Normalize css 
