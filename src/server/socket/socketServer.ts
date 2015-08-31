@@ -1,14 +1,13 @@
-import {Server,Client, ServerSocket} from "../../socketLib/socketLibServer";
+import {Server, ServerInstance, ServerSocket} from "../../socketLib/socketLibServer";
 import http = require('http');
 import * as serviceServer from "./serviceServer";
 import * as clientService from "../../app/socket/serviceClientContract";
 
 
 export function register(app: http.Server) {
-    let clientCreator = (socket:ServerSocket):clientService.contract => {
-        let client = new Client(socket);
+    let clientCreator = (serverInstance:ServerInstance<any>):clientService.contract => {
         return {
-            incrementNumber: client.sendToSocket(clientService.service.incrementNumber)
+            incrementNumber: serverInstance.sendToSocket(clientService.service.incrementNumber)
         };
     };
     let server = new Server(app, serviceServer, clientCreator);

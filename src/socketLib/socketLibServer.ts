@@ -246,28 +246,21 @@ export class RequesterResponder<TClient> {
 }
 
 export class Server<TClient> {
-    constructor(private app: http.Server, responderModule: any, clientCreator: (socket: ServerSocket) => TClient) {
+    constructor(private app: http.Server, responderModule: any, clientCreator: (socket: ServerInstance<any>) => any) {
         let io = socketIo(app);
         io.on('connection', (socket) => {
-            let serverInstance = new ServerInstance(socket, responderModule, clientCreator(socket));
+            let serverInstance = new ServerInstance(socket, responderModule);
+             clientCreator(serverInstance);
         });
     }
 }
 
-class ServerInstance<TClient> extends RequesterResponder<TClient> {
+export class ServerInstance<TClient> extends RequesterResponder<TClient> {
     protected getSocket = () => this.socket;
 
-    constructor(private socket: SocketIO.Socket, responderModule: any, client: TClient) {
-        super(client);
+    constructor(private socket: SocketIO.Socket, responderModule: any) {
+        super(null);
         this.registerAllFunctionsExportedFromAsResponders(responderModule);
         super.startListening();
-    }
-}
-
-export class Client extends RequesterResponder<any> {
-    protected getSocket = () => this.socket;
-
-    constructor(public socket: ServerSocket) {
-        super(null);
     }
 }
