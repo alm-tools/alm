@@ -1,7 +1,7 @@
 import {Server} from "../../socketLib/socketLibServer";
 import http = require('http');
-import * as service from "./service";
+import * as serviceServer from "./serviceServer";
 
 export function register(app: http.Server) {
-    let server = new Server(app,service);
+    let server = new Server(app,serviceServer);
 }

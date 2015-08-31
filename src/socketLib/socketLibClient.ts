@@ -6,9 +6,10 @@ export class Client extends RequesterResponder {
     protected getSocket = () => this.socket;
     private socket: SocketIOClient.Socket;
 
-    constructor(){
+    constructor(responderModule: any){
         super();
         this.socket = io.connect(origin);
+        this.registerAllFunctionsExportedFromAsResponders(responderModule);
         super.startListening();
     }
 }
