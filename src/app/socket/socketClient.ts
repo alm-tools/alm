@@ -1,11 +1,9 @@
 import {Client} from "../../socketLib/socketLibClient";
-import {serviceServer} from "../../server/socket/serviceServerContract";
+import {service} from "../../server/socket/serviceServerContract";
 import * as serviceClient from "./serviceClient";
 
-let client = new Client();
-export let echo = client.sendToSocket(serviceServer.echo);
-export let getAllFiles = client.sendToSocket(serviceServer.getAllFiles);
+let client = new Client(serviceClient);
 
-// Also provide the following services to the server
-client.registerAllFunctionsExportedFromAsResponders(serviceClient);
-client.startListening();
+// Consume the following services from the server
+export let echo = client.sendToSocket(service.echo);
+export let getAllFiles = client.sendToSocket(service.getAllFiles);
