@@ -13,7 +13,3 @@ export let service: contract = {
 Object.keys(service).forEach(key => {
     service[key] = { name: key }
 });
-
-
-
-

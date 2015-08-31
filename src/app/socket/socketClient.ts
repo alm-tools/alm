@@ -7,3 +7,9 @@ let client = new Client(serviceClient);
 import {service} from "../../server/socket/serviceServerContract";
 export let echo = client.sendToSocket(service.echo);
 export let getAllFiles = client.sendToSocket(service.getAllFiles);
+
+// Consume the server push messages
+import * as serverPush from "../../server/socket/socketServerPush";
+export let allcast = client.setupAllCast(serverPush.allcast);
+
+allcast.hello.on((p) => { console.log(p) });

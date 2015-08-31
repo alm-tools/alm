@@ -31,6 +31,11 @@ export interface Message<T> {
     isRequest: boolean;
 }
 
+export interface CastMessage<T> {
+    message: string;
+    data?: T;
+}
+
 /** Query Response function */
 export interface QRFunction<Query, Response> {
     (query: Query): Promise<Response>;

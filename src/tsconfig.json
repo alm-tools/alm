@@ -37,6 +37,7 @@
         "./server/socket/serviceServer.ts",
         "./server/socket/serviceServerContract.ts",
         "./server/socket/socketServer.ts",
+        "./server/socket/socketServerPush.ts",
         "./server/utils/fsu.ts",
         "./server/utils/workerLib.ts",
         "./socketLib/socketLib.ts",

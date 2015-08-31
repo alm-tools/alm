@@ -1,13 +1,6 @@
 import http = require('http');
 import socketIo = require('socket.io');
-import {RequesterResponder,anycastMessageName} from "./socketLib";
-
-export var getCastNoopFunction = <T>() => (messageContents: T): void=> { };
-
-interface CastMessage<T> {
-    message: string;
-    data?: T;
-}
+import {RequesterResponder, anycastMessageName, CastMessage, TypedEvent} from "./socketLib";
 
 export class Server {
     io: SocketIO.Server;
@@ -15,24 +8,27 @@ export class Server {
         this.io = socketIo(app);
         this.io.on('connection', (socket) => {
             let serverInstance = new ServerInstance(socket, responderModule);
-             serverInstance.client = clientCreator(serverInstance);
+            serverInstance.client = clientCreator(serverInstance);
         });
     }
     
     /**
      * Mutates the original in place plus returns the mutated version
-     * Each member of `instance` must be a function that takes some message contents and doesn't expect a return value
+     * Each member of `instance` must be a typed event
      */
     setupAllCast<T>(instance: T): T {
         var toRet = instance;
         Object.keys(toRet).forEach(name => {
-            toRet[name] = (data: T) => {
-                let castMessage: CastMessage<T> = {
-                    message: name,
-                    data: data
-                };
-                console.log('EMIT TO ALL : ',name)
-                this.io.sockets.emit(anycastMessageName, castMessage);
+            // Override the actual emit function with one that sends it on to the server
+            toRet[name] = {
+                emit: (data: T) => {
+                    let castMessage: CastMessage<T> = {
+                        message: name,
+                        data: data
+                    };
+                    console.log('EMIT TO ALL : ', name)
+                    this.io.sockets.emit(anycastMessageName, castMessage);
+                }
             };
         });
         return toRet;
