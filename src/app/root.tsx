@@ -6,7 +6,7 @@ import {TabsContainer} from "./tabs/tabsContainer";
 import * as commands from "./commands/commands";
 var Modal = require('react-modal');
 import * as styles from "./styles/styles";
-import {getAllFiles} from "./socket/socketClient";
+import {getAllFiles,cast} from "./socket/socketClient";
 
 let menuItems = [
     { route: 'get-started', text: 'Get Started' },
@@ -21,7 +21,8 @@ let menuItems = [
 ];
 
 export interface State {
-    isOmniSearchOpen?: boolean
+    isOmniSearchOpen?: boolean;
+    fileList?: string[];
 }
 
 @ui.Radium
@@ -30,7 +31,9 @@ export class Root extends BaseComponent<{}, State>{
     constructor(props: {}) {
         super(props);
 
-        this.state = {};
+        this.state = {
+            fileList : []
+        };
     }
 
     refs: {
@@ -45,11 +48,15 @@ export class Root extends BaseComponent<{}, State>{
     }
 
     componentDidMount() {
+        cast.fileListUpdated.on((update)=>{
+            this.setState({fileList:update.files});
+        });
+        
         commands.findFile.on(() => {
             console.log('find file');
             this.openOmniSearch();
-            getAllFiles({}).then((res) => {
-                console.log(res);
+            getAllFiles({}).then((fileList) => {
+                this.setState({fileList});
             });
         });
         commands.findCommand.on(() => {
@@ -66,6 +73,8 @@ export class Root extends BaseComponent<{}, State>{
             primary={true}
             onTouchTap={this.closeOmniSearch} />
         ]
+        
+        let fileList = this.state.fileList.map(f => <div key={f}>{f}</div>);
         
         return <div>
                 {
@@ -91,73 +100,7 @@ export class Root extends BaseComponent<{}, State>{
                             
                             <div style={[csx.vertical,csx.flex,{overflow:'auto'}]}>
                                 <div style={[csx.vertical]}>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
-                                     <div>result</div>
+                                    {fileList}
                                  </div>
                                 
                             </div>

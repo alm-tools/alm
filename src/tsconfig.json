@@ -34,6 +34,7 @@
         "./server/cookies.ts",
         "./server/devtime.ts",
         "./server/errorCodes.ts",
+        "./server/serverStarted.ts",
         "./server/socket/serviceServer.ts",
         "./server/socket/serviceServerContract.ts",
         "./server/socket/socketServer.ts",

@@ -28,6 +28,8 @@ app.use(express.static(publicPath, {}));
 import {register} from "./server/socket/socketServer";
 register(server);
 
+import serverStarted = require('./server/serverStarted');
+
 // Start listening
 server.listen(port, function(e) {
     if (e) {
@@ -35,4 +37,5 @@ server.listen(port, function(e) {
         exit(errorCodes.couldNotListen);
     }
     console.log(`Dashboard at http://localhost:${port}`);
+    serverStarted.started();
 });

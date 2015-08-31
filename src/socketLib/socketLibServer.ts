@@ -26,7 +26,7 @@ export class Server {
                         message: name,
                         data: data
                     };
-                    console.log('EMIT TO ALL : ', name)
+                    // console.log('EMIT TO ALL : ', name)
                     this.io.sockets.emit(anycastMessageName, castMessage);
                 }
             };

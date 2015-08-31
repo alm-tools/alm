@@ -9,5 +9,9 @@ import {TypedEvent} from "../../socketLib/socketLib";
 
 /** Messages sent to everyone */
 export var cast = {
-    hello: new TypedEvent<{ text: string }>()
+    /** for testing */
+    hello: new TypedEvent<{ text: string }>(),
+    
+    /** If the file worker notices a change */
+    fileListUpdated: new TypedEvent<{ files: string[] }>()
 };

@@ -17,6 +17,7 @@ export function register(app: http.Server) {
     // Provide the server push messages
     cast = server.setupAllCast(serverPush.cast);
 
-    setInterval(() => cast.hello.emit({ text: 'nice' }), 1000);
+    // For testing
+    // setInterval(() => cast.hello.emit({ text: 'nice' }), 1000);
 }
 
