@@ -1,6 +1,6 @@
 
 import * as Mousetrap from "mousetrap";
-import * as events from "./events";
+import * as events from "../../common/events";
 
 export var nextTab = new events.TypedEvent<{}>();
 export var prevTab = new events.TypedEvent<{}>();

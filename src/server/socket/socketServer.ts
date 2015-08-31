@@ -1,4 +1,4 @@
-import {Server, ServerInstance} from "../../socketLib/socketLibServer";
+import {Server, ServerInstance,getCastNoopFunction} from "../../socketLib/socketLibServer";
 import http = require('http');
 import * as serviceServer from "./serviceServer";
 import * as clientService from "../../app/socket/serviceClientContract";
@@ -11,4 +11,11 @@ export function register(app: http.Server) {
         };
     };
     let server = new Server(app, serviceServer, clientCreator);
+    server.setupAllCast(allcast);
+    
+    setInterval(() => allcast.hello({ text: 'nice' }), 1000);
 }
+
+export var allcast = {
+    hello: getCastNoopFunction<{ text: string }>()
+};

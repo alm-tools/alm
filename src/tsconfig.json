@@ -20,12 +20,12 @@
     ],
     "files": [
         "./app/commands/commands.ts",
-        "./app/commands/events.ts",
         "./app/socket/serviceClient.ts",
         "./app/socket/serviceClientContract.ts",
         "./app/socket/socketClient.ts",
         "./app/tabs/tab.ts",
         "./common/constants.ts",
+        "./common/events.ts",
         "./common/utils.ts",
         "./server.ts",
         "./server/cache/cache.ts",

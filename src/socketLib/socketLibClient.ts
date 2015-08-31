@@ -1,4 +1,4 @@
-import {RequesterResponder, Message} from "./socketLib";
+import {RequesterResponder, Message, anycastMessageName, TypedEvent} from "./socketLib";
 let socketIo = io;
 let origin = `${window.location.protocol}//${window.location.hostname}${(window.location.port ? ':' + window.location.port: '')}`;
 
@@ -13,5 +13,9 @@ export class Client extends RequesterResponder {
         // Also provide the following services to the server
         this.registerAllFunctionsExportedFromAsResponders(serviceClient);
         this.startListening();
+        
+        this.socket.on(anycastMessageName,(allcast)=>{
+            console.log('anycast')
+        });
     }
 }

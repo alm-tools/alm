@@ -4,6 +4,13 @@
 // client == parent
 // server == child
 
+/**
+ * Allcast and Broadcast both come through as a message of the following type
+ */
+export var anycastMessageName = 'anycast';
+
+export * from "../common/events";
+
 // Lets get the types straight: 
 export type ServerSocket = SocketIO.Socket;
 export type ClientSocket = SocketIOClient.Socket;
