@@ -23,9 +23,9 @@ function bundle() {
     devConfig.devtool = 'eval';
     devConfig.entry = [        
     // For hot style updates
-        'webpack/hot/dev-server',
+        require.resolve('webpack/hot/dev-server'),
         // The script refreshing the browser on hot updates
-        `webpack-dev-server/client?http://localhost:${webpackPort}`,
+        `${require.resolve('webpack-dev-server/client')}?http://localhost:${webpackPort}`,
         // Also keep existing
     ].concat(config.entry);
     
