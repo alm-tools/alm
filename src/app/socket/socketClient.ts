@@ -10,6 +10,6 @@ export let getAllFiles = client.sendToSocket(service.getAllFiles);
 
 // Consume the server push messages
 import * as serverPush from "../../server/socket/socketServerPush";
-export let allcast = client.setupAllCast(serverPush.all);
+export let cast = client.setupAllCast(serverPush.cast);
 
-allcast.hello.on((p) => { console.log(p) });
+cast.hello.on((p) => { console.log(p) });

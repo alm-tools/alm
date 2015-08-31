@@ -8,6 +8,6 @@
 import {TypedEvent} from "../../socketLib/socketLib";
 
 /** Messages sent to everyone */
-export var all = {
-    hello: new TypedEvent<{text:string}>()
+export var cast = {
+    hello: new TypedEvent<{ text: string }>()
 };

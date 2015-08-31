@@ -2,9 +2,9 @@ import {Server, ServerInstance} from "../../socketLib/socketLibServer";
 import http = require('http');
 import * as serviceServer from "./serviceServer";
 import * as clientService from "../../app/socket/serviceClientContract";
-import * as sp from "./socketServerPush";
+import * as serverPush from "./socketServerPush";
 
-export var allcast = sp.all;
+export var cast = serverPush.cast;
 
 export function register(app: http.Server) {
     let clientCreator = (serverInstance: ServerInstance): clientService.contract => {
@@ -15,8 +15,8 @@ export function register(app: http.Server) {
     let server = new Server(app, serviceServer, clientCreator);
     
     // Provide the server push messages
-    allcast = server.setupAllCast(sp.all);
+    cast = server.setupAllCast(serverPush.cast);
 
-    setInterval(() => allcast.hello.emit({ text: 'nice' }), 1000);
+    setInterval(() => cast.hello.emit({ text: 'nice' }), 1000);
 }
 
