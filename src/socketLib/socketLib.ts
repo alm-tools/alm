@@ -5,8 +5,8 @@
 // server == child
 
 // Lets get the types straight: 
-type ServerSocket = SocketIO.Server;
-type ClientSocket = SocketIOClient.Socket;
+export type ServerSocket = SocketIO.Socket;
+export type ClientSocket = SocketIOClient.Socket;
 
 // Parent makes queries<T>
 // Child responds<T>
@@ -195,7 +195,10 @@ export class RequesterResponder {
 
     ////////////////////////////////// RESPONDER ////////////////////////
 
-    private responders: { [message: string]: <Query, Response>(query: Query) => Promise<Response> } = {};
+    /** Client is an optionl service provided to the responders to call back into the requestor */ 
+    public client: any;
+    
+    private responders: { [message: string]: <Query, Response>(query: Query, client?: any) => Promise<Response> } = {};
 
     protected processRequest = (m: any) => {
         var parsed: Message<any> = m;
@@ -206,7 +209,7 @@ export class RequesterResponder {
         var message = parsed.message;
         var responsePromise: Promise<any>;
         try {
-            responsePromise = this.responders[message](parsed.data);
+            responsePromise = this.responders[message](parsed.data, this.client);
         } catch (err) {
             responsePromise = Promise.reject({ method: message, message: err.message, stack: err.stack, details: err.details || {} });
         }

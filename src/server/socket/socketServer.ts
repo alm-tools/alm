@@ -1,4 +1,4 @@
-import {Server, ServerInstance, ServerSocket} from "../../socketLib/socketLibServer";
+import {Server, ServerInstance} from "../../socketLib/socketLibServer";
 import http = require('http');
 import * as serviceServer from "./serviceServer";
 import * as clientService from "../../app/socket/serviceClientContract";
