@@ -139,7 +139,6 @@ export class RequesterResponder {
         this.pendingRequests.push(message);
         this.pendingRequestsChanged(this.pendingRequests);
         this.getSocket().emit('message', { message: message, id: id, data: data, isRequest: true });
-        console.log('sent!');
         return defer.promise;
     }
 
@@ -148,7 +147,7 @@ export class RequesterResponder {
      * and returns a function that will execute this function by name using IPC
      * (will only work if the process on the other side has this function as a registered responder)
      */
-    sendToSocket<Query, Response>(func: QRFunction<Query, Response>): QRFunction<Query, Response> {
+    sendToSocket<Query, Response>(func: QRFunction<Query, Response>,name = 'message'): QRFunction<Query, Response> {
         var message = func.name;
         return (data) => this.sendToServerHeart(data, message);
     }
