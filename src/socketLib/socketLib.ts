@@ -21,7 +21,7 @@ export interface Message<T> {
         details: any;
     };
     /** Is this message a request or a response */
-    request: boolean;
+    isRequest: boolean;
 }
 
 /** Query Response function */
@@ -61,7 +61,7 @@ export class RequesterResponder {
             });
 
             socket.on('message', (message: Message<any>) => {
-                if (message.request) {
+                if (message.isRequest) {
                     this.processRequest(message);
                 }
                 else {
@@ -138,7 +138,7 @@ export class RequesterResponder {
         // Send data to worker
         this.pendingRequests.push(message);
         this.pendingRequestsChanged(this.pendingRequests);
-        this.getSocket().emit('message', { message: message, id: id, data: data, request: true });
+        this.getSocket().emit('message', { message: message, id: id, data: data, isRequest: true });
         console.log('sent!');
         return defer.promise;
     }
@@ -220,7 +220,7 @@ export class RequesterResponder {
                     id: parsed.id,
                     data: response,
                     error: null,
-                    request: false
+                    isRequest: false
                 });
             })
             .catch((error) => {
@@ -230,7 +230,7 @@ export class RequesterResponder {
                     id: parsed.id,
                     data: null,
                     error: error,
-                    request: false
+                    isRequest: false
                 });
             });
     }
