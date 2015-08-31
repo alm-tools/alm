@@ -5,7 +5,7 @@ import * as clientService from "../../app/socket/serviceClientContract";
 
 
 export function register(app: http.Server) {
-    let clientCreator = (serverInstance:ServerInstance<any>):clientService.contract => {
+    let clientCreator = (serverInstance: ServerInstance): clientService.contract => {
         return {
             incrementNumber: serverInstance.sendToSocket(clientService.service.incrementNumber)
         };

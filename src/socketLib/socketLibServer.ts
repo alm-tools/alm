@@ -34,11 +34,8 @@ function createId(): string {
     });
 }
 
-export class RequesterResponder<TClient> {
+export class RequesterResponder {
     
-    constructor(public client: TClient){
-    }
-
     /** Must be implemented in children */
     protected getSocket: {
         (): {
@@ -194,8 +191,11 @@ export class RequesterResponder<TClient> {
     }
 
     ////////////////////////////////// RESPONDER ////////////////////////
-
-    private responders: { [message: string]: <Query, Response>(query: Query, client: TClient) => Promise<Response> } = {};
+    
+    /** Client is an optionl service provided to the responders to call back into the requestor */ 
+    public client: any;
+    
+    private responders: { [message: string]: <Query, Response>(query: Query, client?: any) => Promise<Response> } = {};
 
     protected processRequest = (m: any) => {
         var parsed: Message<any> = m;
@@ -234,7 +234,7 @@ export class RequesterResponder<TClient> {
             });
     }
 
-    private addToResponders<Query, Response>(func: (query: Query, client: TClient) => Promise<Response>) {
+    private addToResponders<Query, Response>(func: (query: Query) => Promise<Response>) {
         this.responders[func.name] = func;
     }
 
@@ -245,21 +245,21 @@ export class RequesterResponder<TClient> {
     }
 }
 
-export class Server<TClient> {
-    constructor(private app: http.Server, responderModule: any, clientCreator: (socket: ServerInstance<any>) => any) {
+export class Server {
+    constructor(private app: http.Server, responderModule: any, clientCreator: (socket: ServerInstance) => any) {
         let io = socketIo(app);
         io.on('connection', (socket) => {
             let serverInstance = new ServerInstance(socket, responderModule);
-             clientCreator(serverInstance);
+             serverInstance.client = clientCreator(serverInstance);
         });
     }
 }
 
-export class ServerInstance<TClient> extends RequesterResponder<TClient> {
+export class ServerInstance extends RequesterResponder {
     protected getSocket = () => this.socket;
 
     constructor(private socket: SocketIO.Socket, responderModule: any) {
-        super(null);
+        super();
         this.registerAllFunctionsExportedFromAsResponders(responderModule);
         super.startListening();
     }
