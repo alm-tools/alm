@@ -13,5 +13,5 @@ export var cast = {
     hello: new TypedEvent<{ text: string }>(),
     
     /** If the file worker notices a change */
-    fileListUpdated: new TypedEvent<{ files: string[] }>()
+    fileListUpdated: new TypedEvent<{ fileList: string[] }>()
 };

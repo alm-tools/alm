@@ -6,7 +6,7 @@ export interface Echo {
 }
 export function echo(data: Echo, client?: contract): Promise<Echo> {
     console.log('Echo request received:', data);
-    return client.incrementNumber({num:data.num}).then((res)=>{
+    return client.incrementNumber({ num: data.num }).then((res) => {
         return {
             echo: data.echo,
             num: res.num
@@ -14,7 +14,7 @@ export function echo(data: Echo, client?: contract): Promise<Echo> {
     });
 }
 
-import * as fslw from "../cache/fileListing/fileListingWorkerParent";
-export function getAllFiles(data: {}): Promise<string[]> {
-    return fslw.processAllFiles({ filePath: process.cwd() });
+import * as fslw from "../workers/fileListing/fileListingMaster";
+export function getAllFiles(data: {}): Promise<{ fileList: string[] }> {
+    return fslw.worker.getFileList({ directory: process.cwd() });
 }

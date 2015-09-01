@@ -48,16 +48,18 @@ export class Root extends BaseComponent<{}, State>{
     }
 
     componentDidMount() {
+        getAllFiles({}).then((res) => {
+            this.setState({fileList:res.fileList});
+        });
+        
         cast.fileListUpdated.on((update)=>{
-            this.setState({fileList:update.files});
+            console.log(update);
+            this.setState({fileList:update.fileList});
         });
         
         commands.findFile.on(() => {
             console.log('find file');
             this.openOmniSearch();
-            getAllFiles({}).then((fileList) => {
-                this.setState({fileList});
-            });
         });
         commands.findCommand.on(() => {
             console.log('find command');
@@ -74,7 +76,7 @@ export class Root extends BaseComponent<{}, State>{
             onTouchTap={this.closeOmniSearch} />
         ]
         
-        let fileList = this.state.fileList.map(f => <div key={f}>{f}</div>);
+        let fileList = this.state.fileList.slice(0,100).map(f => <div key={f}>{f}</div>);
         
         return <div>
                 {
