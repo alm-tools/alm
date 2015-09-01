@@ -7,7 +7,7 @@ import path = require('path');
 /**
  * The main function you should call from master
  */
-export function startWorker<TWorker>(workerPath: string, workerContract: TWorker, masterImplementation: any): TWorker {
+export function startWorker<TWorker>(workerPath: string, workerContract: TWorker, masterImplementation: any): { parent: Parent; worker: TWorker } {
     var parent = new Parent();
     parent.startWorker(workerPath, showError, []);
 
@@ -17,20 +17,20 @@ export function startWorker<TWorker>(workerPath: string, workerContract: TWorker
         }
     }
 
-    var workerIpced = parent.sendAllToIpc(workerContract);
+    var worker = parent.sendAllToIpc(workerContract);
     parent.registerAllFunctionsExportedFromAsResponders(masterImplementation);
-    return workerIpced;
+    return { parent, worker };
 }
 
 
 /**
  * The main function you should call from worker
  */
-export function runWorker<TMaster>(workerImplementation: any, masterContract: TMaster): TMaster {
+export function runWorker<TMaster>(workerImplementation: any, masterContract: TMaster): { child: Child; master: TMaster } {
     var child = new Child();
     child.registerAllFunctionsExportedFromAsResponders(workerImplementation);
     let master = child.sendAllToIpc(masterContract);
-    return master;
+    return { child, master };
 }
 
 // Parent makes queries<T>

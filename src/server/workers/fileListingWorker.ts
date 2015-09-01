@@ -15,4 +15,4 @@ namespace Worker {
 // Ensure that the namespace follows the contract
 var _checkTypes: contract.WorkerContract = Worker;
 // run worker
-export var master = sw.runWorker(Worker, contract.master);
+export var {master} = sw.runWorker(Worker, contract.master);

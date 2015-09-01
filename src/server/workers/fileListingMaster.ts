@@ -11,4 +11,4 @@ namespace Master {
 
 // Ensure that the namespace follows the contract
 var _checkTypes: contract.MasterContract = Master;
-export var worker = sw.startWorker(__dirname + '/fileListingWorker', contract.worker, Master);
+export var {worker} = sw.startWorker(__dirname + '/fileListingWorker', contract.worker, Master);
