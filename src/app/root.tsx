@@ -8,6 +8,7 @@ var Modal = require('react-modal');
 import * as styles from "./styles/styles";
 import {getAllFiles,cast} from "./socket/socketClient";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
+import {debounce} from "../common/utils";
 
 let menuItems = [
     { route: 'get-started', text: 'Get Started' },
@@ -129,9 +130,9 @@ export class Root extends BaseComponent<{}, State>{
     closeOmniSearch = ()=>{
         this.setState({ isOmniSearchOpen: false });
     };
-    onChangeFilter = (e)=>{
+    onChangeFilter = debounce((e)=>{
         this.setState({ filterValue: this.refs.omniSearchInput.getValue() });
-    };
+    },50);
 }
 
 
