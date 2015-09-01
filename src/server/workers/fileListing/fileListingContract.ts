@@ -1,4 +1,4 @@
-import * as sw from "../utils/simpleWorker";
+import * as sw from "../../utils/simpleWorker";
 
 /**
  * A worker consists of two contracts
