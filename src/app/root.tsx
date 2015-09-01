@@ -8,7 +8,7 @@ var Modal = require('react-modal');
 import * as styles from "./styles/styles";
 import {getAllFiles,cast} from "./socket/socketClient";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
-import {debounce} from "../common/utils";
+import {debounce,createMap} from "../common/utils";
 
 let menuItems = [
     { route: 'get-started', text: 'Get Started' },
@@ -35,6 +35,7 @@ export class Root extends BaseComponent<{}, State>{
         super(props);
 
         this.state = {
+            filterValue: '',
             fileList : []
         };
     }
@@ -82,7 +83,7 @@ export class Root extends BaseComponent<{}, State>{
         let fileList = this.state.fileList;
         fileList = fuzzyFilter(fileList, this.state.filterValue);
         fileList = fileList.slice(0,50);
-        let fileListRendered = fileList.map(f => <div key={f}>{f}</div>);
+        let fileListRendered = fileList.map(result => highlightMatch(result, this.state.filterValue));
         
         return <div>
                 {
@@ -128,7 +129,7 @@ export class Root extends BaseComponent<{}, State>{
         this.refs.omniSearchInput.focus();
     };
     closeOmniSearch = ()=>{
-        this.setState({ isOmniSearchOpen: false });
+        this.setState({ isOmniSearchOpen: false, filterValue: '' });
     };
     onChangeFilter = debounce((e)=>{
         this.setState({ filterValue: this.refs.omniSearchInput.getValue() });
@@ -139,20 +140,21 @@ export class Root extends BaseComponent<{}, State>{
 /** 
  * Based on https://github.com/atom/fuzzy-finder/blob/51f1f2415ecbfab785596825a011c1d2fa2658d3/lib/fuzzy-finder-view.coffee#L56-L74
  */
-function highlightMatch(result: string, query: string) {
+function highlightMatch(result: string, query: string): JSX.Element {
     let matches = match(result, query);
-    console.log(matches);
-    // lastIndex = 0
-    // matchedChars = [] // Build up a set of matched chars to be more semantic
-    // 
-    // for matchIndex of matches
-    //   matchIndex -= offsetIndex
-    //   continue if matchIndex < 0 // If marking up the basename, omit path matches
-    //   unmatched = path.substring(lastIndex, matchIndex)
-    //   if unmatched
-    //     @span matchedChars.join(''), class: 'character-match' if matchedChars.length
-    //     matchedChars = []
-    //     @text unmatched
-    //   matchedChars.push(path[matchIndex])
-    //   lastIndex = matchIndex + 1
+    let matchMap = createMap(matches);
+    // TODO: collapse contiguous sections into a single `<strong>`
+    let rendered = result.split('').map((c,i)=> {
+        if (!matchMap[i]){
+            return c;
+        }
+        else {
+            return <strong>{c}</strong>
+        }
+    });
+    return (
+        <div key={result}>
+            {rendered}
+        </div>
+    );
 }
