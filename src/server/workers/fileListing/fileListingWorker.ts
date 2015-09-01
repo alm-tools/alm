@@ -3,6 +3,7 @@ import * as contract from "./fileListingContract";
 
 import * as glob from "glob";
 import chokidar = require('chokidar');
+import {debounce} from "../../../common/utils";
 
 namespace Worker {
     export var echo: typeof contract.worker.echo = (q) => {
@@ -33,9 +34,9 @@ namespace Worker {
         sendNewFileList();
 
         let watcher = chokidar.watch(directoryUnderWatch);
-        watcher.on('change', function() {
+        watcher.on('change', debounce(function() {
             sendNewFileList();
-        });
+        },100));
 
         return Promise.resolve({});
     }
