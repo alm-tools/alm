@@ -4,9 +4,12 @@ var exec = childprocess.exec;
 var spawn = childprocess.spawn;
 import path = require('path');
 
-export function run<TWorker>(worker: string, workerContract: TWorker, masterImplementation: any): TWorker {
+/**
+ * The main function you should call from master
+ */
+export function startWorker<TWorker>(workerPath: string, workerContract: TWorker, masterImplementation: any): TWorker {
     var parent = new Parent();
-    parent.startWorker(worker, showError, []);
+    parent.startWorker(workerPath, showError, []);
 
     function showError(error: Error) {
         if (error) {
@@ -17,6 +20,17 @@ export function run<TWorker>(worker: string, workerContract: TWorker, masterImpl
     var workerIpced = parent.sendAllToIpc(workerContract);
     parent.registerAllFunctionsExportedFromAsResponders(masterImplementation);
     return workerIpced;
+}
+
+
+/**
+ * The main function you should call from worker
+ */
+export function runWorker<TMaster>(workerImplementation: any, masterContract: TMaster): TMaster {
+    var child = new Child();
+    child.registerAllFunctionsExportedFromAsResponders(workerImplementation);
+    let master = child.sendAllToIpc(masterContract);
+    return master;
 }
 
 // Parent makes queries<T>

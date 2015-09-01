@@ -3,7 +3,7 @@ import chokidar = require('chokidar');
 // import * as fslw from "./cache/fileListing/fileListingWorkerParent";
 import * as socketServer from "./socket/socketServer";
 
-import * as fslw from "./workers/filterListingRunner";
+import * as fslw from "./workers/fileListingMaster";
 
 export function started() {
     fslw.worker.echo({text: 'foo', num: 123}).then((res)=>{

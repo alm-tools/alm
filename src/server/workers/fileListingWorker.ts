@@ -11,11 +11,8 @@ namespace Worker {
         });
     }
 }
-export = Worker;
 
 // Ensure that the namespace follows the contract
 var _checkTypes: contract.WorkerContract = Worker;
-// Register as a worker
-var child = new sw.Child();
-child.registerAllFunctionsExportedFromAsResponders(Worker);
-var master = child.sendAllToIpc(contract.master);
+// run worker
+export var master = sw.runWorker(Worker, contract.master);
