@@ -3,7 +3,6 @@ import * as contract from "./fileListingContract";
 
 namespace Worker {
     export var echo: typeof contract.worker.echo = (q) => {
-        console.error('GOT THE CALL');
         return master.increment(q).then((res) => {
             return {
                 text: q.text,

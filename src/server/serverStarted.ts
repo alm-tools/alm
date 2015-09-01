@@ -6,7 +6,6 @@ import * as socketServer from "./socket/socketServer";
 import * as fslw from "./workers/filterListingRunner";
 
 export function started() {
-    console.log('ABOUT TO CALL');
     fslw.worker.echo({text: 'foo', num: 123}).then((res)=>{
         console.log('FINALLY!', res.num);
     });

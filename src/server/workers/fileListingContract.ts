@@ -7,16 +7,13 @@ import * as sw from "../utils/simpleWorker";
  */
 
 export var master = {
-    increment: null as sw.QRFunction<{ num: number }, { num: number }>
+    increment: {} as sw.QRFunction<{ num: number }, { num: number }>
 }
 
 export type MasterContract = typeof master;
 
 export var worker = {
-    echo: null as sw.QRFunction<{ text: string, num: number }, { text: string, num: number }>
+    echo: {} as sw.QRFunction<{ text: string, num: number }, { text: string, num: number }>
 }
 
 export type WorkerContract = typeof worker;
-
-sw.setupNames(master);
-sw.setupNames(worker);

@@ -4,16 +4,6 @@ var exec = childprocess.exec;
 var spawn = childprocess.spawn;
 import path = require('path');
 
-/** make sure the `name` is present on each field (which is all that is used at runtime) */
-export function setupNames(contract: any) {
-    Object.keys(contract).forEach(key => {
-        if (!contract[key]) {
-            contract[key] = {};
-        }
-        contract[key].name = key;
-    });
-}
-
 export function run<TWorker>(worker: string, workerContract: TWorker, masterImplementation: any): TWorker {
     var parent = new Parent();
     parent.startWorker(worker, showError, []);
@@ -145,7 +135,7 @@ class RequesterResponder {
     sendAllToIpc<TWorker>(contract: TWorker): TWorker {
         var toret = {} as TWorker;
         Object.keys(contract).forEach(key => {
-            toret[key] = this.sendToIpc(contract[key]);
+            toret[key] = this.sendToIpc(contract[key], key);
         });
         return toret;
     }
@@ -155,9 +145,13 @@ class RequesterResponder {
      * and returns a function that will execute this function by name using IPC
      * (will only work if the process on the other side has this function as a registered responder)
      */
-    sendToIpc<Query, Response>(func: QRFunction<Query, Response>): QRFunction<Query, Response> {
-        var message = func.name;
-        return (data) => this.sendToIpcHeart(data, message);
+    sendToIpc<Query, Response>(func: QRFunction<Query, Response>, name?: string): QRFunction<Query, Response> {
+        name = func.name || name;
+        if (!name) {
+            console.error('NO NAME for function', func.toString());
+            throw new Error('Name not specified for function: \n' + func.toString());
+        }
+        return (data) => this.sendToIpcHeart(data, name);
     }
 
     /**
@@ -242,8 +236,13 @@ class RequesterResponder {
             });
     }
 
-    private addToResponders<Query, Response>(func: (query: Query) => Promise<Response>, name?:string) {
-        this.responders[func.name || name] = func;
+    private addToResponders<Query, Response>(func: (query: Query) => Promise<Response>, name?: string) {
+        name = func.name || name;
+        if (!name) {
+            console.error('NO NAME for function', func.toString());
+            throw new Error('Name not specified for function: \n' + func.toString());
+        }
+        this.responders[name] = func;
     }
 
     registerAllFunctionsExportedFromAsResponders(aModule: any) {
