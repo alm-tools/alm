@@ -50,6 +50,7 @@
         "./typings/cookie-parser/cookie-parser.d.ts",
         "./typings/express/express.d.ts",
         "./typings/function.d.ts",
+        "./typings/fuzzaldrin.d.ts",
         "./typings/glob/glob.d.ts",
         "./typings/globals.d.ts",
         "./typings/mime/mime.d.ts",

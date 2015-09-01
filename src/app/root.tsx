@@ -7,6 +7,7 @@ import * as commands from "./commands/commands";
 var Modal = require('react-modal');
 import * as styles from "./styles/styles";
 import {getAllFiles,cast} from "./socket/socketClient";
+import {match, filter as fuzzyFilter} from "fuzzaldrin";
 
 let menuItems = [
     { route: 'get-started', text: 'Get Started' },
@@ -23,6 +24,7 @@ let menuItems = [
 export interface State {
     isOmniSearchOpen?: boolean;
     fileList?: string[];
+    filterValue?: string;
 }
 
 @ui.Radium
@@ -74,9 +76,12 @@ export class Root extends BaseComponent<{}, State>{
             label="Close"
             primary={true}
             onTouchTap={this.closeOmniSearch} />
-        ]
+        ];
         
-        let fileList = this.state.fileList.slice(0,100).map(f => <div key={f}>{f}</div>);
+        let fileList = this.state.fileList;
+        fileList = fuzzyFilter(fileList, this.state.filterValue);
+        fileList = fileList.slice(0,50);
+        let fileListRendered = fileList.map(f => <div key={f}>{f}</div>);
         
         return <div>
                 {
@@ -98,11 +103,15 @@ export class Root extends BaseComponent<{}, State>{
                                 <div style={[styles.userTip]}>Press <code style={styles.keyStroke}>esc</code> to close</div>
                             </div>
                           
-                            <TextField ref="omniSearchInput" floatingLabelText="Filter"/>
+                            <TextField 
+                                ref="omniSearchInput" 
+                                floatingLabelText="Filter"
+                                onChange={this.onChangeFilter}
+                            />
                             
                             <div style={[csx.vertical,csx.flex,{overflow:'auto'}]}>
                                 <div style={[csx.vertical]}>
-                                    {fileList}
+                                    {fileListRendered}
                                  </div>
                                 
                             </div>
@@ -120,4 +129,29 @@ export class Root extends BaseComponent<{}, State>{
     closeOmniSearch = ()=>{
         this.setState({ isOmniSearchOpen: false });
     };
+    onChangeFilter = (e)=>{
+        this.setState({ filterValue: this.refs.omniSearchInput.getValue() });
+    };
+}
+
+
+/** 
+ * Based on https://github.com/atom/fuzzy-finder/blob/51f1f2415ecbfab785596825a011c1d2fa2658d3/lib/fuzzy-finder-view.coffee#L56-L74
+ */
+function highlightMatch(result: string, query: string) {
+    let matches = match(result, query);
+    console.log(matches);
+    // lastIndex = 0
+    // matchedChars = [] // Build up a set of matched chars to be more semantic
+    // 
+    // for matchIndex of matches
+    //   matchIndex -= offsetIndex
+    //   continue if matchIndex < 0 // If marking up the basename, omit path matches
+    //   unmatched = path.substring(lastIndex, matchIndex)
+    //   if unmatched
+    //     @span matchedChars.join(''), class: 'character-match' if matchedChars.length
+    //     matchedChars = []
+    //     @text unmatched
+    //   matchedChars.push(path[matchIndex])
+    //   lastIndex = matchIndex + 1
 }
