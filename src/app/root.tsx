@@ -145,9 +145,11 @@ export class Root extends BaseComponent<{}, State>{
     },50);
     onChangeSelected = (e)=>{
         if (e.key == 'ArrowUp'){
+            e.preventDefault();
             this.setState({ selectedIndex: rangeLimited(--this.state.selectedIndex, 0, 50) });
         }
         if (e.key == 'ArrowDown') {
+            e.preventDefault();
             this.setState({ selectedIndex: rangeLimited(++this.state.selectedIndex, 0, 50) });
         }
     };
@@ -166,7 +168,7 @@ function highlightMatch(result: string, query: string, selected: boolean): JSX.E
             return c;
         }
         else {
-            return <strong>{c}</strong>
+            return <strong key={i}>{c}</strong>
         }
     });
     let selectedStyle = selected ? {
