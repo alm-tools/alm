@@ -84,7 +84,7 @@ export class Root extends BaseComponent<{}, State>{
         let selectedIndex = this.state.selectedIndex;
         let fileListRendered = fileList.map((result,i) => highlightMatch(result, this.state.filterValue, selectedIndex === i));
         
-        return <div>
+        let toret = <div>
                 {
                 //     <AppBar
                 //     title="TypeScript Builder"
@@ -122,6 +122,7 @@ export class Root extends BaseComponent<{}, State>{
 
                 <TabsContainer/>
             </div>;
+        return toret;
     }
     
     openOmniSearch = () => {

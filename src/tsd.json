@@ -46,6 +46,9 @@
     },
     "socket.io-client/socket.io-client.d.ts": {
       "commit": "eb835aa72f45eee4246b1de8beeffe2010c689e6"
+    },
+    "react/react-addons.d.ts": {
+      "commit": "af76bf46025371c760d8fe8c03cf874428da6124"
     }
   }
 }

@@ -59,6 +59,7 @@
         "./typings/mousetrap/mousetrap.d.ts",
         "./typings/node/node.d.ts",
         "./typings/radium/radium.d.ts",
+        "./typings/react/react-addons.d.ts",
         "./typings/react/react.d.ts",
         "./typings/rimraf/rimraf.d.ts",
         "./typings/serve-static/serve-static.d.ts",
