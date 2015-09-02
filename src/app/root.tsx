@@ -85,7 +85,8 @@ export class Root extends BaseComponent<{}, State>{
         let fileList = this.state.fileList;
         fileList = fuzzyFilter(fileList, this.state.filterValue);
         fileList = fileList.slice(0,50);
-        let fileListRendered = fileList.map((result,i) => highlightMatch(result, this.state.filterValue, this.state.selectedIndex === i));
+        let selectedIndex = Math.max(Math.min(this.state.selectedIndex, 50), 0);
+        let fileListRendered = fileList.map((result,i) => highlightMatch(result, this.state.filterValue, selectedIndex === i));
         
         return <div>
                 {
@@ -107,10 +108,12 @@ export class Root extends BaseComponent<{}, State>{
                                 <div style={[styles.userTip]}>Press <code style={styles.keyStroke}>esc</code> to close</div>
                             </div>
                           
-                            <TextField 
+                            <input 
+                                type="text"
                                 ref="omniSearchInput" 
-                                floatingLabelText="Filter"
+                                placeholder="Filter"
                                 onChange={this.onChangeFilter}
+                                onKeyDown={this.onChangeSelected}
                             />
                             
                             <div style={[csx.vertical,csx.flex,{overflow:'auto'}]}>
@@ -128,14 +131,22 @@ export class Root extends BaseComponent<{}, State>{
     
     openOmniSearch = () => {
         this.setState({ isOmniSearchOpen: true });
-        this.refs.omniSearchInput.focus();
+        this.refs.omniSearchInput.getDOMNode().focus();
     };
     closeOmniSearch = ()=>{
         this.setState({ isOmniSearchOpen: false, filterValue: '' });
     };
     onChangeFilter = debounce((e)=>{
-        this.setState({ filterValue: this.refs.omniSearchInput.getValue() });
+        this.setState({ filterValue: this.refs.omniSearchInput.getDOMNode().value });
     },50);
+    onChangeSelected = (e)=>{
+        if (e.key == 'ArrowUp'){
+            this.setState({ selectedIndex: --this.state.selectedIndex });
+        }
+        if (e.key == 'ArrowDown'){
+            this.setState({ selectedIndex: ++this.state.selectedIndex });
+        }
+    };
 }
 
 
