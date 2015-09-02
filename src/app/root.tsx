@@ -24,25 +24,24 @@ let menuItems = [
 
 export interface State {
     isOmniSearchOpen?: boolean;
-    fileList?: string[];
     filterValue?: string;
     selectedIndex?: number;
-    
-    /** Because doing this in render is slow */
-    filteredResults?: string[];
 }
 
 @ui.Radium
 export class Root extends BaseComponent<{}, State>{
 
+    /** not in state as we don't want react diffing it */
+    fileList: string[] = [];
+    /** Because doing this in render is slow */
+    filteredResults: string[] = [];
+    
     constructor(props: {}) {
         super(props);
 
         this.state = {
             filterValue: '',
-            fileList : [],
             selectedIndex: 0,
-            filteredResults: []
         };
     }
 
@@ -59,12 +58,14 @@ export class Root extends BaseComponent<{}, State>{
 
     componentDidMount() {
         getAllFiles({}).then((res) => {
-            this.setState({fileList:res.fileList});
+            this.fileList = res.fileList;
+            this.forceUpdate();
         });
-        
-        cast.fileListUpdated.on((update)=>{
+
+        cast.fileListUpdated.on((update) => {
             console.log(update);
-            this.setState({fileList:update.fileList});
+            this.fileList = update.fileList;
+            this.forceUpdate();
         });
         
         commands.findFile.on(() => {
@@ -78,15 +79,8 @@ export class Root extends BaseComponent<{}, State>{
     }
     
     render() {
-        
-        let OmniSearchPanelActions = [
-            <FlatButton
-            label="Close"
-            primary={true}
-            onTouchTap={this.closeOmniSearch} />
-        ];
-        
-        let fileList = this.state.filteredResults;
+
+        let fileList = this.filteredResults;
         let selectedIndex = this.state.selectedIndex;
         let fileListRendered = fileList.map((result,i) => highlightMatch(result, this.state.filterValue, selectedIndex === i));
         
@@ -139,9 +133,9 @@ export class Root extends BaseComponent<{}, State>{
     };
     onChangeFilter = debounce((e)=>{
         let filterValue = this.refs.omniSearchInput.getDOMNode().value;
-        let filteredResults = fuzzyFilter(this.state.fileList, filterValue);
-        filteredResults = filteredResults.slice(0,50);
-        this.setState({ filterValue, filteredResults });
+        this.filteredResults = fuzzyFilter(this.fileList, filterValue);
+        this.filteredResults = this.filteredResults.slice(0,50);
+        this.setState({ filterValue });
     },50);
     onChangeSelected = (e)=>{
         if (e.key == 'ArrowUp'){
