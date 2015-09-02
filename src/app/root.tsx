@@ -8,7 +8,7 @@ var Modal = require('react-modal');
 import * as styles from "./styles/styles";
 import {getAllFiles,cast} from "./socket/socketClient";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
-import {debounce,createMap} from "../common/utils";
+import {debounce,createMap,rangeLimited} from "../common/utils";
 
 let menuItems = [
     { route: 'get-started', text: 'Get Started' },
@@ -27,6 +27,9 @@ export interface State {
     fileList?: string[];
     filterValue?: string;
     selectedIndex?: number;
+    
+    /** Because doing this in render is slow */
+    filteredResults?: string[];
 }
 
 @ui.Radium
@@ -38,7 +41,8 @@ export class Root extends BaseComponent<{}, State>{
         this.state = {
             filterValue: '',
             fileList : [],
-            selectedIndex: 0
+            selectedIndex: 0,
+            filteredResults: []
         };
     }
 
@@ -82,10 +86,8 @@ export class Root extends BaseComponent<{}, State>{
             onTouchTap={this.closeOmniSearch} />
         ];
         
-        let fileList = this.state.fileList;
-        fileList = fuzzyFilter(fileList, this.state.filterValue);
-        fileList = fileList.slice(0,50);
-        let selectedIndex = Math.max(Math.min(this.state.selectedIndex, 50), 0);
+        let fileList = this.state.filteredResults;
+        let selectedIndex = this.state.selectedIndex;
         let fileListRendered = fileList.map((result,i) => highlightMatch(result, this.state.filterValue, selectedIndex === i));
         
         return <div>
@@ -120,7 +122,6 @@ export class Root extends BaseComponent<{}, State>{
                                 <div style={[csx.vertical]}>
                                     {fileListRendered}
                                  </div>
-                                
                             </div>
                         </div>
                 </Modal>
@@ -134,17 +135,20 @@ export class Root extends BaseComponent<{}, State>{
         this.refs.omniSearchInput.getDOMNode().focus();
     };
     closeOmniSearch = ()=>{
-        this.setState({ isOmniSearchOpen: false, filterValue: '' });
+        this.setState({ isOmniSearchOpen: false, filterValue: '', selectedIndex: 0 });
     };
     onChangeFilter = debounce((e)=>{
-        this.setState({ filterValue: this.refs.omniSearchInput.getDOMNode().value });
+        let filterValue = this.refs.omniSearchInput.getDOMNode().value;
+        let filteredResults = fuzzyFilter(this.state.fileList, filterValue);
+        filteredResults = filteredResults.slice(0,50);
+        this.setState({ filterValue, filteredResults });
     },50);
     onChangeSelected = (e)=>{
         if (e.key == 'ArrowUp'){
-            this.setState({ selectedIndex: --this.state.selectedIndex });
+            this.setState({ selectedIndex: rangeLimited(--this.state.selectedIndex, 0, 50) });
         }
-        if (e.key == 'ArrowDown'){
-            this.setState({ selectedIndex: ++this.state.selectedIndex });
+        if (e.key == 'ArrowDown') {
+            this.setState({ selectedIndex: rangeLimited(++this.state.selectedIndex, 0, 50) });
         }
     };
 }

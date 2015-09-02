@@ -55,3 +55,7 @@ export function debounce<T extends Function>(func: T, milliseconds: number, imme
         return result;
     };
 };
+
+export function rangeLimited(num: number, min: number, max: number) {
+    return Math.max(Math.min(num, max), min);
+}
