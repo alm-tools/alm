@@ -80,12 +80,9 @@ export class Root extends BaseComponent<{}, State>{
     }
     
     render() {
-        console.time('hey')
         let fileList = this.filteredResults;
         let selectedIndex = this.state.selectedIndex;
         let fileListRendered = fileList.map((result,i) => highlightMatch(result, this.state.filterValue, selectedIndex === i));
-        console.timeEnd('hey')
-        
         
         let toret = <div>
                 {
