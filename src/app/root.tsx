@@ -135,7 +135,7 @@ export class Root extends BaseComponent<{}, State>{
         let filterValue = this.refs.omniSearchInput.getDOMNode().value;
         this.filteredResults = fuzzyFilter(this.fileList, filterValue);
         this.filteredResults = this.filteredResults.slice(0,50);
-        this.setState({ filterValue });
+        this.setState({ filterValue, selectedIndex:0 });
     },50);
     onChangeSelected = (e)=>{
         if (e.key == 'ArrowUp'){
