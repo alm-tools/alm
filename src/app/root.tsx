@@ -26,6 +26,7 @@ export interface State {
     isOmniSearchOpen?: boolean;
     fileList?: string[];
     filterValue?: string;
+    selectedIndex?: number;
 }
 
 @ui.Radium
@@ -36,7 +37,8 @@ export class Root extends BaseComponent<{}, State>{
 
         this.state = {
             filterValue: '',
-            fileList : []
+            fileList : [],
+            selectedIndex: 0
         };
     }
 
@@ -83,7 +85,7 @@ export class Root extends BaseComponent<{}, State>{
         let fileList = this.state.fileList;
         fileList = fuzzyFilter(fileList, this.state.filterValue);
         fileList = fileList.slice(0,50);
-        let fileListRendered = fileList.map(result => highlightMatch(result, this.state.filterValue));
+        let fileListRendered = fileList.map((result,i) => highlightMatch(result, this.state.filterValue, this.state.selectedIndex === i));
         
         return <div>
                 {
@@ -140,7 +142,7 @@ export class Root extends BaseComponent<{}, State>{
 /** 
  * Based on https://github.com/atom/fuzzy-finder/blob/51f1f2415ecbfab785596825a011c1d2fa2658d3/lib/fuzzy-finder-view.coffee#L56-L74
  */
-function highlightMatch(result: string, query: string): JSX.Element {
+function highlightMatch(result: string, query: string, selected: boolean): JSX.Element {
     let matches = match(result, query);
     let matchMap = createMap(matches);
     // TODO: collapse contiguous sections into a single `<strong>`
@@ -152,8 +154,12 @@ function highlightMatch(result: string, query: string): JSX.Element {
             return <strong>{c}</strong>
         }
     });
+    let selectedStyle = selected ? {
+        background: 'grey',
+        color: 'white'
+    } : {};
     return (
-        <div key={result}>
+        <div key={result} style={selectedStyle}>
             {rendered}
         </div>
     );
