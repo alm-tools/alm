@@ -131,7 +131,7 @@ export class Root extends BaseComponent<{}, State>{
         this.refs.omniSearchInput.getDOMNode().focus();
     };
     closeOmniSearch = ()=>{
-        this.setState({ isOmniSearchOpen: false, filterValue: '', selectedIndex: 0 });
+        this.setState({ isOmniSearchOpen: false, filterValue: '' });
     };
     onChangeFilter = debounce((e)=>{
         let filterValue = this.refs.omniSearchInput.getDOMNode().value;
