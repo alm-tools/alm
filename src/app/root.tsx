@@ -140,10 +140,10 @@ export class Root extends BaseComponent<{}, State>{
         this.setState({ filterValue, selectedIndex:0 });
     },50);
     incrementSelected = debounce(()=>{
-        this.setState({ selectedIndex: rangeLimited(++this.state.selectedIndex, 0, this.maxShowCount - 1, true) });
+        this.setState({ selectedIndex: rangeLimited(++this.state.selectedIndex, 0, Math.min(this.maxShowCount - 1,this.filteredResults.length - 1), true) });
     },0,true);
     decrementSelected = debounce(()=>{
-        this.setState({ selectedIndex: rangeLimited(--this.state.selectedIndex, 0, this.maxShowCount - 1, true) });
+        this.setState({ selectedIndex: rangeLimited(--this.state.selectedIndex, 0, Math.min(this.maxShowCount - 1,this.filteredResults.length - 1), true) });
     },0,true);
     onChangeSelected = (e)=>{
         if (e.key == 'ArrowUp'){
