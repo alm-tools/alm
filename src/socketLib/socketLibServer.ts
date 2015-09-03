@@ -4,10 +4,10 @@ import {RequesterResponder, anycastMessageName, CastMessage, TypedEvent} from ".
 
 export class Server {
     io: SocketIO.Server;
-    constructor(private app: http.Server, responderModule: any, clientCreator: (socket: ServerInstance) => any) {
+    constructor(private app: http.Server, serverImplementation: any, clientCreator: (socket: ServerInstance) => any) {
         this.io = socketIo(app);
         this.io.on('connection', (socket) => {
-            let serverInstance = new ServerInstance(socket, responderModule);
+            let serverInstance = new ServerInstance(socket, serverImplementation);
             serverInstance.client = clientCreator(serverInstance);
         });
     }

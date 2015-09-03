@@ -41,6 +41,12 @@ export interface QRFunction<Query, Response> {
     (query: Query): Promise<Response>;
 }
 
+/** Query Response function for use by server */
+export interface QRServerFunction<Query, Response, Client> {
+    (query: Query, client?: any): Promise<Response>;
+}
+
+
 /** Creates a Guid (UUID v4) */
 function createId(): string {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -153,14 +159,25 @@ export class RequesterResponder {
         this.getSocket().emit('message', { message: message, id: id, data: data, isRequest: true });
         return defer.promise;
     }
+    
+    /**
+     * Send all the member functions to IPC
+     */
+    sendAllToSocket<TWorker>(contract: TWorker): TWorker {
+        var toret = {} as TWorker;
+        Object.keys(contract).forEach(key => {
+            toret[key] = this.sendToSocket(contract[key], key);
+        });
+        return toret;
+    }
 
     /**
      * Takes a sync named function
      * and returns a function that will execute this function by name using IPC
      * (will only work if the process on the other side has this function as a registered responder)
      */
-    sendToSocket<Query, Response>(func: QRFunction<Query, Response>): QRFunction<Query, Response> {
-        var message = func.name;
+    sendToSocket<Query, Response>(func: QRFunction<Query, Response>, name:string): QRFunction<Query, Response> {
+        var message = name;
         return (data) => this.sendToServerHeart(data, message);
     }
 
@@ -168,9 +185,9 @@ export class RequesterResponder {
      * If there are more than one pending then we only want the last one as they come in.
      * All others will get the default value
      */
-    sendToSocketOnlyLast<Query, Response>(func: QRFunction<Query, Response>, defaultResponse: Response): QRFunction<Query, Response> {
+    sendToSocketOnlyLast<Query, Response>(func: QRFunction<Query, Response>, defaultResponse: Response, name:string): QRFunction<Query, Response> {
         return (data) => {
-            var message = func.name;
+            var message = name;
 
             // If we don't have a child exit
             if (!this.getSocket()) {
@@ -249,13 +266,13 @@ export class RequesterResponder {
             });
     }
 
-    private addToResponders<Query, Response>(func: (query: Query) => Promise<Response>) {
-        this.responders[func.name] = func;
+    private addToResponders<Query, Response>(func: (query: Query) => Promise<Response>,name: string) {
+        this.responders[name] = func;
     }
 
     registerAllFunctionsExportedFromAsResponders(aModule: any) {
         Object.keys(aModule)
             .filter((funcName) => typeof aModule[funcName] == 'function')
-            .forEach((funcName) => this.addToResponders(aModule[funcName]));
+            .forEach((funcName) => this.addToResponders(aModule[funcName], funcName));
     }
 }

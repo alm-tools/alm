@@ -1,7 +1,7 @@
 import {Root} from "./root";
 import * as commands from "./commands/commands";
 import * as React from "react";
-import {echo} from "./socket/socketClient";
+import {server} from "../socket/socketClient";
 var Modal = require('react-modal');
 
 // Normalize css 
@@ -21,5 +21,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // Register commands
     commands.register();
     
-    echo({echo:123,num:345}).then((res)=>console.log(res));
+    server.echo({text:"123",num:345}).then((res)=>console.log(res));
 });

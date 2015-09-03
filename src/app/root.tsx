@@ -6,7 +6,7 @@ import {TabsContainer} from "./tabs/tabsContainer";
 import * as commands from "./commands/commands";
 var Modal = require('react-modal');
 import * as styles from "./styles/styles";
-import {getAllFiles,cast, getFileContents} from "./socket/socketClient";
+import {cast, server} from "../socket/socketClient";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
 import {debounce,createMap,rangeLimited} from "../common/utils";
 
@@ -58,7 +58,7 @@ export class Root extends BaseComponent<{}, State>{
     }
 
     componentDidMount() {
-        getAllFiles({}).then((res) => {
+        server.getAllFiles({}).then((res) => {
             this.fileList = res.fileList;
             this.forceUpdate();
         });
@@ -160,7 +160,7 @@ export class Root extends BaseComponent<{}, State>{
             if (file) {
                 // TODO: Open the file
                 console.log('open', file);
-                getFileContents({filePath: file}).then((res)=>{
+                server.getFileContents({filePath: file}).then((res)=>{
                     console.log('got contents!',res.contents);
                 });
             }

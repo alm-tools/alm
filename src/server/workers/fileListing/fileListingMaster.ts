@@ -1,7 +1,7 @@
 import * as sw from "../../utils/simpleWorker";
 import * as contract from "./fileListingContract";
 
-import * as socketServer from "../../socket/socketServer";
+import * as socketServer from "../../../socket/socketServer";
 
 namespace Master {
     export var increment: typeof contract.master.increment = (q) => {
