@@ -7,6 +7,7 @@ export type contract = typeof _service;
 export let service: contract = {
     echo: null,
     getAllFiles: null,
+    getFileContents: null,
 };
 
 // make sure the `name` is present on each field (which is all that is used at runtime from the client)

@@ -1,4 +1,5 @@
 import {contract} from "../../app/socket/serviceClientContract";
+import * as fsu from "../utils/fsu";
 
 export interface Echo {
     echo: any;
@@ -12,6 +13,11 @@ export function echo(data: Echo, client?: contract): Promise<Echo> {
             num: res.num
         };
     });
+}
+
+export function getFileContents(data: { filePath: string }): Promise<{ contents: string }> {
+    let contents = fsu.readFile(fsu.resolve(process.cwd(), data.filePath));
+    return Promise.resolve({ contents });
 }
 
 import * as fslw from "../workers/fileListing/fileListingMaster";

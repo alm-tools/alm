@@ -38,6 +38,6 @@ server.listen(port, function(e) {
         exit(errorCodes.couldNotListen);
     }
     console.log(`Dashboard at http://localhost:${port}`);
-    open(`http://localhost:${port}`,'chrome');
+    // open(`http://localhost:${port}`,'chrome');
     serverStarted.started();
 });

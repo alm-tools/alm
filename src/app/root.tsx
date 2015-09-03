@@ -6,7 +6,7 @@ import {TabsContainer} from "./tabs/tabsContainer";
 import * as commands from "./commands/commands";
 var Modal = require('react-modal');
 import * as styles from "./styles/styles";
-import {getAllFiles,cast} from "./socket/socketClient";
+import {getAllFiles,cast, getFileContents} from "./socket/socketClient";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
 import {debounce,createMap,rangeLimited} from "../common/utils";
 
@@ -153,6 +153,18 @@ export class Root extends BaseComponent<{}, State>{
         if (e.key == 'ArrowDown') {
             e.preventDefault();
             this.incrementSelected();
+        }
+        if (e.key == 'Enter'){
+            e.preventDefault();
+            let file = this.filteredResults[this.state.selectedIndex];
+            if (file) {
+                // TODO: Open the file
+                console.log('open', file);
+                getFileContents({filePath: file}).then((res)=>{
+                    console.log('got contents!',res.contents);
+                });
+            }
+            this.closeOmniSearch();
         }
     };
 }
