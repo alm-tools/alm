@@ -44,3 +44,7 @@ export let fullWindow = {
     top: '10px',
     bottom: '10px',
 };
+
+export let padded = {
+    padding: '.5rem'
+};

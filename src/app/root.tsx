@@ -35,7 +35,7 @@ export class Root extends BaseComponent<{}, State>{
     fileList: string[] = [];
     /** Because doing this in render is slow */
     filteredResults: string[] = [];
-    maxShowCount = 50;
+    maxShowCount = 15;
     
     constructor(props: {}) {
         super(props);
@@ -233,7 +233,7 @@ function highlightMatch(result: string, query: string, selected: boolean): JSX.E
         color: 'white'
     } : {};
     return (
-        <div key={result} style={selectedStyle}>
+        <div key={result} style={[selectedStyle,styles.padded]}>
             {rendered}
         </div>
     );
