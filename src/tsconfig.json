@@ -58,6 +58,7 @@
         "./typings/mkdirp/mkdirp.d.ts",
         "./typings/mousetrap/mousetrap.d.ts",
         "./typings/node/node.d.ts",
+        "./typings/open.d.ts",
         "./typings/radium/radium.d.ts",
         "./typings/react/react-addons.d.ts",
         "./typings/react/react.d.ts",

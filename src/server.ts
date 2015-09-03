@@ -30,6 +30,7 @@ register(server);
 
 import serverStarted = require('./server/serverStarted');
 
+import open = require('open');
 // Start listening
 server.listen(port, function(e) {
     if (e) {
@@ -37,5 +38,6 @@ server.listen(port, function(e) {
         exit(errorCodes.couldNotListen);
     }
     console.log(`Dashboard at http://localhost:${port}`);
+    open(`http://localhost:${port}`,'chrome');
     serverStarted.started();
 });
