@@ -42,6 +42,6 @@ export function register(app: http.Server) {
     cast = runResult.cast;
     
     // For testing
-    setInterval(() => cast.hello.emit({ text: 'nice' }), 1000);
+    // setInterval(() => cast.hello.emit({ text: 'nice' }), 1000);
 }
 

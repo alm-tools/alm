@@ -21,5 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Register commands
     commands.register();
     
-    server.echo({text:"123",num:345}).then((res)=>console.log(res));
+    // For testing
+    // server.echo({text:"123",num:345}).then((res)=>console.log(res));
 });
