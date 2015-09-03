@@ -1,6 +1,23 @@
-import {RequesterResponder, Message, anycastMessageName, TypedEvent,CastMessage} from "./socketLib";
+import {RequesterResponder, Message, anycastMessageName, TypedEvent, CastMessage} from "./socketLib";
 let socketIo = io;
-let origin = `${window.location.protocol}//${window.location.hostname}${(window.location.port ? ':' + window.location.port: '')}`;
+let origin = `${window.location.protocol}//${window.location.hostname}${(window.location.port ? ':' + window.location.port : '') }`;
+
+/** This is your main function to launch the client */
+export function run<TServer, TCast>(config: {
+    clientImplementation: any;
+    serverContract: TServer;
+    cast: TCast;
+}): {
+        client: Client;
+        server: TServer;
+        cast: TCast;
+    } {
+
+    let client = new Client(config.clientImplementation);
+    let server = client.sendAllToSocket(config.serverContract);
+    let cast = client.setupAllCast(config.cast);
+    return { client, server, cast };
+}
 
 export class Client extends RequesterResponder {
     protected getSocket = () => this.socket;

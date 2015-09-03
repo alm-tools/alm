@@ -33,14 +33,14 @@ export var cast = contract.cast;
 
 /** launch server */
 export function register(app: http.Server) {
-    let clientCreator = (serverInstance: sls.ServerInstance): typeof contract.client => {
-        return serverInstance.sendAllToSocket(contract.client);
-    };
-    let server = new sls.Server(app, Server, clientCreator);
+    let runResult = sls.run({
+        app,
+        serverImplementation: Server,
+        clientContract:contract.client,
+        cast:contract.cast
+    });
+    cast = runResult.cast;
     
-    // Provide the server push messages
-    cast = server.setupAllCast(contract.cast);
-
     // For testing
     setInterval(() => cast.hello.emit({ text: 'nice' }), 1000);
 }

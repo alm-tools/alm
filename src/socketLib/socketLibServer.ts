@@ -2,6 +2,27 @@ import http = require('http');
 import socketIo = require('socket.io');
 import {RequesterResponder, anycastMessageName, CastMessage, TypedEvent} from "./socketLib";
 
+/** This is your main boot function for the server */
+export function run<TClient, TCast>(config: {
+    app: http.Server,
+    serverImplementation: any,
+    clientContract: TClient,
+    cast: TCast
+}): {
+        server: Server,
+        cast: TCast,
+    } {
+        
+    let server = new Server(config.app, config.serverImplementation, (serverInstance: ServerInstance) => {
+        return serverInstance.sendAllToSocket(config.clientContract);
+    });
+    
+    // Provide the server push messages
+    let cast = server.setupAllCast(config.cast);
+
+    return { server, cast };
+}
+
 export class Server {
     io: SocketIO.Server;
     constructor(private app: http.Server, serverImplementation: any, clientCreator: (socket: ServerInstance) => any) {

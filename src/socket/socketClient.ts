@@ -12,9 +12,7 @@ namespace Client {
 // Ensure that the namespace follows the contract
 var _checkTypes: typeof contract.client = Client;
 // launch client
-let client = new slc.Client(Client);
-export let server = client.sendAllToSocket(contract.server);
-export let cast = client.setupAllCast(contract.cast);
+export let {server, cast} = slc.run({ clientImplementation: Client, serverContract: contract.server, cast: contract.cast });
 
 // Sample usage
 cast.hello.on((p) => { console.log(p) });
