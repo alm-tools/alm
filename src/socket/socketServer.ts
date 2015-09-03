@@ -27,23 +27,14 @@ namespace Server {
 
 // Ensure that the namespace follows the contract
 var _checkTypes: typeof contract.server = Server;
-// launch Server
-// let server = new slc.Server();
-// export let server = client.sendAllToSocket(contract.server);
-// export let cast = client.setupAllCast(contract.anycast);
-// 
-// // Sample usage
-// cast.hello.on((p) => { console.log(p) });
-// 
-// 
 
+/** Will be available after register is called */
 export var cast = contract.cast;
 
+/** launch server */
 export function register(app: http.Server) {
     let clientCreator = (serverInstance: sls.ServerInstance): typeof contract.client => {
-        return {
-            increment: serverInstance.sendToSocket(contract.client.increment,'increment')
-        };
+        return serverInstance.sendAllToSocket(contract.client);
     };
     let server = new sls.Server(app, Server, clientCreator);
     
