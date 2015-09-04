@@ -8,6 +8,7 @@ import {Tabs} from "./framework/tabs";
 import {server} from "../../socket/socketClient";
 
 import {Acer} from "../ace/acer";
+require('brace');
 require('brace/mode/typescript')
 require('brace/theme/github')
 
