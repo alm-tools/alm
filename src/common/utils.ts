@@ -66,3 +66,8 @@ export function rangeLimited(num: number, min: number, max: number, loopAround =
     }
     return limited;
 }
+
+export function getFileName(fullFilePath:string){
+    let parts = fullFilePath.split('/');
+    return parts[parts.length - 1];
+}

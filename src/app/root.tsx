@@ -8,7 +8,7 @@ var Modal = require('react-modal');
 import * as styles from "./styles/styles";
 import {cast, server} from "../socket/socketClient";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
-import {debounce,createMap,rangeLimited} from "../common/utils";
+import {debounce,createMap,rangeLimited,getFileName} from "../common/utils";
 
 let menuItems = [
     { route: 'get-started', text: 'Get Started' },
@@ -173,7 +173,7 @@ export class Root extends BaseComponent<{}, State>{
 /** 
  * Based on https://github.com/atom/fuzzy-finder/blob/51f1f2415ecbfab785596825a011c1d2fa2658d3/lib/fuzzy-finder-view.coffee#L56-L74
  */
-function highlightMatch(result: string, query: string, selected: boolean): JSX.Element {
+function getMatches(result: string, query: string) {
     let matches = match(result, query);
     let matchMap = createMap(matches);
     // collapse contiguous sections into a single `<strong>`
@@ -217,9 +217,11 @@ function highlightMatch(result: string, query: string, selected: boolean): JSX.E
     });
     closeOffMatched();
     closeOffUnmatched();
+    return combined;
+}
 
-    // Create rendered
-    let rendered = combined.map((item, i) => {
+function renderMatched(matched: { str: string, matched: boolean }[]): JSX.Element[] {
+    return matched.map((item, i) => {
         if (item.matched) {
             return <strong key={i}>{item.str}</strong>;
         }
@@ -227,6 +229,15 @@ function highlightMatch(result: string, query: string, selected: boolean): JSX.E
             return <span key={i}>{item.str}</span>;
         }
     });
+}
+
+function highlightMatch(result: string, query: string, selected: boolean): JSX.Element {
+    let matchesInPath = getMatches(result, query);
+    let matchesInFileName = getMatches(getFileName(result), query);
+
+    // Create rendered
+    let renderedPath = renderMatched(matchesInPath);
+    let renderedFileName = renderMatched(matchesInFileName);
 
     let selectedStyle = selected ? {
         background: 'grey',
@@ -234,7 +245,8 @@ function highlightMatch(result: string, query: string, selected: boolean): JSX.E
     } : {};
     return (
         <div key={result} style={[selectedStyle,styles.padded]}>
-            {rendered}
+            <div>{renderedFileName}</div>
+            {renderedPath}
         </div>
     );
 }
