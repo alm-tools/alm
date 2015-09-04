@@ -7,6 +7,10 @@ import * as commands from "../commands/commands";
 import {Tabs} from "./framework/tabs";
 import {server} from "../../socket/socketClient";
 
+import {Acer} from "../ace/acer";
+require('brace/mode/typescript')
+require('brace/theme/github')
+
 function loopAroundNext(currentIndex: number, length: number) {
     if ((++currentIndex) == length) {
         return 0;
@@ -75,6 +79,16 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
             return T.getElement()
         });
         
+        // return (
+        //     <Acer
+        //         mode="typescriptlang"
+        //         theme="github"
+        //         onChange={this.onChange}
+        //         name="UNIQUE_ID_OF_DIV"
+        //         editorProps={{$blockScrolling: true}}
+        //       />    
+        // );
+        
         return (
             <Tabs selectedIndex={this.state.selected} titles={tabTitles} onTabClicked={this.onTabClicked}>
                 {tabs}
@@ -84,5 +98,9 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
     
     onTabClicked = (index)=>{
         this.setState({ selected: index });
+    }
+    
+    onChange = (newValue) => {
+      console.log('change',newValue)
     }
 }
