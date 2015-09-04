@@ -5,6 +5,7 @@ import {DashboardTab} from "./dashboardTab";
 import * as commands from "../commands/commands";
 
 import {Tabs} from "./framework/tabs";
+import {server} from "../../socket/socketClient";
 
 function loopAroundNext(currentIndex: number, length: number) {
     if ((++currentIndex) == length) {
@@ -55,6 +56,16 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
         });
         commands.prevTab.on(() => {
             this.setState({ selected: loopAroundPrev(this.state.selected, this.state.tabs.length) });
+        });
+        
+        commands.onOpenFile.on((e) =>{
+            // TODO: Open the file
+            console.log('open', e.filePath);
+            server.getFileContents({ filePath: e.filePath }).then((res) => {
+                console.log('got contents!', res.contents);
+                
+                commands.onDidOpenFile.emit({ filePath: e.filePath });
+            });
         });
     }
 

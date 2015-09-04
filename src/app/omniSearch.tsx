@@ -133,13 +133,9 @@ export class OmniSearch extends BaseComponent<Props, State>{
         }
         if (e.key == 'Enter'){
             e.preventDefault();
-            let file = this.filteredResults[this.state.selectedIndex];
-            if (file) {
-                // TODO: Open the file
-                console.log('open', file);
-                server.getFileContents({filePath: file}).then((res)=>{
-                    console.log('got contents!',res.contents);
-                });
+            let filePath = this.filteredResults[this.state.selectedIndex];
+            if (filePath) {
+                commands.onOpenFile.emit({ filePath: filePath });
             }
             this.closeOmniSearch();
         }
