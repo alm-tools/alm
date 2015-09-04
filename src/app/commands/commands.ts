@@ -1,3 +1,5 @@
+// for keyboard shortcuts watch out for: 
+// https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts
 
 import * as Mousetrap from "mousetrap";
 import * as events from "../../common/events";
