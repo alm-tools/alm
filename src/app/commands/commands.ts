@@ -8,6 +8,8 @@ export var prevTab = new events.TypedEvent<{}>();
 export var findFile = new events.TypedEvent<{}>();
 export var findCommand = new events.TypedEvent<{}>();
 
+export var openFile = new events.TypedEvent<{filePath:string}>();
+
 export function register() {
     
     /** Tabs */
