@@ -45,6 +45,13 @@ export let fullWindow = {
     bottom: '10px',
 };
 
-export let padded = {
+export let padded1 = {
+    padding: '.25rem'
+};
+export let paddedTopBottom1 = {
+    paddingTop: padded1.padding,
+    paddingBottom: padded1.padding
+};
+export let padded2 = {
     padding: '.5rem'
 };

@@ -84,7 +84,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
                         <div style={[styles.userTip]}>Press <code style={styles.keyStroke}>esc</code> to close</div>
                     </div>
                   
-                    <div style={[styles.padded,csx.vertical]}>
+                    <div style={[styles.paddedTopBottom1,csx.vertical]}>
                         <input
                             type="text"
                             ref="omniSearchInput" 
@@ -221,7 +221,7 @@ function highlightMatch(result: string, query: string, selected: boolean): JSX.E
         color: 'white'
     } : {};
     return (
-        <div key={result} style={[selectedStyle,styles.padded]}>
+        <div key={result} style={[selectedStyle,styles.padded2]}>
             <div>{renderedFileName}</div>
             {renderedPath}
         </div>
