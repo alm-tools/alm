@@ -64,6 +64,7 @@
         "./typings/socket.io/socket.io.d.ts",
         "./typings/tsd.d.ts",
         "./typings/v8promise.d.ts",
+        "./app/devtemplate.tsx",
         "./app/main.tsx",
         "./app/material-ui.tsx",
         "./app/omniSearch.tsx",
