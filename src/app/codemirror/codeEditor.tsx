@@ -1,6 +1,11 @@
 var CM = require('codemirror');
 require('codemirror/lib/codemirror.css')
 require('codemirror/mode/javascript/javascript')
+
+
+require('codemirror/mode/meta');
+console.log(CM.findModeByExtension('js'))
+
 var React = require('react');
 
 export var CodeEditor = React.createClass({

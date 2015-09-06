@@ -20,7 +20,7 @@ export class Code extends React.Component<Props, State>  {
         };
         
         server.getFileContents({ filePath: props.url }).then((res) => {
-            console.log('got contents!', res.contents);
+            // console.log('got contents!', res.contents);
             this.setState({content:res.contents});
             
             commands.onDidOpenFile.emit({ filePath: props.url });
@@ -49,7 +49,7 @@ export class Code extends React.Component<Props, State>  {
     
     
     onChange = (newValue) => {
-      console.log('change',newValue)
+      // console.log('change',newValue)
     }
 }
 
