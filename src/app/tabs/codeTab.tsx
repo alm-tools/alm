@@ -4,10 +4,7 @@ import * as tab from "./tab";
 import {server} from "../../socket/socketClient";
 import * as commands from "../commands/commands";
 
-import {Acer} from "../ace/acer";
-require('brace');
-require('brace/mode/typescript')
-require('brace/theme/github')
+import {CodeEditor} from "../codemirror/codeEditor"; 
 
 export interface Props extends tab.ComponentProps {
 }
@@ -24,6 +21,7 @@ export class Code extends React.Component<Props, State>  {
         
         server.getFileContents({ filePath: props.url }).then((res) => {
             console.log('got contents!', res.contents);
+            this.setState({content:res.contents});
             
             commands.onDidOpenFile.emit({ filePath: props.url });
         });
@@ -31,13 +29,16 @@ export class Code extends React.Component<Props, State>  {
 
     render() {
         
+        var options = {
+			lineNumbers: true,
+            mode: 'javascript'
+		};
+        
         return (
-            <Acer
-                mode="typescriptlang"
-                theme="github"
+            <CodeEditor
+                value={this.state.content}
                 onChange={this.onChange}
-                name="UNIQUE_ID_OF_DIV"
-                editorProps={{$blockScrolling: true}}
+                options={options}
               />    
         );
         
