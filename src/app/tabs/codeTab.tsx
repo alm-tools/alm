@@ -31,7 +31,8 @@ export class Code extends React.Component<Props, State>  {
         
         var options = {
 			lineNumbers: true,
-            mode: 'javascript'
+            mode: 'javascript',
+            keyMap: 'sublime'
 		};
         
         return (
