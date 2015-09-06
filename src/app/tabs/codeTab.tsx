@@ -32,7 +32,9 @@ export class Code extends React.Component<Props, State>  {
         var options = {
 			lineNumbers: true,
             mode: 'javascript',
-            keyMap: 'sublime'
+            keyMap: 'sublime',
+            foldGutter: true,
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
 		};
         
         return (
