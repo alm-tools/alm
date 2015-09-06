@@ -52,6 +52,9 @@
     },
     "codemirror/codemirror.d.ts": {
       "commit": "d9fea91e842c2cf5bd0f7d861ac378e571d2ad7c"
+    },
+    "codemirror/codemirror-showhint.d.ts": {
+      "commit": "a1a2d0dd679fcc4b9d3f95bd05cf5a26ea8151a0"
     }
   }
 }

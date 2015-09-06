@@ -15,3 +15,4 @@
 /// <reference path="socket.io-client/socket.io-client.d.ts" />
 /// <reference path="react/react-addons.d.ts" />
 /// <reference path="codemirror/codemirror.d.ts" />
+/// <reference path="codemirror/codemirror-showhint.d.ts" />
