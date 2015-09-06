@@ -1,10 +1,10 @@
-var CM = require('codemirror');
+import CM = require('codemirror');
 require('codemirror/lib/codemirror.css')
 require('codemirror/mode/javascript/javascript')
 
 
 require('codemirror/mode/meta');
-console.log(CM.findModeByExtension('js'))
+console.log(CM.findModeByFileName('asdf/foo.js'))
 
 var React = require('react');
 
