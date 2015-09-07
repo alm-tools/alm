@@ -30,22 +30,27 @@ console.log(CM.findModeByFileName('asdf/foo.js'))
 import React = require('react');
 import * as styles from "../styles/styles";
 
-export var CodeEditor = React.createClass<any,any>({
-
-	propTypes: {
+export class CodeEditor extends React.Component<any,any>{
+	static propTypes = {
 		onChange: React.PropTypes.func,
 		onFocusChange: React.PropTypes.func,
 		options: React.PropTypes.object,
 		path: React.PropTypes.string,
 		value: React.PropTypes.string
-	},
-
-	getInitialState () {
-		return {
+	};
+	
+	constructor(props){
+		super(props);
+		
+		this.state = {
 			isFocused: false
 		};
-	},
-
+	}
+	
+	codeMirror: CM.EditorFromTextArea;
+	_currentCodemirrorValue: string;
+	refs: { [string: string]: any; textarea: any; }	
+	
 	componentDidMount () {
 		var textareaNode = React.findDOMNode(this.refs.textarea);
 		this.codeMirror = CM.fromTextArea(textareaNode as any, this.props.options);
@@ -53,35 +58,36 @@ export var CodeEditor = React.createClass<any,any>({
 		this.codeMirror.on('focus', this.focusChanged.bind(this, true));
 		this.codeMirror.on('blur', this.focusChanged.bind(this, false));
 		this._currentCodemirrorValue = this.props.value;
-	},
-
+	}
+	
 	componentWillUnmount () {
 		// todo: is there a lighter-weight way to remove the cm instance?
 		if (this.codeMirror) {
 			this.codeMirror.toTextArea();
 		}
-	},
+	}
 
 	componentWillReceiveProps (nextProps) {
 		if (this.codeMirror && this._currentCodemirrorValue !== nextProps.value) {
-			this.codeMirror.setValue(nextProps.value);
+			this.codeMirror.getDoc().setValue(nextProps.value);
 		}
-        if (nextProps.mode){
-        }
-	},
-
+		if (nextProps.mode){
+		}
+	}
+	
+	
 	getCodeMirror () {
 		return this.codeMirror;
-	},
-
-	focus () {
+	}
+	
+	focus = () => {
 		if (this.codeMirror) {
 			this.codeMirror.focus();
 			// TODO: restore cursor / scroll position
 		}
-	},
-
-	focusChanged (focused) {
+	}
+	
+	focusChanged = (focused) => {
 		this.setState({
 			isFocused: focused
 		});
@@ -91,14 +97,14 @@ export var CodeEditor = React.createClass<any,any>({
 		let parent:any = React.findDOMNode(this).parentNode;
 		let [height,width] = [parent.offsetHeight,parent.offsetWidth];
 		this.codeMirror.setSize(width,height);
-	},
-
-	codemirrorValueChanged (doc, change) {
+	}
+	
+	codemirrorValueChanged = (doc, change) => {
 		// var newValue = doc.getValue();
 		// this._currentCodemirrorValue = newValue;
 		// this.props.onChange && this.props.onChange(newValue);
-	},
-
+	}
+	
 	render () {
 		var className = 'ReactCodeMirror';
 		if (this.state.isFocused) {
@@ -111,4 +117,4 @@ export var CodeEditor = React.createClass<any,any>({
 		);
 	}
 
-} as any);
+}
