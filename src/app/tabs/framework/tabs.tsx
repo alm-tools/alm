@@ -44,7 +44,8 @@ export class Tabs extends React.Component<Prop,State>{
                 <span style={[csx.horizontal, tabHeaderContainer]}>
                     {titles}
                 </span>
-                <div style={[csx.vertical, csx.flex, csx.scroll]}>
+                {/* overflow visible otherwise display:none makes scroll bars appear a *weird* places */}
+                <div style={[csx.vertical, csx.flex, csx.scroll, { overflow: 'visible' }]}>
                     {children}
                 </div>
             </div>
