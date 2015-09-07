@@ -88,9 +88,9 @@ export var CodeEditor = React.createClass({
 	},
 
 	codemirrorValueChanged (doc, change) {
-		var newValue = doc.getValue();
-		this._currentCodemirrorValue = newValue;
-		this.props.onChange && this.props.onChange(newValue);
+		// var newValue = doc.getValue();
+		// this._currentCodemirrorValue = newValue;
+		// this.props.onChange && this.props.onChange(newValue);
 	},
 
 	render () {
