@@ -43,7 +43,7 @@ export class Tabs extends React.Component<Prop,State>{
                 <span style={[csx.horizontal, tabHeaderContainer]}>
                     {titles}
                 </span>
-                <div style={[csx.flexRoot]}>
+                <div style={[csx.flexRoot, csx.scroll]}>
                     {children}
                 </div>
             </div>
