@@ -56,7 +56,8 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
         commands.nextTab.on(() => {
             let selected = loopAroundNext(this.state.selected, this.state.tabs.length);
             this.setState({ selected });
-            let component = this.refs[this.state.tabs[selected].getTitle()]
+            let ref = tab.getRef(this.state.tabs[selected].url,selected);
+            let component = this.refs[ref];
             if (component && component.focus) {
                 component.focus();
             }
@@ -79,7 +80,7 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
     render() {
         let tabTitles = this.state.tabs.map(t=> t.getTitle());
         let tabs = this.state.tabs.map((t, i) => {
-            return t.getElement(t.getTitle())
+            return t.getElement(i)
         });
         
         return (

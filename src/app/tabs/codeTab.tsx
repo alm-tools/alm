@@ -67,6 +67,6 @@ export class Code extends React.Component<Props, State>  {
 export class CodeTab implements tab.TabInstance {
     constructor(public url: string) {
     }
-    getElement = (ref:string)=> <Code ref={ref} key={`tabBody:${this.url}`} url={this.url}/>;
+    getElement = (index: number) => <Code ref={tab.getRef(this.url, index)} key={tab.getRef(this.url, index)} url={this.url}/>;
     getTitle = () => `${this.url}`;
 }

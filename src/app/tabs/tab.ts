@@ -16,7 +16,7 @@ export interface TabComponentClass {
 
 /** Once we have a tab instance it should be considered immutable */
 export interface TabInstance {
-    getElement(ref:string): JSX.Element;
+    getElement(index:number): JSX.Element;
     getTitle(): string;
     url: string;
 }
@@ -24,4 +24,8 @@ export interface TabInstance {
 /** If no filepath is provided `cwd` is used */
 export function getUrl(protocol: string, filePath?: string) {
     return protocol + (filePath ? filePath : process.cwd);
+}
+
+export function getRef(url: string, index: number){
+    return `${url}:${index}`;
 }
