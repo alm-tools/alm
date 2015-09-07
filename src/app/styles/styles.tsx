@@ -55,3 +55,8 @@ export let paddedTopBottom1 = {
 export let padded2 = {
     padding: '.5rem'
 };
+
+export let fullSize = {
+    width: '100%',
+    height: '100%',
+}

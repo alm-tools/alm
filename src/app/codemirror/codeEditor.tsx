@@ -27,9 +27,10 @@ console.log(CM.findModeByFileName('asdf/foo.js'))
 
 
 
-var React = require('react');
+import React = require('react');
+import * as styles from "../styles/styles";
 
-export var CodeEditor = React.createClass({
+export var CodeEditor = React.createClass<any,any>({
 
 	propTypes: {
 		onChange: React.PropTypes.func,
@@ -47,7 +48,7 @@ export var CodeEditor = React.createClass({
 
 	componentDidMount () {
 		var textareaNode = React.findDOMNode(this.refs.textarea);
-		this.codeMirror = CM.fromTextArea(textareaNode, this.props.options);
+		this.codeMirror = CM.fromTextArea(textareaNode as any, this.props.options);
 		this.codeMirror.on('change', this.codemirrorValueChanged);
 		this.codeMirror.on('focus', this.focusChanged.bind(this, true));
 		this.codeMirror.on('blur', this.focusChanged.bind(this, false));
@@ -85,6 +86,11 @@ export var CodeEditor = React.createClass({
 			isFocused: focused
 		});
 		this.props.onFocusChange && this.props.onFocusChange(focused);
+		
+		// Set height from parent on focus
+		let parent:any = React.findDOMNode(this).parentNode;
+		let [height,width] = [parent.offsetHeight,parent.offsetWidth];
+		this.codeMirror.setSize(width,height);
 	},
 
 	codemirrorValueChanged (doc, change) {
@@ -105,4 +111,4 @@ export var CodeEditor = React.createClass({
 		);
 	}
 
-});
+} as any);
