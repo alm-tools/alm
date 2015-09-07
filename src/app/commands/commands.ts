@@ -2,6 +2,7 @@
 // https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts
 
 import * as Mousetrap from "mousetrap";
+require("mousetrap/plugins/global-bind/mousetrap-global-bind");
 import * as events from "../../common/events";
 
 export var nextTab = new events.TypedEvent<{}>();
@@ -16,11 +17,11 @@ export var onDidOpenFile = new events.TypedEvent<{filePath:string}>();
 export function register() {
     
     /** Tabs */
-    Mousetrap.bind('alt+n', function() {
+    Mousetrap.bindGlobal('alt+n', function() {
         nextTab.emit({});
         return false;
     });
-    Mousetrap.bind('alt+p', function() {
+    Mousetrap.bindGlobal('alt+p', function() {
         prevTab.emit({});
         return false;
     });
@@ -28,11 +29,11 @@ export function register() {
     /**
      * OmniSearch
      */
-    Mousetrap.bind('mod+p', function() {
+    Mousetrap.bindGlobal('mod+p', function() {
         findFile.emit({});
         return false;
     });
-    Mousetrap.bind('mod+shift+p', function() {
+    Mousetrap.bindGlobal('mod+shift+p', function() {
         findCommand.emit({});
         return false;
     });

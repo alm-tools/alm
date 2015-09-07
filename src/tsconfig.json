@@ -55,6 +55,7 @@
         "./typings/mime/mime.d.ts",
         "./typings/minimatch/minimatch.d.ts",
         "./typings/mkdirp/mkdirp.d.ts",
+        "./typings/mousetrap/mousetrap-global-bind.d.ts",
         "./typings/mousetrap/mousetrap.d.ts",
         "./typings/node/node.d.ts",
         "./typings/open.d.ts",
