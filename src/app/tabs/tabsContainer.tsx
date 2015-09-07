@@ -54,7 +54,12 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
 
     componentDidMount() {
         commands.nextTab.on(() => {
-            this.setState({ selected: loopAroundNext(this.state.selected, this.state.tabs.length) });
+            let selected = loopAroundNext(this.state.selected, this.state.tabs.length);
+            this.setState({ selected });
+            let component = this.refs[this.state.tabs[selected].getTitle()]
+            if (component && component.focus) {
+                component.focus();
+            }
         });
         commands.prevTab.on(() => {
             this.setState({ selected: loopAroundPrev(this.state.selected, this.state.tabs.length) });
@@ -73,8 +78,8 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
 
     render() {
         let tabTitles = this.state.tabs.map(t=> t.getTitle());
-        let tabs = this.state.tabs.map((T, i) => {
-            return T.getElement()
+        let tabs = this.state.tabs.map((t, i) => {
+            return t.getElement(t.getTitle())
         });
         
         return (

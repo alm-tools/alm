@@ -148,6 +148,6 @@ export class DashBoard extends React.Component<Props, State>  {
 export class DashboardTab implements tab.TabInstance {
     constructor(public url: string) {
     }
-    getElement = ()=> <DashBoard key={`tabBody:${this.url}`} url={this.url}/>;
+    getElement = (ref)=> <DashBoard ref={ref} key={`tabBody:${this.url}`} url={this.url}/>;
     getTitle = () => `${this.url}`;
 }

@@ -6,6 +6,7 @@ import * as ui from "../ui";
 
 export interface ComponentProps {
     key: string;
+    ref: string;
     url: string;
 }
 
@@ -15,7 +16,7 @@ export interface TabComponentClass {
 
 /** Once we have a tab instance it should be considered immutable */
 export interface TabInstance {
-    getElement(): JSX.Element;
+    getElement(ref:string): JSX.Element;
     getTitle(): string;
     url: string;
 }

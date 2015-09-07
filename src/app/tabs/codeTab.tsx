@@ -26,6 +26,8 @@ export class Code extends React.Component<Props, State>  {
             commands.onDidOpenFile.emit({ filePath: props.url });
         });
     }
+    
+    refs: { [string: string]: any; editor: any; }
 
     render() {
         
@@ -39,6 +41,7 @@ export class Code extends React.Component<Props, State>  {
         
         return (
             <CodeEditor
+                ref='editor'
                 value={this.state.content}
                 onChange={this.onChange}
                 options={options}
@@ -54,12 +57,16 @@ export class Code extends React.Component<Props, State>  {
     onChange = (newValue) => {
       // console.log('change',newValue)
     }
+    
+    focus = () => {
+        this.refs.editor.focus();
+    }
 }
 
 
 export class CodeTab implements tab.TabInstance {
     constructor(public url: string) {
     }
-    getElement = ()=> <Code key={`tabBody:${this.url}`} url={this.url}/>;
+    getElement = (ref:string)=> <Code ref={ref} key={`tabBody:${this.url}`} url={this.url}/>;
     getTitle = () => `${this.url}`;
 }

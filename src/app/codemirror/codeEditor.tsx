@@ -75,6 +75,7 @@ export var CodeEditor = React.createClass({
 	focus () {
 		if (this.codeMirror) {
 			this.codeMirror.focus();
+			// TODO: restore cursor / scroll position
 		}
 	},
 

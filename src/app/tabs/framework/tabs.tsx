@@ -20,7 +20,6 @@ export class Tabs extends React.Component<Prop,State>{
         super(prop);
     }
     render(){
-        
         let selectedIndex = this.props.selectedIndex;
         let titles = this.props.titles.map((t, i) =>
             <span
@@ -32,7 +31,8 @@ export class Tabs extends React.Component<Prop,State>{
         );
         
         let children = React.Children.map(this.props.children,(c,i)=>{
-            let style = (selectedIndex == i ? {} : { display: 'none' });
+            let isSelected = selectedIndex == i;
+            let style = ( isSelected ? {} : { display: 'none' });
             return <div style={style}>
                 {c}
             </div>
