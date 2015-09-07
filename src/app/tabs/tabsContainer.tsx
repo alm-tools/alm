@@ -45,7 +45,7 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
 
         this.state = {
             selected: 0,
-            tabs: [codeSample,dashboardSample]
+            tabs: [dashboardSample,codeSample]
         };
     }
 
