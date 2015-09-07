@@ -46,7 +46,7 @@ export class Root extends BaseComponent<{}, State>{
     }
 
     render() {
-        let toret = <div>
+        let toret = <div id="root">
                 {
                 //     <AppBar
                 //     title="TypeScript Builder"
