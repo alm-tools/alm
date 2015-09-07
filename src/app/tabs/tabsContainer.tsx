@@ -41,11 +41,12 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
         super(props);
 
         let codeSample: tab.TabInstance = new CodeTab('src/app/root.tsx');
-        let dashboardSample: tab.TabInstance = new DashboardTab('Dashboard');
+        let codeSample2: tab.TabInstance = new CodeTab('src/app/root.js');
+        //let dashboardSample: tab.TabInstance = new DashboardTab('Dashboard');
 
         this.state = {
             selected: 0,
-            tabs: [codeSample,dashboardSample]
+            tabs: [codeSample,codeSample2]
         };
     }
 
