@@ -3,6 +3,7 @@
 import React = require('react');
 import * as ui from "../../ui";
 import * as csx from "csx";
+import * as styles from "../../styles/styles";
 import {tabHeaderContainer,tabHeader,tabHeaderActive} from "../../styles/styles";
 
 export interface Prop {
@@ -33,7 +34,7 @@ export class Tabs extends React.Component<Prop,State>{
         let children = React.Children.map(this.props.children,(c,i)=>{
             let isSelected = selectedIndex == i;
             let style = ( isSelected ? {} : { display: 'none' });
-            return <div style={style}>
+            return <div style={[style,csx.flex]}>
                 {c}
             </div>
         });
