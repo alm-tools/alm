@@ -37,7 +37,11 @@ export class Code extends React.Component<Props, State>  {
             keyMap: 'sublime',
             foldGutter: true,
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-            theme:'monokai'
+            theme:'monokai',
+            
+            /** Overcomes horizontal scrolling for now */
+            lineWrapping: true,
+            
 		};
         
         return (
