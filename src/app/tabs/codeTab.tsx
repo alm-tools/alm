@@ -41,7 +41,6 @@ export class Code extends React.Component<Props, State>  {
             
             /** Overcomes horizontal scrolling for now */
             lineWrapping: true,
-            
 		};
         
         return (
