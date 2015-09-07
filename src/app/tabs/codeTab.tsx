@@ -36,7 +36,8 @@ export class Code extends React.Component<Props, State>  {
             mode: 'javascript',
             keyMap: 'sublime',
             foldGutter: true,
-            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+            theme:'monokai'
 		};
         
         return (

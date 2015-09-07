@@ -3,6 +3,7 @@ import CM = require('codemirror');
 
 // CSS
 require('codemirror/lib/codemirror.css')
+require('codemirror/theme/monokai.css')
 
 // addons
 require('codemirror/mode/meta');
