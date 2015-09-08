@@ -19,7 +19,7 @@ namespace Worker {
     let listing: string[] = [];
 
     export var getFileList: typeof contract.worker.getFileList = (q) => {
-        return Promise.resolve({ fileList: listing });
+        return Promise.resolve({ relativeFilePaths: listing });
     }
 
     var directoryUnderWatch: string;

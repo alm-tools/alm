@@ -11,7 +11,8 @@ import {QRFunction, QRServerFunction, TypedEvent} from "../socketLib/socketLib";
 export var server = {
     echo: {} as QRServerFunction<{ text: string, num: number }, { text: string, num: number }, typeof client>,
     getFileContents: {} as QRFunction<{ filePath: string }, { contents: string }>,
-    getAllFiles: {} as QRFunction<{}, { fileList: string[] }>
+    getAllFiles: {} as QRFunction<{}, { relativeFilePaths: string[] }>,
+    makeAbsolute: {} as QRFunction<{ relativeFilePath: string }, { filePath: string }>,
 }
 
 export var client = {
@@ -23,5 +24,5 @@ export var cast = {
     hello: new TypedEvent<{ text: string }>(),
     
     /** If the file worker notices a change */
-    fileListUpdated: new TypedEvent<{ fileList: string[] }>()
+    fileListUpdated: new TypedEvent<{ relativeFilePaths: string[] }>()
 }

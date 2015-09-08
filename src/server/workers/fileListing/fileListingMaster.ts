@@ -10,7 +10,7 @@ namespace Master {
         });
     }
     export var fileListChanged: typeof contract.master.fileListChanged = (q) => {
-        socketServer.cast.fileListUpdated.emit({ fileList: q.fileList });
+        socketServer.cast.fileListUpdated.emit({ relativeFilePaths: q.fileList });
         return Promise.resolve({});
     }
 }

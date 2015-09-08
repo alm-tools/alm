@@ -3,6 +3,7 @@ import * as contract from "./socketContract";
 import http = require("http");
 import * as fsu from "../server/utils/fsu";
 import * as fslw from "../server/workers/fileListing/fileListingMaster";
+import * as project from "../server/project/project";
 
 namespace Server {
     export var echo: typeof contract.server.echo = (data, client) => {
@@ -16,12 +17,16 @@ namespace Server {
     }
     
     export var getFileContents : typeof contract.server.getFileContents = (data) => {
-        let contents = fsu.readFile(fsu.resolve(process.cwd(), data.filePath));
+        let contents = fsu.readFile(data.filePath);
         return Promise.resolve({ contents });
     }
     
     export var getAllFiles : typeof contract.server.getAllFiles = (data) => {
         return fslw.worker.getFileList({ directory: process.cwd() });
+    }
+    
+    export var makeAbsolute : typeof contract.server.makeAbsolute = (data)=> {
+        return Promise.resolve({filePath: project.makeAbsolute(data.relativeFilePath)});
     }
 }
 

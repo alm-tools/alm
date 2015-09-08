@@ -7,7 +7,7 @@ import * as sw from "../../utils/simpleWorker";
  */
 export var worker = {
     echo: {} as sw.QRFunction<{ text: string, num: number }, { text: string, num: number }>,
-    getFileList: {} as sw.QRFunction<{}, { fileList: string[] }>,
+    getFileList: {} as sw.QRFunction<{}, { relativeFilePaths: string[] }>,
     setupWatch: {} as sw.QRFunction<{ directory: string }, {}>
 }
 

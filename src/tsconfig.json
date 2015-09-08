@@ -29,6 +29,7 @@
         "./server/cookies.ts",
         "./server/devtime.ts",
         "./server/errorCodes.ts",
+        "./server/project/project.ts",
         "./server/serverStarted.ts",
         "./server/utils/fsu.ts",
         "./server/utils/simpleWorker.ts",

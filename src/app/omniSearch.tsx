@@ -21,7 +21,7 @@ export interface State {
 @ui.Radium
 export class OmniSearch extends BaseComponent<Props, State>{
     /** not in state as we don't want react diffing it */
-    fileList: string[] = [];
+    relativeFilePaths: string[] = [];
     /** Because doing this in render is slow */
     filteredResults: string[] = [];
     
@@ -49,13 +49,13 @@ export class OmniSearch extends BaseComponent<Props, State>{
     
     componentDidMount() {
         server.getAllFiles({}).then((res) => {
-            this.fileList = res.fileList;
+            this.relativeFilePaths = res.relativeFilePaths;
             this.forceUpdate();
         });
 
         cast.fileListUpdated.on((update) => {
             console.log(update);
-            this.fileList = update.fileList;
+            this.relativeFilePaths = update.relativeFilePaths;
             this.forceUpdate();
         });
     
@@ -112,7 +112,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
     };
     onChangeFilter = debounce((e)=>{
         let filterValue = this.refs.omniSearchInput.getDOMNode().value;
-        this.filteredResults = fuzzyFilter(this.fileList, filterValue);
+        this.filteredResults = fuzzyFilter(this.relativeFilePaths, filterValue);
         this.filteredResults = this.filteredResults.slice(0,this.maxShowCount);
         this.setState({ filterValue, selectedIndex:0 });
     },50);
@@ -133,9 +133,10 @@ export class OmniSearch extends BaseComponent<Props, State>{
         }
         if (e.key == 'Enter'){
             e.preventDefault();
-            let filePath = this.filteredResults[this.state.selectedIndex];
-            if (filePath) {
-                commands.onOpenFile.emit({ filePath: filePath });
+            let relativeFilePath = this.filteredResults[this.state.selectedIndex];
+            if (relativeFilePath) {
+                
+                commands.onOpenFile.emit({ filePath: relativeFilePath });
             }
             this.closeOmniSearch();
         }
