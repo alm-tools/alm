@@ -32,8 +32,7 @@ interface Props extends React.Props<any> {
     onChange: (newValue: string) => any;
 	onFocusChange?: (focused: boolean) => any;
 	options: CodeMirror.EditorConfiguration;
-	path?: string;
-	value: string;
+	path: string;
 }
 
 export class CodeEditor extends React.Component<Props,any>{
@@ -47,7 +46,6 @@ export class CodeEditor extends React.Component<Props,any>{
 	}
 	
 	codeMirror: CM.EditorFromTextArea;
-	_currentCodemirrorValue: string;
 	refs: { [string: string]: any; textarea: any; }	
 	
 	resizehandler: {dispose:()=>any};
@@ -57,8 +55,6 @@ export class CodeEditor extends React.Component<Props,any>{
 		this.codeMirror.on('change', this.codemirrorValueChanged);
 		this.codeMirror.on('focus', this.focusChanged.bind(this, true));
 		this.codeMirror.on('blur', this.focusChanged.bind(this, false));
-		this._currentCodemirrorValue = this.props.value;
-		
 		
         this.resizehandler = onresize.on(() => this.reloadParentHeight());
         setTimeout(() => this.reloadParentHeight());
@@ -71,16 +67,9 @@ export class CodeEditor extends React.Component<Props,any>{
 		}
 		this.resizehandler.dispose();
 	}
+    
+    
 
-	componentWillReceiveProps (nextProps) {
-		if (this.codeMirror && this._currentCodemirrorValue !== nextProps.value) {
-			this.codeMirror.getDoc().setValue(nextProps.value);
-		}
-		if (nextProps.mode){
-		}
-	}
-	
-	
 	getCodeMirror () {
 		return this.codeMirror;
 	}
@@ -112,6 +101,12 @@ export class CodeEditor extends React.Component<Props,any>{
 		// this._currentCodemirrorValue = newValue;
 		// this.props.onChange && this.props.onChange(newValue);
 	}
+    
+    _setCodemirrorValue: string;    
+    setValue(value: string){
+        this.codeMirror.getDoc().setValue(value);
+        this._setCodemirrorValue = value;
+    }
 	
 	render () {
 		var className = 'ReactCodeMirror';
@@ -120,7 +115,7 @@ export class CodeEditor extends React.Component<Props,any>{
 		}
 		return (
 			<div className={className}>
-				<textarea ref="textarea" name={this.props.path} defaultValue={this.props.value} autoComplete={false} />
+				<textarea ref="textarea" name={this.props.path} autoComplete={false} />
 			</div>
 		);
 	}

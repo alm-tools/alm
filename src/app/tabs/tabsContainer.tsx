@@ -54,9 +54,6 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
             this.state.tabs.push(codeTab);
             this.setState({ tabs: this.state.tabs });
             this.onTabClicked(this.state.tabs.length - 1);
-            
-            // TODO: Only after open file
-            commands.onDidOpenFile.emit({ filePath: e.filePath });
         });
         
         commands.onCloseTab.on((e)=>{

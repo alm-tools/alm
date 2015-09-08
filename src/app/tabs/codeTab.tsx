@@ -9,7 +9,6 @@ import {CodeEditor} from "../codemirror/codeEditor";
 export interface Props extends tab.ComponentProps {
 }
 export interface State {
-    content?:string;
 }
 
 export class Code extends React.Component<Props, State> implements tab.TabComponent {
@@ -18,16 +17,16 @@ export class Code extends React.Component<Props, State> implements tab.TabCompon
         this.state = {
             content: ''
         };
-        
-        server.getFileContents({ filePath: props.url }).then((res) => {
-            // console.log('got contents!', res.contents);
-            this.setState({content:res.contents});
-            
-            commands.onDidOpenFile.emit({ filePath: props.url });
-        });
     }
     
     refs: { [string: string]: any; editor: CodeEditor; }
+    
+    componentDidMount() {
+        server.getFileContents({ filePath: this.props.url }).then((res) => {
+            this.refs.editor.setValue(res.contents);
+            commands.onDidOpenFile.emit({ filePath: this.props.url });
+        });
+    }
 
     render() {
         
@@ -46,7 +45,7 @@ export class Code extends React.Component<Props, State> implements tab.TabCompon
         return (
             <CodeEditor
                 ref='editor'
-                value={this.state.content}
+                path={this.props.url}
                 onChange={this.onChange}
                 options={options}
               />    
