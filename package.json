@@ -44,6 +44,7 @@
     "mousetrap": "^1.5.3",
     "normalize.css": "^3.0.3",
     "ntypescript": "1.201508200635.1",
+    "onresize": "^1.0.1",
     "open": "0.0.5",
     "radium": "^0.13.7",
     "react": "^0.13.3",

@@ -56,7 +56,8 @@ export function debounce<T extends Function>(func: T, milliseconds: number, imme
     };
 };
 
-export function rangeLimited(num: number, min: number, max: number, loopAround = false) {
+export function rangeLimited(args: { num: number, min: number, max: number, loopAround?: boolean }) {
+    let {num, min, max, loopAround} = args;
     var limited = Math.max(Math.min(num, max), min);
     if (loopAround && limited > num){
         return max;

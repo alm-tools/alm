@@ -12,7 +12,7 @@ export interface State {
     content?:string;
 }
 
-export class Code extends React.Component<Props, State>  {
+export class Code extends React.Component<Props, State> implements tab.TabComponent {
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -27,7 +27,7 @@ export class Code extends React.Component<Props, State>  {
         });
     }
     
-    refs: { [string: string]: any; editor: any; }
+    refs: { [string: string]: any; editor: CodeEditor; }
 
     render() {
         

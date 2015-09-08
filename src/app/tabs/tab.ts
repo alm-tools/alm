@@ -10,8 +10,8 @@ export interface ComponentProps {
     url: string;
 }
 
-export interface TabComponentClass {
-    new <P extends ComponentProps>(p: P): ui.React.Component<P, any>;
+export interface TabComponent extends ui.React.Component<any, any>{
+    focus();
 }
 
 /** Once we have a tab instance it should be considered immutable */

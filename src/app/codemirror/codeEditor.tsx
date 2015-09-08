@@ -28,6 +28,7 @@ console.log(CM.findModeByFileName('asdf/foo.js'))
 
 
 import React = require('react');
+import onresize = require('onresize');
 import * as styles from "../styles/styles";
 
 export class CodeEditor extends React.Component<any,any>{
@@ -51,6 +52,7 @@ export class CodeEditor extends React.Component<any,any>{
 	_currentCodemirrorValue: string;
 	refs: { [string: string]: any; textarea: any; }	
 	
+	resizehandler: {dispose:()=>any};
 	componentDidMount () {
 		var textareaNode = React.findDOMNode(this.refs.textarea);
 		this.codeMirror = CM.fromTextArea(textareaNode as any, this.props.options);
@@ -58,6 +60,10 @@ export class CodeEditor extends React.Component<any,any>{
 		this.codeMirror.on('focus', this.focusChanged.bind(this, true));
 		this.codeMirror.on('blur', this.focusChanged.bind(this, false));
 		this._currentCodemirrorValue = this.props.value;
+		
+		
+        this.resizehandler = onresize.on(() => this.reloadParentHeight());
+        setTimeout(() => this.reloadParentHeight());
 	}
 	
 	componentWillUnmount () {
@@ -65,6 +71,7 @@ export class CodeEditor extends React.Component<any,any>{
 		if (this.codeMirror) {
 			this.codeMirror.toTextArea();
 		}
+		this.resizehandler.dispose();
 	}
 
 	componentWillReceiveProps (nextProps) {
@@ -79,10 +86,19 @@ export class CodeEditor extends React.Component<any,any>{
 	getCodeMirror () {
 		return this.codeMirror;
 	}
+
+	/** Set height from parent. Using CSS for automatically doing this results in very poor performance */ 
+    private reloadParentHeight() {
+        let parent: any = React.findDOMNode(this).parentNode;
+        let [height, width] = [parent.offsetHeight, parent.offsetWidth];
+        this.codeMirror.setSize(width, height);
+		console.log('called',width,height);
+    }
 	
 	focus = () => {
 		if (this.codeMirror) {
 			this.codeMirror.focus();
+			this.reloadParentHeight();
 			// TODO: restore cursor / scroll position
 		}
 	}
@@ -92,11 +108,6 @@ export class CodeEditor extends React.Component<any,any>{
 			isFocused: focused
 		});
 		this.props.onFocusChange && this.props.onFocusChange(focused);
-		
-		// Set height from parent on focus
-		let parent:any = React.findDOMNode(this).parentNode;
-		let [height,width] = [parent.offsetHeight,parent.offsetWidth];
-		this.codeMirror.setSize(width,height);
 	}
 	
 	codemirrorValueChanged = (doc, change) => {

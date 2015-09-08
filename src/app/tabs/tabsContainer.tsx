@@ -7,23 +7,7 @@ import * as commands from "../commands/commands";
 
 import {Tabs} from "./framework/tabs";
 import {server} from "../../socket/socketClient";
-
-function loopAroundNext(currentIndex: number, length: number) {
-    if ((++currentIndex) == length) {
-        return 0;
-    }
-    else {
-        return currentIndex;
-    }
-}
-function loopAroundPrev(currentIndex: number, length: number) {
-    if ((--currentIndex) == -1) {
-        return length - 1;
-    }
-    else {
-        return currentIndex;
-    }
-}
+import {rangeLimited} from "../../common/utils";
 
 export interface Props {
 
@@ -51,20 +35,16 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
         };
     }
 
-    refs: { [string: string]: any; }
+    refs: { [string: string]: tab.TabComponent; }
 
     componentDidMount() {
         commands.nextTab.on(() => {
-            let selected = loopAroundNext(this.state.selected, this.state.tabs.length);
-            this.setState({ selected });
-            let ref = tab.getRef(this.state.tabs[selected].url,selected);
-            let component = this.refs[ref];
-            if (component && component.focus) {
-                component.focus();
-            }
+            let selected = rangeLimited({ min: 0, max: this.state.tabs.length - 1, num: ++this.state.selected, loopAround: true });
+            this.selectTab(selected);
         });
         commands.prevTab.on(() => {
-            this.setState({ selected: loopAroundPrev(this.state.selected, this.state.tabs.length) });
+            let selected = rangeLimited({ min: 0, max: this.state.tabs.length - 1, num: --this.state.selected, loopAround: true });
+            this.selectTab(selected);
         });
         
         commands.onOpenFile.on((e) =>{
@@ -91,7 +71,20 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
         );
     }
     
-    onTabClicked = (index)=>{
+    onTabClicked = (index) => {
         this.setState({ selected: index });
+        this.selectTab(index);
+    }
+    
+    private selectTab(selected: number) {
+        /** Set timeout to allow the next tab to render */
+        setTimeout(() => {
+            this.setState({ selected: selected });
+            let ref = tab.getRef(this.state.tabs[selected].url, selected);
+            let component = this.refs[ref];
+            if (component) {
+                component.focus();
+            }
+        });
     }
 }

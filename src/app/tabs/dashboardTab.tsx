@@ -7,7 +7,7 @@ export interface Props extends tab.ComponentProps {
 export interface State {
 }
 
-export class DashBoard extends React.Component<Props, State>  {
+export class DashBoard extends React.Component<Props, State> implements tab.TabComponent {
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -142,6 +142,8 @@ export class DashBoard extends React.Component<Props, State>  {
             <div>Dashboard to go here : {this.props.url}</div>
             </div>;
     }
+    
+    focus(){}
 }
 
 
