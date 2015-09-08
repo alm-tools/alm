@@ -1,5 +1,9 @@
 Some reasons that didn't make the cut for the home page : 
+ * MultiMonitor: Just open a new tab!
  * Cause it was fun to do, and demos a lot of Tech in combination and I keep getting questions about how to do these in a neat workflow: `TypeScript`,`webpack`,`react`,`radium`. Checkout [contributing](./README.md) for technical details.
+ * Wrote from scratch: As I looked at the Atom / Brackets code bases and didn't like quite a few things I saw (e.g. how brackets handles third party code, atom's usage of coffescript, neither written in TypeScript, neither supporting remote editing). 
+ * More on remote editing: Dev setups are expensive. Its potentially a joy to work on your office machine from wherever.
+ * Did I mention that I love TypeScript and really wanted to prove that *it provides a technical advantage that greatly increases developer efficiency*.
 
 # atom-typescript
  * We did some previous work on atom-typescript : Now atom is a *seriously* great project, but doing the kind of stuff we wanted to do was *too much modification of atom for a single plugin* e.g. : 
