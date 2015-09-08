@@ -69,23 +69,11 @@ export class CodeEditor extends React.Component<Props,any>{
             
             // Text hover
             textHover: {
-                getTextHover: function(cm, data, e: MouseEvent) {
-                  var html = 'token null';
-                  let node = e.fromElement;
-                  console.log(data)                  ;
-                  if (data) {
-                    var token = data.token;
-                    html = 'node.innerText: ' + node.textContent;
-                    html += '</br>node.className: ' + node.className;
-                    html += '</br>end: ' + token.end;
-                    html += '</br>start: ' + token.start;
-                    html += '</br>string: ' + token.string;
-                    html += '</br>type: ' + token.type;
-                  }
-                  var result = document.createElement('div');
-                  result.innerHTML = html;
-                  return result;
-              },
+                getTextHover: (cm, data, e: MouseEvent) => {
+                    if (data && data.pos) {
+                        return this.getQuickInfo(data.pos);
+                    }
+                },
             },
             
             /** Overcomes horizontal scrolling for now */
@@ -110,7 +98,13 @@ export class CodeEditor extends React.Component<Props,any>{
 		this.resizehandler.dispose();
 	}
     
-    
+    getQuickInfo(pos:CodeMirror.Position): string | HTMLElement {
+        // console.log(pos);
+        // let div = document.createElement('div');
+        // div.innerHTML = '<strong>Awesome</strong>';
+        // return div;
+        return;
+    }
 
 	getCodeMirror () {
 		return this.codeMirror;
