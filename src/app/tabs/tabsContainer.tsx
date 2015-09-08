@@ -58,6 +58,27 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
             // TODO: Only after open file
             commands.onDidOpenFile.emit({ filePath: e.filePath });
         });
+        
+        commands.onCloseTab.on((e)=>{
+            // If no tabs
+            if (!this.state.tabs.length) {
+                return;
+            }
+            
+            // Remove the selected
+            let selected = this.state.selected;
+            this.state.tabs.splice(selected, 1);
+            this.setState({ tabs: this.state.tabs });
+            
+            // Figure out the next:
+            // Nothing to do
+            if (!this.state.tabs.length) {
+                return;
+            }
+            // Previous
+            let next = rangeLimited({num:--selected,min:0,max:this.state.tabs.length});
+            this.selectTab(next);
+        });
     }
 
     render() {

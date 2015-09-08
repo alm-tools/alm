@@ -22,10 +22,7 @@ require('codemirror/mode/javascript/javascript')
 // keymaps
 require('codemirror/keymap/sublime')
 
-
 console.log(CM.findModeByFileName('asdf/foo.js'))
-
-
 
 import React = require('react');
 import onresize = require('onresize');
@@ -92,7 +89,6 @@ export class CodeEditor extends React.Component<any,any>{
         let parent: any = React.findDOMNode(this).parentNode;
         let [height, width] = [parent.offsetHeight, parent.offsetWidth];
         this.codeMirror.setSize(width, height);
-		console.log('called',width,height);
     }
 	
 	focus = () => {

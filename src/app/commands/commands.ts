@@ -13,7 +13,8 @@ export var findCommand = new events.TypedEvent<{}>();
 
 export var onOpenFile = new events.TypedEvent<{filePath:string}>();
 export var onDidOpenFile = new events.TypedEvent<{filePath:string}>();
-export var onCloseFile = new events.TypedEvent<{filePath:string}>();
+
+export var onCloseTab = new events.TypedEvent<{}>();
 
 export function register() {
     
@@ -24,6 +25,10 @@ export function register() {
     });
     Mousetrap.bindGlobal('alt+p', function() {
         prevTab.emit({});
+        return false;
+    });    
+    Mousetrap.bindGlobal('alt+w', function() { // alt+w is consistent with cloud 9 ide so don't change this
+        onCloseTab.emit({});
         return false;
     });
     
