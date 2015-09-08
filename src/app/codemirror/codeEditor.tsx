@@ -25,6 +25,10 @@ require('codemirror/keymap/sublime')
 
 console.log(CM.findModeByFileName('asdf/foo.js'))
 
+// Our Addons
+require('./addons/text-hover');
+require('./addons/text-hover.css');
+
 import React = require('react');
 import onresize = require('onresize');
 import * as styles from "../styles/styles";
@@ -54,10 +58,35 @@ export class CodeEditor extends React.Component<Props,any>{
             lineNumbers: true,
             mode: 'javascript',
             keyMap: 'sublime',
+            theme: 'monokai',
+            
+            // Fold addon
             foldGutter: true,
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-            theme: 'monokai',
+            
+            // Active line addon
             styleActiveLine: true,
+            
+            // Text hover
+            textHover: {
+                getTextHover: function(cm, data, e: MouseEvent) {
+                  var html = 'token null';
+                  let node = e.fromElement;
+                  console.log(data)                  ;
+                  if (data) {
+                    var token = data.token;
+                    html = 'node.innerText: ' + node.textContent;
+                    html += '</br>node.className: ' + node.className;
+                    html += '</br>end: ' + token.end;
+                    html += '</br>start: ' + token.start;
+                    html += '</br>string: ' + token.string;
+                    html += '</br>type: ' + token.type;
+                  }
+                  var result = document.createElement('div');
+                  result.innerHTML = html;
+                  return result;
+              },
+            },
             
             /** Overcomes horizontal scrolling for now */
             lineWrapping: true,

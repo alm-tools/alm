@@ -4,6 +4,8 @@ Our Editor is just a wrapper around codemirror.
 https://codemirror.net/doc/manual.html 
 https://codemirror.net/doc/manual.html#api
 
+Various useful community addons : https://github.com/codemirror/CodeMirror/wiki/CodeMirror-addons 
+
 # VS ACE
 Reasons we went with codemirror
 * sparse documentation
