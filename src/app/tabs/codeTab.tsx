@@ -23,7 +23,7 @@ export class Code extends React.Component<Props, State> implements tab.TabCompon
     
     componentDidMount() {
         server.getFileContents({ filePath: this.props.url }).then((res) => {
-            this.refs.editor.setValue(res.contents);
+            this.refs.editor.setValue(res.contents, true);
             commands.onDidOpenFile.emit({ filePath: this.props.url });
         });
     }

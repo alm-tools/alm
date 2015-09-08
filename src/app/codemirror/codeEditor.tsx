@@ -103,9 +103,13 @@ export class CodeEditor extends React.Component<Props,any>{
 	}
     
     _setCodemirrorValue: string;    
-    setValue(value: string){
+    setValue(value: string, clearHistory = false){
         this.codeMirror.getDoc().setValue(value);
         this._setCodemirrorValue = value;
+        
+        if (clearHistory) {
+            this.codeMirror.getDoc().clearHistory();
+        }
     }
 	
 	render () {
