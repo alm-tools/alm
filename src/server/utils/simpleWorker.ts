@@ -4,6 +4,8 @@ var exec = childprocess.exec;
 var spawn = childprocess.spawn;
 import path = require('path');
 
+export var resolve: typeof Promise.resolve = Promise.resolve.bind(Promise);
+
 /**
  * The main function you should call from master
  */

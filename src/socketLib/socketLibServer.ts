@@ -2,6 +2,8 @@ import http = require('http');
 import socketIo = require('socket.io');
 import {RequesterResponder, anycastMessageName, CastMessage, TypedEvent} from "./socketLib";
 
+export var resolve: typeof Promise.resolve = Promise.resolve.bind(Promise);
+
 /** This is your main boot function for the server */
 export function run<TClient, TCast>(config: {
     app: http.Server,

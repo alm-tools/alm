@@ -2,6 +2,8 @@ import {RequesterResponder, Message, anycastMessageName, TypedEvent, CastMessage
 let socketIo = io;
 let origin = `${window.location.protocol}//${window.location.hostname}${(window.location.port ? ':' + window.location.port : '') }`;
 
+export var resolve: typeof Promise.resolve = Promise.resolve.bind(Promise);
+
 /** This is your main function to launch the client */
 export function run<TServer, TCast>(config: {
     clientImplementation: any;
