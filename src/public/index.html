@@ -29,22 +29,22 @@
     }
     
     /* Scroll bar for chrome */
+    ::-webkit-scrollbar
+    {
+        width: 12px;
+        background-color: #F5F5F5;
+    }
     ::-webkit-scrollbar-track
     {
     	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
         background-color: #F5F5F5;
-    }
-    ::-webkit-scrollbar
-    {
-    	width: 12px;
-    	background-color: #F5F5F5;
     }
     ::-webkit-scrollbar-thumb
     {
     	box-shadow: inset  0 0 6px rgba(0,0,0,.7);
     	background-color: #555;
     }
-    
+
     /* Make react modal appear on top of Code mirror */
     .ReactModal__Overlay {
         z-index: 4;
