@@ -1,5 +1,5 @@
 // Code
-import CM = require('codemirror');
+import CodeMirror = require('codemirror');
 
 // CSS
 require('codemirror/lib/codemirror.css')
@@ -23,7 +23,7 @@ require('codemirror/mode/javascript/javascript')
 // keymaps
 require('codemirror/keymap/sublime')
 
-console.log(CM.findModeByFileName('asdf/foo.js'))
+console.log(CodeMirror.findModeByFileName('asdf/foo.js'))
 
 // Our Addons
 require('./addons/text-hover');
@@ -49,7 +49,7 @@ export class CodeEditor extends React.Component<Props,any>{
 		};
 	}
 	
-	codeMirror: CM.EditorFromTextArea;
+	codeMirror: CodeMirror.EditorFromTextArea;
 	refs: { [string: string]: any; textarea: any; }	
 	
 	resizehandler: {dispose:()=>any};
@@ -81,7 +81,7 @@ export class CodeEditor extends React.Component<Props,any>{
         } as any;
         
 		var textareaNode = React.findDOMNode(this.refs.textarea);
-		this.codeMirror = CM.fromTextArea(textareaNode as any, options);
+		this.codeMirror = CodeMirror.fromTextArea(textareaNode as any, options);
 		this.codeMirror.on('change', this.codemirrorValueChanged);
 		this.codeMirror.on('focus', this.focusChanged.bind(this, true));
 		this.codeMirror.on('blur', this.focusChanged.bind(this, false));
