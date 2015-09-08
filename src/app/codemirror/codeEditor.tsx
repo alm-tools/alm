@@ -28,14 +28,15 @@ import React = require('react');
 import onresize = require('onresize');
 import * as styles from "../styles/styles";
 
-export class CodeEditor extends React.Component<any,any>{
-	static propTypes = {
-		onChange: React.PropTypes.func,
-		onFocusChange: React.PropTypes.func,
-		options: React.PropTypes.object,
-		path: React.PropTypes.string,
-		value: React.PropTypes.string
-	};
+interface Props extends React.Props<any> {
+    onChange: (newValue: string) => any;
+	onFocusChange?: (focused: boolean) => any;
+	options: CodeMirror.EditorConfiguration;
+	path?: string;
+	value: string;
+}
+
+export class CodeEditor extends React.Component<Props,any>{
 	
 	constructor(props){
 		super(props);
