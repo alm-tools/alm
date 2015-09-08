@@ -68,12 +68,10 @@ export class CodeEditor extends React.Component<Props,any>{
             styleActiveLine: true,
             
             // Text hover
-            textHover: {
-                getTextHover: (cm, data, e: MouseEvent) => {
-                    if (data && data.pos) {
-                        return this.getQuickInfo(data.pos);
-                    }
-                },
+            textHover: (cm, data, e: MouseEvent) => {
+                if (data && data.pos) {
+                    return this.getQuickInfo(data.pos);
+                }
             },
             
             /** Overcomes horizontal scrolling for now */
