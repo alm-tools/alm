@@ -15,6 +15,7 @@ require('codemirror/addon/fold/xml-fold');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/comment-fold');
 require('codemirror/addon/fold/foldgutter.css');
+require('codemirror/addon/selection/active-line');
 
 // modes 
 require('codemirror/mode/javascript/javascript')
@@ -31,7 +32,6 @@ import * as styles from "../styles/styles";
 interface Props extends React.Props<any> {
     onChange: (newValue: string) => any;
 	onFocusChange?: (focused: boolean) => any;
-	options: CodeMirror.EditorConfiguration;
 	path: string;
 }
 
@@ -50,8 +50,21 @@ export class CodeEditor extends React.Component<Props,any>{
 	
 	resizehandler: {dispose:()=>any};
 	componentDidMount () {
+        var options: CodeMirror.EditorConfiguration = {
+            lineNumbers: true,
+            mode: 'javascript',
+            keyMap: 'sublime',
+            foldGutter: true,
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+            theme: 'monokai',
+            styleActiveLine: true,
+            
+            /** Overcomes horizontal scrolling for now */
+            lineWrapping: true,
+        } as any;
+        
 		var textareaNode = React.findDOMNode(this.refs.textarea);
-		this.codeMirror = CM.fromTextArea(textareaNode as any, this.props.options);
+		this.codeMirror = CM.fromTextArea(textareaNode as any, options);
 		this.codeMirror.on('change', this.codemirrorValueChanged);
 		this.codeMirror.on('focus', this.focusChanged.bind(this, true));
 		this.codeMirror.on('blur', this.focusChanged.bind(this, false));

@@ -29,25 +29,11 @@ export class Code extends React.Component<Props, State> implements tab.TabCompon
     }
 
     render() {
-        
-        var options = {
-			lineNumbers: true,
-            mode: 'javascript',
-            keyMap: 'sublime',
-            foldGutter: true,
-            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-            theme:'monokai',
-            
-            /** Overcomes horizontal scrolling for now */
-            lineWrapping: true,
-		};
-        
         return (
             <CodeEditor
                 ref='editor'
                 path={this.props.url}
                 onChange={this.onChange}
-                options={options}
               />    
         );
         
