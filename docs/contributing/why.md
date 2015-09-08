@@ -5,6 +5,7 @@ Some reasons that didn't make the cut for the home page :
  * More on remote editing: Dev setups are expensive. Its potentially a joy to work on your office machine from wherever.
  * Did I mention that I love TypeScript and really wanted to prove that *it provides a technical advantage that greatly increases developer efficiency*.
  * Provide you with a base editor that you can build internal projects on top of TypeScript with. The code editing experience should be top notch ... beyond this you can add stuff like WYSIWYG editors taking advantage of the full TypeScript language service.
+ * Having a TypeScript first IDE means I have more *keyboard shortcut space* available specific for TypeScript.
 
 # atom-typescript
  * We did some previous work on atom-typescript : Now atom is a *seriously* great project, but doing the kind of stuff we wanted to do was *too much modification of atom for a single plugin* e.g. : 
