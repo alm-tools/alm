@@ -50,11 +50,13 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
         commands.onOpenFile.on((e) =>{
             // TODO: Open the file
             console.log('open', e.filePath);
-            server.getFileContents({ filePath: e.filePath }).then((res) => {
-                console.log('got contents!', res.contents);
-                
-                commands.onDidOpenFile.emit({ filePath: e.filePath });
-            });
+            let codeTab: tab.TabInstance = new CodeTab(e.filePath);
+            this.state.tabs.push(codeTab);
+            this.setState({ tabs: this.state.tabs });
+            this.onTabClicked(this.state.tabs.length - 1);
+            
+            // TODO: Only after open file
+            commands.onDidOpenFile.emit({ filePath: e.filePath });
         });
     }
 

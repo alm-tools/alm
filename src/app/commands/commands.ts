@@ -13,6 +13,7 @@ export var findCommand = new events.TypedEvent<{}>();
 
 export var onOpenFile = new events.TypedEvent<{filePath:string}>();
 export var onDidOpenFile = new events.TypedEvent<{filePath:string}>();
+export var onCloseFile = new events.TypedEvent<{filePath:string}>();
 
 export function register() {
     
