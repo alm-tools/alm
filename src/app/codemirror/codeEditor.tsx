@@ -66,7 +66,7 @@ export class CodeEditor extends React.Component<Props,any>{
 	resizehandler: {dispose:()=>any};
 	componentDidMount () {
         
-        function hint(ed,options ){
+        function hint(ed,cb:Function,options){
             
             // options is just a copy of the `hintOptions` with defaults added
             // So do something fancy with the Editor 
@@ -86,7 +86,7 @@ export class CodeEditor extends React.Component<Props,any>{
                     className?: string;
                     // if a render function is provided ... it is responsible for adding the needed text to `elt`
                     // elt is the element `li` added for this completion
-                    // data is meh .. more review needed
+                    // data is the whole of this *original* object
                     // cur is the current completion ... i.e. this item in the list
                     render?: (elt: HTMLLIElement, data:any, cur: any)=>void;
                     
@@ -105,7 +105,10 @@ export class CodeEditor extends React.Component<Props,any>{
                 elt.appendChild(document.createTextNode(cur.text));
             }
             
-            console.log(original);
+            if (!original) {
+                cb(null);
+                return;
+            }
             original.list = original.list.map(o=>{
                 let str: string = o as string;
                 return {
@@ -114,9 +117,10 @@ export class CodeEditor extends React.Component<Props,any>{
                 };        
             });
             
-            return original;
+            setTimeout(() => cb(original), 1000);
         };
-    
+        // Make hint async
+        (hint as any).async = true;
         
         
         var options: CodeMirror.EditorConfiguration = {
