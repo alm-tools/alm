@@ -102,12 +102,29 @@ export class CodeEditor extends React.Component<Props,any>{
                     
                     // Delegate to the auto version for now 
                     let original: {
-                        list: string[], // the list of options
+                        // the list of *completions*. Each completion is rendered using the Widget class in showHint
+                        // The complex interface is based on reading the code of the Widget constructor
+                        list: (string | { 
+                            // use displayText or render
+                            displayText?: string; 
+                            className?: string;
+                            // if a render function is provided ... it is responsible for adding the needed text to `elt`
+                            // elt is the element `li` added for this completion
+                            // data is meh .. more review needed
+                            // cur is the current completion ... i.e. this item in the list
+                            render?: (elt: HTMLLIElement, data:any, cur: any)=>void;
+                        })[],
                         from: CodeMirror.Position, // start of token that is being completed
                         to: CodeMirror.Position, // end of token that is being completed
                     } = (CodeMirror as any).hint.auto(ed,options);
                     
                     console.log(original);
+                    original.list = original.list.map(o=>{
+                        let str: string = o as string;
+                        return {
+                            displayText: str
+                        };        
+                    });
                     
                     return original;
                 },    
