@@ -11,6 +11,9 @@ export function setupOptions(cmOptions: any) {
         completeOnSingleClick: true,
         hint: hint,
     };
+    
+    // For debugging
+    // cmOptions.hintOptions.closeOnUnfocus = false;
 }
 
 function hint(ed: CodeMirror.EditorFromTextArea, cb: Function, options) {
@@ -20,7 +23,10 @@ function hint(ed: CodeMirror.EditorFromTextArea, cb: Function, options) {
     // console.log(ed,options);
     
     function render(elt: HTMLLIElement, data: any, cur: any) {
-        elt.innerHTML = cur.text;
+        elt.innerHTML = `<span>
+            <strong>complete: </strong>
+            <span>${cur.text}</span>
+        </span>`.replace(/\s+/g,' ');
     }
 
     // Delegate to the auto version for now 
@@ -37,7 +43,7 @@ function hint(ed: CodeMirror.EditorFromTextArea, cb: Function, options) {
         };
     });
 
-    setTimeout(() => cb(original), 1000);
+    setTimeout(() => cb(original), 100);
 };
 // Make hint async
 (hint as any).async = true;
