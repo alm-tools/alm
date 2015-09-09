@@ -5,9 +5,14 @@ import CodeMirror = require('codemirror');
 require('codemirror/lib/codemirror.css')
 require('codemirror/theme/monokai.css')
 
-// addons
+/** 
+ *  addons
+ */
+// meta
 require('codemirror/mode/meta');
+// comments (single / multiline)
 require('codemirror/addon/comment/comment');
+// code folding
 require('codemirror/addon/fold/foldcode');
 require('codemirror/addon/fold/foldgutter');
 require('codemirror/addon/fold/brace-fold');
@@ -15,6 +20,7 @@ require('codemirror/addon/fold/xml-fold');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/comment-fold');
 require('codemirror/addon/fold/foldgutter.css');
+// Highlight active line
 require('codemirror/addon/selection/active-line');
 
 // modes 
@@ -23,11 +29,12 @@ require('codemirror/mode/javascript/javascript')
 // keymaps
 require('codemirror/keymap/sublime')
 
-console.log(CodeMirror.findModeByFileName('asdf/foo.js'))
-
 // Our Addons
 require('./addons/text-hover');
 require('./addons/text-hover.css');
+
+// Sample addon usage
+console.log(CodeMirror.findModeByFileName('asdf/foo.js'))
 
 import React = require('react');
 import onresize = require('onresize');
