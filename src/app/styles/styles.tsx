@@ -62,11 +62,7 @@ export let fullSize = {
 }
 
 const statusBarHeight = 25;
-export let otherThanStatusBar = {
-    width: '100%',
-    height: `calc(100% - ${statusBarHeight}px)`,
-}
-export let statusBar ={ 
+export let statusBar = {
     width: '100%',
     height: `${statusBarHeight}px`,
     color: '#999',

@@ -40,12 +40,11 @@ export class Tabs extends React.Component<Prop,State>{
         });
         
         return (
-            <div style={[csx.vertical,styles.otherThanStatusBar]}>
-                <span style={[csx.horizontal, tabHeaderContainer]}>
+            <div style={[csx.vertical,csx.flex]} className="app-tabs">
+                <div style={[csx.horizontal, tabHeaderContainer]} className="app-tabs-header">
                     {titles}
-                </span>
-                {/* overflow visible otherwise display:none makes scroll bars appear a *weird* places */}
-                <div style={[csx.vertical, csx.flex, csx.scroll, { overflow: 'visible' }]}>
+                </div>
+                <div style={[csx.flexRoot, csx.flex, csx.scroll]} className="app-tabs-body">
                     {children}
                 </div>
             </div>

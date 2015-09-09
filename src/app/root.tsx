@@ -46,7 +46,7 @@ export class Root extends BaseComponent<{}, State>{
     }
 
     render() {
-        let toret = <div id="root">
+        let toret = <div id="root" style={csx.vertical}>
                 {
                 //     <AppBar
                 //     title="TypeScript Builder"
@@ -58,7 +58,9 @@ export class Root extends BaseComponent<{}, State>{
                 
                 <OmniSearch/>
 
-                <TabsContainer/>
+                <div style={[csx.flex, csx.flexRoot]}>
+                    <TabsContainer/>
+                </div>
                 
                 <div style={[styles.statusBar,csx.horizontal,csx.center]}>
                     <div>🌹</div>
