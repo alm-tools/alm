@@ -92,14 +92,24 @@ export class CodeEditor extends React.Component<Props,any>{
             
             // autocomplete
             showHint: true,
-            // hint: function(ed,options){
-            //     console.log(ed,options);
-            //     return {
-            //         list:[],
-            //         // from is start of token that is being completed
-            //         // to is end of token that is being completed
-            //     }
-            // },
+            hintOptions: {
+                hint: function(ed,options /* just a copy of the `hintOptions` with defaults added really */){
+                    
+                    // So do something fancy with the Editor 
+                    console.log(ed,options);
+                    
+                    // Delegate to the auto version for now 
+                    return (CodeMirror as any).hint.auto(ed,options);
+                    
+                    // TODO: 
+                    return {
+                        // list:[], the list of options
+                        // from: is start of token that is being completed
+                        // to: is end of token that is being completed
+                    }
+                },    
+            },
+            
             
             /** Overcomes horizontal scrolling for now */
             lineWrapping: true,
