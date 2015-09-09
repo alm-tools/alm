@@ -1,5 +1,6 @@
 import os = require('os');
 import fsu = require('./fsu');
+import fs = require('fs');
 
 /**
  * Loads a file from disk or keeps it in memory 
@@ -16,6 +17,10 @@ export class FileModel {
             this.content = fsu.readFile(filePath);
         }
         this.newLine = this.getExpectedNewline(this.content);
+
+        if (filePath) {
+            this.watchFile();
+        }
     }
 
     updateFileContent(newContent) {
@@ -33,9 +38,18 @@ export class FileModel {
         fsu.writeFile(this.filePath, content);
     }
 
-    close() { this.dispose(); }
-    dispose() {
+    close() {
+        this.unwatchFile();
+    }
 
+    fileListener = () => {
+
+    };
+    watchFile() {
+        fs.watchFile(this.filePath, this.fileListener);
+    }
+    unwatchFile() {
+        fs.unwatchFile(this.filePath, this.fileListener);
     }
     
     /** splitLinesAuto from codemirror */
