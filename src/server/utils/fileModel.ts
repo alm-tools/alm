@@ -33,6 +33,7 @@ export class FileModel {
         fsu.writeFile(this.filePath, content);
     }
 
+    close() { this.dispose(); }
     dispose() {
 
     }
@@ -41,16 +42,16 @@ export class FileModel {
     private splitlines(string: string) { return string.split(/\r\n?|\n/); };
     
     /** Couldn't find one online. Hopefully this is good enough */
-    private getExpectedNewline(str: string){
-        let CR = str.match(/\r/g);        
+    private getExpectedNewline(str: string) {
+        let CR = str.match(/\r/g);
         let CRCount = CR ? CR.length : 0;
         let CRLF = str.match(/\r\n/g);
         let CRLFCount = CRLF ? CRLF.length : 0;
-        
-        this.newLine = CRCount == 0 
-                        ? os.EOL 
-                        : CRCount > 1.5*CRLFCount
-                            ? '\r'
-                            : '\r\n';
+
+        this.newLine = CRCount == 0
+            ? os.EOL
+            : CRCount > 1.5 * CRLFCount
+                ? '\r'
+                : '\r\n';
     }
 }
