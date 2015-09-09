@@ -22,10 +22,6 @@ require('codemirror/addon/fold/comment-fold');
 require('codemirror/addon/fold/foldgutter.css');
 // Highlight active line
 require('codemirror/addon/selection/active-line');
-// lint
-require('codemirror/addon/lint/lint');
-require('codemirror/addon/lint/lint.css');
-require('codemirror/addon/lint/javascript-lint'); // NOTE: needs //ajax.aspnetcdn.com/ajax/jshint/r07/jshint.js
 
 // modes 
 require('codemirror/mode/javascript/javascript')
@@ -37,6 +33,7 @@ require('codemirror/keymap/sublime')
 require('./addons/text-hover');
 require('./addons/text-hover.css');
 import autocomplete = require('./addons/autocomplete');
+import linter = require('./addons/linter');
 
 // Sample addon usage
 console.log(CodeMirror.findModeByFileName('asdf/foo.js'))
@@ -102,8 +99,7 @@ export class CodeEditor extends React.Component<Props,any>{
         options.gutters.push("CodeMirror-foldgutter");
         
         // lint
-        options.lint = true;
-        options.gutters.push("CodeMirror-lint-markers");
+        linter.setupOptions(options);
         
 		var textareaNode = React.findDOMNode(this.refs.textarea);
 		this.codeMirror = CodeMirror.fromTextArea(textareaNode as any, options);
