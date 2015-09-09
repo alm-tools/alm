@@ -99,6 +99,11 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
     private selectTab(selected: number) {
         /** Set timeout to allow the next tab to render */
         setTimeout(() => {
+            // cant select what aint there
+            if (this.state.tabs.length == 0) {
+                return;
+            }
+            
             this.setState({ selected: selected });
             let ref = tab.getRef(this.state.tabs[selected].url, selected);
             let component = this.refs[ref];
