@@ -34,6 +34,7 @@
         "./server/errorCodes.ts",
         "./server/project/project.ts",
         "./server/serverStarted.ts",
+        "./server/utils/fileModel.ts",
         "./server/utils/fsu.ts",
         "./server/utils/simpleWorker.ts",
         "./server/workers/fileListing/fileListingContract.ts",
