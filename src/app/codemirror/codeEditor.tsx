@@ -22,6 +22,10 @@ require('codemirror/addon/fold/comment-fold');
 require('codemirror/addon/fold/foldgutter.css');
 // Highlight active line
 require('codemirror/addon/selection/active-line');
+// autocomplete
+require('codemirror/addon/hint/show-hint');
+require('codemirror/addon/hint/show-hint.css');
+require('codemirror/addon/hint/javascript-hint');
 
 // modes 
 require('codemirror/mode/javascript/javascript')
@@ -67,6 +71,11 @@ export class CodeEditor extends React.Component<Props,any>{
             keyMap: 'sublime',
             theme: 'monokai',
             
+            extraKeys: {
+                "Ctrl-Space": "autocomplete",
+                "Cmd-Space": "autocomplete"
+            },
+            
             // Fold addon
             foldGutter: true,
             gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
@@ -80,6 +89,17 @@ export class CodeEditor extends React.Component<Props,any>{
                     return this.getQuickInfo(data.pos);
                 }
             },
+            
+            // autocomplete
+            showHint: true,
+            // hint: function(ed,options){
+            //     console.log(ed,options);
+            //     return {
+            //         list:[],
+            //         // from is start of token that is being completed
+            //         // to is end of token that is being completed
+            //     }
+            // },
             
             /** Overcomes horizontal scrolling for now */
             lineWrapping: true,
@@ -104,12 +124,13 @@ export class CodeEditor extends React.Component<Props,any>{
 	}
     
     getQuickInfo(pos:CodeMirror.Position): Promise<string | HTMLElement> {
-        console.log(pos);
-        let div = document.createElement('div');
-        div.innerHTML = `<strong>Awesome, ${pos.line},${pos.ch}</strong>`;
-        let def = Promise.defer();
-        setTimeout(()=>{def.resolve(div)},1000);
-        return def.promise;
+        // console.log(pos);
+        // let div = document.createElement('div');
+        // div.innerHTML = `<strong>Awesome, ${pos.line},${pos.ch}</strong>`;
+        // let def = Promise.defer();
+        // setTimeout(()=>{def.resolve(div)},1000);
+        // return def.promise;
+        return;
     }
 
 	getCodeMirror () {

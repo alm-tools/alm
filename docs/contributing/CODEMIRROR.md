@@ -6,6 +6,10 @@ https://codemirror.net/doc/manual.html#api
 
 Various useful community addons : https://github.com/codemirror/CodeMirror/wiki/CodeMirror-addons 
 
+Notes: 
+ * Code mirror position `line` is zero based. So is `ch`.
+
+
 # VS ACE
 Reasons we went with codemirror
 * sparse documentation
