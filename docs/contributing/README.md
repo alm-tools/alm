@@ -8,12 +8,17 @@ npm link
 
 Now you can run `tsb`. 
 
-We highly recommend you use [`nodemon`](https://github.com/remy/nodemon): 
+We highly recommend you use [`nodemon`](https://github.com/remy/nodemon), just run it from the project root: 
 
 ```
 npm install nodemon -g
 nodemon
 ```
+
+# After a pull
+`npm link` 
+
+This will just run the right things again (install + initial compile).
 
 # IDE
 We presently use [`atom-typescript`](https://atom.io/packages/atom-typescript). Eventually this project should be self hosting. 
