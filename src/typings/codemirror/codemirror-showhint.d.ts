@@ -32,7 +32,7 @@ declare module CodeMirror {
         from?: Position;
         /** Called if a completion is picked. If provided *you* are responsible for applying the completion */
         hint?: (cm: any, data: Hints, cur: Hint) => void;
-        render?: (element: HTMLLIElement, self: any, data: Hints) => void;
+        render?: (element: HTMLLIElement, data: Hints, cur: Hint) => void;
         to?: Position;
     }
 
