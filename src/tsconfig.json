@@ -19,6 +19,7 @@
         "!./node_modules/**/*"
     ],
     "files": [
+        "./app/codemirror/addons/autocomplete.ts",
         "./app/codemirror/addons/text-hover.ts",
         "./app/commands/commands.ts",
         "./app/tabs/tab.ts",
