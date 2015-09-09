@@ -27,11 +27,12 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
         let codeSample0: tab.TabInstance = new CodeTab('node_modules/ntypescript/src/compiler/checker.ts');
         let codeSample1: tab.TabInstance = new CodeTab('src/app/root.tsx');
         let codeSample2: tab.TabInstance = new CodeTab('src/app/root.js');
+        let codeSample3: tab.TabInstance = new CodeTab('src/bas.ts');
         //let dashboardSample: tab.TabInstance = new DashboardTab('Dashboard');
 
         this.state = {
-            selected: 0,
-            tabs: [codeSample0,codeSample1,codeSample2]
+            selected: 3,
+            tabs: [codeSample0, codeSample1, codeSample2, codeSample3]
         };
     }
 
