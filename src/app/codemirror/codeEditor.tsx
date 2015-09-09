@@ -108,7 +108,7 @@ export class CodeEditor extends React.Component<Props,any>{
 		this.codeMirror.on('blur', this.focusChanged.bind(this, false));
 		
         this.resizehandler = onresize.on(() => this.reloadParentHeight());
-        setTimeout(() => this.reloadParentHeight());
+        setTimeout(() => this.reloadParentHeight(),500);
 	}
 	
 	componentWillUnmount () {
@@ -155,7 +155,9 @@ export class CodeEditor extends React.Component<Props,any>{
 		this.props.onFocusChange && this.props.onFocusChange(focused);
 	}
 	
-	codemirrorValueChanged = (doc, change) => {
+    codemirrorValueChanged = (cm: CodeMirror.EditorFromTextArea, change: CodeMirror.EditorChange) => {
+        console.log(JSON.stringify({val:cm.getDoc().getValue()}));
+        console.log(change);
 		// var newValue = doc.getValue();
 		// this._currentCodemirrorValue = newValue;
 		// this.props.onChange && this.props.onChange(newValue);
