@@ -94,20 +94,22 @@ export class CodeEditor extends React.Component<Props,any>{
             showHint: true,
             hintOptions: {
                 completeOnSingleClick: true,
-                hint: function(ed,options /* just a copy of the `hintOptions` with defaults added really */){
+                hint: function(ed,options ){
                     
+                    // options is just a copy of the `hintOptions` with defaults added
                     // So do something fancy with the Editor 
-                    console.log(ed,options);
+                    // console.log(ed,options);
                     
                     // Delegate to the auto version for now 
-                    return (CodeMirror as any).hint.auto(ed,options);
+                    let original: {
+                        list: string[], // the list of options
+                        from: CodeMirror.Position, // start of token that is being completed
+                        to: CodeMirror.Position, // end of token that is being completed
+                    } = (CodeMirror as any).hint.auto(ed,options);
                     
-                    // TODO: 
-                    return {
-                        // list:[], the list of options
-                        // from: is start of token that is being completed
-                        // to: is end of token that is being completed
-                    }
+                    console.log(original);
+                    
+                    return original;
                 },    
             },
             
