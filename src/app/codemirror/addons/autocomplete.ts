@@ -13,7 +13,6 @@ export function setupOptions(cmOptions: any) {
     };
 }
 
-
 function hint(ed, cb: Function, options) {
     
     // options is just a copy of the `hintOptions` with defaults added
