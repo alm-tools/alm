@@ -93,6 +93,7 @@ export class CodeEditor extends React.Component<Props,any>{
             // autocomplete
             showHint: true,
             hintOptions: {
+                completeOnSingleClick: true,
                 hint: function(ed,options /* just a copy of the `hintOptions` with defaults added really */){
                     
                     // So do something fancy with the Editor 
