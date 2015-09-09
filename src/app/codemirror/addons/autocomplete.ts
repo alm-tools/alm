@@ -4,6 +4,8 @@ require('codemirror/addon/hint/show-hint');
 require('codemirror/addon/hint/show-hint.css');
 require('codemirror/addon/hint/javascript-hint');
 
+/// TODO: checkout the tern demo : http://codemirror.net/demo/tern.html to show docs next to selected item
+
 /** Enable showhint for this code mirror */
 export function setupOptions(cmOptions: any) {
     cmOptions.showHint = true;

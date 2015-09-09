@@ -13,7 +13,8 @@ export function setupOptions(options: any) {
 
 interface LintError {
     message: string,
-    severity?: string,// 'error' | 'warning'
+    /** 'error' (default) | 'warning' */
+    severity?: string,
     from: CodeMirror.Position,
     to: CodeMirror.Position
 }
