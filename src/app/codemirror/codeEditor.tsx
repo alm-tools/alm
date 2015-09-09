@@ -156,8 +156,8 @@ export class CodeEditor extends React.Component<Props,any>{
 	}
 	
     codemirrorValueChanged = (cm: CodeMirror.EditorFromTextArea, change: CodeMirror.EditorChange) => {
-        console.log(JSON.stringify({val:cm.getDoc().getValue()}));
-        console.log(change);
+        // console.log(JSON.stringify({val:cm.getDoc().getValue()}));
+        // console.log(change);
 		// var newValue = doc.getValue();
 		// this._currentCodemirrorValue = newValue;
 		// this.props.onChange && this.props.onChange(newValue);
