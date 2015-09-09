@@ -59,6 +59,10 @@ export class Root extends BaseComponent<{}, State>{
                 <OmniSearch/>
 
                 <TabsContainer/>
+                
+                <div style={[styles.statusBar,csx.horizontal,csx.center]}>
+                    <div>🌹</div>
+                </div>
             </div>;
             
         return toret;

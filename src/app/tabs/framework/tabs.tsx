@@ -40,7 +40,7 @@ export class Tabs extends React.Component<Prop,State>{
         });
         
         return (
-            <div style={[csx.vertical,styles.fullSize]}>
+            <div style={[csx.vertical,styles.otherThanStatusBar]}>
                 <span style={[csx.horizontal, tabHeaderContainer]}>
                     {titles}
                 </span>
