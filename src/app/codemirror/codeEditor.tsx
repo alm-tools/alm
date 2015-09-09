@@ -104,8 +104,12 @@ export class CodeEditor extends React.Component<Props,any>{
                     let original: {
                         // the list of *completions*. Each completion is rendered using the Widget class in showHint
                         // The complex interface is based on reading the code of the Widget constructor
+                        // Also see docs https://codemirror.net/doc/manual.html#addon_show-hint
                         list: (string | { 
-                            // use displayText or render
+                            // Used as the completion text if hint is not provided
+                            text?: string;
+                            
+                            // Also used if render isn't provided && `displayText` isn't provided
                             displayText?: string; 
                             className?: string;
                             // if a render function is provided ... it is responsible for adding the needed text to `elt`
@@ -113,16 +117,26 @@ export class CodeEditor extends React.Component<Props,any>{
                             // data is meh .. more review needed
                             // cur is the current completion ... i.e. this item in the list
                             render?: (elt: HTMLLIElement, data:any, cur: any)=>void;
+                            
+                            // Called if completion is picked
+                            hint?: Function; 
+                            
                         })[],
                         from: CodeMirror.Position, // start of token that is being completed
                         to: CodeMirror.Position, // end of token that is being completed
                     } = (CodeMirror as any).hint.auto(ed,options);
                     
+                    function render(elt: HTMLLIElement, data: any, cur: any) {
+                        elt.appendChild(document.createTextNode(cur.displayText));
+                    }
+                    
                     console.log(original);
                     original.list = original.list.map(o=>{
                         let str: string = o as string;
                         return {
-                            displayText: str
+                            displayText: str,
+                            render: render,
+                            text: str,
                         };        
                     });
                     
