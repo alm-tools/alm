@@ -20,7 +20,7 @@ function hint(ed: CodeMirror.EditorFromTextArea, cb: Function, options) {
     // console.log(ed,options);
     
     function render(elt: HTMLLIElement, data: any, cur: any) {
-        elt.appendChild(document.createTextNode(cur.text));
+        elt.innerHTML = cur.text;
     }
 
     // Delegate to the auto version for now 
