@@ -49,7 +49,7 @@ export class FileModel {
         
         this.newLine = CRCount == 0 
                         ? os.EOL 
-                        : CRCount > 2*CRLFCount
+                        : CRCount > 1.5*CRLFCount
                             ? '\r'
                             : '\r\n';
     }
