@@ -20,7 +20,7 @@ declare module CodeMirror {
     interface Hints {
         from: Position;
         to: Position;
-        list: Hint[] | string[];
+        list: (Hint|string)[];
     }
 
     /** Interface used by showHint.js Codemirror add-on
