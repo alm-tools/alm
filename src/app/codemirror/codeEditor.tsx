@@ -96,12 +96,13 @@ export class CodeEditor extends React.Component<Props,any>{
 		this.resizehandler.dispose();
 	}
     
-    getQuickInfo(pos:CodeMirror.Position): string | HTMLElement {
-        // console.log(pos);
-        // let div = document.createElement('div');
-        // div.innerHTML = '<strong>Awesome</strong>';
-        // return div;
-        return;
+    getQuickInfo(pos:CodeMirror.Position): Promise<string | HTMLElement> {
+        console.log(pos);
+        let div = document.createElement('div');
+        div.innerHTML = `<strong>Awesome, ${pos.line},${pos.ch}</strong>`;
+        let def = Promise.defer();
+        setTimeout(()=>{def.resolve(div)},1000);
+        return def.promise;
     }
 
 	getCodeMirror () {

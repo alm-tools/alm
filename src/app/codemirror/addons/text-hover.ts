@@ -1,4 +1,10 @@
 // src : https://github.com/angelozerr/CodeMirror-XQuery/blob/master/codemirror-extension/addon/hover/text-hover.js
+// Changes prefixed with `BAS`
+
+/** We have single promise queue shared among *all code mirror instances* for all the queries sent */
+let PromiseQueue = [];
+let hidePreviousToolTip = null;
+
 export var CodeMirror = require('codemirror');
 (function() {
   "use strict";
@@ -70,6 +76,8 @@ export var CodeMirror = require('codemirror');
     CodeMirror.on(node, "click", hide);
     state.keyMap = {Esc: hide};
     cm.addKeyMap(state.keyMap);
+    //BAS
+    hidePreviousToolTip = hide;
   }
 
   function TextHoverState(cm, options) {
@@ -116,14 +124,35 @@ export var CodeMirror = require('codemirror');
     var node = e.target || e.srcElement;
     if (node) {
       var state = cm.state.textHover, data = getTokenAndPosAt(cm, e);
-      var content = state.options.getTextHover(cm, data, e);
-      if (content) {
-        node.className += HOVER_CLASS;
-        if (typeof content == 'function') 
-	      content(showTooltipFor, data, e, node, state, cm);
-        else 
-          showTooltipFor(e, content, node, state, cm);        
+      var result = Promise.resolve(state.options.getTextHover(cm, data, e));
+      
+      // Add to queue
+      PromiseQueue.push(result);
+      
+      // BAS hide any previous
+      if (hidePreviousToolTip) {
+          hidePreviousToolTip();
+          hidePreviousToolTip = null;
       }
+      
+      result.then((content) => {
+          // If not the last in the queue ... the results don't matter
+          if (PromiseQueue[PromiseQueue.length - 1] !== result){
+              PromiseQueue = PromiseQueue.filter(p => p != result);
+              return;
+          }
+          PromiseQueue = PromiseQueue.filter(p => p != result);
+          
+          if (content) {
+              node.className += HOVER_CLASS;
+              if (typeof content == 'function') {
+                  content(showTooltipFor, data, e, node, state, cm);
+              }
+              else {
+                  showTooltipFor(e, content, node, state, cm);
+              }
+          }
+      });
     }
   }
 
