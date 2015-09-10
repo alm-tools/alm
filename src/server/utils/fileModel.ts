@@ -38,7 +38,9 @@ export class FileModel {
 
         let lines = this.text.slice(codeEdit.from.line, codeEdit.to.line + 1);
         let content = lines.join('\n');
-        content = content.substr(0, codeEdit.from.ch) + codeEdit.newText + content.substr(content.length - codeEdit.to.ch);
+        let contentBefore = content.substr(0, codeEdit.from.ch);
+        let contentAfter = lines[lines.length - 1].substr(codeEdit.to.ch);
+        content = contentBefore + codeEdit.newText + contentAfter;
         lines = content.split('\n');
 
         this.text = beforeLines.concat(lines).concat(afterLines);
