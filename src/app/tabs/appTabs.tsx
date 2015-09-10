@@ -1,10 +1,10 @@
 'use strict';
 
 import React = require('react');
-import * as ui from "../../ui";
+import * as ui from "../ui";
 import * as csx from "csx";
-import * as styles from "../../styles/styles";
-import {tabHeaderContainer,tabHeader,tabHeaderActive} from "../../styles/styles";
+import * as styles from "../styles/styles";
+import {tabHeaderContainer,tabHeader,tabHeaderActive} from "../styles/styles";
 
 export interface Prop {
     selectedIndex: number;
@@ -16,7 +16,7 @@ export interface State {
 }
 
 @ui.Radium
-export class Tabs extends React.Component<Prop,State>{
+export class AppTabs extends React.Component<Prop,State>{
     constructor(prop:Prop){
         super(prop);
     }

@@ -5,7 +5,7 @@ import {DashboardTab} from "./dashboardTab";
 import {CodeTab} from "./codeTab";
 import * as commands from "../commands/commands";
 
-import {Tabs} from "./framework/tabs";
+import {AppTabs} from "./appTabs";
 import {server} from "../../socket/socketClient";
 import {rangeLimited} from "../../common/utils";
 
@@ -93,9 +93,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         });
         
         return (
-            <Tabs selectedIndex={this.state.selected} titles={tabTitles} onTabClicked={this.onTabClicked}>
+            <AppTabs selectedIndex={this.state.selected} titles={tabTitles} onTabClicked={this.onTabClicked}>
                 {tabs}
-            </Tabs>
+            </AppTabs>
         );
     }
     

@@ -1,3 +1,4 @@
+import utils = require("../../common/utils");
 import os = require('os');
 import fsu = require('./fsu');
 import fs = require('fs');
@@ -7,18 +8,22 @@ import fs = require('fs');
  * Loads a file from disk or keeps it in memory 
  * watches it on fs and then if it changes sends the new content to the client
  * File is *always* saved to cache for recovery
+ * 
+ * Have a model like code mirror ... just use lines at all places ... till we actually write to disk
  */
 export class FileModel {
     /** either the os default or whatever was read from the file */
     private newLine: string;
     private text: string[] = [];
+    
+    /** last known state of the file system text */
+    private savedText: string[] = [];
 
     constructor(public filePath?: string) {
         let content = fsu.readFile(filePath);
         this.newLine = this.getExpectedNewline(content);
         
-        // Have a model like code mirror ... just use lines at all places ... till we actually write to disk
-        this.text = this.splitlines(content);
+        this.savedText = this.text = this.splitlines(content);
 
         if (filePath) {
             this.watchFile();
@@ -29,7 +34,7 @@ export class FileModel {
         return this.text.join('\n');
     }
 
-    edit(codeEdit: CodeEdit) {
+    edit(codeEdit: CodeEdit): boolean {
         let lastLine = this.text.length - 1;
 
         let beforeLines = this.text.slice(0, codeEdit.from.line);
@@ -44,6 +49,8 @@ export class FileModel {
         lines = content.split('\n');
 
         this.text = beforeLines.concat(lines).concat(afterLines);
+        
+        return utils.arraysEqual(this.text, this.savedText);
     }
 
     save(filePath?: string) {
@@ -53,6 +60,7 @@ export class FileModel {
 
         let content = this.text.join(this.newLine);
         fsu.writeFile(this.filePath, content);
+        this.savedText = this.text;
     }
 
     close() {

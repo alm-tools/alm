@@ -72,3 +72,17 @@ export function getFileName(fullFilePath:string){
     let parts = fullFilePath.split('/');
     return parts[parts.length - 1];
 }
+
+/** 
+ * shallow equality of sorted arrays
+ */
+export function arraysEqual<T>(a: T[], b: T[]): boolean {
+    if (a === b) return true;
+    if (a == null || b == null) return false;
+    if (a.length !== b.length) return false;
+
+    for (var i = 0; i < a.length; ++i) {
+        if (a[i] !== b[i]) return false;
+    }
+    return true;
+}
