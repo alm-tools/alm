@@ -2,6 +2,7 @@ import os = require('os');
 import fsu = require('./fsu');
 import fs = require('fs');
 
+// TODO: support files not on disk
 /**
  * Loads a file from disk or keeps it in memory 
  * watches it on fs and then if it changes sends the new content to the client
@@ -10,22 +11,33 @@ import fs = require('fs');
 export class FileModel {
     /** either the os default or whatever was read from the file */
     private newLine;
-    private content: string = '';
+    private text: string[] = [];
 
     constructor(public filePath?: string) {
-        if (filePath) {
-            this.content = fsu.readFile(filePath);
-        }
-        this.newLine = this.getExpectedNewline(this.content);
+        let content = fsu.readFile(filePath);
+        this.newLine = this.getExpectedNewline(content);
+        
+        // Have a model like code mirror ... just use lines at all places ... till we actually write to disk
+        this.text = this.splitlines(content);
 
         if (filePath) {
             this.watchFile();
         }
     }
 
-    updateFileContent(newContent) {
-        // write to cache if file is not on disk
-        
+    edit(codeEdit: CodeEdit) {
+        let lastLine = this.text.length - 1;
+
+        let beforeLines = this.text.slice(0, codeEdit.from.line);
+        // there might not be any after lines. This just might be a new line :)
+        let afterLines = codeEdit.to.line === lastLine ? [] : this.text.slice(codeEdit.to.line + 1, this.text.length);
+
+        let lines = this.text.slice(codeEdit.from.line, codeEdit.to.line + 1);
+        let content = lines.join('\n');
+        content = content.substr(0, codeEdit.from.ch) + codeEdit.newText + content.substr(content.length - codeEdit.to.ch);
+        lines = content.split('\n');
+
+        this.text = beforeLines.concat(lines).concat(afterLines);
     }
 
     save(filePath?: string) {
@@ -33,8 +45,7 @@ export class FileModel {
             this.filePath = filePath;
         }
 
-        let lines = this.splitlines(this.content);
-        let content = lines.join(this.newLine);
+        let content = this.text.join(this.newLine);
         fsu.writeFile(this.filePath, content);
     }
 
