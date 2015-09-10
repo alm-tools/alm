@@ -4,6 +4,9 @@ import * as tab from "./tab";
 import {DashboardTab} from "./dashboardTab";
 import {CodeTab} from "./codeTab";
 import * as commands from "../commands/commands";
+import csx = require('csx');
+
+import {tabHeaderContainer,tabHeader,tabHeaderActive} from "../styles/styles";
 
 import {AppTabs} from "./appTabs";
 import {server} from "../../socket/socketClient";
@@ -87,15 +90,39 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     render() {
-        let tabTitles = this.state.tabs.map(t=> t.getTitle());
+        
+        let selectedIndex = this.state.selected;
+        
+        let titles = this.state.tabs.map(t=> t.getTitle()).map((t, i) =>
+            <span
+                key={`tabHeader ${i}`}
+                style={[tabHeader.base, i == selectedIndex ? tabHeaderActive : {}]}
+                onClick={()=>this.onTabClicked(i)}>
+                {t}
+            </span>
+        );
+        
         let tabs = this.state.tabs.map((t, i) => {
             return t.getElement(i)
         });
         
+        let rederedTabs = tabs.map((c,i)=>{
+            let isSelected = selectedIndex == i;
+            let style = ( isSelected ? {} : { display: 'none' });
+            return <div style={[style,csx.flex]}>
+                {c}
+            </div>
+        });
+        
         return (
-            <AppTabs selectedIndex={this.state.selected} titles={tabTitles} onTabClicked={this.onTabClicked}>
-                {tabs}
-            </AppTabs>
+            <div style={[csx.vertical,csx.flex]} className="app-tabs">
+                <div style={[csx.horizontal, tabHeaderContainer]} className="app-tabs-header">
+                    {titles}
+                </div>
+                <div style={[csx.flexRoot, csx.flex, csx.scroll]} className="app-tabs-body">
+                    {rederedTabs}
+                </div>
+            </div>
         );
     }
     
