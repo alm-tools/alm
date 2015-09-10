@@ -19,7 +19,7 @@ export interface State {
 }
 
 @ui.Radium
-export class TabsContainer extends ui.BaseComponent<Props, State>{
+export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
     constructor(props: Props) {
         super(props);

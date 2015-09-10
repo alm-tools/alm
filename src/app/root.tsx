@@ -2,7 +2,7 @@ import * as React from "react";
 import {BaseComponent, RaisedButton, AppBar, MenuItem, LeftNav, TextField, Dialog, FlatButton} from "./ui";
 import * as ui from "./ui";
 import * as csx from "csx";
-import {TabsContainer} from "./tabs/tabsContainer";
+import {AppTabsContainer} from "./tabs/appTabsContainer";
 import * as commands from "./commands/commands";
 var Modal = require('react-modal');
 import * as styles from "./styles/styles";
@@ -59,7 +59,7 @@ export class Root extends BaseComponent<{}, State>{
                 <OmniSearch/>
 
                 <div style={[csx.flex, csx.flexRoot]}>
-                    <TabsContainer/>
+                    <AppTabsContainer/>
                 </div>
                 
                 <div style={[styles.statusBar,csx.horizontal,csx.center]}>
