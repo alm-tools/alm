@@ -12,6 +12,7 @@ export interface ComponentProps {
 
 export interface TabComponent extends ui.React.Component<any, any>{
     focus();
+    save();
 }
 
 /** Once we have a tab instance it should be considered immutable */

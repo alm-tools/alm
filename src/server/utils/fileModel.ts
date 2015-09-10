@@ -10,7 +10,7 @@ import fs = require('fs');
  */
 export class FileModel {
     /** either the os default or whatever was read from the file */
-    private newLine;
+    private newLine: string;
     private text: string[] = [];
 
     constructor(public filePath?: string) {
@@ -79,7 +79,7 @@ export class FileModel {
         let CRLF = str.match(/\r\n/g);
         let CRLFCount = CRLF ? CRLF.length : 0;
 
-        this.newLine = CRCount == 0
+        return CRCount == 0
             ? os.EOL
             : CRCount > 1.5 * CRLFCount
                 ? '\r'

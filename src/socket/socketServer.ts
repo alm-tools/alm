@@ -59,6 +59,11 @@ namespace Server {
          // console.log(file.getContents());         
          return resolve({});
      }
+     export var saveFile : typeof contract.server.saveFile = (data) => {
+         let file = getOrCreateOpenFile(data.filePath);
+         file.save();
+         return resolve({});
+     }
 }
 
 // Ensure that the namespace follows the contract

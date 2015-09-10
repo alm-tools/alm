@@ -52,6 +52,10 @@ export class Code extends React.Component<Props, State> implements tab.TabCompon
     focus = () => {
         this.refs.editor.focus();
     }
+
+    save = () => {
+        server.saveFile({ filePath: this.filePath });
+    }
 }
 
 

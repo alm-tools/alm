@@ -19,6 +19,7 @@ export var server = {
     openFile: {} as QRFunction<{ filePath: string }, { contents: string }>,
     closeFile: {} as QRFunction<{ filePath: string }, { }>,
     editFile: {} as QRFunction<{ filePath: string, edit: CodeEdit }, {}>,
+    saveFile: {} as QRFunction<{ filePath: string }, {}>,
 }
 
 export var client = {

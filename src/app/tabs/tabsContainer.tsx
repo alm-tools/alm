@@ -79,8 +79,10 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
         });
         
         commands.onSaveTab.on((e) => {
-            // TODO:
-            console.log('save');
+            let component = this.getSelectedComponent();
+            if (component) {
+                component.save();
+            }
         });
     }
 
@@ -111,11 +113,18 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
             }
             
             this.setState({ selected: selected });
-            let ref = tab.getRef(this.state.tabs[selected].url, selected);
-            let component = this.refs[ref];
+            this.state.selected = selected;            
+            let component = this.getSelectedComponent();
             if (component) {
                 component.focus();
             }
         });
+    }
+    
+    getSelectedComponent(): tab.TabComponent {
+        let selected =this.state.selected;
+        let ref = tab.getRef(this.state.tabs[selected].url, selected);
+        let component = this.refs[ref];
+        return component;
     }
 }

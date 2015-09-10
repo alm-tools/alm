@@ -144,6 +144,7 @@ export class DashBoard extends React.Component<Props, State> implements tab.TabC
     }
     
     focus(){}
+    save(){}
 }
 
 
