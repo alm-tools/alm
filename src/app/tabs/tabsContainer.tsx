@@ -77,6 +77,11 @@ export class TabsContainer extends ui.BaseComponent<Props, State>{
             let next = rangeLimited({num:--selected,min:0,max:this.state.tabs.length});
             this.selectTab(next);
         });
+        
+        commands.onSaveTab.on((e) => {
+            // TODO:
+            console.log('save');
+        });
     }
 
     render() {
