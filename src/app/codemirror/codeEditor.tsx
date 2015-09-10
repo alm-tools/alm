@@ -163,16 +163,21 @@ export class CodeEditor extends React.Component<Props,any>{
             to: { line: change.to.line, ch: change.to.ch },
             newText: change.text.join('\n')
         }
+        
+        // This is just code mirror telling us what we already know
+        if (codeEdit.newText == this._setCodemirrorValue) {
+            return;
+        }
         console.log(codeEdit);
 		// var newValue = doc.getValue();
 		// this._currentCodemirrorValue = newValue;
 		// this.props.onChange && this.props.onChange(newValue);
 	}
     
-    _setCodemirrorValue: string;    
+    private _setCodemirrorValue: string;    
     setValue(value: string, clearHistory = false){
-        this.codeMirror.getDoc().setValue(value);
         this._setCodemirrorValue = value;
+        this.codeMirror.getDoc().setValue(value);
         
         if (clearHistory) {
             this.codeMirror.getDoc().clearHistory();
