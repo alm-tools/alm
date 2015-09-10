@@ -43,7 +43,7 @@ import onresize = require('onresize');
 import * as styles from "../styles/styles";
 
 interface Props extends React.Props<any> {
-    onChange: (newValue: string) => any;
+    onEdit: (edit: CodeEdit) => any;
 	onFocusChange?: (focused: boolean) => any;
 	path: string;
 }
@@ -168,7 +168,10 @@ export class CodeEditor extends React.Component<Props,any>{
         if (codeEdit.newText == this._setCodemirrorValue) {
             return;
         }
-        console.log(codeEdit);
+        
+        // Send the edit
+        this.props.onEdit(codeEdit);
+        
 		// var newValue = doc.getValue();
 		// this._currentCodemirrorValue = newValue;
 		// this.props.onChange && this.props.onChange(newValue);

@@ -55,6 +55,7 @@ namespace Server {
      export var editFile : typeof contract.server.editFile = (data) => {
          // TODO
          let file = getOrCreateOpenFile(data.filePath);
+         console.log('apply:',data.edit);
          return resolve({});
      }
 }

@@ -21,8 +21,10 @@ export class Code extends React.Component<Props, State> implements tab.TabCompon
     
     refs: { [string: string]: any; editor: CodeEditor; }
     
+    filePath: string;
     componentDidMount() {
-        server.openFile({ filePath: this.props.url }).then((res) => {
+        this.filePath = this.props.url;
+        server.openFile({ filePath: this.filePath }).then((res) => {
             this.refs.editor.setValue(res.contents, true);
             commands.onDidOpenFile.emit({ filePath: this.props.url });
         });
@@ -33,7 +35,7 @@ export class Code extends React.Component<Props, State> implements tab.TabCompon
             <CodeEditor
                 ref='editor'
                 path={this.props.url}
-                onChange={this.onChange}
+                onEdit={this.onEdit}
               />    
         );
         
@@ -43,8 +45,8 @@ export class Code extends React.Component<Props, State> implements tab.TabCompon
     }
     
     
-    onChange = (newValue) => {
-      // console.log('change',newValue)
+    onEdit = (edit:CodeEdit) => {
+        server.editFile({ filePath: this.filePath, edit: edit });
     }
     
     focus = () => {
