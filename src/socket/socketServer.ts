@@ -16,7 +16,7 @@ namespace Server {
         });
     }
     
-    export var getFileContents : typeof contract.server.getFileContents = (data) => {
+    export var openFile : typeof contract.server.openFile = (data) => {
         let contents = fsu.readFile(data.filePath);
         return Promise.resolve({ contents });
     }

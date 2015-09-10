@@ -10,7 +10,7 @@ import {QRFunction, QRServerFunction, TypedEvent} from "../socketLib/socketLib";
  */
 export var server = {
     echo: {} as QRServerFunction<{ text: string, num: number }, { text: string, num: number }, typeof client>,
-    getFileContents: {} as QRFunction<{ filePath: string }, { contents: string }>,
+    openFile: {} as QRFunction<{ filePath: string }, { contents: string }>,
     getAllFiles: {} as QRFunction<{}, { relativeFilePaths: string[] }>,
     makeAbsolute: {} as QRFunction<{ relativeFilePath: string }, { filePath: string }>,
 }
