@@ -1,5 +1,7 @@
 // for keyboard shortcuts watch out for: 
 // https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts
+// 
+// c9: means keyboard shortcut is consistent with cloud9 ide so don't change these
 
 import * as Mousetrap from "mousetrap";
 require("mousetrap/plugins/global-bind/mousetrap-global-bind");
@@ -15,6 +17,7 @@ export var onOpenFile = new events.TypedEvent<{filePath:string}>();
 export var onDidOpenFile = new events.TypedEvent<{filePath:string}>();
 
 export var onCloseTab = new events.TypedEvent<{}>();
+export var onSaveTab = new events.TypedEvent<{}>();
 
 export function register() {
     
@@ -27,8 +30,12 @@ export function register() {
         prevTab.emit({});
         return false;
     });    
-    Mousetrap.bindGlobal('alt+w', function() { // alt+w is consistent with cloud 9 ide so don't change this
+    Mousetrap.bindGlobal('alt+w', function() { // c9
         onCloseTab.emit({});
+        return false;
+    });
+    Mousetrap.bindGlobal('mod+s', function() { // c9
+        onSaveTab.emit({});
         return false;
     });
     
