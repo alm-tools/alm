@@ -9,10 +9,16 @@ import {QRFunction, QRServerFunction, TypedEvent} from "../socketLib/socketLib";
  * a contract on how the server --anycasts-> all clients
  */
 export var server = {
-    echo: {} as QRServerFunction<{ text: string, num: number }, { text: string, num: number }, typeof client>,
-    openFile: {} as QRFunction<{ filePath: string }, { contents: string }>,
+    echo: {} as QRServerFunction<{ text: string, num: number }, { text: string, num: number }, typeof client>,    
     getAllFiles: {} as QRFunction<{}, { relativeFilePaths: string[] }>,
     makeAbsolute: {} as QRFunction<{ relativeFilePath: string }, { filePath: string }>,
+    
+    /** 
+     * File stuff
+     */
+    openFile: {} as QRFunction<{ filePath: string }, { contents: string }>,
+    closeFile: {} as QRFunction<{ filePath: string }, { }>,
+    editFile: {} as QRFunction<{ filePath: string, edit: CodeEdit }, {}>,
 }
 
 export var client = {

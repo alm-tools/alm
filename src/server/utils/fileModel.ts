@@ -24,6 +24,10 @@ export class FileModel {
             this.watchFile();
         }
     }
+    
+    getContents() {
+        return this.text.join('\n');
+    }
 
     edit(codeEdit: CodeEdit) {
         let lastLine = this.text.length - 1;
