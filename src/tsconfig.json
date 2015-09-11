@@ -82,7 +82,6 @@
         "./app/root.tsx",
         "./app/styles/styles.tsx",
         "./app/styles/theme.tsx",
-        "./app/tabs/appTabs.tsx",
         "./app/tabs/appTabsContainer.tsx",
         "./app/tabs/codeTab.tsx",
         "./app/tabs/dashboardTab.tsx",

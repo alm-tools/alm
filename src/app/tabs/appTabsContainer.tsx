@@ -8,7 +8,6 @@ import csx = require('csx');
 
 import {tabHeaderContainer,tabHeader,tabHeaderActive} from "../styles/styles";
 
-import {AppTabs} from "./appTabs";
 import {server} from "../../socket/socketClient";
 import {rangeLimited} from "../../common/utils";
 
