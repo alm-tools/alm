@@ -40,3 +40,6 @@ webpack.config.js
 
 * Visit `/dev` to enable dev workflow and then test app
 * Visit `/prod` to enable min js workflow and then test app
+
+More Reading (I haven't read these....but I just read the code): 
+* [Hot reloading docs](https://github.com/webpack/docs/wiki/hot-module-replacement-with-webpack) 
