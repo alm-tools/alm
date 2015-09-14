@@ -1,7 +1,7 @@
 import * as ui from "../ui";
 import * as React from "react";
 import * as tab from "./tab";
-import {DashboardTab} from "./dashboardTab";
+// import {DashboardTab} from "./dashboardTab";
 import {CodeTab} from "./codeTab";
 import * as commands from "../commands/commands";
 import csx = require('csx');
@@ -11,13 +11,17 @@ import {tabHeaderContainer,tabHeader,tabHeaderActive} from "../styles/styles";
 import {server} from "../../socket/socketClient";
 import {rangeLimited} from "../../common/utils";
 
-export interface Props {
+export interface Props extends React.Props<any> {
 
 }
 
 export interface State {
     selected?: number;
     tabs?: tab.TabInstance[];
+    
+    oldTabs?: tab.OldTabInstance[];
+    
+    
 }
 
 @ui.Radium
@@ -26,15 +30,15 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     constructor(props: Props) {
         super(props);
 
-        let codeSample0: tab.TabInstance = new CodeTab('node_modules/ntypescript/src/compiler/checker.ts');
-        let codeSample1: tab.TabInstance = new CodeTab('src/app/root.tsx');
-        let codeSample2: tab.TabInstance = new CodeTab('src/app/root.js');
-        let codeSample3: tab.TabInstance = new CodeTab('src/bas.ts');
+        let codeSample0: tab.OldTabInstance = new CodeTab('node_modules/ntypescript/src/compiler/checker.ts');
+        let codeSample1: tab.OldTabInstance = new CodeTab('src/app/root.tsx');
+        let codeSample2: tab.OldTabInstance = new CodeTab('src/app/root.js');
+        let codeSample3: tab.OldTabInstance = new CodeTab('src/bas.ts');
         //let dashboardSample: tab.TabInstance = new DashboardTab('Dashboard');
 
         this.state = {
             selected: 3,
-            tabs: [codeSample0, codeSample1, codeSample2, codeSample3]
+            oldTabs: [codeSample0, codeSample1, codeSample2, codeSample3]
         };
     }
 
@@ -42,41 +46,41 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
     componentDidMount() {
         commands.nextTab.on(() => {
-            let selected = rangeLimited({ min: 0, max: this.state.tabs.length - 1, num: ++this.state.selected, loopAround: true });
+            let selected = rangeLimited({ min: 0, max: this.state.oldTabs.length - 1, num: ++this.state.selected, loopAround: true });
             this.selectTab(selected);
         });
         commands.prevTab.on(() => {
-            let selected = rangeLimited({ min: 0, max: this.state.tabs.length - 1, num: --this.state.selected, loopAround: true });
+            let selected = rangeLimited({ min: 0, max: this.state.oldTabs.length - 1, num: --this.state.selected, loopAround: true });
             this.selectTab(selected);
         });
         
         commands.onOpenFile.on((e) =>{
             // TODO: Open the file
             console.log('open', e.filePath);
-            let codeTab: tab.TabInstance = new CodeTab(e.filePath);
-            this.state.tabs.push(codeTab);
-            this.setState({ tabs: this.state.tabs });
-            this.onTabClicked(this.state.tabs.length - 1);
+            let codeTab: tab.OldTabInstance = new CodeTab(e.filePath);
+            this.state.oldTabs.push(codeTab);
+            this.setState({ oldTabs: this.state.oldTabs });
+            this.onTabClicked(this.state.oldTabs.length - 1);
         });
         
         commands.onCloseTab.on((e)=>{
             // If no tabs
-            if (!this.state.tabs.length) {
+            if (!this.state.oldTabs.length) {
                 return;
             }
             
             // Remove the selected
             let selected = this.state.selected;
-            this.state.tabs.splice(selected, 1);
-            this.setState({ tabs: this.state.tabs });
+            this.state.oldTabs.splice(selected, 1);
+            this.setState({ oldTabs: this.state.oldTabs });
             
             // Figure out the next:
             // Nothing to do
-            if (!this.state.tabs.length) {
+            if (!this.state.oldTabs.length) {
                 return;
             }
             // Previous
-            let next = rangeLimited({num:--selected,min:0,max:this.state.tabs.length});
+            let next = rangeLimited({num:--selected,min:0,max:this.state.oldTabs.length});
             this.selectTab(next);
         });
         
@@ -92,7 +96,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         
         let selectedIndex = this.state.selected;
         
-        let titles = this.state.tabs.map(t=> t.getTitle()).map((t, i) =>
+        let titles = this.state.oldTabs.map(t=> t.getTitle()).map((t, i) =>
             <span
                 key={`tabHeader ${i}`}
                 style={[tabHeader.base, i == selectedIndex ? tabHeaderActive : {}]}
@@ -101,7 +105,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             </span>
         );
         
-        let tabs = this.state.tabs.map((t, i) => {
+        let tabs = this.state.oldTabs.map((t, i) => {
             return t.getElement(i)
         });
         
@@ -134,7 +138,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         /** Set timeout to allow the next tab to render */
         setTimeout(() => {
             // cant select what aint there
-            if (this.state.tabs.length == 0) {
+            if (this.state.oldTabs.length == 0) {
                 return;
             }
             
@@ -149,7 +153,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     
     getSelectedComponent(): tab.TabComponent {
         let selected =this.state.selected;
-        let ref = tab.getRef(this.state.tabs[selected].url, selected);
+        let ref = tab.getRef(this.state.oldTabs[selected].url, selected);
         let component = this.refs[ref];
         return component;
     }

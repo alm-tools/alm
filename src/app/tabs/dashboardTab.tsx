@@ -1,3 +1,4 @@
+/* 
 import * as ui from "../ui";
 import * as React from "react";
 import * as tab from "./tab";
@@ -154,3 +155,4 @@ export class DashboardTab implements tab.TabInstance {
     getElement = (index: number) => <DashBoard ref={tab.getRef(this.url, index) } key={tab.getRef(this.url, index)} url={this.url}/>;
     getTitle = () => `${this.url}`;
 }
+*/

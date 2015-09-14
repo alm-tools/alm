@@ -59,7 +59,7 @@ export class Code extends React.Component<Props, State> implements tab.TabCompon
 }
 
 
-export class CodeTab implements tab.TabInstance {
+export class CodeTab implements tab.OldTabInstance {
     constructor(public url: string) {
     }
     getElement = (index: number) => <Code ref={tab.getRef(this.url, index)} key={tab.getRef(this.url, index)} url={this.url}/>;

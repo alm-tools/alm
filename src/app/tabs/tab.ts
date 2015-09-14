@@ -15,8 +15,14 @@ export interface TabComponent extends ui.React.Component<any, any>{
     save();
 }
 
-/** Once we have a tab instance it should be considered immutable */
 export interface TabInstance {
+    ref?: TabComponent,
+    title: string,
+    saved: boolean,
+    url: string;
+}
+
+export interface OldTabInstance {
     getElement(index:number): JSX.Element;
     getTitle(): string;
     url: string;
