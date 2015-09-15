@@ -26,20 +26,23 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     constructor(props: Props) {
         super(props);
 
-        let codeSample0: tab.TabInstance = {
-            ref: null,
-            url: 'node_modules/ntypescript/src/compiler/checker.ts',
-            title: 'checker',
-            saved: false
-        }
-
         this.state = {
             selected: 0,
-            tabs: [codeSample0]
+            tabs: []
         };
+        
+        this.setupDemoTab();
     }
 
     refs: { [string: string]: tab.Component; }
+    
+    /** For Demo only */
+    setupDemoTab(){
+        let relativeFilePath= 'node_modules/ntypescript/src/compiler/checker.ts';
+        server.makeAbsolute({ relativeFilePath }).then(abs => {
+            commands.onOpenFile.emit({ filePath: abs.filePath });
+        });
+    }
 
     componentDidMount() {
         commands.nextTab.on(() => {
