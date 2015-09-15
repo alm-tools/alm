@@ -142,6 +142,7 @@ export class CodeEditor extends React.Component<Props,any>{
 	
 	focus = () => {
 		if (this.codeMirror) {
+            this.codeMirror.refresh();
 			this.codeMirror.focus();
 			this.reloadParentHeight();
 			// TODO: restore cursor / scroll position

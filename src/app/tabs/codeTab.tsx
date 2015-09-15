@@ -15,7 +15,6 @@ export class Code extends React.Component<Props, State> implements tab.Component
     constructor(props: Props) {
         super(props);
         this.state = {
-            content: ''
         };
     }
 
