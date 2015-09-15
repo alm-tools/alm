@@ -6,7 +6,7 @@ import {Code} from "./codeTab";
 import * as commands from "../commands/commands";
 import csx = require('csx');
 
-import {tabHeaderContainer,tabHeader,tabHeaderActive} from "../styles/styles";
+import {tabHeaderContainer,tabHeader,tabHeaderActive,tabHeaderUnsaved} from "../styles/styles";
 
 import {server} from "../../socket/socketClient";
 import {rangeLimited} from "../../common/utils";
@@ -38,8 +38,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     
     /** For Demo only */
     setupDemoTab(){
-        let relativeFilePath= 'node_modules/ntypescript/src/compiler/checker.ts';
-        server.makeAbsolute({ relativeFilePath }).then(abs => {
+        server.makeAbsolute({ relativeFilePath: 'node_modules/ntypescript/src/compiler/checker.ts' }).then(abs => {
+            commands.onOpenFile.emit({ filePath: abs.filePath });
+        });
+        server.makeAbsolute({ relativeFilePath: 'src/bas.ts'}).then(abs => {
             commands.onOpenFile.emit({ filePath: abs.filePath });
         });
     }
@@ -59,7 +61,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 ref: null,
                 url: `file://${e.filePath}`,
                 title: `${getFileName(e.filePath)}`,
-                saved: false
+                saved: true
             }
             
             this.state.tabs.push(codeTab);
@@ -100,23 +102,28 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         
         let selectedIndex = this.state.selected;
         
-        let titles = this.state.tabs.map(t=> t.title).map((t, i) =>
-            <span
+        let titles = this.state.tabs.map((t, i) =>{
+            let title = t.title;
+            var style = [tabHeader.base, i == selectedIndex ? tabHeaderActive : {}];
+            if (!t.saved){
+                style.push(tabHeaderUnsaved);
+            }
+            return <span
                 key={`tabHeader ${i}`}
-                style={[tabHeader.base, i == selectedIndex ? tabHeaderActive : {}]}
+                style={style}
                 onClick={()=>this.onTabClicked(i)}>
-                {t}
+                {title}
             </span>
-        );
+        });
         
         let rederedTabs = this.state.tabs.map((t,i)=>{
             let isSelected = selectedIndex == i;
             let style = ( isSelected ? {} : { display: 'none' });
-            
+
             let Component = getComponentByUrl(t.url);
             
             return <div key={i} style={[style,csx.flex]}>
-                <Component ref={tab.getRef({url:t.url,index:i})} url={t.url} onSaveChanged={this.onSaveChanged}/>
+                <Component ref={tab.getRef({url:t.url,index:i})} url={t.url} onSavedChanged={(saved)=>{this.onSavedChanged(saved,i)}}/>
             </div>
         });
         
@@ -136,10 +143,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         this.setState({ selected: index });
         this.selectTab(index);
     }
-    
-    onSaveChanged = () =>{
-        // TODO:
-        console.log("TODO");
+
+    onSavedChanged = (saved: boolean, index: number) => {
+        let state = this.state;
+        state.tabs[index].saved = saved;
+        this.setState({ tabs: state.tabs });
     }
     
     private selectTab(selected: number) {

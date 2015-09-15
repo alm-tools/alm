@@ -16,13 +16,17 @@ export var tabHeader = {
         borderLeft: '6px solid rgb(88, 88, 88)',
         cursor: 'pointer',
         userSelect: 'none',
-        transition: "color .5s, border-left .5s"
+        transition: "color .5s, border-left .5s, background .5s"
     },
 };
 
 export var tabHeaderActive = {
     color: "#6edeef",
     borderLeft: '6px solid #6edeef',
+};
+
+export var tabHeaderUnsaved = {
+    background: "#888",
 };
 
 export var userTip = {

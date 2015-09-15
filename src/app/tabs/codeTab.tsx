@@ -47,7 +47,9 @@ export class Code extends React.Component<Props, State> implements tab.Component
 
 
     onEdit = (edit: CodeEdit) => {
-        server.editFile({ filePath: this.filePath, edit: edit });
+        server.editFile({ filePath: this.filePath, edit: edit }).then((res)=>{
+            this.props.onSavedChanged(res.saved);
+        });
     }
 
     focus = () => {
@@ -55,7 +57,7 @@ export class Code extends React.Component<Props, State> implements tab.Component
     }
 
     save = () => {
-        server.saveFile({ filePath: this.filePath });
+        server.saveFile({ filePath: this.filePath }).then(()=>{this.props.onSavedChanged(true)});
     }
     
     /** From file://filePath to filePath*/

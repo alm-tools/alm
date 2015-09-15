@@ -13,7 +13,7 @@ export interface ComponentProps extends ui.React.Props<any> {
     url: string;
     
     // what you can tell us about
-    onSaveChanged: (saved: boolean) => void;
+    onSavedChanged: (saved: boolean) => void;
 }
 
 export interface Component extends ui.React.Component<any, any> {

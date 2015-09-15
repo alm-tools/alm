@@ -34,6 +34,7 @@ export class FileModel {
         return this.text.join('\n');
     }
 
+    /** Returns true if the file same as what was on disk */
     edit(codeEdit: CodeEdit): boolean {
         let lastLine = this.text.length - 1;
 

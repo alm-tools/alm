@@ -54,10 +54,10 @@ namespace Server {
      }
      export var editFile : typeof contract.server.editFile = (data) => {
          let file = getOrCreateOpenFile(data.filePath);
-         let hasEdits = file.edit(data.edit);
+         let saved = file.edit(data.edit);
          // console.log('-------------------------');
          // console.log(file.getContents());         
-         return resolve({hasEdits});
+         return resolve({saved});
      }
      export var saveFile : typeof contract.server.saveFile = (data) => {
          let file = getOrCreateOpenFile(data.filePath);
