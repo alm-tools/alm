@@ -23,7 +23,8 @@ export class Code extends React.Component<Props, State> implements tab.Component
     
     filePath: string;
     componentDidMount() {
-        this.filePath = this.props.url;
+        this.filePath = this.getFilePathFromUrl(this.props.url);
+        
         server.openFile({ filePath: this.filePath }).then((res) => {
             this.refs.editor.setValue(res.contents, true);
             commands.onDidOpenFile.emit({ filePath: this.props.url });
@@ -55,5 +56,10 @@ export class Code extends React.Component<Props, State> implements tab.Component
 
     save = () => {
         server.saveFile({ filePath: this.filePath });
+    }
+    
+    /** From file://{$filPath} to */
+    getFilePathFromUrl(url:string){
+        
     }
 }

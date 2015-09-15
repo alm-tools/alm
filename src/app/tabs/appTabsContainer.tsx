@@ -55,12 +55,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         });
         
         commands.onOpenFile.on((e) =>{
-            // TODO: Open the file
-            console.log('open', e.filePath);
-            
             let codeTab: tab.TabInstance = {
                 ref: null,
-                url: `${e.filePath}`,
+                url: `file://${e.filePath}`,
                 title: `${getFileName(e.filePath)}`,
                 saved: false
             }
