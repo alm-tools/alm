@@ -11,7 +11,7 @@ export interface Props extends tab.ComponentProps {
 export interface State {
 }
 
-export class Code extends React.Component<Props, State> implements tab.TabComponent {
+export class Code extends React.Component<Props, State> implements tab.Component {
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -56,12 +56,4 @@ export class Code extends React.Component<Props, State> implements tab.TabCompon
     save = () => {
         server.saveFile({ filePath: this.filePath });
     }
-}
-
-
-export class CodeTab implements tab.OldTabInstance {
-    constructor(public url: string) {
-    }
-    getElement = (index: number) => <Code ref={tab.getRef(this.url, index)} key={tab.getRef(this.url, index)} url={this.url}/>;
-    getTitle = () => `${this.url}`;
 }

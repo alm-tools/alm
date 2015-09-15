@@ -2,7 +2,7 @@ import * as ui from "../ui";
 import * as React from "react";
 import * as tab from "./tab";
 // import {DashboardTab} from "./dashboardTab";
-import {CodeTab} from "./codeTab";
+import {Code} from "./codeTab";
 import * as commands from "../commands/commands";
 import csx = require('csx');
 
@@ -18,10 +18,6 @@ export interface Props extends React.Props<any> {
 export interface State {
     selected?: number;
     tabs?: tab.TabInstance[];
-    
-    oldTabs?: tab.OldTabInstance[];
-    
-    
 }
 
 @ui.Radium
@@ -30,57 +26,65 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     constructor(props: Props) {
         super(props);
 
-        let codeSample0: tab.OldTabInstance = new CodeTab('node_modules/ntypescript/src/compiler/checker.ts');
-        let codeSample1: tab.OldTabInstance = new CodeTab('src/app/root.tsx');
-        let codeSample2: tab.OldTabInstance = new CodeTab('src/app/root.js');
-        let codeSample3: tab.OldTabInstance = new CodeTab('src/bas.ts');
-        //let dashboardSample: tab.TabInstance = new DashboardTab('Dashboard');
+        let codeSample0: tab.TabInstance = {
+            ref: null,
+            url: 'node_modules/ntypescript/src/compiler/checker.ts',
+            title: 'checker',
+            saved: false
+        }
 
         this.state = {
-            selected: 3,
-            oldTabs: [codeSample0, codeSample1, codeSample2, codeSample3]
+            selected: 0,
+            tabs: [codeSample0]
         };
     }
 
-    refs: { [string: string]: tab.TabComponent; }
+    refs: { [string: string]: tab.Component; }
 
     componentDidMount() {
         commands.nextTab.on(() => {
-            let selected = rangeLimited({ min: 0, max: this.state.oldTabs.length - 1, num: ++this.state.selected, loopAround: true });
+            let selected = rangeLimited({ min: 0, max: this.state.tabs.length - 1, num: ++this.state.selected, loopAround: true });
             this.selectTab(selected);
         });
         commands.prevTab.on(() => {
-            let selected = rangeLimited({ min: 0, max: this.state.oldTabs.length - 1, num: --this.state.selected, loopAround: true });
+            let selected = rangeLimited({ min: 0, max: this.state.tabs.length - 1, num: --this.state.selected, loopAround: true });
             this.selectTab(selected);
         });
         
         commands.onOpenFile.on((e) =>{
             // TODO: Open the file
             console.log('open', e.filePath);
-            let codeTab: tab.OldTabInstance = new CodeTab(e.filePath);
-            this.state.oldTabs.push(codeTab);
-            this.setState({ oldTabs: this.state.oldTabs });
-            this.onTabClicked(this.state.oldTabs.length - 1);
+            
+            let codeTab: tab.TabInstance = {
+                ref: null,
+                url: `${e.filePath}`,
+                title: `${getFileName(e.filePath)}`,
+                saved: false
+            }
+            
+            this.state.tabs.push(codeTab);
+            this.setState({ tabs: this.state.tabs });
+            this.onTabClicked(this.state.tabs.length - 1);
         });
         
         commands.onCloseTab.on((e)=>{
             // If no tabs
-            if (!this.state.oldTabs.length) {
+            if (!this.state.tabs.length) {
                 return;
             }
             
             // Remove the selected
             let selected = this.state.selected;
-            this.state.oldTabs.splice(selected, 1);
-            this.setState({ oldTabs: this.state.oldTabs });
+            this.state.tabs.splice(selected, 1);
+            this.setState({ tabs: this.state.tabs });
             
             // Figure out the next:
             // Nothing to do
-            if (!this.state.oldTabs.length) {
+            if (!this.state.tabs.length) {
                 return;
             }
             // Previous
-            let next = rangeLimited({num:--selected,min:0,max:this.state.oldTabs.length});
+            let next = rangeLimited({num:--selected,min:0,max:this.state.tabs.length});
             this.selectTab(next);
         });
         
@@ -96,7 +100,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         
         let selectedIndex = this.state.selected;
         
-        let titles = this.state.oldTabs.map(t=> t.getTitle()).map((t, i) =>
+        let titles = this.state.tabs.map(t=> t.title).map((t, i) =>
             <span
                 key={`tabHeader ${i}`}
                 style={[tabHeader.base, i == selectedIndex ? tabHeaderActive : {}]}
@@ -105,15 +109,14 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             </span>
         );
         
-        let tabs = this.state.oldTabs.map((t, i) => {
-            return t.getElement(i)
-        });
-        
-        let rederedTabs = tabs.map((c,i)=>{
+        let rederedTabs = this.state.tabs.map((t,i)=>{
             let isSelected = selectedIndex == i;
             let style = ( isSelected ? {} : { display: 'none' });
-            return <div style={[style,csx.flex]}>
-                {c}
+            
+            let Component = getComponentByUrl(t.url);
+            
+            return <div key={i} style={[style,csx.flex]}>
+                <Component ref={tab.getRef({url:t.url,index:i})} url={t.url} onSaveChanged={this.onSaveChanged}/>
             </div>
         });
         
@@ -134,11 +137,16 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         this.selectTab(index);
     }
     
+    onSaveChanged = () =>{
+        // TODO:
+        console.log("TODO");
+    }
+    
     private selectTab(selected: number) {
         /** Set timeout to allow the next tab to render */
         setTimeout(() => {
             // cant select what aint there
-            if (this.state.oldTabs.length == 0) {
+            if (this.state.tabs.length == 0) {
                 return;
             }
             
@@ -151,10 +159,21 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         });
     }
     
-    getSelectedComponent(): tab.TabComponent {
+    getSelectedComponent(): tab.Component {
         let selected =this.state.selected;
-        let ref = tab.getRef(this.state.oldTabs[selected].url, selected);
+        let ref = tab.getRef({url:this.state.tabs[selected].url, index:selected});
         let component = this.refs[ref];
         return component;
     }
+}
+
+
+export function getFileName(filePath:string){
+    let parts = filePath.split('/');
+    return parts[parts.length - 1];
+}
+
+/** TODO: implement other protocol tabs */
+export function getComponentByUrl(url:string) {
+    return Code;
 }
