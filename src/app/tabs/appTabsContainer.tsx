@@ -41,6 +41,12 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         server.makeAbsolute({ relativeFilePath: 'node_modules/ntypescript/src/compiler/checker.ts' }).then(abs => {
             commands.onOpenFile.emit({ filePath: abs.filePath });
         });
+        server.makeAbsolute({ relativeFilePath: 'src/app/root.tsx'}).then(abs => {
+            commands.onOpenFile.emit({ filePath: abs.filePath });
+        });
+        server.makeAbsolute({ relativeFilePath: 'src/app/root.js'}).then(abs => {
+            commands.onOpenFile.emit({ filePath: abs.filePath });
+        });
         server.makeAbsolute({ relativeFilePath: 'src/bas.ts'}).then(abs => {
             commands.onOpenFile.emit({ filePath: abs.filePath });
         });
