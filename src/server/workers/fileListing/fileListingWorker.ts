@@ -27,7 +27,7 @@ namespace Worker {
     export var setupWatch: typeof contract.worker.setupWatch = (q) => {
         directoryUnderWatch = q.directory;
 
-        function sendNewFileList() {
+        var sendNewFileList = debounce((function () {
             var mg = new glob.Glob('**', { cwd: q.directory }, (e, newList) => {
                 if (e) {
                     console.error('Globbing error:', e);
@@ -41,14 +41,18 @@ namespace Worker {
                 
                 master.fileListChanged({ fileList: listing });
             });
-        }
-
+        }),100);
+        
         sendNewFileList();
 
         let watcher = chokidar.watch(directoryUnderWatch);
-        watcher.on('change', debounce(function() {
-            sendNewFileList();
-        },100));
+        
+        // Just the ones that impact file listing
+        // https://github.com/paulmillr/chokidar#methods--events
+        watcher.on('add', sendNewFileList);
+        watcher.on('addDir', sendNewFileList);
+        watcher.on('unlink', sendNewFileList);
+        watcher.on('unlinkDir', sendNewFileList);
 
         return Promise.resolve({});
     }
