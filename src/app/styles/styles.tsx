@@ -26,7 +26,7 @@ export var tabHeaderActive = {
 };
 
 export var tabHeaderUnsaved = {
-    background: "#888",
+    background: "#777",
 };
 
 export var userTip = {
