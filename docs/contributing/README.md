@@ -43,3 +43,7 @@ webpack.config.js
 
 More Reading (I haven't read these....but I just read the code): 
 * [Hot reloading docs](https://github.com/webpack/docs/wiki/hot-module-replacement-with-webpack) 
+
+
+## Conventions
+Please see [CONVENTIONS.md]('./CONVENTIONS.md')

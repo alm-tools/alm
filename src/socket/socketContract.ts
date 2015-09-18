@@ -34,5 +34,5 @@ export var cast = {
     fileListUpdated: new TypedEvent<{ relativeFilePaths: string[] }>(),
     
     /** If an open and already saved file changes on disk  */
-    savedFileChangedOnDisk: new TypedEvent<{ filePath: string; content: string }>(),
+    savedFileChangedOnDisk: new TypedEvent<{ filePath: string; contents: string }>(),
 }

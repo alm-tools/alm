@@ -21,13 +21,13 @@ export class FileModel {
 
     constructor(public config: {
         filePath: string;
-        /** New content is only sent if the file has no pending changes. Otherwise it is silently ignored */
-        savedFileChangedOnDisk: (content: string) => any;
+        /** New contents is only sent if the file has no pending changes. Otherwise it is silently ignored */
+        savedFileChangedOnDisk: (contents: string) => any;
     }) {
-        let content = fsu.readFile(config.filePath);
-        this.newLine = this.getExpectedNewline(content);
+        let contents = fsu.readFile(config.filePath);
+        this.newLine = this.getExpectedNewline(contents);
 
-        this.savedText = this.text = this.splitlines(content);
+        this.savedText = this.text = this.splitlines(contents);
         this.watchFile();
     }
 
@@ -56,8 +56,8 @@ export class FileModel {
     }
 
     save() {
-        let content = this.text.join(this.newLine);
-        fsu.writeFile(this.config.filePath, content);
+        let contents = this.text.join(this.newLine);
+        fsu.writeFile(this.config.filePath, contents);
         this.savedText = this.text;
     }
 
@@ -70,8 +70,8 @@ export class FileModel {
     }
 
     fileListener = () => {
-        let content = fsu.readFile(this.config.filePath);
-        let text = this.splitlines(content);
+        let contents = fsu.readFile(this.config.filePath);
+        let text = this.splitlines(contents);
         let newTextSameAsSavedText = utils.arraysEqual(this.text, this.text);
 
         if (newTextSameAsSavedText) {

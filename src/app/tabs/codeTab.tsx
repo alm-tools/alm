@@ -29,9 +29,9 @@ export class Code extends React.Component<Props, State> implements tab.Component
             commands.onDidOpenFile.emit({ filePath: this.props.url });
         });
         
-        cast.savedFileChangedOnDisk.on((ch)=>{
-            if (ch.filePath == this.filePath) {
-                console.log('new content: ', ch.content);
+        cast.savedFileChangedOnDisk.on((res)=>{
+            if (res.filePath == this.filePath) {
+                this.refs.editor.setValue(res.contents, true);
             }
         });
     }

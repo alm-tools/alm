@@ -18,8 +18,8 @@ function getOrCreateOpenFile(filePath: string) {
     if (!file) {
         file = new FileModel({
             filePath: filePath, 
-            savedFileChangedOnDisk: (content) => {
-                cast.savedFileChangedOnDisk.emit({ filePath, content });
+            savedFileChangedOnDisk: (contents) => {
+                cast.savedFileChangedOnDisk.emit({ filePath, contents });
             }
         });
         openFiles.push(file);
