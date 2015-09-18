@@ -1,3 +1,7 @@
+/**
+ * Controls the root directory we are working off of
+ */
+
 import * as fsu from "../utils/fsu";
 
 let projectRoot = process.cwd();
