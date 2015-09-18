@@ -11,6 +11,11 @@ export interface Props extends tab.ComponentProps {
 export interface State {
 }
 
+/**
+ * This is a thin wrapper around `CodeEditor` with the following key motivations
+ * - All server code must go through here
+ * - All tab type stuff must go through here
+ */
 export class Code extends React.Component<Props, State> implements tab.Component {
     constructor(props: Props) {
         super(props);

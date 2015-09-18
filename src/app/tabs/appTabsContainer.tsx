@@ -64,7 +64,6 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         
         commands.onOpenFile.on((e) =>{
             let codeTab: tab.TabInstance = {
-                ref: null,
                 url: `file://${e.filePath}`,
                 title: `${getFileName(e.filePath)}`,
                 saved: true
@@ -72,28 +71,12 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             
             this.state.tabs.push(codeTab);
             this.setState({ tabs: this.state.tabs });
-            this.onTabClicked(this.state.tabs.length - 1);
+            this.selectTab(this.state.tabs.length - 1);
         });
         
         commands.onCloseTab.on((e)=>{
-            // If no tabs
-            if (!this.state.tabs.length) {
-                return;
-            }
-            
             // Remove the selected
-            let selected = this.state.selected;
-            this.state.tabs.splice(selected, 1);
-            this.setState({ tabs: this.state.tabs });
-            
-            // Figure out the next:
-            // Nothing to do
-            if (!this.state.tabs.length) {
-                return;
-            }
-            // Previous
-            let next = rangeLimited({num:--selected,min:0,max:this.state.tabs.length});
-            this.selectTab(next);
+            this.closeTab(this.state.selected);
         });
         
         commands.onSaveTab.on((e) => {
@@ -117,7 +100,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             return <span
                 key={`tabHeader ${i}`}
                 style={style}
-                onClick={()=>this.onTabClicked(i)}>
+                onClick={(event)=>this.onTabClicked(event.nativeEvent as MouseEvent,i)}>
                 {title}
             </span>
         });
@@ -145,9 +128,15 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         );
     }
     
-    onTabClicked = (index) => {
-        this.setState({ selected: index });
-        this.selectTab(index);
+    onTabClicked = (event: MouseEvent,index) => {
+        // center click: 
+        if (event.which == 2) {
+            this.closeTab(index);
+        }
+        else {
+            this.selectTab(index);    
+            this.setState({ selected: index });
+        }
     }
 
     onSavedChanged = (saved: boolean, index: number) => {
@@ -178,6 +167,32 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         let ref = tab.getRef({url:this.state.tabs[selected].url, index:selected});
         let component = this.refs[ref];
         return component;
+    }
+    
+    closeTab(index: number) {
+        // If no tabs
+        if (!this.state.tabs.length) {
+            return;
+        }
+        
+        this.state.tabs.splice(index, 1);
+        this.setState({ tabs: this.state.tabs });
+        
+        // If this is the selected tab, Figure out the next:
+        if (index == this.state.selected) {
+            // Nothing to do
+            if (!this.state.tabs.length) {
+                return;
+            }
+            // Previous
+            let next = rangeLimited({ num: --index, min: 0, max: this.state.tabs.length });
+            this.selectTab(next);
+        }
+        // If this is a tab before the selected, decrement selected
+        else if (index < this.state.selected){
+            this.state.selected--;
+            this.setState({ selected: this.state.selected });
+        }
     }
 }
 

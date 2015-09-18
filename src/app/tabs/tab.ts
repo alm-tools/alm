@@ -22,8 +22,6 @@ export interface Component extends ui.React.Component<any, any> {
 }
 
 export interface TabInstance {
-    ref?: Component,
-
     url: string;
     title: string,
     saved: boolean,
