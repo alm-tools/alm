@@ -31,7 +31,7 @@ export class Code extends React.Component<Props, State> implements tab.Component
         
         cast.savedFileChangedOnDisk.on((res)=>{
             if (res.filePath == this.filePath) {
-                this.refs.editor.setValue(res.contents, true);
+                this.refs.editor.setValue(res.contents, false);
             }
         });
     }

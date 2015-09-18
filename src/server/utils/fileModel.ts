@@ -2,6 +2,7 @@ import utils = require("../../common/utils");
 import os = require('os');
 import fsu = require('./fsu');
 import fs = require('fs');
+import chokidar = require('chokidar');
 
 // TODO: support files not on disk
 /**
@@ -18,7 +19,7 @@ export class FileModel {
     
     /** last known state of the file system text */
     private savedText: string[] = [];
-
+    
     constructor(public config: {
         filePath: string;
         /** New contents is only sent if the file has no pending changes. Otherwise it is silently ignored */
@@ -27,7 +28,8 @@ export class FileModel {
         let contents = fsu.readFile(config.filePath);
         this.newLine = this.getExpectedNewline(contents);
 
-        this.savedText = this.text = this.splitlines(contents);
+        this.text = this.splitlines(contents);
+        this.savedText = this.text.slice();
         this.watchFile();
     }
 
@@ -58,7 +60,7 @@ export class FileModel {
     save() {
         let contents = this.text.join(this.newLine);
         fsu.writeFile(this.config.filePath, contents);
-        this.savedText = this.text;
+        this.savedText = this.text.slice();
     }
 
     saved(): boolean {
@@ -72,24 +74,29 @@ export class FileModel {
     fileListener = () => {
         let contents = fsu.readFile(this.config.filePath);
         let text = this.splitlines(contents);
-        let newTextSameAsSavedText = utils.arraysEqual(this.text, this.text);
-
+        let newTextSameAsSavedText = utils.arraysEqual(text, this.text);
+        
         if (newTextSameAsSavedText) {
             return;
         }
 
         if (this.saved()) {
             this.text = text;
-            this.savedText = this.text;
-            this.config.savedFileChangedOnDisk(this.text.join(this.newLine));
+            this.savedText = this.text.slice();
+            
+            this.config.savedFileChangedOnDisk(this.getContents());
         }
     };
 
+    /** The chokidar watcher */
+    private fsWatcher: fs.FSWatcher = null;
     watchFile() {
-        fs.watchFile(this.config.filePath, this.fileListener);
+        this.fsWatcher = chokidar.watch(this.config.filePath);
+        this.fsWatcher.on('all',this.fileListener);
     }
     unwatchFile() {
-        fs.unwatchFile(this.config.filePath, this.fileListener);
+        this.fsWatcher.close();
+        this.fsWatcher = null;
     }
     
     /** splitLinesAuto from codemirror */
