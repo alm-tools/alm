@@ -9,14 +9,19 @@ let resolve = sls.resolve;
 
 let openFiles: FileModel[] = [];
 function getOpenFile(filePath: string) {
-    if (openFiles.some(f=> f.filePath == filePath)) {
-        return openFiles.filter(f=> f.filePath == filePath)[0];
+    if (openFiles.some(f=> f.config.filePath == filePath)) {
+        return openFiles.filter(f=> f.config.filePath == filePath)[0];
     }
 }
 function getOrCreateOpenFile(filePath: string) {
     var file = getOpenFile(filePath);
     if (!file) {
-        file = new FileModel(filePath);
+        file = new FileModel({
+            filePath: filePath, 
+            newContentFromDisk: (content) => {
+                console.log("TODO: Push content to all editors")
+            }
+        });
         openFiles.push(file);
     }
     return file;

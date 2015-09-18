@@ -19,15 +19,16 @@ export class FileModel {
     /** last known state of the file system text */
     private savedText: string[] = [];
 
-    constructor(public filePath?: string) {
-        let content = fsu.readFile(filePath);
+    constructor(public config: {
+        filePath: string;
+        /** New content is only sent if the file has no pending changes. Otherwise it is silently ignored */
+        newContentFromDisk: (content:string) => any;
+    }) {
+        let content = fsu.readFile(config.filePath);
         this.newLine = this.getExpectedNewline(content);
         
         this.savedText = this.text = this.splitlines(content);
-
-        if (filePath) {
-            this.watchFile();
-        }
+        this.watchFile();
     }
     
     getContents() {
@@ -54,13 +55,9 @@ export class FileModel {
         return { saved: utils.arraysEqual(this.text, this.savedText) };
     }
 
-    save(filePath?: string) {
-        if (filePath) {
-            this.filePath = filePath;
-        }
-
+    save() {
         let content = this.text.join(this.newLine);
-        fsu.writeFile(this.filePath, content);
+        fsu.writeFile(this.config.filePath, content);
         this.savedText = this.text;
     }
 
@@ -71,11 +68,12 @@ export class FileModel {
     fileListener = () => {
 
     };
+    
     watchFile() {
-        fs.watchFile(this.filePath, this.fileListener);
+        fs.watchFile(this.config.filePath, this.fileListener);
     }
     unwatchFile() {
-        fs.unwatchFile(this.filePath, this.fileListener);
+        fs.unwatchFile(this.config.filePath, this.fileListener);
     }
     
     /** splitLinesAuto from codemirror */
