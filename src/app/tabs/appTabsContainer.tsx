@@ -197,7 +197,6 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 }
 
-
 export function getFileName(filePath:string){
     let parts = filePath.split('/');
     return parts[parts.length - 1];
