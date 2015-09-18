@@ -34,8 +34,8 @@ export class FileModel {
         return this.text.join('\n');
     }
 
-    /** Returns true if the file same as what was on disk */
-    edit(codeEdit: CodeEdit): boolean {
+    /** Returns true if the file is same as what was on disk */
+    edit(codeEdit: CodeEdit): { saved: boolean } {
         let lastLine = this.text.length - 1;
 
         let beforeLines = this.text.slice(0, codeEdit.from.line);
@@ -51,7 +51,7 @@ export class FileModel {
 
         this.text = beforeLines.concat(lines).concat(afterLines);
         
-        return utils.arraysEqual(this.text, this.savedText);
+        return { saved: utils.arraysEqual(this.text, this.savedText) };
     }
 
     save(filePath?: string) {
