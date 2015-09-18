@@ -39,7 +39,7 @@
     "express": "4.13.0",
     "fuzzaldrin": "^2.1.0",
     "glob": "^5.0.14",
-    "globby": "^3.0.1",
+    "glob-expand": "^0.1.0",
     "layoutjs": "^1.0.2",
     "material-ui": "^0.10.4",
     "mkdirp": "^0.5.1",

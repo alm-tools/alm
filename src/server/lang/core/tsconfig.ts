@@ -192,7 +192,7 @@ function errorWithDetails<T>(error: Error, details: T): Error {
 
 import fs = require('fs');
 import path = require('path');
-import globby = require('globby');
+import expand = require('glob-expand');
 import os = require('os');
 import formatting = require('./formatCodeOptions');
 
@@ -390,7 +390,7 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptProjectFileDeta
     }
     if (toExpand) { // Expand whatever needs expanding
         try {
-            projectSpec.files = globby.sync(toExpand, { cwd: cwdPath, nodir: true });
+            projectSpec.files = expand({ filter: 'isFile', cwd: cwdPath }, toExpand);
         }
         catch (ex) {
             throw errorWithDetails<GET_PROJECT_GLOB_EXPAND_FAILED_Details>(
