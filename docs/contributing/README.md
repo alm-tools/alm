@@ -27,7 +27,7 @@ We presently use [`atom-typescript`](https://atom.io/packages/atom-typescript). 
 atom .
 ```
 
-## Webpack
+# Webpack
 The workflow we are using is similar to [the one documented here](http://www.christianalfoni.com/articles/2015_04_19_The-ultimate-webpack-setup)
 
 The meanings of these folders comes from that
@@ -45,5 +45,11 @@ More Reading (I haven't read these....but I just read the code):
 * [Hot reloading docs](https://github.com/webpack/docs/wiki/hot-module-replacement-with-webpack) 
 
 
-## Conventions
+# Conventions
 Please see [CONVENTIONS.md]('./CONVENTIONS.md')
+
+
+# Server Folder Structure
+
+* `server/workers` we run various background workers. They are present here.
+* `server/lang` our main API stuff on top of the core TypeScript Language Service.

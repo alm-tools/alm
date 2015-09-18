@@ -8,3 +8,9 @@ interface CodeEdit {
     to: EditorPosition;
     newText: string;
 }
+
+/** Our extensions to the Error object */
+interface Error {
+    /** Really useful to have for debugging */
+    details?: any; 
+}
