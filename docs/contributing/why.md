@@ -13,8 +13,6 @@ Some reasons that didn't make the cut for the home page :
     * Have our own error panel 
     * Intercept the symbol provider to show typescript project wide symbols
     * Have a background worker doing our analysis for us 
+    * Plus some things like a *build server* support doesn't seem like a valid thing to add as atom plugin.
     * more ... 
-    
-Plus some things like a *build server* support doesn't seem like a valid thing to add as atom plugin.
-
-Also an atom plugin should work *the way you want it to work*. This software will come with its own *strong* opinions to give a consistent workflow.
+ * Also an atom plugin should work *the way you want it to work*. This software will come with its own *strong* opinions to give a consistent workflow.
