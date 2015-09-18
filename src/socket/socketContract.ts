@@ -31,5 +31,8 @@ export var cast = {
     hello: new TypedEvent<{ text: string }>(),
     
     /** If the file worker notices a change */
-    fileListUpdated: new TypedEvent<{ relativeFilePaths: string[] }>()
+    fileListUpdated: new TypedEvent<{ relativeFilePaths: string[] }>(),
+    
+    /** If an open and already saved file changes on disk  */
+    savedFileChangedOnDisk: new TypedEvent<{ filePath: string; content: string }>(),
 }

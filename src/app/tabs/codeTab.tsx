@@ -1,7 +1,7 @@
 import * as ui from "../ui";
 import * as React from "react";
 import * as tab from "./tab";
-import {server} from "../../socket/socketClient";
+import {server,cast} from "../../socket/socketClient";
 import * as commands from "../commands/commands";
 
 import {CodeEditor} from "../codemirror/codeEditor";
@@ -27,6 +27,12 @@ export class Code extends React.Component<Props, State> implements tab.Component
         server.openFile({ filePath: this.filePath }).then((res) => {
             this.refs.editor.setValue(res.contents, true);
             commands.onDidOpenFile.emit({ filePath: this.props.url });
+        });
+        
+        cast.savedFileChangedOnDisk.on((ch)=>{
+            if (ch.filePath == this.filePath) {
+                console.log('new content: ', ch.content);
+            }
         });
     }
 
