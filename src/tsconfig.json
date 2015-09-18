@@ -24,6 +24,7 @@
         "./app/codemirror/addons/text-hover.ts",
         "./app/commands/commands.ts",
         "./app/tabs/tab.ts",
+        "./app/utils/preventBackspaceNav.ts",
         "./bas.ts",
         "./common/constants.ts",
         "./common/events.ts",

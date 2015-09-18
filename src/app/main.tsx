@@ -3,6 +3,8 @@ import * as commands from "./commands/commands";
 import * as React from "react";
 import {server} from "../socket/socketClient";
 var Modal = require('react-modal');
+import {preventBackspaceNav} from "./utils/preventBackspaceNav";
+preventBackspaceNav();
 
 // Normalize css 
 require('normalize.css');
