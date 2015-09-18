@@ -5,6 +5,7 @@ import * as tab from "./tab";
 import {Code} from "./codeTab";
 import * as commands from "../commands/commands";
 import csx = require('csx');
+import {createId} from "../../common/utils";
 
 import {tabHeaderContainer,tabHeader,tabHeaderActive,tabHeaderUnsaved} from "../styles/styles";
 
@@ -64,6 +65,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         
         commands.onOpenFile.on((e) =>{
             let codeTab: tab.TabInstance = {
+                id: createId(),
                 url: `file://${e.filePath}`,
                 title: `${getFileName(e.filePath)}`,
                 saved: true
@@ -111,8 +113,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
             let Component = getComponentByUrl(t.url);
             
-            return <div key={i} style={[style,csx.flex]}>
-                <Component ref={tab.getRef({url:t.url,index:i})} url={t.url} onSavedChanged={(saved)=>{this.onSavedChanged(saved,i)}}/>
+            return <div key={t.id} style={[style,csx.flex]}>
+                <Component ref={t.id} url={t.url} onSavedChanged={(saved)=>{this.onSavedChanged(saved,i)}}/>
             </div>
         });
         
@@ -163,9 +165,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
     
     getSelectedComponent(): tab.Component {
-        let selected =this.state.selected;
-        let ref = tab.getRef({url:this.state.tabs[selected].url, index:selected});
-        let component = this.refs[ref];
+        let selected = this.state.selected;
+        let component = this.refs[this.state.tabs[selected].id];
         return component;
     }
     

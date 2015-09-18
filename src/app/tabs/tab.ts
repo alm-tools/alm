@@ -22,6 +22,7 @@ export interface Component extends ui.React.Component<any, any> {
 }
 
 export interface TabInstance {
+    id: string;
     url: string;
     title: string,
     saved: boolean,
@@ -30,8 +31,4 @@ export interface TabInstance {
 /** If no filepath is provided `cwd` is used */
 export function getUrl(protocol: string, filePath?: string) {
     return protocol + (filePath ? filePath : process.cwd);
-}
-
-export function getRef(args: { url: string, index: number }) {
-    return `${args.url}:${args.index}`;
 }
