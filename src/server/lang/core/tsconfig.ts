@@ -1,4 +1,5 @@
 import * as fsu from "../../utils/fsu";
+import ts = require('ntypescript');
 
 import simpleValidator = require('./simpleValidator');
 import stripBom = require('strip-bom');

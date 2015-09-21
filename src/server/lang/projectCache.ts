@@ -227,3 +227,8 @@ export function resetCache(query: SoftResetQuery) {
     //         });
     //     });
 }
+
+export function fileListingUpdated(relativeFilePaths: string[]) {
+    let tsconfigs = relativeFilePaths.filter(t=>t.endsWith('tsconfig.json'));
+    // console.log(tsconfigs);
+}

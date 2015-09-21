@@ -88,6 +88,7 @@
         "./typings/strip-bom.d.ts",
         "./typings/tsd.d.ts",
         "./typings/v8promise.d.ts",
+        "./typings/v8string.d.ts",
         "./app/codemirror/codeEditor.tsx",
         "./app/devtemplate.tsx",
         "./app/main.tsx",

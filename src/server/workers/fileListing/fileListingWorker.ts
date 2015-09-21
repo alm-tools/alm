@@ -41,7 +41,7 @@ namespace Worker {
                 
                 master.fileListChanged({ fileList: listing });
             });
-        }),100);
+        }),500);
         
         sendNewFileList();
 
