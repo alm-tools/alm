@@ -3,7 +3,7 @@ import * as contract from "./socketContract";
 import http = require("http");
 import * as fsu from "../server/utils/fsu";
 import * as fslw from "../server/workers/fileListing/fileListingMaster";
-import * as project from "../server/project/project";
+import * as workingDir from "../server/workingDir/workingDir";
 import {FileModel} from "../server/utils/fileModel";
 let resolve = sls.resolve;
 
@@ -51,7 +51,7 @@ namespace Server {
     }
     
     export var makeAbsolute : typeof contract.server.makeAbsolute = (data)=> {
-        return Promise.resolve({filePath: project.makeAbsolute(data.relativeFilePath)});
+        return Promise.resolve({filePath: workingDir.makeAbsolute(data.relativeFilePath)});
     }
     
     /**
