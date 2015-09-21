@@ -1,3 +1,5 @@
+/// <reference path="../../node_modules/ntypescript/bin/ntypescript.d.ts"/>
+
 interface EditorPosition {
     line: number;
     ch: number;
