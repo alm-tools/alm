@@ -75,3 +75,7 @@ export let statusBar = {
     fontSize: '12px',
     border: '1px solid #999',
 }
+export let statusBarSection = {
+    paddingLeft: '3px',
+    paddingRight: '3px',
+}

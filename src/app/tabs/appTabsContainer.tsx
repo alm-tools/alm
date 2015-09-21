@@ -11,6 +11,7 @@ import {tabHeaderContainer,tabHeader,tabHeaderActive,tabHeaderUnsaved} from "../
 
 import {server} from "../../socket/socketClient";
 import {rangeLimited} from "../../common/utils";
+import {statusBar} from "../statusBar";
 
 export interface Props extends React.Props<any> {
 
@@ -160,6 +161,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             let component = this.getSelectedComponent();
             if (component) {
                 component.focus();
+                statusBar.setActiveProject(component.props.url);
             }
         });
     }

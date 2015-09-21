@@ -92,6 +92,7 @@
         "./app/material-ui.tsx",
         "./app/omniSearch.tsx",
         "./app/root.tsx",
+        "./app/statusBar.tsx",
         "./app/styles/styles.tsx",
         "./app/styles/theme.tsx",
         "./app/tabs/appTabsContainer.tsx",

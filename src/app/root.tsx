@@ -10,6 +10,8 @@ import {cast, server} from "../socket/socketClient";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
 import {debounce,createMap,rangeLimited,getFileName} from "../common/utils";
 import {OmniSearch} from "./omniSearch";
+import {StatusBar} from "./statusBar";
+import sb = require('./statusBar');
 
 let menuItems = [
     { route: 'get-started', text: 'Get Started' },
@@ -39,10 +41,15 @@ export class Root extends BaseComponent<{}, State>{
     refs: {
         [string: string]: any;
         leftNav: any;
+        statusBar: StatusBar;
     }
 
     toggle = () => {
         this.refs.leftNav.toggle();
+    }
+    
+    componentDidMount() {
+        sb.statusBar = this.refs.statusBar;
     }
 
     render() {
@@ -62,9 +69,7 @@ export class Root extends BaseComponent<{}, State>{
                     <AppTabsContainer/>
                 </div>
                 
-                <div style={[styles.statusBar,csx.horizontal,csx.center]}>
-                    <div>🌹</div>
-                </div>
+                <StatusBar ref="statusBar"></StatusBar>
             </div>;
             
         return toret;
