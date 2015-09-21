@@ -53,6 +53,7 @@
         "./socketLib/socketLib.ts",
         "./socketLib/socketLibClient.ts",
         "./socketLib/socketLibServer.ts",
+        "./store/store.ts",
         "./typings/chokidar/chokidar.d.ts",
         "./typings/codemirror/codemirror-meta.d.ts",
         "./typings/codemirror/codemirror-showhint.d.ts",
