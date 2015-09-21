@@ -184,6 +184,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             return;
         }
         
+        // inform the component
+        let component = this.refs[this.state.tabs[index].id];
+        component.close();
+        
         this.state.tabs.splice(index, 1);
         this.setState({ tabs: this.state.tabs });
         

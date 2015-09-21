@@ -26,6 +26,13 @@ function getOrCreateOpenFile(filePath: string) {
     }
     return file;
 }
+function closeOpenFile(filePath: string) {
+    var file = getOpenFile(filePath);
+    if (file) {
+        file.close();
+        openFiles = openFiles.filter(f=> f.config.filePath !== filePath);
+    }
+}
 
 namespace Server {
     export var echo: typeof contract.server.echo = (data, client) => {
@@ -54,7 +61,7 @@ namespace Server {
          return resolve({contents:file.getContents()});
      }
      export var closeFile : typeof contract.server.openFile = (data) => {
-         // TODO
+         closeOpenFile(data.filePath);
          return resolve({});
      }
      export var editFile : typeof contract.server.editFile = (data) => {

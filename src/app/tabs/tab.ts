@@ -19,6 +19,7 @@ export interface ComponentProps extends ui.React.Props<any> {
 export interface Component extends ui.React.Component<any, any> {
     focus();
     save();
+    close();
 }
 
 export interface TabInstance {

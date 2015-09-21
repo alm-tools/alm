@@ -70,6 +70,10 @@ export class Code extends React.Component<Props, State> implements tab.Component
         server.saveFile({ filePath: this.filePath }).then(()=>{this.props.onSavedChanged(true)});
     }
     
+    close = () => {
+        server.closeFile({filePath: this.filePath});
+    }
+    
     /** From file://filePath to filePath*/
     getFilePathFromUrl(url: string) {
         return url.substr('file://'.length);
