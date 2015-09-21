@@ -55,6 +55,9 @@
     },
     "codemirror/codemirror-showhint.d.ts": {
       "commit": "a1a2d0dd679fcc4b9d3f95bd05cf5a26ea8151a0"
+    },
+    "redux/redux.d.ts": {
+      "commit": "273a567b0a0bcc34cbf2a2470b2febc95796b644"
     }
   }
 }
