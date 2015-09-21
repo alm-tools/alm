@@ -35,6 +35,10 @@ export class TypedEvent<T> {
     emit = (event: T) => {
         this.listeners.forEach((listener) => listener(event));
     }
+    
+    pipe<TE extends TypedEvent<any>>(te: TE): Disposable {
+        return this.on((e)=>te.emit(e));
+    }
 }
 
 /** single event listener queue */

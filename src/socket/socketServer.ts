@@ -3,37 +3,11 @@ import * as contract from "./socketContract";
 import http = require("http");
 import * as fsu from "../server/utils/fsu";
 import * as fslw from "../server/workers/fileListing/fileListingMaster";
-import * as workingDir from "../server/workingDir/workingDir";
-import {FileModel} from "../server/utils/fileModel";
+import * as workingDir from "../server/disk/workingDir";
+import {FileModel} from "../server/disk/fileModel";
 let resolve = sls.resolve;
 
-let openFiles: FileModel[] = [];
-function getOpenFile(filePath: string) {
-    if (openFiles.some(f=> f.config.filePath == filePath)) {
-        return openFiles.filter(f=> f.config.filePath == filePath)[0];
-    }
-}
-function getOrCreateOpenFile(filePath: string) {
-    var file = getOpenFile(filePath);
-    if (!file) {
-        file = new FileModel({
-            filePath: filePath, 
-            savedFileChangedOnDisk: (contents) => {
-                cast.savedFileChangedOnDisk.emit({ filePath, contents });
-            }
-        });
-        openFiles.push(file);
-    }
-    return file;
-}
-function closeOpenFile(filePath: string) {
-    var file = getOpenFile(filePath);
-    if (file) {
-        file.close();
-        // Right now we still keep the file open indefinitely
-        // openFiles = openFiles.filter(f=> f.config.filePath !== filePath);
-    }
-}
+import {savedFileChangedOnDisk,getOpenFile,getOrCreateOpenFile,closeOpenFile} from "../server/disk/fileModelCache";
 
 namespace Server {
     export var echo: typeof contract.server.echo = (data, client) => {
@@ -94,7 +68,7 @@ export function register(app: http.Server) {
         cast:contract.cast
     });
     cast = runResult.cast;
-    
+    savedFileChangedOnDisk.pipe(cast.savedFileChangedOnDisk);
     // For testing
     // setInterval(() => cast.hello.emit({ text: 'nice' }), 1000);
 }

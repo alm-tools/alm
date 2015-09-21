@@ -1,6 +1,6 @@
 import utils = require("../../common/utils");
 import os = require('os');
-import fsu = require('./fsu');
+import fsu = require('../utils/fsu');
 import fs = require('fs');
 import chokidar = require('chokidar');
 
