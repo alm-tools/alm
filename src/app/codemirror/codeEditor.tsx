@@ -186,6 +186,10 @@ export class CodeEditor extends React.Component<Props,any>{
             this.codeMirror.getDoc().clearHistory();
         }
     }
+    
+    getValue(){
+        return this.codeMirror.getDoc().getValue();
+    }
 	
 	render () {
 		var className = 'ReactCodeMirror';
