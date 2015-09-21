@@ -163,6 +163,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 component.focus();
                 statusBar.setActiveProject(component.props.url);
             }
+            else {
+                statusBar.setActiveProject('');
+            }
         });
     }
     
@@ -173,6 +176,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
     
     closeTab(index: number) {
+        // Always clear the status bar
+        statusBar.setActiveProject('');
+        
         // If no tabs
         if (!this.state.tabs.length) {
             return;
