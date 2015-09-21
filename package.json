@@ -35,7 +35,7 @@
     "codemirror": "^5.6.0",
     "colors": "^1.1.2",
     "cookie-parser": "^1.3.5",
-    "csx": "^1.0.4",
+    "csx": "^1.0.6",
     "express": "4.13.0",
     "fuzzaldrin": "^2.1.0",
     "glob": "^5.0.14",
