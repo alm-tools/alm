@@ -68,18 +68,15 @@ export class FileModel {
     }
 
     close() {
-        this.unwatchFile();
+        this.save();
+        // right now we keep the file open indefinitely once opened
+        // this.unwatchFile();
     }
 
     fileListener = () => {
         let contents = fsu.readFile(this.config.filePath);
         let text = this.splitlines(contents);
-        let newTextSameAsSavedText = utils.arraysEqual(text, this.text);
         
-        if (newTextSameAsSavedText) {
-            return;
-        }
-
         if (this.saved()) {
             this.text = text;
             this.savedText = this.text.slice();

@@ -30,7 +30,8 @@ function closeOpenFile(filePath: string) {
     var file = getOpenFile(filePath);
     if (file) {
         file.close();
-        openFiles = openFiles.filter(f=> f.config.filePath !== filePath);
+        // Right now we still keep the file open indefinitely
+        // openFiles = openFiles.filter(f=> f.config.filePath !== filePath);
     }
 }
 
