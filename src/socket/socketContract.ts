@@ -35,4 +35,7 @@ export var cast = {
     
     /** If an open and already saved file changes on disk  */
     savedFileChangedOnDisk: new TypedEvent<{ filePath: string; contents: string }>(),
+    
+    /** Errors for a file path */
+    errorsUpdated: new TypedEvent<{filePath: string; errors: string[]}>()
 }

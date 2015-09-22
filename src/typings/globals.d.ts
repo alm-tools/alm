@@ -16,3 +16,12 @@ interface Error {
     /** Really useful to have for debugging */
     details?: any; 
 }
+
+
+interface CodeError {
+    filePath: string;
+    from: EditorPosition;
+    to: EditorPosition;
+    message: string;
+    preview: string;
+}
