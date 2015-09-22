@@ -229,12 +229,15 @@ export function resetCache(query: SoftResetQuery) {
     //     });
 }
 
-export function fileListingUpdated(relativeFilePaths: string[]) {
-    let tsconfigs = relativeFilePaths.filter(t=> t.endsWith('tsconfig.json'));
+
+// also let the project cache check for updates
+import * as flm from "../workers/fileListing/fileListingMaster";
+flm.filePathsUpdated.on(function (data) {
+    let tsconfigs = data.filePaths.filter(t=> t.endsWith('tsconfig.json'));
     let local = tsconfigs.filter(t=> !t.includes('node_modules'));
     local.forEach(fig => {
         if (!projectByProjectFilePath[fig]){
             getOrCreateProjectFile(fig);
         }
     });
-}
+})

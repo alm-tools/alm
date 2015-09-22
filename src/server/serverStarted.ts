@@ -1,5 +1,7 @@
-import * as fslw from "./workers/fileListing/fileListingMaster";
+import * as flm from "./workers/fileListing/fileListingMaster";
+import * as ps from "./lang/projectService";
 
 export function started() {
-    fslw.worker.setupWatch({ directory: process.cwd() });
+    flm.start();
+    ps.start();
 }
