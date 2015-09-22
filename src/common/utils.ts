@@ -94,3 +94,14 @@ export function createId(): string {
         return v.toString(16);
     });
 }
+
+// Not optimized
+export function selectMany<T>(arr: T[][]): T[] {
+    var result = [];
+    for (var i = 0; i < arr.length; i++) {
+        for (var j = 0; j < arr[i].length; j++) {
+            result.push(arr[i][j]);
+        }
+    }
+    return result;
+}
