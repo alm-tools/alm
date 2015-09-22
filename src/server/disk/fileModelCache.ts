@@ -30,3 +30,7 @@ export function closeOpenFile(filePath: string) {
         // openFiles = openFiles.filter(f=> f.config.filePath !== filePath);
     }
 }
+
+export function getOpenFiles(): FileModel[] {
+    return openFiles;
+}

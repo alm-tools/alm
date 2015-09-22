@@ -3,6 +3,7 @@ import path = require("path");
 import tsconfig = require("./core/tsconfig");
 import {Project, languageServiceHost} from "./core/project";
 import * as fsu from "../utils/fsu";
+import {getOpenFile} from "../disk/fileModelCache";
 
 /** utility interface **/
 export interface FilePathQuery {
@@ -229,6 +230,11 @@ export function resetCache(query: SoftResetQuery) {
 }
 
 export function fileListingUpdated(relativeFilePaths: string[]) {
-    let tsconfigs = relativeFilePaths.filter(t=>t.endsWith('tsconfig.json'));
-    // console.log(tsconfigs);
+    let tsconfigs = relativeFilePaths.filter(t=> t.endsWith('tsconfig.json'));
+    let local = tsconfigs.filter(t=> !t.includes('node_modules'));
+    local.forEach(fig => {
+        if (!projectByProjectFilePath[fig]){
+            getOrCreateProjectFile(fig);
+        }
+    });
 }
