@@ -36,7 +36,7 @@ export class TypedEvent<T> {
         this.listeners.forEach((listener) => listener(event));
     }
     
-    pipe<TE extends TypedEvent<any>>(te: TE): Disposable {
+    pipe = (te: TypedEvent<T>): Disposable => {
         return this.on((e)=>te.emit(e));
     }
 }
