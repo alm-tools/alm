@@ -8,6 +8,7 @@ import {FileModel} from "../server/disk/fileModel";
 let resolve = sls.resolve;
 
 import {savedFileChangedOnDisk,getOpenFile,getOrCreateOpenFile,closeOpenFile} from "../server/disk/fileModelCache";
+import * as errorCache from "../server/lang/errorsCache";
 
 namespace Server {
     export var echo: typeof contract.server.echo = (data, client) => {
@@ -51,6 +52,14 @@ namespace Server {
          file.save();
          return resolve({});
      }
+     
+     /**
+      * Error handling
+      */
+     
+    export var getErrors : typeof contract.server.getErrors  = (data) => { 
+        return resolve(errorCache.getErrors());
+    }
 }
 
 // Ensure that the namespace follows the contract
@@ -68,7 +77,10 @@ export function register(app: http.Server) {
         cast:contract.cast
     });
     cast = runResult.cast;
+    
     savedFileChangedOnDisk.pipe(cast.savedFileChangedOnDisk);
+    errorCache.errorsUpdated.pipe(cast.errorsUpdated);
+    
     // For testing
     // setInterval(() => cast.hello.emit({ text: 'nice' }), 1000);
 }

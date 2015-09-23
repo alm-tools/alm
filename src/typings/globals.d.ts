@@ -25,3 +25,7 @@ interface CodeError {
     message: string;
     preview: string;
 }
+
+interface ErrorsByFilePath { 
+    [filePath: string]: string[]
+}

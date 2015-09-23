@@ -20,6 +20,12 @@ export var server = {
     closeFile: {} as QRFunction<{ filePath: string }, { }>,
     editFile: {} as QRFunction<{ filePath: string, edit: CodeEdit }, { saved: boolean }>,
     saveFile: {} as QRFunction<{ filePath: string }, {}>,
+    
+    
+    /**
+     * Error stuff
+     */
+    getErrors: {} as QRFunction<{}, ErrorsByFilePath>
 }
 
 export var client = {
@@ -37,5 +43,5 @@ export var cast = {
     savedFileChangedOnDisk: new TypedEvent<{ filePath: string; contents: string }>(),
     
     /** Errors for a file path */
-    errorsUpdated: new TypedEvent<{filePath: string; errors: string[]}>()
+    errorsUpdated: new TypedEvent<ErrorsByFilePath>()
 }

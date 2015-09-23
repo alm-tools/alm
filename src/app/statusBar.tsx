@@ -5,6 +5,7 @@ import Radium = require('radium');
 import csx = require('csx');
 import {BaseComponent} from "./ui";
 import * as ui from "./ui";
+import {cast,server} from "../socket/socketClient";
 
 export interface Props extends React.Props<any> {
 
@@ -27,6 +28,17 @@ export class StatusBar extends BaseComponent<Props, State>{
             activeProject: '',
             errorsByFilePath: {}
         }
+    }
+    
+    componentDidMount() {
+        server.getErrors({}).then((details)=>{
+            this.state.errorsByFilePath = details;
+            this.forceUpdate();
+        })
+        cast.errorsUpdated.on((details)=>{
+            this.state.errorsByFilePath = details;
+            this.forceUpdate();
+        });
     }
     
     setActiveProject(activeProject: string){
