@@ -14,6 +14,6 @@ Some reasons that didn't make the cut for the home page :
     * Intercept the symbol provider to show typescript project wide symbols
     * Have a background worker doing our analysis for us 
     * Plus some things like a *build server* support doesn't seem like a valid thing to add as atom plugin.
-    * There are lots of times when it breakes due to no fault of our own, (but we try to fix it asap) e.g [link](https://github.com/TypeStrong/atom-typescript/issues/596)
+    * There are lots of times when it breakes due to no fault of our own, (but we try to fix it asap). Examples [link](https://github.com/TypeStrong/atom-typescript/issues/596)
     * more ... 
  * Also an atom plugin should work *the way you want it to work*. This software will come with its own *strong* opinions to give a consistent workflow.
