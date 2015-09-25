@@ -28,6 +28,7 @@
         "./bas.ts",
         "./common/constants.ts",
         "./common/events.ts",
+        "./common/json.ts",
         "./common/utils.ts",
         "./server.ts",
         "./server/cache/cache.ts",
