@@ -83,6 +83,34 @@ export var noSelect = {
     userSelect: 'none'
 }
 
-export let hand = csx.extend(noSelect, {
+export let hand = {
     cursor: 'pointer',
-})
+}
+
+export let codeFont = {
+    fontFamily: 'monospace'
+}
+
+export namespace errorsPanel {
+    export let main = {
+        color: '#999',
+        fontFamily: codeFont.fontFamily,
+        padding: '6px',
+    }
+    
+    export let filePath = {
+        fontSize: '1rem',
+        fontWeight: 'bold',
+        padding: '3px',
+    }
+    
+    export let perFileList = {
+        paddingLeft: '6px',
+        borderLeft: '6px solid #f92672'
+    }
+    
+    export let errorMessage = {
+        border: '2px solid #999',
+        padding: '3px'
+    }
+}

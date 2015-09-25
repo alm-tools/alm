@@ -13,6 +13,7 @@ export interface Props extends React.Props<any> {
 export interface State {
     activeProject?: string;
     errorsByFilePath?: { [filePath: string]: string[] };
+    errorsExpanded?: boolean;
 }
 
 /**
@@ -54,19 +55,62 @@ export class StatusBar extends BaseComponent<Props, State>{
         let activeProject = this.state.activeProject;
         let errorCount = utils.selectMany(Object.keys(this.state.errorsByFilePath).map((k)=>this.state.errorsByFilePath[k]));
         
-        return <div style={[styles.statusBar,csx.horizontal,csx.center]}>
-            {/* Left sections */}
-            <span style={[styles.statusBarSection, styles.noSelect]}>🌹</span> 
-            <span style={styles.statusBarSection}>{activeProject}</span>
-            
-            {/* seperator */}
-            <span style={csx.flex}></span>
-            
-            {/* Right sections */}
-            <span style={[styles.statusBarSection, styles.hand]}>
-                {errorCount.length} ⛔
-            </span> 
-            
-        </div>
+        let errorPanel = null;
+        if (this.state.errorsExpanded){
+            errorPanel = <div style={styles.errorsPanel.main}>
+            {
+                Object.keys(this.state.errorsByFilePath)
+                .filter(filePath=>!!this.state.errorsByFilePath[filePath].length)
+                .map((filePath,i)=>{
+                    
+                    let errors = 
+                        this.state.errorsByFilePath[filePath]
+                            .map((e, j) => (
+                                <div key={`${i}:${j}`} style={[styles.hand,styles.errorsPanel.errorMessage]} onClick={()=>this.openFile(filePath,e)}>
+                                        {e}
+                                </div>
+                            ));
+                    
+                    return <div key={i}>
+                        <div style={styles.errorsPanel.filePath}>> {filePath}</div>
+                        
+                        <div style={styles.errorsPanel.perFileList}>
+                            {errors}
+                        </div>
+                    </div>
+                })
+            }
+            </div>
+        }
+        
+        return (
+            <div>            
+                {errorPanel}
+                <div style={[styles.statusBar,csx.horizontal,csx.center]}>
+                    {/* Left sections */}
+                    <span style={[styles.statusBarSection, styles.noSelect]}>🌹</span> 
+                    <span style={styles.statusBarSection}>{activeProject}</span>
+                    
+                    {/* seperator */}
+                    <span style={csx.flex}></span>
+                    
+                    {/* Right sections */}
+                    <span style={[styles.statusBarSection, styles.hand, styles.noSelect]} onClick={this.toggleErrors}>
+                        {errorCount.length} ⛔
+                    </span> 
+                    
+                </div>
+            </div>
+        );
+    }
+    
+    toggleErrors = () => {
+        this.state.errorsExpanded = !this.state.errorsExpanded;
+        this.setState({ errorsExpanded: this.state.errorsExpanded });
+    }
+    
+    openFile = (filePath:string,error:string) => { 
+        // TODO:
+        console.log(filePath, error);
     }
 }
