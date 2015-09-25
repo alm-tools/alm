@@ -34,54 +34,6 @@ var projectByFilePath: { [filePath: string]: Project } = {}
 
 
 
-
-
-/** We are loading the project from file system.
-    This might not match what we have in the editor memory, so query those as well
-*/
-export function cacheAndCreateProject(projectFile: tsconfig.TypeScriptProjectFileDetails) {
-    var project = projectByProjectFilePath[projectFile.projectFilePath] = new Project(projectFile);
-    projectFile.project.files.forEach((file) => projectByFilePath[file] = project);
-
-    // query the parent for unsaved changes
-    // We do this lazily
-    // TODO
-    // queryParent.getUpdatedTextForUnsavedEditors({})
-    //     .then(resp=> {
-    //         resp.editors.forEach(e=> {
-    //             consistentPath(e);
-    //             project.languageServiceHost.updateScript(e.filePath, e.text);
-    //         });
-    //     });
-
-    watchProjectFileIfNotDoingItAlready(projectFile.projectFilePath);
-
-    return project;
-}
-
-/** Looks into the cache and if not found caches it */
-export function getOrCreateProject(filePath: string) {
-
-    // For transform files we check for the file with .ts extension in cache
-    if (tsconfig.endsWith(filePath, '.tst')) {
-        filePath = filePath + '.ts';
-    }
-
-    filePath = fsu.consistentPath(filePath);
-    if (projectByFilePath[filePath]) {
-        // we are in good shape
-        return projectByFilePath[filePath];
-    }
-    else {
-        // We are in a bad shape. Why didn't we know of this file before?
-        // Even if we find the projectFile we should invalidate it.
-        var projectFile = getProjectFileFromDisk(filePath);
-        var project = cacheAndCreateProject(projectFile);
-        return project;
-    }
-}
-
-
 export interface SoftResetQuery {
     filePath: string;
     text: string;
@@ -113,6 +65,40 @@ export function resetCache(query: SoftResetQuery) {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////// NEW CODE //////////////////////////////////////////
+
+
+/** Create a project from a project file */
+export function cacheAndCreateProject(projectFile: tsconfig.TypeScriptProjectFileDetails) {
+    var project = projectByProjectFilePath[projectFile.projectFilePath] = new Project(projectFile);
+    projectFile.project.files.forEach((file) => projectByFilePath[file] = project);
+
+    // Update the language service host for any unsaved changes
+    getOpenFiles().forEach(e=> {
+        project.languageServiceHost.updateScript(e.config.filePath, e.getContents());
+    });
+
+    watchProjectFileIfNotDoingItAlready(projectFile.projectFilePath);
+
+    return project;
+}
+
+
+/** Looks into the cache and if not found caches it */
+export function getOrCreateProject(filePath: string) {
+
+    filePath = fsu.consistentPath(filePath);
+    if (projectByFilePath[filePath]) {
+        // we are in good shape
+        return projectByFilePath[filePath];
+    }
+    else {
+        // We are in a bad shape. Why didn't we know of this file before?
+        // Even if we find the projectFile we should invalidate it.
+        var projectFile = getProjectFileFromDisk(filePath);
+        var project = cacheAndCreateProject(projectFile);
+        return project;
+    }
+}
 
 /**
  * Project file error reporting

@@ -4,11 +4,10 @@ import fsu = require('../utils/fsu');
 import fs = require('fs');
 import chokidar = require('chokidar');
 
-// TODO: support files not on disk
 /**
- * Loads a file from disk or keeps it in memory 
+ * Loads a file from disk
  * watches it on fs and then if it changes sends the new content to the client
- * File is *always* saved to cache for recovery
+ * TODO: File is *always* saved to cache for recovery
  * 
  * Have a model like code mirror ... just use lines at all places ... till we actually write to disk
  */
