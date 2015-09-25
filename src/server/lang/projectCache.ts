@@ -23,6 +23,9 @@ export function consistentPath(query: FilePathQuery) {
 //////////////// MAINTAIN A HOT CACHE TO DECREASE FILE LOOKUPS /////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * for project only
+ */
 var projectByProjectFilePath: { [projectFilePath: string]: Project } = {}
 
 /**
@@ -31,8 +34,6 @@ var projectByProjectFilePath: { [projectFilePath: string]: Project } = {}
  * 	Or any source ts file path
  */
 var projectByFilePath: { [filePath: string]: Project } = {}
-
-
 
 export interface SoftResetQuery {
     filePath: string;

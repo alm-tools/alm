@@ -56,14 +56,14 @@ export class StatusBar extends BaseComponent<Props, State>{
         
         return <div style={[styles.statusBar,csx.horizontal,csx.center]}>
             {/* Left sections */}
-            <span style={styles.statusBarSection}>🌹</span> 
+            <span style={[styles.statusBarSection, styles.noSelect]}>🌹</span> 
             <span style={styles.statusBarSection}>{activeProject}</span>
             
             {/* seperator */}
             <span style={csx.flex}></span>
             
             {/* Right sections */}
-            <span style={styles.statusBarSection}>
+            <span style={[styles.statusBarSection, styles.hand]}>
                 {errorCount.length} ⛔
             </span> 
             

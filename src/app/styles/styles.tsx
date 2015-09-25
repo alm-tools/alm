@@ -78,3 +78,11 @@ export let statusBarSection = {
     paddingLeft: '3px',
     paddingRight: '3px',
 }
+
+export var noSelect = { 
+    userSelect: 'none'
+}
+
+export let hand = csx.extend(noSelect, {
+    cursor: 'pointer',
+})
