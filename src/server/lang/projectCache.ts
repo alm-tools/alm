@@ -3,7 +3,7 @@ import path = require("path");
 import tsconfig = require("./core/tsconfig");
 import {Project, languageServiceHost} from "./core/project";
 import * as fsu from "../utils/fsu";
-import {getOpenFile} from "../disk/fileModelCache";
+import {getOpenFiles} from "../disk/fileModelCache";
 import {setErrorsForFilePath} from "./errorsCache";
 
 /** utility interface **/
@@ -122,10 +122,10 @@ function reportProjectFileErrors(ex:Error, filePath: string){
     if (ex.message === tsconfig.errors.GET_PROJECT_JSON_PARSE_FAILED
         || ex.message === tsconfig.errors.GET_PROJECT_PROJECT_FILE_INVALID_OPTIONS
         || ex.message === tsconfig.errors.GET_PROJECT_GLOB_EXPAND_FAILED) {
-        let details = ex.details;
+        let details:tsconfig.ProjectFileErrorDetails = ex.details;
         setErrorsForFilePath({
             filePath: details.projectFilePath,
-            errors: [ex.message + details]
+            errors: [ex.message + ex.details.errorMessage]
         });
         // Watch this project file to see if user fixes errors
         watchProjectFileIfNotDoingItAlready(details.projectFilePath);
@@ -197,7 +197,6 @@ export function getProjectFileFromDisk(filePath: string): tsconfig.TypeScriptPro
                 return tsconfig.getDefaultInMemoryProject(filePath);
             }
             else {
-                let details: tsconfig.GET_PROJECT_NO_PROJECT_FOUND_Details = ex.details;
                 setErrorsForFilePath({
                     filePath: filePath,
                     errors: [
@@ -220,10 +219,10 @@ export function getProjectFileFromDisk(filePath: string): tsconfig.TypeScriptPro
 import * as flm from "../workers/fileListing/fileListingMaster";
 flm.filePathsUpdated.on(function (data) {
     let tsconfigs = data.filePaths.filter(t=> t.endsWith('tsconfig.json'));
-    let local = tsconfigs.filter(t=> !t.includes('node_modules'));
-    local.forEach(fig => {
+    let locals = tsconfigs.filter(t=> !t.includes('node_modules'));
+    locals.forEach(fig => {
         if (!projectByProjectFilePath[fig]){
-            getProjectFileFromDisk(fig);
+             cacheAndCreateProject(getProjectFileFromDisk(fig));
         }
     });
 })

@@ -33,8 +33,8 @@ export function parse<T>(str: string): {
         let beforeLines = splitlines(content.substr(0, e.at));
         
         let at = {
-            line: beforeLines.length,
-            ch: beforeLines[beforeLines.length - 1].length
+            line: Math.max(beforeLines.length - 1, 0),
+            ch: Math.max(beforeLines[beforeLines.length - 1].length - 1, 0)
         };
 
         return {
@@ -61,11 +61,17 @@ function splitlines(string: string) { return string.split(/\r\n?|\n/); };
 
 export interface ParseError {
     message: string;
-    at: { line: number; ch: number };
+    at: { 
+        /** zero based */
+        line: number; 
+        /** zero based */
+        ch: number 
+    };
 }
 
 /**
  * https://github.com/douglascrockford/JSON-js/blob/master/json_parse.js
+ * AS IT IS. ONLY MODIFIED WITH TYPE ASSERTSIONS / ANNOTATIONS
  */
 var json_parse:any = (function () {
     "use strict";

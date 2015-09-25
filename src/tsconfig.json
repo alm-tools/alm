@@ -88,7 +88,6 @@
         "./typings/serve-static/serve-static.d.ts",
         "./typings/socket.io-client/socket.io-client.d.ts",
         "./typings/socket.io/socket.io.d.ts",
-        "./typings/strip-bom.d.ts",
         "./typings/tsd.d.ts",
         "./typings/v8promise.d.ts",
         "./typings/v8string.d.ts",

@@ -1,8 +1,8 @@
 import * as fsu from "../../utils/fsu";
 import ts = require('ntypescript');
+import * as json from "../../../common/json";
 
 import simpleValidator = require('./simpleValidator');
-import stripBom = require('strip-bom');
 var types = simpleValidator.types;
 
 // Most compiler options come from require('typescript').CompilerOptions, but
@@ -169,24 +169,12 @@ export var errors = {
     CREATE_FILE_MUST_EXIST: 'The Typescript file must exist on disk in order to create a project',
     CREATE_PROJECT_ALREADY_EXISTS: 'Project file already exists',
 };
-export interface GET_PROJECT_JSON_PARSE_FAILED_Details {
-    projectFilePath: string;
-    error: Error;
-}
-export interface GET_PROJECT_PROJECT_FILE_INVALID_OPTIONS_Details {
+export interface ProjectFileErrorDetails {
     projectFilePath: string;
     errorMessage: string;
 }
-export interface GET_PROJECT_GLOB_EXPAND_FAILED_Details {
-    glob: string[];
-    projectFilePath: string;
-    errorMessage: string;
-}
-export interface GET_PROJECT_NO_PROJECT_FOUND_Details {
-    projectFilePath: string;
-    errorMessage: string;
-}
-function errorWithDetails<T>(error: Error, details: T): Error {
+
+function errorWithDetails(error: Error, details: ProjectFileErrorDetails): Error {
     error.details = details;
     return error;
 }
@@ -356,7 +344,7 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptProjectFileDeta
     catch (e) {
         let err: Error = e;
         if (err.message == "not found") {
-            throw errorWithDetails<GET_PROJECT_NO_PROJECT_FOUND_Details>(
+            throw errorWithDetails(
                 new Error(errors.GET_PROJECT_NO_PROJECT_FOUND), { projectFilePath: fsu.consistentPath(pathOrSrcFile), errorMessage: err.message });
         }
     }
@@ -370,12 +358,15 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptProjectFileDeta
     } catch (ex) {
         throw new Error(errors.GET_PROJECT_FAILED_TO_OPEN_PROJECT_FILE);
     }
-    try {
-        projectSpec = JSON.parse(stripBom(projectFileTextContent));
-    } catch (ex) {
-        throw errorWithDetails<GET_PROJECT_JSON_PARSE_FAILED_Details>(
-            new Error(errors.GET_PROJECT_JSON_PARSE_FAILED), { projectFilePath: fsu.consistentPath(projectFile), error: ex.message });
+    let res = json.parse(projectFileTextContent);
+    if (res.data) {
+        projectSpec = res.data;
     }
+    else {
+        throw errorWithDetails(
+            new Error(errors.GET_PROJECT_JSON_PARSE_FAILED), { projectFilePath: fsu.consistentPath(projectFile), errorMessage: res.error.message });
+    }
+    
 
     // Setup default project options
     if (!projectSpec.compilerOptions) projectSpec.compilerOptions = {};
@@ -394,9 +385,9 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptProjectFileDeta
             projectSpec.files = expand({ filter: 'isFile', cwd: cwdPath }, toExpand);
         }
         catch (ex) {
-            throw errorWithDetails<GET_PROJECT_GLOB_EXPAND_FAILED_Details>(
+            throw errorWithDetails(
                 new Error(errors.GET_PROJECT_GLOB_EXPAND_FAILED),
-                { glob: projectSpec.filesGlob, projectFilePath: fsu.consistentPath(projectFile), errorMessage: ex.message });
+                { projectFilePath: fsu.consistentPath(projectFile), errorMessage: ex.message });
         }
     }
     if (projectSpec.filesGlob) { // for filesGlob we keep the files in sync
@@ -443,7 +434,7 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptProjectFileDeta
     // Validate the raw compiler options before converting them to TS compiler options
     var validationResult = validator.validate(projectSpec.compilerOptions);
     if (validationResult.errorMessage) {
-        throw errorWithDetails<GET_PROJECT_PROJECT_FILE_INVALID_OPTIONS_Details>(
+        throw errorWithDetails(
             new Error(errors.GET_PROJECT_PROJECT_FILE_INVALID_OPTIONS),
             { projectFilePath: fsu.consistentPath(projectFile), errorMessage: validationResult.errorMessage }
         );
