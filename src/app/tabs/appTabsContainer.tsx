@@ -13,10 +13,11 @@ import {server} from "../../socket/socketClient";
 import {rangeLimited} from "../../common/utils";
 import {statusBar} from "../statusBar";
 
-import {setActiveProject} from "../../state/state";
+import {setActiveProject,StoreState} from "../../state/state";
+import {connect} from "react-redux";
 
 export interface Props extends React.Props<any> {
-
+    errorsExpanded?: boolean
 }
 
 export interface State {
@@ -24,6 +25,9 @@ export interface State {
     tabs?: tab.TabInstance[];
 }
 
+@connect((state: StoreState): Props => {
+    return { errorsExpanded: state.errorsExpanded };
+})
 @ui.Radium
 export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
@@ -36,6 +40,15 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         };
         
         this.setupDemoTab();
+    }
+
+    componentWillReceiveProps(nextProps: Props) {
+        setTimeout(() => {
+            let comp = this.getSelectedComponent();
+            if (comp) {
+                comp.focus();
+            }
+        });
     }
 
     refs: { [string: string]: tab.Component; }

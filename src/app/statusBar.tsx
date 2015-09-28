@@ -24,7 +24,7 @@ export interface State {
  */
 export var statusBar: StatusBar;
 
-@connect(function(state: StoreState):Props {
+@connect((state: StoreState): Props => {
     return { errorsExpanded: state.errorsExpanded, activeProject: state.activeProject };
 })
 @ui.Radium
