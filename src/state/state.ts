@@ -97,3 +97,7 @@ export function collapseErrors() {
         collapseErrors: true
     });
 }
+
+
+/// imagine a function 
+// give an object {type:string,payload:T,handler:(ST,T)=>ST} returns State->State
