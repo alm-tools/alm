@@ -96,12 +96,14 @@ export namespace errorsPanel {
         color: '#999',
         fontFamily: codeFont.fontFamily,
         padding: '6px',
+        borderTop: '2px solid grey'
     }
     
     export let filePath = {
         fontSize: '1rem',
         fontWeight: 'bold',
         padding: '3px',
+        cursor: hand.cursor,
     }
     
     export let perFileList = {
@@ -110,7 +112,13 @@ export namespace errorsPanel {
     }
     
     export let errorMessage = {
+        padding: '3px',
+        paddingBottom: '6px'
+    }
+    
+    export let errorPreview = {
+        padding: '3px',
+        background: 'black',
         border: '2px solid #999',
-        padding: '3px'
     }
 }

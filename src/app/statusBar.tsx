@@ -67,13 +67,14 @@ export class StatusBar extends BaseComponent<Props, State>{
                     let errors = 
                         this.state.errorsByFilePath[filePath]
                             .map((e, j) => (
-                                <div key={`${i}:${j}`} style={[styles.hand,styles.errorsPanel.errorMessage]} onClick={()=>this.openFile(filePath,e)}>
-                                        {e}
+                                <div key={`${i}:${j}`} style={[styles.hand]} onClick={()=>this.openFile(filePath,e)}>
+                                        <div style={[styles.hand,styles.errorsPanel.errorMessage]}>{e}</div>
+                                        {/*<div style={styles.errorsPanel.errorPreview}>{e}</div>*/}
                                 </div>
                             ));
                     
                     return <div key={i}>
-                        <div style={styles.errorsPanel.filePath}>> {filePath}</div>
+                        <div style={styles.errorsPanel.filePath} onClick={()=>this.openFile(filePath)}> {'>'} {filePath}</div>
                         
                         <div style={styles.errorsPanel.perFileList}>
                             {errors}
@@ -114,7 +115,7 @@ export class StatusBar extends BaseComponent<Props, State>{
         }
     }
     
-    openFile = (filePath:string,error:string) => { 
+    openFile = (filePath: string, error?: string) => { 
         // TODO:
         console.log(filePath, error);
     }
