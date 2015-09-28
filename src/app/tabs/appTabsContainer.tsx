@@ -13,6 +13,8 @@ import {server} from "../../socket/socketClient";
 import {rangeLimited} from "../../common/utils";
 import {statusBar} from "../statusBar";
 
+import {setActiveProject} from "../../state/state";
+
 export interface Props extends React.Props<any> {
 
 }
@@ -161,10 +163,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             let component = this.getSelectedComponent();
             if (component) {
                 component.focus();
-                statusBar.setActiveProject(component.props.url);
+                setActiveProject(component.props.url);
             }
             else {
-                statusBar.setActiveProject('');
+                setActiveProject('');
             }
         });
     }
@@ -177,7 +179,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     
     closeTab(index: number) {
         // Always clear the status bar
-        statusBar.setActiveProject('');
+        setActiveProject('');
         
         // If no tabs
         if (!this.state.tabs.length) {

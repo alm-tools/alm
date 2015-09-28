@@ -7,13 +7,16 @@ import {BaseComponent} from "./ui";
 import * as ui from "./ui";
 import {cast,server} from "../socket/socketClient";
 
-export interface Props extends React.Props<any> {
+import {connect} from "react-redux";
+import {StoreState,expandErrors,collapseErrors} from "../state/state";
 
+export interface Props extends React.Props<any> {
+    // from react-redux ... connected below
+    errorsExpanded?: boolean; 
+    activeProject?: string;
 }
 export interface State {
-    activeProject?: string;
     errorsByFilePath?: { [filePath: string]: string[] };
-    errorsExpanded?: boolean;
 }
 
 /**
@@ -21,12 +24,14 @@ export interface State {
  */
 export var statusBar: StatusBar;
 
+@connect(function(state: StoreState):Props {
+    return { errorsExpanded: state.statusBar.errorsExpanded, activeProject: state.statusBar.activeProject };
+})
 @ui.Radium
 export class StatusBar extends BaseComponent<Props, State>{
     constructor(props:Props){
         super(props);
         this.state = {
-            activeProject: '',
             errorsByFilePath: {}
         }
     }
@@ -42,21 +47,17 @@ export class StatusBar extends BaseComponent<Props, State>{
         });
     }
     
-    setActiveProject(activeProject: string){
-        this.setState({activeProject});
-    }
-    
     setErrorsInFile(filePath:string,error:string[]){
         this.state.errorsByFilePath[filePath] = error;
     }
     
     render(){
         
-        let activeProject = this.state.activeProject;
+        let activeProject = this.props.activeProject;
         let errorCount = utils.selectMany(Object.keys(this.state.errorsByFilePath).map((k)=>this.state.errorsByFilePath[k]));
         
         let errorPanel = null;
-        if (this.state.errorsExpanded){
+        if (this.props.errorsExpanded){
             errorPanel = <div style={styles.errorsPanel.main}>
             {
                 Object.keys(this.state.errorsByFilePath)
@@ -105,8 +106,12 @@ export class StatusBar extends BaseComponent<Props, State>{
     }
     
     toggleErrors = () => {
-        this.state.errorsExpanded = !this.state.errorsExpanded;
-        this.setState({ errorsExpanded: this.state.errorsExpanded });
+        if (this.props.errorsExpanded){
+            collapseErrors();
+        }
+        else{
+            expandErrors();
+        }
     }
     
     openFile = (filePath:string,error:string) => { 

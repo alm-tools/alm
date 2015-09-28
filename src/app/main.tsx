@@ -1,8 +1,14 @@
 import {Root} from "./root";
 import * as commands from "./commands/commands";
 import * as React from "react";
+import { Provider } from 'react-redux';
+import {store} from "../state/state";
+
 import {server} from "../socket/socketClient";
 var Modal = require('react-modal');
+
+
+// prevent backspace
 import {preventBackspaceNav} from "./utils/preventBackspaceNav";
 preventBackspaceNav();
 
@@ -18,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Modal.injectCSS();
     
     // Render the main app
-    React.render(<Root />, appElement);
+    React.render(<Provider store={store}>{() => <Root />}</Provider>, appElement);
     
     // Register commands
     commands.register();
