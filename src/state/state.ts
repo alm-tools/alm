@@ -1,103 +1,31 @@
-import {combineReducers} from "redux";
-import {createStore} from "redux";
+import {SimpleRedux} from "./simpleRedux";
 
-/**
- * Status bar
- */
-
-interface StatusBarState {
+export interface StoreState {
     activeProject: string;
     errorsExpanded: boolean;
 }
-let initialStatusBarState = { activeProject: '', errorsExpanded: false };
+let initialStoreState = { activeProject: '', errorsExpanded: false };
 
-/** Needed by redux */
-interface Action { 
-    type: string;
-}
+let redux = new SimpleRedux<StoreState>(initialStoreState);
+export var store = redux.store;
 
-export var types = { 
-    setActiveProject: '',
-    expandErrors: '',
-    collapseErrors: '',
-}
-
-// make values same as keys
-Object.keys(types).map((key) => types[key] = key);
-
-interface SetActiveProjectAction extends Action {
-    activeProject: string;
-}
-
-interface ExpandErrorsAction extends Action {
-    expandErrors: boolean;
-}
-
-interface CollapseErrorsAction extends Action {
-    collapseErrors: boolean;
-}
-
-type StatusBarAction = SetActiveProjectAction & ExpandErrorsAction & CollapseErrorsAction;
-
-function statusBarReducer(state: StatusBarState = initialStatusBarState, action: StatusBarAction): StatusBarState {
-    switch (action.type) {
-        case types.setActiveProject:
-            return {
-                errorsExpanded: state.errorsExpanded,
-                activeProject: action.activeProject
-            };
-        case types.expandErrors: 
-            return {
-                errorsExpanded: true,
-                activeProject: action.activeProject
-            };
-        case types.collapseErrors:
-            return {
-                errorsExpanded: false,
-                activeProject: action.activeProject
-            };
-    }
-
-    return state;
-}
-    
-
-/**
- * Finally
- */
-export interface StoreState { 
-    statusBar: StatusBarState    
-}
-export let reducers = combineReducers({
-    statusBar: statusBarReducer
+export let setActiveProject = redux.add('setActiveProject', (state, payload: string) => {
+    return {
+        errorsExpanded: state.errorsExpanded,
+        activeProject: payload
+    };
 });
 
+export let expandErrors = redux.add('expandErrors', (state, payload: {  }) => {
+    return {
+        errorsExpanded: true,
+        activeProject: state.activeProject
+    };
+});
 
-export let store = createStore(reducers);
-let dispatch = store.dispatch;
-
-
-export function setActiveProject(activeProject: string) {
-    dispatch(<SetActiveProjectAction>{
-        type: types.setActiveProject,
-        activeProject
-    });
-}
-
-export function expandErrors() {
-    dispatch(<ExpandErrorsAction>{
-        type: types.expandErrors,
-        expandErrors: true
-    });
-}
-
-export function collapseErrors() {
-    dispatch(<CollapseErrorsAction>{
-        type: types.collapseErrors,
-        collapseErrors: true
-    });
-}
-
-
-/// imagine a function 
-// give an object {type:string,payload:T,handler:(ST,T)=>ST} returns State->State
+export let collapseErrors = redux.add('collapseErrors', (state, payload: {  }) => {
+    return {
+        errorsExpanded: false,
+        activeProject: state.activeProject
+    };
+});

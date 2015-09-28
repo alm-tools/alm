@@ -25,7 +25,7 @@ export interface State {
 export var statusBar: StatusBar;
 
 @connect(function(state: StoreState):Props {
-    return { errorsExpanded: state.statusBar.errorsExpanded, activeProject: state.statusBar.activeProject };
+    return { errorsExpanded: state.errorsExpanded, activeProject: state.activeProject };
 })
 @ui.Radium
 export class StatusBar extends BaseComponent<Props, State>{
@@ -107,10 +107,10 @@ export class StatusBar extends BaseComponent<Props, State>{
     
     toggleErrors = () => {
         if (this.props.errorsExpanded){
-            collapseErrors();
+            collapseErrors({});
         }
         else{
-            expandErrors();
+            expandErrors({});
         }
     }
     
