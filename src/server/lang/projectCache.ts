@@ -112,7 +112,7 @@ function reportProjectFileErrors(ex:Error, filePath: string){
         let details:tsconfig.ProjectFileErrorDetails = ex.details;
         setErrorsForFilePath({
             filePath: details.projectFilePath,
-            errors: [ex.message + ex.details.errorMessage]
+            errors: [`${ex.message} : ${ex.details.errorMessage}`]
         });
         // Watch this project file to see if user fixes errors
         watchProjectFileIfNotDoingItAlready(details.projectFilePath);
