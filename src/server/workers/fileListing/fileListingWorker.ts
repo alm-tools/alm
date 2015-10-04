@@ -28,25 +28,25 @@ namespace Worker {
         directoryUnderWatch = q.directory;
 
         var sendNewFileList = debounce((function () {
-            var mg = new glob.Glob('**', { cwd: q.directory }, (e, newList) => {
+            var mg = new glob.Glob('**', { cwd: q.directory, stat: true }, (e, newList) => {
                 if (e) {
                     console.error('Globbing error:', e);
                 }
-                
+
                 /** Filter out directories */
                 listing = newList.filter(nl=> {
                     let p = path.resolve(q.directory,nl);
                     return mg.statCache[p] && mg.statCache[p].isFile()
                 });
-                
+
                 master.fileListChanged({ fileList: listing });
             });
         }),500);
-        
+
         sendNewFileList();
 
         let watcher = chokidar.watch(directoryUnderWatch);
-        
+
         // Just the ones that impact file listing
         // https://github.com/paulmillr/chokidar#methods--events
         watcher.on('add', sendNewFileList);
