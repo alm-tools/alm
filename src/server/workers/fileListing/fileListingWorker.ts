@@ -28,7 +28,7 @@ namespace Worker {
         directoryUnderWatch = q.directory;
 
         var sendNewFileList = debounce((function () {
-            var mg = new glob.Glob('**', { cwd: q.directory, stat: true }, (e, newList) => {
+            var mg = new glob.Glob('**', { cwd: q.directory }, (e, newList) => {
                 if (e) {
                     console.error('Globbing error:', e);
                 }
@@ -36,7 +36,7 @@ namespace Worker {
                 /** Filter out directories */
                 listing = newList.filter(nl=> {
                     let p = path.resolve(q.directory,nl);
-                    return mg.statCache[p] && mg.statCache[p].isFile()
+                    return mg.cache[p] && mg.cache[p] == 'FILE';
                 });
 
                 master.fileListChanged({ fileList: listing });
