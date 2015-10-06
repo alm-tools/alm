@@ -41,6 +41,7 @@ console.log(CodeMirror.findModeByFileName('asdf/foo.js'))
 import React = require('react');
 import onresize = require('onresize');
 import * as styles from "../styles/styles";
+import * as csx from "csx";
 
 interface Props extends React.Props<any> {
     onEdit: (edit: CodeEdit) => any;
@@ -107,8 +108,7 @@ export class CodeEditor extends React.Component<Props,any>{
 		this.codeMirror.on('focus', this.focusChanged.bind(this, true));
 		this.codeMirror.on('blur', this.focusChanged.bind(this, false));
 		
-        this.resizehandler = onresize.on(() => this.reloadParentHeight());
-        setTimeout(() => this.reloadParentHeight(),500);
+        this.resizehandler = onresize.on(() => this.refresh());
 	}
 	
 	componentWillUnmount () {
@@ -133,20 +133,18 @@ export class CodeEditor extends React.Component<Props,any>{
 		return this.codeMirror;
 	}
 
-	/** Set height from parent. Using CSS for automatically doing this results in very poor performance */ 
-    private reloadParentHeight() {
-        let parent: any = React.findDOMNode(this).parentNode;
-        let [height, width] = [parent.offsetHeight, parent.offsetWidth];
-        this.codeMirror.setSize(width, height);
-    }
-	
 	focus = () => {
 		if (this.codeMirror) {
 			this.codeMirror.focus();
-            this.codeMirror.refresh(); // Needed to resize gutters correctly
-			this.reloadParentHeight(); // Resize the editor overall
+            this.refresh();
 		}
 	}
+    
+    private refresh(){
+        if (this.codeMirror) {
+            this.codeMirror.refresh(); // Needed to resize gutters correctly
+        }
+    }
 	
 	focusChanged = (focused) => {
 		this.setState({
@@ -197,7 +195,7 @@ export class CodeEditor extends React.Component<Props,any>{
 			className += ' ReactCodeMirror--focused';
 		}
 		return (
-			<div className={className}>
+			<div className={className} style={csx.extend(csx.vertical,csx.flex)}>
 				<textarea ref="textarea" name={this.props.path} autoComplete={false} />
 			</div>
 		);

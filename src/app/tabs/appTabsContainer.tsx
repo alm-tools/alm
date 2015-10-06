@@ -129,7 +129,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
             let Component = getComponentByUrl(t.url);
             
-            return <div key={t.id} style={[style,csx.flex]}>
+            return <div className="app-tabs-container-component-div" key={t.id} style={[csx.flex,csx.flexRoot,style]}>
                 <Component ref={t.id} url={t.url} onSavedChanged={(saved)=>{this.onSavedChanged(saved,i)}}/>
             </div>
         });
