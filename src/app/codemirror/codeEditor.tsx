@@ -137,10 +137,11 @@ export class CodeEditor extends React.Component<Props,any>{
 		if (this.codeMirror) {
 			this.codeMirror.focus();
             this.refresh();
+            setTimeout(this.refresh,500);
 		}
 	}
     
-    private refresh(){
+    private refresh = () => {
         if (this.codeMirror) {
             this.codeMirror.refresh(); // Needed to resize gutters correctly
         }
