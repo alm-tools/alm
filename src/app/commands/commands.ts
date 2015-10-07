@@ -1,6 +1,6 @@
-// for keyboard shortcuts watch out for: 
+// for keyboard shortcuts watch out for:
 // https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts
-// 
+//
 // c9: means keyboard shortcut is consistent with cloud9 ide so don't change these
 
 import * as Mousetrap from "mousetrap";
@@ -20,7 +20,7 @@ export var onCloseTab = new events.TypedEvent<{}>();
 export var onSaveTab = new events.TypedEvent<{}>();
 
 export function register() {
-    
+
     /** Tabs */
     Mousetrap.bindGlobal('alt+n', function() {
         nextTab.emit({});
@@ -29,7 +29,7 @@ export function register() {
     Mousetrap.bindGlobal('alt+p', function() {
         prevTab.emit({});
         return false;
-    });    
+    });
     Mousetrap.bindGlobal('alt+w', function() { // c9
         onCloseTab.emit({});
         return false;
@@ -38,7 +38,7 @@ export function register() {
         onSaveTab.emit({});
         return false;
     });
-    
+
     /**
      * OmniSearch
      */
