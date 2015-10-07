@@ -22,11 +22,11 @@ export var onSaveTab = new events.TypedEvent<{}>();
 export function register() {
 
     /** Tabs */
-    Mousetrap.bindGlobal('alt+n', function() {
+    Mousetrap.bindGlobal('alt+k', function() {
         nextTab.emit({});
         return false;
     });
-    Mousetrap.bindGlobal('alt+p', function() {
+    Mousetrap.bindGlobal('alt+j', function() {
         prevTab.emit({});
         return false;
     });
