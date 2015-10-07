@@ -1,0 +1,8 @@
+{
+    "projects": [
+        {
+            "name": "main",
+            "tsconfig": "./src/tsconfig.json"
+        }
+    ]
+}
