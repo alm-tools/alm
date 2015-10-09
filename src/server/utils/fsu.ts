@@ -49,3 +49,5 @@ export function writeFile(filePath: string, content: string) {
     mkdirp.sync(path.dirname(filePath));
     fs.writeFileSync(filePath, content, 'utf8');
 }
+
+export var existsSync = (filePath: string) => fs.existsSync(filePath);

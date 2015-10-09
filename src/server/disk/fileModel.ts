@@ -3,26 +3,28 @@ import os = require('os');
 import fsu = require('../utils/fsu');
 import fs = require('fs');
 import chokidar = require('chokidar');
+import {TypedEvent} from "../../common/events";
 
 /**
  * Loads a file from disk
  * watches it on fs and then if it changes sends the new content to the client
  * TODO: File is *always* saved to cache for recovery
- * 
+ *
  * Have a model like code mirror ... just use lines at all places ... till we actually write to disk
  */
 export class FileModel {
     /** either the os default or whatever was read from the file */
     private newLine: string;
     private text: string[] = [];
-    
+
     /** last known state of the file system text */
     private savedText: string[] = [];
-    
+
+    /** New contents is only sent if the file has no pending changes. Otherwise it is silently ignored */
+    public onSavedFileChangedOnDisk = new TypedEvent<{ contents: string }>();
+
     constructor(public config: {
         filePath: string;
-        /** New contents is only sent if the file has no pending changes. Otherwise it is silently ignored */
-        savedFileChangedOnDisk: (contents: string) => any;
     }) {
         let contents = fsu.readFile(config.filePath);
         this.newLine = this.getExpectedNewline(contents);
@@ -75,12 +77,12 @@ export class FileModel {
     fileListener = () => {
         let contents = fsu.readFile(this.config.filePath);
         let text = this.splitlines(contents);
-        
+
         if (this.saved()) {
             this.text = text;
             this.savedText = this.text.slice();
-            
-            this.config.savedFileChangedOnDisk(this.getContents());
+
+            this.onSavedFileChangedOnDisk.emit({ contents: this.getContents() });
         }
     };
 
@@ -94,10 +96,10 @@ export class FileModel {
         this.fsWatcher.close();
         this.fsWatcher = null;
     }
-    
+
     /** splitLinesAuto from codemirror */
     private splitlines(string: string) { return string.split(/\r\n?|\n/); };
-    
+
     /** Couldn't find one online. Hopefully this is good enough */
     private getExpectedNewline(str: string) {
         let CR = str.match(/\r/g);

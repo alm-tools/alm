@@ -13,10 +13,10 @@ export function getOrCreateOpenFile(filePath: string) {
     var file = getOpenFile(filePath);
     if (!file) {
         file = new FileModel({
-            filePath: filePath, 
-            savedFileChangedOnDisk: (contents) => {
-                savedFileChangedOnDisk.emit({ filePath, contents });
-            }
+            filePath: filePath
+        });
+        file.onSavedFileChangedOnDisk.on((evt)=>{
+            savedFileChangedOnDisk.emit({ filePath, contents: evt.contents });
         });
         openFiles.push(file);
     }

@@ -6,6 +6,8 @@ import * as path from "path";
 import * as fsu from "../utils/fsu";
 import * as flm from "../workers/fileListing/fileListingMaster";
 import * as wd from "../disk/workingDir";
+import * as fmc from "../disk/fileModelCache";
+import * as tsconfig from "./core/tsconfig";
 
 import simpleValidator = require('./core/simpleValidator');
 var types = simpleValidator.types;
@@ -69,7 +71,7 @@ export function getDefaultProject(): Promise<Project> {
     }
 
     // otherwise :
-    return flm.filePathsUpdated.current().then((list)=>{
+    return flm.filePathsUpdated.current().then((list) => {
         // Detect some tsconfig.json
         // Return!
         let tsconfigs = list.filePaths.filter(t=> t.endsWith('tsconfig.json'));
@@ -84,7 +86,7 @@ export function getDefaultProject(): Promise<Project> {
             let tsconfig = tsconfigs[0];
 
             return {
-                name:'auto',
+                name: 'auto',
                 tsconfig
             };
         }
@@ -93,3 +95,21 @@ export function getDefaultProject(): Promise<Project> {
         throw new Error('No tsconfig.json found!');
     });
 }
+
+/**
+ * The currently active project
+ */
+let currentProject: Project;
+
+/**
+ * As soon as we get a new file listing ... check if tsb.json is there. If it is start watching / parsing it
+ */
+flm.filePathsUpdated.on(function(data) {
+    let expectedLocation = path.resolve(process.cwd(), "tsb.json");
+
+    if (fsu.existsSync(expectedLocation)) {
+        let tsbFile = fmc.getOpenFile(expectedLocation);
+    
+    }
+
+});
