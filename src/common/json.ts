@@ -1,15 +1,17 @@
-/**
- * Over JSON.parse: 
- * * allows BOM
- * * allows // comments 
- * * provides a typed error detail on parse error
- */
-export function parse<T>(str: string): {
+export interface ParsedData<T> {
     /** only if valid */
     data?: T;
     /** only if error */
     error?: ParseError;
-} {
+}
+
+/**
+ * Over JSON.parse:
+ * * allows BOM
+ * * allows // comments
+ * * provides a typed error detail on parse error
+ */
+export function parse<T>(str: string): ParsedData<T> {
     str = stripBOM(str);
 
     let lines = splitlines(str);
@@ -31,7 +33,7 @@ export function parse<T>(str: string): {
     catch (e) {
         let error:{message:string;at:number} = e;
         let beforeLines = splitlines(content.substr(0, e.at));
-        
+
         let at = {
             line: Math.max(beforeLines.length - 1, 0),
             ch: Math.max(beforeLines[beforeLines.length - 1].length - 1, 0)
@@ -61,11 +63,11 @@ function splitlines(string: string) { return string.split(/\r\n?|\n/); };
 
 export interface ParseError {
     message: string;
-    at: { 
+    at: {
         /** zero based */
-        line: number; 
+        line: number;
         /** zero based */
-        ch: number 
+        ch: number
     };
 }
 
@@ -325,8 +327,8 @@ var json_parse:any = (function () {
         case '-':
             return number();
         default:
-            return ch >= '0' && ch <= '9' 
-                ? number() 
+            return ch >= '0' && ch <= '9'
+                ? number()
                 : word();
         }
     };

@@ -34,10 +34,33 @@ export class TypedEvent<T> {
 
     emit = (event: T) => {
         this.listeners.forEach((listener) => listener(event));
+
+        this._last = event;
+        while (this._currentQueue.length) {
+            let item = this._currentQueue.pop();
+            item.resolve(event);
+        }
     }
-    
+
     pipe = (te: TypedEvent<T>): Disposable => {
         return this.on((e)=>te.emit(e));
+    }
+
+    /**
+     * A promise that is resolved on first event
+     * ... or immediately with the last value
+     */
+    private _currentQueue:PromiseDeferred<T>[] = [];
+    private _last: T = null;
+    current = (): Promise<T> => {
+        if (this._last != null){
+            return Promise.resolve(this._last);
+        }
+        else {
+            let p = Promise.defer();
+            this._currentQueue.push(p);
+            return p.promise;
+        }
     }
 }
 
