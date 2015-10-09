@@ -65,7 +65,6 @@ export function getDefaultProject(): Promise<Project> {
 
     if (found.data && found.data.projects && found.data.projects[0]) {
         let first = found.data.projects[0];
-
         return Promise.resolve(found.data.projects[0]);
     }
 

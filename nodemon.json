@@ -1,3 +1,6 @@
 {
-    "ignore": ["src/app/*", "node_modules/codemirror/*"]
+    "ignore": [
+        "src/app/*",
+        "node_modules/codemirror/*"
+    ]
 }
