@@ -3,6 +3,10 @@
         {
             "name": "main",
             "tsconfig": "./src/tsconfig.json"
+        },
+        {
+            "name": "invalidconfig",
+            "tsconfig": "./test/error/tsconfigInvalidJson/tsconfig.json"
         }
     ]
 }
