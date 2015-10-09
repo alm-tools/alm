@@ -11,7 +11,6 @@ export interface FilePathQuery {
     filePath: string;
 }
 
-
 /** mutate and fix the filePath silently */
 export function consistentPath(query: FilePathQuery) {
     if (!query.filePath) return;
@@ -195,7 +194,7 @@ export function getProjectFileFromDisk(filePath: string): tsconfig.TypeScriptPro
         }
         else {
             reportProjectFileErrors(ex, filePath);
-            throw ex;    
+            throw ex;
         }
     }
 }
