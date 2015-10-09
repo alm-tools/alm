@@ -20,7 +20,10 @@ export class FileModel {
     /** last known state of the file system text */
     private savedText: string[] = [];
 
-    /** New contents is only sent if the file has no pending changes. Otherwise it is silently ignored */
+    /**
+     * New contents is only sent if the file has no pending changes. Otherwise it is silently ignored
+     * Always emit ... even if we are the ones that saved
+     */
     public onSavedFileChangedOnDisk = new TypedEvent<{ contents: string }>();
 
     constructor(public config: {

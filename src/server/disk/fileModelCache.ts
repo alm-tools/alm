@@ -15,7 +15,7 @@ export function getOrCreateOpenFile(filePath: string) {
         file = new FileModel({
             filePath: filePath
         });
-        file.onSavedFileChangedOnDisk.on((evt)=>{
+        file.onSavedFileChangedOnDisk.on((evt) => {
             savedFileChangedOnDisk.emit({ filePath, contents: evt.contents });
         });
         openFiles.push(file);
@@ -33,4 +33,8 @@ export function closeOpenFile(filePath: string) {
 
 export function getOpenFiles(): FileModel[] {
     return openFiles;
+}
+
+export function isFileOpen(filePath: string) {
+    return !!getOpenFile(filePath);
 }

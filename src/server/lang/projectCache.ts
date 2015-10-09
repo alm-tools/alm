@@ -198,17 +198,3 @@ export function getProjectFileFromDisk(filePath: string): tsconfig.TypeScriptPro
         }
     }
 }
-
-/**
- * On file listing updates check for new projects
- */
-import * as flm from "../workers/fileListing/fileListingMaster";
-flm.filePathsUpdated.on(function (data) {
-    let tsconfigs = data.filePaths.filter(t=> t.endsWith('tsconfig.json'));
-    let locals = tsconfigs.filter(t=> !t.includes('node_modules'));
-    locals.forEach(fig => {
-        if (!projectByProjectFilePath[fig]){
-             cacheAndCreateProject(getProjectFileFromDisk(fig));
-        }
-    });
-})
