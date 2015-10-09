@@ -12,7 +12,7 @@ import {StoreState,expandErrors,collapseErrors} from "../state/state";
 
 export interface Props extends React.Props<any> {
     // from react-redux ... connected below
-    errorsExpanded?: boolean; 
+    errorsExpanded?: boolean;
     activeProject?: string;
 }
 export interface State {
@@ -35,7 +35,7 @@ export class StatusBar extends BaseComponent<Props, State>{
             errorsByFilePath: {}
         }
     }
-    
+
     componentDidMount() {
         server.getErrors({}).then((details)=>{
             this.state.errorsByFilePath = details;
@@ -46,25 +46,26 @@ export class StatusBar extends BaseComponent<Props, State>{
             this.forceUpdate();
         });
     }
-    
+
     setErrorsInFile(filePath:string,error:string[]){
         this.state.errorsByFilePath[filePath] = error;
     }
-    
+
     render(){
-        
+
         let activeProject = this.props.activeProject;
-        let errorCount = utils.selectMany(Object.keys(this.state.errorsByFilePath).map((k)=>this.state.errorsByFilePath[k]));
-        
+        let errorCount = utils.selectMany(Object.keys(this.state.errorsByFilePath).map((k)=>this.state.errorsByFilePath[k])).length;
+
         let errorPanel = null;
         if (this.props.errorsExpanded){
             errorPanel = <div style={styles.errorsPanel.main}>
             {
+                errorCount?
                 Object.keys(this.state.errorsByFilePath)
                 .filter(filePath=>!!this.state.errorsByFilePath[filePath].length)
                 .map((filePath,i)=>{
-                    
-                    let errors = 
+
+                    let errors =
                         this.state.errorsByFilePath[filePath]
                             .map((e, j) => (
                                 <div key={`${i}:${j}`} style={[styles.hand]} onClick={()=>this.openFile(filePath,e)}>
@@ -72,40 +73,40 @@ export class StatusBar extends BaseComponent<Props, State>{
                                         {/*<div style={styles.errorsPanel.errorPreview}>{e}</div>*/}
                                 </div>
                             ));
-                    
+
                     return <div key={i}>
                         <div style={styles.errorsPanel.filePath} onClick={()=>this.openFile(filePath)}> {'>'} {filePath}</div>
-                        
+
                         <div style={styles.errorsPanel.perFileList}>
                             {errors}
                         </div>
                     </div>
-                })
+                }): <div>No Errors \u2665</div>
             }
             </div>
         }
-        
+
         return (
-            <div>            
+            <div>
                 {errorPanel}
                 <div style={[styles.statusBar,csx.horizontal,csx.center]}>
                     {/* Left sections */}
-                    <span style={[styles.statusBarSection, styles.noSelect]}>🌹</span> 
+                    <span style={[styles.statusBarSection, styles.noSelect]}>🌹</span>
                     <span style={styles.statusBarSection}>{activeProject}</span>
-                    
+
                     {/* seperator */}
                     <span style={csx.flex}></span>
-                    
+
                     {/* Right sections */}
                     <span style={[styles.statusBarSection, styles.hand, styles.noSelect]} onClick={this.toggleErrors}>
-                        {errorCount.length} ⛔
-                    </span> 
-                    
+                        {errorCount} ⛔
+                    </span>
+
                 </div>
             </div>
         );
     }
-    
+
     toggleErrors = () => {
         if (this.props.errorsExpanded){
             collapseErrors({});
@@ -114,8 +115,8 @@ export class StatusBar extends BaseComponent<Props, State>{
             expandErrors({});
         }
     }
-    
-    openFile = (filePath: string, error?: string) => { 
+
+    openFile = (filePath: string, error?: string) => {
         // TODO:
         console.log(filePath, error);
     }
