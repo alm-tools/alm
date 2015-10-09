@@ -14,14 +14,6 @@ import equal = require('deep-equal');
 import simpleValidator = require('./core/simpleValidator');
 var types = simpleValidator.types;
 
-interface ProjectJson {
-    name?: string;
-    /**
-     * Full path to tsconfig.json (including file name)
-     */
-    tsconfig: string;
-}
-
 interface TsbJson {
     projects: ProjectJson[];
 }

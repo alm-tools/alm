@@ -14,7 +14,7 @@ interface CodeEdit {
 /** Our extensions to the Error object */
 interface Error {
     /** Really useful to have for debugging */
-    details?: any; 
+    details?: any;
 }
 
 
@@ -26,6 +26,15 @@ interface CodeError {
     preview: string;
 }
 
-interface ErrorsByFilePath { 
+interface ErrorsByFilePath {
     [filePath: string]: string[]
+}
+
+/** Config as read from tsb.json */
+interface ProjectJson {
+    name: string;
+    /**
+     * Full path to tsconfig.json (including file name)
+     */
+    tsconfig: string;
 }
