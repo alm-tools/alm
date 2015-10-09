@@ -79,7 +79,7 @@ export let statusBarSection = {
     paddingRight: '3px',
 }
 
-export var noSelect = { 
+export var noSelect = {
     userSelect: 'none'
 }
 
@@ -92,30 +92,34 @@ export let codeFont = {
 }
 
 export namespace errorsPanel {
+    export let success = {
+        color: '#73c990'
+    }
     export let main = {
         color: '#999',
         fontFamily: codeFont.fontFamily,
         padding: '6px',
-        borderTop: '2px solid grey'
+        borderTop: '2px solid grey',
+        height: '150px'
     }
-    
+
     export let filePath = {
         fontSize: '1rem',
         fontWeight: 'bold',
         padding: '3px',
         cursor: hand.cursor,
     }
-    
+
     export let perFileList = {
         paddingLeft: '6px',
         borderLeft: '6px solid #f92672'
     }
-    
+
     export let errorMessage = {
         padding: '3px',
         paddingBottom: '6px'
     }
-    
+
     export let errorPreview = {
         padding: '3px',
         background: 'black',

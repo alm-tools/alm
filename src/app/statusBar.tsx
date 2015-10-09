@@ -81,7 +81,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                             {errors}
                         </div>
                     </div>
-                }): <div>No Errors \u2665</div>
+                }): <div style={styles.errorsPanel.success}>No Errors \u2665</div>
             }
             </div>
         }
