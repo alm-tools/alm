@@ -18,7 +18,7 @@ interface Project {
     tsconfig: string;
 }
 
-interface Parsed {
+interface ParsedTsb {
     projects: Project[];
 }
 
@@ -26,7 +26,7 @@ export const errors = {
     ReadErrorTsb: "Failed to read file tsb.json",
 }
 
-function readTsb(): json.ParsedData<Parsed> {
+function readTsb(): json.ParsedData<ParsedTsb> {
     let expectedLocation = path.resolve(process.cwd(), "tsb.json");
 
     try {
@@ -44,7 +44,7 @@ function readTsb(): json.ParsedData<Parsed> {
         };
     }
 
-    let parsed = json.parse<Parsed>(contents);
+    let parsed = json.parse<ParsedTsb>(contents);
     if (parsed.data && parsed.data.projects) {
         parsed.data.projects = parsed.data.projects.map(p=> {
             if (p.tsconfig) {
