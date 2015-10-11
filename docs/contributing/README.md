@@ -3,25 +3,29 @@
 git clone https://github.com/basarat/tsb.git
 cd tsb
 npm install
-npm link 
+npm link
 ```
 
-Now you can run `tsb`. 
+Now you can run `tsb`.
 
-We highly recommend you use [`nodemon`](https://github.com/remy/nodemon), just run it from the project root: 
+We highly recommend you use [`nodemon`](https://github.com/remy/nodemon), just run it from the project root:
 
 ```
 npm install nodemon -g
 nodemon
 ```
 
-# After a pull
-`npm link` 
+# After moving a new machine
+I quite often work on my personal laptop during my 1 hour one way commute and need to setup the machine quickly, so on the new machine:
 
-This will just run the right things again (install + initial compile).
+```
+npm run resume
+```
+
+This will just run the right things again (pull + install + initial compile).
 
 # IDE
-We presently use [`atom-typescript`](https://atom.io/packages/atom-typescript). Eventually this project should be self hosting. 
+We presently use [`atom-typescript`](https://atom.io/packages/atom-typescript). Eventually this project should be self hosting.
 
 ```
 atom .
@@ -41,8 +45,8 @@ webpack.config.js
 * Visit `/dev` to enable dev workflow and then test app
 * Visit `/prod` to enable min js workflow and then test app
 
-More Reading (I haven't read these....but I just read the code): 
-* [Hot reloading docs](https://github.com/webpack/docs/wiki/hot-module-replacement-with-webpack) 
+More Reading (I haven't read these....but I just read the code):
+* [Hot reloading docs](https://github.com/webpack/docs/wiki/hot-module-replacement-with-webpack)
 
 
 # Conventions
