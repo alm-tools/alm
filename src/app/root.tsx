@@ -1,3 +1,6 @@
+/**
+ * The root frontend component
+ */
 import * as React from "react";
 import {BaseComponent, RaisedButton, AppBar, MenuItem, LeftNav, TextField, Dialog, FlatButton} from "./ui";
 import * as ui from "./ui";
@@ -47,7 +50,7 @@ export class Root extends BaseComponent<{}, State>{
     toggle = () => {
         this.refs.leftNav.toggle();
     }
-    
+
     componentDidMount() {
         sb.statusBar = this.refs.statusBar;
     }
@@ -62,16 +65,16 @@ export class Root extends BaseComponent<{}, State>{
                 // />
                 }
                 <LeftNav ref="leftNav" docked={false} menuItems={menuItems} />
-                
+
                 <OmniSearch/>
 
                 <div style={[csx.flex, csx.flexRoot]}>
                     <AppTabsContainer/>
                 </div>
-                
+
                 <StatusBar ref="statusBar"></StatusBar>
             </div>;
-            
+
         return toret;
     }
 }
