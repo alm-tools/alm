@@ -57,7 +57,7 @@ namespace Server {
      * Config stuff
      */
     export var getProjects: typeof contract.server.getProjects = (data) => {
-        return resolve{projects: [] };
+        return resolve({ projects: [] });
     };
 
     /**
