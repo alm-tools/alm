@@ -143,8 +143,6 @@ export let currentTsb = new TypedEvent<TsbJson>();
  * TODO: or push a pseudo tsb.json
  */
 export function start(){
-    currentTsb.pipe(cast.tsbUpdated);
-
     let expectedLocation = getTsbPath();
 
     let file = fmc.getOrCreateOpenFile(expectedLocation);

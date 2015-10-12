@@ -88,6 +88,7 @@ export function register(app: http.Server) {
 
     savedFileChangedOnDisk.pipe(cast.savedFileChangedOnDisk);
     errorCache.errorsUpdated.pipe(cast.errorsUpdated);
+    currentConfigs.currentTsb.pipe(cast.tsbUpdated);
 
     // For testing
     // setInterval(() => cast.hello.emit({ text: 'nice' }), 1000);
