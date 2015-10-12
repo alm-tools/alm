@@ -154,6 +154,9 @@ export function start(){
     });
     parseAndCastTsb(file.getContents());
 
+    /**
+      * If there are any errors we do not cast the bad project list
+      */
     function parseAndCastTsb(contents:string){
         let parsed = json.parse<TsbJson>(contents);
 
