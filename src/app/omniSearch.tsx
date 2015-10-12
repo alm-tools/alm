@@ -20,13 +20,12 @@ export interface State {
 
 @ui.Radium
 export class OmniSearch extends BaseComponent<Props, State>{
-    /** not in state as we don't want react diffing it */
     relativeFilePaths: string[] = [];
     /** Because doing this in render is slow */
     filteredResults: string[] = [];
-    
+
     maxShowCount = 15;
-    
+
     constructor(props: Props) {
         super(props);
 
@@ -40,13 +39,13 @@ export class OmniSearch extends BaseComponent<Props, State>{
     componentWillReceiveProps(props: Props) {
         this.setState(this.propsToState(props));
     }
-    
+
     refs: {
         [string: string]: any;
         omniSearch: any;
         omniSearchInput: any;
     }
-    
+
     componentDidMount() {
         server.getAllFiles({}).then((res) => {
             this.relativeFilePaths = res.relativeFilePaths;
@@ -58,7 +57,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
             this.relativeFilePaths = update.relativeFilePaths;
             this.forceUpdate();
         });
-    
+
         commands.findFile.on(() => {
             console.log('find file');
             this.openOmniSearch();
@@ -73,7 +72,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
         let fileList = this.filteredResults;
         let selectedIndex = this.state.selectedIndex;
         let fileListRendered = fileList.map((result,i) => highlightMatch(result, this.state.filterValue, selectedIndex === i));
-        
+
         return <Modal
               isOpen={this.state.isOmniSearchOpen}
               onRequestClose={this.closeOmniSearch}>
@@ -83,17 +82,17 @@ export class OmniSearch extends BaseComponent<Props, State>{
                         <div style={[csx.flex]}></div>
                         <div style={[styles.userTip]}>Press <code style={styles.keyStroke}>esc</code> to close</div>
                     </div>
-                  
+
                     <div style={[styles.paddedTopBottom1,csx.vertical]}>
                         <input
                             type="text"
-                            ref="omniSearchInput" 
+                            ref="omniSearchInput"
                             placeholder="Filter"
                             onChange={this.onChangeFilter}
                             onKeyDown={this.onChangeSelected}
                         />
                     </div>
-                    
+
                     <div style={[csx.vertical,csx.flex,{overflow:'auto'}]}>
                         <div style={[csx.vertical]}>
                             {fileListRendered}
@@ -102,7 +101,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
                 </div>
         </Modal>
     }
-    
+
     openOmniSearch = () => {
         this.setState({ isOmniSearchOpen: true });
         this.refs.omniSearchInput.getDOMNode().focus();
@@ -145,7 +144,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
 }
 
 
-/** 
+/**
  * Based on https://github.com/atom/fuzzy-finder/blob/51f1f2415ecbfab785596825a011c1d2fa2658d3/lib/fuzzy-finder-view.coffee#L56-L74
  */
 function getMatches(result: string, query: string) {
