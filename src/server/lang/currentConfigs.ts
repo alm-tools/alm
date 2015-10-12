@@ -22,7 +22,7 @@ export const errors = {
     ReadErrorTsb: "Failed to read file tsb.json",
 }
 
-function readTsb(): json.ParsedData<TsbJson> {
+export function readTsb(): json.ParsedData<TsbJson> {
     let expectedLocation = getTsbPath();
 
     try {

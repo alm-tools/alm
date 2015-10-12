@@ -5,6 +5,7 @@ import * as fsu from "../server/utils/fsu";
 import * as fslw from "../server/workers/fileListing/fileListingMaster";
 import * as workingDir from "../server/disk/workingDir";
 import {FileModel} from "../server/disk/fileModel";
+import * as currentConfigs from "../server/lang/currentConfigs";
 let resolve = sls.resolve;
 
 import {savedFileChangedOnDisk, getOpenFile, getOrCreateOpenFile, closeOpenFile} from "../server/disk/fileModelCache";
@@ -57,7 +58,8 @@ namespace Server {
      * Config stuff
      */
     export var getProjects: typeof contract.server.getProjects = (data) => {
-        return resolve({ projects: [] });
+        let projects = currentConfigs.readTsb().data ? currentConfigs.readTsb().data.projects : [];
+        return resolve({projects});
     };
 
     /**

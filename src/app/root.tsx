@@ -53,6 +53,10 @@ export class Root extends BaseComponent<{}, State>{
 
     componentDidMount() {
         sb.statusBar = this.refs.statusBar;
+
+        server.getProjects({}).then(res => {
+            console.log(res);
+        });
     }
 
     render() {
