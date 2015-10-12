@@ -132,3 +132,46 @@ import * as projectCache from "./projectCache";
 function sync(projectJson: ProjectJson) {
     currentProject = projectCache.cacheAndCreateProject(projectCache.getProjectFileFromDisk(projectJson.tsconfig));
 }
+
+import {cast} from "../../socket/socketServer";
+import {setErrorsForFilePath} from "./errorsCache";
+/**
+ * As soon as the server boots up we need to start watching tsb for details
+ * and report any errors ... or provide the project details
+ * or push a pseudo tsb.json
+ */
+export function start(){
+    let expectedLocation = getTsbPath();
+
+    let file = fmc.getOrCreateOpenFile(expectedLocation);
+    file.onSavedFileChangedOnDisk.on((evt)=>{
+        let contents = evt.contents;
+        parseAndCastTsb(contents);
+    });
+    parseAndCastTsb(file.getContents());
+
+    function parseAndCastTsb(contents:string){
+        let parsed = json.parse<TsbJson>(contents);
+
+        // TODO: cast the contents
+        if (parsed.data && parsed.data.projects) {
+            parsed.data.projects = parsed.data.projects.map(p=> {
+                if (p.tsconfig) {
+                    p.tsconfig = wd.makeAbsolute(p.tsconfig);
+                }
+                return p;
+            });
+        }
+        // TODO: cast the projects
+        let toNotify = parsed.data;
+    }
+
+    function reportTsbErrors(errors:string[]){
+        setErrorsForFilePath({
+            filePath:expectedLocation,
+            errors: errors
+        });
+    }
+
+    file.onSavedFileChangedOnDisk
+}
