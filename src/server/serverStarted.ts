@@ -6,7 +6,5 @@ export function started() {
     flm.start();
     ps.start();
 
-    cc.getDefaultProject().then((res) => {
-        console.log(res);
-    });
+    cc.start();
 }

@@ -135,12 +135,16 @@ function sync(projectJson: ProjectJson) {
 
 import {cast} from "../../socket/socketServer";
 import {setErrorsForFilePath} from "./errorsCache";
+import {TypedEvent} from "../../common/events";
+export let currentTsb = new TypedEvent<TsbJson>();
 /**
  * As soon as the server boots up we need to start watching tsb for details
  * and report any errors ... or provide the project details
- * or push a pseudo tsb.json
+ * TODO: or push a pseudo tsb.json
  */
 export function start(){
+    currentTsb.pipe(cast.tsbUpdated);
+
     let expectedLocation = getTsbPath();
 
     let file = fmc.getOrCreateOpenFile(expectedLocation);
@@ -153,7 +157,12 @@ export function start(){
     function parseAndCastTsb(contents:string){
         let parsed = json.parse<TsbJson>(contents);
 
-        // TODO: cast the contents
+        if (parsed.error){
+            reportTsbErrors([parsed.error.message]);
+            return;
+        }
+        reportTsbErrors([]);
+
         if (parsed.data && parsed.data.projects) {
             parsed.data.projects = parsed.data.projects.map(p=> {
                 if (p.tsconfig) {
@@ -162,8 +171,7 @@ export function start(){
                 return p;
             });
         }
-        // TODO: cast the projects
-        let toNotify = parsed.data;
+        currentTsb.emit(parsed.data);
     }
 
     function reportTsbErrors(errors:string[]){
@@ -172,6 +180,4 @@ export function start(){
             errors: errors
         });
     }
-
-    file.onSavedFileChangedOnDisk
 }

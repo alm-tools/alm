@@ -57,9 +57,8 @@ namespace Server {
     /**
      * Config stuff
      */
-    export var getProjects: typeof contract.server.getProjects = (data) => {
-        let projects = currentConfigs.readTsb().data ? currentConfigs.readTsb().data.projects : [];
-        return resolve({projects});
+    export var getCurrentTsb: typeof contract.server.getCurrentTsb = (data) => {
+        return currentConfigs.currentTsb.current();
     };
 
     /**
