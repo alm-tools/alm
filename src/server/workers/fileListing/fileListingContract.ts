@@ -7,12 +7,11 @@ import * as sw from "../../utils/simpleWorker";
  */
 export var worker = {
     echo: {} as sw.QRFunction<{ text: string, num: number }, { text: string, num: number }>,
-    getFileList: {} as sw.QRFunction<{}, { relativeFilePaths: string[] }>,
+    fileList: {} as sw.QRFunction<{}, { relativeFilePaths: string[] }>,
     setupWatch: {} as sw.QRFunction<{ directory: string }, {}>
 }
 
 export var master = {
     increment: {} as sw.QRFunction<{ num: number }, { num: number }>,
-    fileListChanged: {} as sw.QRFunction<({ fileList: string[] }), any>
+    fileListUpdated: {} as sw.QRFunction<({ fileList: string[] }), any>
 }
-

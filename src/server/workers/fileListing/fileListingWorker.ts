@@ -18,7 +18,7 @@ namespace Worker {
 
     let listing: string[] = [];
 
-    export var getFileList: typeof contract.worker.getFileList = (q) => {
+    export var fileList: typeof contract.worker.fileList = (q) => {
         return Promise.resolve({ relativeFilePaths: listing });
     }
 
@@ -39,7 +39,7 @@ namespace Worker {
                     return mg.cache[p] && mg.cache[p] == 'FILE';
                 });
 
-                master.fileListChanged({ fileList: listing });
+                master.fileListUpdated({ fileList: listing });
             });
         }),500);
 

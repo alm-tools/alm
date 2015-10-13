@@ -23,7 +23,7 @@ namespace Server {
     }
 
     export var fileList: typeof contract.server.fileList = (data) => {
-        return fslw.worker.getFileList({ directory: process.cwd() });
+        return fslw.worker.fileList({ directory: process.cwd() });
     }
 
     export var makeAbsolute: typeof contract.server.makeAbsolute = (data) => {

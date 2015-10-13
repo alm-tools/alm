@@ -14,7 +14,7 @@ namespace Master {
             num: ++q.num
         });
     }
-    export var fileListChanged: typeof contract.master.fileListChanged = (q) => {
+    export var fileListUpdated: typeof contract.master.fileListUpdated = (q) => {
 
         socketServer.cast.fileListUpdated.emit({ relativeFilePaths: q.fileList });
 
