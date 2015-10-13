@@ -47,7 +47,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
     }
 
     componentDidMount() {
-        server.getAllFiles({}).then((res) => {
+        server.fileList({}).then((res) => {
             this.relativeFilePaths = res.relativeFilePaths;
             this.forceUpdate();
         });

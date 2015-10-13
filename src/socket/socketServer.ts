@@ -22,7 +22,7 @@ namespace Server {
         });
     }
 
-    export var getAllFiles: typeof contract.server.getAllFiles = (data) => {
+    export var fileList: typeof contract.server.fileList = (data) => {
         return fslw.worker.getFileList({ directory: process.cwd() });
     }
 
@@ -57,7 +57,7 @@ namespace Server {
     /**
      * Config stuff
      */
-    export var getCurrentTsb: typeof contract.server.getCurrentTsb = (data) => {
+    export var currentTsb: typeof contract.server.currentTsb = (data) => {
         return currentConfigs.currentTsb.current();
     };
 
@@ -88,7 +88,7 @@ export function register(app: http.Server) {
 
     savedFileChangedOnDisk.pipe(cast.savedFileChangedOnDisk);
     errorCache.errorsUpdated.pipe(cast.errorsUpdated);
-    currentConfigs.currentTsb.pipe(cast.tsbUpdated);
+    currentConfigs.currentTsb.pipe(cast.currentTsbUpdated);
 
     // For testing
     // setInterval(() => cast.hello.emit({ text: 'nice' }), 1000);

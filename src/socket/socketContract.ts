@@ -10,7 +10,7 @@ import {QRFunction, QRServerFunction, TypedEvent} from "../socketLib/socketLib";
  */
 export var server = {
     echo: {} as QRServerFunction<{ text: string, num: number }, { text: string, num: number }, typeof client>,
-    getAllFiles: {} as QRFunction<{}, { relativeFilePaths: string[] }>,
+    fileList: {} as QRFunction<{}, { relativeFilePaths: string[] }>,
     makeAbsolute: {} as QRFunction<{ relativeFilePath: string }, { filePath: string }>,
 
     /**
@@ -24,7 +24,7 @@ export var server = {
     /**
      * config stuff
      */
-    getCurrentTsb: {} as QRFunction<{}, { projects: ProjectJson[] }>,
+    currentTsb: {} as QRFunction<{}, { projects: ProjectJson[] }>,
 
     /**
      * Error stuff
@@ -50,5 +50,5 @@ export var cast = {
     errorsUpdated: new TypedEvent<ErrorsByFilePath>(),
 
     /** Tsb updated */
-    tsbUpdated: new TypedEvent<{projects: ProjectJson[]}>()
+    currentTsbUpdated: new TypedEvent<{projects: ProjectJson[]}>()
 }

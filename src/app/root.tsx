@@ -54,11 +54,11 @@ export class Root extends BaseComponent<{}, State>{
     componentDidMount() {
         sb.statusBar = this.refs.statusBar;
 
-        server.getCurrentTsb({}).then(res => {
+        server.currentTsb({}).then(res => {
             console.log(res);
         });
 
-        cast.tsbUpdated.on(res => {
+        cast.currentTsbUpdated.on(res => {
             console.log(res);
         });
     }
