@@ -31,11 +31,11 @@ export class Code extends React.Component<Props, State> implements tab.Component
 
         server.openFile({ filePath: this.filePath }).then((res) => {
             this.refs.editor.setValue(res.contents, true);
-            commands.onDidOpenFile.emit({ filePath: this.props.url });
+            commands.didOpenFile.emit({ filePath: this.props.url });
         });
-        
+
         cast.savedFileChangedOnDisk.on((res)=>{
-            if (res.filePath == this.filePath 
+            if (res.filePath == this.filePath
                 && this.refs.editor.getValue() !== res.contents) {
                 this.refs.editor.setValue(res.contents, false);
             }
@@ -70,11 +70,11 @@ export class Code extends React.Component<Props, State> implements tab.Component
     save = () => {
         server.saveFile({ filePath: this.filePath }).then(()=>{this.props.onSavedChanged(true)});
     }
-    
+
     close = () => {
         server.closeFile({filePath: this.filePath});
     }
-    
+
     /** From file://filePath to filePath*/
     getFilePathFromUrl(url: string) {
         return url.substr('file://'.length);

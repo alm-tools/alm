@@ -12,9 +12,11 @@ export var prevTab = new events.TypedEvent<{}>();
 
 export var findFile = new events.TypedEvent<{}>();
 export var findCommand = new events.TypedEvent<{}>();
+export var selectProject = new events.TypedEvent<{}>();
+export var didSelectProject = new events.TypedEvent<{projectName:string}>();
 
-export var onOpenFile = new events.TypedEvent<{filePath:string}>();
-export var onDidOpenFile = new events.TypedEvent<{filePath:string}>();
+export var openFile = new events.TypedEvent<{filePath:string}>();
+export var didOpenFile = new events.TypedEvent<{filePath:string}>();
 
 export var onCloseTab = new events.TypedEvent<{}>();
 export var onSaveTab = new events.TypedEvent<{}>();
@@ -42,12 +44,16 @@ export function register() {
     /**
      * OmniSearch
      */
-    Mousetrap.bindGlobal('mod+p', function() {
+    Mousetrap.bindGlobal('mod+p', function() { // atom,sublime
         findFile.emit({});
         return false;
     });
-    Mousetrap.bindGlobal('mod+shift+p', function() {
+    Mousetrap.bindGlobal('mod+shift+p', function() { // atom,sublime
         findCommand.emit({});
+        return false;
+    });
+    Mousetrap.bindGlobal('alt+shift+p', function() { // atom:ProjectManager
+        selectProject.emit({});
         return false;
     });
 }

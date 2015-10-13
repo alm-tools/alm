@@ -38,7 +38,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             selected: 0,
             tabs: []
         };
-        
+
         this.setupDemoTab();
     }
 
@@ -52,20 +52,20 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     refs: { [string: string]: tab.Component; }
-    
+
     /** For Demo only */
     setupDemoTab(){
         server.makeAbsolute({ relativeFilePath: 'node_modules/ntypescript/src/compiler/checker.ts' }).then(abs => {
-            commands.onOpenFile.emit({ filePath: abs.filePath });
+            commands.openFile.emit({ filePath: abs.filePath });
         });
         server.makeAbsolute({ relativeFilePath: 'src/app/root.tsx'}).then(abs => {
-            commands.onOpenFile.emit({ filePath: abs.filePath });
+            commands.openFile.emit({ filePath: abs.filePath });
         });
         server.makeAbsolute({ relativeFilePath: 'src/app/root.js'}).then(abs => {
-            commands.onOpenFile.emit({ filePath: abs.filePath });
+            commands.openFile.emit({ filePath: abs.filePath });
         });
         server.makeAbsolute({ relativeFilePath: 'src/bas.ts'}).then(abs => {
-            commands.onOpenFile.emit({ filePath: abs.filePath });
+            commands.openFile.emit({ filePath: abs.filePath });
         });
     }
 
@@ -78,25 +78,25 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             let selected = rangeLimited({ min: 0, max: this.state.tabs.length - 1, num: --this.state.selected, loopAround: true });
             this.selectTab(selected);
         });
-        
-        commands.onOpenFile.on((e) =>{
+
+        commands.openFile.on((e) =>{
             let codeTab: tab.TabInstance = {
                 id: createId(),
                 url: `file://${e.filePath}`,
                 title: `${getFileName(e.filePath)}`,
                 saved: true
             }
-            
+
             this.state.tabs.push(codeTab);
             this.setState({ tabs: this.state.tabs });
             this.selectTab(this.state.tabs.length - 1);
         });
-        
+
         commands.onCloseTab.on((e)=>{
             // Remove the selected
             this.closeTab(this.state.selected);
         });
-        
+
         commands.onSaveTab.on((e) => {
             let component = this.getSelectedComponent();
             if (component) {
@@ -106,9 +106,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     render() {
-        
+
         let selectedIndex = this.state.selected;
-        
+
         let titles = this.state.tabs.map((t, i) =>{
             let title = t.title;
             var style = [tabHeader.base, i == selectedIndex ? tabHeaderActive : {}];
@@ -122,18 +122,18 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 {title}
             </span>
         });
-        
+
         let rederedTabs = this.state.tabs.map((t,i)=>{
             let isSelected = selectedIndex == i;
             let style = ( isSelected ? {} : { display: 'none' });
 
             let Component = getComponentByUrl(t.url);
-            
+
             return <div className="app-tabs-container-component-div" key={t.id} style={[csx.flex,csx.flexRoot,style]}>
                 <Component ref={t.id} url={t.url} onSavedChanged={(saved)=>{this.onSavedChanged(saved,i)}}/>
             </div>
         });
-        
+
         return (
             <div style={[csx.vertical,csx.flex]} className="app-tabs">
                 <div style={[csx.horizontal, tabHeaderContainer]} className="app-tabs-header">
@@ -145,14 +145,14 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             </div>
         );
     }
-    
+
     onTabClicked = (event: MouseEvent,index) => {
-        // center click: 
+        // center click:
         if (event.which == 2) {
             this.closeTab(index);
         }
         else {
-            this.selectTab(index);    
+            this.selectTab(index);
             this.setState({ selected: index });
         }
     }
@@ -162,7 +162,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         state.tabs[index].saved = saved;
         this.setState({ tabs: state.tabs });
     }
-    
+
     private selectTab(selected: number) {
         /** Set timeout to allow the next tab to render */
         setTimeout(() => {
@@ -170,9 +170,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             if (this.state.tabs.length == 0) {
                 return;
             }
-            
+
             this.setState({ selected: selected });
-            this.state.selected = selected;            
+            this.state.selected = selected;
             let component = this.getSelectedComponent();
             if (component) {
                 component.focus();
@@ -183,29 +183,29 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             }
         });
     }
-    
+
     getSelectedComponent(): tab.Component {
         let selected = this.state.selected;
         let component = this.refs[this.state.tabs[selected].id];
         return component;
     }
-    
+
     closeTab(index: number) {
         // Always clear the status bar
         setActiveProject('');
-        
+
         // If no tabs
         if (!this.state.tabs.length) {
             return;
         }
-        
+
         // inform the component
         let component = this.refs[this.state.tabs[index].id];
         component.close();
-        
+
         this.state.tabs.splice(index, 1);
         this.setState({ tabs: this.state.tabs });
-        
+
         // If this is the selected tab, Figure out the next:
         if (index == this.state.selected) {
             // Nothing to do
