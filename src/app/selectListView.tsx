@@ -15,15 +15,21 @@ import * as commands from "./commands/commands";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
 
 
+/**
+ * The singleton select list view
+ */
+export var selectListView: SelectListView;
+
 type DataItem = any;
 
-export interface Props {
+export interface Props extends React.Props<any>{
 }
 export interface State {
     isOpen?: boolean;
     filterValue?: string;
     selectedIndex?: number;
 
+    header?: string;
     data?: DataItem[];
     render?: (t:DataItem) => any;
 }
@@ -33,11 +39,14 @@ export class SelectListView extends BaseComponent<Props, State>{
 
     /** The main interaction API */
     show(args: {
+        header: string;
         data: DataItem[];
         render: (t: DataItem) => any;
     }) {
         this.setState({
             isOpen: true,
+
+            header: args.header,
             data: args.data,
             render: args.render
         });
@@ -70,7 +79,7 @@ export class SelectListView extends BaseComponent<Props, State>{
             onRequestClose={this.closeOmniSearch}>
                 <div style={[csx.vertical]}>
                     <div style={[csx.horizontal]}>
-                        <h4>Omni Search</h4>
+                        <h4>{this.state.header}</h4>
                         <div style={[csx.flex]}></div>
                         <div style={[styles.userTip]}>Press <code style={styles.keyStroke}>esc</code> to close</div>
                         </div>

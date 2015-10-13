@@ -13,8 +13,13 @@ import {cast, server} from "../socket/socketClient";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
 import {debounce,createMap,rangeLimited,getFileName} from "../common/utils";
 import {OmniSearch} from "./omniSearch";
+
+import {SelectListView} from "./selectListView";
+import slv = require("./selectListView");
+
 import {StatusBar} from "./statusBar";
 import sb = require('./statusBar');
+
 
 let menuItems = [
     { route: 'get-started', text: 'Get Started' },
@@ -45,6 +50,7 @@ export class Root extends BaseComponent<{}, State>{
         [string: string]: any;
         leftNav: any;
         statusBar: StatusBar;
+        selectListView: SelectListView;
     }
 
     toggle = () => {
@@ -53,13 +59,22 @@ export class Root extends BaseComponent<{}, State>{
 
     componentDidMount() {
         sb.statusBar = this.refs.statusBar;
+        slv.selectListView = this.refs.selectListView;
 
+        let tsb:{projects:ProjectJson[]};
         server.currentTsb({}).then(res => {
-            console.log(res);
+            tsb = res;
+        });
+        cast.currentTsbUpdated.on(res => {
+            tsb = res;
         });
 
-        cast.currentTsbUpdated.on(res => {
-            console.log(res);
+        commands.doSelectProject.on(()=>{
+            this.refs.selectListView.show({
+                header: 'Select the active project',
+                data: tsb.projects,
+                render: (d: ProjectJson) => <div>{d.name}</div>
+            });
         });
     }
 
@@ -75,6 +90,8 @@ export class Root extends BaseComponent<{}, State>{
                 <LeftNav ref="leftNav" docked={false} menuItems={menuItems} />
 
                 <OmniSearch/>
+
+                <SelectListView ref="selectListView"/>
 
                 <div style={[csx.flex, csx.flexRoot]}>
                     <AppTabsContainer/>
