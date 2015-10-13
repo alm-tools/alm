@@ -5,6 +5,9 @@ import * as glob from "glob";
 import chokidar = require('chokidar');
 import {debounce} from "../../../common/utils";
 import path = require('path');
+import {TypedEvent}  from "../../../common/events";
+
+let listing = new TypedEvent<{relativeFilePaths: string[]}>();
 
 namespace Worker {
     export var echo: typeof contract.worker.echo = (q) => {
@@ -16,10 +19,8 @@ namespace Worker {
         });
     }
 
-    let listing: string[] = [];
-
     export var fileList: typeof contract.worker.fileList = (q) => {
-        return Promise.resolve({ relativeFilePaths: listing });
+        return listing.current();
     }
 
     var directoryUnderWatch: string;
@@ -34,12 +35,12 @@ namespace Worker {
                 }
 
                 /** Filter out directories */
-                listing = newList.filter(nl=> {
+                newList = newList.filter(nl=> {
                     let p = path.resolve(q.directory,nl);
                     return mg.cache[p] && mg.cache[p] == 'FILE';
                 });
 
-                master.fileListUpdated({ fileList: listing });
+                listing.emit({ relativeFilePaths: newList });
             });
         }),500);
 
@@ -62,3 +63,4 @@ namespace Worker {
 var _checkTypes: typeof contract.worker = Worker;
 // run worker
 export var {master} = sw.runWorker(Worker, contract.master);
+listing.on(master.fileListUpdated);

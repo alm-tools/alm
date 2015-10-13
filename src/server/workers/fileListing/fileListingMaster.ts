@@ -16,9 +16,9 @@ namespace Master {
     }
     export var fileListUpdated: typeof contract.master.fileListUpdated = (q) => {
 
-        socketServer.cast.fileListUpdated.emit({ relativeFilePaths: q.fileList });
+        socketServer.cast.fileListUpdated.emit({ relativeFilePaths: q.relativeFilePaths });
 
-        filePaths = q.fileList.map(rfp => workingDir.makeAbsolute(rfp));
+        filePaths = q.relativeFilePaths.map(rfp => workingDir.makeAbsolute(rfp));
         filePathsUpdated.emit({ filePaths });
 
         return Promise.resolve({});
