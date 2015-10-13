@@ -12,10 +12,10 @@ export var prevTab = new events.TypedEvent<{}>();
 
 export var findFile = new events.TypedEvent<{}>();
 export var findCommand = new events.TypedEvent<{}>();
-export var selectProject = new events.TypedEvent<{}>();
+export var doSelectProject = new events.TypedEvent<{}>();
 export var didSelectProject = new events.TypedEvent<{projectName:string}>();
 
-export var openFile = new events.TypedEvent<{filePath:string}>();
+export var docOpenFile = new events.TypedEvent<{filePath:string}>();
 export var didOpenFile = new events.TypedEvent<{filePath:string}>();
 
 export var onCloseTab = new events.TypedEvent<{}>();
@@ -53,7 +53,7 @@ export function register() {
         return false;
     });
     Mousetrap.bindGlobal('alt+shift+p', function() { // atom:ProjectManager
-        selectProject.emit({});
+        doSelectProject.emit({});
         return false;
     });
 }
