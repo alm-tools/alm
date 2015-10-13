@@ -45,11 +45,14 @@ export class SelectListView extends BaseComponent<Props, State>{
     }) {
         this.setState({
             isOpen: true,
+            selectedIndex: 0,
 
             header: args.header,
             data: args.data,
             render: args.render
         });
+
+        this.refs.omniSearchInput.getDOMNode().focus();
     }
 
     maxShowCount = 15;
@@ -57,7 +60,13 @@ export class SelectListView extends BaseComponent<Props, State>{
     constructor(props: Props) {
         super(props);
 
-        this.state = {};
+        this.state = {
+            isOpen: false,
+            selectedIndex: 0,
+
+            header: '',
+            data: [],
+        };
     }
 
     refs: {
@@ -70,9 +79,21 @@ export class SelectListView extends BaseComponent<Props, State>{
     }
 
     render() {
-        // let fileList = this.filteredResults;
+        let fileList = this.state.data;
         let selectedIndex = this.state.selectedIndex;
-        // let fileListRendered = fileList.map((result,i) => highlightMatch(result, this.state.filterValue, selectedIndex === i));
+        let fileListRendered = fileList.map((item,i) =>{
+                // key = i
+                let selected = selectedIndex === i;
+                let selectedStyle = selected ? {
+                    background: 'grey',
+                    color: 'white'
+                } : {};
+                return (
+                    <div key={i} style={[selectedStyle,styles.padded2]}>
+                        {this.state.render(item)}
+                    </div>
+                );
+            });
 
         return <Modal
             isOpen={this.state.isOpen}
@@ -96,17 +117,13 @@ export class SelectListView extends BaseComponent<Props, State>{
 
                     <div style={[csx.vertical, csx.flex, { overflow: 'auto' }]}>
                         <div style={[csx.vertical]}>
-                            {/*fileListRendered*/}
+                            {fileListRendered}
                             </div>
                         </div>
                     </div>
             </Modal>
     }
 
-    openOmniSearch = () => {
-        this.setState({ isOpen: true });
-        this.refs.omniSearchInput.getDOMNode().focus();
-    };
     closeOmniSearch = () => {
         this.setState({ isOpen: false, filterValue: '' });
     };
