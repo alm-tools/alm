@@ -13,6 +13,7 @@ import {debounce, createMap, rangeLimited, getFileName} from "../common/utils";
 import {cast, server} from "../socket/socketClient";
 import * as commands from "./commands/commands";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
+import * as utils from "../common/utils";
 
 
 /**
@@ -22,7 +23,7 @@ export var selectListView: SelectListView;
 
 type DataItem = any;
 
-export interface Props extends React.Props<any>{
+export interface Props extends React.Props<any> {
 }
 export interface State {
     isOpen?: boolean;
@@ -31,12 +32,14 @@ export interface State {
 
     header?: string;
     data?: DataItem[];
-    render?: (t:DataItem) => any;
-    textify?: (t:DataItem) => string;
+    render?: (t: DataItem) => any;
+    textify?: (t: DataItem) => string;
 }
 
 @ui.Radium
 export class SelectListView extends BaseComponent<Props, State>{
+
+    filteredResults: DataItem[];
 
     /** The main interaction API */
     show<T>(args: {
@@ -47,6 +50,7 @@ export class SelectListView extends BaseComponent<Props, State>{
     }) {
         this.setState({
             isOpen: true,
+            filterValue: '',
             selectedIndex: 0,
 
             header: args.header,
@@ -56,6 +60,7 @@ export class SelectListView extends BaseComponent<Props, State>{
         });
 
         this.refs.omniSearchInput.getDOMNode().focus();
+        this.filteredResults = args.data.concat([]);
     }
 
     maxShowCount = 15;
@@ -63,6 +68,7 @@ export class SelectListView extends BaseComponent<Props, State>{
     constructor(props: Props) {
         super(props);
 
+        this.filteredResults = [];
         this.state = {
             isOpen: false,
             selectedIndex: 0,
@@ -82,21 +88,21 @@ export class SelectListView extends BaseComponent<Props, State>{
     }
 
     render() {
-        let fileList = this.state.data;
+        let fileList = this.filteredResults;
         let selectedIndex = this.state.selectedIndex;
-        let fileListRendered = fileList.map((item,i) =>{
-                // key = i
-                let selected = selectedIndex === i;
-                let selectedStyle = selected ? {
-                    background: 'grey',
-                    color: 'white'
-                } : {};
-                return (
-                    <div key={i} style={[selectedStyle,styles.padded2]}>
-                        {this.state.render(item)}
+        let fileListRendered = fileList.map((item, i) => {
+            // key = i
+            let selected = selectedIndex === i;
+            let selectedStyle = selected ? {
+                background: 'grey',
+                color: 'white'
+            } : {};
+            return (
+                <div key={i} style={[selectedStyle, styles.padded2]}>
+                        {this.state.render(item) }
                     </div>
-                );
-            });
+            );
+        });
 
         return <Modal
             isOpen={this.state.isOpen}
@@ -132,8 +138,15 @@ export class SelectListView extends BaseComponent<Props, State>{
     };
     onChangeFilter = debounce((e) => {
         let filterValue = this.refs.omniSearchInput.getDOMNode().value;
-        // this.filteredResults = fuzzyFilter(this.relativeFilePaths, filterValue);
-        // this.filteredResults = this.filteredResults.slice(0,this.maxShowCount);
+
+        this.filteredResults = getFilteredItems({
+            items: this.state.data,
+            textify: this.state.textify,
+            filterValue
+        });
+
+        this.filteredResults = this.filteredResults.slice(0, this.maxShowCount);
+
         this.setState({ filterValue, selectedIndex: 0 });
     }, 50);
     incrementSelected = debounce(() => {
@@ -162,4 +175,16 @@ export class SelectListView extends BaseComponent<Props, State>{
             this.closeOmniSearch();
         }
     };
+}
+
+
+function getFilteredItems<T>(args: { items: T[], textify: (item: T) => string, filterValue: string }): T[] {
+    let textValues = args.items.map(args.textify);
+
+    let textValuesToItem = {} as any;
+    args.items.forEach((item) => {
+        textValuesToItem[args.textify(item)] = item;
+    })
+
+    return fuzzyFilter(textValues, args.filterValue).map((textvalue) => textValuesToItem[textvalue]);
 }

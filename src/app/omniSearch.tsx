@@ -147,7 +147,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
 /**
  * Based on https://github.com/atom/fuzzy-finder/blob/51f1f2415ecbfab785596825a011c1d2fa2658d3/lib/fuzzy-finder-view.coffee#L56-L74
  */
-function getMatches(result: string, query: string) {
+function getMatchedSegments(result: string, query: string) {
     let matches = match(result, query);
     let matchMap = createMap(matches);
     // collapse contiguous sections into a single `<strong>`
@@ -194,7 +194,7 @@ function getMatches(result: string, query: string) {
     return combined;
 }
 
-function renderMatched(matched: { str: string, matched: boolean }[]): JSX.Element[] {
+function renderMatchedSegments(matched: { str: string, matched: boolean }[]): JSX.Element[] {
     return matched.map((item, i) => {
         if (item.matched) {
             return <strong key={i}>{item.str}</strong>;
@@ -205,13 +205,14 @@ function renderMatched(matched: { str: string, matched: boolean }[]): JSX.Elemen
     });
 }
 
+/** Specific to omniSearch */
 function highlightMatch(result: string, query: string, selected: boolean): JSX.Element {
-    let matchesInPath = getMatches(result, query);
-    let matchesInFileName = getMatches(getFileName(result), query);
+    let matchesInPath = getMatchedSegments(result, query);
+    let matchesInFileName = getMatchedSegments(getFileName(result), query);
 
     // Create rendered
-    let renderedPath = renderMatched(matchesInPath);
-    let renderedFileName = renderMatched(matchesInFileName);
+    let renderedPath = renderMatchedSegments(matchesInPath);
+    let renderedFileName = renderMatchedSegments(matchesInFileName);
 
     let selectedStyle = selected ? {
         background: 'grey',
