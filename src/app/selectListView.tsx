@@ -32,16 +32,18 @@ export interface State {
     header?: string;
     data?: DataItem[];
     render?: (t:DataItem) => any;
+    textify?: (t:DataItem) => string;
 }
 
 @ui.Radium
 export class SelectListView extends BaseComponent<Props, State>{
 
     /** The main interaction API */
-    show(args: {
+    show<T>(args: {
         header: string;
-        data: DataItem[];
-        render: (t: DataItem) => any;
+        data: T[];
+        render: (t: T) => any;
+        textify: (t: T) => string;
     }) {
         this.setState({
             isOpen: true,
@@ -49,7 +51,8 @@ export class SelectListView extends BaseComponent<Props, State>{
 
             header: args.header,
             data: args.data,
-            render: args.render
+            render: args.render,
+            textify: args.textify
         });
 
         this.refs.omniSearchInput.getDOMNode().focus();

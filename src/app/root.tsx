@@ -70,10 +70,11 @@ export class Root extends BaseComponent<{}, State>{
         });
 
         commands.doSelectProject.on(()=>{
-            this.refs.selectListView.show({
+            this.refs.selectListView.show<ProjectJson>({
                 header: 'Select the active project',
                 data: tsb.projects,
-                render: (d: ProjectJson) => <div>{d.name}</div>
+                render: (d) => <div>{d.name}</div>,
+                textify: (d) => d.name
             });
         });
     }
