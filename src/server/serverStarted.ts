@@ -6,5 +6,5 @@ export function started() {
     flm.start();
     ps.start();
 
-    cc.start();
+    cc.startWatchingIfNotDoingAlready();
 }

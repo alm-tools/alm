@@ -127,22 +127,46 @@ let currentProject: project.Project;
  */
 flm.filePathsUpdated.on(function(data) {
     let expectedLocation = getTsbPath();
+    startWatchingIfNotDoingAlready();
+});
 
-    if (fsu.existsSync(expectedLocation) && !fmc.isFileOpen(expectedLocation)) {
-        let tsbFile = fmc.getOpenFile(expectedLocation);
-        tsbFile.onSavedFileChangedOnDisk.on(() => {
-            sync();
+/**
+  * Note: If there are any errors we do not cast the bad project list
+  * But we always report the correct errors (or clear them)
+  */
+function parseAndCastTsb(contents: string) {
+    let parsed = json.parse<TsbJson>(contents);
+
+    if (parsed.error) {
+        reportTsbErrors([parsed.error.message]);
+        return;
+    }
+    reportTsbErrors([]);
+
+    if (parsed.data && parsed.data.projects) {
+        parsed.data.projects = parsed.data.projects.map(p=> {
+            if (p.tsconfig) {
+                p.tsconfig = wd.makeAbsolute(p.tsconfig);
+            }
+            return p;
         });
     }
-});
+    currentTsbContents.emit(parsed.data);
+
+    function reportTsbErrors(errors: string[]) {
+        let expectedLocation = getTsbPath();
+        setErrorsForFilePath({
+            filePath: expectedLocation,
+            errors: errors
+        });
+    }
+}
 
 import * as projectCache from "./projectCache";
 
 /** convert active tsb project name to current project */
 function sync() {
     getDefaultProject().then((projectJson) => {
-        /// If you change tsb.json
-        /// This is enough to justify a full sync
         let projectFileDetails = projectCache.getProjectFileFromDisk(projectJson.tsconfig)
         currentProject = projectCache.cacheAndCreateProject(projectFileDetails);
     });
@@ -153,51 +177,23 @@ import {cast} from "../../socket/socketServer";
 import {TypedEvent} from "../../common/events";
 export let currentTsbContents = new TypedEvent<TsbJson>();
 /**
- * As soon as the server boots up we need to start watching tsb for details
- * and report any errors ... or provide the project details
- * TODO: if file doesn't exist on disk we are screwed
- * (consolidated with the code in file list updated ^ as that works even if file doesn't exist to begin with)
+ * As soon as the server boots up we need to do an initial attempt
  */
-export function start() {
+export function startWatchingIfNotDoingAlready() {
     // Load up the tsb
     sync();
-
-    // Start watching / reporting tsb + its errors
     let expectedLocation = getTsbPath();
-    let file = fmc.getOrCreateOpenFile(expectedLocation);
-    file.onSavedFileChangedOnDisk.on((evt) => {
-        let contents = evt.contents;
-        parseAndCastTsb(contents);
-    });
-    parseAndCastTsb(file.getContents());
 
-    /**
-      * If there are any errors we do not cast the bad project list
-      */
-    function parseAndCastTsb(contents: string) {
-        let parsed = json.parse<TsbJson>(contents);
+    if (fsu.existsSync(expectedLocation) && !fmc.isFileOpen(expectedLocation)) {
+        let tsbFile = fmc.getOrCreateOpenFile(expectedLocation);
+        tsbFile.onSavedFileChangedOnDisk.on((evt) => {
+            let contents = evt.contents;
+            parseAndCastTsb(contents);
 
-        if (parsed.error) {
-            reportTsbErrors([parsed.error.message]);
-            return;
-        }
-        reportTsbErrors([]);
-
-        if (parsed.data && parsed.data.projects) {
-            parsed.data.projects = parsed.data.projects.map(p=> {
-                if (p.tsconfig) {
-                    p.tsconfig = wd.makeAbsolute(p.tsconfig);
-                }
-                return p;
-            });
-        }
-        currentTsbContents.emit(parsed.data);
-    }
-
-    function reportTsbErrors(errors: string[]) {
-        setErrorsForFilePath({
-            filePath: expectedLocation,
-            errors: errors
+            /// If you change tsb.json
+            /// This is enough to justify a full sync
+            sync();
         });
+        parseAndCastTsb(tsbFile.getContents());
     }
 }
