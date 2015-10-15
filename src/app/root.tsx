@@ -74,7 +74,8 @@ export class Root extends BaseComponent<{}, State>{
                 header: 'Select the active project',
                 data: tsb.projects,
                 render: (d,highlitedText) => <div>{highlitedText}</div>,
-                textify: (d) => d.name
+                textify: (d) => d.name,
+                onSelect: (d) => console.log(d)
             });
         });
     }

@@ -34,6 +34,7 @@ export interface State {
     data?: DataItem[];
     render?: (t: DataItem, highlighted: JSX.Element[]) => any;
     textify?: (t: DataItem) => string;
+    onSelect?: (t: DataItem) => void;
 }
 
 @ui.Radium
@@ -48,8 +49,9 @@ export class SelectListView extends BaseComponent<Props, State>{
         header: string;
         data: T[];
         render: (t: T, highlighted: JSX.Element[]) => any;
-        // This text will be used for filtering as well as passing to render
+        /** This text will be used for filtering as well as passing to render */
         textify: (t: T) => string;
+        onSelect: (t: T) => void;
     }) {
         this.filteredResults = args.data.concat([]);
 
@@ -61,7 +63,8 @@ export class SelectListView extends BaseComponent<Props, State>{
             header: args.header,
             data: args.data,
             render: args.render,
-            textify: args.textify
+            textify: args.textify,
+            onSelect: args.onSelect,
         });
 
         this.refs.omniSearchInput.getDOMNode().focus();
@@ -169,12 +172,8 @@ export class SelectListView extends BaseComponent<Props, State>{
         }
         if (e.key == 'Enter') {
             e.preventDefault();
-            // let relativeFilePath = this.filteredResults[this.state.selectedIndex];
-            // if (relativeFilePath) {
-            //     server.makeAbsolute({ relativeFilePath }).then(abs => {
-            //         commands.onOpenFile.emit({ filePath: abs.filePath });
-            //     });
-            // }
+            let result = this.filteredResults[this.state.selectedIndex];
+            this.state.onSelect(result);
             this.closeOmniSearch();
         }
     };
