@@ -32,7 +32,7 @@ export interface State {
 
     header?: string;
     data?: DataItem[];
-    render?: (t: DataItem) => any;
+    render?: (t: DataItem, highlighted: JSX.Element[]) => any;
     textify?: (t: DataItem) => string;
 }
 
@@ -47,13 +47,12 @@ export class SelectListView extends BaseComponent<Props, State>{
     show<T>(args: {
         header: string;
         data: T[];
-        render: (t: T) => any;
-
-        /**
-         * Whatever you return from this you do not need to show yourself. This will be shown for you *highlighted* correctly as a div after your content
-         */
+        render: (t: T, highlighted: JSX.Element[]) => any;
+        // This text will be used for filtering as well as passing to render
         textify: (t: T) => string;
     }) {
+        this.filteredResults = args.data.concat([]);
+
         this.setState({
             isOpen: true,
             filterValue: '',
@@ -66,7 +65,6 @@ export class SelectListView extends BaseComponent<Props, State>{
         });
 
         this.refs.omniSearchInput.getDOMNode().focus();
-        this.filteredResults = args.data.concat([]);
     }
 
     maxShowCount = 15;
@@ -105,10 +103,7 @@ export class SelectListView extends BaseComponent<Props, State>{
             } : {};
             return (
                 <div key={i} style={[selectedStyle, styles.padded2]}>
-                        {this.state.render(item)}
-                        <div>
-
-                        </div>
+                        {this.state.render(item, renderMatchedSegments(this.state.textify(item), this.state.filterValue)) }
                 </div>
             );
         });

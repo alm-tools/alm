@@ -73,7 +73,7 @@ export class Root extends BaseComponent<{}, State>{
             this.refs.selectListView.show<ProjectJson>({
                 header: 'Select the active project',
                 data: tsb.projects,
-                render: (d) => <div>{d.name}</div>,
+                render: (d,highlitedText) => <div>{highlitedText}</div>,
                 textify: (d) => d.name
             });
         });
