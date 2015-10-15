@@ -8,6 +8,7 @@ import * as wd from "../disk/workingDir";
 import * as fmc from "../disk/fileModelCache";
 import * as tsconfig from "./core/tsconfig";
 import * as project from "./core/project";
+import {setErrorsForFilePath,clearErrors} from "./errorsCache";
 
 import equal = require('deep-equal');
 
@@ -29,9 +30,12 @@ function getTsbPath() {
 
 /** The active project name */
 let activeProjectName = '';
+
+/**  */
 export function setActiveProjectName(name:string){
     activeProjectName = name;
-    reloadTsb();
+    clearErrors();
+    sync();
 }
 
 /** A simple wrapper around json parse for strong typing + relative path soring */
@@ -65,6 +69,11 @@ function readTsb(): json.ParsedData<TsbJson> {
     return parsed;
 }
 
+/**
+ * Wraps up read tsb into something that returns the current project (if found)
+ * or creates one from tsconfig.json (if found)
+ * or errors
+ */
 export function getDefaultProject(): Promise<ProjectJson> {
 
     // if there is a tsb.json
@@ -118,7 +127,7 @@ flm.filePathsUpdated.on(function(data) {
     if (fsu.existsSync(expectedLocation) && !fmc.isFileOpen(expectedLocation)) {
         let tsbFile = fmc.getOpenFile(expectedLocation);
         tsbFile.onSavedFileChangedOnDisk.on(() => {
-            reloadTsb();
+            sync();
         });
     }
 });
@@ -126,7 +135,7 @@ flm.filePathsUpdated.on(function(data) {
 import * as projectCache from "./projectCache";
 
 /** convert active tsb project name to current project */
-function reloadTsb() {
+function sync() {
     getDefaultProject().then((projectJson) => {
         /// If you change tsb.json
         /// This is enough to justify a full sync
@@ -137,7 +146,6 @@ function reloadTsb() {
 
 
 import {cast} from "../../socket/socketServer";
-import {setErrorsForFilePath} from "./errorsCache";
 import {TypedEvent} from "../../common/events";
 export let currentTsbContents = new TypedEvent<TsbJson>();
 /**
@@ -147,7 +155,7 @@ export let currentTsbContents = new TypedEvent<TsbJson>();
  */
 export function start() {
     // Load up the tsb
-    reloadTsb();
+    sync();
 
     // Start watching / reporting tsb + its errors
     let expectedLocation = getTsbPath();

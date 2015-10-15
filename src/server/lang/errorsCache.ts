@@ -21,3 +21,8 @@ export function setErrorsForFilePath(details: { filePath: string, errors: string
 export function getErrors(){
     return _errorsByFilePath;
 }
+
+export function clearErrors() {
+    _errorsByFilePath = {};
+    errorsUpdated.emit({});
+}
