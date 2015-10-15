@@ -156,6 +156,7 @@ export let currentTsbContents = new TypedEvent<TsbJson>();
  * As soon as the server boots up we need to start watching tsb for details
  * and report any errors ... or provide the project details
  * TODO: if file doesn't exist on disk we are screwed
+ * (consolidated with the code in file list updated ^ as that works even if file doesn't exist to begin with)
  */
 export function start() {
     // Load up the tsb
