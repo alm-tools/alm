@@ -5,8 +5,16 @@
             "tsconfig": "./src/tsconfig.json"
         },
         {
-            "name": "invalidconfig",
-            "tsconfig": "./test/error/tsconfigInvalidJson/tsconfig.json"
+            "name": "tsconfigInvalidJson",
+            "tsconfig": "./tests/error/tsconfigInvalidJson/tsconfig.json"
+        },
+      	{   
+            "name": "tsconfigQueryPathDoesNotExist",
+            "tsconfig": "./this is probaby not a disk path :)"
+        },
+        {   
+            "name": "tsconfigNotFound",
+            "tsconfig": "tests/error/tsconfigNotFound"
         }
     ]
 }
