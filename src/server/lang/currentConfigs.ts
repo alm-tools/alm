@@ -29,8 +29,13 @@ function getTsbPath() {
 
 /** The active project name */
 let activeProjectName = '';
+export function setActiveProjectName(name:string){
+    activeProjectName = name;
+    reloadTsb();
+}
 
-export function readTsb(): json.ParsedData<TsbJson> {
+/** A simple wrapper around json parse for strong typing + relative path soring */
+function readTsb(): json.ParsedData<TsbJson> {
     let expectedLocation = getTsbPath();
 
     try {
@@ -123,10 +128,10 @@ import * as projectCache from "./projectCache";
 /** convert active tsb project name to current project */
 function reloadTsb() {
     getDefaultProject().then((projectJson) => {
-
         /// If you change tsb.json
         /// This is enough to justify a full sync
-        currentProject = projectCache.cacheAndCreateProject(projectCache.getProjectFileFromDisk(projectJson.tsconfig));
+        let projectFileDetails = projectCache.getProjectFileFromDisk(projectJson.tsconfig)
+        currentProject = projectCache.cacheAndCreateProject(projectFileDetails);
     });
 }
 
@@ -141,8 +146,11 @@ export let currentTsbContents = new TypedEvent<TsbJson>();
  * TODO: if file doesn't exist on disk we are screwed
  */
 export function start() {
-    let expectedLocation = getTsbPath();
+    // Load up the tsb
+    reloadTsb();
 
+    // Start watching / reporting tsb + its errors
+    let expectedLocation = getTsbPath();
     let file = fmc.getOrCreateOpenFile(expectedLocation);
     file.onSavedFileChangedOnDisk.on((evt) => {
         let contents = evt.contents;

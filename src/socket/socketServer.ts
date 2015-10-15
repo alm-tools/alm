@@ -60,6 +60,11 @@ namespace Server {
     export var currentTsbContents: typeof contract.server.currentTsbContents = (data) => {
         return currentConfigs.currentTsbContents.current();
     };
+    export var setActiveProjectName: typeof contract.server.setActiveProjectName = (data) => {
+        currentConfigs.setActiveProjectName(data.name);
+        return resolve({});
+    }
+
 
     /**
      * Error handling

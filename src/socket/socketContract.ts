@@ -25,6 +25,7 @@ export var server = {
      * config stuff
      */
     currentTsbContents: {} as QRFunction<{}, { projects: ProjectJson[] }>,
+    setActiveProjectName: {} as QRFunction<{name:string}, {}>,
 
     /**
      * Error stuff
