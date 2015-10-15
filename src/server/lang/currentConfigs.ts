@@ -22,6 +22,14 @@ export const errors = {
     ReadErrorTsb: "Failed to read file tsb.json",
 }
 
+/** Utility function so that I don't need to keep passing this around */
+function getTsbPath() {
+    return fsu.resolve(process.cwd(), "tsb.json");
+}
+
+/** The active project name */
+let activeProjectName = '';
+
 export function readTsb(): json.ParsedData<TsbJson> {
     let expectedLocation = getTsbPath();
 
@@ -52,25 +60,23 @@ export function readTsb(): json.ParsedData<TsbJson> {
     return parsed;
 }
 
-function getTsbPath() {
-    return fsu.resolve(process.cwd(), "tsb.json");
-}
-
 export function getDefaultProject(): Promise<ProjectJson> {
 
     // if there is a tsb.json
     // use it!
-    let found = readTsb();
+    let tsbContents = readTsb();
 
-    if (found.data && found.data.projects && found.data.projects[0]) {
-        let first = found.data.projects[0];
-        return Promise.resolve(found.data.projects[0]);
+    // If tsb has valid projects, return active (or first)
+    if (tsbContents.data && tsbContents.data.projects && tsbContents.data.projects.length) {
+        let first = tsbContents.data.projects[0];
+        let foundActive = tsbContents.data.projects.filter(p=> p.name == activeProjectName)[0];
+
+        return Promise.resolve(foundActive ? foundActive : first);
     }
 
-    // otherwise :
+    // otherwise create some from tsconfig
     return flm.filePathsUpdated.current().then((list) => {
         // Detect some tsconfig.json
-        // Return!
         let tsconfigs = list.filePaths.filter(t=> t.endsWith('tsconfig.json'));
         // exclude node_modules
         tsconfigs = tsconfigs.filter(t=> !t.includes('node_modules'));
@@ -83,12 +89,12 @@ export function getDefaultProject(): Promise<ProjectJson> {
             let tsconfig = tsconfigs[0];
 
             return {
-                name: 'auto',
+                name: '__auto__',
                 tsconfig
             };
         }
 
-        // If no tsconfig.json ... Abort for now!
+        // If no tsconfig.json ... abort for now!
         throw new Error('No tsconfig.json found!');
     });
 }
@@ -97,7 +103,6 @@ export function getDefaultProject(): Promise<ProjectJson> {
  * The currently active project
  */
 let currentProject: project.Project;
-let currentProjectJson: ProjectJson;
 
 /**
  * As soon as we get a new file listing ... check if tsb.json is there. If it is start watching / parsing it
@@ -113,25 +118,18 @@ flm.filePathsUpdated.on(function(data) {
     }
 });
 
-/** Check if tsb.json did indeed change  */
+import * as projectCache from "./projectCache";
+
+/** convert active tsb project name to current project */
 function reloadTsb() {
     getDefaultProject().then((projectJson) => {
-        if (equal(currentProjectJson, projectJson)) {
-            return;
-        }
 
         /// If you change tsb.json
         /// This is enough to justify a full sync
-        sync(projectJson);
+        currentProject = projectCache.cacheAndCreateProject(projectCache.getProjectFileFromDisk(projectJson.tsconfig));
     });
 }
 
-
-import * as projectCache from "./projectCache";
-/** All bets are off! */
-function sync(projectJson: ProjectJson) {
-    currentProject = projectCache.cacheAndCreateProject(projectCache.getProjectFileFromDisk(projectJson.tsconfig));
-}
 
 import {cast} from "../../socket/socketServer";
 import {setErrorsForFilePath} from "./errorsCache";
@@ -140,13 +138,13 @@ export let currentTsbContents = new TypedEvent<TsbJson>();
 /**
  * As soon as the server boots up we need to start watching tsb for details
  * and report any errors ... or provide the project details
- * TODO: or push a pseudo tsb.json
+ * TODO: if file doesn't exist on disk we are screwed
  */
-export function start(){
+export function start() {
     let expectedLocation = getTsbPath();
 
     let file = fmc.getOrCreateOpenFile(expectedLocation);
-    file.onSavedFileChangedOnDisk.on((evt)=>{
+    file.onSavedFileChangedOnDisk.on((evt) => {
         let contents = evt.contents;
         parseAndCastTsb(contents);
     });
@@ -155,10 +153,10 @@ export function start(){
     /**
       * If there are any errors we do not cast the bad project list
       */
-    function parseAndCastTsb(contents:string){
+    function parseAndCastTsb(contents: string) {
         let parsed = json.parse<TsbJson>(contents);
 
-        if (parsed.error){
+        if (parsed.error) {
             reportTsbErrors([parsed.error.message]);
             return;
         }
@@ -175,9 +173,9 @@ export function start(){
         currentTsbContents.emit(parsed.data);
     }
 
-    function reportTsbErrors(errors:string[]){
+    function reportTsbErrors(errors: string[]) {
         setErrorsForFilePath({
-            filePath:expectedLocation,
+            filePath: expectedLocation,
             errors: errors
         });
     }
