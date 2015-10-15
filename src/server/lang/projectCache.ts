@@ -113,9 +113,15 @@ function reportProjectFileErrors(ex:Error, filePath: string){
             filePath: details.projectFilePath,
             errors: [`${ex.message} : ${ex.details.errorMessage}`]
         });
-        // Watch this project file to see if user fixes errors
-        watchProjectFileIfNotDoingItAlready(details.projectFilePath);
     }
+    else {
+        setErrorsForFilePath({
+            filePath: filePath,
+            errors: [`${ex.message}`]
+        });
+    }
+    // Watch this project file to see if user fixes errors
+    watchProjectFileIfNotDoingItAlready(filePath);
 }
 
 /**

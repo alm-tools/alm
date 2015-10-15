@@ -159,7 +159,7 @@ export interface TypeScriptProjectFileDetails {
 //////////////////////////////////////////////////////////////////////
 
 export var errors = {
-    GET_PROJECT_INVALID_PATH: 'Invalid Path',
+    GET_PROJECT_INVALID_PATH: 'The path used to query for tsconfig.json does not exist',
     GET_PROJECT_NO_PROJECT_FOUND: 'No Project Found',
     GET_PROJECT_FAILED_TO_OPEN_PROJECT_FILE: 'Failed to fs.readFileSync the project file',
     GET_PROJECT_JSON_PARSE_FAILED: 'Failed to JSON.parse the project file',
@@ -366,7 +366,7 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptProjectFileDeta
         throw errorWithDetails(
             new Error(errors.GET_PROJECT_JSON_PARSE_FAILED), { projectFilePath: fsu.consistentPath(projectFile), errorMessage: res.error.message });
     }
-    
+
 
     // Setup default project options
     if (!projectSpec.compilerOptions) projectSpec.compilerOptions = {};
