@@ -8,7 +8,7 @@ import * as wd from "../disk/workingDir";
 import * as fmc from "../disk/fileModelCache";
 import * as tsconfig from "./core/tsconfig";
 import * as project from "./core/project";
-import {setErrorsForFilePath,clearErrors} from "./errorsCache";
+import {setErrorsForFilePath, clearErrors} from "./errorsCache";
 
 import equal = require('deep-equal');
 
@@ -31,8 +31,12 @@ function getTsbPath() {
 /** The active project name */
 let activeProjectName = '';
 
-/**  */
-export function setActiveProjectName(name:string){
+/**
+  * Chages the active project.
+  * Clear any previously reported errors and recalculate the errors
+  * This is what the user should call if they want to manually sync as well
+  */
+export function setActiveProjectName(name: string) {
     activeProjectName = name;
     clearErrors();
     sync();
