@@ -62,10 +62,10 @@ export class Root extends BaseComponent<{}, State>{
         slv.selectListView = this.refs.selectListView;
 
         let tsb:{projects:ProjectJson[]};
-        server.currentTsb({}).then(res => {
+        server.currentTsbContents({}).then(res => {
             tsb = res;
         });
-        cast.currentTsbUpdated.on(res => {
+        cast.currentTsbContentsUpdated.on(res => {
             tsb = res;
         });
 

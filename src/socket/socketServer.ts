@@ -57,8 +57,8 @@ namespace Server {
     /**
      * Config stuff
      */
-    export var currentTsb: typeof contract.server.currentTsb = (data) => {
-        return currentConfigs.currentTsb.current();
+    export var currentTsbContents: typeof contract.server.currentTsbContents = (data) => {
+        return currentConfigs.currentTsbContents.current();
     };
 
     /**
@@ -88,7 +88,7 @@ export function register(app: http.Server) {
 
     savedFileChangedOnDisk.pipe(cast.savedFileChangedOnDisk);
     errorCache.errorsUpdated.pipe(cast.errorsUpdated);
-    currentConfigs.currentTsb.pipe(cast.currentTsbUpdated);
+    currentConfigs.currentTsbContents.pipe(cast.currentTsbContentsUpdated);
 
     // For testing
     // setInterval(() => cast.hello.emit({ text: 'nice' }), 1000);

@@ -24,7 +24,7 @@ export var server = {
     /**
      * config stuff
      */
-    currentTsb: {} as QRFunction<{}, { projects: ProjectJson[] }>,
+    currentTsbContents: {} as QRFunction<{}, { projects: ProjectJson[] }>,
 
     /**
      * Error stuff
@@ -50,5 +50,5 @@ export var cast = {
     errorsUpdated: new TypedEvent<ErrorsByFilePath>(),
 
     /** Tsb updated */
-    currentTsbUpdated: new TypedEvent<{projects: ProjectJson[]}>()
+    currentTsbContentsUpdated: new TypedEvent<{projects: ProjectJson[]}>()
 }

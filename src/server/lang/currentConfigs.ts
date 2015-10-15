@@ -136,7 +136,7 @@ function sync(projectJson: ProjectJson) {
 import {cast} from "../../socket/socketServer";
 import {setErrorsForFilePath} from "./errorsCache";
 import {TypedEvent} from "../../common/events";
-export let currentTsb = new TypedEvent<TsbJson>();
+export let currentTsbContents = new TypedEvent<TsbJson>();
 /**
  * As soon as the server boots up we need to start watching tsb for details
  * and report any errors ... or provide the project details
@@ -172,7 +172,7 @@ export function start(){
                 return p;
             });
         }
-        currentTsb.emit(parsed.data);
+        currentTsbContents.emit(parsed.data);
     }
 
     function reportTsbErrors(errors:string[]){
