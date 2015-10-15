@@ -49,7 +49,9 @@ export class SelectListView extends BaseComponent<Props, State>{
         data: T[];
         render: (t: T) => any;
 
-        /** Whatever you return from this you do not need to show yourself. This will be shown for you */
+        /**
+         * Whatever you return from this you do not need to show yourself. This will be shown for you *highlighted* correctly as a div after your content
+         */
         textify: (t: T) => string;
     }) {
         this.setState({
@@ -103,8 +105,11 @@ export class SelectListView extends BaseComponent<Props, State>{
             } : {};
             return (
                 <div key={i} style={[selectedStyle, styles.padded2]}>
-                        {this.state.render(item) }
-                    </div>
+                        {this.state.render(item)}
+                        <div>
+
+                        </div>
+                </div>
             );
         });
 
@@ -180,8 +185,10 @@ export class SelectListView extends BaseComponent<Props, State>{
     };
 }
 
-
-function getFilteredItems<T>(args: { items: T[], textify: (item: T) => string, filterValue: string }): T[] {
+/**
+ * Applies fuzzy filter to the text version of each item returning the matched items
+ */
+export function getFilteredItems<T>(args: { items: T[], textify: (item: T) => string, filterValue: string }): T[] {
     let textValues = args.items.map(args.textify);
 
     let textValuesToItem = {} as any;
@@ -190,4 +197,74 @@ function getFilteredItems<T>(args: { items: T[], textify: (item: T) => string, f
     })
 
     return fuzzyFilter(textValues, args.filterValue).map((textvalue) => textValuesToItem[textvalue]);
+}
+
+
+/**
+ * Based on https://github.com/atom/fuzzy-finder/blob/51f1f2415ecbfab785596825a011c1d2fa2658d3/lib/fuzzy-finder-view.coffee#L56-L74
+ */
+export function renderMatchedSegments(result: string, query: string): JSX.Element[] {
+    // A data structure which is efficient to render
+    type MatchedSegments = { str: string, matched: boolean }[];
+
+    // local function that creates the *matched segment* data structure
+    function getMatchedSegments(result: string, query: string) {
+        let matches = match(result, query);
+        let matchMap = createMap(matches);
+        // collapse contiguous sections into a single `<strong>`
+        let currentUnmatchedCharacters = [];
+        let currentMatchedCharacters = [];
+        let combined: MatchedSegments = [];
+        function closeOffUnmatched() {
+            if (currentUnmatchedCharacters.length) {
+                combined.push({ str: currentUnmatchedCharacters.join(''), matched: false });
+                currentUnmatchedCharacters = [];
+            }
+        }
+        function closeOffMatched() {
+            if (currentMatchedCharacters.length) {
+                combined.push({ str: currentMatchedCharacters.join(''), matched: true });
+                currentMatchedCharacters = [];
+            }
+        }
+        result.split('').forEach((c, i) => {
+            let isMatched = matchMap[i];
+            if (isMatched) {
+                if (currentMatchedCharacters.length) {
+                    currentMatchedCharacters.push(c);
+                }
+                else {
+                    currentMatchedCharacters = [c]
+                    // close off any unmatched characters
+                    closeOffUnmatched();
+                }
+            }
+            else {
+                if (currentUnmatchedCharacters.length) {
+                    currentUnmatchedCharacters.push(c);
+                }
+                else {
+                    currentUnmatchedCharacters = [c]
+                    // close off any matched characters
+                    closeOffMatched();
+                }
+            }
+        });
+        closeOffMatched();
+        closeOffUnmatched();
+        return combined;
+    }
+
+    /**
+     * Rendering the matched segment data structure is trivial
+     */
+    let matched = getMatchedSegments(result, query);
+    return matched.map((item, i) => {
+        if (item.matched) {
+            return <strong key={i}>{item.str}</strong>;
+        }
+        else {
+            return <span key={i}>{item.str}</span>;
+        }
+    });
 }

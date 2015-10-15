@@ -9,6 +9,7 @@ import {debounce,createMap,rangeLimited,getFileName} from "../common/utils";
 import {cast, server} from "../socket/socketClient";
 import * as commands from "./commands/commands";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
+import {renderMatchedSegments} from "./selectListView";
 
 export interface Props {
 }
@@ -143,76 +144,11 @@ export class OmniSearch extends BaseComponent<Props, State>{
     };
 }
 
-
-/**
- * Based on https://github.com/atom/fuzzy-finder/blob/51f1f2415ecbfab785596825a011c1d2fa2658d3/lib/fuzzy-finder-view.coffee#L56-L74
- */
-function getMatchedSegments(result: string, query: string) {
-    let matches = match(result, query);
-    let matchMap = createMap(matches);
-    // collapse contiguous sections into a single `<strong>`
-    let currentUnmatchedCharacters = [];
-    let currentMatchedCharacters = [];
-    let combined: { str: string, matched: boolean }[] = [];
-    function closeOffUnmatched() {
-        if (currentUnmatchedCharacters.length) {
-            combined.push({ str: currentUnmatchedCharacters.join(''), matched: false });
-            currentUnmatchedCharacters = [];
-        }
-    }
-    function closeOffMatched() {
-        if (currentMatchedCharacters.length) {
-            combined.push({ str: currentMatchedCharacters.join(''), matched: true });
-            currentMatchedCharacters = [];
-        }
-    }
-    result.split('').forEach((c, i) => {
-        let isMatched = matchMap[i];
-        if (isMatched) {
-            if (currentMatchedCharacters.length) {
-                currentMatchedCharacters.push(c);
-            }
-            else {
-                currentMatchedCharacters = [c]
-                // close off any unmatched characters
-                closeOffUnmatched();
-            }
-        }
-        else {
-            if (currentUnmatchedCharacters.length) {
-                currentUnmatchedCharacters.push(c);
-            }
-            else {
-                currentUnmatchedCharacters = [c]
-                // close off any matched characters
-                closeOffMatched();
-            }
-        }
-    });
-    closeOffMatched();
-    closeOffUnmatched();
-    return combined;
-}
-
-function renderMatchedSegments(matched: { str: string, matched: boolean }[]): JSX.Element[] {
-    return matched.map((item, i) => {
-        if (item.matched) {
-            return <strong key={i}>{item.str}</strong>;
-        }
-        else {
-            return <span key={i}>{item.str}</span>;
-        }
-    });
-}
-
 /** Specific to omniSearch */
 function highlightMatch(result: string, query: string, selected: boolean): JSX.Element {
-    let matchesInPath = getMatchedSegments(result, query);
-    let matchesInFileName = getMatchedSegments(getFileName(result), query);
-
     // Create rendered
-    let renderedPath = renderMatchedSegments(matchesInPath);
-    let renderedFileName = renderMatchedSegments(matchesInFileName);
+    let renderedPath = renderMatchedSegments(result,query);
+    let renderedFileName = renderMatchedSegments(getFileName(result), query);
 
     let selectedStyle = selected ? {
         background: 'grey',
