@@ -41,11 +41,15 @@ export class SelectListView extends BaseComponent<Props, State>{
 
     filteredResults: DataItem[];
 
-    /** The main interaction API */
+    /**
+     * The main interaction API
+     */
     show<T>(args: {
         header: string;
         data: T[];
         render: (t: T) => any;
+
+        /** Whatever you return from this you do not need to show yourself. This will be shown for you */
         textify: (t: T) => string;
     }) {
         this.setState({
@@ -146,14 +150,13 @@ export class SelectListView extends BaseComponent<Props, State>{
         });
 
         this.filteredResults = this.filteredResults.slice(0, this.maxShowCount);
-
         this.setState({ filterValue, selectedIndex: 0 });
     }, 50);
     incrementSelected = debounce(() => {
-        // this.setState({ selectedIndex: rangeLimited({ num: ++this.state.selectedIndex, min: 0, max: Math.min(this.maxShowCount - 1, this.filteredResults.length - 1), loopAround: true }) });
+        this.setState({ selectedIndex: rangeLimited({ num: ++this.state.selectedIndex, min: 0, max: Math.min(this.maxShowCount - 1, this.filteredResults.length - 1), loopAround: true }) });
     }, 0, true);
     decrementSelected = debounce(() => {
-        // this.setState({ selectedIndex: rangeLimited({ num: --this.state.selectedIndex, min: 0, max: Math.min(this.maxShowCount - 1, this.filteredResults.length - 1), loopAround: true }) });
+        this.setState({ selectedIndex: rangeLimited({ num: --this.state.selectedIndex, min: 0, max: Math.min(this.maxShowCount - 1, this.filteredResults.length - 1), loopAround: true }) });
     }, 0, true);
     onChangeSelected = (e) => {
         if (e.key == 'ArrowUp') {
