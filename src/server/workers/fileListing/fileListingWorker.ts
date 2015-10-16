@@ -55,6 +55,11 @@ namespace Worker {
         watcher.on('unlink', sendNewFileList);
         watcher.on('unlinkDir', sendNewFileList);
 
+        // Just for changes
+        watcher.on('change', (path) => {
+            master.fileChanged({ filePath: path });
+        });
+
         return Promise.resolve({});
     }
 }

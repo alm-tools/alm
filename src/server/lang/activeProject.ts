@@ -130,6 +130,18 @@ flm.filePathsUpdated.on(function(data) {
 });
 
 /**
+ * As soon as we get a changed file ....
+ * This allows us to lazily open project files as changes are detected
+ */
+flm.fileChangedOnDisk.on((evt)=>{
+    // Check if its a part of the current project .... if not ignore :)
+    if (currentProject && currentProject.includesSourceFile(evt.filePath)) {
+        let file = fmc.getOrCreateOpenFile(evt.filePath);
+        currentProject.languageServiceHost.updateScript(file.config.filePath,file.getContents());
+    }
+});
+
+/**
   * Note: If there are any errors we do not cast the bad project list
   * But we always report the correct errors (or clear them)
   */
@@ -211,8 +223,10 @@ namespace ConfigFile {
         var project = new Project(configFile);
 
         // Update the language service host for any unsaved changes
-        getOpenFiles().forEach(e=> {
-            project.languageServiceHost.updateScript(e.config.filePath, e.getContents());
+        getOpenFiles().forEach(fileModel=> {
+            if (project.includesSourceFile(fileModel.config.filePath)) {
+                project.languageServiceHost.updateScript(fileModel.config.filePath, fileModel.getContents());
+            }
         });
 
         watchProjectFileIfNotDoingItAlready(configFile.projectFilePath);

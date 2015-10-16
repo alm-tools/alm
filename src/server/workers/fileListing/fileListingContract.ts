@@ -13,5 +13,6 @@ export var worker = {
 
 export var master = {
     increment: {} as sw.QRFunction<{ num: number }, { num: number }>,
-    fileListUpdated: {} as sw.QRFunction<({ relativeFilePaths: string[] }), any>
+    fileListUpdated: {} as sw.QRFunction<({ relativeFilePaths: string[] }), any>,
+    fileChanged: {} as sw.QRFunction<({ filePath: string }), any>
 }

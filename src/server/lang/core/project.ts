@@ -20,7 +20,6 @@ export class Project {
             this.languageServiceHost.addScript(file);
         });
 
-
         this.languageService = ts.createLanguageService(this.languageServiceHost, ts.createDocumentRegistry());
     }
 
@@ -32,7 +31,7 @@ export class Project {
         return files;
     }
 
-    public includesSourceFile(fileName: string) {
-        return (this.getProjectSourceFiles().filter((f) => f.fileName === fileName).length === 1);
+    public includesSourceFile(filePath: string) {
+        return (this.getProjectSourceFiles().filter((f) => f.fileName === filePath).length === 1);
     }
 }

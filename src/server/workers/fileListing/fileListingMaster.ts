@@ -6,7 +6,7 @@ import {TypedEvent} from "../../../common/events";
 import * as workingDir from "../../disk/workingDir";
 
 export var filePathsUpdated = new TypedEvent<{ filePaths: string[] }>();
-export var fileChanged = new TypedEvent<{filePath:string}>();
+export var fileChangedOnDisk = new TypedEvent<{filePath:string}>();
 
 namespace Master {
     export var increment: typeof contract.master.increment = (q) => {
@@ -21,6 +21,10 @@ namespace Master {
         let filePaths = q.relativeFilePaths.map(rfp => workingDir.makeAbsolute(rfp));
         filePathsUpdated.emit({ filePaths });
 
+        return Promise.resolve({});
+    }
+    export var fileChanged: typeof contract.master.fileChanged = (q) => {
+        fileChangedOnDisk.emit({ filePath: q.filePath });
         return Promise.resolve({});
     }
 }
