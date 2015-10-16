@@ -5,7 +5,7 @@ import * as fsu from "../server/utils/fsu";
 import * as fslw from "../server/workers/fileListing/fileListingMaster";
 import * as workingDir from "../server/disk/workingDir";
 import {FileModel} from "../server/disk/fileModel";
-import * as currentConfigs from "../server/lang/currentConfigs";
+import * as activeProject from "../server/lang/activeProject";
 let resolve = sls.resolve;
 
 import {savedFileChangedOnDisk, getOpenFile, getOrCreateOpenFile, closeOpenFile} from "../server/disk/fileModelCache";
@@ -58,10 +58,10 @@ namespace Server {
      * Config stuff
      */
     export var currentTsbContents: typeof contract.server.currentTsbContents = (data) => {
-        return currentConfigs.currentTsbContents.current();
+        return activeProject.currentTsbContents.current();
     };
     export var setActiveProjectName: typeof contract.server.setActiveProjectName = (data) => {
-        currentConfigs.setActiveProjectName(data.name);
+        activeProject.setActiveProjectName(data.name);
         return resolve({});
     }
 
@@ -93,7 +93,7 @@ export function register(app: http.Server) {
 
     savedFileChangedOnDisk.pipe(cast.savedFileChangedOnDisk);
     errorCache.errorsUpdated.pipe(cast.errorsUpdated);
-    currentConfigs.currentTsbContents.pipe(cast.currentTsbContentsUpdated);
+    activeProject.currentTsbContents.pipe(cast.currentTsbContentsUpdated);
 
     // For testing
     // setInterval(() => cast.hello.emit({ text: 'nice' }), 1000);

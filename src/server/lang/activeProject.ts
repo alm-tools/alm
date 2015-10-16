@@ -1,5 +1,5 @@
 /**
- * Reader for tsconfig.json
+ * Tracks tsb.json and the active project within that
  */
 import * as json from "../../common/json";
 import * as fsu from "../utils/fsu";
@@ -78,7 +78,7 @@ function readTsb(): json.ParsedData<TsbJson> {
  * or creates one from tsconfig.json (if found)
  * or errors
  */
-export function getDefaultProject(): Promise<ProjectJson> {
+export function getCurrentOrDefaultProjectDetails(): Promise<ProjectJson> {
 
     // if there is a tsb.json
     // use it!
@@ -166,9 +166,9 @@ import * as projectCache from "./projectCache";
 
 /** convert active tsb project name to current project */
 function sync() {
-    getDefaultProject().then((projectJson) => {
-        let projectFileDetails = projectCache.getProjectFileFromDisk(projectJson.tsconfig)
-        currentProject = projectCache.cacheAndCreateProject(projectFileDetails);
+    getCurrentOrDefaultProjectDetails().then((projectJson) => {
+        let configFileDetails = projectCache.getConfigFileFromDisk(projectJson.tsconfig)
+        currentProject = projectCache.cacheAndCreateProject(configFileDetails);
     });
 }
 

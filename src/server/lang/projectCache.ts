@@ -68,16 +68,16 @@ export function resetCache(query: SoftResetQuery) {
 
 
 /** Create a project from a project file */
-export function cacheAndCreateProject(projectFile: tsconfig.TypeScriptProjectFileDetails) {
-    var project = projectByProjectFilePath[projectFile.projectFilePath] = new Project(projectFile);
-    projectFile.project.files.forEach((file) => projectByFilePath[file] = project);
+export function cacheAndCreateProject(configFile: tsconfig.TypeScriptConfigFileDetails) {
+    var project = projectByProjectFilePath[configFile.projectFilePath] = new Project(configFile);
+    configFile.project.files.forEach((file) => projectByFilePath[file] = project);
 
     // Update the language service host for any unsaved changes
     getOpenFiles().forEach(e=> {
         project.languageServiceHost.updateScript(e.config.filePath, e.getContents());
     });
 
-    watchProjectFileIfNotDoingItAlready(projectFile.projectFilePath);
+    watchProjectFileIfNotDoingItAlready(configFile.projectFilePath);
 
     return project;
 }
@@ -94,7 +94,7 @@ export function getOrCreateProject(filePath: string) {
     else {
         // We are in a bad shape. Why didn't we know of this file before?
         // Even if we find the projectFile we should invalidate it.
-        var projectFile = getProjectFileFromDisk(filePath);
+        var projectFile = getConfigFileFromDisk(filePath);
         var project = cacheAndCreateProject(projectFile);
         return project;
     }
@@ -155,7 +155,7 @@ function watchProjectFileIfNotDoingItAlready(projectFilePath: string) {
 
         // Reload the project file from the file system and re cache it
         try {
-            var projectFile = getProjectFileFromDisk(projectFilePath);
+            var projectFile = getConfigFileFromDisk(projectFilePath);
             cacheAndCreateProject(projectFile);
             setErrorsForFilePath({filePath: projectFile.projectFilePath, errors:[]});
         }
@@ -171,7 +171,7 @@ function watchProjectFileIfNotDoingItAlready(projectFilePath: string) {
  * This explicilty loads the project from the filesystem
  * For (lib.d.ts) and other (.d.ts files where project is not found) creation is done in memory
  */
-export function getProjectFileFromDisk(filePath: string): tsconfig.TypeScriptProjectFileDetails {
+export function getConfigFileFromDisk(filePath: string): tsconfig.TypeScriptConfigFileDetails {
 
     try {
         // If we are asked to look at stuff in lib.d.ts create its own project

@@ -219,7 +219,7 @@ export class LanguageServiceHost implements ts.LanguageServiceHost {
      */
     fileNameToScript: { [fileName: string]: ScriptInfo } = Object.create(null);
 
-    constructor(private config: tsconfig.TypeScriptProjectFileDetails) {
+    constructor(private config: tsconfig.TypeScriptConfigFileDetails) {
         // Add the `lib.d.ts`
         if (!config.project.compilerOptions.noLib) {
           this.addScript(getDefaultLibFilePath(config.project.compilerOptions));

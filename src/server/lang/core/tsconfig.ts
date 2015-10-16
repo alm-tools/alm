@@ -146,7 +146,7 @@ export interface TypeScriptProjectSpecification {
 
 ///////// FOR USE WITH THE API /////////////
 
-export interface TypeScriptProjectFileDetails {
+export interface TypeScriptConfigFileDetails {
     /** The path to the project file. This acts as the baseDIR */
     projectFileDirectory: string;
     /** The actual path of the project file (including tsconfig.json) */
@@ -297,7 +297,7 @@ function tsToRawCompilerOptions(compilerOptions: ts.CompilerOptions): CompilerOp
     return jsonOptions;
 }
 
-export function getDefaultInMemoryProject(srcFile: string): TypeScriptProjectFileDetails {
+export function getDefaultInMemoryProject(srcFile: string): TypeScriptConfigFileDetails {
     var dir = fs.lstatSync(srcFile).isDirectory() ? srcFile : path.dirname(srcFile);
 
     var files = [srcFile];
@@ -327,7 +327,7 @@ export function getDefaultInMemoryProject(srcFile: string): TypeScriptProjectFil
  * Use this to bootstrap the UI for what project the user might want to work on.
  * Note: Definition files (.d.ts) are considered thier own project
  */
-export function getProjectSync(pathOrSrcFile: string): TypeScriptProjectFileDetails {
+export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetails {
 
     if (!fs.existsSync(pathOrSrcFile)) {
         throw new Error(errors.GET_PROJECT_INVALID_PATH);

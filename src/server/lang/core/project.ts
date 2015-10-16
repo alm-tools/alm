@@ -12,7 +12,7 @@ export class Project {
     public languageServiceHost: languageServiceHost.LanguageServiceHost;
     public languageService: ts.LanguageService;
 
-    constructor(public projectFile: tsconfig.TypeScriptProjectFileDetails) {
+    constructor(public projectFile: tsconfig.TypeScriptConfigFileDetails) {
         this.languageServiceHost = new languageServiceHost.LanguageServiceHost(projectFile);
 
         // Add all the files
