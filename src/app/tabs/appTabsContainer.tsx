@@ -56,16 +56,16 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     /** For Demo only */
     setupDemoTab(){
         server.makeAbsolute({ relativeFilePath: 'node_modules/ntypescript/src/compiler/checker.ts' }).then(abs => {
-            commands.docOpenFile.emit({ filePath: abs.filePath });
+            commands.doOpenFile.emit({ filePath: abs.filePath });
         });
         server.makeAbsolute({ relativeFilePath: 'src/app/root.tsx'}).then(abs => {
-            commands.docOpenFile.emit({ filePath: abs.filePath });
+            commands.doOpenFile.emit({ filePath: abs.filePath });
         });
         server.makeAbsolute({ relativeFilePath: 'src/app/root.js'}).then(abs => {
-            commands.docOpenFile.emit({ filePath: abs.filePath });
+            commands.doOpenFile.emit({ filePath: abs.filePath });
         });
         server.makeAbsolute({ relativeFilePath: 'src/bas.ts'}).then(abs => {
-            commands.docOpenFile.emit({ filePath: abs.filePath });
+            commands.doOpenFile.emit({ filePath: abs.filePath });
         });
     }
 
@@ -79,7 +79,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.selectTab(selected);
         });
 
-        commands.docOpenFile.on((e) =>{
+        commands.doOpenFile.on((e) =>{
             let codeTab: tab.TabInstance = {
                 id: createId(),
                 url: `file://${e.filePath}`,

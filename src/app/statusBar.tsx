@@ -111,6 +111,6 @@ export class StatusBar extends BaseComponent<Props, State>{
     }
 
     openFile = (filePath: string, error?: CodeError) => {
-        commands.docOpenFile.emit({ filePath: filePath });
+        commands.doOpenFile.emit({ filePath: filePath });
     }
 }

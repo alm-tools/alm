@@ -140,7 +140,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
         let relativeFilePath = this.filteredResults[index];
         if (relativeFilePath) {
             server.makeAbsolute({ relativeFilePath }).then(abs => {
-                commands.docOpenFile.emit({ filePath: abs.filePath });
+                commands.doOpenFile.emit({ filePath: abs.filePath });
             });
         }
         this.closeOmniSearch();
