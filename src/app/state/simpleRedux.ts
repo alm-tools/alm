@@ -23,6 +23,10 @@ export class SimpleRedux<State>{
         return dispatcher;
     }
 
+    getState = (): State => {
+        return this.store.getState();
+    }
+
     private _reducer = (state: State = this.initialState, action: any): State => {
         if (this._listeners[action.type])
             return this._listeners[action.type](state, action.payload);
