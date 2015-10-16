@@ -14,9 +14,9 @@ export interface Props extends React.Props<any> {
     // from react-redux ... connected below
     errorsExpanded?: boolean;
     activeProject?: string;
+    errorsByFilePath?: ErrorsByFilePath;
 }
 export interface State {
-    errorsByFilePath?: ErrorsByFilePath;
 }
 
 /**
@@ -25,42 +25,39 @@ export interface State {
 export var statusBar: StatusBar;
 
 @connect((state: StoreState): Props => {
-    return { errorsExpanded: state.errorsExpanded, activeProject: state.activeProject };
+    return {
+        errorsExpanded: state.errorsExpanded,
+        activeProject: state.activeProject,
+        errorsByFilePath: state.errorsByFilePath
+    };
 })
 @ui.Radium
 export class StatusBar extends BaseComponent<Props, State>{
     constructor(props:Props){
         super(props);
         this.state = {
-            errorsByFilePath: {}
         }
     }
 
     componentDidMount() {
-        server.getErrors({}).then((details)=>{
-            this.setState({errorsByFilePath : details});
-        })
-        cast.errorsUpdated.on((details)=>{
-            this.setState({errorsByFilePath : details});
-        });
     }
 
     render(){
 
         let activeProject = this.props.activeProject;
-        let errorCount = utils.selectMany(Object.keys(this.state.errorsByFilePath).map((k)=>this.state.errorsByFilePath[k])).length;
+        let errorCount = utils.selectMany(Object.keys(this.props.errorsByFilePath).map((k)=>this.props.errorsByFilePath[k])).length;
 
         let errorPanel = null;
         if (this.props.errorsExpanded){
             errorPanel = <div style={styles.errorsPanel.main}>
             {
                 errorCount?
-                Object.keys(this.state.errorsByFilePath)
-                .filter(filePath=>!!this.state.errorsByFilePath[filePath].length)
+                Object.keys(this.props.errorsByFilePath)
+                .filter(filePath=>!!this.props.errorsByFilePath[filePath].length)
                 .map((filePath,i)=>{
 
                     let errors =
-                        this.state.errorsByFilePath[filePath]
+                        this.props.errorsByFilePath[filePath]
                             .map((e, j) => (
                                 <div key={`${i}:${j}`} style={[styles.hand]} onClick={()=>this.openFile(filePath,e)}>
                                         <div style={[styles.hand,styles.errorsPanel.errorMessage]}>

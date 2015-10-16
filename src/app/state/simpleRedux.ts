@@ -1,7 +1,7 @@
 import {createStore} from "redux";
 
 /**
- * Instead of creating a "reducer" (with a switch statement!) + "actionCreator" 
+ * Instead of creating a "reducer" (with a switch statement!) + "actionCreator"
  * You just call `add` to provide a typeSafe "reducer" and we give you a typeSafe "actionCreator"
  */
 export class SimpleRedux<State>{
@@ -12,13 +12,13 @@ export class SimpleRedux<State>{
         this.store = createStore(this._reducer);
     }
 
-    add<Payload>(type: string, reducer: (state: State, payload: Payload) => State): { (payload: Payload): void; } {
+    add<Payload>(usefulNameForDebugging: string, reducer: (state: State, payload: Payload) => State): { (payload: Payload): void; } {
         let dispatcher = (payload) => this.store.dispatch({
-            type: type,
+            type: usefulNameForDebugging,
             payload: payload
         });
-        
-        this._listeners[type] = reducer;
+
+        this._listeners[usefulNameForDebugging] = reducer;
 
         return dispatcher;
     }

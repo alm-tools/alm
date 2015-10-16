@@ -5,9 +5,10 @@ import {Root} from "./root";
 import * as commands from "./commands/commands";
 import * as React from "react";
 import { Provider } from 'react-redux';
+import * as state from "./state/state";
 import {store} from "./state/state";
 
-import {server} from "../socket/socketClient";
+import {server, cast} from "../socket/socketClient";
 var Modal = require('react-modal');
 
 
@@ -34,4 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // For testing
     // server.echo({text:"123",num:345}).then((res)=>console.log(res));
+
+    // Anything that should mutate the state
+    server.getErrors({}).then((errorsByFilePath)=>{
+        state.setErrorsByFilePath(errorsByFilePath);
+    })
+    cast.errorsUpdated.on((errorsByFilePath)=>{
+        state.setErrorsByFilePath(errorsByFilePath);
+    });
 });
