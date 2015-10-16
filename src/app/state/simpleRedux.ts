@@ -29,7 +29,18 @@ export class SimpleRedux<State>{
 
     private _reducer = (state: State = this.initialState, action: any): State => {
         if (this._listeners[action.type])
-            return this._listeners[action.type](state, action.payload);
+            return this._extendState(state, this._listeners[action.type](state, action.payload));
         else return state;
+    }
+
+    private _extendState(state: State, newState: State): State {
+        let result = {};
+        for (let key in state) {
+            result[key] = state[key];
+        }
+        for (let key in newState) {
+            result[key] = newState[key];
+        }
+        return result as State;
     }
 }
