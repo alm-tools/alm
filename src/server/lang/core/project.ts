@@ -12,11 +12,11 @@ export class Project {
     public languageServiceHost: languageServiceHost.LanguageServiceHost;
     public languageService: ts.LanguageService;
 
-    constructor(public projectFile: tsconfig.TypeScriptConfigFileDetails) {
-        this.languageServiceHost = new languageServiceHost.LanguageServiceHost(projectFile);
+    constructor(public configFile: tsconfig.TypeScriptConfigFileDetails) {
+        this.languageServiceHost = new languageServiceHost.LanguageServiceHost(configFile);
 
         // Add all the files
-        projectFile.project.files.forEach((file) => {
+        configFile.project.files.forEach((file) => {
             this.languageServiceHost.addScript(file);
         });
 
@@ -26,7 +26,7 @@ export class Project {
 
     /** all files except lib.d.ts  */
     public getProjectSourceFiles(): ts.SourceFile[] {
-        var libFile = languageServiceHost.getDefaultLibFilePath(this.projectFile.project.compilerOptions);
+        var libFile = languageServiceHost.getDefaultLibFilePath(this.configFile.project.compilerOptions);
         var files
             = this.languageService.getProgram().getSourceFiles().filter(x=> x.fileName !== libFile);
         return files;

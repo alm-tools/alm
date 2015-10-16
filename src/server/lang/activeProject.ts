@@ -267,10 +267,10 @@ namespace ConfigFile {
             }
 
             // if not the active project
-            if (!currentProject || !currentProject.projectFile || !currentProject.projectFile.projectFilePath) {
+            if (!currentProject || !currentProject.configFile || !currentProject.configFile.projectFilePath) {
                 return;
             }
-            if (projectFilePath !== currentProject.projectFile.projectFilePath){
+            if (projectFilePath !== currentProject.configFile.projectFilePath){
                 return;
             }
 
