@@ -105,7 +105,7 @@ export class SelectListView extends BaseComponent<Props, State>{
                 color: 'white'
             } : {};
             return (
-                <div key={i} style={[selectedStyle, styles.padded2]}>
+                <div key={i} style={[selectedStyle, styles.padded2, styles.hand]} onClick={()=>this.selectIndex(i)}>
                         {this.state.render(item, renderMatchedSegments(this.state.textify(item), this.state.filterValue)) }
                 </div>
             );
@@ -172,11 +172,14 @@ export class SelectListView extends BaseComponent<Props, State>{
         }
         if (e.key == 'Enter') {
             e.preventDefault();
-            let result = this.filteredResults[this.state.selectedIndex];
-            this.state.onSelect(result);
-            this.closeOmniSearch();
+            this.selectIndex(this.state.selectedIndex);
         }
     };
+    selectIndex = (index: number)=> {
+        let result = this.filteredResults[index];
+        this.state.onSelect(result);
+        this.closeOmniSearch();
+    }
 }
 
 /**
