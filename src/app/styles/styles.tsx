@@ -100,7 +100,8 @@ export namespace errorsPanel {
         fontFamily: codeFont.fontFamily,
         padding: '6px',
         borderTop: '2px solid grey',
-        height: '150px'
+        height: '150px',
+        overflow: 'auto'
     }
 
     export let filePath = {
