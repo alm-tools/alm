@@ -5,7 +5,7 @@ import {Root} from "./root";
 import * as commands from "./commands/commands";
 import * as React from "react";
 import { Provider } from 'react-redux';
-import {store} from "../state/state";
+import {store} from "./state/state";
 
 import {server} from "../socket/socketClient";
 var Modal = require('react-modal');

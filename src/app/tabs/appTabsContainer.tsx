@@ -13,7 +13,7 @@ import {server} from "../../socket/socketClient";
 import {rangeLimited} from "../../common/utils";
 import {statusBar} from "../statusBar";
 
-import {setActiveProject,StoreState} from "../../state/state";
+import {setActiveProject,StoreState} from "../state/state";
 import {connect} from "react-redux";
 
 export interface Props extends React.Props<any> {

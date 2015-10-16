@@ -8,7 +8,7 @@ import * as ui from "./ui";
 import {cast,server} from "../socket/socketClient";
 
 import {connect} from "react-redux";
-import {StoreState,expandErrors,collapseErrors} from "../state/state";
+import {StoreState,expandErrors,collapseErrors} from "./state/state";
 
 export interface Props extends React.Props<any> {
     // from react-redux ... connected below
