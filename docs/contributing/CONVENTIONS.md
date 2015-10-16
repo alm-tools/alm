@@ -12,3 +12,6 @@
 
 # Stream
 * If there is something that we care about initially as well as updates use `foo`/`fooUpdated` e.g. `fileList`/`fileListUpdated`
+
+# `line` , `ch`
+Always `0` based, unless explicitly marked to be different.
