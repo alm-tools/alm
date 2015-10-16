@@ -2,6 +2,7 @@ import {FileModel} from "./fileModel";
 import {TypedEvent} from "../../common/events";
 
 export var savedFileChangedOnDisk = new TypedEvent<{ filePath: string; contents: string }>();
+export var didEdit = new TypedEvent<{ filePath: string; edit: CodeEdit }>();
 
 let openFiles: FileModel[] = [];
 export function getOpenFile(filePath: string) {
@@ -18,6 +19,9 @@ export function getOrCreateOpenFile(filePath: string) {
         file.onSavedFileChangedOnDisk.on((evt) => {
             savedFileChangedOnDisk.emit({ filePath, contents: evt.contents });
         });
+        file.didEdit.on((evt) => {
+            didEdit.emit({ filePath, edit: evt.codeEdit });
+        });
         openFiles.push(file);
     }
     return file;
@@ -25,7 +29,7 @@ export function getOrCreateOpenFile(filePath: string) {
 export function closeOpenFile(filePath: string) {
     var file = getOpenFile(filePath);
     if (file) {
-        file.close();
+        file.save();
         // Right now we still keep the file open indefinitely
         // openFiles = openFiles.filter(f=> f.config.filePath !== filePath);
     }

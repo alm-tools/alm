@@ -23,13 +23,26 @@ export const errors = {
     ReadErrorTsb: "Failed to read file tsb.json",
 }
 
+
+/** The active project name */
+let activeProjectName = '';
+
+/**
+ * The currently active project
+ */
+let currentProject: project.Project = null;
+
 /** Utility function so that I don't need to keep passing this around */
 function getTsbPath() {
     return fsu.resolve(process.cwd(), "tsb.json");
 }
 
-/** The active project name */
-let activeProjectName = '';
+/** Utility function used all the time */
+export function getProjectIfCurrent(filePath: string): project.Project {
+    if (currentProject && currentProject.includesSourceFile(filePath)) {
+        return currentProject;
+    }
+}
 
 /**
   * Chages the active project.
@@ -118,11 +131,6 @@ export function getCurrentOrDefaultProjectDetails(): Promise<ProjectJson> {
 }
 
 /**
- * The currently active project
- */
-let currentProject: project.Project = null;
-
-/**
  * As soon as we get a new file listing ... check if tsb.json is there. If it is start watching / parsing it
  */
 flm.filePathsUpdated.on(function(data) {
@@ -130,16 +138,27 @@ flm.filePathsUpdated.on(function(data) {
 });
 
 /**
- * As soon as we get a changed file ....
- * We could use the file notifier in fileModelCache but its tricky to unsubscribe when a project goes out of scope
- * Doing the check lazily like this is easier to maintain
+ * As soon as file changes on disk do a full reconcile ....
  */
-flm.fileChangedOnDisk.on((evt)=>{
+fmc.savedFileChangedOnDisk.on((evt) => {
     // Check if its a part of the current project .... if not ignore :)
-    if (currentProject && currentProject.includesSourceFile(evt.filePath)) {
-        let file = fmc.getOrCreateOpenFile(evt.filePath);
-        currentProject.languageServiceHost.updateScript(file.config.filePath,file.getContents());
+    let proj = getProjectIfCurrent(evt.filePath)
+    if (proj) {
+        proj.languageServiceHost.updateScript(evt.filePath, evt.contents);
     }
+    /** TODO: update errors */
+});
+/**
+ * As soon as edit happens apply to current project
+ */
+fmc.didEdit.on((evt)=>{
+    let proj = getProjectIfCurrent(evt.filePath)
+    if (proj) {
+        proj.languageServiceHost.editScript(evt.filePath, evt.edit.from, evt.edit.to, evt.edit.newText);
+        // For debugging
+        // console.log(proj.languageService.getSourceFile(evt.filePath).text);
+    }
+    /** TODO: update errors */
 });
 
 /**

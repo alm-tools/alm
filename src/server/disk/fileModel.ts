@@ -26,6 +26,11 @@ export class FileModel {
      */
     public onSavedFileChangedOnDisk = new TypedEvent<{ contents: string }>();
 
+    /**
+     * Always emit
+     */
+    public didEdit = new TypedEvent<{codeEdit: CodeEdit}>();
+
     constructor(public config: {
         filePath: string;
     }) {
@@ -58,6 +63,8 @@ export class FileModel {
 
         this.text = beforeLines.concat(lines).concat(afterLines);
 
+        this.didEdit.emit({codeEdit});
+
         return { saved: this.saved() };
     }
 
@@ -69,12 +76,6 @@ export class FileModel {
 
     saved(): boolean {
         return utils.arraysEqual(this.text, this.savedText);
-    }
-
-    close() {
-        this.save();
-        // right now we keep the file open indefinitely once opened
-        // this.unwatchFile();
     }
 
     fileListener = () => {
