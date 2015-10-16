@@ -131,7 +131,8 @@ flm.filePathsUpdated.on(function(data) {
 
 /**
  * As soon as we get a changed file ....
- * This allows us to lazily open project files as changes are detected
+ * We could use the file notifier in fileModelCache but its tricky to unsubscribe when a project goes out of scope
+ * Doing the check lazily like this is easier to maintain
  */
 flm.fileChangedOnDisk.on((evt)=>{
     // Check if its a part of the current project .... if not ignore :)

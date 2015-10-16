@@ -1,5 +1,6 @@
 import path = require('path');
 import fs = require('fs');
+import fmc = require('../../disk/fileModelCache');
 var textBuffer = require('basarat-text-buffer');
 
 import tsconfig = require('./tsconfig');
@@ -227,11 +228,9 @@ export class LanguageServiceHost implements ts.LanguageServiceHost {
     }
 
     addScript = (fileName: string, content?: string) => {
-
-
         try {
             if (!content) {
-                content = fs.readFileSync(fileName).toString();
+                content = fmc.getOrCreateOpenFile(fileName).getContents();
             }
         }
         catch (ex) { // if we cannot read the file for whatever reason
@@ -348,7 +347,7 @@ export class LanguageServiceHost implements ts.LanguageServiceHost {
             return getScriptSnapShot(script);
         }
         // This script should be a part of the project if it exists
-        else if(fs.existsSync(fileName)){
+        else if (fs.existsSync(fileName)){
             this.config.project.files.push(fileName);
             this.addScript(fileName);
             return this.getScriptSnapshot(fileName);
