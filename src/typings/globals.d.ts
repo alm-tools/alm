@@ -27,7 +27,7 @@ interface CodeError {
 }
 
 interface ErrorsByFilePath {
-    [filePath: string]: string[]
+    [filePath: string]: CodeError[]
 }
 
 /** Config as read from tsb.json */

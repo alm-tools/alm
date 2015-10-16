@@ -8,7 +8,7 @@ import * as wd from "../disk/workingDir";
 import * as fmc from "../disk/fileModelCache";
 import * as tsconfig from "./core/tsconfig";
 import * as project from "./core/project";
-import {setErrorsForFilePath, clearErrors} from "./errorsCache";
+import {setErrorsForFilePath, clearErrors, makeBlandError, appendErrorsByFilePath} from "./errorsCache";
 import {diagnosticToCodeError} from "./building";
 
 import equal = require('deep-equal');
@@ -70,7 +70,8 @@ function readTsb(): json.ParsedData<TsbJson> {
                 at: {
                     line: 0,
                     ch: 0
-                }
+                },
+                preview: null
             }
         };
     }
@@ -170,7 +171,7 @@ function parseAndCastTsb(contents: string) {
     let parsed = json.parse<TsbJson>(contents);
 
     if (parsed.error) {
-        reportTsbErrors([parsed.error.message]);
+        reportTsbErrors([json.parseErrorToCodeError(getTsbPath(), parsed.error)]);
         return;
     }
     reportTsbErrors([]);
@@ -185,7 +186,7 @@ function parseAndCastTsb(contents: string) {
     }
     currentTsbContents.emit(parsed.data);
 
-    function reportTsbErrors(errors: string[]) {
+    function reportTsbErrors(errors: CodeError[]) {
         let expectedLocation = getTsbPath();
         setErrorsForFilePath({
             filePath: expectedLocation,
@@ -204,6 +205,7 @@ function sync() {
         // TODO: Send all the errors from the project files:
         let diagnostics = currentProject.getDiagnostics();
         let errors = diagnostics.map(diagnosticToCodeError);
+        appendErrorsByFilePath(errors);
     });
 }
 
@@ -268,13 +270,13 @@ namespace ConfigFile {
             let details:tsconfig.ProjectFileErrorDetails = ex.details;
             setErrorsForFilePath({
                 filePath: details.projectFilePath,
-                errors: [`${ex.message} : ${ex.details.errorMessage}`]
+                errors: [makeBlandError(details.projectFilePath,`${ex.message} : ${ex.details.errorMessage}`)]
             });
         }
         else {
             setErrorsForFilePath({
                 filePath: filePath,
-                errors: [`${ex.message}`]
+                errors: [makeBlandError(filePath,`${ex.message}`)]
             });
         }
         // Watch this project file to see if user fixes errors
@@ -340,9 +342,7 @@ namespace ConfigFile {
                 else {
                     setErrorsForFilePath({
                         filePath: filePath,
-                        errors: [
-                            'No project file found'
-                        ]
+                        errors: [makeBlandError(filePath, 'No project file found')]
                     });
                     throw ex;
                 }

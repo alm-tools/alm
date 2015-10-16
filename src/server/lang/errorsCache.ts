@@ -13,8 +13,17 @@ export let errorsUpdated = new TypedEvent<ErrorsByFilePath>()
  */
 let _errorsByFilePath: ErrorsByFilePath = {};
 
-export function setErrorsForFilePath(details: { filePath: string, errors: string[] }) {
+/** The pased errors are considered *the only current* errors for the filePath */
+export function setErrorsForFilePath(details: { filePath: string, errors: CodeError[] }) {
     _errorsByFilePath[details.filePath] = details.errors;
+    errorsUpdated.emit(_errorsByFilePath);
+}
+
+/** Errors are just added to any current errors */
+export function appendErrorsByFilePath(errors: CodeError[]) {
+    for (let error of errors) {
+        _errorsByFilePath[error.filePath] = _errorsByFilePath[error.filePath] ? _errorsByFilePath[error.filePath].concat([error]) : [error];
+    }
     errorsUpdated.emit(_errorsByFilePath);
 }
 
@@ -25,4 +34,21 @@ export function getErrors(){
 export function clearErrors() {
     _errorsByFilePath = {};
     errorsUpdated.emit({});
+}
+
+
+export function makeBlandError(filePath: string, error: string): CodeError {
+    return {
+        filePath,
+        from: {
+            line: 0,
+            ch: 0
+        },
+        to: {
+            line: 0,
+            ch: 0
+        },
+        message: error,
+        preview: null
+    }
 }

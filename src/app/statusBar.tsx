@@ -16,7 +16,7 @@ export interface Props extends React.Props<any> {
     activeProject?: string;
 }
 export interface State {
-    errorsByFilePath?: { [filePath: string]: string[] };
+    errorsByFilePath?: ErrorsByFilePath;
 }
 
 /**
@@ -38,17 +38,11 @@ export class StatusBar extends BaseComponent<Props, State>{
 
     componentDidMount() {
         server.getErrors({}).then((details)=>{
-            this.state.errorsByFilePath = details;
-            this.forceUpdate();
+            this.setState({errorsByFilePath : details});
         })
         cast.errorsUpdated.on((details)=>{
-            this.state.errorsByFilePath = details;
-            this.forceUpdate();
+            this.setState({errorsByFilePath : details});
         });
-    }
-
-    setErrorsInFile(filePath:string,error:string[]){
-        this.state.errorsByFilePath[filePath] = error;
     }
 
     render(){
@@ -69,8 +63,10 @@ export class StatusBar extends BaseComponent<Props, State>{
                         this.state.errorsByFilePath[filePath]
                             .map((e, j) => (
                                 <div key={`${i}:${j}`} style={[styles.hand]} onClick={()=>this.openFile(filePath,e)}>
-                                        <div style={[styles.hand,styles.errorsPanel.errorMessage]}>{e}</div>
-                                        {/*<div style={styles.errorsPanel.errorPreview}>{e}</div>*/}
+                                        <div style={[styles.hand,styles.errorsPanel.errorMessage]}>
+                                            {e.message}
+                                        </div>
+                                        {e.preview?<div style={styles.errorsPanel.errorPreview}>{e.preview}</div>:''}
                                 </div>
                             ));
 
@@ -116,7 +112,7 @@ export class StatusBar extends BaseComponent<Props, State>{
         }
     }
 
-    openFile = (filePath: string, error?: string) => {
+    openFile = (filePath: string, error?: CodeError) => {
         // TODO:
         console.log(filePath, error);
     }

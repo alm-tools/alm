@@ -42,12 +42,22 @@ export function parse<T>(str: string): ParsedData<T> {
         return {
             error: {
                 message: e.message,
-                at
+                at,
+                preview: beforeLines[beforeLines.length - 1]
             }
         }
     }
 }
 
+export function parseErrorToCodeError(filePath: string, error: ParseError) : CodeError {
+    return {
+        filePath,
+        from: error.at,
+        to: error.at,
+        message: error.message,
+        preview: error.preview
+    }
+}
 
 function stripBOM(str: string) {
     // Catches EFBBBF (UTF-8 BOM) because the buffer-to-string
@@ -63,6 +73,7 @@ function splitlines(string: string) { return string.split(/\r\n?|\n/); };
 
 export interface ParseError {
     message: string;
+    preview: string;
     at: {
         /** zero based */
         line: number;
