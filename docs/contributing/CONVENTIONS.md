@@ -6,4 +6,9 @@
 # File contents
 * `contents` : The string `string` content of a file.
 * `text` : The `string:[]` contents split by a newline. This is the model followed by codemirror as well.
- 
+
+# Events
+* If there is a user command that will subsequently cause another command use `do`/`did` e.g. `doOpenFile` and `didOpenFile`
+
+# Stream
+* If there is something that we care about initially as well as updates use `foo`/`fooUpdated` e.g. `fileList`/`fileListUpdated`
