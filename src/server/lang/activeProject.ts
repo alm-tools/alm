@@ -211,20 +211,19 @@ export let currentTsbContents = new TypedEvent<TsbJson>();
  */
 export function startWatchingIfNotDoingAlready() {
     // Load up the tsb
-    sync();
     let expectedLocation = getTsbPath();
 
     if (fsu.existsSync(expectedLocation) && !fmc.isFileOpen(expectedLocation)) {
         let tsbFile = fmc.getOrCreateOpenFile(expectedLocation);
         tsbFile.onSavedFileChangedOnDisk.on((evt) => {
             let contents = evt.contents;
-            parseAndCastTsb(contents);
-
             /// If you change tsb.json
             /// This is enough to justify a full sync
+            parseAndCastTsb(contents);
             sync();
         });
         parseAndCastTsb(tsbFile.getContents());
+        sync();
     }
 }
 
