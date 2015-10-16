@@ -78,7 +78,7 @@ export class FileModel {
         return utils.arraysEqual(this.text, this.savedText);
     }
 
-    fileListener = () => {
+    fileListener = (eventName: string, path: string) => {
         let contents = fsu.readFile(this.config.filePath);
         let text = this.splitlines(contents);
 
@@ -93,7 +93,7 @@ export class FileModel {
     /** The chokidar watcher */
     private fsWatcher: fs.FSWatcher = null;
     watchFile() {
-        this.fsWatcher = chokidar.watch(this.config.filePath);
+        this.fsWatcher = chokidar.watch(this.config.filePath,{ignoreInitial: true});
         this.fsWatcher.on('all',this.fileListener);
     }
     unwatchFile() {
