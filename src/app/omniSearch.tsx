@@ -72,7 +72,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
     render() {
         let fileList = this.filteredResults;
         let selectedIndex = this.state.selectedIndex;
-        let fileListRendered = fileList.map((result,i) => highlightMatch(result, this.state.filterValue, selectedIndex === i));
+        let fileListRendered = fileList.map((result, i) => this.renderHighlightedMatchItem(result, this.state.filterValue, selectedIndex === i, i));
 
         return <Modal
               isOpen={this.state.isOmniSearchOpen}
@@ -133,31 +133,33 @@ export class OmniSearch extends BaseComponent<Props, State>{
         }
         if (e.key == 'Enter'){
             e.preventDefault();
-            let relativeFilePath = this.filteredResults[this.state.selectedIndex];
-            if (relativeFilePath) {
-                server.makeAbsolute({ relativeFilePath }).then(abs => {
-                    commands.docOpenFile.emit({ filePath: abs.filePath });
-                });
-            }
-            this.closeOmniSearch();
+            this.selectIndex(this.state.selectedIndex);
         }
     };
-}
+    selectIndex = (index:number) => {
+        let relativeFilePath = this.filteredResults[index];
+        if (relativeFilePath) {
+            server.makeAbsolute({ relativeFilePath }).then(abs => {
+                commands.docOpenFile.emit({ filePath: abs.filePath });
+            });
+        }
+        this.closeOmniSearch();
+    }
 
-/** Specific to omniSearch */
-function highlightMatch(result: string, query: string, selected: boolean): JSX.Element {
-    // Create rendered
-    let renderedPath = renderMatchedSegments(result,query);
-    let renderedFileName = renderMatchedSegments(getFileName(result), query);
+    renderHighlightedMatchItem(result: string, query: string, selected: boolean,index: number): JSX.Element {
+        // Create rendered
+        let renderedPath = renderMatchedSegments(result,query);
+        let renderedFileName = renderMatchedSegments(getFileName(result), query);
 
-    let selectedStyle = selected ? {
-        background: 'grey',
-        color: 'white'
-    } : {};
-    return (
-        <div key={result} style={[selectedStyle,styles.padded2]}>
-            <div>{renderedFileName}</div>
-            {renderedPath}
-        </div>
-    );
+        let selectedStyle = selected ? {
+            background: 'grey',
+            color: 'white'
+        } : {};
+        return (
+            <div key={result} style={[selectedStyle,styles.padded2,styles.hand]} onClick={()=>this.selectIndex(index)}>
+                <div>{renderedFileName}</div>
+                {renderedPath}
+            </div>
+        );
+    }
 }
