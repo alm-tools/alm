@@ -9,6 +9,7 @@ import * as fmc from "../disk/fileModelCache";
 import * as tsconfig from "./core/tsconfig";
 import * as project from "./core/project";
 import {setErrorsForFilePath, clearErrors} from "./errorsCache";
+import {diagnosticToCodeError} from "./building";
 
 import equal = require('deep-equal');
 
@@ -199,9 +200,12 @@ function sync() {
         currentProject = null;
         let configFileDetails = ConfigFile.getConfigFileFromDisk(projectJson.tsconfig)
         currentProject = ConfigFile.createProjectFromConfigFile(configFileDetails);
+
+        // TODO: Send all the errors from the project files:
+        let diagnostics = currentProject.getDiagnostics();
+        let errors = diagnostics.map(diagnosticToCodeError);
     });
 }
-
 
 import {cast} from "../../socket/socketServer";
 import {TypedEvent} from "../../common/events";

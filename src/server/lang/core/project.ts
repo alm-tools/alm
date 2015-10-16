@@ -4,6 +4,7 @@ import os = require('os');
 
 export import languageServiceHost = require('./languageServiceHost');
 import tsconfig = require('./tsconfig');
+import {selectMany}  from "../../../common/utils";
 
 /**
  * Wraps up `langaugeService` `languageServiceHost` and `projectFile` in a single package
@@ -33,5 +34,17 @@ export class Project {
 
     public includesSourceFile(filePath: string) {
         return (this.getProjectSourceFiles().filter((f) => f.fileName === filePath).length === 1);
+    }
+
+    public getDiagnosticsForFile(filePath: string) {
+        var diagnostics = this.languageService.getSyntacticDiagnostics(filePath);
+        if (diagnostics.length === 0) {
+            diagnostics = this.languageService.getSemanticDiagnostics(filePath);
+        }
+        return diagnostics;
+    }
+
+    public getDiagnostics() {
+        return selectMany(this.getProjectSourceFiles().map(sf=>this.getDiagnosticsForFile(sf.fileName)));
     }
 }

@@ -16,7 +16,7 @@
     "filesGlob": [
         "./**/*.ts",
         "./**/*.tsx",
-        "!./node_modules/**/*"
+        "!./node_modules/**"
     ],
     "files": [
         "app/codemirror/addons/autocomplete.ts",
@@ -39,6 +39,7 @@
         "server/disk/workingDir.ts",
         "server/errorCodes.ts",
         "server/lang/activeProject.ts",
+        "server/lang/building.ts",
         "server/lang/core/formatCodeOptions.ts",
         "server/lang/core/languageServiceHost.ts",
         "server/lang/core/project.ts",
