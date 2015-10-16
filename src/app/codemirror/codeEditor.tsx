@@ -5,7 +5,7 @@ import CodeMirror = require('codemirror');
 require('codemirror/lib/codemirror.css')
 require('codemirror/theme/monokai.css')
 
-/** 
+/**
  *  addons
  */
 // meta
@@ -23,7 +23,7 @@ require('codemirror/addon/fold/foldgutter.css');
 // Highlight active line
 require('codemirror/addon/selection/active-line');
 
-// modes 
+// modes
 require('codemirror/mode/javascript/javascript')
 
 // keymaps
@@ -50,67 +50,67 @@ interface Props extends React.Props<any> {
 }
 
 export class CodeEditor extends React.Component<Props,any>{
-	
+
 	constructor(props){
 		super(props);
-		
+
 		this.state = {
 			isFocused: false
 		};
 	}
-	
+
 	codeMirror: CodeMirror.EditorFromTextArea;
-	refs: { [string: string]: any; textarea: any; }	
-	
+	refs: { [string: string]: any; textarea: any; }
+
 	resizehandler: {dispose:()=>any};
 	componentDidMount () {
-        
+
         var options: CodeMirror.EditorConfiguration = {
             lineNumbers: true,
             mode: 'javascript',
             keyMap: 'sublime',
             theme: 'monokai',
-            
+
             extraKeys: {
                 "Ctrl-Space": "autocomplete",
                 "Cmd-Space": "autocomplete"
             },
-            
+
             gutters: ["CodeMirror-linenumbers"],
-            
+
             // Active line addon
             styleActiveLine: true,
-            
+
             // Text hover
             textHover: (cm, data, e: MouseEvent) => {
                 if (data && data.pos) {
                     return this.getQuickInfo(data.pos);
                 }
             },
-            
+
             /** Overcomes horizontal scrolling for now */
             lineWrapping: true,
         } as any;
-        
+
         // autocomplete
         autocomplete.setupOptions(options);
 
         // fold
         (options as any).foldGutter = true;
         options.gutters.push("CodeMirror-foldgutter");
-        
+
         // lint
-        linter.setupOptions(options);
-        
+        linter.setupOptions(options,this.props.path.substr('file://'.length));
+
 		var textareaNode = React.findDOMNode(this.refs.textarea);
 		this.codeMirror = CodeMirror.fromTextArea(textareaNode as any, options);
 		this.codeMirror.on('change', this.codemirrorValueChanged);
 		this.codeMirror.on('focus', this.focusChanged.bind(this, true));
 		this.codeMirror.on('blur', this.focusChanged.bind(this, false));
-		
+
         this.resizehandler = onresize.on(() => this.refresh());
 	}
-	
+
 	componentWillUnmount () {
 		// todo: is there a lighter-weight way to remove the cm instance?
 		if (this.codeMirror) {
@@ -118,7 +118,7 @@ export class CodeEditor extends React.Component<Props,any>{
 		}
 		this.resizehandler.dispose();
 	}
-    
+
     getQuickInfo(pos:CodeMirror.Position): Promise<string | HTMLElement> {
         // console.log(pos);
         // let div = document.createElement('div');
@@ -140,20 +140,20 @@ export class CodeEditor extends React.Component<Props,any>{
             setTimeout(this.refresh,500);
 		}
 	}
-    
+
     private refresh = () => {
         if (this.codeMirror) {
             this.codeMirror.refresh(); // Needed to resize gutters correctly
         }
     }
-	
+
 	focusChanged = (focused) => {
 		this.setState({
 			isFocused: focused
 		});
 		this.props.onFocusChange && this.props.onFocusChange(focused);
 	}
-	
+
     codemirrorValueChanged = (cm: CodeMirror.EditorFromTextArea, change: CodeMirror.EditorChange) => {
         // console.log(JSON.stringify({val:cm.getDoc().getValue()}));
         // console.log(change);
@@ -162,34 +162,34 @@ export class CodeEditor extends React.Component<Props,any>{
             to: { line: change.to.line, ch: change.to.ch },
             newText: change.text.join('\n')
         }
-        
+
         // This is just code mirror telling us what we already know
         if (codeEdit.newText == this._setCodemirrorValue) {
             return;
         }
-        
+
         // Send the edit
         this.props.onEdit(codeEdit);
-        
+
 		// var newValue = doc.getValue();
 		// this._currentCodemirrorValue = newValue;
 		// this.props.onChange && this.props.onChange(newValue);
 	}
-    
-    private _setCodemirrorValue: string;    
+
+    private _setCodemirrorValue: string;
     setValue(value: string, clearHistory = false){
         this._setCodemirrorValue = value;
         this.codeMirror.getDoc().setValue(value);
-        
+
         if (clearHistory) {
             this.codeMirror.getDoc().clearHistory();
         }
     }
-    
+
     getValue(){
         return this.codeMirror.getDoc().getValue();
     }
-	
+
 	render () {
 		var className = 'ReactCodeMirror';
 		if (this.state.isFocused) {
