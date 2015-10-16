@@ -393,7 +393,7 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
     if (projectSpec.filesGlob) { // for filesGlob we keep the files in sync
         var prettyJSONProjectSpec = prettyJSON(projectSpec);
         if (prettyJSONProjectSpec !== projectFileTextContent) {
-            fs.writeFileSync(projectFile, prettyJSON(projectSpec));
+            // fs.writeFileSync(projectFile, prettyJSON(projectSpec));
         }
     }
 
