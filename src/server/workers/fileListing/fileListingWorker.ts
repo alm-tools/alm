@@ -46,7 +46,7 @@ namespace Worker {
 
         sendNewFileList();
 
-        let watcher = chokidar.watch(directoryUnderWatch);
+        let watcher = chokidar.watch(directoryUnderWatch, { ignoreInitial: true });
 
         // Just the ones that impact file listing
         // https://github.com/paulmillr/chokidar#methods--events
