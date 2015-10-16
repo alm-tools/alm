@@ -92,7 +92,7 @@ class RequesterResponder {
     protected processResponse(m: any) {
         var parsed: Message<any> = m;
 
-        this.pendingRequests.pop();
+        this.pendingRequests.shift();
         this.pendingRequestsChanged(this.pendingRequests);
 
         if (!parsed.message || !parsed.id) {
@@ -144,7 +144,7 @@ class RequesterResponder {
         this.getProcess().send({ message: message, id: id, data: data, request: true });
         return defer.promise;
     }
-    
+
     /**
      * Send all the member functions to IPC
      */
@@ -380,5 +380,3 @@ export class Child extends RequesterResponder {
         }, 1000);
     }
 }
-
-
