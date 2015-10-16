@@ -1,6 +1,7 @@
 import * as fsu from "../../utils/fsu";
 import ts = require('ntypescript');
 import * as json from "../../../common/json";
+import {makeBlandError} from "../../../common/utils";
 
 import simpleValidator = require('./simpleValidator');
 var types = simpleValidator.types;
@@ -171,7 +172,7 @@ export var errors = {
 };
 export interface ProjectFileErrorDetails {
     projectFilePath: string;
-    errorMessage: string;
+    error: CodeError;
 }
 
 function errorWithDetails(error: Error, details: ProjectFileErrorDetails): Error {
@@ -344,12 +345,14 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
     catch (e) {
         let err: Error = e;
         if (err.message == "not found") {
+            let bland = makeBlandError(fsu.consistentPath(pathOrSrcFile),err.message);
             throw errorWithDetails(
-                new Error(errors.GET_PROJECT_NO_PROJECT_FOUND), { projectFilePath: fsu.consistentPath(pathOrSrcFile), errorMessage: err.message });
+                new Error(errors.GET_PROJECT_NO_PROJECT_FOUND), { projectFilePath: fsu.consistentPath(pathOrSrcFile), error: bland });
         }
     }
     projectFile = path.normalize(projectFile);
     var projectFileDirectory = path.dirname(projectFile) + path.sep;
+    let projectFilePath = fsu.consistentPath(projectFile);
 
     // We now have a valid projectFile. Parse it:
     var projectSpec: TypeScriptProjectRawSpecification;
@@ -364,7 +367,7 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
     }
     else {
         throw errorWithDetails(
-            new Error(errors.GET_PROJECT_JSON_PARSE_FAILED), { projectFilePath: fsu.consistentPath(projectFile), errorMessage: res.error.message });
+            new Error(errors.GET_PROJECT_JSON_PARSE_FAILED), { projectFilePath, error: json.parseErrorToCodeError(projectFilePath,res.error)});
     }
 
 
@@ -387,7 +390,7 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
         catch (ex) {
             throw errorWithDetails(
                 new Error(errors.GET_PROJECT_GLOB_EXPAND_FAILED),
-                { projectFilePath: fsu.consistentPath(projectFile), errorMessage: ex.message });
+                { projectFilePath , error: makeBlandError(projectFilePath,ex.message)});
         }
     }
     if (projectSpec.filesGlob) { // for filesGlob we keep the files in sync
@@ -436,7 +439,7 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
     if (validationResult.errorMessage) {
         throw errorWithDetails(
             new Error(errors.GET_PROJECT_PROJECT_FILE_INVALID_OPTIONS),
-            { projectFilePath: fsu.consistentPath(projectFile), errorMessage: validationResult.errorMessage }
+            { projectFilePath, error: makeBlandError(projectFilePath, validationResult.errorMessage) }
         );
     }
 

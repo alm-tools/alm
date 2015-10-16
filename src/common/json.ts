@@ -32,18 +32,24 @@ export function parse<T>(str: string): ParsedData<T> {
     }
     catch (e) {
         let error:{message:string;at:number} = e;
-        let beforeLines = splitlines(content.substr(0, e.at));
 
-        let at = {
-            line: Math.max(beforeLines.length - 1, 0),
-            ch: Math.max(beforeLines[beforeLines.length - 1].length - 1, 0)
-        };
+        function indexToPosition(index:number):{line:number,ch:number}{
+            let beforeLines = splitlines(content.substr(0, index));
+            return {
+                line: Math.max(beforeLines.length - 1, 0),
+                ch: Math.max(beforeLines[beforeLines.length - 1].length - 1, 0)
+            };
+        }
+
+        let fromIndex = Math.max(error.at - 1, 0);
+        let toIndex = Math.min(error.at + 1, content.length);
 
         return {
             error: {
                 message: e.message,
-                at,
-                preview: beforeLines[beforeLines.length - 1]
+                from: indexToPosition(fromIndex),
+                to: indexToPosition(toIndex),
+                preview: content.substring(fromIndex, toIndex-1)
             }
         }
     }
@@ -52,8 +58,8 @@ export function parse<T>(str: string): ParsedData<T> {
 export function parseErrorToCodeError(filePath: string, error: ParseError) : CodeError {
     return {
         filePath,
-        from: error.at,
-        to: error.at,
+        from: error.from,
+        to: error.to,
         message: error.message,
         preview: error.preview
     }
@@ -74,7 +80,13 @@ function splitlines(string: string) { return string.split(/\r\n?|\n/); };
 export interface ParseError {
     message: string;
     preview: string;
-    at: {
+    from: {
+        /** zero based */
+        line: number;
+        /** zero based */
+        ch: number
+    };
+    to: {
         /** zero based */
         line: number;
         /** zero based */

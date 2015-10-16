@@ -8,8 +8,9 @@ import * as wd from "../disk/workingDir";
 import * as fmc from "../disk/fileModelCache";
 import * as tsconfig from "./core/tsconfig";
 import * as project from "./core/project";
-import {setErrorsForFilePath, clearErrors, makeBlandError, appendErrorsByFilePath} from "./errorsCache";
+import {setErrorsForFilePath, clearErrors, appendErrorsByFilePath} from "./errorsCache";
 import {diagnosticToCodeError} from "./building";
+import {makeBlandError} from "../../common/utils";
 
 import equal = require('deep-equal');
 
@@ -67,7 +68,11 @@ function readTsb(): json.ParsedData<TsbJson> {
         return {
             error: {
                 message: errors.ReadErrorTsb,
-                at: {
+                from: {
+                    line: 0,
+                    ch: 0
+                },
+                to: {
                     line: 0,
                     ch: 0
                 },
@@ -273,7 +278,7 @@ namespace ConfigFile {
             let details:tsconfig.ProjectFileErrorDetails = ex.details;
             setErrorsForFilePath({
                 filePath: details.projectFilePath,
-                errors: [makeBlandError(details.projectFilePath,`${ex.message} : ${ex.details.errorMessage}`)]
+                errors: [details.error]
             });
         }
         else {

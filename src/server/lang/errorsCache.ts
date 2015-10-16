@@ -35,20 +35,3 @@ export function clearErrors() {
     _errorsByFilePath = {};
     errorsUpdated.emit({});
 }
-
-
-export function makeBlandError(filePath: string, error: string): CodeError {
-    return {
-        filePath,
-        from: {
-            line: 0,
-            ch: 0
-        },
-        to: {
-            line: 0,
-            ch: 0
-        },
-        message: error,
-        preview: null
-    }
-}

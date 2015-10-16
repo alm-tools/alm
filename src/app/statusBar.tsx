@@ -6,6 +6,7 @@ import csx = require('csx');
 import {BaseComponent} from "./ui";
 import * as ui from "./ui";
 import {cast,server} from "../socket/socketClient";
+import * as commands from "./commands/commands";
 
 import {connect} from "react-redux";
 import {StoreState,expandErrors,collapseErrors} from "./state/state";
@@ -110,7 +111,6 @@ export class StatusBar extends BaseComponent<Props, State>{
     }
 
     openFile = (filePath: string, error?: CodeError) => {
-        // TODO:
-        console.log(filePath, error);
+        commands.docOpenFile.emit({ filePath: filePath });
     }
 }

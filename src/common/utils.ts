@@ -2,10 +2,12 @@ export function log() {
     console.log('log');
 }
 
+type MapKey = string|number;
+type MapableArray = MapKey[];
 /**
  * Create a quick lookup map from list
  */
-export function createMap(arr: (string|number)[]): { [string: string]: boolean;[number: number]: boolean } {
+export function createMap(arr: MapableArray): { [string: string]: boolean;[number: number]: boolean } {
     return arr.reduce((result: { [string: string]: boolean }, key: string) => {
         result[key] = true;
         return result;
@@ -73,7 +75,7 @@ export function getFileName(fullFilePath:string){
     return parts[parts.length - 1];
 }
 
-/** 
+/**
  * shallow equality of sorted arrays
  */
 export function arraysEqual<T>(a: T[], b: T[]): boolean {
@@ -104,4 +106,21 @@ export function selectMany<T>(arr: T[][]): T[] {
         }
     }
     return result;
+}
+
+/** Lots of things don't have a good error. But we would like to be consistent even with simple errors */
+export function makeBlandError(filePath: string, error: string): CodeError {
+    return {
+        filePath,
+        from: {
+            line: 0,
+            ch: 0
+        },
+        to: {
+            line: 0,
+            ch: 0
+        },
+        message: error,
+        preview: null
+    }
 }
