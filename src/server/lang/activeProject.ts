@@ -275,7 +275,7 @@ namespace ConfigFile {
             }
 
             // Reload the project file from the file system and re cache it
-            sync();
+            setActiveProjectName(activeProjectName);
         });
     }
 
