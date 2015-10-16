@@ -126,7 +126,6 @@ let currentProject: project.Project = null;
  * As soon as we get a new file listing ... check if tsb.json is there. If it is start watching / parsing it
  */
 flm.filePathsUpdated.on(function(data) {
-    let expectedLocation = getTsbPath();
     startWatchingIfNotDoingAlready();
 });
 
