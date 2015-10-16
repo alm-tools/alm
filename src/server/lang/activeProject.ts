@@ -148,7 +148,6 @@ fmc.savedFileChangedOnDisk.on((evt) => {
     if (proj) {
         proj.languageServiceHost.updateScript(evt.filePath, evt.contents);
     }
-    /** TODO: update errors */
 });
 /**
  * As soon as edit happens apply to current project
@@ -159,8 +158,12 @@ fmc.didEdit.on((evt)=>{
         proj.languageServiceHost.editScript(evt.filePath, evt.edit.from, evt.edit.to, evt.edit.newText);
         // For debugging
         // console.log(proj.languageService.getSourceFile(evt.filePath).text);
+
+        // update errors
+        let diagnostics = proj.getDiagnosticsForFile(evt.filePath);
+        let errors = diagnostics.map(diagnosticToCodeError);
+        setErrorsForFilePath({ filePath: evt.filePath, errors });
     }
-    /** TODO: update errors */
 });
 
 /**
@@ -202,7 +205,7 @@ function sync() {
         let configFileDetails = ConfigFile.getConfigFileFromDisk(projectJson.tsconfig)
         currentProject = ConfigFile.createProjectFromConfigFile(configFileDetails);
 
-        // TODO: Send all the errors from the project files:
+        // Send all the errors from the project files:
         let diagnostics = currentProject.getDiagnostics();
         let errors = diagnostics.map(diagnosticToCodeError);
         appendErrorsByFilePath(errors);
