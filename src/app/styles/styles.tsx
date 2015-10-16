@@ -117,7 +117,6 @@ export namespace errorsPanel {
 
     export let errorMessage = {
         padding: '3px',
-        paddingBottom: '6px'
     }
 
     export let errorPreview = {
