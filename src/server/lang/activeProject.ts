@@ -120,7 +120,7 @@ export function getCurrentOrDefaultProjectDetails(): Promise<ProjectJson> {
 /**
  * The currently active project
  */
-let currentProject: project.Project;
+let currentProject: project.Project = null;
 
 /**
  * As soon as we get a new file listing ... check if tsb.json is there. If it is start watching / parsing it
@@ -162,13 +162,12 @@ function parseAndCastTsb(contents: string) {
     }
 }
 
-import * as projectCache from "./projectCache";
-
 /** convert active tsb project name to current project */
 function sync() {
     getCurrentOrDefaultProjectDetails().then((projectJson) => {
-        let configFileDetails = projectCache.getConfigFileFromDisk(projectJson.tsconfig)
-        currentProject = projectCache.cacheAndCreateProject(configFileDetails);
+        currentProject = null;
+        let configFileDetails = ConfigFile.getConfigFileFromDisk(projectJson.tsconfig)
+        currentProject = ConfigFile.createProjectFromConfigFile(configFileDetails);
     });
 }
 
@@ -195,5 +194,127 @@ export function startWatchingIfNotDoingAlready() {
             sync();
         });
         parseAndCastTsb(tsbFile.getContents());
+    }
+}
+
+
+/**
+ * Utility functions to convert a `configFile` to a `project`
+ */
+import fs = require("fs");
+import path = require("path");
+import {Project, languageServiceHost} from "./core/project";
+import {getOpenFiles} from "../disk/fileModelCache";
+namespace ConfigFile {
+
+    /** Create a project from a project file */
+    export function createProjectFromConfigFile(configFile: tsconfig.TypeScriptConfigFileDetails) {
+        var project = new Project(configFile);
+
+        // Update the language service host for any unsaved changes
+        getOpenFiles().forEach(e=> {
+            project.languageServiceHost.updateScript(e.config.filePath, e.getContents());
+        });
+
+        watchProjectFileIfNotDoingItAlready(configFile.projectFilePath);
+
+        return project;
+    }
+
+    /**
+     * Project file error reporting
+     */
+    function reportProjectFileErrors(ex:Error, filePath: string){
+        var err: Error = ex;
+        if (ex.message === tsconfig.errors.GET_PROJECT_JSON_PARSE_FAILED
+            || ex.message === tsconfig.errors.GET_PROJECT_PROJECT_FILE_INVALID_OPTIONS
+            || ex.message === tsconfig.errors.GET_PROJECT_GLOB_EXPAND_FAILED) {
+            let details:tsconfig.ProjectFileErrorDetails = ex.details;
+            setErrorsForFilePath({
+                filePath: details.projectFilePath,
+                errors: [`${ex.message} : ${ex.details.errorMessage}`]
+            });
+        }
+        else {
+            setErrorsForFilePath({
+                filePath: filePath,
+                errors: [`${ex.message}`]
+            });
+        }
+        // Watch this project file to see if user fixes errors
+        watchProjectFileIfNotDoingItAlready(filePath);
+    }
+
+    /**
+     * Project file watching
+     */
+    var watchingProjectFile: { [projectFilePath: string]: boolean } = {}
+    function watchProjectFileIfNotDoingItAlready(projectFilePath: string) {
+
+        // Don't watch lib.d.ts and other
+        // projects that are "in memory" only
+        if (!fs.existsSync(projectFilePath)) {
+            return;
+        }
+
+        if (watchingProjectFile[projectFilePath]) return; // Only watch once
+        watchingProjectFile[projectFilePath] = true;
+
+        fs.watch(projectFilePath, { persistent: false }, () => {
+            // if file no longer exists
+            if (!fs.existsSync(projectFilePath)) {
+                return;
+            }
+
+            // if not the active project
+            if (!currentProject || !currentProject.projectFile || !currentProject.projectFile.projectFilePath) {
+                return;
+            }
+            if (projectFilePath !== currentProject.projectFile.projectFilePath){
+                return;
+            }
+
+            // Reload the project file from the file system and re cache it
+            sync();
+        });
+    }
+
+
+    /**
+     * This explicilty loads the project from the filesystem
+     * For (lib.d.ts) and other (.d.ts files where project is not found) creation is done in memory
+     */
+    export function getConfigFileFromDisk(filePath: string): tsconfig.TypeScriptConfigFileDetails {
+
+        try {
+            // If we are asked to look at stuff in lib.d.ts create its own project
+            if (path.dirname(filePath) == languageServiceHost.typescriptDirectory) {
+                return tsconfig.getDefaultInMemoryProject(filePath);
+            }
+
+            var projectFile = tsconfig.getProjectSync(filePath);
+            setErrorsForFilePath({filePath: projectFile.projectFilePath, errors:[]});
+            return projectFile;
+        } catch (ex) {
+            if (ex.message === tsconfig.errors.GET_PROJECT_NO_PROJECT_FOUND) {
+                // If we have a .d.ts file then it is its own project and return
+                if (tsconfig.endsWith(filePath.toLowerCase(), '.d.ts')) {
+                    return tsconfig.getDefaultInMemoryProject(filePath);
+                }
+                else {
+                    setErrorsForFilePath({
+                        filePath: filePath,
+                        errors: [
+                            'No project file found'
+                        ]
+                    });
+                    throw ex;
+                }
+            }
+            else {
+                reportProjectFileErrors(ex, filePath);
+                throw ex;
+            }
+        }
     }
 }
