@@ -45,6 +45,10 @@ export class Project {
     }
 
     public getDiagnostics() {
-        return selectMany(this.getProjectSourceFiles().map(sf=>this.getDiagnosticsForFile(sf.fileName)));
+        const program = this.languageService.getProgram();
+
+        return program.getGlobalDiagnostics()
+            .concat(program.getSemanticDiagnostics())
+            .concat(program.getSyntacticDiagnostics());
     }
 }
