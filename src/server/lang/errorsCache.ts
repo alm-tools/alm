@@ -4,6 +4,7 @@
  */
 
 import {TypedEvent} from "../../common/events";
+import {createMapByKey} from "../../common/utils";
 
 
 export let errorsUpdated = new TypedEvent<ErrorsByFilePath>()
@@ -14,8 +15,11 @@ export let errorsUpdated = new TypedEvent<ErrorsByFilePath>()
 let _errorsByFilePath: ErrorsByFilePath = {};
 
 /** The pased errors are considered *the only current* errors for the filePath */
-export function setErrorsForFilePath(details: { filePath: string, errors: CodeError[] }) {
-    _errorsByFilePath[details.filePath] = details.errors;
+export function setErrorsByFilePath(errors: CodeError[]) {
+    let errorsByFile = createMapByKey(errors, (e) => e.filePath);
+    for (let filePath in errorsByFile) {
+        _errorsByFilePath[filePath] = errorsByFile[filePath];
+    }
     errorsUpdated.emit(_errorsByFilePath);
 }
 
@@ -27,11 +31,16 @@ export function appendErrorsByFilePath(errors: CodeError[]) {
     errorsUpdated.emit(_errorsByFilePath);
 }
 
-export function getErrors(){
+export function getErrors() {
     return _errorsByFilePath;
 }
 
 export function clearErrors() {
     _errorsByFilePath = {};
     errorsUpdated.emit({});
+}
+
+export function clearErrorsForFilePath(filePath: string) {
+    _errorsByFilePath[filePath] = [];
+    errorsUpdated.emit(_errorsByFilePath);
 }

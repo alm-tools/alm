@@ -14,6 +14,18 @@ export function createMap(arr: MapableArray): { [string: string]: boolean;[numbe
     }, <{ [string: string]: boolean }>{});
 }
 
+/**
+ * Create a quick lookup map from list
+ */
+export function createMapByKey<K extends MapKey,V>(arr: V[], getKey:(item:V)=>K): { [key:string]: V[]; [key:number]: V[]} {
+    var result: any = {};
+    arr.forEach(item => {
+        let key: any = getKey(item);
+        result[key] = result[key] ? result[key].concat(item) : [item];
+    })
+    return result;
+}
+
 /** Sloppy but effective code to find distinct */
 export function distinct(arr: string[]): string[] {
     var map = createMap(arr);
