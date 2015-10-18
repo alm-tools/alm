@@ -16,7 +16,8 @@
     "filesGlob": [
         "./**/*.ts",
         "./**/*.tsx",
-        "!./node_modules/**"
+        "!./node_modules/**",
+        "!./tests/**"
     ],
     "files": [
         "app/codemirror/addons/autocomplete.ts",
@@ -27,7 +28,6 @@
         "app/state/state.ts",
         "app/tabs/tab.ts",
         "app/utils/preventBackspaceNav.ts",
-        "bas.ts",
         "common/constants.ts",
         "common/events.ts",
         "common/json.ts",
