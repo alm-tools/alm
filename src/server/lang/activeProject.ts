@@ -1,3 +1,4 @@
+import utils = require("../../common/utils");
 /**
  * Tracks tsb.json and the active project within that
  */
@@ -152,6 +153,7 @@ fmc.savedFileChangedOnDisk.on((evt) => {
     let proj = getProjectIfCurrent(evt.filePath)
     if (proj) {
         proj.languageServiceHost.updateScript(evt.filePath, evt.contents);
+        refreshAllProjectDiagnostics();
     }
 });
 /**
@@ -203,6 +205,19 @@ function parseAndCastTsb(contents: string) {
     }
 }
 
+/**
+ * If there hasn't been a request for a while then we refresh
+ * As its a bit slow to get *all* the errors
+ */
+var refreshAllProjectDiagnostics = utils.debounce(() => {
+    if (currentProject) {
+        // Send all the errors from the project files:
+        let diagnostics = currentProject.getDiagnostics();
+        let errors = diagnostics.map(diagnosticToCodeError);
+        appendErrorsByFilePath(errors);
+    }
+}, 2000);
+
 /** convert active tsb project name to current project */
 function sync() {
     getCurrentOrDefaultProjectDetails().then((projectJson) => {
@@ -210,10 +225,7 @@ function sync() {
         let configFileDetails = ConfigFile.getConfigFileFromDisk(projectJson.tsconfig)
         currentProject = ConfigFile.createProjectFromConfigFile(configFileDetails);
 
-        // Send all the errors from the project files:
-        let diagnostics = currentProject.getDiagnostics();
-        let errors = diagnostics.map(diagnosticToCodeError);
-        appendErrorsByFilePath(errors);
+        refreshAllProjectDiagnostics();
     });
 }
 
