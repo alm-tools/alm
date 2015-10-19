@@ -32,15 +32,11 @@ function codeErrorToLintError(codeError: CodeError): LintError {
 
 class Linter {
     constructor(public filePath: string) {
-        (this.lint as any).async = true;
     }
 
-    lint = (doc: string,
-        cb: (cm: CodeMirror.EditorFromTextArea, errorsNotSorted: LintError[]) => void, options: any, cm: CodeMirror.EditorFromTextArea) => {
-
+    lint = (doc: string, options: any, cm: CodeMirror.EditorFromTextArea) => {
         let rawErrors = state.getState().errorsByFilePath[this.filePath] || [];
         let errors: LintError[] = rawErrors.map(codeErrorToLintError);
-
-        cb(cm, errors);
+        return errors;
     }
 }
