@@ -212,7 +212,8 @@ export class CodeEditor extends React.Component<Props,any>{
     sourceId = createId();
     applyCodeEdit(codeEdit: CodeEdit) {
         if (codeEdit.sourceId !== this.sourceId){
-            this.codeMirror.getDoc().replaceRange(codeEdit.newText, codeEdit.from, codeEdit.to, codeEdit.sourceId);
+            // Note that we use *our source id* as this is now a change *we are making to code mirror* :)
+            this.codeMirror.getDoc().replaceRange(codeEdit.newText, codeEdit.from, codeEdit.to, this.sourceId);
         }
     }
 
