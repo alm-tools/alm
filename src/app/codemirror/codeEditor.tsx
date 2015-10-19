@@ -209,7 +209,7 @@ export class CodeEditor extends React.Component<Props,any>{
     }
 
     /** Used to track code edits originating from this tab */
-    sourceId = createId();
+    sourceId = `+${createId()}`;
     applyCodeEdit(codeEdit: CodeEdit) {
         if (codeEdit.sourceId !== this.sourceId){
             // Note that we use *our source id* as this is now a change *we are making to code mirror* :)
