@@ -9,7 +9,7 @@ import * as wd from "../disk/workingDir";
 import * as fmc from "../disk/fileModelCache";
 import * as tsconfig from "./core/tsconfig";
 import * as project from "./core/project";
-import {setErrorsByFilePath, clearErrors, clearErrorsForFilePath} from "./errorsCache";
+import {setErrorsByFilePaths, clearErrors, clearErrorsForFilePath} from "./errorsCache";
 import {diagnosticToCodeError} from "./building";
 import {makeBlandError} from "../../common/utils";
 
@@ -169,7 +169,7 @@ fmc.didEdit.on((evt)=>{
         // update errors for this file
         let diagnostics = proj.getDiagnosticsForFile(evt.filePath);
         let errors = diagnostics.map(diagnosticToCodeError);
-        setErrorsByFilePath(errors);
+        setErrorsByFilePaths([evt.filePath], errors);
 
         // After a while update all project diagnostics as well
         refreshAllProjectDiagnostics();
@@ -201,7 +201,7 @@ function parseAndCastTsb(contents: string) {
 
     function reportTsbErrors(errors: CodeError[]) {
         let expectedLocation = getTsbPath();
-        setErrorsByFilePath(errors);
+        setErrorsByFilePaths([expectedLocation], errors);
     }
 }
 
@@ -214,7 +214,8 @@ var refreshAllProjectDiagnostics = utils.debounce(() => {
         // Send all the errors from the project files:
         let diagnostics = currentProject.getDiagnostics();
         let errors = diagnostics.map(diagnosticToCodeError);
-        setErrorsByFilePath(errors);
+        let filePaths = currentProject.getProjectSourceFiles().map(x=>x.fileName);
+        setErrorsByFilePaths(filePaths, errors);
     }
 }, 2000);
 
@@ -288,10 +289,10 @@ namespace ConfigFile {
             || ex.message === tsconfig.errors.GET_PROJECT_PROJECT_FILE_INVALID_OPTIONS
             || ex.message === tsconfig.errors.GET_PROJECT_GLOB_EXPAND_FAILED) {
             let details:tsconfig.ProjectFileErrorDetails = ex.details;
-            setErrorsByFilePath([details.error]);
+            setErrorsByFilePaths([filePath],[details.error]);
         }
         else {
-            setErrorsByFilePath([makeBlandError(filePath,`${ex.message}`)]);
+            setErrorsByFilePaths([filePath], [makeBlandError(filePath, `${ex.message}`)]);
         }
         // Watch this project file to see if user fixes errors
         watchProjectFileIfNotDoingItAlready(filePath);
@@ -354,7 +355,7 @@ namespace ConfigFile {
                     return tsconfig.getDefaultInMemoryProject(filePath);
                 }
                 else {
-                    setErrorsByFilePath([makeBlandError(filePath, 'No project file found')]);
+                    setErrorsByFilePaths([filePath], [makeBlandError(filePath, 'No project file found')]);
                     throw ex;
                 }
             }
