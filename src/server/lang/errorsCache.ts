@@ -38,7 +38,7 @@ export function getErrors() {
 
 export function clearErrors() {
     _errorsByFilePath = {};
-    errorsUpdated.emit({});
+    errorsUpdated.emit(_errorsByFilePath);
 }
 
 export function clearErrorsForFilePath(filePath: string) {
