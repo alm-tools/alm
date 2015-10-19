@@ -8,7 +8,7 @@ import {FileModel} from "../server/disk/fileModel";
 import * as activeProject from "../server/lang/activeProject";
 let resolve = sls.resolve;
 
-import {savedFileChangedOnDisk, getOpenFile, getOrCreateOpenFile, closeOpenFile} from "../server/disk/fileModelCache";
+import {savedFileChangedOnDisk, didEdit, getOpenFile, getOrCreateOpenFile, closeOpenFile} from "../server/disk/fileModelCache";
 import * as errorCache from "../server/lang/errorsCache";
 
 namespace Server {
@@ -92,6 +92,8 @@ export function register(app: http.Server) {
     cast = runResult.cast;
 
     savedFileChangedOnDisk.pipe(cast.savedFileChangedOnDisk);
+    didEdit.pipe(cast.didEdit);
+
     errorCache.errorsUpdated.pipe(cast.errorsUpdated);
     activeProject.currentTsbContents.pipe(cast.currentTsbContentsUpdated);
 

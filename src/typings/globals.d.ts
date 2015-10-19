@@ -9,6 +9,10 @@ interface CodeEdit {
     from: EditorPosition;
     to: EditorPosition;
     newText: string;
+    /**
+     * When we are editing stuff from the front end we want all code edits except ours (user typing code)
+     */
+    sourceId? : string;
 }
 
 /** Our extensions to the Error object */

@@ -3,6 +3,7 @@ import * as React from "react";
 import * as tab from "./tab";
 import {server,cast} from "../../socket/socketClient";
 import * as commands from "../commands/commands";
+import * as utils from "../../common/utils";
 
 import {CodeEditor} from "../codemirror/codeEditor";
 
@@ -17,6 +18,10 @@ export interface State {
  * - All tab type stuff must go through here
  */
 export class Code extends React.Component<Props, State> implements tab.Component {
+
+    /** Used to track code edits originating from this tab */
+    sourceId = utils.createId();
+
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -40,6 +45,13 @@ export class Code extends React.Component<Props, State> implements tab.Component
                 this.refs.editor.setValue(res.contents, false);
             }
         });
+
+        cast.didEdit.on(res=> {
+            if (res.filePath == this.filePath
+                && this.sourceId !== res.edit.sourceId) {
+                this.refs.editor.applyCodeEdit(res.edit);
+            }
+        });
     }
 
     render() {
@@ -58,6 +70,7 @@ export class Code extends React.Component<Props, State> implements tab.Component
 
 
     onEdit = (edit: CodeEdit) => {
+        edit.sourceId = this.sourceId;
         server.editFile({ filePath: this.filePath, edit: edit }).then((res)=>{
             this.props.onSavedChanged(res.saved);
         });

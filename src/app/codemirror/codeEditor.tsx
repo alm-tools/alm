@@ -52,8 +52,12 @@ interface Props extends React.Props<any> {
 
 export class CodeEditor extends React.Component<Props,any>{
 
+    public filePath: string;
+
 	constructor(props){
 		super(props);
+
+        this.filePath = this.props.path.substr('file://'.length);
 
 		this.state = {
 			isFocused: false
@@ -103,7 +107,7 @@ export class CodeEditor extends React.Component<Props,any>{
         options.gutters.push("CodeMirror-foldgutter");
 
         // lint
-        linter.setupOptions(options,this.props.path.substr('file://'.length));
+        linter.setupOptions(options,this.filePath);
         // also lint on errors changing
         this.errorWatcher = cast.errorsUpdated.on(()=>this.codeMirror.performLint());
 
@@ -194,6 +198,11 @@ export class CodeEditor extends React.Component<Props,any>{
 
     getValue(){
         return this.codeMirror.getDoc().getValue();
+    }
+
+    applyCodeEdit(codeEdit: CodeEdit) {
+        // TODO: apply code edit
+        this.codeMirror.getDoc().replaceRange(codeEdit.newText,CodeMirror.Pos(codeEdit.from.line,codeEdit.from.ch),CodeMirror.Pos(codeEdit.to.line,codeEdit.to.ch));
     }
 
 	render () {
