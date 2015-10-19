@@ -43,6 +43,7 @@ import onresize = require('onresize');
 import * as styles from "../styles/styles";
 import * as csx from "csx";
 import {cast} from "../../socket/socketClient";
+import {createId} from "../../common/utils";
 
 interface Props extends React.Props<any> {
     onEdit: (edit: CodeEdit) => any;
@@ -167,11 +168,18 @@ export class CodeEditor extends React.Component<Props,any>{
     codemirrorValueChanged = (cm: CodeMirror.EditorFromTextArea, change: CodeMirror.EditorChange) => {
         // console.log(JSON.stringify({val:cm.getDoc().getValue()}));
         // console.log(change);
+
+        // This is just code mirror passing us back changes that we applied ourselves
+        if (change.origin == this.sourceId) {
+            return;
+        }
+
         let codeEdit: CodeEdit = {
             from: { line: change.from.line, ch: change.from.ch },
             to: { line: change.to.line, ch: change.to.ch },
-            newText: change.text.join('\n')
-        }
+            newText: change.text.join('\n'),
+            sourceId: this.sourceId
+        };
 
         // This is just code mirror telling us what we already know
         if (codeEdit.newText == this._setCodemirrorValue) {
@@ -200,9 +208,12 @@ export class CodeEditor extends React.Component<Props,any>{
         return this.codeMirror.getDoc().getValue();
     }
 
+    /** Used to track code edits originating from this tab */
+    sourceId = createId();
     applyCodeEdit(codeEdit: CodeEdit) {
-        // TODO: apply code edit
-        this.codeMirror.getDoc().replaceRange(codeEdit.newText,CodeMirror.Pos(codeEdit.from.line,codeEdit.from.ch),CodeMirror.Pos(codeEdit.to.line,codeEdit.to.ch));
+        if (codeEdit.sourceId !== this.sourceId){
+            this.codeMirror.getDoc().replaceRange(codeEdit.newText, codeEdit.from, codeEdit.to, codeEdit.sourceId);
+        }
     }
 
 	render () {

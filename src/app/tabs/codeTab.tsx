@@ -19,9 +19,6 @@ export interface State {
  */
 export class Code extends React.Component<Props, State> implements tab.Component {
 
-    /** Used to track code edits originating from this tab */
-    sourceId = utils.createId();
-
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -47,8 +44,7 @@ export class Code extends React.Component<Props, State> implements tab.Component
         });
 
         cast.didEdit.on(res=> {
-            if (res.filePath == this.filePath
-                && this.sourceId !== res.edit.sourceId) {
+            if (res.filePath == this.filePath) {
                 this.refs.editor.applyCodeEdit(res.edit);
             }
         });
@@ -70,7 +66,6 @@ export class Code extends React.Component<Props, State> implements tab.Component
 
 
     onEdit = (edit: CodeEdit) => {
-        edit.sourceId = this.sourceId;
         server.editFile({ filePath: this.filePath, edit: edit }).then((res)=>{
             this.props.onSavedChanged(res.saved);
         });
