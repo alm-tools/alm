@@ -11,6 +11,7 @@ let initialStoreState: StoreState = { activeProject: '', errorsExpanded: false, 
 let redux = new SimpleRedux<StoreState>(initialStoreState);
 export var store = redux.store;
 export var getState = redux.getState;
+export var subscribe = redux.subscribe;
 
 export let setActiveProject = redux.add('setActiveProject', (state, payload: string): StoreState => {
     return {

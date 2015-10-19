@@ -27,6 +27,10 @@ export class SimpleRedux<State>{
         return this.store.getState();
     }
 
+    subscribe = (changed: { (): any }): { dispose: () => any } => {
+        return { dispose: this.store.subscribe(changed) as any };
+    }
+
     private _reducer = (state: State = this.initialState, action: any): State => {
         if (this._listeners[action.type])
             return this._extendState(state, this._listeners[action.type](state, action.payload));

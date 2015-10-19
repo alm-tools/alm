@@ -42,6 +42,7 @@ import React = require('react');
 import onresize = require('onresize');
 import * as styles from "../styles/styles";
 import * as csx from "csx";
+import {cast} from "../../socket/socketClient";
 
 interface Props extends React.Props<any> {
     onEdit: (edit: CodeEdit) => any;
@@ -63,6 +64,8 @@ export class CodeEditor extends React.Component<Props,any>{
 	refs: { [string: string]: any; textarea: any; }
 
 	resizehandler: {dispose:()=>any};
+    errorWatcher: {dispose:()=>any};
+
 	componentDidMount () {
 
         var options: CodeMirror.EditorConfiguration = {
@@ -101,6 +104,8 @@ export class CodeEditor extends React.Component<Props,any>{
 
         // lint
         linter.setupOptions(options,this.props.path.substr('file://'.length));
+        // also lint on errors changing
+        this.errorWatcher = cast.errorsUpdated.on(()=>this.codeMirror.performLint());
 
 		var textareaNode = React.findDOMNode(this.refs.textarea);
 		this.codeMirror = CodeMirror.fromTextArea(textareaNode as any, options);
@@ -117,6 +122,7 @@ export class CodeEditor extends React.Component<Props,any>{
 			this.codeMirror.toTextArea();
 		}
 		this.resizehandler.dispose();
+        this.errorWatcher.dispose();
 	}
 
     getQuickInfo(pos:CodeMirror.Position): Promise<string | HTMLElement> {
