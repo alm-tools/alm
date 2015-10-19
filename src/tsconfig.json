@@ -62,6 +62,7 @@
         "socketLib/socketLibClient.ts",
         "socketLib/socketLibServer.ts",
         "typings/chokidar/chokidar.d.ts",
+        "typings/codemirror/codemirror-lint.d.ts",
         "typings/codemirror/codemirror-meta.d.ts",
         "typings/codemirror/codemirror-showhint.d.ts",
         "typings/codemirror/codemirror.d.ts",
