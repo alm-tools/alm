@@ -94,6 +94,23 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.setState({ tabs: this.state.tabs });
             this.selectTab(this.state.tabs.length - 1);
         });
+        commands.doOpenOrFocusFile.on((e)=>{
+            // if open and focused ignore
+            // if open and not focused then focus
+            // If not hand over to doOpenFile
+            if (this.state.tabs[this.state.selected].url
+                && this.state.tabs[this.state.selected].url.substr('file://'.length) == e.filePath){
+                return;
+            }
+
+            let openTabIndex = this.state.tabs.map(t=>t.url.substr('file://'.length) == e.filePath).indexOf(true);
+            if (openTabIndex !== -1){
+                this.selectTab(openTabIndex);
+            }
+            else {
+                commands.doOpenFile.emit(e);
+            }
+        });
 
         commands.onCloseTab.on((e)=>{
             // Remove the selected
