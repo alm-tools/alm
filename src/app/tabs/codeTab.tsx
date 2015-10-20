@@ -46,6 +46,7 @@ export class Code extends React.Component<Props, State> implements tab.Component
         cast.didEdit.on(res=> {
             if (res.filePath == this.filePath) {
                 this.refs.editor.applyCodeEdit(res.edit);
+                this.props.onSavedChanged(res.saved);
             }
         });
     }

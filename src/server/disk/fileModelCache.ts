@@ -2,7 +2,7 @@ import {FileModel} from "./fileModel";
 import {TypedEvent} from "../../common/events";
 
 export var savedFileChangedOnDisk = new TypedEvent<{ filePath: string; contents: string }>();
-export var didEdit = new TypedEvent<{ filePath: string; edit: CodeEdit }>();
+export var didEdit = new TypedEvent<{ filePath: string; saved: boolean, edit: CodeEdit }>();
 
 let openFiles: FileModel[] = [];
 export function getOpenFile(filePath: string) {
@@ -20,7 +20,7 @@ export function getOrCreateOpenFile(filePath: string) {
             savedFileChangedOnDisk.emit({ filePath, contents: evt.contents });
         });
         file.didEdit.on((evt) => {
-            didEdit.emit({ filePath, edit: evt.codeEdit });
+            didEdit.emit({ filePath, saved:evt.saved, edit: evt.codeEdit });
         });
         openFiles.push(file);
     }

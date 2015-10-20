@@ -29,7 +29,7 @@ export class FileModel {
     /**
      * Always emit
      */
-    public didEdit = new TypedEvent<{codeEdit: CodeEdit}>();
+    public didEdit = new TypedEvent<{codeEdit: CodeEdit; saved: boolean}>();
 
     constructor(public config: {
         filePath: string;
@@ -63,9 +63,10 @@ export class FileModel {
 
         this.text = beforeLines.concat(lines).concat(afterLines);
 
-        this.didEdit.emit({codeEdit});
+        let saved = this.saved();
+        this.didEdit.emit({ codeEdit, saved });
 
-        return { saved: this.saved() };
+        return { saved };
     }
 
     save() {

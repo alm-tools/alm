@@ -48,7 +48,7 @@ export var cast = {
     savedFileChangedOnDisk: new TypedEvent<{ filePath: string; contents: string }>(),
 
     /** If a user does a code edit */
-    didEdit: new TypedEvent<{filePath: string, edit: CodeEdit}>(),
+    didEdit: new TypedEvent<{filePath: string, edit: CodeEdit, saved: boolean}>(),
 
     /** Errors for a file path */
     errorsUpdated: new TypedEvent<ErrorsByFilePath>(),
