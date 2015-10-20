@@ -43,7 +43,7 @@ import onresize = require('onresize');
 import * as styles from "../styles/styles";
 import * as csx from "csx";
 import {cast} from "../../socket/socketClient";
-import {createId} from "../../common/utils";
+import {createId,getFilePathFromUrl} from "../../common/utils";
 
 interface Props extends React.Props<any> {
     onEdit: (edit: CodeEdit) => any;
@@ -58,7 +58,7 @@ export class CodeEditor extends React.Component<Props,any>{
 	constructor(props){
 		super(props);
 
-        this.filePath = this.props.path.substr('file://'.length);
+        this.filePath = getFilePathFromUrl(this.props.path);
 
 		this.state = {
 			isFocused: false

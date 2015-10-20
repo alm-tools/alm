@@ -29,7 +29,7 @@ export class Code extends React.Component<Props, State> implements tab.Component
 
     filePath: string;
     componentDidMount() {
-        this.filePath = this.getFilePathFromUrl(this.props.url);
+        this.filePath = utils.getFilePathFromUrl(this.props.url);
 
         server.openFile({ filePath: this.filePath }).then((res) => {
             this.refs.editor.setValue(res.contents, true);
@@ -48,7 +48,7 @@ export class Code extends React.Component<Props, State> implements tab.Component
                 this.refs.editor.applyCodeEdit(res.edit);
             }
         });
-        
+
         cast.didStatusChange.on(res=>{
             if (res.filePath == this.filePath) {
                 this.props.onSavedChanged(res.saved);
@@ -87,10 +87,5 @@ export class Code extends React.Component<Props, State> implements tab.Component
 
     close = () => {
         server.closeFile({filePath: this.filePath});
-    }
-
-    /** From file://filePath to filePath*/
-    getFilePathFromUrl(url: string) {
-        return url.substr('file://'.length);
     }
 }

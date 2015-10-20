@@ -4,6 +4,7 @@ import * as tab from "./tab";
 // import {DashboardTab} from "./dashboardTab";
 import {Code} from "./codeTab";
 import * as commands from "../commands/commands";
+import * as utils from "../../common/utils";
 import csx = require('csx');
 import {createId} from "../../common/utils";
 
@@ -98,13 +99,12 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             // if open and focused ignore
             // if open and not focused then focus
             // If not hand over to doOpenFile
-            if (this.state.tabs[this.state.selected].url
-                && this.state.tabs[this.state.selected].url.substr('file://'.length) == e.filePath){
+            if (utils.getFilePathFromUrl(this.state.tabs[this.state.selected].url) == e.filePath){
                 return;
             }
 
-            let openTabIndex = this.state.tabs.map(t=>t.url.substr('file://'.length) == e.filePath).indexOf(true);
-            if (openTabIndex !== -1){
+            let openTabIndex = this.state.tabs.map(t=> utils.getFilePathFromUrl(t.url) == e.filePath).indexOf(true);
+            if (openTabIndex !== -1) {
                 this.selectTab(openTabIndex);
             }
             else {

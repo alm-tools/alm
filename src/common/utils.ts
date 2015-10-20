@@ -136,3 +136,8 @@ export function makeBlandError(filePath: string, error: string): CodeError {
         preview: null
     }
 }
+
+/** From `file://filePath` to `filePath` */
+export function getFilePathFromUrl(url: string) {
+    return url && url.length > 'file://'.length ? url.substr('file://'.length): '';
+}
