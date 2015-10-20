@@ -8,7 +8,7 @@ import {FileModel} from "../server/disk/fileModel";
 import * as activeProject from "../server/lang/activeProject";
 let resolve = sls.resolve;
 
-import {savedFileChangedOnDisk, didEdit, getOpenFile, getOrCreateOpenFile, closeOpenFile} from "../server/disk/fileModelCache";
+import * as fmc from "../server/disk/fileModelCache";
 import * as errorCache from "../server/lang/errorsCache";
 
 namespace Server {
@@ -34,22 +34,22 @@ namespace Server {
      * File stuff
      */
     export var openFile: typeof contract.server.openFile = (data) => {
-        let file = getOrCreateOpenFile(data.filePath);
+        let file = fmc.getOrCreateOpenFile(data.filePath);
         return resolve({ contents: file.getContents() });
     }
     export var closeFile: typeof contract.server.openFile = (data) => {
-        closeOpenFile(data.filePath);
+        fmc.closeOpenFile(data.filePath);
         return resolve({});
     }
     export var editFile: typeof contract.server.editFile = (data) => {
-        let file = getOrCreateOpenFile(data.filePath);
+        let file = fmc.getOrCreateOpenFile(data.filePath);
         let {saved} = file.edit(data.edit);
         // console.log('-------------------------');
         // console.log(file.getContents());
         return resolve({ saved });
     }
     export var saveFile: typeof contract.server.saveFile = (data) => {
-        let file = getOrCreateOpenFile(data.filePath);
+        let file = fmc.getOrCreateOpenFile(data.filePath);
         file.save();
         return resolve({});
     }
@@ -91,8 +91,10 @@ export function register(app: http.Server) {
     });
     cast = runResult.cast;
 
-    savedFileChangedOnDisk.pipe(cast.savedFileChangedOnDisk);
-    didEdit.pipe(cast.didEdit);
+    fmc.savedFileChangedOnDisk.pipe(cast.savedFileChangedOnDisk);
+    fmc.didEdit.pipe(cast.didEdit);
+    fmc.didStatusChange.pipe(cast.didStatusChange);
+
 
     errorCache.errorsUpdated.pipe(cast.errorsUpdated);
     activeProject.currentTsbContents.pipe(cast.currentTsbContentsUpdated);

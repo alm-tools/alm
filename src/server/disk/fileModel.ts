@@ -29,7 +29,12 @@ export class FileModel {
     /**
      * Always emit
      */
-    public didEdit = new TypedEvent<{codeEdit: CodeEdit; saved: boolean}>();
+    public didEdit = new TypedEvent<{codeEdit: CodeEdit;}>();
+
+    /**
+     * Always emit
+     */
+    public didStatusChange = new TypedEvent<{saved:boolean;}>();
 
     constructor(public config: {
         filePath: string;
@@ -64,7 +69,8 @@ export class FileModel {
         this.text = beforeLines.concat(lines).concat(afterLines);
 
         let saved = this.saved();
-        this.didEdit.emit({ codeEdit, saved });
+        this.didEdit.emit({ codeEdit });
+        this.didStatusChange.emit({ saved });
 
         return { saved };
     }
@@ -73,6 +79,7 @@ export class FileModel {
         let contents = this.text.join(this.newLine);
         fsu.writeFile(this.config.filePath, contents);
         this.savedText = this.text.slice();
+        this.didStatusChange.emit({saved:true});
     }
 
     saved(): boolean {
