@@ -69,7 +69,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                             ));
 
                     return <div key={i}>
-                        <div style={styles.errorsPanel.filePath} onClick={()=>this.openFile(filePath)}> {'>'} {filePath}</div>
+                        <div style={styles.errorsPanel.filePath} onClick={()=>this.openFile(filePath,this.props.errorsByFilePath[filePath][0])}> {'>'} {filePath}</div>
 
                         <div style={styles.errorsPanel.perFileList}>
                             {errors}
@@ -110,7 +110,7 @@ export class StatusBar extends BaseComponent<Props, State>{
         }
     }
 
-    openFile = (filePath: string, error?: CodeError) => {
-        commands.doOpenOrFocusFile.emit({ filePath: filePath });
+    openFile = (filePath: string, error: CodeError) => {
+        commands.doOpenOrFocusFile.emit({ filePath: filePath, line: error.from.line });
     }
 }
