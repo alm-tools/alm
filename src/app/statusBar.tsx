@@ -60,10 +60,10 @@ export class StatusBar extends BaseComponent<Props, State>{
                     let errors =
                         this.props.errorsByFilePath[filePath]
                             .map((e, j) => (
-                                <div key={`${i}:${j}`} style={[styles.hand, styles.errorsPanel.errorMessageContainer]} onClick={()=>this.openFile(filePath,e)}>
-                                    <div style={styles.errorsPanel.errorMessageContent}>
-                                        <div>
-                                            {e.message}
+                                <div key={`${i}:${j}`} style={[styles.hand, styles.errorsPanel.errorDetailsContainer]} onClick={()=>this.openFile(filePath,e)}>
+                                    <div style={styles.errorsPanel.errorDetailsContent}>
+                                        <div style={styles.errorsPanel.errorMessage}>
+                                            🐛({e.from.line+1}:{e.from.ch+1}) {e.message}
                                         </div>
                                         {e.preview?<div style={styles.errorsPanel.errorPreview}>{e.preview}</div>:''}
                                     </div>
