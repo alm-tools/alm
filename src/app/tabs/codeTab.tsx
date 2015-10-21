@@ -34,6 +34,7 @@ export class Code extends React.Component<Props, State> implements tab.Component
         server.openFile({ filePath: this.filePath }).then((res) => {
             this.refs.editor.setValue(res.contents, true);
             commands.didOpenFile.emit({ filePath: this.props.url });
+            this.props.onSavedChanged(res.saved);
         });
 
         cast.savedFileChangedOnDisk.on((res)=>{

@@ -35,7 +35,7 @@ namespace Server {
      */
     export var openFile: typeof contract.server.openFile = (data) => {
         let file = fmc.getOrCreateOpenFile(data.filePath);
-        return resolve({ contents: file.getContents() });
+        return resolve({ contents: file.getContents(), saved: file.saved() });
     }
     export var closeFile: typeof contract.server.openFile = (data) => {
         fmc.closeOpenFile(data.filePath);
