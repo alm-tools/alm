@@ -116,7 +116,10 @@ export namespace errorsPanel {
         borderLeft: '6px solid #f92672'
     }
 
-    export let errorMessage = {
+    export let errorMessageContainer = {
+        padding: '3px',
+    }
+    export let errorMessageContent = {
         padding: '3px',
     }
 
