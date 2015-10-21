@@ -13,17 +13,17 @@ export function setupOptions(cmOptions: any) {
         completeOnSingleClick: true,
         hint: hint,
     };
-    
+
     // For debugging
     // cmOptions.hintOptions.closeOnUnfocus = false;
 }
 
 function hint(ed: CodeMirror.EditorFromTextArea, cb: Function, options) {
-    
+
     // options is just a copy of the `hintOptions` with defaults added
-    // So do something fancy with the Editor 
+    // So do something fancy with the Editor
     // console.log(ed,options);
-    
+
     function render(elt: HTMLLIElement, data: any, cur: any) {
         elt.innerHTML = `<span>
             <strong>complete: </strong>
@@ -31,7 +31,7 @@ function hint(ed: CodeMirror.EditorFromTextArea, cb: Function, options) {
         </span>`.replace(/\s+/g,' ');
     }
 
-    // Delegate to the auto version for now 
+    // Delegate to the auto version for now
     let original:CodeMirror.Hints = (CodeMirror as any).hint.auto(ed, options);
     if (!original) {
         cb(null);
