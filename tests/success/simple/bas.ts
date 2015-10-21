@@ -5,3 +5,4 @@
 import {foo} from "./foo";
 let bar = foo;
 // bar = '456';
+> > 

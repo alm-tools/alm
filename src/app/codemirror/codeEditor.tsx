@@ -152,6 +152,13 @@ export class CodeEditor extends React.Component<Props,any>{
 		}
 	}
 
+    gotoPosition = (position: EditorPosition) => {
+        if (this.codeMirror) {
+			this.codeMirror.getDoc().setCursor(position);
+            this.codeMirror.focus();
+		}
+    }
+
     private refresh = () => {
         if (this.codeMirror) {
             this.codeMirror.refresh(); // Needed to resize gutters correctly

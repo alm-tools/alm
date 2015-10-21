@@ -94,22 +94,33 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.state.tabs.push(codeTab);
             this.setState({ tabs: this.state.tabs });
             this.selectTab(this.state.tabs.length - 1);
+
+            if (e.position) {
+                setTimeout(() => this.gotoPositionOnSelectedTab(e.position), 500);
+            }
         });
+
         commands.doOpenOrFocusFile.on((e)=>{
             // if open and focused ignore
             // if open and not focused then focus
             // If not hand over to doOpenFile
             if (utils.getFilePathFromUrl(this.state.tabs[this.state.selected].url) == e.filePath){
+                if (e.position) {
+                    this.gotoPositionOnSelectedTab(e.position)
+                }
                 return;
             }
 
             let openTabIndex = this.state.tabs.map(t=> utils.getFilePathFromUrl(t.url) == e.filePath).indexOf(true);
             if (openTabIndex !== -1) {
                 this.selectTab(openTabIndex);
+                if (e.position) {
+                    setTimeout(() => this.gotoPositionOnSelectedTab(e.position));
+                }
+                return;
             }
-            else {
-                commands.doOpenFile.emit(e);
-            }
+
+            commands.doOpenFile.emit(e);
         });
 
         commands.onCloseTab.on((e)=>{
@@ -181,6 +192,13 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         let state = this.state;
         state.tabs[index].saved = saved;
         this.setState({ tabs: state.tabs });
+    }
+
+    gotoPositionOnSelectedTab(position: EditorPosition) {
+        let component = this.getSelectedComponent();
+        if (component) {
+            component.gotoPosition(position);
+        }
     }
 
     private selectTab(selected: number) {

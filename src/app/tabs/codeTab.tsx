@@ -89,4 +89,8 @@ export class Code extends React.Component<Props, State> implements tab.Component
     close = () => {
         server.closeFile({filePath: this.filePath});
     }
+
+    gotoPosition = (position) => {
+        this.refs.editor.gotoPosition(position);
+    }
 }

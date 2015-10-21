@@ -15,9 +15,9 @@ export var findCommand = new events.TypedEvent<{}>();
 export var doSelectProject = new events.TypedEvent<{}>();
 export var didSelectProject = new events.TypedEvent<{ projectName: string }>();
 
-export var doOpenFile = new events.TypedEvent<{ filePath: string }>();
+export var doOpenFile = new events.TypedEvent<{ filePath: string, position?: EditorPosition }>();
 export var didOpenFile = new events.TypedEvent<{ filePath: string }>();
-export var doOpenOrFocusFile = new events.TypedEvent<{ filePath: string, line: number }>();
+export var doOpenOrFocusFile = new events.TypedEvent<{ filePath: string, position?: EditorPosition }>();
 
 export var onCloseTab = new events.TypedEvent<{}>();
 export var onSaveTab = new events.TypedEvent<{}>();
