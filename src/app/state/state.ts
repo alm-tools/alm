@@ -1,3 +1,4 @@
+import * as types from "../../common/types";
 import {SimpleRedux} from "./simpleRedux";
 
 /** make sure you update initial state */
@@ -6,8 +7,10 @@ export interface StoreState {
     errorsExpanded?: boolean;
     errorsByFilePath?: ErrorsByFilePath;
     currentFilePath?: string;
+    /** Is the current file in the activeProject */
+    inActiveProject?: types.TriState;
 }
-let initialStoreState: StoreState = { activeProject: '', errorsExpanded: false, errorsByFilePath: {}, currentFilePath:'' };
+let initialStoreState: StoreState = { activeProject: '', errorsExpanded: false, errorsByFilePath: {}, currentFilePath:'', inActiveProject: types.TriState.Unknown };
 
 let redux = new SimpleRedux<StoreState>(initialStoreState);
 export var store = redux.store;
@@ -17,6 +20,12 @@ export var subscribe = redux.subscribe;
 export let setActiveProject = redux.add('setActiveProject', (state, payload: string): StoreState => {
     return {
         activeProject: payload,
+    };
+});
+
+export let setInActiveProject = redux.add('setInActiveProject', (state, payload: types.TriState): StoreState => {
+    return {
+        inActiveProject: payload,
     };
 });
 

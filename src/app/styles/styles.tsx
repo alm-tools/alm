@@ -1,5 +1,8 @@
 import csx = require('csx');
 
+export let errorColor = '#f92672';
+export let successColor = '#73c990';
+
 export var tabHeaderContainer = {
     background: 'grey'
 }
@@ -77,6 +80,12 @@ export let statusBar = {
 export let statusBarSection = {
     paddingLeft: '3px',
     paddingRight: '3px',
+}
+export let statusBarError = {
+    color: errorColor
+}
+export let statusBarSuccess = {
+    color: successColor
 }
 
 export var noSelect = {

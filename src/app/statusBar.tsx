@@ -7,6 +7,7 @@ import {BaseComponent} from "./ui";
 import * as ui from "./ui";
 import {cast,server} from "../socket/socketClient";
 import * as commands from "./commands/commands";
+import * as types from "../common/types";
 
 import {connect} from "react-redux";
 import {StoreState,expandErrors,collapseErrors} from "./state/state";
@@ -15,6 +16,7 @@ export interface Props extends React.Props<any> {
     // from react-redux ... connected below
     errorsExpanded?: boolean;
     activeProject?: string;
+    inActiveProject?: types.TriState;
     currentFilePath?: string;
     errorsByFilePath?: ErrorsByFilePath;
 }
@@ -30,6 +32,7 @@ export var statusBar: StatusBar;
     return {
         errorsExpanded: state.errorsExpanded,
         activeProject: state.activeProject,
+        inActiveProject: state.inActiveProject,
         currentFilePath: state.currentFilePath,
         errorsByFilePath: state.errorsByFilePath
     };
@@ -83,6 +86,15 @@ export class StatusBar extends BaseComponent<Props, State>{
             </div>
         }
 
+        let inActiveProjectSection =
+            this.props.inActiveProject == types.TriState.Unknown
+            ? ''
+            : <span style={[styles.statusBarSection]}>
+                {this.props.inActiveProject == types.TriState.True
+                    ?<span style={styles.statusBarSuccess}>👌</span>
+                    :<span style={styles.statusBarError}>🙅</span>}
+            </span>
+
         return (
             <div>
                 {errorPanel}
@@ -91,6 +103,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                     <span style={[styles.statusBarSection, styles.noSelect]}>🌹</span>
                     {this.props.activeProject?<span style={styles.statusBarSection}>{this.props.activeProject}</span>:''}
                     {this.props.currentFilePath?<span style={styles.statusBarSection}>{this.props.currentFilePath}</span>:''}
+                    {inActiveProjectSection}
 
                     {/* seperator */}
                     <span style={csx.flex}></span>

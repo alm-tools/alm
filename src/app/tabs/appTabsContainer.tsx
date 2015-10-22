@@ -14,7 +14,8 @@ import {server} from "../../socket/socketClient";
 import {rangeLimited} from "../../common/utils";
 import {statusBar} from "../statusBar";
 
-import {setCurrentFilePath,StoreState} from "../state/state";
+import {setCurrentFilePath, setInActiveProject, StoreState} from "../state/state";
+import * as state from "../state/state";
 import {connect} from "react-redux";
 
 export interface Props extends React.Props<any> {
@@ -214,6 +215,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             let component = this.getSelectedComponent();
             if (component) {
                 component.focus();
+                let url = this.state.tabs[selected].url;
+                let filePath = utils.getFilePathFromUrl(url);
+                if (filePath){
+                    state.setCurrentFilePath(filePath);
+                }
             }
             else {
                 setCurrentFilePath('');

@@ -4,7 +4,6 @@ import * as tab from "./tab";
 import {server,cast} from "../../socket/socketClient";
 import * as commands from "../commands/commands";
 import * as utils from "../../common/utils";
-import * as state from "../state/state";
 
 import {CodeEditor} from "../codemirror/codeEditor";
 
@@ -81,7 +80,6 @@ export class Code extends React.Component<Props, State> implements tab.Component
 
     focus = () => {
         this.refs.editor.focus();
-        state.setCurrentFilePath(this.filePath);
     }
 
     save = () => {
