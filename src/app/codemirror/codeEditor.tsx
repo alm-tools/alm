@@ -118,6 +118,10 @@ export class CodeEditor extends React.Component<Props,any>{
 		this.codeMirror.on('focus', this.focusChanged.bind(this, true));
 		this.codeMirror.on('blur', this.focusChanged.bind(this, false));
 
+        // Make hint / autocomplete more aggresive
+        autocomplete.setupCodeMirror(this.codeMirror);
+
+
         this.resizehandler = onresize.on(() => this.refresh());
 	}
 
