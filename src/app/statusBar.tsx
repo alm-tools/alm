@@ -89,8 +89,8 @@ export class StatusBar extends BaseComponent<Props, State>{
                 <div style={[styles.statusBar,csx.horizontal,csx.center]}>
                     {/* Left sections */}
                     <span style={[styles.statusBarSection, styles.noSelect]}>🌹</span>
-                    <span style={styles.statusBarSection}>{this.props.activeProject}</span>
-                    <span style={styles.statusBarSection}>{this.props.currentFilePath}</span>
+                    {this.props.activeProject?<span style={styles.statusBarSection}>{this.props.activeProject}</span>:''}
+                    {this.props.currentFilePath?<span style={styles.statusBarSection}>{this.props.currentFilePath}</span>:''}
 
                     {/* seperator */}
                     <span style={csx.flex}></span>
