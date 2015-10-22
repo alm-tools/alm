@@ -15,6 +15,7 @@ export interface Props extends React.Props<any> {
     // from react-redux ... connected below
     errorsExpanded?: boolean;
     activeProject?: string;
+    currentFilePath?: string;
     errorsByFilePath?: ErrorsByFilePath;
 }
 export interface State {
@@ -29,6 +30,7 @@ export var statusBar: StatusBar;
     return {
         errorsExpanded: state.errorsExpanded,
         activeProject: state.activeProject,
+        currentFilePath: state.currentFilePath,
         errorsByFilePath: state.errorsByFilePath
     };
 })
@@ -45,7 +47,6 @@ export class StatusBar extends BaseComponent<Props, State>{
 
     render(){
 
-        let activeProject = this.props.activeProject;
         let errorCount = utils.selectMany(Object.keys(this.props.errorsByFilePath).map((k)=>this.props.errorsByFilePath[k])).length;
 
         let errorPanel = null;
@@ -88,7 +89,8 @@ export class StatusBar extends BaseComponent<Props, State>{
                 <div style={[styles.statusBar,csx.horizontal,csx.center]}>
                     {/* Left sections */}
                     <span style={[styles.statusBarSection, styles.noSelect]}>🌹</span>
-                    <span style={styles.statusBarSection}>{activeProject}</span>
+                    <span style={styles.statusBarSection}>{this.props.activeProject}</span>
+                    <span style={styles.statusBarSection}>{this.props.currentFilePath}</span>
 
                     {/* seperator */}
                     <span style={csx.flex}></span>

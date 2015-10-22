@@ -14,7 +14,7 @@ import {server} from "../../socket/socketClient";
 import {rangeLimited} from "../../common/utils";
 import {statusBar} from "../statusBar";
 
-import {setActiveProject,StoreState} from "../state/state";
+import {setCurrentFilePath,StoreState} from "../state/state";
 import {connect} from "react-redux";
 
 export interface Props extends React.Props<any> {
@@ -214,10 +214,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             let component = this.getSelectedComponent();
             if (component) {
                 component.focus();
-                setActiveProject(component.props.url);
             }
             else {
-                setActiveProject('');
+                setCurrentFilePath('');
             }
         });
     }
@@ -230,7 +229,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
     closeTab(index: number) {
         // Always clear the status bar
-        setActiveProject('');
+        setCurrentFilePath('');
 
         // If no tabs
         if (!this.state.tabs.length) {

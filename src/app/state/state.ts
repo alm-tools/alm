@@ -5,8 +5,9 @@ export interface StoreState {
     activeProject?: string;
     errorsExpanded?: boolean;
     errorsByFilePath?: ErrorsByFilePath;
+    currentFilePath?: string;
 }
-let initialStoreState: StoreState = { activeProject: '', errorsExpanded: false, errorsByFilePath: {} };
+let initialStoreState: StoreState = { activeProject: '', errorsExpanded: false, errorsByFilePath: {}, currentFilePath:'' };
 
 let redux = new SimpleRedux<StoreState>(initialStoreState);
 export var store = redux.store;
@@ -16,6 +17,12 @@ export var subscribe = redux.subscribe;
 export let setActiveProject = redux.add('setActiveProject', (state, payload: string): StoreState => {
     return {
         activeProject: payload,
+    };
+});
+
+export let setCurrentFilePath = redux.add('setCurrentFilePath', (state, payload: string): StoreState => {
+    return {
+        currentFilePath: payload,
     };
 });
 
