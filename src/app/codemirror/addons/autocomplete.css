@@ -38,7 +38,7 @@
   margin: 0;
   padding: 0 4px;
   border-radius: 2px;
-  /*max-width: 19em;*/
+  max-width: 19em;
   white-space: pre;
   color: black;
   cursor: pointer;
@@ -61,4 +61,7 @@ li.CodeMirror-hint-active {
     color: red;
     display: table-cell;
     padding-right: 3px;
+}
+.CodeMirror-hint-active .hint.left {
+    color: #62FF00;
 }

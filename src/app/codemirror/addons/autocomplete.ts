@@ -52,6 +52,9 @@ export function setupCodeMirror(cm: CodeMirror.EditorFromTextArea){
 }
 
 export class AutoCompleter {
+    /** if not the last request ... don't show results */
+    lastRequest: number;
+
     constructor(public filePath: string) {
         // Make hint async
         (this.hint as any).async = true;
@@ -68,6 +71,8 @@ export class AutoCompleter {
         let token = editor.getTokenAt(cur);
         let prefix = token.string;
         let position = editor.getDoc().indexFromPos(cur);
+
+        this.lastRequest = position;
 
         /** For various reasons if we don't want to return completions */
         let noCompletions: CodeMirror.Hints = null;
@@ -99,6 +104,11 @@ export class AutoCompleter {
         // if in active project
         if (state.inActiveProject()) {
             server.getCompletionsAtPosition({ filePath: this.filePath, position, prefix }).then(res=> {
+                if (this.lastRequest !== position){
+                    cb(null);
+                    return;
+                }
+
                 cb({
                     from: { line: cur.line, ch: token.start },
                     to: { line: cur.line, ch: token.start + prefix.length },

@@ -20,7 +20,6 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
 
     var completions: ts.CompletionInfo = project.languageService.getCompletionsAtPosition(filePath, position);
     var completionList = completions ? completions.entries.filter(x=> !!x) : [];
-    console.log(prefix);
     var endsInPunctuation = utils.prefixEndsInPunctuation(prefix);
 
     if (prefix.length && !endsInPunctuation) {
