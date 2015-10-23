@@ -91,8 +91,8 @@ export class StatusBar extends BaseComponent<Props, State>{
             ? ''
             : <span style={[styles.statusBarSection]}>
                 {this.props.inActiveProject == types.TriState.True
-                    ?<span style={[styles.statusBarSuccess,styles.noSelect]} title="File is part of the currently active project. Robots providing code intelligence.">👍</span>
-                    :<span style={[styles.statusBarError,styles.noSelect]} title="File is not a part of the currently active project. Robots deactivated.">👎</span>}
+                    ?<span style={[styles.noSelect]} title="File is part of the currently active project. Robots providing code intelligence.">👍</span>
+                    :<span style={[styles.noSelect]} title="File is not a part of the currently active project. Robots deactivated.">👎</span>}
             </span>
 
         return (
@@ -100,7 +100,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                 {errorPanel}
                 <div style={[styles.statusBar,csx.horizontal,csx.center]}>
                     {/* Left sections */}
-                    <span style={[styles.statusBarSection, styles.noSelect]} title="Here have a rose. Because you deserve it.">🌹</span>
+                    <span style={[styles.statusBarSection, styles.noSelect]} title="Here have a rose. Because you deserve it 🌹">🌹</span>
                     {this.props.activeProject?<span style={[styles.statusBarSection]}>{this.props.activeProject}</span>:''}
                     {this.props.currentFilePath?<span style={[styles.statusBarSection]}>{this.props.currentFilePath}</span>:''}
                     {inActiveProjectSection}
@@ -109,8 +109,8 @@ export class StatusBar extends BaseComponent<Props, State>{
                     <span style={csx.flex}></span>
 
                     {/* Right sections */}
-                    <span style={[styles.statusBarSection, styles.hand, styles.noSelect]} onClick={this.toggleErrors}>
-                        {errorCount ? <span style={styles.statusBarError}>{errorCount} ⛔</span> : <span style={styles.statusBarSuccess}>{errorCount} ⛔</span> }
+                    <span style={[styles.statusBarSection, styles.noSelect, styles.hand]} onClick={this.toggleErrors}>
+                        {errorCount ? <span style={styles.statusBarError}>{errorCount} 🔴</span> : <span style={styles.statusBarSuccess}>{errorCount} ⚪</span> }
                     </span>
 
                 </div>
