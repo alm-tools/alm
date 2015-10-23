@@ -25,6 +25,7 @@ declare module CodeMirror {
     /** Interface used by showHint.js Codemirror add-on
     When completions aren't simple strings, they should be objects with the following properties: */
     interface Hint {
+        /** text is what is used by default to apply the completion */
         text: string;
         className?: string;
         displayText?: string;
