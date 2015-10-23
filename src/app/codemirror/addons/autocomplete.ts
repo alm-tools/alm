@@ -29,7 +29,12 @@ export function setupCodeMirror(cm: CodeMirror.EditorFromTextArea){
     let timeout:any;
 
     // Don't be aggresive on these ending characters
-    let ignoreEnds = createMap([';', ',', '(', ')','`','"',"'"]);
+    let ignoreEnds = createMap([
+        ';', ',',
+        '(', ')',
+        '`','"',"'",
+        "{","}","[","]"
+    ]);
 
     cm.on("inputRead", function(editor,change: CodeMirror.EditorChange) {
         if (timeout) {
