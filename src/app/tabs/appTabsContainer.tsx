@@ -16,6 +16,7 @@ import {statusBar} from "../statusBar";
 
 import {setCurrentFilePath, setInActiveProject, StoreState} from "../state/state";
 import * as state from "../state/state";
+import * as types from "../../common/types";
 import {connect} from "react-redux";
 
 export interface Props extends React.Props<any> {
@@ -219,10 +220,12 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 let filePath = utils.getFilePathFromUrl(url);
                 if (filePath){
                     state.setCurrentFilePath(filePath);
+                    // TODO: query server about this
                 }
             }
             else {
                 setCurrentFilePath('');
+                state.setInActiveProject(types.TriState.Unknown);
             }
         });
     }
@@ -236,6 +239,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     closeTab(index: number) {
         // Always clear the status bar
         setCurrentFilePath('');
+        state.setInActiveProject(types.TriState.Unknown);
 
         // If no tabs
         if (!this.state.tabs.length) {
