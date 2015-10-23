@@ -61,6 +61,10 @@ li.CodeMirror-hint-active {
     color: red;
     display: table-cell;
     padding-right: 3px;
+
+    /* Because of using table - row on parent spacing between items needs to come from here as well */
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 .CodeMirror-hint-active .hint.left {
     color: #62FF00;
