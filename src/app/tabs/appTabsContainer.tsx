@@ -1,3 +1,8 @@
+/**
+ * This maintains the User interface Tabs for app,
+ * e.g. selected tab, any handling of open tab requests etc.
+ */
+
 import * as ui from "../ui";
 import * as React from "react";
 import * as tab from "./tab";
