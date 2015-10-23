@@ -51,7 +51,7 @@ export class AutoCompleter {
         (this.hint as any).async = true;
     }
 
-    hint = (editor: CodeMirror.EditorFromTextArea, cb: Function, options): void => {
+    hint = (editor: CodeMirror.EditorFromTextArea, cb: (hints: CodeMirror.Hints) => void, options): void => {
 
         // options is just a copy of the `hintOptions` with defaults added
         // So do something fancy with the Editor
@@ -63,7 +63,26 @@ export class AutoCompleter {
         let prefix = token.string;
         let position = editor.getDoc().indexFromPos(cur);
 
-        // server.getCompletionsAtPosition({filePath:});
+        /** For various reasons if we don't want to return completions */
+        let noCompletions: CodeMirror.Hints = null;
+
+        // if in active project
+        if (state.inActiveProject()) {
+            server.getCompletionsAtPosition({ filePath: this.filePath, position: position }).then(res=> {
+                cb({
+                    from: { line: cur.line, ch: token.start },
+                    to: { line: cur.line, ch: token.start + prefix.length },
+
+                    list: ['asdf']
+                });
+            });
+            return;
+        }
+        else {
+            cb(noCompletions);
+            return;
+        }
+
 
         if (/\b(?:string|comment)\b/.test(token.type)) return;
 

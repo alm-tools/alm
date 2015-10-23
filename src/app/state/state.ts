@@ -28,6 +28,7 @@ export let setInActiveProject = redux.add('setInActiveProject', (state, payload:
         inActiveProject: payload,
     };
 });
+export let inActiveProject = () => getState().inActiveProject === types.TriState.True;
 
 export let setCurrentFilePath = redux.add('setCurrentFilePath', (state, payload: string): StoreState => {
     return {
