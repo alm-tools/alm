@@ -38,6 +38,7 @@
         "server/devtime.ts",
         "server/disk/fileModel.ts",
         "server/disk/fileModelCache.ts",
+        "server/disk/session.ts",
         "server/disk/workingDir.ts",
         "server/errorCodes.ts",
         "server/lang/activeProject.ts",

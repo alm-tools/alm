@@ -1,8 +1,8 @@
 /**
- * Its Types (e.g. enums) + constants :) 
+ * Its Types (e.g. enums) + constants :)
  */
 
-export const cacheDir = '.tsb';
+export const cacheDir = './.tsb';
 export const title = "TypeScript Builder";
 
 export enum TriState {

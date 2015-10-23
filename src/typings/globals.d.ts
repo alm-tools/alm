@@ -42,3 +42,21 @@ interface ProjectJson {
      */
     tsconfig: string;
 }
+
+
+/**
+ * Session related types
+ */
+interface SessionTab {
+    url: string;
+}
+interface Session {
+    openTabs: SessionTab[];
+    /** Full path to tsconfig.json including file name */
+    tsconfig?: string;
+    /** Duration since epoch */
+    lastUsed: number;
+}
+interface Sessions {
+    sessions: Session[];
+}
