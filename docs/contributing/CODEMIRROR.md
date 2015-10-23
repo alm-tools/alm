@@ -1,14 +1,16 @@
 Our Editor is just a wrapper around codemirror.
 
-# Docs 
-https://codemirror.net/doc/manual.html 
+# Docs
+https://codemirror.net/doc/manual.html
 https://codemirror.net/doc/manual.html#api
 
-Various useful community addons : https://github.com/codemirror/CodeMirror/wiki/CodeMirror-addons 
+Various useful community addons : https://github.com/codemirror/CodeMirror/wiki/CodeMirror-addons
 
-Notes: 
+Notes:
  * Code mirror position `line` is zero based. So is `ch`.
 
+# Position vs Index
+Quite commonly we need a zero based *string* index into the file. Codemirror has functions `indexFromPos` and `posFromIndex`.
 
 # VS ACE
 Reasons we went with codemirror
