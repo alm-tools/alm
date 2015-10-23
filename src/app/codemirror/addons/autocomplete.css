@@ -27,24 +27,24 @@
     overflow-y: auto;
 
     /** customizations */
-    display: flex;
-    flex-direction: column;
+
+    /** theoretically its needed ... but as soon as we add it height no longer works (css limitation)
+     * But since table-row table-cell children work even without this ... lets do that :)
+     */
+    /** display: table; */
 }
 
 .CodeMirror-hint {
   margin: 0;
   padding: 0 4px;
   border-radius: 2px;
-  max-width: 19em;
+  /*max-width: 19em;*/
   white-space: pre;
   color: black;
   cursor: pointer;
 
   /** customizations */
-  display: flex;
-  flex-direction: row;
-
-  flex: 1;
+  display: table-row;
 }
 
 li.CodeMirror-hint-active {
@@ -59,4 +59,6 @@ li.CodeMirror-hint-active {
  */
 .hint.left {
     color: red;
+    display: table-cell;
+    padding-right: 3px;
 }

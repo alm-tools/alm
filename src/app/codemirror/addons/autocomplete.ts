@@ -18,12 +18,10 @@ export function setupOptions(cmOptions: any, filePath: string) {
         completeOnSingleClick: true, // User can click on the item to select it :)
         completeSingle: false, // Don't compelete the last item
         hint: new AutoCompleter(filePath).hint,
-
-        // closeOnUnfocus: false, // Comes handy when debugging
     };
 
-    // For debugging
-    // cmOptions.hintOptions.closeOnUnfocus = false;
+    // Debugging
+    // cmOptions.hintOptions.closeOnUnfocus = false; // DEBUG
 }
 
 /** Mostly make completions more aggressive */
@@ -80,10 +78,10 @@ export class AutoCompleter {
             /** hacky push to render function */
             let original: Types.Completion = cur['original'];
 
-            elt.innerHTML = `<span>
+            elt.innerHTML = `
                 <strong class="hint left">${original.kind}</strong>
                 <span>${original.name}</span>
-            </span>`.replace(/\s+/g,' ');
+            `.replace(/\s+/g,' ');
         }
 
         function completionToCodeMirrorHint(completion: Types.Completion): CodeMirror.Hint {
