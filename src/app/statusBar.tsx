@@ -110,7 +110,7 @@ export class StatusBar extends BaseComponent<Props, State>{
 
                     {/* Right sections */}
                     <span style={[styles.statusBarSection, styles.hand, styles.noSelect]} onClick={this.toggleErrors}>
-                        {errorCount} ⛔
+                        {errorCount ? <span style={styles.statusBarError}>{errorCount} ⛔</span> : <span style={styles.statusBarSuccess}>{errorCount} ⛔</span> }
                     </span>
 
                 </div>
