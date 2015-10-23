@@ -36,15 +36,12 @@ export function setupCodeMirror(cm: CodeMirror.EditorFromTextArea){
         "{","}","[","]"
     ]);
 
-    cm.on("inputRead", function(editor,change: CodeMirror.EditorChange) {
+    cm.on("inputRead", function(ed: any, change: CodeMirror.EditorChange) {
+        let editor: CodeMirror.EditorFromTextArea = ed;
+
         /** Very important to clear any pending request */
         if (timeout) {
             clearTimeout(timeout);
-        }
-
-        // if a completion is already active ... then cm will call us anyways :)
-        if (editor.state.completionActive) {
-            return;
         }
 
         /** only on user input (e.g. exclude `cut`) */
@@ -57,6 +54,14 @@ export function setupCodeMirror(cm: CodeMirror.EditorFromTextArea){
         }
 
         timeout = setTimeout(function() {
+            // if a completion is already active ... then cm will call us anyways :)
+            if ((editor as any).state.completionActive) {
+                // For some reason it doesn't for `.`
+                let cur = editor.getDoc().getCursor();
+                if (editor.getTokenAt(cur).string !== '.'){
+                    return;
+                }
+            }
             CodeMirror.showHint(cm as any);
         }, 150);
     });
@@ -132,7 +137,7 @@ export class AutoCompleter {
                 cb({
                     from,
                     to,
-                    list: res.completions.map(completionToCodeMirrorHint)
+                    list: res.completions.filter(x=>!x.snippet).map(completionToCodeMirrorHint)
                 });
             });
             return;
