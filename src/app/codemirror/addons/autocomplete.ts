@@ -37,8 +37,14 @@ export function setupCodeMirror(cm: CodeMirror.EditorFromTextArea){
     ]);
 
     cm.on("inputRead", function(editor,change: CodeMirror.EditorChange) {
+        /** Very important to clear any pending request */
         if (timeout) {
             clearTimeout(timeout);
+        }
+
+        // if a completion is already active ... then cm will call us anyways :)
+        if (editor.state.completionActive) {
+            return;
         }
 
         /** only on user input (e.g. exclude `cut`) */

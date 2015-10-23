@@ -45,6 +45,7 @@
 
   /** customizations */
   display: table-row;
+  transition: color .2s, background .2s;
 }
 
 li.CodeMirror-hint-active {
@@ -61,6 +62,8 @@ li.CodeMirror-hint-active {
     color: red;
     display: table-cell;
     padding-right: 3px;
+    
+    transition: color .2s, background .2s;
 
     /* Because of using table - row on parent spacing between items needs to come from here as well */
     padding-top: 2px;
