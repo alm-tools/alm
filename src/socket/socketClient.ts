@@ -1,5 +1,6 @@
 import * as slc from "../socketLib/socketLibClient";
 import * as contract from "./socketContract";
+export import Types = contract.Types;
 
 namespace Client {
     export var increment: typeof contract.client.increment = (q) => {
@@ -16,5 +17,3 @@ export let {server, cast} = slc.run({ clientImplementation: Client, serverContra
 
 // Sample usage
 cast.hello.on((p) => { console.log(p) });
-
-

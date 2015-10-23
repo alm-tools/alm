@@ -5,6 +5,8 @@ require('codemirror/addon/hint/show-hint.css');
 require('codemirror/addon/hint/javascript-hint');
 
 import {createMap} from "../../../common/utils";
+import {server,cast,Types} from "../../../socket/socketClient";
+import * as state from "../../state/state";
 
 /// TODO: checkout the tern demo : http://codemirror.net/demo/tern.html to show docs next to selected item
 
@@ -43,12 +45,23 @@ export function setupCodeMirror(cm: CodeMirror.EditorFromTextArea){
     });
 }
 
-function hint(ed: CodeMirror.EditorFromTextArea, cb: Function, options) {
+function hint(editor: CodeMirror.EditorFromTextArea, cb: Function, options) {
 
     // options is just a copy of the `hintOptions` with defaults added
     // So do something fancy with the Editor
     // console.log(ed,options);
     // console.log(options);
+
+    let cur = editor.getDoc().getCursor();
+    let token = editor.getTokenAt(cur);
+    let prefix = token.string;
+    let position = editor.getDoc().indexFromPos(cur);
+
+    // server.getCompletionsAtPosition({filePath:});
+
+    if (/\b(?:string|comment)\b/.test(token.type)) return;
+
+    console.log(cur);
 
     function render(elt: HTMLLIElement, data: any, cur: any) {
         elt.innerHTML = `<span>
@@ -57,8 +70,10 @@ function hint(ed: CodeMirror.EditorFromTextArea, cb: Function, options) {
         </span>`.replace(/\s+/g,' ');
     }
 
+    console.log(editor,options);
+
     // Delegate to the auto version for now
-    let original:CodeMirror.Hints = (CodeMirror as any).hint.auto(ed, options);
+    let original:CodeMirror.Hints = (CodeMirror as any).hint.auto(editor, options);
     if (!original) {
         cb(null);
         return;
