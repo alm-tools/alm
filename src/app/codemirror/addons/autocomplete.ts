@@ -57,6 +57,7 @@ export function setupCodeMirror(cm: CodeMirror.EditorFromTextArea){
             // if a completion is already active ... then cm will call us anyways :)
             if ((editor as any).state.completionActive) {
                 // For some reason it doesn't for `.`
+                // Suspect its because `token` changes and therefore show-hint hides it ¯\_(ツ)_/¯
                 let cur = editor.getDoc().getCursor();
                 if (editor.getTokenAt(cur).string !== '.'){
                     return;
