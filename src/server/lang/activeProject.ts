@@ -1,7 +1,8 @@
-import utils = require("../../common/utils");
 /**
  * Tracks tsb.json and the active project within that
  */
+
+import utils = require("../../common/utils");
 import * as json from "../../common/json";
 import * as fsu from "../utils/fsu";
 import * as flm from "../workers/fileListing/fileListingMaster";
@@ -9,14 +10,12 @@ import * as wd from "../disk/workingDir";
 import * as fmc from "../disk/fileModelCache";
 import * as tsconfig from "./core/tsconfig";
 import * as project from "./core/project";
+import * as types from "../../common/types";
 import {setErrorsByFilePaths, clearErrors, clearErrorsForFilePath} from "./errorsCache";
 import {diagnosticToCodeError} from "./building";
 import {makeBlandError} from "../../common/utils";
 
 import equal = require('deep-equal');
-
-import simpleValidator = require('./core/simpleValidator');
-var types = simpleValidator.types;
 
 interface TsbJson {
     projects: ProjectJson[];
@@ -45,6 +44,21 @@ export function getProjectIfCurrent(filePath: string): project.Project {
     if (currentProject && currentProject.includesSourceFile(filePath)) {
         return currentProject;
     }
+}
+
+/**
+ * Sometimes (e.g in the projectService) you want to error out
+ * because these functions should not be called if there is no active project
+ */
+export function getProjectIfCurrentOrErrorOut(filePath:string): project.Project {
+    let proj = getProjectIfCurrent(filePath);
+
+    if (!proj) {
+        console.error(types.errors.CALLED_WHEN_NO_ACTIVE_PROJECT_FOR_FILE_PATH, filePath);
+        throw new Error(types.errors.CALLED_WHEN_NO_ACTIVE_PROJECT_FOR_FILE_PATH);
+    }
+
+    return proj;
 }
 
 /**

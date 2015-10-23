@@ -141,3 +141,8 @@ export function makeBlandError(filePath: string, error: string): CodeError {
 export function getFilePathFromUrl(url: string) {
     return url && url.length > 'file://'.length ? url.substr('file://'.length): '';
 }
+
+/**
+ * Promise.resolve is something I call the time (allows you to take x|promise and return promise ... aka make sync prog async if needed)
+ */
+export var resolve: typeof Promise.resolve = Promise.resolve.bind(Promise);

@@ -31,7 +31,12 @@ export var server = {
     /**
      * Error stuff
      */
-    getErrors: {} as QRFunction<{}, ErrorsByFilePath>
+    getErrors: {} as QRFunction<{}, ErrorsByFilePath>,
+
+    /**
+     * Project Service
+     */
+    getCompletionsAtPosition: {} as QRFunction<Types.FilePathPositionQuery,Types.GetCompletionsAtPositionResponse>,
 }
 
 export var client = {
@@ -59,4 +64,37 @@ export var cast = {
 
     /** Tsb updated */
     currentTsbContentsUpdated: new TypedEvent<{projects: ProjectJson[]}>()
+}
+
+
+/**
+ * General utility interfaces
+ */
+export namespace Types {
+    /** Used a lot in project service */
+    export interface FilePathPositionQuery {
+        filePath: string;
+        position: number;
+    }
+
+    /**
+     * Completions stuff
+     */
+    export interface GetCompletionsAtPositionQuery extends FilePathPositionQuery {
+        prefix: string;
+    }
+
+    export interface Completion {
+        name?: string; // stuff like "toString"
+        kind?: string; // stuff like "var"
+        comment?: string; // the docComment if any
+        display?: string; // This is either displayParts (for functions) or just the kind duplicated
+
+        /** If snippet is specified then the above stuff is ignored */
+        snippet?: string;
+    }
+    export interface GetCompletionsAtPositionResponse {
+        completions: Completion[];
+        endsInPunctuation: boolean;
+    }
 }

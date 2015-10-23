@@ -28,7 +28,6 @@
         "app/state/state.ts",
         "app/tabs/tab.ts",
         "app/utils/preventBackspaceNav.ts",
-        "common/constants.ts",
         "common/events.ts",
         "common/json.ts",
         "common/types.ts",

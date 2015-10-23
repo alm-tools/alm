@@ -6,6 +6,7 @@ import * as fslw from "../server/workers/fileListing/fileListingMaster";
 import * as workingDir from "../server/disk/workingDir";
 import {FileModel} from "../server/disk/fileModel";
 import * as activeProject from "../server/lang/activeProject";
+import * as projectService from "../server/lang/projectService";
 let resolve = sls.resolve;
 
 import * as fmc from "../server/disk/fileModelCache";
@@ -77,6 +78,11 @@ namespace Server {
     export var getErrors: typeof contract.server.getErrors = (data) => {
         return resolve(errorCache.getErrors());
     }
+
+    /**
+     * Project service
+     */
+    export var getCompletionsAtPosition : typeof contract.server.getCompletionsAtPosition = projectService.getCompletionsAtPosition;
 }
 
 // Ensure that the namespace follows the contract
