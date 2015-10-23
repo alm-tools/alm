@@ -146,3 +146,8 @@ export function getFilePathFromUrl(url: string) {
  * Promise.resolve is something I call the time (allows you to take x|promise and return promise ... aka make sync prog async if needed)
  */
 export var resolve: typeof Promise.resolve = Promise.resolve.bind(Promise);
+
+/** Useful for various editor related stuff e.g. completions */
+var punctuations = createMap([';', '{', '}', '(', ')', '.', ':', '<', '>', "'", '"']);
+/** Does the prefix end in punctuation */
+export var prefixEndsInPunctuation = (prefix: string) => prefix.length && prefix.trim().length && punctuations[prefix.trim()[prefix.trim().length - 1]];

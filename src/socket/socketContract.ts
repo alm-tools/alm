@@ -36,7 +36,7 @@ export var server = {
     /**
      * Project Service
      */
-    getCompletionsAtPosition: {} as QRFunction<Types.FilePathPositionQuery,Types.GetCompletionsAtPositionResponse>,
+    getCompletionsAtPosition: {} as QRFunction<Types.GetCompletionsAtPositionQuery,Types.GetCompletionsAtPositionResponse>,
 }
 
 export var client = {

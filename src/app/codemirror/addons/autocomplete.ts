@@ -66,14 +66,37 @@ export class AutoCompleter {
         /** For various reasons if we don't want to return completions */
         let noCompletions: CodeMirror.Hints = null;
 
+
+        function render(elt: HTMLLIElement, data: CodeMirror.Hints, cur: CodeMirror.Hint) {
+
+            /** hacky push to render function */
+            let original: Types.Completion = cur['original'];
+
+            elt.innerHTML = `<span>
+                <strong>complete: </strong>
+                <span>${original.name}</span>
+            </span>`.replace(/\s+/g,' ');
+        }
+
+        function completionToCodeMirrorHint(completion: Types.Completion): CodeMirror.Hint {
+            let result: CodeMirror.Hint = {
+                text: completion.name,
+                render: render
+            }
+
+            /** Hacky way to pass to render function */
+            result['original'] = completion;
+
+            return result;
+        }
+
         // if in active project
         if (state.inActiveProject()) {
-            server.getCompletionsAtPosition({ filePath: this.filePath, position: position }).then(res=> {
+            server.getCompletionsAtPosition({ filePath: this.filePath, position, prefix }).then(res=> {
                 cb({
                     from: { line: cur.line, ch: token.start },
                     to: { line: cur.line, ch: token.start + prefix.length },
-
-                    list: ['asdf']
+                    list: res.completions.map(completionToCodeMirrorHint)
                 });
             });
             return;
@@ -82,36 +105,6 @@ export class AutoCompleter {
             cb(noCompletions);
             return;
         }
-
-
-        if (/\b(?:string|comment)\b/.test(token.type)) return;
-
-        console.log(cur);
-
-        function render(elt: HTMLLIElement, data: any, cur: any) {
-            elt.innerHTML = `<span>
-                <strong>complete: </strong>
-                <span>${cur.text}</span>
-            </span>`.replace(/\s+/g,' ');
-        }
-
-        console.log(editor,options);
-
-        // Delegate to the auto version for now
-        let original:CodeMirror.Hints = (CodeMirror as any).hint.auto(editor, options);
-        if (!original) {
-            cb(null);
-            return;
-        }
-        original.list = original.list.map(o=> {
-            let str: string = o as string;
-            return {
-                render: render,
-                text: str,
-            };
-        });
-
-        setTimeout(() => cb(original), 100);
     };
 
 }
