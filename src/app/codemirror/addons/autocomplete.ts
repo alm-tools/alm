@@ -120,9 +120,18 @@ export class AutoCompleter {
                     return;
                 }
 
+                let from = { line: cur.line, ch: token.start };
+                let to = { line: cur.line, ch: token.start + prefix.length };
+
+                // Don't eat the dot!
+                // (our projectService completions come back without the dot)
+                if (token.string == '.'){
+                    from = to;
+                }
+
                 cb({
-                    from: { line: cur.line, ch: token.start },
-                    to: { line: cur.line, ch: token.start + prefix.length },
+                    from,
+                    to,
                     list: res.completions.map(completionToCodeMirrorHint)
                 });
             });
