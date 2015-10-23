@@ -1,12 +1,13 @@
 import CM = require('codemirror');
 let CodeMirror = CM;
 require('codemirror/addon/hint/show-hint');
-require('codemirror/addon/hint/show-hint.css');
 require('codemirror/addon/hint/javascript-hint');
 
 import {createMap} from "../../../common/utils";
 import {server,cast,Types} from "../../../socket/socketClient";
 import * as state from "../../state/state";
+
+require('./autocomplete.css');
 
 /// TODO: checkout the tern demo : http://codemirror.net/demo/tern.html to show docs next to selected item
 
@@ -17,6 +18,8 @@ export function setupOptions(cmOptions: any, filePath: string) {
         completeOnSingleClick: true, // User can click on the item to select it :)
         completeSingle: false, // Don't compelete the last item
         hint: new AutoCompleter(filePath).hint,
+
+        // closeOnUnfocus: false, // Comes handy when debugging
     };
 
     // For debugging
@@ -28,11 +31,16 @@ export function setupCodeMirror(cm: CodeMirror.EditorFromTextArea){
     let timeout:any;
 
     // Don't be aggresive on these ending characters
-    let ignoreEnds = createMap([';',',']);
+    let ignoreEnds = createMap([';', ',', '(', ')']);
 
     cm.on("inputRead", function(editor,change: CodeMirror.EditorChange) {
         if (timeout) {
             clearTimeout(timeout);
+        }
+
+        /** only on user input (e.g. exclude `cut`) */
+        if (change.origin !== '+input'){
+            return;
         }
 
         if (change && change.text && ignoreEnds[change.text.join('')]){
@@ -73,7 +81,7 @@ export class AutoCompleter {
             let original: Types.Completion = cur['original'];
 
             elt.innerHTML = `<span>
-                <strong>complete: </strong>
+                <strong class="hint left">${original.kind}</strong>
                 <span>${original.name}</span>
             </span>`.replace(/\s+/g,' ');
         }

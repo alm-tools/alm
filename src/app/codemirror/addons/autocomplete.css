@@ -1,0 +1,62 @@
+/*
+ * Class names pulled from show-hint.css
+ * commented out sections *before customizations* are sections we commented out of show-hint
+ */
+
+.CodeMirror-hints {
+    /** Straight from show-hint.css */
+    position: absolute;
+    z-index: 10;
+    overflow: hidden;
+    list-style: none;
+
+    margin: 0;
+    padding: 2px;
+
+    -webkit-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
+    -moz-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
+    box-shadow: 2px 3px 5px rgba(0,0,0,.2);
+    border-radius: 3px;
+    border: 1px solid silver;
+
+    background: white;
+    font-size: 90%;
+    font-family: monospace;
+
+    max-height: 20em;
+    overflow-y: auto;
+
+    /** customizations */
+    display: flex;
+    flex-direction: column;
+}
+
+.CodeMirror-hint {
+  margin: 0;
+  padding: 0 4px;
+  border-radius: 2px;
+  max-width: 19em;
+  white-space: pre;
+  color: black;
+  cursor: pointer;
+
+  /** customizations */
+  display: flex;
+  flex-direction: row;
+
+  flex: 1;
+}
+
+li.CodeMirror-hint-active {
+  background: #08f;
+  color: white;
+}
+
+
+/**
+ * Everything below is custom 🌹
+ * custom classes in our hints
+ */
+.hint.left {
+    color: red;
+}
