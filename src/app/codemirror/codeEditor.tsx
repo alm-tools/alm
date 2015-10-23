@@ -100,8 +100,8 @@ export class CodeEditor extends React.Component<Props,any>{
             lineWrapping: true,
         } as any;
 
-        // autocomplete
-        autocomplete.setupOptions(options);
+        // setup hint / autocomplete options
+        autocomplete.setupOptions(options, this.filePath);
 
         // fold
         (options as any).foldGutter = true;
@@ -120,7 +120,6 @@ export class CodeEditor extends React.Component<Props,any>{
 
         // Make hint / autocomplete more aggresive
         autocomplete.setupCodeMirror(this.codeMirror);
-
 
         this.resizehandler = onresize.on(() => this.refresh());
 	}

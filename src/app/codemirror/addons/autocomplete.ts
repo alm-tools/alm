@@ -11,12 +11,12 @@ import * as state from "../../state/state";
 /// TODO: checkout the tern demo : http://codemirror.net/demo/tern.html to show docs next to selected item
 
 /** Enable showhint for this code mirror */
-export function setupOptions(cmOptions: any) {
+export function setupOptions(cmOptions: any, filePath: string) {
     cmOptions.showHint = true;
     cmOptions.hintOptions = {
         completeOnSingleClick: true, // User can click on the item to select it :)
         completeSingle: false, // Don't compelete the last item
-        hint: hint,
+        hint: new AutoCompleter(filePath).hint,
     };
 
     // For debugging
@@ -45,48 +45,54 @@ export function setupCodeMirror(cm: CodeMirror.EditorFromTextArea){
     });
 }
 
-function hint(editor: CodeMirror.EditorFromTextArea, cb: Function, options) {
-
-    // options is just a copy of the `hintOptions` with defaults added
-    // So do something fancy with the Editor
-    // console.log(ed,options);
-    // console.log(options);
-
-    let cur = editor.getDoc().getCursor();
-    let token = editor.getTokenAt(cur);
-    let prefix = token.string;
-    let position = editor.getDoc().indexFromPos(cur);
-
-    // server.getCompletionsAtPosition({filePath:});
-
-    if (/\b(?:string|comment)\b/.test(token.type)) return;
-
-    console.log(cur);
-
-    function render(elt: HTMLLIElement, data: any, cur: any) {
-        elt.innerHTML = `<span>
-            <strong>complete: </strong>
-            <span>${cur.text}</span>
-        </span>`.replace(/\s+/g,' ');
+export class AutoCompleter {
+    constructor(public filePath: string) {
+        // Make hint async
+        (this.hint as any).async = true;
     }
 
-    console.log(editor,options);
+    hint = (editor: CodeMirror.EditorFromTextArea, cb: Function, options): void => {
 
-    // Delegate to the auto version for now
-    let original:CodeMirror.Hints = (CodeMirror as any).hint.auto(editor, options);
-    if (!original) {
-        cb(null);
-        return;
-    }
-    original.list = original.list.map(o=> {
-        let str: string = o as string;
-        return {
-            render: render,
-            text: str,
-        };
-    });
+        // options is just a copy of the `hintOptions` with defaults added
+        // So do something fancy with the Editor
+        // console.log(ed,options);
+        // console.log(options);
 
-    setTimeout(() => cb(original), 100);
-};
-// Make hint async
-(hint as any).async = true;
+        let cur = editor.getDoc().getCursor();
+        let token = editor.getTokenAt(cur);
+        let prefix = token.string;
+        let position = editor.getDoc().indexFromPos(cur);
+
+        // server.getCompletionsAtPosition({filePath:});
+
+        if (/\b(?:string|comment)\b/.test(token.type)) return;
+
+        console.log(cur);
+
+        function render(elt: HTMLLIElement, data: any, cur: any) {
+            elt.innerHTML = `<span>
+                <strong>complete: </strong>
+                <span>${cur.text}</span>
+            </span>`.replace(/\s+/g,' ');
+        }
+
+        console.log(editor,options);
+
+        // Delegate to the auto version for now
+        let original:CodeMirror.Hints = (CodeMirror as any).hint.auto(editor, options);
+        if (!original) {
+            cb(null);
+            return;
+        }
+        original.list = original.list.map(o=> {
+            let str: string = o as string;
+            return {
+                render: render,
+                text: str,
+            };
+        });
+
+        setTimeout(() => cb(original), 100);
+    };
+
+}
