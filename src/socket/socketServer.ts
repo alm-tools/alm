@@ -64,6 +64,10 @@ namespace Server {
         activeProject.setActiveProjectName(data.name);
         return resolve({});
     }
+    export var isFilePathInActiveProject: typeof contract.server.isFilePathInActiveProject = (data) => {
+        let inActiveProject = !!activeProject.getProjectIfCurrent(data.filePath);
+        return resolve({inActiveProject});
+    }
 
 
     /**

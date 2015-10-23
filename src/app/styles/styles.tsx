@@ -89,7 +89,8 @@ export let statusBarSuccess = {
 }
 
 export var noSelect = {
-    userSelect: 'none'
+    userSelect: 'none',
+    cursor: 'default'
 }
 
 export let hand = {

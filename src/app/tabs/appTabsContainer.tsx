@@ -225,7 +225,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 let filePath = utils.getFilePathFromUrl(url);
                 if (filePath){
                     state.setCurrentFilePath(filePath);
-                    // TODO: query server about this
+                    server.isFilePathInActiveProject({filePath}).then(res=>{
+                        res.inActiveProject ? state.setInActiveProject(types.TriState.True) : state.setInActiveProject(types.TriState.False);
+                    });
                 }
             }
             else {

@@ -26,6 +26,7 @@ export var server = {
      */
     currentTsbContents: {} as QRFunction<{}, { projects: ProjectJson[] }>,
     setActiveProjectName: {} as QRFunction<{name:string}, {}>,
+    isFilePathInActiveProject: {} as QRFunction<{ filePath: string }, { inActiveProject: boolean }>,
 
     /**
      * Error stuff
