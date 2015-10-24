@@ -109,7 +109,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                     <span style={csx.flex}></span>
 
                     {/* Right sections */}
-                    <span style={[styles.statusBarSection, styles.noSelect, styles.hand]} onClick={this.toggleErrors}>
+                    <span style={[styles.statusBarSection, styles.noSelect, styles.hand]} onClick={this.toggleErrors} title={`${errorCount} errors. Click to toggle error panel.`}>
                         {errorCount ? <span style={styles.statusBarError}>{errorCount} 🔴</span> : <span style={styles.statusBarSuccess}>{errorCount} ⚪</span> }
                     </span>
 
