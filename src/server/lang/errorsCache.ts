@@ -18,9 +18,21 @@ let _errorsByFilePath: ErrorsByFilePath = {};
  * Sending massive error lists *constantly* can quickly degrade the web experience
  * So we:
  * - debounce it
- * - //TODO: only send 50 errors per file or 200 errors total
+ * - only send 50 errors per file or 200 errors total
+ * - // TODO: still tell them all the counts
  */
-let sendErrors = debounce(()=>errorsUpdated.emit(_errorsByFilePath),250);
+let sendErrors = debounce(()=>{
+    let limitedCopy: ErrorsByFilePath = {};
+    let total = 0;
+    for (let filePath in _errorsByFilePath) {
+        let errors = _errorsByFilePath[filePath];
+        if (errors.length > 50) errors = errors.slice(0,50);
+        limitedCopy[filePath] = errors;
+        total += errors.length;
+        if (total > 200) break;
+    }
+    errorsUpdated.emit(limitedCopy)
+},250);
 
 /** The pased errors are considered *the only current* errors for the filePath */
 export function setErrorsByFilePaths(filePaths: string[], errors: CodeError[]) {
