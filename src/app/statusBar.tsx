@@ -8,7 +8,6 @@ import * as ui from "./ui";
 import {cast,server} from "../socket/socketClient";
 import * as commands from "./commands/commands";
 import * as types from "../common/types";
-var {VelocityTransitionGroup} = require('velocity-react');
 
 import {connect} from "react-redux";
 import {StoreState,expandErrors,collapseErrors} from "./state/state";
@@ -96,11 +95,11 @@ export class StatusBar extends BaseComponent<Props, State>{
             </span>
         return (
             <div>
-                <VelocityTransitionGroup
-                    enter={{animation: "fadeIn", duration: 300, stagger: 100}}
-                    leave={{animation: "slideUp", duration: 300, stagger: 100}}>
+                <ui.VelocityTransitionGroup
+                    enter={{animation: "transition.flipYIn", duration: 300}}
+                    leave={{animation: "slideUp", duration: 300}}>
                     {errorPanel}
-                </VelocityTransitionGroup>
+                </ui.VelocityTransitionGroup>
                 <div style={csx.extend(styles.statusBar,csx.horizontal,csx.center)}>
                     {/* Left sections */}
                     <span style={csx.extend(styles.statusBarSection, styles.noSelect)} title="Here have a rose. Because you deserve it 🌹">🌹</span>
