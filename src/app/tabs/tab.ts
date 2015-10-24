@@ -2,13 +2,12 @@
  * Anything to do with tabs should use this file
  */
 
-import * as ui from "../ui";
-
+import * as React from "react";
 export interface TabState {
 
 }
 
-export interface ComponentProps extends ui.React.Props<any> {
+export interface ComponentProps extends React.Props<any> {
     // what you get
     url: string;
 
@@ -16,7 +15,7 @@ export interface ComponentProps extends ui.React.Props<any> {
     onSavedChanged: (saved: boolean) => void;
 }
 
-export interface Component extends ui.React.Component<any, any> {
+export interface Component extends React.Component<any, any> {
     focus();
     save();
     close();

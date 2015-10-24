@@ -98,7 +98,6 @@
         "app/codemirror/codeEditor.tsx",
         "app/devtemplate.tsx",
         "app/main.tsx",
-        "app/material-ui.tsx",
         "app/omniSearch.tsx",
         "app/root.tsx",
         "app/selectListView.tsx",
