@@ -11,23 +11,23 @@
 
     <!-- Our main javascript -->
     <script src="/build/bundle.js"></script>
-    
+
     <!-- Roboto font needed by material UI -->
     <link href="http://fonts.googleapis.com/css?family=Roboto:400,300,500" rel="stylesheet" type="text/css">
-    
+
     <style>
-    
+
     /* Setup a 100% layout *with no scroll bars* */
     html, body, #app, #root {
         height: 100%;
         overflow: hidden;
     }
-    
+
     /* Make the root background same as the editor background */
     #root {
         background-color: #272822;
     }
-    
+
     /* Scroll bar for chrome */
     ::-webkit-scrollbar
     {
@@ -45,12 +45,12 @@
     	box-shadow: inset  0 0 6px rgba(0,0,0,.7);
     	background-color: #555;
     }
-    
+
     /* Make react modal appear on top of Code mirror */
     .ReactModal__Overlay {
         z-index: 4;
     }
-    
+
     /* Make code mirror flex boxy */
     .CodeMirror {
         display: flex;
@@ -60,9 +60,9 @@
     .CodeMirror-scroll {
         flex: 1;
     }
-    
+
     </style>
-    
+
     <!-- The main app container -->
     <div id="app"></div>
 </body>
