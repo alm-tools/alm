@@ -4,7 +4,7 @@
  */
 
 import {TypedEvent} from "../../common/events";
-import {createMapByKey} from "../../common/utils";
+import {createMapByKey,debounce} from "../../common/utils";
 
 
 export let errorsUpdated = new TypedEvent<ErrorsByFilePath>()
@@ -13,6 +13,14 @@ export let errorsUpdated = new TypedEvent<ErrorsByFilePath>()
  * current errors
  */
 let _errorsByFilePath: ErrorsByFilePath = {};
+
+/**
+ * Sending massive error lists *constantly* can quickly degrade the web experience
+ * So we:
+ * - debounce it
+ * - //TODO: only send 50 errors per file or 200 errors total
+ */
+let sendErrors = debounce(()=>errorsUpdated.emit(_errorsByFilePath),250);
 
 /** The pased errors are considered *the only current* errors for the filePath */
 export function setErrorsByFilePaths(filePaths: string[], errors: CodeError[]) {
@@ -29,7 +37,7 @@ export function setErrorsByFilePaths(filePaths: string[], errors: CodeError[]) {
         }
     }
 
-    errorsUpdated.emit(_errorsByFilePath);
+    sendErrors();
 }
 
 export function getErrors() {
@@ -38,10 +46,10 @@ export function getErrors() {
 
 export function clearErrors() {
     _errorsByFilePath = {};
-    errorsUpdated.emit(_errorsByFilePath);
+    sendErrors();
 }
 
 export function clearErrorsForFilePath(filePath: string) {
     _errorsByFilePath[filePath] = [];
-    errorsUpdated.emit(_errorsByFilePath);
+    sendErrors();
 }
