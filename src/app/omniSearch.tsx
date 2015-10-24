@@ -1,4 +1,5 @@
 import React = require("react");
+var ReactDOM = require("react-dom");
 import Radium = require('radium');
 import csx = require('csx');
 import {BaseComponent} from "./ui";
@@ -105,13 +106,13 @@ export class OmniSearch extends BaseComponent<Props, State>{
 
     openOmniSearch = () => {
         this.setState({ isOmniSearchOpen: true });
-        this.refs.omniSearchInput.getDOMNode().focus();
+        ReactDOM.findDOMNode(this.refs.omniSearchInput).focus();
     };
     closeOmniSearch = ()=>{
         this.setState({ isOmniSearchOpen: false, filterValue: '' });
     };
     onChangeFilter = debounce((e)=>{
-        let filterValue = this.refs.omniSearchInput.getDOMNode().value;
+        let filterValue = ReactDOM.findDOMNode(this.refs.omniSearchInput).value;
         this.filteredResults = fuzzyFilter(this.relativeFilePaths, filterValue);
         this.filteredResults = this.filteredResults.slice(0,this.maxShowCount);
         this.setState({ filterValue, selectedIndex:0 });

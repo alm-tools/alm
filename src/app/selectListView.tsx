@@ -3,6 +3,7 @@
  * similar to atom space pen views
  */
 import React = require("react");
+var ReactDOM = require("react-dom");
 import Radium = require('radium');
 import csx = require('csx');
 import {BaseComponent} from "./ui";
@@ -67,7 +68,7 @@ export class SelectListView extends BaseComponent<Props, State>{
             onSelect: args.onSelect,
         });
 
-        this.refs.omniSearchInput.getDOMNode().focus();
+        ReactDOM.findDOMNode(this.refs.omniSearchInput).focus();
     }
 
     maxShowCount = 15;
@@ -144,7 +145,7 @@ export class SelectListView extends BaseComponent<Props, State>{
         this.setState({ isOpen: false, filterValue: '' });
     };
     onChangeFilter = debounce((e) => {
-        let filterValue = this.refs.omniSearchInput.getDOMNode().value;
+        let filterValue = ReactDOM.findDOMNode(this.refs.omniSearchInput).value;
 
         this.filteredResults = getFilteredItems({
             items: this.state.data,
