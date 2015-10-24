@@ -108,7 +108,7 @@ export class RequesterResponder {
         var parsed: Message<any> = m;
 
         this.pendingRequests.shift();
-        this.pendingRequestsChanged(this.pendingRequests);
+        this.pendingRequestsChanged(this.pendingRequests.slice());
 
         if (!parsed.message || !parsed.id) {
             console.log('SERVER ERR: Invalid JSON data from server:', m);

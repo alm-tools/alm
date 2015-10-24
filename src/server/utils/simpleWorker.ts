@@ -93,7 +93,7 @@ class RequesterResponder {
         var parsed: Message<any> = m;
 
         this.pendingRequests.shift();
-        this.pendingRequestsChanged(this.pendingRequests);
+        this.pendingRequestsChanged(this.pendingRequests.slice());
 
         if (!parsed.message || !parsed.id) {
             console.log('PARENT ERR: Invalid JSON data from child:', m);
