@@ -8,6 +8,7 @@ import * as ui from "./ui";
 import {cast,server} from "../socket/socketClient";
 import * as commands from "./commands/commands";
 import * as types from "../common/types";
+import {Clipboard} from "./clipboard";
 
 import {connect} from "react-redux";
 import {StoreState,expandErrors,collapseErrors} from "./state/state";
@@ -67,6 +68,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                                     <div style={styles.errorsPanel.errorDetailsContent}>
                                         <div style={styles.errorsPanel.errorMessage}>
                                             🐛({e.from.line+1}:{e.from.ch+1}) {e.message}
+                                            {' '}<Clipboard text={`${e.filePath}:${e.from.line+1} ${e.message}`}/>
                                         </div>
                                         {e.preview?<div style={styles.errorsPanel.errorPreview}>{e.preview}</div>:''}
                                     </div>
