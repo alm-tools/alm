@@ -13,16 +13,22 @@ export interface State {
 
 let buttonStyle = {
     height: '18px',
-    padding: '2px 6px',
+    padding: '2px 3px',
     display: 'inline-block',
     cursor: 'pointer',
-    color: '#BFBABA',
-    backgroundColor: '#eee',
     backgroundImage: 'linear-gradient(#7B7B7B, #353434)',
     border: '1px solid #464646',
     borderRadius: '3px',
     userSelect: 'none',
-    outline: '0'
+    outline: '0',
+
+    ':active': {
+        backgroundImage: 'linear-gradient(#353434, #7B7B7B)',
+    }
+}
+
+let clippy = {
+    width: '12px'
 }
 
 @ui.Radium
@@ -30,10 +36,7 @@ export class Clipboard extends BaseComponent<Props, State>{
     render(){
         return (
             <button style={buttonStyle} data-clipboard-text={this.props.text}>
-                {
-                    // <img src="assets/clippy.svg"/>
-                }
-                c
+                <img src="assets/clippy.svg" style={clippy}/>
             </button>
         );
     }
