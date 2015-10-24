@@ -96,7 +96,7 @@ export class StatusBar extends BaseComponent<Props, State>{
         return (
             <div>
                 <ui.VelocityTransitionGroup
-                    enter={{animation: "transition.flipYIn", duration: 300}}
+                    enter={{animation: "slideDown", duration: 150}}
                     leave={{animation: "slideUp", duration: 300}}>
                     {errorPanel}
                 </ui.VelocityTransitionGroup>
