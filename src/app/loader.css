@@ -1,0 +1,66 @@
+/** based on http://codepen.io/trvr/pen/EwyAJ */
+
+.loader ul {
+  width: 10px;
+}
+.loader ul li {
+  display: inline-block;
+  width: 2px;
+  height: 10px;
+  -moz-transform: translateY(0);
+  -ms-transform: translateY(0);
+  -webkit-transform: translateY(0);
+  transform: translateY(0);
+  -moz-box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+  -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+  animation: colorbars 333ms alternate infinite cubic-bezier(0.2, 0, 0.5, 1);
+}
+
+.loader .one {
+  background: #2776b7;
+  border-radius: 3px 0 0 3px;
+}
+
+.loader .two {
+  background: #328fc5;
+}
+
+.loader .three {
+  background: #56b4d4;
+}
+
+.loader .four {
+  background: #61ca8c;
+}
+
+.loader .five {
+  background: #c5e9ae;
+  border-radius: 0 3px 3px 0;
+}
+
+.loader li:nth-of-type(1) {
+  animation-delay: 111ms;
+}
+
+.loader li:nth-of-type(2) {
+  animation-delay: 222ms;
+}
+
+.loader li:nth-of-type(3) {
+  animation-delay: 333ms;
+}
+
+.loader li:nth-of-type(4) {
+  animation-delay: 444ms;
+}
+
+.loader li:nth-of-type(5) {
+  animation-delay: 555ms;
+}
+
+@keyframes colorbars {
+  to {
+    transform: translateY(4px);
+  }
+}

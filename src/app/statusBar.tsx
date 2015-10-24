@@ -9,6 +9,7 @@ import {cast,server} from "../socket/socketClient";
 import * as commands from "./commands/commands";
 import * as types from "../common/types";
 import {Clipboard} from "./clipboard";
+import {Loader} from "./loader";
 
 import {connect} from "react-redux";
 import {StoreState,expandErrors,collapseErrors} from "./state/state";
@@ -120,6 +121,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                     <span style={csx.flex}></span>
 
                     {/* Right sections */}
+                    <Loader/>
                     <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)} onClick={this.toggleErrors} title={`${errorCount} errors. Click to toggle error panel.`}>
                         {errorCount ? <span style={styles.statusBarError}>{errorCount} 🔴</span> : <span style={styles.statusBarSuccess}>{errorCount} ⚪</span> }
                     </span>
