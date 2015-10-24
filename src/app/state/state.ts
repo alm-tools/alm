@@ -9,8 +9,9 @@ export interface StoreState {
     currentFilePath?: string;
     /** Is the current file in the activeProject */
     inActiveProject?: types.TriState;
+    pendingRequests?: string[];
 }
-let initialStoreState: StoreState = { activeProject: '', errorsExpanded: false, errorsByFilePath: {}, currentFilePath:'', inActiveProject: types.TriState.Unknown };
+let initialStoreState: StoreState = { activeProject: '', errorsExpanded: false, errorsByFilePath: {}, currentFilePath:'', inActiveProject: types.TriState.Unknown, pendingRequests: [] };
 
 let redux = new SimpleRedux<StoreState>(initialStoreState);
 export var store = redux.store;
@@ -53,3 +54,9 @@ export let setErrorsByFilePath = redux.add('setErrorsByFilePath', (state, payloa
         errorsByFilePath: payload
     };
 });
+
+export let setPendingRequests = redux.add('setPendingRequests', (state, payload: string[]): StoreState => {
+    return {
+        pendingRequests: payload
+    };
+})

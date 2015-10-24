@@ -13,12 +13,15 @@ export function run<TServer, TCast>(config: {
         client: Client;
         server: TServer;
         cast: TCast;
+        pendingRequestsChanged: TypedEvent<{pending:string[]}>;
     } {
 
     let client = new Client(config.clientImplementation);
     let server = client.sendAllToSocket(config.serverContract);
     let cast = client.setupAllCast(config.cast);
-    return { client, server, cast };
+    let pendingRequestsChanged = new TypedEvent<{pending:string[]}>();
+    client.pendingRequestsChanged = pending => pendingRequestsChanged.emit({pending});
+    return { client, server, cast, pendingRequestsChanged };
 }
 
 export class Client extends RequesterResponder {
@@ -28,18 +31,18 @@ export class Client extends RequesterResponder {
     constructor(clientImplementation: any) {
         super();
         this.socket = io.connect(origin);
-        
+
         // Also provide the following services to the server
         this.registerAllFunctionsExportedFromAsResponders(clientImplementation);
         this.startListening();
-        
+
         this.socket.on(anycastMessageName,(msg:CastMessage<any>)=>{
             this.typedEvents[msg.message].emit(msg.data);
         });
     }
-    
+
     private typedEvents:{[key:string]:TypedEvent<any>} = {};
-    
+
     /**
      * Each member of `instance` must be a typed event
      * we wire these up to be emitted in the client if an emit is called on the server

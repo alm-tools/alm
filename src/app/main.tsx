@@ -9,7 +9,7 @@ import { Provider } from 'react-redux';
 import * as state from "./state/state";
 import {store} from "./state/state";
 
-import {server, cast} from "../socket/socketClient";
+import {server, cast, pendingRequestsChanged} from "../socket/socketClient";
 var Modal = require('react-modal');
 
 
@@ -43,8 +43,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Anything that should mutate the state
     server.getErrors({}).then((errorsByFilePath)=>{
         state.setErrorsByFilePath(errorsByFilePath);
-    })
+    });
     cast.errorsUpdated.on((errorsByFilePath)=>{
         state.setErrorsByFilePath(errorsByFilePath);
+    });
+    pendingRequestsChanged.on((r)=>{
+        state.setPendingRequests(r.pending);
     });
 });
