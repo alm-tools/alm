@@ -39,6 +39,7 @@ import linter = require('./addons/linter');
 console.log(CodeMirror.findModeByFileName('asdf/foo.js'))
 
 import React = require('react');
+var ReactDOM = require('react-dom');
 import onresize = require('onresize');
 import * as styles from "../styles/styles";
 import * as csx from "csx";
@@ -112,7 +113,7 @@ export class CodeEditor extends React.Component<Props,any>{
         // also lint on errors changing
         this.errorWatcher = cast.errorsUpdated.on(()=>this.codeMirror.performLint());
 
-		var textareaNode = React.findDOMNode(this.refs.textarea);
+		var textareaNode = ReactDOM.findDOMNode(this.refs.textarea);
 		this.codeMirror = CodeMirror.fromTextArea(textareaNode as any, options);
 		this.codeMirror.on('change', this.codemirrorValueChanged);
 		this.codeMirror.on('focus', this.focusChanged.bind(this, true));

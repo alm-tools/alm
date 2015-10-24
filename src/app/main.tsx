@@ -4,6 +4,7 @@
 import {Root} from "./root";
 import * as commands from "./commands/commands";
 import * as React from "react";
+var ReactDOM = require("react-dom");
 import { Provider } from 'react-redux';
 import * as state from "./state/state";
 import {store} from "./state/state";
@@ -25,10 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Register a modal location
     Modal.setAppElement(appElement);
-    Modal.injectCSS();
 
     // Render the main app
-    React.render(<Provider store={store}>{() => <Root />}</Provider>, appElement);
+    ReactDOM.render(<Provider store={store}><Root /></Provider>, appElement);
 
     // Register commands
     commands.register();
