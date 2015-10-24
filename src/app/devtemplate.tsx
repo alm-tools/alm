@@ -13,5 +13,10 @@ export interface State {
 
 @ui.Radium
 export class OmniSearch extends BaseComponent<Props, State>{
-
+    render(){
+        return (
+            <div>
+            </div>
+        );
+    }
 }
