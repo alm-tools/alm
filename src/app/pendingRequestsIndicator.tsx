@@ -24,20 +24,28 @@ export class PendingRequestsIndicator extends BaseComponent<Props, State>{
     componentWillReceiveProps(){
     }
     render(){
-        console.log(this.props.pendingRequests);
         let pendingRequestsCount = this.props.pendingRequests.length;
         let style = {
-            opacity: Math.min(1, .05 * pendingRequestsCount)
+            opacity: Math.min(1, .1 * pendingRequestsCount),
+            transition: 'opacity .5s',
+        };
+        let pendingRequestCountStyle = {
+            fontSize: '7px',
+            paddingRight: '2px',
+            color: '#2776b7'
         };
         return (
-            <span className="loader" style={style}>
-                <ul>
-                    <li className="one" />
-                    <li className="two" />
-                    <li className="three" />
-                    <li className="four" />
-                    <li className="five" />
-                </ul>
+            <span style={style}>
+                <span style={pendingRequestCountStyle}>{pendingRequestsCount}</span>
+                <span className="loader">
+                    <ul>
+                        <li className="one" />
+                        <li className="two" />
+                        <li className="three" />
+                        <li className="four" />
+                        <li className="five" />
+                    </ul>
+                </span>
             </span>
         );
     }

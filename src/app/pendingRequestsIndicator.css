@@ -2,6 +2,8 @@
 
 .loader ul {
   width: 10px;
+  padding-left: 0px;
+  display: inline-block;
 }
 .loader ul li {
   display: inline-block;
