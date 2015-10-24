@@ -8,6 +8,7 @@ import * as ui from "./ui";
 import {cast,server} from "../socket/socketClient";
 import * as commands from "./commands/commands";
 import * as types from "../common/types";
+var {VelocityTransitionGroup} = require('velocity-react');
 
 import {connect} from "react-redux";
 import {StoreState,expandErrors,collapseErrors} from "./state/state";
@@ -37,7 +38,6 @@ export var statusBar: StatusBar;
         errorsByFilePath: state.errorsByFilePath
     };
 })
-@ui.Radium
 export class StatusBar extends BaseComponent<Props, State>{
     constructor(props:Props){
         super(props);
@@ -52,7 +52,7 @@ export class StatusBar extends BaseComponent<Props, State>{
 
         let errorCount = utils.selectMany(Object.keys(this.props.errorsByFilePath).map((k)=>this.props.errorsByFilePath[k])).length;
 
-        let errorPanel = null;
+        let errorPanel = undefined;
         if (this.props.errorsExpanded){
             errorPanel = <div style={styles.errorsPanel.main}>
             {
@@ -89,27 +89,30 @@ export class StatusBar extends BaseComponent<Props, State>{
         let inActiveProjectSection =
             this.props.inActiveProject == types.TriState.Unknown
             ? ''
-            : <span style={[styles.statusBarSection]}>
+            : <span style={styles.statusBarSection}>
                 {this.props.inActiveProject == types.TriState.True
-                    ?<span style={[styles.noSelect]} title="File is part of the currently active project. Robots providing code intelligence.">👍</span>
-                    :<span style={[styles.noSelect]} title="File is not a part of the currently active project. Robots deactivated.">👎</span>}
+                    ?<span style={styles.noSelect} title="File is part of the currently active project. Robots providing code intelligence.">👍</span>
+                    :<span style={styles.noSelect} title="File is not a part of the currently active project. Robots deactivated.">👎</span>}
             </span>
-
         return (
             <div>
-                {errorPanel}
-                <div style={[styles.statusBar,csx.horizontal,csx.center]}>
+                <VelocityTransitionGroup
+                    enter={{animation: "fadeIn", duration: 300, stagger: 100}}
+                    leave={{animation: "slideUp", duration: 300, stagger: 100}}>
+                    {errorPanel}
+                </VelocityTransitionGroup>
+                <div style={csx.extend(styles.statusBar,csx.horizontal,csx.center)}>
                     {/* Left sections */}
-                    <span style={[styles.statusBarSection, styles.noSelect]} title="Here have a rose. Because you deserve it 🌹">🌹</span>
-                    {this.props.activeProject?<span style={[styles.statusBarSection]}>{this.props.activeProject}</span>:''}
-                    {this.props.currentFilePath?<span style={[styles.statusBarSection]}>{this.props.currentFilePath}</span>:''}
+                    <span style={csx.extend(styles.statusBarSection, styles.noSelect)} title="Here have a rose. Because you deserve it 🌹">🌹</span>
+                    {this.props.activeProject?<span style={csx.extend(styles.statusBarSection)}>{this.props.activeProject}</span>:''}
+                    {this.props.currentFilePath?<span style={csx.extend(styles.statusBarSection)}>{this.props.currentFilePath}</span>:''}
                     {inActiveProjectSection}
 
                     {/* seperator */}
                     <span style={csx.flex}></span>
 
                     {/* Right sections */}
-                    <span style={[styles.statusBarSection, styles.noSelect, styles.hand]} onClick={this.toggleErrors} title={`${errorCount} errors. Click to toggle error panel.`}>
+                    <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)} onClick={this.toggleErrors} title={`${errorCount} errors. Click to toggle error panel.`}>
                         {errorCount ? <span style={styles.statusBarError}>{errorCount} 🔴</span> : <span style={styles.statusBarSuccess}>{errorCount} ⚪</span> }
                     </span>
 
