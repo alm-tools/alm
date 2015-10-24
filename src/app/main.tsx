@@ -20,6 +20,10 @@ preventBackspaceNav();
 // Normalize css
 require('normalize.css');
 
+// Load clipboard and enable for all things clipboard
+let Clipboard = require('clipboard/dist/clipboard');
+new Clipboard('[data-clipboard-target],[data-clipboard-text]');
+
 document.addEventListener('DOMContentLoaded', () => {
     // The main app element
     var appElement = document.getElementById('app');

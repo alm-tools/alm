@@ -104,7 +104,14 @@ export class StatusBar extends BaseComponent<Props, State>{
                     {/* Left sections */}
                     <span style={csx.extend(styles.statusBarSection, styles.noSelect)} title="Here have a rose. Because you deserve it 🌹">🌹</span>
                     {this.props.activeProject?<span style={csx.extend(styles.statusBarSection)}>{this.props.activeProject}</span>:''}
-                    {this.props.currentFilePath?<span style={csx.extend(styles.statusBarSection)}>{this.props.currentFilePath}</span>:''}
+                    {this.props.currentFilePath
+                        ?<span
+                            title="Click to copy"
+                            data-clipboard-text={this.props.currentFilePath}
+                            style={csx.extend(styles.statusBarSection,styles.noSelect,styles.hand)}>
+                                {this.props.currentFilePath}
+                        </span>
+                        :''}
                     {inActiveProjectSection}
 
                     {/* seperator */}
