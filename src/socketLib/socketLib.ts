@@ -11,7 +11,7 @@ export var anycastMessageName = 'anycast';
 
 export * from "../common/events";
 
-// Lets get the types straight: 
+// Lets get the types straight:
 export type ServerSocket = SocketIO.Socket;
 export type ClientSocket = SocketIOClient.Socket;
 
@@ -107,7 +107,7 @@ export class RequesterResponder {
     protected processResponse(m: any) {
         var parsed: Message<any> = m;
 
-        this.pendingRequests.pop();
+        this.pendingRequests.shift();
         this.pendingRequestsChanged(this.pendingRequests);
 
         if (!parsed.message || !parsed.id) {
@@ -159,7 +159,7 @@ export class RequesterResponder {
         this.getSocket().emit('message', { message: message, id: id, data: data, isRequest: true });
         return defer.promise;
     }
-    
+
     /**
      * Send all the member functions to IPC
      */
@@ -224,9 +224,9 @@ export class RequesterResponder {
 
     ////////////////////////////////// RESPONDER ////////////////////////
 
-    /** Client is an optionl service provided to the responders to call back into the requestor */ 
+    /** Client is an optionl service provided to the responders to call back into the requestor */
     public client: any;
-    
+
     private responders: { [message: string]: <Query, Response>(query: Query, client?: any) => Promise<Response> } = {};
 
     protected processRequest = (m: any) => {
