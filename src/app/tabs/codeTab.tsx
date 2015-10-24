@@ -17,7 +17,7 @@ export interface State {
  * - All server code must go through here
  * - All tab type stuff must go through here
  */
-export class Code extends React.Component<Props, State> implements tab.Component {
+export class Code extends ui.BaseComponent<Props, State> implements tab.Component {
 
     constructor(props: Props) {
         super(props);
@@ -37,24 +37,27 @@ export class Code extends React.Component<Props, State> implements tab.Component
             this.props.onSavedChanged(res.saved);
         });
 
-        cast.savedFileChangedOnDisk.on((res)=>{
+        this.disposible.add(cast.savedFileChangedOnDisk.on((res)=>{
             if (res.filePath == this.filePath
                 && this.refs.editor.getValue() !== res.contents) {
                 this.refs.editor.setValue(res.contents, false);
             }
-        });
+        }));
 
-        cast.didEdit.on(res=> {
+        this.disposible.add(cast.didEdit.on(res=> {
             if (res.filePath == this.filePath) {
                 this.refs.editor.applyCodeEdit(res.edit);
             }
-        });
+        }));
 
-        cast.didStatusChange.on(res=>{
+        this.disposible.add(cast.didStatusChange.on(res=>{
             if (res.filePath == this.filePath) {
                 this.props.onSavedChanged(res.saved);
             }
-        })
+        }));
+    }
+    componentWillUnmount(){
+        this.disposible.dispose();
     }
 
     render() {
