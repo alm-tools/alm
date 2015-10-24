@@ -95,6 +95,7 @@
         "typings/tsd.d.ts",
         "typings/v8promise.d.ts",
         "typings/v8string.d.ts",
+        "app/clipboard.tsx",
         "app/codemirror/codeEditor.tsx",
         "app/devtemplate.tsx",
         "app/main.tsx",
