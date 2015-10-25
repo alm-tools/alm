@@ -81,9 +81,29 @@ li.CodeMirror-hint-active {
     color: #62FF00;
     background: rgba(98, 255, 0, 0.42);
 }
+
 .hint.main {
+    display: table-cell;
+
     padding-right: 2px;
     padding-left: 2px;
 }
 .CodeMirror-hint-active .hint.main {
+}
+
+.hint.right {
+    display: table-cell;
+
+    padding-right: 2px;
+    padding-left: 2px;
+
+    max-width: 200px;
+
+    font-size: 8px;
+    color: #D1D1D1;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.CodeMirror-hint-active .hint.right {
 }

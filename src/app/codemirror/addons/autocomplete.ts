@@ -103,6 +103,7 @@ export class AutoCompleter {
             elt.innerHTML = `
                 <strong class="hint left">${original.kind}</strong>
                 <span class="hint main">${original.name}</span>
+                <span class="hint right">${original.display}</span>
             `.replace(/\s+/g,' ');
         }
 
