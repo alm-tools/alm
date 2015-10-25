@@ -64,7 +64,7 @@ li.CodeMirror-hint-active {
  * custom classes in our hints
  */
 .hint.left {
-    color: red;
+    color: #FF8888;
     background: rgba(255, 0, 0, 0.31);
 
     display: table-cell;
@@ -78,7 +78,7 @@ li.CodeMirror-hint-active {
     padding-bottom: 2px;
 }
 .CodeMirror-hint-active .hint.left {
-    color: #62FF00;
+    color: #A8F777;
     background: rgba(98, 255, 0, 0.42);
 }
 
