@@ -46,7 +46,7 @@
 
   /** customizations */
   display: table-row;
-  transition: color .2s cubic-bezier(0.23, 1, 0.32, 1), background .2s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: color .2s cubic-bezier(0.23, 1, 0.32, 1);
   color: white;
 }
 
@@ -71,7 +71,7 @@ li.CodeMirror-hint-active {
     padding-right: 2px;
     padding-left: 2px;
 
-    transition: color .2s cubic-bezier(0.23, 1, 0.32, 1), background .2s cubic-bezier(0.23, 1, 0.32, 1);
+    transition: color .2s cubic-bezier(0.23, 1, 0.32, 1);
 
     /* Because of using table - row on parent spacing between items needs to come from here as well */
     padding-top: 2px;
