@@ -26,7 +26,7 @@ export class PendingRequestsIndicator extends BaseComponent<Props, State>{
     render(){
         let pendingRequestsCount = this.props.pendingRequests.length;
         let style = {
-            opacity: Math.min(1, .1 * pendingRequestsCount),
+            opacity: pendingRequestsCount?1:0,
             transition: 'opacity .5s',
         };
         let pendingRequestCountStyle = {
