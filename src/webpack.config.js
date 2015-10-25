@@ -12,10 +12,16 @@ var config = {
         filename: 'bundle.js'
     },
     module: {
-        loaders: [{
-            test: /\.css$/,
-            loader: "style-loader!css-loader"
-        }]
+        loaders: [
+            {
+                test: /\.css$/,
+                loader: "style-loader!css-loader"
+            },
+            {
+                test: /\.(otf|eot|png|svg|ttf|woff|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                loader: 'url-loader?limit=100000'
+          },
+        ]
     }
 };
 

@@ -24,6 +24,9 @@ require('normalize.css');
 let Clipboard = require('clipboard/dist/clipboard');
 new Clipboard('[data-clipboard-text]');
 
+// Setup font awesome
+require('font-awesome/css/font-awesome.css');
+
 document.addEventListener('DOMContentLoaded', () => {
     // The main app element
     var appElement = document.getElementById('app');
