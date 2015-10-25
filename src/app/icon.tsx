@@ -16,6 +16,7 @@ export interface Props extends React.Props<any> {
     inverse?: boolean;
 
     className?: string; // anything else you want
+    style?: any;// any styles you want
 }
 export interface State {
 
@@ -26,7 +27,7 @@ export class Icon extends BaseComponent<Props, State>{
     render() {
         let {
             name, size, rotate, flip, spin, fixedWidth, stack, inverse,
-            pulse, className
+            pulse, className, style
         } = this.props;
         let classNames = `fa fa-${name}`;
         if (size) {
@@ -59,7 +60,7 @@ export class Icon extends BaseComponent<Props, State>{
         }
 
         return (
-            <i className={classNames}></i>
+            <i className={classNames} style={style}></i>
         );
     }
 }
