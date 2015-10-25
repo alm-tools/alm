@@ -10,6 +10,7 @@ import * as commands from "./commands/commands";
 import * as types from "../common/types";
 import {Clipboard} from "./clipboard";
 import {PendingRequestsIndicator} from "./pendingRequestsIndicator";
+import {Icon} from "./icon";
 
 import {connect} from "react-redux";
 import {StoreState,expandErrors,collapseErrors} from "./state/state";
@@ -93,8 +94,8 @@ export class StatusBar extends BaseComponent<Props, State>{
             ? ''
             : <span style={styles.statusBarSection}>
                 {this.props.inActiveProject == types.TriState.True
-                    ?<span style={styles.noSelect} title="File is part of the currently active project. Robots providing code intelligence.">👍</span>
-                    :<span style={styles.noSelect} title="File is not a part of the currently active project. Robots deactivated.">👎</span>}
+                    ?<span style={styles.noSelect} title="File is part of the currently active project. Robots providing code intelligence."><Icon name="eye"/></span>
+                    :<span style={styles.noSelect} title="File is not a part of the currently active project. Robots deactivated."><Icon name="eye-slash"/></span>}
             </span>
         return (
             <div>
