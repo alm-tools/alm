@@ -28,6 +28,7 @@ export class PendingRequestsIndicator extends BaseComponent<Props, State>{
         let style = {
             opacity: pendingRequestsCount?1:0,
             transition: 'opacity .5s',
+            cursor: 'pointer'
         };
         let pendingRequestCountStyle = {
             fontSize: '7px',
@@ -35,7 +36,7 @@ export class PendingRequestsIndicator extends BaseComponent<Props, State>{
             color: '#2776b7'
         };
         return (
-            <span style={style}>
+            <span style={style} onClick={()=>console.log(this.props.pendingRequests)}>
                 <span style={pendingRequestCountStyle}>{pendingRequestsCount}</span>
                 <span className="loader">
                     <ul>
