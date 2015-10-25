@@ -32,6 +32,7 @@
      * But since table-row table-cell children work even without this ... lets do that :)
      */
     /** display: table; */
+    background: #272822;
 }
 
 .CodeMirror-hint {
@@ -45,12 +46,16 @@
 
   /** customizations */
   display: table-row;
-  transition: color .2s, background .2s;
+  transition: color .2s cubic-bezier(0.23, 1, 0.32, 1), background .2s cubic-bezier(0.23, 1, 0.32, 1);
+  color: white;
 }
 
 li.CodeMirror-hint-active {
   background: #08f;
   color: white;
+
+  /** customizations */
+
 }
 
 
@@ -60,11 +65,13 @@ li.CodeMirror-hint-active {
  */
 .hint.left {
     color: red;
+    background: rgba(255, 0, 0, 0.31);
+
     display: table-cell;
     padding-right: 2px;
     padding-left: 2px;
 
-    transition: color .2s, background .2s;
+    transition: color .2s cubic-bezier(0.23, 1, 0.32, 1), background .2s cubic-bezier(0.23, 1, 0.32, 1);
 
     /* Because of using table - row on parent spacing between items needs to come from here as well */
     padding-top: 2px;
@@ -72,7 +79,11 @@ li.CodeMirror-hint-active {
 }
 .CodeMirror-hint-active .hint.left {
     color: #62FF00;
+    background: rgba(98, 255, 0, 0.42);
 }
 .hint.main {
     padding-right: 2px;
+    padding-left: 2px;
+}
+.CodeMirror-hint-active .hint.main {
 }
