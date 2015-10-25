@@ -61,7 +61,7 @@ li.CodeMirror-hint-active {
 .hint.left {
     color: red;
     display: table-cell;
-    padding-right: 3px;
+    padding-right: 2px;
     padding-left: 2px;
 
     transition: color .2s, background .2s;
@@ -72,4 +72,7 @@ li.CodeMirror-hint-active {
 }
 .CodeMirror-hint-active .hint.left {
     color: #62FF00;
+}
+.hint.main {
+    padding-right: 2px;
 }
