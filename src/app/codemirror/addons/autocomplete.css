@@ -78,8 +78,7 @@ li.CodeMirror-hint-active {
     padding-bottom: 2px;
 }
 .CodeMirror-hint-active .hint.left {
-    color: #A8F777;
-    background: rgba(98, 255, 0, 0.42);
+    color: white !important;
 }
 
 .hint.main {
