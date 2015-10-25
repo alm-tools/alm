@@ -35,7 +35,7 @@ let clippy = {
 export class Clipboard extends BaseComponent<Props, State>{
     render(){
         return (
-            <button style={buttonStyle} data-clipboard-text={this.props.text}>
+            <button style={buttonStyle} data-clipboard-text={this.props.text} onClick={(event)=>event.stopPropagation()}>
                 <img src="assets/clippy.svg" style={clippy}/>
             </button>
         );

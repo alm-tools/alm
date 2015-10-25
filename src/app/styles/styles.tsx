@@ -134,6 +134,8 @@ export namespace errorsPanel {
     }
     export let errorMessage = {
         paddingBottom: '3px',
+        cursor: 'pointer',
+        userSelect: 'none',
     }
 
     export let errorPreview = {
