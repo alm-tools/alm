@@ -100,7 +100,7 @@ export class StatusBar extends BaseComponent<Props, State>{
             <div>
                 <ui.VelocityTransitionGroup
                     enter={{animation: "slideDown", duration: 150}}
-                    leave={{animation: "slideUp", duration: 300}}>
+                    leave={{animation: "slideUp", duration: 150}}>
                     {errorPanel}
                 </ui.VelocityTransitionGroup>
                 <div style={csx.extend(styles.statusBar,csx.horizontal,csx.center)}>
