@@ -101,7 +101,7 @@ export class AutoCompleter {
             let original: Types.Completion = cur['original'];
 
             elt.innerHTML = `
-                <strong class="hint left">${original.kind}</strong>
+                <strong class="hint left" style="color:${original.color};background:${original.colorBackground}">${original.kind}</strong>
                 <span class="hint main">${original.name}</span>
                 <span class="hint right">${original.display}</span>
             `.replace(/\s+/g,' ');
