@@ -110,6 +110,7 @@
         "app/tabs/appTabsContainer.tsx",
         "app/tabs/codeTab.tsx",
         "app/tabs/dashboardTab.tsx",
+        "app/tabs/tips.tsx",
         "app/ui.tsx"
     ],
     "exclude": []
