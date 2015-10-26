@@ -12,11 +12,17 @@ export interface State {
     selected: number;
 }
 
-export var tipText = {
+var tipStyle = {
     fontSize: '2rem',
     color: '#776666',
     fontWeight: 'bold',
-    userSelect: 'none'
+    userSelect: 'none',
+    whiteSpace: 'pre',
+}
+
+var tipKeyboardStyle = {
+    border: '2px solid',
+    borderRadius: '6px'
 }
 
 interface TipMessage {
@@ -44,7 +50,7 @@ export class Tips extends BaseComponent<Props, State>{
 
     constructor(props) {
         super(props);
-
+        ``
         this.state = {
             selected: 0
         };
@@ -62,9 +68,9 @@ export class Tips extends BaseComponent<Props, State>{
     ]
 
     componentDidMount() {
-        let next = () => utils.rangeLimited({ num: this.state.selected + 1, min: 0, max: this.tips.length - 1, loopAround: true});
+        let next = () => utils.rangeLimited({ num: this.state.selected + 1, min: 0, max: this.tips.length - 1, loopAround: true });
 
-        let loop = setInterval(() => this.setState({ selected: next() }), 5000);
+        let loop = setInterval(() => this.setState({ selected: next() }), 2000);
         this.disposible.add({ dispose: () => clearInterval(loop) });
     }
     componentWillUnmount() {
@@ -74,8 +80,8 @@ export class Tips extends BaseComponent<Props, State>{
     render() {
         let tip = this.tips[this.state.selected];
         return (
-            <div style={[csx.flex, csx.centerCenter, tipText]}>
-                <div>{tip.message} using {tip.keyboard}</div>
+            <div style={[csx.flex, csx.centerCenter, tipStyle]}>
+                {tip.message} using <span style={tipKeyboardStyle}> {tip.keyboard} </span>
             </div>
         );
     }
