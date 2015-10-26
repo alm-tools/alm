@@ -30,7 +30,8 @@ let inputBlackStyle = {
     border: '2px solid #3C3C3C',
 }
 let tipMessageStyle = {
-    color: 'grey'
+    color: 'grey',
+    lineHeight: '1.5rem'
 }
 var keyboardShortCutStyle = {
     border: '2px solid',
