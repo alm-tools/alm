@@ -68,7 +68,7 @@ export class Tips extends BaseComponent<Props, State>{
     componentDidMount() {
         let next = () => utils.rangeLimited({ num: this.state.selected + 1, min: 0, max: this.tips.length - 1, loopAround: true });
 
-        let loop = setInterval(() => this.setState({ selected: next() }), 2000);
+        let loop = setInterval(() => this.setState({ selected: next() }), 5000);
         this.disposible.add({ dispose: () => clearInterval(loop) });
     }
     componentWillUnmount() {
@@ -80,15 +80,16 @@ export class Tips extends BaseComponent<Props, State>{
         {
             /**
              * To use velocity animation group
-             *  - The sub element must change ... hence `key` otherwise react reuses DOM
-             *  - The sub component will be forced to have `display:block`
+             *  - The first sub element must change ... hence `key` otherwise react reuses DOM
+             *  - The first sub element will be forced to have `display:block`
              *  	(velocity does that for some reason ... so no flexbox ... we use newLayer)
              *  - Restore flexbox using newLayer + some flex root
              */
         }
         return (
             <ui.VelocityTransitionGroup
-                enter={{animation: "fadeIn"}} leave={{animation: "fadeOut"}}
+                runOnMount={true}
+                enter={{animation: "transition.swoopIn"}} leave={{animation: "transition.whirlOut"}}
                 style={csx.extend(csx.flex,{position:'relative'})}>
                 <div key={this.state.selected} style={csx.extend(csx.newLayer)}>
 
