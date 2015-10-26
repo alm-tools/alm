@@ -60,9 +60,21 @@ export class Tips extends BaseComponent<Props, State>{
             keyboard: platformKeyboard('Ctrl+P')
         },
         {
-            message: 'Select the project',
+            message: 'Set active project',
             keyboard: platformKeyboard('Alt+Shift+P')
-        }
+        },
+        {
+            message: 'Close a tab',
+            keyboard: platformKeyboard('Alt+W')
+        },
+        {
+            message: 'Previous tab',
+            keyboard: platformKeyboard('Alt+J')
+        },
+        {
+            message: 'Next tab',
+            keyboard: platformKeyboard('Alt+K')
+        },
     ]
 
     componentDidMount() {
