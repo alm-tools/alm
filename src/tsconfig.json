@@ -98,6 +98,7 @@
         "app/clipboard.tsx",
         "app/codemirror/codeEditor.tsx",
         "app/devtemplate.tsx",
+        "app/findAndReplace.tsx",
         "app/icon.tsx",
         "app/main.tsx",
         "app/omniSearch.tsx",

@@ -144,3 +144,8 @@ export namespace errorsPanel {
         border: '2px solid #999',
     }
 }
+
+
+export let inputBlack = {
+    border: '2px solid #3C3C3C',
+}
