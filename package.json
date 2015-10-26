@@ -67,7 +67,6 @@
   "devDependencies": {
     "css-loader": "^0.16.0",
     "http-proxy": "^1.11.1",
-    "react-modal": "^0.3.0",
     "style-loader": "^0.12.3",
     "webpack": "^1.11.0",
     "webpack-dev-server": "^1.10.1"
