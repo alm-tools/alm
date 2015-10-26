@@ -28,6 +28,10 @@ let inputBlackStyle = {
     outline: 'none',
     padding: '2px',
     border: '2px solid #3C3C3C',
+    ':focus':{
+        border: '2px solid #0090E0',
+        boxShadow: '0px 0px 1px 1px #0090E0'
+    }
 }
 let tipMessageStyle = {
     color: 'grey',
