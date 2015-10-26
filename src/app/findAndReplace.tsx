@@ -43,7 +43,9 @@ let searchOptionsLabelStyle = {
     color: 'grey',
     fontSize: '1.5rem',
     fontWeight: 'bold',
-    cursor:'pointer'
+    cursor:'pointer',
+    paddingLeft: '5px',
+    paddingRight: '5px',
 }
 
 
@@ -74,14 +76,14 @@ export class FindAndReplace extends BaseComponent<Props, State>{
             <div style={csx.vertical}>
                 <div style={[csx.horizontal, csx.center, styles.padded1]}>
                     <input ref="find" placeholder="Find" style={[inputBlackStyle, csx.flex]} />
+                    <div style={[csx.horizontal, csx.aroundJustified, styles.padded1]}>
+                        <label style={[csx.horizontal,csx.center]}><ui.Toggle/><span style={searchOptionsLabelStyle}>.*</span></label>
+                        <label style={[csx.horizontal,csx.center]}><ui.Toggle/><span style={searchOptionsLabelStyle}>Aa</span></label>
+                        <label style={[csx.horizontal,csx.center]}><ui.Toggle/><span style={searchOptionsLabelStyle}><Icon name="text-width"/></span></label>
+                    </div>
                 </div>
                 <div style={[csx.horizontal, csx.center, styles.padded1]}>
                     <input ref="replace" placeholder="Replace" style={[inputBlackStyle, csx.flex]} />
-                </div>
-                <div style={[csx.horizontal, csx.aroundJustified, styles.padded1]}>
-                    <label style={[csx.horizontal,csx.center]}><ui.Toggle/><span style={searchOptionsLabelStyle}>.*</span></label>
-                    <label style={[csx.horizontal,csx.center]}><ui.Toggle/><span style={searchOptionsLabelStyle}>Aa</span></label>
-                    <label style={[csx.horizontal,csx.center]}><ui.Toggle/><span style={searchOptionsLabelStyle}>|--|</span></label>
                 </div>
                 <div style={[tipMessageStyle,styles.padded1]}>
                     <span style={keyboardShortCutStyle}>Esc</span> to exit
