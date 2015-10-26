@@ -24,6 +24,7 @@ import * as state from "../state/state";
 import * as types from "../../common/types";
 import {connect} from "react-redux";
 import * as styles from "../styles/styles";
+import {Tips} from "./tips";
 
 export interface Props extends React.Props<any> {
     errorsExpanded?: boolean
@@ -178,11 +179,12 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 <div style={[csx.horizontal, tabHeaderContainer]} className="app-tabs-header">
                     {titles}
                 </div>
-                <div style={[csx.flexRoot, csx.flex, csx.scroll,{position:'relative'}]} className="app-tabs-body">
-                    <div style={[csx.newLayer,csx.centerCenter,styles.tipText]}>
-                        <div>Find a file to work with using [Ctrl | CMD] + P </div>
-                    </div>
-                    {rederedTabs}
+                <div style={[csx.flexRoot, csx.flex, csx.scroll]} className="app-tabs-body">
+                    {
+                        rederedTabs.length
+                        ? rederedTabs
+                        : <Tips/>
+                     }
                 </div>
             </div>
         );

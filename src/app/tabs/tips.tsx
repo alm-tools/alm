@@ -11,11 +11,19 @@ export interface State {
 
 }
 
+export var tipText = {
+    fontSize: '2rem',
+    color: '#776666',
+    fontWeight: 'bold',
+    userSelect: 'none'
+}
+
 @ui.Radium
-export class OmniSearch extends BaseComponent<Props, State>{
+export class Tips extends BaseComponent<Props, State>{
     render(){
         return (
-            <div>
+            <div style={[csx.flex,csx.centerCenter,tipText]}>
+                <div>Find a file to work with using [Ctrl | CMD] + P </div>
             </div>
         );
     }

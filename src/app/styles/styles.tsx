@@ -144,10 +144,3 @@ export namespace errorsPanel {
         border: '2px solid #999',
     }
 }
-
-export var tipText = {
-    fontSize: '2rem',
-    color: '#776666',
-    fontWeight: 'bold',
-    userSelect: 'none'
-}
