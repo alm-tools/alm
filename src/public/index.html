@@ -48,6 +48,20 @@
     .ReactModal__Overlay {
         z-index: 4;
     }
+    /* React modal color consistency */
+    .ReactModal__Content.ReactModal__Content--after-open
+    {
+        background-color: #555 !important;
+        color: white  !important;
+    }
+    .ReactModal__Content.ReactModal__Content--after-open input
+    {
+        background-color: #333 !important;
+        color: white  !important;
+        outline: none;
+        padding: 2px;
+        border: 2px solid grey;
+    }
 
     /* Make code mirror flex boxy */
     .CodeMirror {
