@@ -18,6 +18,7 @@ import slv = require("./selectListView");
 
 import {StatusBar} from "./statusBar";
 import sb = require('./statusBar');
+import {FindAndReplace} from "./findAndReplace";
 
 export interface State {
     isOmniSearchOpen?: boolean;
@@ -79,7 +80,9 @@ export class Root extends ui.BaseComponent<{}, State>{
                     <AppTabsContainer/>
                 </div>
 
-                <StatusBar ref="statusBar"></StatusBar>
+                <FindAndReplace/>
+
+                <StatusBar ref="statusBar"/>
             </div>;
 
         return toret;

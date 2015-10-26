@@ -16,4 +16,7 @@ export let {VelocityTransitionGroup} = VelocityReact;
 
 export class BaseComponent<Props, State> extends React.Component<Props, State>{
     disposible = new CompositeDisposible();
+    componentWillUnmount() {
+        this.disposible.dispose();
+    }
 }

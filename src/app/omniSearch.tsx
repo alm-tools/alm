@@ -85,7 +85,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
                         <div style={[styles.userTip]}>Press <code style={styles.keyStroke}>esc</code> to close</div>
                     </div>
 
-                    <div style={[styles.paddedTopBottom1,csx.vertical]}>
+                    <div style={[styles.padded1TopBottom,csx.vertical]}>
                         <input
                             type="text"
                             ref="omniSearchInput"

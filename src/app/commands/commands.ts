@@ -22,6 +22,8 @@ export var doOpenOrFocusFile = new events.TypedEvent<{ filePath: string, positio
 export var onCloseTab = new events.TypedEvent<{}>();
 export var onSaveTab = new events.TypedEvent<{}>();
 
+export var findAndReplace = new events.TypedEvent<{}>();
+
 export function register() {
 
     /** Tabs */
@@ -55,6 +57,14 @@ export function register() {
     });
     Mousetrap.bindGlobal('alt+shift+p', function() { // atom:ProjectManager
         doSelectProject.emit({});
+        return false;
+    });
+
+    /**
+     * Find and replace
+     */
+    Mousetrap.bindGlobal('mod+f', function() { // atom,sublime,c9
+        findAndReplace.emit({});
         return false;
     });
 }

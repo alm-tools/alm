@@ -55,8 +55,13 @@ export let fullWindow = {
 export let padded1 = {
     padding: '.25rem'
 };
-export let paddedTopBottom1 = {
+export let padded1TopBottom = {
     paddingTop: padded1.padding,
+    paddingBottom: padded1.padding
+};
+export let padded1LeftRightBottom = {
+    paddingLeft: padded1.padding,
+    paddingRight: padded1.padding,
     paddingBottom: padded1.padding
 };
 export let padded2 = {
@@ -143,9 +148,4 @@ export namespace errorsPanel {
         background: 'black',
         border: '2px solid #999',
     }
-}
-
-
-export let inputBlack = {
-    border: '2px solid #3C3C3C',
 }
