@@ -9,8 +9,13 @@ export interface StoreState {
     currentFilePath?: string;
     /** Is the current file in the activeProject */
     inActiveProject?: types.TriState;
+
     pendingRequests?: string[];
+
+    /** Find and replace */
+    findAndReplaceValue?: string;
 }
+
 let initialStoreState: StoreState = { activeProject: '', errorsExpanded: false, errorsByFilePath: {}, currentFilePath:'', inActiveProject: types.TriState.Unknown, pendingRequests: [] };
 
 let redux = new SimpleRedux<StoreState>(initialStoreState);
