@@ -8,6 +8,7 @@ import * as utils from "../common/utils";
 import * as styles from "./styles/styles";
 import * as state from "./state/state";
 import * as commands from "./commands/commands";
+import {Icon} from "./icon";
 
 export interface Props extends React.Props<any> {
 
@@ -37,6 +38,12 @@ var keyboardShortCutStyle = {
     padding: '2px',
     fontSize: '.7rem',
     backgroundColor: 'black',
+}
+let searchOptionsLabelStyle = {
+    color: 'grey',
+    fontSize: '1.5rem',
+    fontWeight: 'bold',
+    cursor:'pointer'
 }
 
 
@@ -71,7 +78,11 @@ export class FindAndReplace extends BaseComponent<Props, State>{
                 <div style={[csx.horizontal, csx.center, styles.padded1]}>
                     <input ref="replace" placeholder="Replace" style={[inputBlackStyle, csx.flex]} />
                 </div>
-            
+                <div style={[csx.horizontal, csx.aroundJustified, styles.padded1]}>
+                    <label style={[csx.horizontal,csx.center]}><ui.Toggle/><span style={searchOptionsLabelStyle}>.*</span></label>
+                    <label style={[csx.horizontal,csx.center]}><ui.Toggle/><span style={searchOptionsLabelStyle}>Aa</span></label>
+                    <label style={[csx.horizontal,csx.center]}><ui.Toggle/><span style={searchOptionsLabelStyle}>|--|</span></label>
+                </div>
                 <div style={[tipMessageStyle,styles.padded1]}>
                     <span style={keyboardShortCutStyle}>Esc</span> to exit
                     {' '}<span style={keyboardShortCutStyle}>Enter</span> in the find field to search, or in the replace field to replace
