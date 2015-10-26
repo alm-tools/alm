@@ -20,3 +20,12 @@ export class BaseComponent<Props, State> extends React.Component<Props, State>{
         this.disposible.dispose();
     }
 }
+
+/**
+ * Straight out of codemirror.js
+ */
+var ios = /AppleWebKit/.test(navigator.userAgent) && /Mobile\/\w+/.test(navigator.userAgent);
+var mac = ios || /Mac/.test(navigator.platform);
+var windows = /win/i.test(navigator.platform);
+
+export var modName = mac ? '⌘' : 'Ctrl';

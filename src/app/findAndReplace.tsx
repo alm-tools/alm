@@ -17,16 +17,26 @@ export interface State {
 }
 
 
-export let labelStyle = {
+let labelStyle = {
     color: 'grey',
     padding: '4px'
 }
-export let inputBlackStyle = {
+let inputBlackStyle = {
     backgroundColor: '#333',
     color: 'white',
     outline: 'none',
     padding: '2px',
     border: '2px solid #3C3C3C',
+}
+let tipMessageStyle = {
+    color: 'grey'
+}
+var keyboardShortCutStyle = {
+    border: '2px solid',
+    borderRadius: '6px',
+    padding: '2px',
+    fontSize: '.7rem',
+    backgroundColor: 'black',
 }
 
 
@@ -58,8 +68,15 @@ export class FindAndReplace extends BaseComponent<Props, State>{
                 <div style={[csx.horizontal, csx.center, styles.padded1]}>
                     <input ref="find" placeholder="Find" style={[inputBlackStyle, csx.flex]} />
                 </div>
-                <div style={[csx.horizontal, csx.center, styles.padded1LeftRightBottom]}>
+                <div style={[csx.horizontal, csx.center, styles.padded1]}>
                     <input ref="replace" placeholder="Replace" style={[inputBlackStyle, csx.flex]} />
+                </div>
+            
+                <div style={[tipMessageStyle,styles.padded1]}>
+                    <span style={keyboardShortCutStyle}>Esc</span> to exit
+                    {' '}<span style={keyboardShortCutStyle}>Enter</span> in the find field to search, or in the replace field to replace
+                    {' '}<span style={keyboardShortCutStyle}>Shift + Enter</span> to do it in the reverse
+                    {' '}<span style={keyboardShortCutStyle}>{ui.modName} + Enter</span> to do them all at once
                 </div>
             </div>
         );

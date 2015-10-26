@@ -30,20 +30,6 @@ interface TipMessage {
     keyboard: string;
 }
 
-/**
- * Straight out of codemirror.js
- */
-var ios = /AppleWebKit/.test(navigator.userAgent) && /Mobile\/\w+/.test(navigator.userAgent);
-var mac = ios || /Mac/.test(navigator.platform);
-var windows = /win/i.test(navigator.platform);
-
-function platformKeyboard(keyboard: string): string {
-    if (mac) {
-        return keyboard.replace('Ctrl', '⌘');
-    }
-    return keyboard;
-}
-
 export class Tips extends BaseComponent<Props, State>{
 
     constructor(props) {
@@ -57,23 +43,23 @@ export class Tips extends BaseComponent<Props, State>{
     tips: TipMessage[] = [
         {
             message: 'Find a file to work with',
-            keyboard: platformKeyboard('Ctrl+P')
+            keyboard: `${ui.modName}+P`
         },
         {
             message: 'Set active project',
-            keyboard: platformKeyboard('Alt+Shift+P')
+            keyboard: `Alt+Shift+P`
         },
         {
             message: 'Close a tab',
-            keyboard: platformKeyboard('Alt+W')
+            keyboard: 'Alt+W'
         },
         {
             message: 'Previous tab',
-            keyboard: platformKeyboard('Alt+J')
+            keyboard: 'Alt+J'
         },
         {
             message: 'Next tab',
-            keyboard: platformKeyboard('Alt+K')
+            keyboard: 'Alt+K'
         },
     ]
 
