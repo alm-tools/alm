@@ -63,9 +63,10 @@ export class FindAndReplace extends BaseComponent<Props, State>{
     refs: {
         [string: string]: any;
         find: JSX.Element;
+        replace: JSX.Element;
     }
     findInput = (): HTMLInputElement=> ReactDOM.findDOMNode(this.refs.find);
-    replace = (): HTMLInputElement=> ReactDOM.findDOMNode(this.refs.find);
+    replaceInput = (): HTMLInputElement=> ReactDOM.findDOMNode(this.refs.replace);
     // searchLocation = (): HTMLInputElement=> ReactDOM.findDOMNode(this.refs.find);
 
     render() {
@@ -76,7 +77,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         return (
             <div style={csx.vertical}>
                 <div style={[csx.horizontal, csx.center, styles.padded1]}>
-                    <input ref="find" placeholder="Find" style={[inputBlackStyle, csx.flex]} />
+                    <input ref="find" placeholder="Find" style={[inputBlackStyle, csx.flex]} onKeyDown={this.findKeyDownHandler} />
                     <div style={[csx.horizontal, csx.aroundJustified, styles.padded1]}>
                         <label style={[csx.horizontal,csx.center]}><ui.Toggle/><span style={searchOptionsLabelStyle}>.*</span></label>
                         <label style={[csx.horizontal,csx.center]}><ui.Toggle/><span style={searchOptionsLabelStyle}>Aa</span></label>
@@ -84,7 +85,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
                     </div>
                 </div>
                 <div style={[csx.horizontal, csx.center, styles.padded1]}>
-                    <input ref="replace" placeholder="Replace" style={[inputBlackStyle, csx.flex]} />
+                    <input ref="replace" placeholder="Replace" style={[inputBlackStyle, csx.flex]} onKeyDown={this.replaceKeyDownHandler} />
                 </div>
                 <div style={[tipMessageStyle,styles.padded1]}>
                     <span style={keyboardShortCutStyle}>Esc</span> to exit
@@ -95,4 +96,36 @@ export class FindAndReplace extends BaseComponent<Props, State>{
             </div>
         );
     }
+
+    /** Utility function for keyboard handling */
+    getKeyStates(e:React.SyntheticEvent){
+        let event: KeyboardEvent = e as any; // This is a lie .... but a convinient one
+        let nativeEvent: KeyboardEvent = e.nativeEvent as any;
+
+        let tab = event.key == 'Tab';
+        let shift = nativeEvent.shiftKey;
+        let mod = nativeEvent.metaKey || nativeEvent.ctrlKey;
+        let enter = event.key == 'Enter';
+
+        return {tab,shift,mod,enter};
+    }
+
+    /** Tab key is only called on key down :) */
+    findKeyDownHandler = (e:React.SyntheticEvent) => {
+        let states = this.getKeyStates(e);
+
+        if (states.tab && states.shift) {
+            this.replaceInput().focus();
+            e.preventDefault();
+        }
+    };
+
+    replaceKeyDownHandler = (e:React.SyntheticEvent) => {
+        let states = this.getKeyStates(e);
+
+        if (states.tab && !states.shift) {
+            this.findInput().focus();
+            e.preventDefault();
+        }
+    };
 }
