@@ -44,8 +44,6 @@ function platformKeyboard(keyboard: string): string {
     return keyboard;
 }
 
-
-@ui.Radium
 export class Tips extends BaseComponent<Props, State>{
 
     constructor(props) {
@@ -79,10 +77,29 @@ export class Tips extends BaseComponent<Props, State>{
 
     render() {
         let tip = this.tips[this.state.selected];
+        {
+            /**
+             * To use velocity animation group
+             *  - The sub element must change ... hence `key` otherwise react reuses DOM
+             *  - The sub component will be forced to have `display:block`
+             *  	(velocity does that for some reason ... so no flexbox ... we use newLayer)
+             *  - Restore flexbox using newLayer + some flex root
+             */
+        }
         return (
-            <div style={[csx.flex, csx.centerCenter, tipStyle]}>
-                {tip.message} using <span style={tipKeyboardStyle}> {tip.keyboard} </span>
-            </div>
+            <ui.VelocityTransitionGroup
+                enter={{animation: "fadeIn"}} leave={{animation: "fadeOut"}}
+                style={csx.extend(csx.flex,{position:'relative'})}>
+                <div key={this.state.selected} style={csx.extend(csx.newLayer)}>
+
+                    <span style={csx.extend(csx.newLayer, csx.flexRoot)}>
+                        <span style={csx.extend(csx.flex, csx.centerCenter, tipStyle)}>
+                            {tip.message} using <span style={tipKeyboardStyle}> {tip.keyboard} </span>
+                        </span>
+                    </span>
+
+                </div>
+            </ui.VelocityTransitionGroup>
         );
     }
 }
