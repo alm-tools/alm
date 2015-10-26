@@ -124,7 +124,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                     {/* Right sections */}
                     <PendingRequestsIndicator />
                     <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)} onClick={this.toggleErrors} title={`${errorCount} errors. Click to toggle error panel.`}>
-                        {errorCount ? <span style={styles.statusBarError}>{errorCount} 🔴</span> : <span style={styles.statusBarSuccess}>{errorCount} ⚪</span> }
+                        <span style={csx.extend(errorCount?styles.statusBarError:styles.statusBarSuccess,{transition: 'color .4s'})}>{errorCount} <Icon name="times-circle"/></span>
                     </span>
 
                 </div>
