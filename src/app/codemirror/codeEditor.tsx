@@ -44,8 +44,12 @@ var ReactDOM = require('react-dom');
 import onresize = require('onresize');
 import * as styles from "../styles/styles";
 import * as csx from "csx";
+import * as ui from "../ui";
 import {cast} from "../../socket/socketClient";
 import {createId,getFilePathFromUrl} from "../../common/utils";
+
+import * as state from "../state/state";
+
 
 interface Props extends React.Props<any> {
     onEdit: (edit: CodeEdit) => any;
@@ -53,7 +57,7 @@ interface Props extends React.Props<any> {
 	path: string;
 }
 
-export class CodeEditor extends React.Component<Props,any>{
+export class CodeEditor extends ui.BaseComponent<Props,any>{
 
     public filePath: string;
 
@@ -69,9 +73,6 @@ export class CodeEditor extends React.Component<Props,any>{
 
 	codeMirror: CodeMirror.EditorFromTextArea;
 	refs: { [string: string]: any; textarea: any; }
-
-	resizehandler: {dispose:()=>any};
-    errorWatcher: {dispose:()=>any};
 
 	componentDidMount () {
 
@@ -112,7 +113,7 @@ export class CodeEditor extends React.Component<Props,any>{
         // lint
         linter.setupOptions(options,this.filePath);
         // also lint on errors changing
-        this.errorWatcher = cast.errorsUpdated.on(()=>this.codeMirror.performLint());
+        this.disposible.add(cast.errorsUpdated.on(()=>this.codeMirror.performLint()));
 
 		var textareaNode = ReactDOM.findDOMNode(this.refs.textarea);
 		this.codeMirror = CodeMirror.fromTextArea(textareaNode as any, options);
@@ -123,7 +124,11 @@ export class CodeEditor extends React.Component<Props,any>{
         // Make hint / autocomplete more aggresive
         autocomplete.setupCodeMirror(this.codeMirror);
 
-        this.resizehandler = onresize.on(() => this.refresh());
+        this.disposible.add(onresize.on(() => this.refresh()));
+
+        this.disposible.add(state.subscribe((newState)=>{
+
+        }));
 	}
 
 	componentWillUnmount () {
@@ -131,8 +136,7 @@ export class CodeEditor extends React.Component<Props,any>{
 		if (this.codeMirror) {
 			this.codeMirror.toTextArea();
 		}
-		this.resizehandler.dispose();
-        this.errorWatcher.dispose();
+		this.disposible.dispose();
 	}
 
     getQuickInfo(pos:CodeMirror.Position): Promise<string | HTMLElement> {
