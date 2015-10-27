@@ -1,9 +1,25 @@
 // Based on https://codemirror.net/demo/search.html
 // and https://codemirror.net/addon/search/search.js
 
-require('search/searchcursor');
+require('codemirror/addon/search/searchcursor');
+import CodeMirror = require('codemirror');
 
-// See docs https://codemirror.net/doc/manual.html#addon_searchcursor
+/**
+ * Mostly providing a typed API on top of `search`
+ */
+export let commands = {
+  search: (cm:CodeMirror.EditorFromTextArea, query: string) => startSearch(cm, getSearchState(cm), query),
+  // clearSearch: (cm:CodeMirror.EditorFromTextArea) => clearSearch(cm),
+  //
+  // findNext: (cm:CodeMirror.EditorFromTextArea) => findNext(cm,false),
+  // findPrev: (cm:CodeMirror.EditorFromTextArea) => findNext(cm,true),
+}
+
+
+/**
+ * See docs https://codemirror.net/doc/manual.html#addon_search
+ * Taken source code AS IT IS, but needed function local to the file (e.g. startSearch), so imported here
+ */
 function searchOverlay(query, caseInsensitive) {
     if (typeof query == "string")
       query = new RegExp(query.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), caseInsensitive ? "gi" : "g");
@@ -202,16 +218,10 @@ function searchOverlay(query, caseInsensitive) {
       });
     });
   }
-
-export let commands = {
-  find : function(cm) {clearSearch(cm); doSearch(cm);},
-  findPersistent : function(cm) {clearSearch(cm); doSearch(cm, false, true);},
-  findNext : (cm) => doSearch(cm),
-  findPrev : function(cm) {doSearch(cm, true);},
-  clearSearch : clearSearch,
-  replace : replace,
-  replaceAll : function(cm) {replace(cm, true);},
-
-  // my hooks
-  doSearch: doSearch
-}
+  CodeMirror.commands.find = function(cm) {clearSearch(cm); doSearch(cm);};
+  CodeMirror.commands.findPersistent = function(cm) {clearSearch(cm); doSearch(cm, false, true);};
+  CodeMirror.commands.findNext = doSearch;
+  CodeMirror.commands.findPrev = function(cm) {doSearch(cm, true);};
+  CodeMirror.commands.clearSearch = clearSearch;
+  CodeMirror.commands.replace = replace;
+  CodeMirror.commands.replaceAll = function(cm) {replace(cm, true);};

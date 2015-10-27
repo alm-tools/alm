@@ -213,6 +213,7 @@ export class CodeEditor extends React.Component<Props,any>{
 
         if (clearHistory) {
             this.codeMirror.getDoc().clearHistory();
+            search.commands.search(this.codeMirror,"foo");
         }
     }
 
