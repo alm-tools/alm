@@ -34,7 +34,6 @@ export class Tips extends BaseComponent<Props, State>{
 
     constructor(props) {
         super(props);
-        ``
         this.state = {
             selected: 0
         };
@@ -60,6 +59,10 @@ export class Tips extends BaseComponent<Props, State>{
         {
             message: 'Next tab',
             keyboard: 'Alt+K'
+        },
+        {
+            message: 'Editor keybindings:',
+            keyboard: 'Sublime Text'
         },
     ]
 
@@ -93,7 +96,7 @@ export class Tips extends BaseComponent<Props, State>{
 
                     <span style={csx.extend(csx.newLayer, csx.flexRoot)}>
                         <span style={csx.extend(csx.flex, csx.centerCenter, tipStyle)}>
-                            {tip.message} using <span style={tipKeyboardStyle}> {tip.keyboard} </span>
+                            {tip.message} <span style={tipKeyboardStyle}> {tip.keyboard} </span>
                         </span>
                     </span>
 
