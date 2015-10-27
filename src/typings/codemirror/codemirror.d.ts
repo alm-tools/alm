@@ -634,8 +634,8 @@ declare module CodeMirror {
     }
 
     interface PositionConstructor {
-        new (line: number, ch: number): Position;
-        (line: number, ch: number): Position;
+        new (line: number, ch?: number): Position;
+        (line: number, ch?: number): Position;
     }
 
     interface Position {
