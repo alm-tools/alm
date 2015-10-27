@@ -19,6 +19,7 @@ export let commands = {
 /**
  * See docs https://codemirror.net/doc/manual.html#addon_search
  * Taken source code AS IT IS, but needed function local to the file (e.g. startSearch), so imported here
+ * The commands need to be commented out othewise CM will intercept calls to `Ctrl+F`
  */
 function searchOverlay(query, caseInsensitive) {
     if (typeof query == "string")
@@ -218,10 +219,11 @@ function searchOverlay(query, caseInsensitive) {
       });
     });
   }
-  CodeMirror.commands.find = function(cm) {clearSearch(cm); doSearch(cm);};
-  CodeMirror.commands.findPersistent = function(cm) {clearSearch(cm); doSearch(cm, false, true);};
-  CodeMirror.commands.findNext = doSearch;
-  CodeMirror.commands.findPrev = function(cm) {doSearch(cm, true);};
-  CodeMirror.commands.clearSearch = clearSearch;
-  CodeMirror.commands.replace = replace;
-  CodeMirror.commands.replaceAll = function(cm) {replace(cm, true);};
+
+  // CodeMirror.commands.find = function(cm) {clearSearch(cm); doSearch(cm);};
+  // CodeMirror.commands.findPersistent = function(cm) {clearSearch(cm); doSearch(cm, false, true);};
+  // CodeMirror.commands.findNext = doSearch;
+  // CodeMirror.commands.findPrev = function(cm) {doSearch(cm, true);};
+  // CodeMirror.commands.clearSearch = clearSearch;
+  // CodeMirror.commands.replace = replace;
+  // CodeMirror.commands.replaceAll = function(cm) {replace(cm, true);};
