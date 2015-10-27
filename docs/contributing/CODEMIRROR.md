@@ -12,7 +12,19 @@ Notes:
 # Position vs Index
 Quite commonly we need a zero based *string* index into the file. Codemirror has functions `indexFromPos` and `posFromIndex`.
 
-# VS ACE
+
+# Selecting
+```
+cm.setSelection(cursor.from(), cursor.to());
+```
+
+# Scroll into view
+```
+cm.scrollIntoView({from: cursor.from(), to: cursor.to()});
+```
+
+
+## VS ACE
 Reasons we went with codemirror
 * sparse documentation
 * not on NPM (at least officially, and come with a bunch of *webworkers* that are hard to integrate / remove)
