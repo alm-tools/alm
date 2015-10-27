@@ -60,3 +60,14 @@ interface Session {
 interface Sessions {
     sessions: Session[];
 }
+
+
+/**
+ * Find and replace (FAR) related stuff
+ */
+interface FindQuery {
+    query: string;
+    isRegex: boolean;
+    isCaseSensitive: boolean;
+    isFullWord: boolean;
+}

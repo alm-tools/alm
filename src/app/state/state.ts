@@ -13,10 +13,23 @@ export interface StoreState {
     pendingRequests?: string[];
 
     /** Find and replace */
-    findAndReplaceValue?: string;
+    findQuery?: FindQuery;
 }
 
-let initialStoreState: StoreState = { activeProject: '', errorsExpanded: false, errorsByFilePath: {}, currentFilePath:'', inActiveProject: types.TriState.Unknown, pendingRequests: [] };
+let initialStoreState: StoreState = {
+    activeProject: '',
+    errorsExpanded: false,
+    errorsByFilePath: {},
+    currentFilePath: '',
+    inActiveProject: types.TriState.Unknown,
+    pendingRequests: [],
+    findQuery: {
+        query: undefined,
+        isRegex: false,
+        isCaseSensitive: false,
+        isFullWord: false
+    }
+};
 
 let redux = new SimpleRedux<StoreState>(initialStoreState);
 export var store = redux.store;
@@ -64,4 +77,28 @@ export let setPendingRequests = redux.add('setPendingRequests', (state, payload:
     return {
         pendingRequests: payload
     };
-})
+});
+
+export let setFindQueryIsCaseSensitive = redux.add('setFindQueryIsCaseSensitive', (state:StoreState, payload:boolean): StoreState => {
+    let findQuery = state.findQuery;
+    let newFindQuery = redux.updateFields({isCaseSensitive: payload})(findQuery);
+    return {
+        findQuery: newFindQuery
+    };
+});
+
+export let setFindQueryIsRegex = redux.add('setFindQueryIsRegex', (state:StoreState, payload:boolean): StoreState => {
+    let findQuery = state.findQuery;
+    let newFindQuery = redux.updateFields({isRegex: payload})(findQuery);
+    return {
+        findQuery: newFindQuery
+    };
+});
+
+export let setFindQueryIsFullWord = redux.add('setFindQueryIsFullWord', (state:StoreState, payload:boolean): StoreState => {
+    let findQuery = state.findQuery;
+    let newFindQuery = redux.updateFields({isFullWord: payload})(findQuery);
+    return {
+        findQuery: newFindQuery
+    };
+});
