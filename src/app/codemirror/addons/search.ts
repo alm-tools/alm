@@ -203,13 +203,15 @@ function searchOverlay(query, caseInsensitive) {
     });
   }
 
-  CodeMirror.commands.find = function(cm) {clearSearch(cm); doSearch(cm);};
-  CodeMirror.commands.findPersistent = function(cm) {clearSearch(cm); doSearch(cm, false, true);};
-  CodeMirror.commands.findNext = doSearch;
-  CodeMirror.commands.findPrev = function(cm) {doSearch(cm, true);};
-  CodeMirror.commands.clearSearch = clearSearch;
-  CodeMirror.commands.replace = replace;
-  CodeMirror.commands.replaceAll = function(cm) {replace(cm, true);};
+export let commands = {
+  find : function(cm) {clearSearch(cm); doSearch(cm);},
+  findPersistent : function(cm) {clearSearch(cm); doSearch(cm, false, true);},
+  findNext : (cm) => doSearch(cm),
+  findPrev : function(cm) {doSearch(cm, true);},
+  clearSearch : clearSearch,
+  replace : replace,
+  replaceAll : function(cm) {replace(cm, true);},
 
-
-export var foo = 123;
+  // my hooks
+  doSearch: doSearch
+}
