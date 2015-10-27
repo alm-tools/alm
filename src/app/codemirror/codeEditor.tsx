@@ -127,7 +127,13 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
         this.disposible.add(onresize.on(() => this.refresh()));
 
         this.disposible.add(state.subscribe((newState)=>{
-
+            let query = newState.findQuery.query;
+            if (!query){
+                search.commands.clearSearch(this.codeMirror);
+            }
+            else {
+                search.commands.search(this.codeMirror,query);
+            }
         }));
 	}
 
@@ -217,7 +223,6 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
 
         if (clearHistory) {
             this.codeMirror.getDoc().clearHistory();
-            search.commands.search(this.codeMirror,"foo");
         }
     }
 

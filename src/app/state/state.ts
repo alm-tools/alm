@@ -79,6 +79,14 @@ export let setPendingRequests = redux.add('setPendingRequests', (state, payload:
     };
 });
 
+export let setFindQueryQuery = redux.add('setFindQueryQuery', (state:StoreState, payload:string): StoreState => {
+    let findQuery = state.findQuery;
+    let newFindQuery = redux.updateFields({query: payload})(findQuery);
+    return {
+        findQuery: newFindQuery
+    };
+});
+
 export let setFindQueryIsCaseSensitive = redux.add('setFindQueryIsCaseSensitive', (state:StoreState, payload:boolean): StoreState => {
     let findQuery = state.findQuery;
     let newFindQuery = redux.updateFields({isCaseSensitive: payload})(findQuery);

@@ -82,7 +82,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         return (
             <div style={csx.vertical}>
                 <div style={[csx.horizontal, csx.center, styles.padded1]}>
-                    <input ref="find" placeholder="Find" style={[inputBlackStyle, csx.flex]} onKeyDown={this.findKeyDownHandler} />
+                    <input ref="find" placeholder="Find" style={[inputBlackStyle, csx.flex]} onKeyDown={this.findKeyDownHandler} onChange={this.findChanged}/>
                     <div style={[csx.horizontal, csx.aroundJustified, styles.padded1]}>
                         <label style={[csx.horizontal,csx.center]}><ui.Toggle/><span style={searchOptionsLabelStyle}>.*</span></label>
                         <label style={[csx.horizontal,csx.center]}><ui.Toggle/><span style={searchOptionsLabelStyle}>Aa</span></label>
@@ -133,4 +133,9 @@ export class FindAndReplace extends BaseComponent<Props, State>{
             e.preventDefault();
         }
     };
+
+    findChanged = () => {
+        let val = this.findInput().value;
+        state.setFindQueryQuery(val);
+    }
 }

@@ -9,7 +9,7 @@ import CodeMirror = require('codemirror');
  */
 export let commands = {
   search: (cm:CodeMirror.EditorFromTextArea, query: string) => startSearch(cm, getSearchState(cm), query),
-  // clearSearch: (cm:CodeMirror.EditorFromTextArea) => clearSearch(cm),
+  clearSearch: (cm:CodeMirror.EditorFromTextArea) => clearSearch(cm),
   //
   // findNext: (cm:CodeMirror.EditorFromTextArea) => findNext(cm,false),
   // findPrev: (cm:CodeMirror.EditorFromTextArea) => findNext(cm,true),
