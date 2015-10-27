@@ -34,6 +34,7 @@ require('./addons/text-hover');
 require('./addons/text-hover.css');
 import autocomplete = require('./addons/autocomplete');
 import linter = require('./addons/linter');
+import search = require("./addons/search");
 
 // Sample addon usage
 console.log(CodeMirror.findModeByFileName('asdf/foo.js'))
