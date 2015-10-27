@@ -22,3 +22,7 @@ To take the contract + implementation and work the magic we have two libraries, 
 
 ## More than just Promises
 Basically anything that is *async* in its contract can be used under the same principle. Our `socketLib` allows us to convert *events* raised from the server become *events* that are emitted (`cast`) to all the clients. Great for stuff like an up to date error list, file changes etc.
+
+## Example
+
+Checkout the [`socket` folder](https://github.com/TypeScriptBuilder/tsb/tree/e34bbf9cb6227f3cd150737fef5a47f212e2ad7a/src/socket) which contains the socket contract + server + client :rose:
