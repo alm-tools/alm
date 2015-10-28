@@ -126,11 +126,19 @@ export class FindAndReplace extends BaseComponent<Props, State>{
 
     /** Tab key is only called on key down :) */
     findKeyDownHandler = (e:React.SyntheticEvent) => {
-        let states = this.getKeyStates(e);
+        let {tab,shift,enter} = this.getKeyStates(e);
 
-        if (states.tab && states.shift) {
+        if (shift && tab) {
             this.replaceInput().focus();
             e.preventDefault();
+        }
+
+        if (shift && enter){
+            commands.findPrevious.emit({});
+        }
+        
+        if (enter){
+            commands.findNext.emit({});
         }
     };
 

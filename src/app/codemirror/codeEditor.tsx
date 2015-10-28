@@ -237,6 +237,14 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
         search.commands.clearSearch(this.codeMirror);
     }
 
+    findNext = () => {
+        search.commands.findNext(this.codeMirror);
+    }
+
+    findPrevious = () => {
+        search.commands.findPrevious(this.codeMirror);
+    }
+
 	render () {
 		var className = 'ReactCodeMirror';
 		if (this.state.isFocused) {

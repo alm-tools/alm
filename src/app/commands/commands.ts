@@ -24,7 +24,12 @@ export var doOpenOrFocusFile = new events.TypedEvent<{ filePath: string, positio
 export var onCloseTab = new events.TypedEvent<{}>();
 export var onSaveTab = new events.TypedEvent<{}>();
 
+/**
+ * FAR find and replace
+ */
 export var findAndReplace = new events.TypedEvent<{}>();
+export var findNext = new events.TypedEvent<{}>();
+export var findPrevious = new events.TypedEvent<{}>();
 
 export var toggleErrorMessagesPanel = new events.TypedEvent();
 

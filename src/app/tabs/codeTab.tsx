@@ -104,4 +104,12 @@ export class Code extends ui.BaseComponent<Props, State> implements tab.Componen
     clearSearch = () => {
         this.refs.editor.clearSearch();
     }
+
+    findNext = () => {
+        this.refs.editor.findNext();
+    }
+
+    findPrevious = () => {
+        this.refs.editor.findPrevious();
+    }
 }
