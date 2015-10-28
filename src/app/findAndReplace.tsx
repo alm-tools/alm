@@ -131,14 +131,17 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         if (shift && tab) {
             this.replaceInput().focus();
             e.preventDefault();
+            return;
         }
 
-        if (shift && enter){
+        if (shift && enter) {
             commands.findPrevious.emit({});
+            return;
         }
-        
-        if (enter){
+
+        if (enter) {
             commands.findNext.emit({});
+            return;
         }
     };
 
