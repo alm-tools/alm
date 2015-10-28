@@ -26,14 +26,14 @@ export class SimpleRedux<State>{
     /**
      * WARNING: this only supports 1 level of nesting
      */
-    addSub<Payload, SubState>(usefulNameForDebugging: string, subState: (state) => SubState, reducer: (state: SubState, payload: Payload) => SubState): { (payload: Payload): void; } {
+    addSub<Payload, SubState>(usefulNameForDebugging: string, select: (state) => SubState, reducer: (state: SubState, payload: Payload) => SubState): { (payload: Payload): void; } {
         let dispatcher = (payload) => this.store.dispatch({
             type: usefulNameForDebugging,
             payload: payload
         });
 
         this._listeners[usefulNameForDebugging] = (state: State, payload: Payload): State => {
-            let sub = subState(state);
+            let sub = select(state);
             for (var key in state) {
                 if (state[key] == sub) break;
             }
