@@ -125,15 +125,6 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
         autocomplete.setupCodeMirror(this.codeMirror);
 
         this.disposible.add(onresize.on(() => this.refresh()));
-
-        this.disposible.add(state.subscribeSub(state=>state.findQuery,(findQuery)=>{
-            if (!findQuery.isShown || !findQuery.query) {
-                search.commands.clearSearch(this.codeMirror);
-            }
-            else {
-                search.commands.search(this.codeMirror, findQuery.query);
-            }
-        }));
 	}
 
 	componentWillUnmount () {
@@ -236,6 +227,14 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
             // Note that we use *our source id* as this is now a change *we are making to code mirror* :)
             this.codeMirror.getDoc().replaceRange(codeEdit.newText, codeEdit.from, codeEdit.to, this.sourceId);
         }
+    }
+
+    search = (options: FindOptions) => {
+        search.commands.search(this.codeMirror, options.query);
+    }
+
+    clearSearch = () => {
+        search.commands.clearSearch(this.codeMirror);
     }
 
 	render () {

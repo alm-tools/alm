@@ -14,7 +14,7 @@ import {Icon} from "./icon";
 
 export interface Props extends React.Props<any> {
     // connected using redux
-    findQuery?: FindQuery;
+    findQuery?: FindOptions;
 }
 export interface State {
 }
@@ -58,7 +58,7 @@ let searchOptionsLabelStyle = {
 
 @connect((state: state.StoreState): Props => {
     return {
-        findQuery: state.findQuery
+        findQuery: state.findOptions
     };
 })
 @ui.Radium
@@ -66,12 +66,12 @@ export class FindAndReplace extends BaseComponent<Props, State>{
 
     componentDidMount() {
         this.disposible.add(commands.findAndReplace.on(() => {
-            state.setFindQueryIsShown(true);
+            state.setFindOptionsIsShown(true);
             this.findInput().focus();
         }));
 
         this.disposible.add(commands.esc.on(() => {
-            state.setFindQueryIsShown(false);
+            state.setFindOptionsIsShown(false);
             this.findInput().focus();
         }));
     }
@@ -145,6 +145,6 @@ export class FindAndReplace extends BaseComponent<Props, State>{
 
     findChanged = utils.debounce(() => {
         let val = this.findInput().value;
-        state.setFindQueryQuery(val)
+        state.setFindOptionsQuery(val)
     },200);
 }

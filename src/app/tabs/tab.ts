@@ -20,6 +20,11 @@ export interface Component extends React.Component<any, any> {
     save();
     close();
     gotoPosition(position: EditorPosition);
+
+    /** Called at the start of a new search or on focusing */
+    search(options: FindOptions);
+    /** Called to clear the search if the tab is in focus when that happens */
+    clearSearch();
 }
 
 export interface TabInstance {

@@ -13,7 +13,7 @@ export interface StoreState {
     pendingRequests?: string[];
 
     /** Find and replace */
-    findQuery?: FindQuery;
+    findOptions?: FindOptions;
 }
 
 let initialStoreState: StoreState = {
@@ -23,9 +23,9 @@ let initialStoreState: StoreState = {
     currentFilePath: '',
     inActiveProject: types.TriState.Unknown,
     pendingRequests: [],
-    findQuery: {
+    findOptions: {
         isShown: false,
-        query: undefined,
+        query: '',
         isRegex: false,
         isCaseSensitive: false,
         isFullWord: false
@@ -81,42 +81,42 @@ export let setPendingRequests = redux.add('setPendingRequests', (state, payload:
     };
 });
 
-export let setFindQueryQuery = redux.add('setFindQueryQuery', (state:StoreState, payload:string): StoreState => {
-    let findQuery = state.findQuery;
+export let setFindOptionsQuery = redux.add('setFindOptionsQuery', (state:StoreState, payload:string): StoreState => {
+    let findQuery = state.findOptions;
     let newFindQuery = redux.updateFields({query: payload})(findQuery);
     return {
-        findQuery: newFindQuery
+        findOptions: newFindQuery
     };
 });
 
-export let setFindQueryIsCaseSensitive = redux.add('setFindQueryIsCaseSensitive', (state:StoreState, payload:boolean): StoreState => {
-    let findQuery = state.findQuery;
+export let setFindOptionsIsCaseSensitive = redux.add('setFindOptionsIsCaseSensitive', (state:StoreState, payload:boolean): StoreState => {
+    let findQuery = state.findOptions;
     let newFindQuery = redux.updateFields({isCaseSensitive: payload})(findQuery);
     return {
-        findQuery: newFindQuery
+        findOptions: newFindQuery
     };
 });
 
-export let setFindQueryIsRegex = redux.add('setFindQueryIsRegex', (state:StoreState, payload:boolean): StoreState => {
-    let findQuery = state.findQuery;
+export let setFindOptionsIsRegex = redux.add('setFindOptionsIsRegex', (state:StoreState, payload:boolean): StoreState => {
+    let findQuery = state.findOptions;
     let newFindQuery = redux.updateFields({isRegex: payload})(findQuery);
     return {
-        findQuery: newFindQuery
+        findOptions: newFindQuery
     };
 });
 
-export let setFindQueryIsFullWord = redux.add('setFindQueryIsFullWord', (state:StoreState, payload:boolean): StoreState => {
-    let findQuery = state.findQuery;
+export let setFindOptionsIsFullWord = redux.add('setFindOptionsIsFullWord', (state:StoreState, payload:boolean): StoreState => {
+    let findQuery = state.findOptions;
     let newFindQuery = redux.updateFields({isFullWord: payload})(findQuery);
     return {
-        findQuery: newFindQuery
+        findOptions: newFindQuery
     };
 });
 
-export let setFindQueryIsShown = redux.add('setFindQueryIsShown', (state:StoreState, payload:boolean): StoreState => {
-    let findQuery = state.findQuery;
+export let setFindOptionsIsShown = redux.add('setFindOptionsIsShown', (state:StoreState, payload:boolean): StoreState => {
+    let findQuery = state.findOptions;
     let newFindQuery = redux.updateFields({isShown: payload})(findQuery);
     return {
-        findQuery: newFindQuery
+        findOptions: newFindQuery
     };
 });

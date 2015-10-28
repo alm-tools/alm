@@ -93,7 +93,15 @@ export class Code extends ui.BaseComponent<Props, State> implements tab.Componen
         server.closeFile({filePath: this.filePath});
     }
 
-    gotoPosition = (position) => {
+    gotoPosition = (position: EditorPosition) => {
         this.refs.editor.gotoPosition(position);
+    }
+
+    search = (query: FindOptions) => {
+        this.refs.editor.search(query);
+    }
+
+    clearSearch = () => {
+        this.refs.editor.clearSearch();
     }
 }

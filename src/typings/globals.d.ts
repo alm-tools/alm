@@ -65,7 +65,7 @@ interface Sessions {
 /**
  * Find and replace (FAR) related stuff
  */
-interface FindQuery {
+interface FindOptions {
     isShown: boolean;
     query: string;
     isRegex: boolean;

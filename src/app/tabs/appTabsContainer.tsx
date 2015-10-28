@@ -150,6 +150,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 component.focus();
             }
         });
+
+        this.disposible.add(state.subscribeSub(state=>state.findOptions,(findQuery)=>{
+            this.sendOrClearSearchOnCurrentComponent();
+        }));
     }
 
     render() {
@@ -221,6 +225,20 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         }
     }
 
+    /** Called if the options change OR tab gets selected */
+    sendOrClearSearchOnCurrentComponent(){
+        let component = this.getSelectedComponent();
+        if (!component) return;
+
+        let options = state.getState().findOptions;
+        if (!options.isShown || !options.query) {
+            component.clearSearch()
+        }
+        else {
+            component.search(options)
+        }
+    }
+
     private selectTab(selected: number) {
         /** Set timeout to allow the next tab to render */
         setTimeout(() => {
@@ -234,6 +252,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             let component = this.getSelectedComponent();
             if (component) {
                 component.focus();
+                this.sendOrClearSearchOnCurrentComponent();
                 let url = this.state.tabs[selected].url;
                 let filePath = utils.getFilePathFromUrl(url);
                 if (filePath){
