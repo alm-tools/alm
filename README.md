@@ -1,10 +1,7 @@
 # TypeScript Builder 🌹
 ![TypeScript Builder](https://raw.githubusercontent.com/basarat/tsb/master/resources/icon.png)
 
-Gives complete dev environment for TypeScript from *creation* all the way down to *deployment* that is:
-
-* easy to install
-* easy to use
+> Not just another general purpose IDE. The **best** TypeScript developer workflow.
 
 **Why TypeScript?**
 
