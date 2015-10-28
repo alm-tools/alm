@@ -26,15 +26,15 @@ export class SimpleRedux<State>{
     /**
      * WARNING: this only supports 1 level of nesting
      */
-    addSub<Payload,SubState>(usefulNameForDebugging: string, subState:(state)=>SubState , reducer: (state: SubState, payload: Payload) => SubState): { (payload: Payload): void; } {
+    addSub<Payload, SubState>(usefulNameForDebugging: string, subState: (state) => SubState, reducer: (state: SubState, payload: Payload) => SubState): { (payload: Payload): void; } {
         let dispatcher = (payload) => this.store.dispatch({
             type: usefulNameForDebugging,
             payload: payload
         });
 
-        this._listeners[usefulNameForDebugging] = (state:State, payload: Payload): State => {
+        this._listeners[usefulNameForDebugging] = (state: State, payload: Payload): State => {
             let sub = subState(state);
-            for (var key in state){
+            for (var key in state) {
                 if (state[key] == sub) break;
             }
             let newSub = reducer(sub, payload);
@@ -49,8 +49,22 @@ export class SimpleRedux<State>{
         return this.store.getState();
     }
 
-    subscribe = (changed: { (state:State): any }): { dispose: () => any } => {
-        return { dispose: this.store.subscribe(()=>changed(this.getState())) as any };
+    subscribe = (changed: { (state: State): any }): { dispose: () => any } => {
+        return { dispose: this.store.subscribe(() => changed(this.getState())) as any };
+    }
+
+    subscribeSub = <SubState>(select: (state: State) => SubState, onChange: (state: SubState) => void): { dispose: () => any } => {
+        let currentState = select(this.getState());
+
+        let handleChange = () => {
+            let nextState = select(this.getState());
+            if (nextState !== currentState) {
+                currentState = nextState;
+                onChange(currentState);
+            }
+        }
+
+        return this.subscribe(handleChange);
     }
 
     private _reducer = (state: State = this.initialState, action: any): State => {
@@ -74,7 +88,7 @@ export class SimpleRedux<State>{
      * Take every field of fields and put them override them in the complete object
      * NOTE: this API is a bit reverse of extent because of the way generic constraints work in TypeScript
      */
-    updateFields = <T>(fields:T) => <U extends T>(complete:U) : U => {
+    updateFields = <T>(fields: T) => <U extends T>(complete: U): U => {
         let result = <U>{};
         for (let id in complete) {
             result[id] = complete[id];

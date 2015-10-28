@@ -126,13 +126,12 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
 
         this.disposible.add(onresize.on(() => this.refresh()));
 
-        // TODO: add sub state observable
-        this.disposible.add(state.subscribe((newState)=>{
-            if (!newState.findQuery.isShown || !newState.findQuery.query) {
+        this.disposible.add(state.subscribeSub(state=>state.findQuery,(findQuery)=>{
+            if (!findQuery.isShown || !findQuery.query) {
                 search.commands.clearSearch(this.codeMirror);
             }
             else {
-                search.commands.search(this.codeMirror, newState.findQuery.query);
+                search.commands.search(this.codeMirror, findQuery.query);
             }
         }));
 	}
