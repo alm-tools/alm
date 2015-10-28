@@ -7,6 +7,8 @@ import * as Mousetrap from "mousetrap";
 require("mousetrap/plugins/global-bind/mousetrap-global-bind");
 import * as events from "../../common/events";
 
+export var esc = new events.TypedEvent<{}>();
+
 export var nextTab = new events.TypedEvent<{}>();
 export var prevTab = new events.TypedEvent<{}>();
 
@@ -25,6 +27,12 @@ export var onSaveTab = new events.TypedEvent<{}>();
 export var findAndReplace = new events.TypedEvent<{}>();
 
 export function register() {
+
+    /** General utility */
+    Mousetrap.bindGlobal('esc', function() {
+        esc.emit({});
+        return false;
+    });
 
     /** Tabs */
     Mousetrap.bindGlobal('alt+k', function() {

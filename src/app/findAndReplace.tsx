@@ -69,6 +69,11 @@ export class FindAndReplace extends BaseComponent<Props, State>{
             state.setFindQueryIsShown(true);
             this.findInput().focus();
         }));
+
+        this.disposible.add(commands.esc.on(() => {
+            state.setFindQueryIsShown(false);
+            this.findInput().focus();
+        }));
     }
 
     refs: {

@@ -68,6 +68,9 @@ export class OmniSearch extends BaseComponent<Props, State>{
             console.log('find command');
             this.openOmniSearch();
         });
+        commands.esc.on(()=>{
+            this.closeOmniSearch();
+        });
     }
 
     render() {
