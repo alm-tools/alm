@@ -127,12 +127,11 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
         this.disposible.add(onresize.on(() => this.refresh()));
 
         this.disposible.add(state.subscribe((newState)=>{
-            let query = newState.findQuery.query;
-            if (!query){
+            if (!newState.findQuery.isShown || !newState.findQuery.query) {
                 search.commands.clearSearch(this.codeMirror);
             }
             else {
-                search.commands.search(this.codeMirror,query);
+                search.commands.search(this.codeMirror, newState.findQuery.query);
             }
         }));
 	}

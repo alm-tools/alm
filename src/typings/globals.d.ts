@@ -66,6 +66,7 @@ interface Sessions {
  * Find and replace (FAR) related stuff
  */
 interface FindQuery {
+    isShown: boolean;
     query: string;
     isRegex: boolean;
     isCaseSensitive: boolean;

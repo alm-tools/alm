@@ -8,13 +8,15 @@ import * as utils from "../common/utils";
 import * as styles from "./styles/styles";
 import * as state from "./state/state";
 import * as commands from "./commands/commands";
+import {connect} from "react-redux";
 import {Icon} from "./icon";
 
-export interface Props extends React.Props<any> {
 
+export interface Props extends React.Props<any> {
+    // connected using redux
+    findQuery?: FindQuery;
 }
 export interface State {
-    shown?: boolean;
 }
 
 
@@ -54,13 +56,17 @@ let searchOptionsLabelStyle = {
     paddingRight: '5px',
 }
 
-
+@connect((state: state.StoreState): Props => {
+    return {
+        findQuery: state.findQuery
+    };
+})
 @ui.Radium
 export class FindAndReplace extends BaseComponent<Props, State>{
 
     componentDidMount() {
         this.disposible.add(commands.findAndReplace.on(() => {
-            this.setState({ shown: true });
+            state.setFindQueryIsShown(true);
             this.findInput().focus();
         }));
     }
@@ -75,7 +81,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
     // searchLocation = (): HTMLInputElement=> ReactDOM.findDOMNode(this.refs.find);
 
     render() {
-        if (!this.state.shown) {
+        if (!this.props.findQuery.isShown) {
             return <span></span>;
         }
 

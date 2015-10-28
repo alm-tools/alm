@@ -24,6 +24,7 @@ let initialStoreState: StoreState = {
     inActiveProject: types.TriState.Unknown,
     pendingRequests: [],
     findQuery: {
+        isShown: false,
         query: undefined,
         isRegex: false,
         isCaseSensitive: false,
@@ -106,6 +107,14 @@ export let setFindQueryIsRegex = redux.add('setFindQueryIsRegex', (state:StoreSt
 export let setFindQueryIsFullWord = redux.add('setFindQueryIsFullWord', (state:StoreState, payload:boolean): StoreState => {
     let findQuery = state.findQuery;
     let newFindQuery = redux.updateFields({isFullWord: payload})(findQuery);
+    return {
+        findQuery: newFindQuery
+    };
+});
+
+export let setFindQueryIsShown = redux.add('setFindQueryIsShown', (state:StoreState, payload:boolean): StoreState => {
+    let findQuery = state.findQuery;
+    let newFindQuery = redux.updateFields({isShown: payload})(findQuery);
     return {
         findQuery: newFindQuery
     };
