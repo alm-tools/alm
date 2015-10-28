@@ -143,6 +143,13 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 component.save();
             }
         });
+
+        commands.esc.on(()=>{
+            let component = this.getSelectedComponent();
+            if (component) {
+                component.focus();
+            }
+        });
     }
 
     render() {

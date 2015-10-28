@@ -64,6 +64,10 @@ export class Tips extends BaseComponent<Props, State>{
             message: 'Editor keybindings:',
             keyboard: 'Sublime Text'
         },
+        {
+            message: 'Editor focus from anywhere',
+            keyboard: 'Escape'
+        }
     ]
 
     componentDidMount() {
