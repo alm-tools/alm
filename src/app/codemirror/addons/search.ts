@@ -19,6 +19,10 @@ export let commands = {
   findPrevious: (cm:CodeMirror.EditorFromTextArea) => findNext(cm,true),
 }
 
+// MODIFICATION BELOW
+// - TODO: parseQuery is commented out in favor of `parseQuery (x)=>x` as we already use a regex passed in
+//      Prevents the *magic detection* logic
+
 
 /**
  * See docs https://codemirror.net/doc/manual.html#addon_search
