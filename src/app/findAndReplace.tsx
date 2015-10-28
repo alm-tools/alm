@@ -134,8 +134,9 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         }
     };
 
+    setFindQueryQuery = utils.debounce((val:string)=>state.setFindQueryQuery(val),200);
     findChanged = () => {
         let val = this.findInput().value;
-        state.setFindQueryQuery(val);
+        this.setFindQueryQuery(val);
     }
 }
