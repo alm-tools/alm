@@ -1,7 +1,12 @@
 // Based on https://codemirror.net/demo/search.html
 // and https://codemirror.net/addon/search/search.js
 
+// Search cursor is NEEDED
 require('codemirror/addon/search/searchcursor');
+// Show search matches on scrollbar (optional but I like it)
+require('codemirror/addon/search/matchesonscrollbar');
+require('codemirror/addon/search/matchesonscrollbar.css');
+
 import CodeMirror = require('codemirror');
 
 /**
