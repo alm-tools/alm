@@ -26,6 +26,8 @@ export var onSaveTab = new events.TypedEvent<{}>();
 
 export var findAndReplace = new events.TypedEvent<{}>();
 
+export var toggleErrorMessagesPanel = new events.TypedEvent();
+
 export function register() {
 
     /** General utility */
@@ -75,4 +77,12 @@ export function register() {
         findAndReplace.emit({});
         return false;
     });
+
+    /**
+     * Error panel
+     */
+     Mousetrap.bindGlobal('mod+shift+m', function() { // code
+         toggleErrorMessagesPanel.emit({});
+         return false;
+     });
 }

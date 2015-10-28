@@ -14,6 +14,7 @@ import {Icon} from "./icon";
 
 import {connect} from "react-redux";
 import {StoreState,expandErrors,collapseErrors} from "./state/state";
+import * as state from "./state/state";
 
 export interface Props extends React.Props<any> {
     // from react-redux ... connected below
@@ -48,6 +49,9 @@ export class StatusBar extends BaseComponent<Props, State>{
     }
 
     componentDidMount() {
+        this.disposible.add(commands.toggleErrorMessagesPanel.on(()=>{
+            state.getState().errorsExpanded?state.collapseErrors({}):state.expandErrors({});
+        }));
     }
 
     render(){
