@@ -86,14 +86,12 @@ export class FindAndReplace extends BaseComponent<Props, State>{
     // searchLocation = (): HTMLInputElement=> ReactDOM.findDOMNode(this.refs.find);
 
     render() {
-        if (!this.props.findQuery.isShown) {
-            return <span></span>;
-        }
+        let shownStyle = this.props.findQuery.isShown ? {} : { display: 'none' };
 
         return (
-            <div style={csx.vertical}>
+            <div style={[csx.vertical,shownStyle]}>
                 <div style={[csx.horizontal, csx.center, styles.padded1]}>
-                    <input ref="find" placeholder="Find" style={[inputBlackStyle, csx.flex]} onKeyDown={this.findKeyDownHandler} onChange={this.findChanged}/>
+                    <input ref="find" placeholder="Find" style={[inputBlackStyle, csx.flex]} onKeyDown={this.findKeyDownHandler} onChange={this.findChanged} defaultValue={this.props.findQuery.query}/>
                     <div style={[csx.horizontal, csx.aroundJustified, styles.padded1]}>
                         <label style={[csx.horizontal,csx.center]}><ui.Toggle/><span style={searchOptionsLabelStyle}>.*</span></label>
                         <label style={[csx.horizontal,csx.center]}><ui.Toggle/><span style={searchOptionsLabelStyle}>Aa</span></label>

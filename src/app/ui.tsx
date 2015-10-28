@@ -20,7 +20,7 @@ export class BaseComponent<Props, State> extends React.Component<Props, State>{
 require('velocity-animate');
 require('velocity-animate/velocity.ui');
 let VelocityReact = require('velocity-react');
-export let {VelocityTransitionGroup} = VelocityReact;
+export let {VelocityTransitionGroup, VelocityComponent} = VelocityReact;
 
 /**
  * Straight out of codemirror.js
