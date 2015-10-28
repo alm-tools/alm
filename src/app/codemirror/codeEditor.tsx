@@ -230,6 +230,9 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
     }
 
     search = (options: FindOptions) => {
+        // TODO: support options
+        // Note that Code mirror only takes `query` string *tries* to detect case senstivity, regex on its own
+        // So simpler if we just convert options into regex, and then code mirror will happy use the regex as is
         search.commands.search(this.codeMirror, options.query);
     }
 
