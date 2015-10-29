@@ -17,8 +17,47 @@ export let commands = {
   clearSearch: (cm:CodeMirror.EditorFromTextArea) => clearSearch(cm),
   findNext: (cm:CodeMirror.EditorFromTextArea) => findNext(cm,false),
   findPrevious: (cm:CodeMirror.EditorFromTextArea) => findNext(cm,true),
+  replaceNext: (cm: CodeMirror.EditorFromTextArea, newText: string) => simpleReplace(cm, newText, false),
+  replaceAll: (cm: CodeMirror.EditorFromTextArea, newText: string) => simpleReplace(cm, newText, true),
 }
 
+
+/** This is pulled out as is from `replace` function below. Just the dialog calls were removed 🌹 */
+function simpleReplace(codeMirror: CodeMirror.EditorFromTextArea, newText: string, all: boolean) {
+
+    /** These are the variables that I hand to introduce */
+    let cm: any = codeMirror;
+    let query = getSearchState(cm).query; // Note: this is different from what was there in that function (lastQuery)
+    let text = newText;
+
+    /**
+     * The following lines are based on the replace function
+    */
+
+    if (all) {
+      replaceAll(cm, query, text)
+    } else {
+      var cursor = getSearchCursor(cm, query, cm.getCursor());
+      var advance = function(replace?:boolean) {
+        var start = cursor.from(), match;
+        if (!(match = cursor.findNext())) {
+          cursor = getSearchCursor(cm, query);
+          if (!(match = cursor.findNext()) ||
+              (start && cursor.from().line == start.line && cursor.from().ch == start.ch)) return;
+        }
+        cm.setSelection(cursor.from(), cursor.to());
+        cm.scrollIntoView({from: cursor.from(), to: cursor.to()});
+
+        if (replace) doReplace(match);
+      };
+      function doReplace(match) {
+        cursor.replace(typeof query == "string" ? text :
+                       text.replace(/\$(\d)/g, function(_, i) {return match[i];}));
+        advance(false);
+      };
+      advance(true);
+    }
+}
 
 
 /**

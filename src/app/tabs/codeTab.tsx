@@ -112,4 +112,12 @@ export class Code extends ui.BaseComponent<Props, State> implements tab.Componen
     findPrevious = () => {
         this.refs.editor.findPrevious();
     }
+
+    replaceNext = (newText: string) => {
+        this.refs.editor.replaceNext(newText);
+    }
+
+    replaceAll = (newText: string) => {
+        this.refs.editor.replaceAll(newText);
+    }
 }

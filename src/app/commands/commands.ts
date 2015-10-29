@@ -30,6 +30,8 @@ export var onSaveTab = new events.TypedEvent<{}>();
 export var findAndReplace = new events.TypedEvent<{}>();
 export var findNext = new events.TypedEvent<{}>();
 export var findPrevious = new events.TypedEvent<{}>();
+export var replaceNext = new events.TypedEvent<{ newText: string }>();
+export var replaceAll = new events.TypedEvent<{ newText: string }>();
 
 export var toggleErrorMessagesPanel = new events.TypedEvent();
 

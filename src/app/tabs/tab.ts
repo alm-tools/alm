@@ -31,6 +31,8 @@ export interface Component extends React.Component<any, any> {
     clearSearch();
     findNext();
     findPrevious();
+    replaceNext(newText: string);
+    replaceAll(newText: string);
 }
 
 export interface TabInstance {

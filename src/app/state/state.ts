@@ -29,7 +29,7 @@ let initialStoreState: StoreState = {
         isRegex: false,
         isCaseSensitive: false,
         isFullWord: false
-    }
+    },
 };
 
 let redux = new SimpleRedux<StoreState>(initialStoreState);

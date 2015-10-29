@@ -165,6 +165,20 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             }
         });
 
+        commands.replaceNext.on((e)=>{
+            let component = this.getSelectedComponent();
+            if (component) {
+                component.replaceNext(e.newText);
+            }
+        });
+
+        commands.replaceAll.on((e)=>{
+            let component = this.getSelectedComponent();
+            if (component) {
+                component.replaceAll(e.newText);
+            }
+        });
+
         this.disposible.add(state.subscribeSub(state=>state.findOptions,(findQuery)=>{
             this.sendOrClearSearchOnCurrentComponent();
         }));
