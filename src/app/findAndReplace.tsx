@@ -86,9 +86,16 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         [string: string]: any;
         find: JSX.Element;
         replace: JSX.Element;
+        regex: {refs:{input: JSX.Element}};
+        caseInsensitive: {refs:{input: JSX.Element}};
+        fullWord: {refs:{input: JSX.Element}};
     }
     findInput = (): HTMLInputElement=> ReactDOM.findDOMNode(this.refs.find);
     replaceInput = (): HTMLInputElement=> ReactDOM.findDOMNode(this.refs.replace);
+    regexInput = (): HTMLInputElement=> ReactDOM.findDOMNode(this.refs.regex.refs.input);
+    caseInsensitiveInput = (): HTMLInputElement=> ReactDOM.findDOMNode(this.refs.caseInsensitive.refs.input);
+    fullWordInput = (): HTMLInputElement=> ReactDOM.findDOMNode(this.refs.fullWord.refs.input);
+
     replaceWith = () => this.replaceInput().value;
     // searchLocation = (): HTMLInputElement=> ReactDOM.findDOMNode(this.refs.find);
 
@@ -98,15 +105,15 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         return (
             <div style={[csx.vertical,shownStyle]}>
                 <div style={[csx.horizontal, csx.center, styles.padded1]}>
-                    <input ref="find" placeholder="Find" style={[inputBlackStyle, inputCodeStyle, csx.flex]} onKeyDown={this.findKeyDownHandler} onChange={this.findChanged} defaultValue={this.props.findQuery.query}/>
+                    <input tabIndex={1} ref="find" placeholder="Find" style={[inputBlackStyle, inputCodeStyle, csx.flex]} onKeyDown={this.findKeyDownHandler} onChange={this.findChanged} defaultValue={this.props.findQuery.query}/>
                     <div style={[csx.horizontal, csx.aroundJustified, styles.padded1]}>
-                        <label style={[csx.horizontal,csx.center]}><ui.Toggle onChange={this.handleRegexChange}/><span style={searchOptionsLabelStyle}>.*</span></label>
-                        <label style={[csx.horizontal,csx.center]}><ui.Toggle onChange={this.handleCaseSensitiveChange}/><span style={searchOptionsLabelStyle}>Aa</span></label>
-                        <label style={[csx.horizontal,csx.center]}><ui.Toggle onChange={this.handleFullWordChange}/><span style={searchOptionsLabelStyle}><Icon name="text-width"/></span></label>
+                        <label style={[csx.horizontal,csx.center]}><ui.Toggle tabIndex={3} ref="regex" onChange={this.handleRegexChange}/><span style={searchOptionsLabelStyle}>.*</span></label>
+                        <label style={[csx.horizontal,csx.center]}><ui.Toggle tabIndex={4} ref="caseInsensitive" onChange={this.handleCaseSensitiveChange}/><span style={searchOptionsLabelStyle}>Aa</span></label>
+                        <label style={[csx.horizontal,csx.center]}><ui.Toggle tabIndex={5} ref="fullWord" onKeyDown={this.fullWordKeyDownHandler} onChange={this.handleFullWordChange}/><span style={searchOptionsLabelStyle}><Icon name="text-width"/></span></label>
                     </div>
                 </div>
                 <div style={[csx.horizontal, csx.center, styles.padded1]}>
-                    <input ref="replace" placeholder="Replace" style={[inputBlackStyle, inputCodeStyle, csx.flex]} onKeyDown={this.replaceKeyDownHandler} />
+                    <input tabIndex={2} ref="replace" placeholder="Replace" style={[inputBlackStyle, inputCodeStyle, csx.flex]} onKeyDown={this.replaceKeyDownHandler} />
                 </div>
                 <div style={[tipMessageStyle,styles.padded1]}>
                     <span style={keyboardShortCutStyle}>Esc</span> to exit
@@ -137,7 +144,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         let {tab,shift,enter} = this.getKeyStates(e);
 
         if (shift && tab) {
-            this.replaceInput().focus();
+            this.fullWordInput().focus();
             e.preventDefault();
             return;
         }
@@ -146,6 +153,10 @@ export class FindAndReplace extends BaseComponent<Props, State>{
     };
 
     replaceKeyDownHandler = (e:React.SyntheticEvent) => {
+        this.handleSearchKeys(e);
+    };
+
+    fullWordKeyDownHandler = (e:React.SyntheticEvent) => {
         let {tab,shift,enter} = this.getKeyStates(e);
 
         if (tab && !shift) {
@@ -153,8 +164,6 @@ export class FindAndReplace extends BaseComponent<Props, State>{
             e.preventDefault();
             return;
         }
-
-        this.handleSearchKeys(e);
     };
 
     handleSearchKeys(e: React.SyntheticEvent) {
