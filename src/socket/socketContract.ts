@@ -63,7 +63,10 @@ export var cast = {
     errorsUpdated: new TypedEvent<ErrorsByFilePath>(),
 
     /** Tsb updated */
-    currentTsbContentsUpdated: new TypedEvent<{projects: ProjectJson[]}>()
+    currentTsbContentsUpdated: new TypedEvent<{projects: ProjectJson[]}>(),
+
+    /** Active project name updated */
+    activeProjectNameUpdated: new TypedEvent<{activeProjectName: string}>(),
 }
 
 

@@ -14,6 +14,7 @@ import * as types from "../../common/types";
 import {setErrorsByFilePaths, clearErrors, clearErrorsForFilePath} from "./errorsCache";
 import {diagnosticToCodeError} from "./building";
 import {makeBlandError} from "../../common/utils";
+import {TypedEvent} from "../../common/events";
 
 import equal = require('deep-equal');
 
@@ -28,6 +29,7 @@ export const errors = {
 
 /** The active project name */
 let activeProjectName = '';
+export let activeProjectNameUpdated = new TypedEvent<{activeProjectName:string}>();
 
 /**
  * The currently active project
@@ -68,6 +70,7 @@ export function getProjectIfCurrentOrErrorOut(filePath:string): project.Project 
   */
 export function setActiveProjectName(name: string) {
     activeProjectName = name;
+    activeProjectNameUpdated.emit({activeProjectName});
     clearErrors();
     sync();
 }
@@ -236,6 +239,11 @@ var refreshAllProjectDiagnostics = utils.debounce(() => {
 /** convert active tsb project name to current project */
 function sync() {
     getCurrentOrDefaultProjectDetails().then((projectJson) => {
+
+        // TODO: consolidate 
+        activeProjectName = projectJson.name;
+        activeProjectNameUpdated.emit({ activeProjectName });
+
         currentProject = null;
         let configFileDetails = ConfigFile.getConfigFileFromDisk(projectJson.tsconfig)
         currentProject = ConfigFile.createProjectFromConfigFile(configFileDetails);
@@ -245,7 +253,6 @@ function sync() {
 }
 
 import {cast} from "../../socket/socketServer";
-import {TypedEvent} from "../../common/events";
 export let currentTsbContents = new TypedEvent<TsbJson>();
 /**
  * As soon as the server boots up we need to do an initial attempt

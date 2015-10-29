@@ -56,6 +56,9 @@ export class Root extends ui.BaseComponent<{}, State>{
         cast.currentTsbContentsUpdated.on(res => {
             tsb = res;
         });
+        cast.activeProjectNameUpdated.on(res => {
+            state.setActiveProject(res.activeProjectName);
+        });
 
         commands.doSelectProject.on(()=>{
             this.refs.selectListView.show<ProjectJson>({
@@ -65,7 +68,6 @@ export class Root extends ui.BaseComponent<{}, State>{
                 textify: (d) => d.name,
                 onSelect: (d) => {
                     server.setActiveProjectName({ name: d.name });
-                    state.setActiveProject(d.name);
                 }
             });
         });

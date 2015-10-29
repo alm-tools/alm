@@ -109,6 +109,7 @@ export function register(app: http.Server) {
 
     errorCache.errorsUpdated.pipe(cast.errorsUpdated);
     activeProject.currentTsbContents.pipe(cast.currentTsbContentsUpdated);
+    activeProject.activeProjectNameUpdated.pipe(cast.activeProjectNameUpdated);
 
     // For testing
     // setInterval(() => cast.hello.emit({ text: 'nice' }), 1000);
