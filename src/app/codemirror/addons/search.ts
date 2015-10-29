@@ -13,33 +13,39 @@ import CodeMirror = require('codemirror');
  * Mostly providing a typed API on top of `search`
  */
 export let commands = {
-  search: (cm:CodeMirror.EditorFromTextArea, query: string) => startSearch(cm, getSearchState(cm), query),
+  search: (cm:CodeMirror.EditorFromTextArea, query: RegExp) => startSearch(cm, getSearchState(cm), query),
   clearSearch: (cm:CodeMirror.EditorFromTextArea) => clearSearch(cm),
   findNext: (cm:CodeMirror.EditorFromTextArea) => findNext(cm,false),
   findPrevious: (cm:CodeMirror.EditorFromTextArea) => findNext(cm,true),
 }
 
-// MODIFICATION BELOW
-// - TODO: parseQuery is commented out in favor of `parseQuery (x)=>x` as we already use a regex passed in
-//      Prevents the *magic detection* logic
 
 
 /**
  * See docs https://codemirror.net/doc/manual.html#addon_search
- * Taken source code AS IT IS, but needed function local to the file (e.g. startSearch), so imported here
- * The commands need to be commented out othewise CM will intercept calls to `Ctrl+F`
+ * Mostly source code AS IT IS, but needed function local to the file (e.g. startSearch), so imported here
+ * MODIFICATION BELOW
+ * - parseQuery is commented out in favor of `parseQuery (x)=>x` as we already use a regex passed in
+ *      Prevents the *magic detection* logic
+ * - The commands need to be commented out othewise CM will intercept calls to `Ctrl+F`
+ * - Add name:'searchOverlayMode' to the return of `searchOverlay` otherwise if errors happen CM will report "undefined mode failed to advance stream"
+ * - Fix searchOverlay with https://github.com/codemirror/CodeMirror/pull/3619
  */
+
 function searchOverlay(query, caseInsensitive) {
     if (typeof query == "string")
       query = new RegExp(query.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&"), caseInsensitive ? "gi" : "g");
     else if (!query.global)
       query = new RegExp(query.source, query.ignoreCase ? "gi" : "g");
 
-    return {token: function(stream) {
+    return {
+      name:'searchOverlayMode',
+      token: function(stream) {
       query.lastIndex = stream.pos;
       var match = query.exec(stream.string);
       if (match && match.index == stream.pos) {
-        stream.pos += match[0].length;
+        // https://github.com/codemirror/CodeMirror/pull/3619
+        stream.pos += match[0].length ? match[0].length : 1;
         return "searching";
       } else if (match) {
         stream.pos = match.index;
@@ -86,7 +92,7 @@ function searchOverlay(query, caseInsensitive) {
     else if (confirm(shortText)) fs[0]();
   }
 
-  function parseString(string) {
+  function parseString(string:string) {
     return string.replace(/\\(.)/g, function(_, ch) {
       if (ch == "n") return "\n"
       if (ch == "r") return "\r"
@@ -95,6 +101,10 @@ function searchOverlay(query, caseInsensitive) {
   }
 
   function parseQuery(query) {
+    // MODIFICATION
+    // bypassing any query parsing
+    return query;
+
     var isRE = query.match(/^\/(.*)\/([a-z]*)$/);
     if (isRE) {
       try { query = new RegExp(isRE[1], isRE[2].indexOf("i") == -1 ? "" : "i"); }

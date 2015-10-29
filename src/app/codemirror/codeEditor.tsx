@@ -230,10 +230,31 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
     }
 
     search = (options: FindOptions) => {
-        // TODO: support options
         // Note that Code mirror only takes `query` string *tries* to detect case senstivity, regex on its own
         // So simpler if we just convert options into regex, and then code mirror will happy use the regex as is
-        search.commands.search(this.codeMirror, options.query);
+        let str = options.query;
+        var query: RegExp;
+
+        /** This came from search.js in code mirror */
+        let defaultQuery = /x^/;
+
+        if (!options.isRegex){
+            // from CMs search.js
+            str = str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+        }
+        if (options.isFullWord){
+            str = `\\b${str}\\b`;
+        }
+        try {
+            query = new RegExp(str, options.isCaseSensitive ? "g" : "gi");
+        }
+        catch (e) {
+            query = defaultQuery;
+        }
+        if (query.test("")){
+            query = defaultQuery;
+        }
+        search.commands.search(this.codeMirror, query);
     }
 
     clearSearch = () => {
