@@ -6,4 +6,9 @@
 declare module CodeMirror {
     /** @internal Utility function inside code mirror to stop events */
     function e_stop(event:any);
+
+    interface SearchCursor {
+        /** from source */
+        pos: Position;
+    }
 }
