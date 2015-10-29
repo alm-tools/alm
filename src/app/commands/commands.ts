@@ -84,6 +84,10 @@ export function register() {
         findAndReplace.emit({});
         return false;
     });
+    Mousetrap.bindGlobal('mod+h', function() { // atom,sublime,c9
+        findAndReplace.emit({});
+        return false;
+    });
 
     /**
      * Error panel

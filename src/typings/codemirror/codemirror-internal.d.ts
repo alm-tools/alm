@@ -8,7 +8,5 @@ declare module CodeMirror {
     function e_stop(event:any);
 
     interface SearchCursor {
-        /** from source */
-        pos: Position;
     }
 }

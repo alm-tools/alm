@@ -71,8 +71,9 @@ export class FindAndReplace extends BaseComponent<Props, State>{
     componentDidMount() {
         this.disposible.add(commands.findAndReplace.on(() => {
             state.setFindOptionsIsShown(true);
-            this.findInput().focus();
             this.findInput().select();
+            this.replaceInput().select();
+            this.findInput().focus();
         }));
 
         this.disposible.add(commands.esc.on(() => {
@@ -173,7 +174,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
             return;
         }
 
-        if (mod && enter) {
+        if (shift && enter) {
             commands.findPrevious.emit({});
             return;
         }

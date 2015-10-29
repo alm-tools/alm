@@ -21,7 +21,6 @@ export let commands = {
   replaceAll: (cm: CodeMirror.EditorFromTextArea, newText: string) => simpleReplace(cm, newText, true),
 }
 
-
 /** This is pulled out as is from `replace` function below. Just the dialog calls were removed 🌹 */
 function simpleReplace(codeMirror: CodeMirror.EditorFromTextArea, newText: string, all: boolean) {
 
@@ -35,27 +34,28 @@ function simpleReplace(codeMirror: CodeMirror.EditorFromTextArea, newText: strin
     */
 
     if (all) {
-      replaceAll(cm, query, text)
+        replaceAll(cm, query, text)
     } else {
-      var cursor = getSearchCursor(cm, query, cm.getCursor());
-      var advance = function(replace?:boolean) {
-        var start = cursor.from(), match;
+        var cursor: CodeMirror.SearchCursor = getSearchCursor(cm, query, cm.getCursor("start"));
+
+        /** Next match */
+        var match;
         if (!(match = cursor.findNext())) {
-          cursor = getSearchCursor(cm, query);
-          if (!(match = cursor.findNext()) ||
-              (start && cursor.from().line == start.line && cursor.from().ch == start.ch)) return;
+            cursor = getSearchCursor(cm, query, CodeMirror.Pos(cm.firstLine(), 0));
+            if (!(match = cursor.findNext()))
+                return;
         }
         cm.setSelection(cursor.from(), cursor.to());
-        cm.scrollIntoView({from: cursor.from(), to: cursor.to()});
+        cm.scrollIntoView({ from: cursor.from(), to: cursor.to() });
+        doReplace();
 
-        if (replace) doReplace(match);
-      };
-      function doReplace(match) {
-        cursor.replace(typeof query == "string" ? text :
-                       text.replace(/\$(\d)/g, function(_, i) {return match[i];}));
-        advance(false);
-      };
-      advance(true);
+        // Take them to the next match if any
+        findNext(cm, false);
+
+        /** straight out of search function. Just trimed out as we know our query is a regex already */
+        function doReplace() {
+            cursor.replace(text.replace(/\$(\d)/g, function(_, i) { return match[i]; }));
+        };
     }
 }
 
