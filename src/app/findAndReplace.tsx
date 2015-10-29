@@ -139,12 +139,12 @@ export class FindAndReplace extends BaseComponent<Props, State>{
             return;
         }
 
-        if (shift && enter) {
+        if (shift && enter && state.getState().findOptions.query) {
             commands.findPrevious.emit({});
             return;
         }
 
-        if (enter) {
+        if (enter && state.getState().findOptions.query) {
             commands.findNext.emit({});
             return;
         }
