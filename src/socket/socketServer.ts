@@ -2,7 +2,7 @@ import * as sls from "../socketLib/socketLibServer";
 import * as contract from "./socketContract";
 import http = require("http");
 import * as fsu from "../server/utils/fsu";
-import * as fslw from "../server/workers/fileListing/fileListingMaster";
+import * as flm from "../server/workers/fileListing/fileListingMaster";
 import * as workingDir from "../server/disk/workingDir";
 import {FileModel} from "../server/disk/fileModel";
 import * as activeProject from "../server/lang/activeProject";
@@ -24,7 +24,7 @@ namespace Server {
     }
 
     export var fileList: typeof contract.server.fileList = (data) => {
-        return fslw.worker.fileList({ directory: process.cwd() });
+        return flm.worker.fileList({ directory: workingDir.getProjectRoot() });
     }
 
     export var makeAbsolute: typeof contract.server.makeAbsolute = (data) => {
