@@ -15,3 +15,6 @@
 
 # `line` , `ch`
 Always `0` based, unless explicitly marked to be different.
+
+# Dependency
+Workers and worker-like state modules (file listing, active project) do not explicitly depend on the *socketServer*. Instead they provide an `event` that the socket can pipe to `cast`. Reason, preventing cycles : these modules generally provide a function called from sockets as well (socket -> module) and therefore module using socket will create a cycle.
