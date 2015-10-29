@@ -72,6 +72,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         this.disposible.add(commands.findAndReplace.on(() => {
             state.setFindOptionsIsShown(true);
             this.findInput().focus();
+            this.findInput().select();
         }));
 
         this.disposible.add(commands.esc.on(() => {
