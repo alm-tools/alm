@@ -19,6 +19,7 @@ import slv = require("./selectListView");
 import {StatusBar} from "./statusBar";
 import sb = require('./statusBar');
 import {FindAndReplace} from "./findAndReplace";
+import * as state from "./state/state";
 
 export interface State {
     isOmniSearchOpen?: boolean;
@@ -64,6 +65,7 @@ export class Root extends ui.BaseComponent<{}, State>{
                 textify: (d) => d.name,
                 onSelect: (d) => {
                     server.setActiveProjectName({ name: d.name });
+                    state.setActiveProject(d.name);
                 }
             });
         });
