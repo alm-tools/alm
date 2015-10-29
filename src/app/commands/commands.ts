@@ -72,6 +72,10 @@ export function register() {
         findCommand.emit({});
         return false;
     });
+
+    /**
+     * Project
+     */
     Mousetrap.bindGlobal('alt+shift+p', function() { // atom:ProjectManager
         doSelectProject.emit({});
         return false;
