@@ -84,7 +84,7 @@ function searchOverlay(query, caseInsensitive) {
       var match = query.exec(stream.string);
       if (match && match.index == stream.pos) {
         // https://github.com/codemirror/CodeMirror/pull/3619
-        stream.pos += match[0].length ? match[0].length : 1;
+        stream.pos += match[0].length || 1;
         return "searching";
       } else if (match) {
         stream.pos = match.index;
