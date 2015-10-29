@@ -1,24 +1,45 @@
 // Type definitions for CodeMirror
 // Project: https://github.com/marijnh/CodeMirror
-// Definitions by: basarat <https://github.com/basarat>
+// Definitions by: jacqt <https://github.com/jacqt>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
 
 declare module CodeMirror {
-    interface Editor {
-        /**
-         * Can be used to implement search/replace functionality.
-         * query can be a regular expression or a string (only strings will match across lines—if they contain newlines).
-         * start provides the starting position of the search. It can be a {line, ch} object, or can be left off to default to the start of the document.
-         * caseFold is only relevant when matching a string. It will cause the search to be case-insensitive.
-         */
-        getSearchCursor(query: RegExp | string, start?: CodeMirror.Position, caseFold?: boolean): SearchCursor;
+    interface Doc {
+        /** This method can be used to implement search/replace functionality.
+         *  `query`: This can be a regular * expression or a string (only strings will match across lines -
+         *          if they contain newlines).
+         *  `start`: This provides the starting position of the search. It can be a `{line, ch} object,
+         *          or can be left off to default to the start of the document
+         *  `caseFold`: This is only relevant when matching a string. IT will cause the search to be case-insenstive */
+        getSearchCursor(query: string | RegExp, start?: Position, caseFold?: boolean): SearchCursor;
     }
 
     interface SearchCursor {
-        findNext(): boolean;
-        findPrevious(): boolean;
-        from(): CodeMirror.Position;
-        to(): CodeMirror.Position;
-        replace(text: string, origin?: string);
+        /** Searches forward or backward from the current position. The return value indicates whether a match was
+         * found. If matching a regular expression, the return value will be the array returned by the match method, in case
+         * you want to extract matched groups */
+        find(reverse: boolean): boolean | any[];
+
+        /** Searches forward from the current position. The return value indicates whether a match was
+         * found. If matching a regular expression, the return value will be the array returned by the match method, in case
+         * you want to extract matched groups */
+        findNext(): boolean | any[];
+
+        /** Searches backward from the current position. The return value indicates whether a match was
+         * found. If matching a regular expression, the return value will be the array returned by the match method, in case
+         * you want to extract matched groups */
+        findPrevious(): boolean | any[];
+
+        /** Only valid when the last call to find, findNext, or findPrevious did not return false. Returns {line, ch}
+         * objects pointing the start of the match. */
+        from(): Position;
+
+        /** Only valid when the last call to find, findNext, or findPrevious did not return false. Returns {line, ch}
+         * objects pointing the end of the match. */
+        to(): Position;
+
+
+        /** Replaces the currently found match with the given text and adjusts the cursor position to reflect the deplacement. */
+        replace(text: string, origin?: string): void;
     }
 }
