@@ -25,6 +25,7 @@ import * as types from "../../common/types";
 import {connect} from "react-redux";
 import * as styles from "../styles/styles";
 import {Tips} from "./tips";
+import {cast} from "../../socket/socketClient";
 
 export interface Props extends React.Props<any> {
     errorsExpanded?: boolean
@@ -182,6 +183,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         this.disposible.add(state.subscribeSub(state=>state.findOptions,(findQuery)=>{
             this.sendOrClearSearchOnCurrentComponent();
         }));
+
+        cast.activeProjectNameUpdated.on(res => {
+            state.setActiveProject(res.activeProjectName);
+            this.updateActiveFileInformation();
+        });
     }
 
     render() {
@@ -277,24 +283,28 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
             this.setState({ selected: selected });
             this.state.selected = selected;
-            let component = this.getSelectedComponent();
-            if (component) {
-                component.focus();
-                this.sendOrClearSearchOnCurrentComponent();
-                let url = this.state.tabs[selected].url;
-                let filePath = utils.getFilePathFromUrl(url);
-                if (filePath){
-                    state.setCurrentFilePath(filePath);
-                    server.isFilePathInActiveProject({filePath}).then(res=>{
-                        res.inActiveProject ? state.setInActiveProject(types.TriState.True) : state.setInActiveProject(types.TriState.False);
-                    });
-                }
-            }
-            else {
-                setCurrentFilePath('');
-                state.setInActiveProject(types.TriState.Unknown);
-            }
+            this.updateActiveFileInformation();
         });
+    }
+
+    updateActiveFileInformation() {
+        let component = this.getSelectedComponent();
+        if (component) {
+            component.focus();
+            this.sendOrClearSearchOnCurrentComponent();
+            let url = this.state.tabs[this.state.selected].url;
+            let filePath = utils.getFilePathFromUrl(url);
+            if (filePath){
+                state.setCurrentFilePath(filePath);
+                server.isFilePathInActiveProject({filePath}).then(res=>{
+                    res.inActiveProject ? state.setInActiveProject(types.TriState.True) : state.setInActiveProject(types.TriState.False);
+                });
+            }
+        }
+        else {
+            setCurrentFilePath('');
+            state.setInActiveProject(types.TriState.Unknown);
+        }
     }
 
     getSelectedComponent(): tab.Component {

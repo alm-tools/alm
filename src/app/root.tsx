@@ -1,3 +1,4 @@
+import types = require("../common/types");
 /**
  * The root frontend component
  */
@@ -56,10 +57,7 @@ export class Root extends ui.BaseComponent<{}, State>{
         cast.currentTsbContentsUpdated.on(res => {
             tsb = res;
         });
-        cast.activeProjectNameUpdated.on(res => {
-            state.setActiveProject(res.activeProjectName);
-        });
-
+        
         commands.doSelectProject.on(()=>{
             this.refs.selectListView.show<ProjectJson>({
                 header: 'Select the active project',
@@ -68,6 +66,7 @@ export class Root extends ui.BaseComponent<{}, State>{
                 textify: (d) => d.name,
                 onSelect: (d) => {
                     server.setActiveProjectName({ name: d.name });
+                    state.setInActiveProject(types.TriState.Unknown);
                 }
             });
         });
