@@ -1,3 +1,6 @@
+## Helping All TypeScript Developers
+Wanted to create something that would help all TypeScript developers, all they need is NodeJS (which they already have because of `npm install typescript -g`). We have experience in writing solutions (e.g. cyclic analysis, dependency viewer, AST visualizer) that we want to share with *everyone* not just people that *use a particular IDE*.
+
 ## Remote editing (uses the browser)
 * Works the same on the *server* as your local file system. Remote editing FTW!
 * Heck..you can check in the IDE as a `devDependency`!
@@ -17,7 +20,7 @@ We did some previous work on atom-typescript : Now atom is a *seriously* great p
 * We want to highjack the tree view to hide build resources + highjack renaming to support code refactoring
 * Have our own error panel (or build panel or find references panel)
 * Intercept the symbol provider to show typescript project wide symbols
-* Have a background worker doing our analysis for us
+* Have a background worker doing our analysis for us, this has performance and platform issues if you use *atom as node*.
 * Plus some things like a *build server* support doesn't seem like a valid thing to add as atom plugin.
-* There are lots of times when it breakes due to no fault of our own, (but we try to fix it asap). Examples [here](https://github.com/TypeStrong/atom-typescript/issues/596), [here](https://github.com/TypeStrong/atom-typescript/issues/583), [here](https://github.com/TypeStrong/atom-typescript/issues/611#issuecomment-142780859)
-* Also an atom plugin should work *the way you want it to work*. This software will come with its own *strong* opinions to give a consistent workflow.
+* There are lots of times when it breakes due to no fault of our own, (we totally appreciate the effort atom team puts in this but nonetheless). Examples [here](https://github.com/TypeStrong/atom-typescript/issues/596), [here](https://github.com/TypeStrong/atom-typescript/issues/583), [here](https://github.com/TypeStrong/atom-typescript/issues/611#issuecomment-142780859)
+* Also an atom *plugin* should work *the way you want it to work*. This software will come with its own *strong* opinions to give a consistent workflow.
