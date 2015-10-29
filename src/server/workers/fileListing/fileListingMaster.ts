@@ -1,7 +1,6 @@
 import * as sw from "../../utils/simpleWorker";
 import * as contract from "./fileListingContract";
 
-import * as socketServer from "../../../socket/socketServer";
 import {TypedEvent} from "../../../common/events";
 import * as workingDir from "../../disk/workingDir";
 
@@ -14,11 +13,9 @@ namespace Master {
             num: ++q.num
         });
     }
+    /** warning, this function is named differently from the event filePathsUpdated for a reason */
     export var fileListUpdated: typeof contract.master.fileListUpdated = (q) => {
-
-        socketServer.cast.fileListUpdated.emit({ relativeFilePaths: q.relativeFilePaths });
-
-        let filePaths = q.relativeFilePaths.map(rfp => workingDir.makeAbsolute(rfp));
+        let filePaths =  q.relativeFilePaths.map(rfp => workingDir.makeAbsolute(rfp));
         filePathsUpdated.emit({ filePaths });
 
         return Promise.resolve({});

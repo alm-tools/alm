@@ -23,8 +23,8 @@ namespace Server {
         });
     }
 
-    export var fileList: typeof contract.server.fileList = (data) => {
-        return flm.worker.fileList({ directory: workingDir.getProjectRoot() });
+    export var filePaths: typeof contract.server.filePaths = (data) => {
+        return flm.filePathsUpdated.current();
     }
 
     export var makeAbsolute: typeof contract.server.makeAbsolute = (data) => {
@@ -105,6 +105,7 @@ export function register(app: http.Server) {
     fmc.didEdit.pipe(cast.didEdit);
     fmc.didStatusChange.pipe(cast.didStatusChange);
 
+    flm.filePathsUpdated.pipe(cast.filePathsUpdated);
 
     errorCache.errorsUpdated.pipe(cast.errorsUpdated);
     activeProject.currentTsbContents.pipe(cast.currentTsbContentsUpdated);

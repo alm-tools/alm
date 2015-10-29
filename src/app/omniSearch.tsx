@@ -22,7 +22,7 @@ export interface State {
 
 @ui.Radium
 export class OmniSearch extends BaseComponent<Props, State>{
-    relativeFilePaths: string[] = [];
+    filePaths: string[] = [];
     /** Because doing this in render is slow */
     filteredResults: string[] = [];
 
@@ -49,14 +49,14 @@ export class OmniSearch extends BaseComponent<Props, State>{
     }
 
     componentDidMount() {
-        server.fileList({}).then((res) => {
-            this.relativeFilePaths = res.relativeFilePaths;
+        server.filePaths({}).then((res) => {
+            this.filePaths = res.filePaths;
             this.forceUpdate();
         });
 
-        cast.fileListUpdated.on((update) => {
+        cast.filePathsUpdated.on((update) => {
             console.log(update);
-            this.relativeFilePaths = update.relativeFilePaths;
+            this.filePaths = update.filePaths;
             this.forceUpdate();
         });
 
@@ -116,7 +116,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
     };
     onChangeFilter = debounce((e)=>{
         let filterValue = ReactDOM.findDOMNode(this.refs.omniSearchInput).value;
-        this.filteredResults = fuzzyFilter(this.relativeFilePaths, filterValue);
+        this.filteredResults = fuzzyFilter(this.filePaths, filterValue);
         this.filteredResults = this.filteredResults.slice(0,this.maxShowCount);
         this.setState({ filterValue, selectedIndex:0 });
     },50);

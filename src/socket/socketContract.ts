@@ -10,7 +10,7 @@ import {QRFunction, QRServerFunction, TypedEvent} from "../socketLib/socketLib";
  */
 export var server = {
     echo: {} as QRServerFunction<{ text: string, num: number }, { text: string, num: number }, typeof client>,
-    fileList: {} as QRFunction<{}, { relativeFilePaths: string[] }>,
+    filePaths: {} as QRFunction<{}, { filePaths: string[] }>,
     makeAbsolute: {} as QRFunction<{ relativeFilePath: string }, { filePath: string }>,
 
     /**
@@ -48,7 +48,7 @@ export var cast = {
     hello: new TypedEvent<{ text: string }>(),
 
     /** If the file worker notices a change */
-    fileListUpdated: new TypedEvent<{ relativeFilePaths: string[] }>(),
+    filePathsUpdated: new TypedEvent<{ filePaths: string[] }>(),
 
     /** If an open and already saved file changes on disk  */
     savedFileChangedOnDisk: new TypedEvent<{ filePath: string; contents: string }>(),
