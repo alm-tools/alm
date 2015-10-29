@@ -98,9 +98,9 @@ export class FindAndReplace extends BaseComponent<Props, State>{
                 <div style={[csx.horizontal, csx.center, styles.padded1]}>
                     <input ref="find" placeholder="Find" style={[inputBlackStyle, inputCodeStyle, csx.flex]} onKeyDown={this.findKeyDownHandler} onChange={this.findChanged} defaultValue={this.props.findQuery.query}/>
                     <div style={[csx.horizontal, csx.aroundJustified, styles.padded1]}>
-                        <label style={[csx.horizontal,csx.center]}><ui.Toggle/><span style={searchOptionsLabelStyle}>.*</span></label>
-                        <label style={[csx.horizontal,csx.center]}><ui.Toggle/><span style={searchOptionsLabelStyle}>Aa</span></label>
-                        <label style={[csx.horizontal,csx.center]}><ui.Toggle/><span style={searchOptionsLabelStyle}><Icon name="text-width"/></span></label>
+                        <label style={[csx.horizontal,csx.center]}><ui.Toggle onChange={this.handleRegexChange}/><span style={searchOptionsLabelStyle}>.*</span></label>
+                        <label style={[csx.horizontal,csx.center]}><ui.Toggle onChange={this.handleCaseSensitiveChange}/><span style={searchOptionsLabelStyle}>Aa</span></label>
+                        <label style={[csx.horizontal,csx.center]}><ui.Toggle onChange={this.handleFullWordChange}/><span style={searchOptionsLabelStyle}><Icon name="text-width"/></span></label>
                     </div>
                 </div>
                 <div style={[csx.horizontal, csx.center, styles.padded1]}>
@@ -163,4 +163,17 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         let val = this.findInput().value;
         state.setFindOptionsQuery(val)
     },200);
+
+    handleRegexChange = (e) => {
+        let val: boolean = e.target.checked;
+        state.setFindOptionsIsRegex(val);
+    }
+    handleCaseSensitiveChange = (e) => {
+        let val: boolean = e.target.checked;
+        state.setFindOptionsIsCaseSensitive(val);
+    }
+    handleFullWordChange = (e) => {
+        let val: boolean = e.target.checked;
+        state.setFindOptionsIsFullWord(val);
+    }
 }
