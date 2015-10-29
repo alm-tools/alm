@@ -104,16 +104,22 @@ export class FindAndReplace extends BaseComponent<Props, State>{
 
         return (
             <div style={[csx.vertical,shownStyle]}>
-                <div style={[csx.horizontal, csx.center, styles.padded1]}>
-                    <input tabIndex={1} ref="find" placeholder="Find" style={[inputBlackStyle, inputCodeStyle, csx.flex]} onKeyDown={this.findKeyDownHandler} onChange={this.findChanged} defaultValue={this.props.findQuery.query}/>
-                    <div style={[csx.horizontal, csx.aroundJustified, styles.padded1]}>
-                        <label style={[csx.horizontal,csx.center]}><ui.Toggle tabIndex={3} ref="regex" onChange={this.handleRegexChange}/><span style={searchOptionsLabelStyle}>.*</span></label>
-                        <label style={[csx.horizontal,csx.center]}><ui.Toggle tabIndex={4} ref="caseInsensitive" onChange={this.handleCaseSensitiveChange}/><span style={searchOptionsLabelStyle}>Aa</span></label>
-                        <label style={[csx.horizontal,csx.center]}><ui.Toggle tabIndex={5} ref="fullWord" onKeyDown={this.fullWordKeyDownHandler} onChange={this.handleFullWordChange}/><span style={searchOptionsLabelStyle}><Icon name="text-width"/></span></label>
+                <div style={[csx.horizontal,shownStyle]}>
+                    <div style={[csx.flex, csx.vertical]}>
+                        <div style={[csx.horizontal, csx.center, styles.padded1]}>
+                            <input tabIndex={1} ref="find" placeholder="Find" style={[inputBlackStyle, inputCodeStyle, csx.flex]} onKeyDown={this.findKeyDownHandler} onChange={this.findChanged} defaultValue={this.props.findQuery.query}/>
+                        </div>
+                        <div style={[csx.horizontal, csx.center, styles.padded1]}>
+                            <input tabIndex={2} ref="replace" placeholder="Replace" style={[inputBlackStyle, inputCodeStyle, csx.flex]} onKeyDown={this.replaceKeyDownHandler} />
+                        </div>
                     </div>
-                </div>
-                <div style={[csx.horizontal, csx.center, styles.padded1]}>
-                    <input tabIndex={2} ref="replace" placeholder="Replace" style={[inputBlackStyle, inputCodeStyle, csx.flex]} onKeyDown={this.replaceKeyDownHandler} />
+                    <div style={[csx.centerCenter]}>
+                        <div style={[csx.horizontal, csx.aroundJustified, styles.padded1]}>
+                            <label style={[csx.horizontal,csx.center]}><ui.Toggle tabIndex={3} ref="regex" onChange={this.handleRegexChange}/><span style={searchOptionsLabelStyle}>.*</span></label>
+                            <label style={[csx.horizontal,csx.center]}><ui.Toggle tabIndex={4} ref="caseInsensitive" onChange={this.handleCaseSensitiveChange}/><span style={searchOptionsLabelStyle}>Aa</span></label>
+                            <label style={[csx.horizontal,csx.center]}><ui.Toggle tabIndex={5} ref="fullWord" onKeyDown={this.fullWordKeyDownHandler} onChange={this.handleFullWordChange}/><span style={searchOptionsLabelStyle}><Icon name="text-width"/></span></label>
+                        </div>
+                    </div>
                 </div>
                 <div style={[tipMessageStyle,styles.padded1]}>
                     <span style={keyboardShortCutStyle}>Esc</span> to exit
