@@ -1,7 +1,7 @@
 {
   "name": "tsb",
-  "version": "1.0.1",
-  "description": "Programmer's Editor",
+  "version": "1.0.2",
+  "description": "The best TypeScript development environment",
   "main": "src/server.js",
   "bin": {
     "tsb": "./src/server.js"
