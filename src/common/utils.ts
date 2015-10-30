@@ -96,9 +96,10 @@ export function getDirectory(filePath: string): string {
 
 /** Folder + filename only e.g. `/asdf/something/tsconfig.json` => `something/tsconfig.json` */
 export function getFolderAndFileName(filePath:string): string {
-    let directory = getDirectory(filePath);
+    let directoryPath = getDirectory(filePath);
+    let directoryName = getFileName(directoryPath);
     let fileName = getFileName(filePath);
-    return `${directory}/${fileName}`;
+    return `${directoryName}/${fileName}`;
 }
 
 /**
