@@ -36,6 +36,7 @@ interface ErrorsByFilePath {
 
 interface ActiveProjectConfigDetails {
     name: string;
+    isImplicit: boolean;
     tsconfigFilePath?: string;
 }
 

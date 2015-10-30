@@ -45,6 +45,7 @@ function refreshAvailableProjects() {
         let projectConfigs: ActiveProjectConfigDetails[] = tsconfigs.map(tsconfig=> {
             return {
                 name: utils.getFolderAndFileName(tsconfig),
+                isImplicit: false,
                 tsconfigFilePath: tsconfig
             };
         });
@@ -52,7 +53,8 @@ function refreshAvailableProjects() {
         // If no tsconfigs add an implicit one!
         if (projectConfigs.length == 0) {
             projectConfigs.push({
-                name: implicitProjectName
+                name: implicitProjectName,
+                isImplicit: true,
             });
         };
 
@@ -88,6 +90,11 @@ export function sync() {
         currentProject = null;
         let configFileDetails = ConfigFile.getConfigFileFromDiskOrInMemory(projectConfig)
         currentProject = ConfigFile.createProjectFromConfigFile(configFileDetails);
+
+        // If we made it up to here ... means the config file was good :)
+        if (!projectConfig.isImplicit) {
+            clearErrorsForFilePath(projectConfig.tsconfigFilePath);
+        }
 
         // Set the active project (the project we get returned might not be from the active project name)
         if (activeProjectName !== projectConfig.name) {
@@ -176,9 +183,6 @@ namespace ConfigFile {
                 project.languageServiceHost.updateScript(fileModel.config.filePath, fileModel.getContents());
             }
         });
-
-        // Make sure have the file open aka. watched
-        fmc.getOrCreateOpenFile(configFile.projectFilePath);
 
         return project;
     }

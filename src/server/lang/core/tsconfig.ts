@@ -1,4 +1,11 @@
+/**
+ * BIG CHANGES
+ * - this uses fmc (allows us to read file in memory that user might be editing)
+ */
+import * as fmc from "../../disk/fileModelCache";
+
 import * as fsu from "../../utils/fsu";
+import fs = require('fs');
 import ts = require('ntypescript');
 import * as json from "../../../common/json";
 import {makeBlandError} from "../../../common/utils";
@@ -180,7 +187,6 @@ function errorWithDetails(error: Error, details: ProjectFileErrorDetails): Error
     return error;
 }
 
-import fs = require('fs');
 import path = require('path');
 import expand = require('glob-expand');
 import os = require('os');
@@ -330,7 +336,7 @@ export function getDefaultInMemoryProject(srcFile: string): TypeScriptConfigFile
  */
 export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetails {
 
-    if (!fs.existsSync(pathOrSrcFile)) {
+    if (!fsu.existsSync(pathOrSrcFile)) {
         throw new Error(errors.GET_PROJECT_INVALID_PATH);
     }
 
@@ -357,7 +363,7 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
     // We now have a valid projectFile. Parse it:
     var projectSpec: TypeScriptProjectRawSpecification;
     try {
-        var projectFileTextContent = fs.readFileSync(projectFile, 'utf8');
+        var projectFileTextContent = fmc.getOrCreateOpenFile(projectFile).getContents();
     } catch (ex) {
         throw new Error(errors.GET_PROJECT_FAILED_TO_OPEN_PROJECT_FILE);
     }
@@ -408,7 +414,7 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
         var packagePath = travelUpTheDirectoryTreeTillYouFind(projectFileDirectory, 'package.json');
         if (packagePath) {
             let packageJSONPath = getPotentiallyRelativeFile(projectFileDirectory, packagePath);
-            let parsedPackage = JSON.parse(fs.readFileSync(packageJSONPath).toString());
+            let parsedPackage = JSON.parse(fmc.getOrCreateOpenFile(packageJSONPath).getContents());
             pkg = {
                 main: parsedPackage.main,
                 name: parsedPackage.name,
@@ -514,7 +520,7 @@ function increaseProjectForReferenceAndImports(files: string[]): string[] {
 
         files.forEach(file => {
             try {
-                var content = fs.readFileSync(file).toString();
+                var content = fmc.getOrCreateOpenFile(file).getContents();
             }
             catch (ex) {
                 // if we cannot read a file for whatever reason just quit
@@ -602,7 +608,7 @@ function getDefinitionsForNodeModules(projectDir: string, files: string[]): { ou
     function addAllReferencedFilesWithMaxVersion(file: string) {
         var dir = path.dirname(file);
         try {
-            var content = fs.readFileSync(file).toString();
+            var content = fmc.getOrCreateOpenFile(file).getContents();
         }
         catch (ex) {
             // if we cannot read a file for whatever reason just quit
@@ -641,7 +647,7 @@ function getDefinitionsForNodeModules(projectDir: string, files: string[]): { ou
         var moduleDirs = getDirs(node_modules);
         for (let moduleDir of moduleDirs) {
             try {
-                var package_json = JSON.parse(fs.readFileSync(`${moduleDir}/package.json`).toString());
+                var package_json = JSON.parse(fmc.getOrCreateOpenFile(`${moduleDir}/package.json`).getContents());
                 packagejson.push(`${moduleDir}/package.json`);
             }
             catch (ex) {
