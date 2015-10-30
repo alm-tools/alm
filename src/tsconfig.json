@@ -87,6 +87,7 @@
         "./typings/node/node.d.ts",
         "./typings/open.d.ts",
         "./typings/radium/radium.d.ts",
+        "./typings/react-dom/react-dom.d.ts",
         "./typings/react-redux/react-redux.d.ts",
         "./typings/react/react-addons.d.ts",
         "./typings/react/react.d.ts",

@@ -1,5 +1,5 @@
 import React = require("react");
-var ReactDOM = require("react-dom");
+import ReactDOM = require("react-dom");
 import Radium = require('radium');
 import csx = require('csx');
 import {BaseComponent} from "./ui";
@@ -46,6 +46,8 @@ export class OmniSearch extends BaseComponent<Props, State>{
         [string: string]: any;
         omniSearch: any;
         omniSearchInput: any;
+
+        selected: Element;
     }
 
     componentDidMount() {
@@ -70,6 +72,17 @@ export class OmniSearch extends BaseComponent<Props, State>{
         });
         commands.esc.on(()=>{
             this.closeOmniSearch();
+        });
+    }
+
+    componentDidUpdate() {
+        // get the dom node that is selected
+        // make sure its parent scrolls to make this visible
+        setTimeout(()=>{
+            if (this.refs.selected) {
+                let selectedLater = ReactDOM.findDOMNode(this.refs.selected) as HTMLDivElement;
+                selectedLater.scrollIntoView();
+            }
         });
     }
 
@@ -99,9 +112,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
                     </div>
 
                     <div style={[csx.vertical,csx.flex,{overflow:'auto'}]}>
-                        <div style={[csx.vertical]}>
-                            {fileListRendered}
-                         </div>
+                        {fileListRendered}
                     </div>
                 </div>
         </Modal>
@@ -109,13 +120,13 @@ export class OmniSearch extends BaseComponent<Props, State>{
 
     openOmniSearch = () => {
         this.setState({ isOmniSearchOpen: true });
-        ReactDOM.findDOMNode(this.refs.omniSearchInput).focus();
+        (ReactDOM.findDOMNode(this.refs.omniSearchInput) as HTMLInputElement).focus();
     };
     closeOmniSearch = ()=>{
         this.setState({ isOmniSearchOpen: false, filterValue: '' });
     };
     onChangeFilter = debounce((e)=>{
-        let filterValue = ReactDOM.findDOMNode(this.refs.omniSearchInput).value;
+        let filterValue = (ReactDOM.findDOMNode(this.refs.omniSearchInput) as HTMLInputElement).value;
         this.filteredResults = fuzzyFilter(this.filePaths, filterValue);
         this.filteredResults = this.filteredResults.slice(0,this.maxShowCount);
         this.setState({ filterValue, selectedIndex:0 });
@@ -156,11 +167,13 @@ export class OmniSearch extends BaseComponent<Props, State>{
         let renderedFileName = renderMatchedSegments(getFileName(result), query);
 
         let selectedStyle = selected ? {
-            background: 'grey',
+            background: '#545454',
             color: 'white'
         } : {};
+
+        let ref = selected && "selected";
         return (
-            <div key={result} style={[selectedStyle,styles.padded2,styles.hand]} onClick={()=>this.selectIndex(index)}>
+            <div key={result} style={[selectedStyle,styles.padded2,styles.hand]} onClick={()=>this.selectIndex(index)} ref={ref}>
                 <div>{renderedFileName}</div>
                 {renderedPath}
             </div>

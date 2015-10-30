@@ -105,7 +105,7 @@ export class SelectListView extends BaseComponent<Props, State>{
             // key = i
             let selected = selectedIndex === i;
             let selectedStyle = selected ? {
-                background: 'grey',
+                background: '#545454',
                 color: 'white'
             } : {};
             return (
