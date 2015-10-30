@@ -19,7 +19,6 @@ import {server} from "../../socket/socketClient";
 import {rangeLimited} from "../../common/utils";
 import {statusBar} from "../statusBar";
 
-import {setCurrentFilePath, setInActiveProject, StoreState} from "../state/state";
 import * as state from "../state/state";
 import * as types from "../../common/types";
 import {connect} from "react-redux";
@@ -37,7 +36,7 @@ export interface State {
     tabs?: tab.TabInstance[];
 }
 
-@connect((state: StoreState): Props => {
+@connect((state: state.StoreState): Props => {
     return { errorsExpanded: state.errorsExpanded };
 })
 @ui.Radium
@@ -312,7 +311,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             }
         }
         else {
-            setCurrentFilePath('');
+            state.setCurrentFilePath('');
             state.setInActiveProject(types.TriState.Unknown);
         }
     }
@@ -325,7 +324,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
     closeTab(index: number) {
         // Always clear the status bar
-        setCurrentFilePath('');
+        state.setCurrentFilePath('');
         state.setInActiveProject(types.TriState.Unknown);
 
         // If no tabs
