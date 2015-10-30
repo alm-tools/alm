@@ -45,6 +45,15 @@ require('react-toggle/style.css')
  */
 import toastr = require("toastr");
 require('toastr/build/toastr.css');
-export function notifyQuickDisappear(message: string) {
+export function notifyInfoQuickDisappear(message: string) {
     toastr.info(message, null, { timeOut: 600 });
+}
+export function notifyInfoNormalDisappear(message: string) {
+    toastr.info(message);
+}
+export function notifyWarningNormalDisappear(message: string) {
+    toastr.warning(message);
+}
+export function notifySuccessNormalDisappear(message: string){
+    toastr.success(message);
 }

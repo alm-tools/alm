@@ -98,8 +98,17 @@ export class StatusBar extends BaseComponent<Props, State>{
             ? ''
             : <span style={styles.statusBarSection}>
                 {this.props.inActiveProject == types.TriState.True
-                    ?<span style={csx.extend(styles.noSelect,styles.statusBarSuccess)} title="File is part of the currently active project. Robots providing code intelligence."><Icon name="eye"/></span>
-                    :<span style={csx.extend(styles.noSelect,styles.statusBarError)} title="File is not a part of the currently active project. Robots deactivated."><Icon name="eye-slash"/></span>}
+                    ?<span style={csx.extend(styles.noSelect,styles.statusBarSuccess, styles.hand)}
+                        onClick={()=>ui.notifySuccessNormalDisappear("The file is a part of the currently active TypeScript project and we are actively providing code intelligence")}
+                        title="File is part of the currently active project. Robots providing code intelligence.">
+                        <Icon name="eye"/>
+                     </span>
+                    :<span
+                        style={csx.extend(styles.noSelect,styles.statusBarError,styles.hand)}
+                        onClick={()=>ui.notifyWarningNormalDisappear("The file is not a part of the currently active TypeScript project")}
+                        title="File is not a part of the currently active project. Robots deactivated.">
+                            <Icon name="eye-slash"/>
+                     </span>}
             </span>
         return (
             <div>
@@ -119,7 +128,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                         ?<span
                             title="Click to copy"
                             data-clipboard-text={this.props.currentFilePath}
-                            onClick={()=>ui.notifyQuickDisappear("File path copied to clipboard")}
+                            onClick={()=>ui.notifyInfoQuickDisappear("File path copied to clipboard")}
                             style={csx.extend(styles.statusBarSection,styles.noSelect,styles.hand)}>
                                 {this.props.currentFilePath}
                         </span>
