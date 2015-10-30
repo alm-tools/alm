@@ -80,8 +80,8 @@ export class OmniSearch extends BaseComponent<Props, State>{
         // make sure its parent scrolls to make this visible
         setTimeout(()=>{
             if (this.refs.selected) {
-                let selectedLater = ReactDOM.findDOMNode(this.refs.selected) as HTMLDivElement;
-                selectedLater.scrollIntoView();
+                let selected = ReactDOM.findDOMNode(this.refs.selected) as HTMLDivElement;
+                selected.scrollIntoViewIfNeeded(false);
             }
         });
     }
