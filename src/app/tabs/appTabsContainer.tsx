@@ -201,13 +201,18 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         let titles = this.state.tabs.map((t, i) =>{
             var style = [tabHeader.base, i == selectedIndex ? tabHeaderActive : {}];
 
+            let titleClose = (event:React.SyntheticEvent) => {
+                this.closeTab(i);
+                event.stopPropagation();
+            };
+
             let title: JSX.Element;
             if (!t.saved){
                 style.push(tabHeaderUnsaved);
-                title = <span>{t.title} <Icon name="times" onClick={()=>this.closeTab(i)}/></span>
+                title = <span>{t.title} <Icon name="times" onClick={titleClose}/></span>
             }
             else {
-                title = <span>{t.title} <Icon name="times" onClick={()=>this.closeTab(i)}/></span>;
+                title = <span>{t.title} <Icon name="times" onClick={titleClose}/></span>;
             }
             return <span
                 key={`tabHeader ${i}`}
