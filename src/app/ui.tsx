@@ -6,6 +6,7 @@ export import Radium = require('radium');
 export import csx = require('csx');
 import * as theme from "./styles/theme";
 import {CompositeDisposible} from "../common/events";
+export import $ = require("jquery");
 
 
 export class BaseComponent<Props, State> extends React.Component<Props, State>{
