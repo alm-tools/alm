@@ -34,7 +34,7 @@ interface ErrorsByFilePath {
     [filePath: string]: CodeError[]
 }
 
-interface ProjectConfigDetails {
+interface ActiveProjectConfigDetails {
     name: string;
     tsconfigFilePath?: string;
 }

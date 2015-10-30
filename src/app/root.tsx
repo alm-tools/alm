@@ -50,7 +50,7 @@ export class Root extends ui.BaseComponent<{}, State>{
         sb.statusBar = this.refs.statusBar;
         slv.selectListView = this.refs.selectListView;
 
-        let availableProjects: ProjectConfigDetails[] = [];
+        let availableProjects: ActiveProjectConfigDetails[] = [];
         server.availableProjects({}).then(res => {
             availableProjects = res;
         });
@@ -59,7 +59,7 @@ export class Root extends ui.BaseComponent<{}, State>{
         });
 
         commands.doSelectProject.on(()=>{
-            this.refs.selectListView.show<ProjectConfigDetails>({
+            this.refs.selectListView.show<ActiveProjectConfigDetails>({
                 header: 'Select the active project',
                 data: availableProjects,
                 render: (d,highlitedText) => <div>{highlitedText}</div>,

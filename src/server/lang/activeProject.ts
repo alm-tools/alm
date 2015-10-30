@@ -30,7 +30,7 @@ let implicitProjectName = "__auto__";
 let currentProject: project.Project = null;
 
 /** All the available projects */
-export let availableProjects = new TypedEvent<ProjectConfigDetails[]>();
+export let availableProjects = new TypedEvent<ActiveProjectConfigDetails[]>();
 function refreshAvailableProjects() {
     return flm.filePathsUpdated.current().then((list) => {
         // Detect some tsconfig.json
@@ -42,7 +42,7 @@ function refreshAvailableProjects() {
             return a.length - b.length;
         });
 
-        let projectConfigs: ProjectConfigDetails[] = tsconfigs.map(tsconfig=> {
+        let projectConfigs: ActiveProjectConfigDetails[] = tsconfigs.map(tsconfig=> {
             return {
                 name: utils.getFolderAndFileName(tsconfig),
                 tsconfigFilePath: tsconfig
@@ -234,7 +234,7 @@ namespace ConfigFile {
      * This explicilty loads the project from the filesystem
      * For (lib.d.ts) and other (.d.ts files where project is not found) creation is done in memory
      */
-    export function getConfigFileFromDiskOrInMemory(config: ProjectConfigDetails): tsconfig.TypeScriptConfigFileDetails {
+    export function getConfigFileFromDiskOrInMemory(config: ActiveProjectConfigDetails): tsconfig.TypeScriptConfigFileDetails {
         if (!config.tsconfigFilePath) {
             // TODO: THIS isn't RIGHT ...
             // as this function is designed to work *from a single source file*.

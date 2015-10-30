@@ -24,7 +24,7 @@ export var server = {
     /**
      * config stuff
      */
-    availableProjects: {} as QRFunction<{}, ProjectConfigDetails[]>,
+    availableProjects: {} as QRFunction<{}, ActiveProjectConfigDetails[]>,
     getActiveProjectName: {} as QRFunction<{}, {name:string}>,
     setActiveProjectName: {} as QRFunction<{name:string}, {}>,
     isFilePathInActiveProject: {} as QRFunction<{ filePath: string }, { inActiveProject: boolean }>,
@@ -64,7 +64,7 @@ export var cast = {
     errorsUpdated: new TypedEvent<ErrorsByFilePath>(),
 
     /** Tsb updated */
-    availableProjectsUpdated: new TypedEvent<ProjectConfigDetails[]>(),
+    availableProjectsUpdated: new TypedEvent<ActiveProjectConfigDetails[]>(),
 
     /** Active project name updated */
     activeProjectNameUpdated: new TypedEvent<{activeProjectName: string}>(),
