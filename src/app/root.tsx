@@ -50,7 +50,7 @@ export class Root extends ui.BaseComponent<{}, State>{
         sb.statusBar = this.refs.statusBar;
         slv.selectListView = this.refs.selectListView;
 
-        let availableProjects: ProjectConfigDetails[];
+        let availableProjects: ProjectConfigDetails[] = [];
         server.availableProjects({}).then(res => {
             availableProjects = res;
         });
