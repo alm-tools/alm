@@ -8,6 +8,7 @@ var ReactDOM = require("react-dom");
 import { Provider } from 'react-redux';
 import * as state from "./state/state";
 import {store} from "./state/state";
+import * as ui from "./ui";
 
 import {server, cast, pendingRequestsChanged} from "../socket/socketClient";
 var Modal = require('react-modal');
