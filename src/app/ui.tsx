@@ -8,7 +8,7 @@ import * as theme from "./styles/theme";
 import {CompositeDisposible} from "../common/events";
 export import $ = require("jquery");
 
-
+/** The base component that provides and easy access point for overall app behaviour changes */
 export class BaseComponent<Props, State> extends React.Component<Props, State>{
     disposible = new CompositeDisposible();
     componentWillUnmount() {
