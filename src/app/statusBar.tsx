@@ -98,7 +98,7 @@ export class StatusBar extends BaseComponent<Props, State>{
             ? ''
             : <span style={styles.statusBarSection}>
                 {this.props.inActiveProject == types.TriState.True
-                    ?<span style={csx.extend(styles.noSelect)} title="File is part of the currently active project. Robots providing code intelligence."><Icon name="eye"/></span>
+                    ?<span style={csx.extend(styles.noSelect,styles.statusBarSuccess)} title="File is part of the currently active project. Robots providing code intelligence."><Icon name="eye"/></span>
                     :<span style={csx.extend(styles.noSelect,styles.statusBarError)} title="File is not a part of the currently active project. Robots deactivated."><Icon name="eye-slash"/></span>}
             </span>
         return (
@@ -110,8 +110,11 @@ export class StatusBar extends BaseComponent<Props, State>{
                 </ui.VelocityTransitionGroup>
                 <div style={csx.extend(styles.statusBar,csx.horizontal,csx.center)}>
                     {/* Left sections */}
-                    <span style={csx.extend(styles.statusBarSection, styles.noSelect)} title="Here have a rose. Because you deserve it 🌹">🌹</span>
+                    <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)} onClick={this.toggleErrors} title={`${errorCount} errors. Click to toggle error panel.`}>
+                        <span style={csx.extend(errorCount?styles.statusBarError:styles.statusBarSuccess,{transition: 'color .4s'})}>{errorCount} <Icon name="times-circle"/></span>
+                    </span>             
                     {this.props.activeProject?<span style={csx.extend(styles.statusBarSection)}>{this.props.activeProject}</span>:''}
+                    {inActiveProjectSection}
                     {this.props.currentFilePath
                         ?<span
                             title="Click to copy"
@@ -120,17 +123,14 @@ export class StatusBar extends BaseComponent<Props, State>{
                                 {this.props.currentFilePath}
                         </span>
                         :''}
-                    {inActiveProjectSection}
+
 
                     {/* seperator */}
                     <span style={csx.flex}></span>
 
                     {/* Right sections */}
                     <PendingRequestsIndicator />
-                    <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)} onClick={this.toggleErrors} title={`${errorCount} errors. Click to toggle error panel.`}>
-                        <span style={csx.extend(errorCount?styles.statusBarError:styles.statusBarSuccess,{transition: 'color .4s'})}>{errorCount} <Icon name="times-circle"/></span>
-                    </span>
-
+                    <span style={csx.extend(styles.statusBarSection, styles.noSelect)} title="Here have a rose. Because you deserve it 🌹">🌹</span>
                 </div>
             </div>
         );

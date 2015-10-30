@@ -66,6 +66,7 @@ export class Root extends ui.BaseComponent<{}, State>{
                 textify: (d) => d.name,
                 onSelect: (d) => {
                     server.setActiveProjectName({ name: d.name });
+                    state.setActiveProject(d.name);
                     state.setInActiveProject(types.TriState.Unknown);
                 }
             });
