@@ -25,6 +25,7 @@ import * as types from "../../common/types";
 import {connect} from "react-redux";
 import * as styles from "../styles/styles";
 import {Tips} from "./tips";
+import {Icon} from "../icon";
 import {cast} from "../../socket/socketClient";
 
 export interface Props extends React.Props<any> {
@@ -199,10 +200,15 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         let selectedIndex = this.state.selected;
 
         let titles = this.state.tabs.map((t, i) =>{
-            let title = t.title;
             var style = [tabHeader.base, i == selectedIndex ? tabHeaderActive : {}];
+
+            let title: JSX.Element;
             if (!t.saved){
                 style.push(tabHeaderUnsaved);
+                title = <span>{t.title} <Icon name="times" onClick={()=>this.closeTab(i)}/></span>
+            }
+            else {
+                title = <span>{t.title} <Icon name="times" onClick={()=>this.closeTab(i)}/></span>;
             }
             return <span
                 key={`tabHeader ${i}`}

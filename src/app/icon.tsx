@@ -4,7 +4,7 @@ import csx = require('csx');
 import {BaseComponent} from "./ui";
 import * as ui from "./ui";
 
-export interface Props extends React.Props<any> {
+export interface Props extends React.DOMAttributes {
     name: string;
     size?: string; // 1g,2x,3x,4x,5x
     rotate?: string; // '45', '90', '135', '180', '225', '270', '315'
@@ -29,6 +29,7 @@ export class Icon extends BaseComponent<Props, State>{
             name, size, rotate, flip, spin, fixedWidth, stack, inverse,
             pulse, className, style
         } = this.props;
+        let props:any = this.props;
         let classNames = `fa fa-${name}`;
         if (size) {
             classNames = `${classNames} fa-${size}`;
@@ -60,7 +61,7 @@ export class Icon extends BaseComponent<Props, State>{
         }
 
         return (
-            <i className={classNames} style={style}></i>
+            <i className={classNames} style={style} {...props}></i>
         );
     }
 }
