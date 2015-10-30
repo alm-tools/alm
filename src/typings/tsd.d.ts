@@ -17,3 +17,4 @@
 /// <reference path="codemirror/codemirror.d.ts" />
 /// <reference path="codemirror/codemirror-showhint.d.ts" />
 /// <reference path="redux/redux.d.ts" />
+/// <reference path="react-dom/react-dom.d.ts" />
