@@ -5,7 +5,7 @@
  */
 
 import * as activeProject from "./activeProject";
-let getProject = activeProject.getProjectIfCurrentOrErrorOut;
+let getProject = activeProject.GetProject.ifCurrentOrErrorOut;
 
 import {Types} from "../../socket/socketContract";
 

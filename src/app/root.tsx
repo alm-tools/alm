@@ -50,18 +50,18 @@ export class Root extends ui.BaseComponent<{}, State>{
         sb.statusBar = this.refs.statusBar;
         slv.selectListView = this.refs.selectListView;
 
-        let tsb:{projects:ProjectJson[]};
-        server.currentTsbContents({}).then(res => {
-            tsb = res;
+        let availableProjects: ProjectConfigDetails[];
+        server.availableProjects({}).then(res => {
+            availableProjects = res;
         });
-        cast.currentTsbContentsUpdated.on(res => {
-            tsb = res;
+        cast.availableProjectsUpdated.on(res => {
+            availableProjects = res;
         });
-        
+
         commands.doSelectProject.on(()=>{
-            this.refs.selectListView.show<ProjectJson>({
+            this.refs.selectListView.show<ProjectConfigDetails>({
                 header: 'Select the active project',
-                data: tsb.projects,
+                data: availableProjects,
                 render: (d,highlitedText) => <div>{highlitedText}</div>,
                 textify: (d) => d.name,
                 onSelect: (d) => {

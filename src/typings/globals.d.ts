@@ -34,15 +34,10 @@ interface ErrorsByFilePath {
     [filePath: string]: CodeError[]
 }
 
-/** Config as read from tsb.json */
-interface ProjectJson {
+interface ProjectConfigDetails {
     name: string;
-    /**
-     * Full path to tsconfig.json (including file name)
-     */
-    tsconfig: string;
+    tsconfigFilePath?: string;
 }
-
 
 /**
  * Session related types

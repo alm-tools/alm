@@ -58,17 +58,24 @@ namespace Server {
     /**
      * Config stuff
      */
-    export var currentTsbContents: typeof contract.server.currentTsbContents = (data) => {
-        return activeProject.currentTsbContents.current();
+    export var availableProjects: typeof contract.server.availableProjects = (data) => {
+        return activeProject.availableProjects.current();
+    };
+    export var getActiveProjectName: typeof contract.server.getActiveProjectName = (data) => {
+        return activeProject.activeProjectNameUpdated.current().then((res)=>{
+            return {
+                name: res.activeProjectName
+            };
+        });
     };
     export var setActiveProjectName: typeof contract.server.setActiveProjectName = (data) => {
         activeProject.setActiveProjectName(data.name);
         return resolve({});
-    }
+    };
     export var isFilePathInActiveProject: typeof contract.server.isFilePathInActiveProject = (data) => {
-        let inActiveProject = !!activeProject.getProjectIfCurrent(data.filePath);
+        let inActiveProject = !!activeProject.GetProject.ifCurrent(data.filePath);
         return resolve({inActiveProject});
-    }
+    };
 
 
     /**
@@ -108,7 +115,7 @@ export function register(app: http.Server) {
     flm.filePathsUpdated.pipe(cast.filePathsUpdated);
 
     errorCache.errorsUpdated.pipe(cast.errorsUpdated);
-    activeProject.currentTsbContents.pipe(cast.currentTsbContentsUpdated);
+    activeProject.availableProjects.pipe(cast.availableProjectsUpdated);
     activeProject.activeProjectNameUpdated.pipe(cast.activeProjectNameUpdated);
 
     // For testing

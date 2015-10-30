@@ -3,5 +3,5 @@ import * as ap from "./lang/activeProject";
 
 export function started() {
     flm.start();
-    ap.startWatchingIfNotDoingAlready();
+    ap.start();
 }
