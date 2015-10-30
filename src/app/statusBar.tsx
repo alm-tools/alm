@@ -70,7 +70,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                     let errors =
                         this.props.errorsByFilePath[filePath]
                             .map((e, j) => (
-                                <div key={`${i}:${j}`} style={[styles.hand, styles.errorsPanel.errorDetailsContainer]} onClick={()=>this.openFile(filePath,e)}>
+                                <div key={`${i}:${j}`} style={[styles.hand, styles.errorsPanel.errorDetailsContainer]} onClick={()=>this.openErrorLocation(e)}>
                                     <div style={styles.errorsPanel.errorDetailsContent}>
                                         <div style={styles.errorsPanel.errorMessage}>
                                             🐛({e.from.line+1}:{e.from.ch+1}) {e.message}
@@ -82,7 +82,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                             ));
 
                     return <div key={i}>
-                        <div style={styles.errorsPanel.filePath} onClick={()=>this.openFile(filePath,this.props.errorsByFilePath[filePath][0])}>{filePath}</div>
+                        <div style={styles.errorsPanel.filePath} onClick={()=>this.openErrorLocation(this.props.errorsByFilePath[filePath][0])}>{filePath}</div>
 
                         <div style={styles.errorsPanel.perFileList}>
                             {errors}
@@ -122,7 +122,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                     <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)} onClick={this.toggleErrors} title={`${errorCount} errors. Click to toggle error panel.`}>
                         <span style={csx.extend(errorCount?styles.statusBarError:styles.statusBarSuccess,{transition: 'color .4s'})}>{errorCount} <Icon name="times-circle"/></span>
                     </span>
-                    {this.props.activeProject?<span style={csx.extend(styles.statusBarSection)}>{this.props.activeProject}</span>:''}
+                    {this.props.activeProject?<span style={csx.extend(styles.statusBarSection, styles.hand)} onClick={()=>this.openFile(this.props.activeProject)}>{this.props.activeProject}</span>:''}
                     {inActiveProjectSection}
                     {this.props.currentFilePath
                         ?<span
@@ -155,8 +155,12 @@ export class StatusBar extends BaseComponent<Props, State>{
         }
     }
 
-    openFile = (filePath: string, error: CodeError) => {
-        commands.doOpenOrFocusFile.emit({ filePath: filePath, position: error.from });
+    openErrorLocation = (error: CodeError) => {
+        commands.doOpenOrFocusFile.emit({ filePath: error.filePath, position: error.from });
+    }
+
+    openFile = (filePath: string) => {
+        commands.doOpenOrFocusFile.emit({ filePath });
     }
 
     giveRose = () => {
