@@ -112,7 +112,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                     {/* Left sections */}
                     <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)} onClick={this.toggleErrors} title={`${errorCount} errors. Click to toggle error panel.`}>
                         <span style={csx.extend(errorCount?styles.statusBarError:styles.statusBarSuccess,{transition: 'color .4s'})}>{errorCount} <Icon name="times-circle"/></span>
-                    </span>             
+                    </span>
                     {this.props.activeProject?<span style={csx.extend(styles.statusBarSection)}>{this.props.activeProject}</span>:''}
                     {inActiveProjectSection}
                     {this.props.currentFilePath
@@ -130,7 +130,7 @@ export class StatusBar extends BaseComponent<Props, State>{
 
                     {/* Right sections */}
                     <PendingRequestsIndicator />
-                    <span style={csx.extend(styles.statusBarSection, styles.noSelect)} title="Here have a rose. Because you deserve it 🌹">🌹</span>
+                    <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)} onClick={this.giveRose} title="Your stars and tweets keep this rose alive 🌹">🌹</span>
                 </div>
             </div>
         );
@@ -147,5 +147,9 @@ export class StatusBar extends BaseComponent<Props, State>{
 
     openFile = (filePath: string, error: CodeError) => {
         commands.doOpenOrFocusFile.emit({ filePath: filePath, position: error.from });
+    }
+
+    giveRose = () => {
+        window.open('https://twitter.com/basarat')
     }
 }
