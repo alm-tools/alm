@@ -135,6 +135,11 @@ fmc.didEdit.on((evt) => {
         // After a while update all project diagnostics as well
         refreshAllProjectDiagnostics();
     }
+
+    // Also watch edits to the current config file
+    if (utils.getFolderAndFileName(evt.filePath) == activeProjectName){
+        sync();
+    }
 });
 
 /**
@@ -172,7 +177,8 @@ namespace ConfigFile {
             }
         });
 
-        watchProjectFileIfNotDoingItAlready(configFile.projectFilePath);
+        // Make sure have the file open aka. watched
+        fmc.getOrCreateOpenFile(configFile.projectFilePath);
 
         return project;
     }
@@ -191,42 +197,6 @@ namespace ConfigFile {
         else {
             setErrorsByFilePaths([filePath], [makeBlandError(filePath, `${ex.message}`)]);
         }
-        // Watch this project file to see if user fixes errors
-        watchProjectFileIfNotDoingItAlready(filePath);
-    }
-
-    /**
-     * Project file watching
-     */
-    var watchingProjectFile: { [projectFilePath: string]: boolean } = {}
-    function watchProjectFileIfNotDoingItAlready(projectFilePath: string) {
-
-        // Don't watch lib.d.ts and other
-        // projects that are "in memory" only
-        if (!fs.existsSync(projectFilePath)) {
-            return;
-        }
-
-        if (watchingProjectFile[projectFilePath]) return; // Only watch once
-        watchingProjectFile[projectFilePath] = true;
-
-        fs.watch(projectFilePath, { persistent: false }, () => {
-            // if file no longer exists
-            if (!fs.existsSync(projectFilePath)) {
-                return;
-            }
-
-            // if not the active project
-            if (!currentProject || !currentProject.configFile || !currentProject.configFile.projectFilePath) {
-                return;
-            }
-            if (projectFilePath !== currentProject.configFile.projectFilePath) {
-                return;
-            }
-
-            // Reload the project file from the file system and re cache it
-            setActiveProjectName(activeProjectName);
-        });
     }
 
 
