@@ -208,8 +208,10 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
 
     private _setCodemirrorValue: string;
     setValue(value: string, clearHistory = false){
+        let cursor = this.codeMirror.getDoc().getCursor();
         this._setCodemirrorValue = value;
         this.codeMirror.getDoc().setValue(value);
+        this.codeMirror.getDoc().setCursor(cursor);
 
         if (clearHistory) {
             this.codeMirror.getDoc().clearHistory();
