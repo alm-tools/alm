@@ -7,8 +7,6 @@ export import csx = require('csx');
 import * as theme from "./styles/theme";
 import {CompositeDisposible} from "../common/events";
 export import $ = require("jquery");
-export import notify = require("toastr");
-require('toastr/build/toastr.css');
 
 /** The base component that provides and easy access point for overall app behaviour changes */
 export class BaseComponent<Props, State> extends React.Component<Props, State>{
@@ -41,3 +39,12 @@ export var modName = mac ? '⌘' : 'Ctrl';
 
 export let Toggle = require('react-toggle')
 require('react-toggle/style.css')
+
+/**
+ * Notifications
+ */
+import toastr = require("toastr");
+require('toastr/build/toastr.css');
+export function notifyQuickDisappear(message: string) {
+    toastr.info(message, null, { timeOut: 600 });
+}
