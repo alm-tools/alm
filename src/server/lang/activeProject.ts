@@ -82,6 +82,7 @@ export function setActiveProjectName(name: string) {
 /** convert project name to current project */
 export function sync() {
     availableProjects.current().then((projectConfigs) => {
+        // we are guaranteed as least one project config (which just might be the implicit one)
         let projectConfig = projectConfigs.filter(x=>x.name == activeProjectName)[0] || projectConfigs[0];
 
         currentProject = null;

@@ -10,7 +10,7 @@ import {TypedEvent} from "../../common/events";
  * watches it on fs and then if it changes sends the new content to the client
  * TODO: File is *always* saved to cache for recovery
  *
- * Have a model like code mirror ... just use lines at all places ... till we actually write to disk
+ * Has a model like code mirror ... just use lines at all places ... till we actually write to disk
  */
 export class FileModel {
     /** either the os default or whatever was read from the file */
