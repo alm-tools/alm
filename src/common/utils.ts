@@ -82,9 +82,23 @@ export function rangeLimited(args: { num: number, min: number, max: number, loop
     return limited;
 }
 
+/** `/asdf/bar/j.ts` => `j.ts` */
 export function getFileName(fullFilePath:string){
     let parts = fullFilePath.split('/');
     return parts[parts.length - 1];
+}
+
+/** `/asdf/bar/j.ts` => `/asdf/bar` */
+export function getDirectory(filePath: string): string {
+    let directory = filePath.substring(0, filePath.lastIndexOf("/"));
+    return directory;
+}
+
+/** Folder + filename only e.g. `/asdf/something/tsconfig.json` => `something/tsconfig.json` */
+export function getFolderAndFileName(filePath:string): string {
+    let directory = getDirectory(filePath);
+    let fileName = getFileName(filePath);
+    return `${directory}/${fileName}`;
 }
 
 /**
@@ -151,13 +165,3 @@ export var resolve: typeof Promise.resolve = Promise.resolve.bind(Promise);
 var punctuations = createMap([';', '{', '}', '(', ')', '.', ':', '<', '>', "'", '"']);
 /** Does the prefix end in punctuation */
 export var prefixEndsInPunctuation = (prefix: string) => prefix.length && prefix.trim().length && punctuations[prefix.trim()[prefix.trim().length - 1]];
-
-
-/**
- * Folder + filename only e.g. `something/tsconfig.json`
- */
-export function getFolderAndFileName(filePath:string): string {
-    let directory = filePath.substring(0,filePath.lastIndexOf("/")+1);
-    let fileName = getFileName(filePath);
-    return `${directory}/${fileName}`;
-}
