@@ -122,7 +122,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                     <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)} onClick={this.toggleErrors} title={`${errorCount} errors. Click to toggle error panel.`}>
                         <span style={csx.extend(errorCount?styles.statusBarError:styles.statusBarSuccess,{transition: 'color .4s'})}>{errorCount} <Icon name="times-circle"/></span>
                     </span>
-                    {this.props.activeProject?<span style={csx.extend(styles.statusBarSection, styles.hand)} onClick={()=>this.openFile(this.props.activeProject)}>{this.props.activeProject}</span>:''}
+                    {this.props.activeProject?<span style={csx.extend(styles.statusBarSection)}>{this.props.activeProject}</span>:''}
                     {inActiveProjectSection}
                     {this.props.currentFilePath
                         ?<span
