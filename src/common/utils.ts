@@ -151,3 +151,13 @@ export var resolve: typeof Promise.resolve = Promise.resolve.bind(Promise);
 var punctuations = createMap([';', '{', '}', '(', ')', '.', ':', '<', '>', "'", '"']);
 /** Does the prefix end in punctuation */
 export var prefixEndsInPunctuation = (prefix: string) => prefix.length && prefix.trim().length && punctuations[prefix.trim()[prefix.trim().length - 1]];
+
+
+/**
+ * Folder + filename only e.g. `something/tsconfig.json`
+ */
+export function getFolderAndFileName(filePath:string): string {
+    let directory = filePath.substring(0,filePath.lastIndexOf("/")+1);
+    let fileName = getFileName(filePath);
+    return `${directory}/${fileName}`;
+}
