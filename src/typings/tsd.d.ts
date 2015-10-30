@@ -18,3 +18,4 @@
 /// <reference path="codemirror/codemirror-showhint.d.ts" />
 /// <reference path="redux/redux.d.ts" />
 /// <reference path="react-dom/react-dom.d.ts" />
+/// <reference path="jquery/jquery.d.ts" />

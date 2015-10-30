@@ -79,6 +79,7 @@
         "./typings/glob-expand.d.ts",
         "./typings/glob/glob.d.ts",
         "./typings/globals.d.ts",
+        "./typings/jquery/jquery.d.ts",
         "./typings/mime/mime.d.ts",
         "./typings/minimatch/minimatch.d.ts",
         "./typings/mkdirp/mkdirp.d.ts",
