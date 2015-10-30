@@ -139,8 +139,11 @@ export class StatusBar extends BaseComponent<Props, State>{
                     <span style={csx.flex}></span>
 
                     {/* Right sections */}
-                    <PendingRequestsIndicator />
-                    <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)} onClick={this.giveRose} title="Your stars and tweets keep this rose alive 🌹">🌹</span>
+                    <span style={csx.extend(styles.statusBarSection)}>
+                        <PendingRequestsIndicator />
+                    </span>
+                    <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)} onClick={this.giveStar} title="If you like it then you should have put a star on it 🌟. Also, go here for support ⚠️">🌟</span>
+                    <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)} onClick={this.giveRose} title="Your follows keep this rose alive 🌹">🌹</span>
                 </div>
             </div>
         );
@@ -161,6 +164,10 @@ export class StatusBar extends BaseComponent<Props, State>{
 
     openFile = (filePath: string) => {
         commands.doOpenOrFocusFile.emit({ filePath });
+    }
+
+    giveStar = () => {
+        window.open('https://github.com/TypeScriptBuilder/tsb')
     }
 
     giveRose = () => {
