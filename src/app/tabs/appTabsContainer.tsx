@@ -324,8 +324,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
     getSelectedComponent(): tab.Component {
         let selected = this.state.selected;
-        let component = this.refs[this.state.tabs[selected].id];
-        return component;
+        let tab = this.state.tabs[selected];
+        return tab && tab.id ? this.refs[tab.id] : undefined;
     }
 
     closeTab(index: number) {
