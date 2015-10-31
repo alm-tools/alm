@@ -11,6 +11,7 @@ import {cast, server} from "../../socket/socketClient";
 import * as commands from "../commands/commands";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
 import {Icon} from "../icon";
+import {TypedEvent} from "../../common/events";
 
 /** Stuff shared by the select list view */
 import {renderMatchedSegments, keyStrokeStyle} from ".././selectListView";
@@ -24,7 +25,8 @@ export interface State {
 }
 
 enum Mode {
-    FileSearch
+    FileSearch,
+    ProjectSearch
 }
 
 let inputStyle = {
@@ -209,5 +211,52 @@ export class OmniSearch extends BaseComponent<Props, State>{
                 {renderedPath}
             </div>
         );
+    }
+}
+
+
+/**
+ * Omni search has a lot of UI work in it,
+ * don't want to sprike in all the MODE selection stuff in there as well
+ * So ... created this class
+ */
+class SearchState {
+    /**
+     * Various search lists
+     */
+    filePaths: string [] = [];
+
+    /**
+     * Current mode
+     */
+    mode: Mode = Mode.FileSearch;
+
+    /**
+     * showing search results
+     */
+    isShown: boolean;
+
+    /**
+     * if there are new search results the user might care about
+     */
+    updatedSearchResults = new TypedEvent<{}>();
+
+    constructor() {
+        server.filePaths({}).then((res) => {
+            this.filePaths = res.filePaths;
+            this._updateIfUserIsSearching(Mode.FileSearch);
+        });
+
+        cast.filePathsUpdated.on((update) => {
+            console.log(update);
+            this.filePaths = update.filePaths;
+            this._updateIfUserIsSearching(Mode.FileSearch);
+        });
+    }
+
+    private _updateIfUserIsSearching(mode:Mode){
+        if (this.mode == mode && this.isShown){
+            this.updatedSearchResults.emit({});
+        }
     }
 }
