@@ -108,7 +108,7 @@ export let codeFont = {
 
 export namespace errorsPanel {
     export let success = {
-        color: '#73c990'
+        color: successColor
     }
     export let main = {
         color: '#999',
