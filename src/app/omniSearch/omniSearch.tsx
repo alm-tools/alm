@@ -12,6 +12,8 @@ import * as commands from "../commands/commands";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
 import {Icon} from "../icon";
 import {TypedEvent} from "../../common/events";
+import * as state from "../state/state";
+import * as types from "../../common/types";
 
 /** Stuff shared by the select list view */
 import {renderMatchedSegments, keyStrokeStyle, getFilteredItems} from ".././selectListView";
@@ -252,38 +254,52 @@ class SearchState {
         let renderedResults: JSX.Element[] = [];
         if (this.mode == SearchMode.File){
             let fileList: string[] = this.filteredValues;
-            let fileListRendered = fileList.map((filePath, i) => {
-
+            renderedResults = this.createRenderedForList(fileList,(filePath)=>{
                 // Create rendered
-                let renderedPath = renderMatchedSegments(filePath,this.rawFilterValue);
-                let renderedFileName = renderMatchedSegments(getFileName(filePath), this.rawFilterValue);
-                let rendered = <div>
-                    <div>{renderedFileName}</div>
-                    {renderedPath}
-                </div>;
-
-                return this._wrapRenderedItemForSelection(rendered, i)
+                let renderedPath = renderMatchedSegments(filePath,this.parsedFilterValue);
+                let renderedFileName = renderMatchedSegments(getFileName(filePath), this.parsedFilterValue);
+                return (
+                    <div>
+                        <div>{renderedFileName}</div>
+                        {renderedPath}
+                    </div>
+                );
             });
-            renderedResults = fileListRendered;
         }
 
         if (this.mode == SearchMode.Project){
             let filteredProjects: ActiveProjectConfigDetails[] = this.filteredValues;
+            renderedResults = this.createRenderedForList(filteredProjects,(project)=>{
+                // Create rendered
+                let matched = renderMatchedSegments(project.name,this.parsedFilterValue);
+                return (
+                    <div>
+                        {matched}
+                    </div>
+                );
+            });
+        }
+
+        if (this.mode == SearchMode.Unknown){
+            // TODO: show a nice list of options ... and use that to drive the selection of that to set mode!
         }
 
         return renderedResults;
     }
 
-    private _wrapRenderedItemForSelection(rendered: JSX.Element, index: number): JSX.Element {
-        let selected = this.selectedIndex === index;
-        let style = selected ? selectedStyle : {};
-        let ref = selected && "selected";
+    private createRenderedForList<T>(items: T[], itemToRender: (item: T) => JSX.Element): JSX.Element[] {
+        return items.map((item, index) => {
+            let rendered = itemToRender(item);
+            let selected = this.selectedIndex === index;
+            let style = selected ? selectedStyle : {};
+            let ref = selected && "selected";
 
-        return (
-            <div key={index} style={[style,styles.padded2,styles.hand, listItemStyle]} onClick={()=>this.choseIndex(index)} ref={ref}>
-                {rendered}
-            </div>
-        );
+            return (
+                <div key={index} style={[style, styles.padded2, styles.hand, listItemStyle]} onClick={() => this.choseIndex(index) } ref={ref}>
+                    {rendered}
+                </div>
+            );
+        });
     }
 
     choseIndex = (index:number) => {
@@ -293,6 +309,16 @@ class SearchState {
                 commands.doOpenFile.emit({ filePath: filePath });
             }
         }
+
+        if (this.mode == SearchMode.Project){
+            let activeProject:ActiveProjectConfigDetails = this.filteredValues[index];
+            if (activeProject) {
+                server.setActiveProjectName({ name: activeProject.name });
+                state.setActiveProject(activeProject.name);
+                state.setInActiveProject(types.TriState.Unknown);
+            }
+        }
+
         this.closeOmniSearch();
     }
 
@@ -315,15 +341,18 @@ class SearchState {
         }
         else { // if not explicit fall back to file
             this.mode = SearchMode.File;
+            this.parsedFilterValue = trimmed;
         }
 
         if (this.mode == SearchMode.File){
-            this.filteredValues = fuzzyFilter(this.filePaths, value);
+            this.filteredValues = fuzzyFilter(this.filePaths, this.parsedFilterValue);
             this.filteredValues = this.filteredValues.slice(0,this.maxShowCount);
         }
 
         if (this.mode == SearchMode.Project){
-            this.filteredValues = getFilteredItems<ActiveProjectConfigDetails>({ items: this.availableProjects, textify: (p) => p.name, filterValue: this.parsedFilterValue });
+            this.filteredValues = this.parsedFilterValue
+                ? getFilteredItems<ActiveProjectConfigDetails>({ items: this.availableProjects, textify: (p) => p.name, filterValue: this.parsedFilterValue })
+                : this.availableProjects;
         }
 
         this.selectedIndex = 0;

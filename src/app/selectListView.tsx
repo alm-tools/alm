@@ -53,6 +53,21 @@ export class SelectListView extends BaseComponent<Props, State>{
 
     filteredResults: DataItem[];
 
+    /*
+    API sample usage
+        this.refs.selectListView.show<ActiveProjectConfigDetails>({
+        header: 'Select the active project',
+        data: availableProjects,
+        render: (d,highlitedText) => <div>{highlitedText}</div>,
+        textify: (d) => d.name,
+        onSelect: (d) => {
+            server.setActiveProjectName({ name: d.name });
+            state.setActiveProject(d.name);
+            state.setInActiveProject(types.TriState.Unknown);
+        }
+    });
+    */
+
     /**
      * The main interaction API
      */

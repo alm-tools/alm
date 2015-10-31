@@ -49,28 +49,6 @@ export class Root extends ui.BaseComponent<{}, State>{
     componentDidMount() {
         sb.statusBar = this.refs.statusBar;
         slv.selectListView = this.refs.selectListView;
-
-        let availableProjects: ActiveProjectConfigDetails[] = [];
-        server.availableProjects({}).then(res => {
-            availableProjects = res;
-        });
-        cast.availableProjectsUpdated.on(res => {
-            availableProjects = res;
-        });
-
-        commands.doSelectProject.on(()=>{
-            this.refs.selectListView.show<ActiveProjectConfigDetails>({
-                header: 'Select the active project',
-                data: availableProjects,
-                render: (d,highlitedText) => <div>{highlitedText}</div>,
-                textify: (d) => d.name,
-                onSelect: (d) => {
-                    server.setActiveProjectName({ name: d.name });
-                    state.setActiveProject(d.name);
-                    state.setInActiveProject(types.TriState.Unknown);
-                }
-            });
-        });
     }
 
     render() {
