@@ -52,7 +52,7 @@ let listItemStyle = {
 export class OmniSearch extends BaseComponent<Props, State>{
     filePaths: string[] = [];
     /** Because doing this in render is slow */
-    filteredResults: string[] = [];
+    filePathsFiltered: string[] = [];
 
     maxShowCount = 15;
 
@@ -121,7 +121,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
 
         let renderedResults: JSX.Element[] = [];
         if (this.mode == Mode.FileSearch){
-            let fileList = this.filteredResults;
+            let fileList = this.filePathsFiltered;
             let fileListRendered = fileList.map((result, i) => this.renderHighlightedMatchItem(result, this.state.filterValue, selectedIndex === i, i));
             renderedResults = fileListRendered;
         }
@@ -163,15 +163,15 @@ export class OmniSearch extends BaseComponent<Props, State>{
     };
     onChangeFilter = debounce((e)=>{
         let filterValue = (ReactDOM.findDOMNode(this.refs.omniSearchInput) as HTMLInputElement).value;
-        this.filteredResults = fuzzyFilter(this.filePaths, filterValue);
-        this.filteredResults = this.filteredResults.slice(0,this.maxShowCount);
+        this.filePathsFiltered = fuzzyFilter(this.filePaths, filterValue);
+        this.filePathsFiltered = this.filePathsFiltered.slice(0,this.maxShowCount);
         this.setState({ filterValue, selectedIndex:0 });
     },50);
     incrementSelected = debounce(() => {
-        this.setState({ selectedIndex: rangeLimited({ num: ++this.state.selectedIndex, min: 0, max: Math.min(this.maxShowCount - 1, this.filteredResults.length - 1), loopAround: true }) });
+        this.setState({ selectedIndex: rangeLimited({ num: ++this.state.selectedIndex, min: 0, max: Math.min(this.maxShowCount - 1, this.filePathsFiltered.length - 1), loopAround: true }) });
     }, 0, true);
     decrementSelected = debounce(() => {
-        this.setState({ selectedIndex: rangeLimited({ num: --this.state.selectedIndex, min: 0, max: Math.min(this.maxShowCount - 1, this.filteredResults.length - 1), loopAround: true }) });
+        this.setState({ selectedIndex: rangeLimited({ num: --this.state.selectedIndex, min: 0, max: Math.min(this.maxShowCount - 1, this.filePathsFiltered.length - 1), loopAround: true }) });
     },0,true);
     onChangeSelected = (e)=>{
         if (e.key == 'ArrowUp'){
@@ -188,7 +188,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
         }
     };
     selectIndex = (index:number) => {
-        let relativeFilePath = this.filteredResults[index];
+        let relativeFilePath = this.filePathsFiltered[index];
         if (relativeFilePath) {
             server.makeAbsolute({ relativeFilePath }).then(abs => {
                 commands.doOpenFile.emit({ filePath: abs.filePath });
