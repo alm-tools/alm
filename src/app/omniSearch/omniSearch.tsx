@@ -2,15 +2,15 @@ import React = require("react");
 import ReactDOM = require("react-dom");
 import Radium = require('radium');
 import csx = require('csx');
-import {BaseComponent} from "./ui";
-import * as ui from "./ui";
+import {BaseComponent} from "../ui";
+import * as ui from "../ui";
 var Modal = require('react-modal');
-import * as styles from "./styles/styles";
-import {debounce,createMap,rangeLimited,getFileName} from "../common/utils";
-import {cast, server} from "../socket/socketClient";
-import * as commands from "./commands/commands";
+import * as styles from "../styles/styles";
+import {debounce,createMap,rangeLimited,getFileName} from "../../common/utils";
+import {cast, server} from "../../socket/socketClient";
+import * as commands from "../commands/commands";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
-import {renderMatchedSegments} from "./selectListView";
+import {renderMatchedSegments} from ".././selectListView";
 
 export interface Props {
 }
@@ -20,6 +20,10 @@ export interface State {
     selectedIndex?: number;
 }
 
+enum Mode {
+    FileSearch,
+}
+
 @ui.Radium
 export class OmniSearch extends BaseComponent<Props, State>{
     filePaths: string[] = [];
@@ -27,6 +31,8 @@ export class OmniSearch extends BaseComponent<Props, State>{
     filteredResults: string[] = [];
 
     maxShowCount = 15;
+
+    mode: Mode = Mode.FileSearch;
 
     constructor(props: Props) {
         super(props);
@@ -87,9 +93,14 @@ export class OmniSearch extends BaseComponent<Props, State>{
     }
 
     render() {
-        let fileList = this.filteredResults;
         let selectedIndex = this.state.selectedIndex;
-        let fileListRendered = fileList.map((result, i) => this.renderHighlightedMatchItem(result, this.state.filterValue, selectedIndex === i, i));
+
+        let renderedResults: JSX.Element[] = [];
+        if (this.mode == Mode.FileSearch){
+            let fileList = this.filteredResults;
+            let fileListRendered = fileList.map((result, i) => this.renderHighlightedMatchItem(result, this.state.filterValue, selectedIndex === i, i));
+            renderedResults = fileListRendered;
+        }
 
         return <Modal
               isOpen={this.state.isOmniSearchOpen}
@@ -111,8 +122,8 @@ export class OmniSearch extends BaseComponent<Props, State>{
                         />
                     </div>
 
-                    <div style={[csx.vertical,csx.flex,{overflow:'auto'}]}>
-                        {fileListRendered}
+                    <div className="scrollContainer" style={[csx.vertical,csx.flex,{overflow:'auto'}]}>
+                        {renderedResults}
                     </div>
                 </div>
         </Modal>

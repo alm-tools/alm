@@ -12,7 +12,7 @@ import * as styles from "./styles/styles";
 import {cast, server} from "../socket/socketClient";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
 import {debounce,createMap,rangeLimited,getFileName} from "../common/utils";
-import {OmniSearch} from "./omniSearch";
+import {OmniSearch} from "./omniSearch/omniSearch";
 
 import {SelectListView} from "./selectListView";
 import slv = require("./selectListView");

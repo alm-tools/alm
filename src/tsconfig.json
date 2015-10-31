@@ -108,7 +108,7 @@
         "./app/findAndReplace.tsx",
         "./app/icon.tsx",
         "./app/main.tsx",
-        "./app/omniSearch.tsx",
+        "./app/omniSearch/omniSearch.tsx",
         "./app/pendingRequestsIndicator.tsx",
         "./app/root.tsx",
         "./app/selectListView.tsx",
