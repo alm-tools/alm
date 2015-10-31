@@ -237,7 +237,12 @@ class SearchState {
     /**
      * showing search results
      */
-    isShown: boolean;
+    isShown: boolean = false;
+
+    /**
+     * The currently selected search result
+     */
+    selectedIndex: number = 0;
 
     /**
      * if there are new search results the user might care about
@@ -266,5 +271,9 @@ class SearchState {
         }
     }
 
+    public renderResults(): JSX.Element[] {
+        // TODO
+        return [];
+    }
 
 }
