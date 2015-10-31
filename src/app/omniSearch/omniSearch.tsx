@@ -115,6 +115,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
 
     render() {
         let renderedResults: JSX.Element[] = this.searchState.renderResults();
+        let searchingName = this.searchState.getSearchingName();
 
         return <Modal
               isOpen={this.searchState.isShown}
@@ -122,6 +123,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
                 <div style={[csx.vertical]}>
                     <div style={[csx.horizontal,csx.center]}>
                         <h4 style={{marginTop:'1rem', marginBottom: '1rem'} as any}>Omni Search <Icon name="search"/></h4>
+                        {searchingName?<h5  style={{marginTop:'0', marginBottom: '0', marginLeft: '10px', border:'1px solid grey', padding: '4px 4px', background:'black'} as any}>{searchingName}</h5>:''}
                         <div style={[csx.flex]}></div>
                         <div style={{fontSize:'0.9rem', color:'grey'} as any}><code style={keyStrokeStyle}>Esc</code> to exit <code style={keyStrokeStyle}>Enter</code> to select</div>
                     </div>
@@ -183,6 +185,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
 interface SearchModeDescription {
     mode: SearchMode;
     description : string;
+    searchingName: string;
     shortcut: string;
 }
 
@@ -262,17 +265,20 @@ class SearchState {
             {
                 mode: SearchMode.File,
                 description: 'Search for a File in the working directory',
-                shortcut: 'f'
+                shortcut: 'f',
+                searchingName: "Files"
             },
             {
                 mode: SearchMode.Command,
                 description: 'Search for a Command',
-                shortcut: 'c'
+                shortcut: 'c',
+                searchingName: "Commands"
             },
             {
                 mode: SearchMode.Project,
                 description: 'Search for a TypeScript Project to work on',
-                shortcut: 'p'
+                shortcut: 'p',
+                searchingName: "Projects"
             }
         ];
 
@@ -330,6 +336,12 @@ class SearchState {
         }
 
         return renderedResults;
+    }
+
+    getSearchingName(): string {
+        let description = this.modeDescriptions.filter(x=>x.mode == this.mode)[0];
+        if (!description) return '';
+        else return description.searchingName;
     }
 
     private createRenderedForList<T>(items: T[], itemToRender: (item: T) => JSX.Element): JSX.Element[] {
