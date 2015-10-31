@@ -292,3 +292,28 @@ class SearchState {
         this.stateChanged.emit({});
     };
 }
+
+/** TODO: This exits to make creating new modes easier 🌹 */
+// interface OmniSearchModeImplementation<T>{
+//     /**
+//      * config stuff
+//      */
+//     mode: Mode,
+//     maxShowCount: number;
+//
+//     /**
+//      * User searching stuff
+//      */
+//     newValue(value: string);
+//     totalResultsNumber(): number;
+//
+//     /**
+//      * Render
+//      */
+//     renderResults(): JSX.Element[];
+//
+//     /**
+//      * Finally chose
+//      */
+//     choseIndex(index: number): void;
+// }
