@@ -219,6 +219,8 @@ export class OmniSearch extends BaseComponent<Props, State>{
  * Omni search has a lot of UI work in it,
  * don't want to sprike in all the MODE selection stuff in there as well
  * So ... created this class
+ * Responsible for taking user input > parsing it and then > returning the rendered search results
+ * Also maintains the selected index within the search results
  */
 class SearchState {
     /**
@@ -259,4 +261,6 @@ class SearchState {
             this.updatedSearchResults.emit({});
         }
     }
+
+
 }
