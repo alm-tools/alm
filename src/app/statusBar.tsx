@@ -1,6 +1,7 @@
 import utils = require("../common/utils");
 import styles = require("./styles/styles");
 import React = require("react");
+import ReactDOMServer = require("react-dom/server");
 import Radium = require('radium');
 import csx = require('csx');
 import {BaseComponent} from "./ui";
@@ -15,6 +16,15 @@ import {Icon} from "./icon";
 import {connect} from "react-redux";
 import {StoreState,expandErrors,collapseErrors} from "./state/state";
 import * as state from "./state/state";
+
+
+let notificationKeyboardStyle = {
+    border: '2px solid',
+    borderRadius: '6px',
+    display: 'inline-block',
+    padding: '5px',
+    background: 'grey',
+}
 
 export interface Props extends React.Props<any> {
     // from react-redux ... connected below
@@ -93,19 +103,20 @@ export class StatusBar extends BaseComponent<Props, State>{
             </div>
         }
 
+        let projectTipKeboard = ReactDOMServer.renderToString(<div style={notificationKeyboardStyle}>Alt+Shift+P</div>);
         let inActiveProjectSection =
             this.props.inActiveProject == types.TriState.Unknown
             ? ''
             : <span style={styles.statusBarSection}>
                 {this.props.inActiveProject == types.TriState.True
                     ?<span style={csx.extend(styles.noSelect,styles.statusBarSuccess, styles.hand)}
-                        onClick={()=>ui.notifySuccessNormalDisappear("The file is a part of the currently active TypeScript project and we are actively providing code intelligence")}
+                        onClick={()=>ui.notifySuccessNormalDisappear(`The file is a part of the currently active TypeScript project and we are actively providing code intelligence`)}
                         title="File is part of the currently active project. Robots providing code intelligence.">
                         <Icon name="eye"/>
                      </span>
                     :<span
                         style={csx.extend(styles.noSelect,styles.statusBarError,styles.hand)}
-                        onClick={()=>ui.notifyWarningNormalDisappear("The file is not a part of the currently active TypeScript project")}
+                        onClick={() => ui.notifyWarningNormalDisappear(`The file is not a part of the currently active TypeScript project <br/> <br/> ${projectTipKeboard}`, { onClick: () => commands.doSelectProject.emit({}) }) }
                         title="File is not a part of the currently active project. Robots deactivated.">
                             <Icon name="eye-slash"/>
                      </span>}

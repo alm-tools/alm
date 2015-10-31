@@ -7,6 +7,7 @@ export import csx = require('csx');
 import * as theme from "./styles/theme";
 import {CompositeDisposible} from "../common/events";
 export import $ = require("jquery");
+import * as commands from "./commands/commands";
 
 /** The base component that provides and easy access point for overall app behaviour changes */
 export class BaseComponent<Props, State> extends React.Component<Props, State>{
@@ -51,9 +52,12 @@ export function notifyInfoQuickDisappear(message: string) {
 export function notifyInfoNormalDisappear(message: string) {
     toastr.info(message);
 }
-export function notifyWarningNormalDisappear(message: string) {
-    toastr.warning(message);
+export function notifyWarningNormalDisappear(message: string, options:{onClick:()=>void}) {
+    toastr.warning(message, null, { onclick: options.onClick });
 }
 export function notifySuccessNormalDisappear(message: string){
     toastr.success(message);
 }
+commands.esc.on(()=>{
+    toastr.clear();
+});
