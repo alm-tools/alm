@@ -197,8 +197,8 @@ class SearchState {
     /**
      * Current raw user input value
      */
-    rawFilterValue: string;
-    parsedFilterValue: string;
+    rawFilterValue: string = '';
+    parsedFilterValue: string = '';
 
     /**
      * Various search lists
@@ -430,11 +430,17 @@ class SearchState {
     }
 
     openOmniSearch = (mode: SearchMode) => {
-        // TODO: if already shown and the mode reqested is different would be nice to just change a few leading characters
+        let oldMode = this.mode;
+        let oldRawFilterValue = this.rawFilterValue;
+
         this.mode = mode;
         let description = this.modeDescriptions.filter(x=>x.mode == mode)[0];
-
         this.rawFilterValue = description?description.shortcut+'>':'';
+
+        // If already shown and the mode reqested is different would be nice to just change a few leading characters
+        if (this.isShown && oldMode != this.mode && oldMode !== SearchMode.Unknown) {
+            this.rawFilterValue = this.rawFilterValue + oldRawFilterValue.trim().substr(2);
+        }
 
         this.isShown = true;
         this.newValue(this.rawFilterValue);
