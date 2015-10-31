@@ -203,7 +203,7 @@ class SearchState {
     /**
      * Various search lists
      */
-    modeDescriptions: SearchModeDescription[] = [];
+    modeDescriptions: SearchModeDescription[] = []; // set in ctor
     filePaths: string [] = [];
     availableProjects: ActiveProjectConfigDetails[] = [];
 
@@ -214,11 +214,7 @@ class SearchState {
      * Current mode
      */
     mode: SearchMode = SearchMode.File;
-    _modeMap: { [key: string]: SearchMode } = {
-        'f': SearchMode.File,
-        'c': SearchMode.Command,
-        'p': SearchMode.Project,
-    };
+    _modeMap: { [key: string]: SearchMode } = {}; // set in ctor
 
     /**
      * showing search results
@@ -278,7 +274,10 @@ class SearchState {
                 description: 'Search for a TypeScript Project to work on',
                 shortcut: 'p'
             }
-        ]
+        ];
+
+        // setup mode map
+        this.modeDescriptions.forEach(md => this._modeMap[md.shortcut] = md.mode);
     }
 
     private _updateIfUserIsSearching(mode:SearchMode){
@@ -431,16 +430,11 @@ class SearchState {
     }
 
     openOmniSearch = (mode: SearchMode) => {
-        this.mode = mode;
-
         // TODO: if already shown and the mode reqested is different would be nice to just change a few leading characters
-        this.rawFilterValue = mode == SearchMode.File
-            ? 'f>'
-            : mode == SearchMode.Command
-            ? 'c>'
-            : mode == SearchMode.Project
-            ? 'p>'
-            : '';
+        this.mode = mode;
+        let description = this.modeDescriptions.filter(x=>x.mode == mode)[0];
+
+        this.rawFilterValue = description?description.shortcut+'>':'';
 
         this.isShown = true;
         this.newValue(this.rawFilterValue);
