@@ -21,7 +21,7 @@ export interface State {
 }
 
 enum Mode {
-    FileSearch,
+    FileSearch
 }
 
 let inputStyle = {
@@ -31,7 +31,8 @@ let inputStyle = {
     padding: '2px',
     border: '2px solid #3C3C3C',
     fontSize: '1.5rem',
-    lineHeight: '2rem'
+    lineHeight: '2rem',
+    fontFamily: 'monospace'
 }
 
 @ui.Radium
