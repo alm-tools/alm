@@ -19,9 +19,6 @@ import {renderMatchedSegments, keyStrokeStyle} from ".././selectListView";
 export interface Props {
 }
 export interface State {
-    isOmniSearchOpen?: boolean;
-    filterValue?: string;
-    selectedIndex?: number;
 }
 
 enum Mode {
@@ -50,16 +47,14 @@ let listItemStyle = {
 
 @ui.Radium
 export class OmniSearch extends BaseComponent<Props, State>{
-    filePaths: string[] = [];
-    /** Because doing this in render is slow */
-    filePathsFiltered: string[] = [];
-
-    maxShowCount = 15;
-
     mode: Mode = Mode.FileSearch;
+
+    searchState = new SearchState();
 
     constructor(props: Props) {
         super(props);
+
+        this.searchState.stateChanged.on(() => this.forceUpdate());
 
         this.state = this.propsToState(props);
     }
@@ -81,17 +76,6 @@ export class OmniSearch extends BaseComponent<Props, State>{
     }
 
     componentDidMount() {
-        server.filePaths({}).then((res) => {
-            this.filePaths = res.filePaths;
-            this.forceUpdate();
-        });
-
-        cast.filePathsUpdated.on((update) => {
-            console.log(update);
-            this.filePaths = update.filePaths;
-            this.forceUpdate();
-        });
-
         commands.findFile.on(() => {
             console.log('find file');
             this.openOmniSearch();
@@ -99,9 +83,6 @@ export class OmniSearch extends BaseComponent<Props, State>{
         commands.findCommand.on(() => {
             console.log('find command');
             this.openOmniSearch();
-        });
-        commands.esc.on(()=>{
-            this.closeOmniSearch();
         });
     }
 
@@ -113,25 +94,20 @@ export class OmniSearch extends BaseComponent<Props, State>{
                 let selected = ReactDOM.findDOMNode(this.refs.selected) as HTMLDivElement;
                 selected.scrollIntoViewIfNeeded(false);
             }
+            // also keep the input in focus
+            (ReactDOM.findDOMNode(this.refs.omniSearchInput) as HTMLInputElement).focus();
         });
     }
 
     render() {
-        let selectedIndex = this.state.selectedIndex;
-
-        let renderedResults: JSX.Element[] = [];
-        if (this.mode == Mode.FileSearch){
-            let fileList = this.filePathsFiltered;
-            let fileListRendered = fileList.map((result, i) => this.renderHighlightedMatchItem(result, this.state.filterValue, selectedIndex === i, i));
-            renderedResults = fileListRendered;
-        }
+        let renderedResults: JSX.Element[] = this.searchState.renderResults();
 
         return <Modal
-              isOpen={this.state.isOmniSearchOpen}
-              onRequestClose={this.closeOmniSearch}>
+              isOpen={this.searchState.isShown}
+              onRequestClose={this.searchState.closeOmniSearch}>
                 <div style={[csx.vertical]}>
-                    <div style={[csx.horizontal, csx.center]}>
-                        <h4>Omni Search <Icon name="search"/></h4>
+                    <div style={[csx.horizontal,csx.center]}>
+                        <h4 style={{marginTop:'1rem', marginBottom: '1rem'} as any}>Omni Search <Icon name="search"/></h4>
                         <div style={[csx.flex]}></div>
                         <div style={{fontSize:'0.9rem', color:'grey'} as any}><code style={keyStrokeStyle}>Esc</code> to exit <code style={keyStrokeStyle}>Enter</code> to select</div>
                     </div>
@@ -155,23 +131,17 @@ export class OmniSearch extends BaseComponent<Props, State>{
     }
 
     openOmniSearch = () => {
-        this.setState({ isOmniSearchOpen: true });
-        (ReactDOM.findDOMNode(this.refs.omniSearchInput) as HTMLInputElement).focus();
-    };
-    closeOmniSearch = ()=>{
-        this.setState({ isOmniSearchOpen: false, filterValue: '' });
+        this.searchState.openOmniSearch();
     };
     onChangeFilter = debounce((e)=>{
         let filterValue = (ReactDOM.findDOMNode(this.refs.omniSearchInput) as HTMLInputElement).value;
-        this.filePathsFiltered = fuzzyFilter(this.filePaths, filterValue);
-        this.filePathsFiltered = this.filePathsFiltered.slice(0,this.maxShowCount);
-        this.setState({ filterValue, selectedIndex:0 });
+        this.searchState.newValue(filterValue);
     },50);
     incrementSelected = debounce(() => {
-        this.setState({ selectedIndex: rangeLimited({ num: ++this.state.selectedIndex, min: 0, max: Math.min(this.maxShowCount - 1, this.filePathsFiltered.length - 1), loopAround: true }) });
+        this.searchState.incrementSelected();
     }, 0, true);
     decrementSelected = debounce(() => {
-        this.setState({ selectedIndex: rangeLimited({ num: --this.state.selectedIndex, min: 0, max: Math.min(this.maxShowCount - 1, this.filePathsFiltered.length - 1), loopAround: true }) });
+        this.searchState.decrementSelected();
     },0,true);
     onChangeSelected = (e)=>{
         if (e.key == 'ArrowUp'){
@@ -184,45 +154,26 @@ export class OmniSearch extends BaseComponent<Props, State>{
         }
         if (e.key == 'Enter'){
             e.preventDefault();
-            this.selectIndex(this.state.selectedIndex);
+            this.searchState.choseIndex(this.searchState.selectedIndex);
         }
     };
-    selectIndex = (index:number) => {
-        let relativeFilePath = this.filePathsFiltered[index];
-        if (relativeFilePath) {
-            server.makeAbsolute({ relativeFilePath }).then(abs => {
-                commands.doOpenFile.emit({ filePath: abs.filePath });
-            });
-        }
-        this.closeOmniSearch();
-    }
 
-    renderHighlightedMatchItem(result: string, query: string, selected: boolean,index: number): JSX.Element {
-        // Create rendered
-        let renderedPath = renderMatchedSegments(result,query);
-        let renderedFileName = renderMatchedSegments(getFileName(result), query);
-
-        let style = selected ? selectedStyle : {};
-
-        let ref = selected && "selected";
-        return (
-            <div key={result} style={[style,styles.padded2,styles.hand, listItemStyle]} onClick={()=>this.selectIndex(index)} ref={ref}>
-                <div>{renderedFileName}</div>
-                {renderedPath}
-            </div>
-        );
-    }
 }
 
 
 /**
- * Omni search has a lot of UI work in it,
- * don't want to sprike in all the MODE selection stuff in there as well
+ * Omni search has a lot of UI work (debouncing and whatnot) in it,
+ * don't want to sprinkel in all the MODE selection stuff in there as well
  * So ... created this class
  * Responsible for taking user input > parsing it and then > returning the rendered search results
- * Also maintains the selected index within the search results
+ * Also maintains the selected index within the search results and takes approriate action if user commits to it
  */
 class SearchState {
+    /**
+     * Current raw user input value
+     */
+    rawFilterValue: string;
+
     /**
      * Various search lists
      */
@@ -245,9 +196,9 @@ class SearchState {
     selectedIndex: number = 0;
 
     /**
-     * if there are new search results the user might care about
+     * if there are new search results the user might care about, or user selection changed or whatever
      */
-    updatedSearchResults = new TypedEvent<{} >( );
+    stateChanged = new TypedEvent<{} >( );
 
     /** for performance reasons */
     maxShowCount = 15;
@@ -263,17 +214,81 @@ class SearchState {
             this.filePaths = update.filePaths;
             this._updateIfUserIsSearching(Mode.FileSearch);
         });
+
+        commands.esc.on(()=>{
+            this.closeOmniSearch();
+        });
     }
 
     private _updateIfUserIsSearching(mode:Mode){
         if (this.mode == mode && this.isShown){
-            this.updatedSearchResults.emit({});
+            this.stateChanged.emit({});
         }
     }
 
-    public renderResults(): JSX.Element[] {
-        // TODO
-        return [];
+    renderResults(): JSX.Element[] {
+        let renderedResults: JSX.Element[] = [];
+        if (this.mode == Mode.FileSearch){
+            let fileList = this.filePathsFiltered;
+            let fileListRendered = fileList.map((result, i) => this._renderFilteredFilePaths(result, this.rawFilterValue, this.selectedIndex === i, i, ()=>this.choseIndex(i)));
+            renderedResults = fileListRendered;
+        }
+        return renderedResults;
     }
 
+    private _renderFilteredFilePaths(result: string, query: string, selected: boolean,index: number, onClick:()=>any): JSX.Element {
+        // Create rendered
+        let renderedPath = renderMatchedSegments(result,query);
+        let renderedFileName = renderMatchedSegments(getFileName(result), query);
+
+        let style = selected ? selectedStyle : {};
+
+        let ref = selected && "selected";
+        return (
+            <div key={result} style={[style,styles.padded2,styles.hand, listItemStyle]} onClick={onClick} ref={ref}>
+                <div>{renderedFileName}</div>
+                {renderedPath}
+            </div>
+        );
+    }
+
+    choseIndex = (index:number) => {
+        let filePath = this.filePathsFiltered[index];
+        if (filePath) {
+            commands.doOpenFile.emit({ filePath: filePath });
+        }
+        this.closeOmniSearch();
+    }
+
+    newValue(value:string){
+        this.rawFilterValue = value;
+
+        // TODO: support non file queries
+        this.filePathsFiltered = fuzzyFilter(this.filePaths, value);
+        this.filePathsFiltered = this.filePathsFiltered.slice(0,this.maxShowCount);
+
+        this.selectedIndex = 0;
+        this.stateChanged.emit({});
+    }
+
+    incrementSelected = () => {
+        this.selectedIndex = rangeLimited({ num: this.selectedIndex + 1, min: 0, max: Math.min(this.maxShowCount - 1, this.filePathsFiltered.length - 1), loopAround: true });
+        this.stateChanged.emit({});
+    }
+
+    decrementSelected = () => {
+        this.selectedIndex = rangeLimited({ num: this.selectedIndex - 1, min: 0, max: Math.min(this.maxShowCount - 1, this.filePathsFiltered.length - 1), loopAround: true });
+        this.stateChanged.emit({});
+    }
+
+    openOmniSearch = () => {
+        this.isShown = true;
+        this.stateChanged.emit({});
+    }
+
+    closeOmniSearch = () => {
+        this.isShown = false;
+        this.rawFilterValue = '';
+        this.stateChanged.emit({});
+    };
 }
