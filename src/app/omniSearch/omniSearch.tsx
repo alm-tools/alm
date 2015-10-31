@@ -24,6 +24,16 @@ enum Mode {
     FileSearch,
 }
 
+let inputStyle = {
+    backgroundColor: '#333',
+    color: 'white',
+    outline: 'none',
+    padding: '2px',
+    border: '2px solid #3C3C3C',
+    fontSize: '1.5rem',
+    lineHeight: '2rem'
+}
+
 @ui.Radium
 export class OmniSearch extends BaseComponent<Props, State>{
     filePaths: string[] = [];
@@ -114,6 +124,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
 
                     <div style={[styles.padded1TopBottom,csx.vertical]}>
                         <input
+                            style={inputStyle}
                             type="text"
                             ref="omniSearchInput"
                             placeholder="Filter"
