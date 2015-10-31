@@ -16,6 +16,16 @@ import * as commands from "./commands/commands";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
 import * as utils from "../common/utils";
 
+export var keyStrokeStyle = {
+    fontSize: '0.9rem',
+    background: '#111',
+    paddingTop: '1px',
+    paddingBottom: '1px',
+    paddingLeft: '4px',
+    paddingRight: '4px',
+    borderRadius: '5px',
+    border: '2px solid'
+};
 
 /**
  * The singleton select list view
@@ -122,7 +132,7 @@ export class SelectListView extends BaseComponent<Props, State>{
                     <div style={[csx.horizontal]}>
                         <h4>{this.state.header}</h4>
                         <div style={[csx.flex]}></div>
-                        <div style={[styles.userTip]}>Press <code style={styles.keyStroke}>esc</code> to close</div>
+                        <div style={{fontSize:'0.9rem', color:'grey'} as any}><code style={keyStrokeStyle}>Esc</code> to exit <code style={keyStrokeStyle}>Enter</code> to select</div>
                         </div>
 
                     <div style={[styles.padded1TopBottom, csx.vertical]}>

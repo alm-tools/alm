@@ -10,8 +10,10 @@ import {debounce,createMap,rangeLimited,getFileName} from "../../common/utils";
 import {cast, server} from "../../socket/socketClient";
 import * as commands from "../commands/commands";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
-import {renderMatchedSegments} from ".././selectListView";
 import {Icon} from "../icon";
+
+/** Stuff shared by the select list view */
+import {renderMatchedSegments, keyStrokeStyle} from ".././selectListView";
 
 export interface Props {
 }
@@ -41,17 +43,6 @@ let selectedStyle = {
 };
 let listItemStyle = {
     fontFamily: 'monospace'
-};
-
-var keyStrokeStyle = {
-    fontSize: '0.9rem',
-    background: '#111',
-    paddingTop: '1px',
-    paddingBottom: '1px',
-    paddingLeft: '4px',
-    paddingRight: '4px',
-    borderRadius: '5px',
-    border: '2px solid'
 };
 
 
