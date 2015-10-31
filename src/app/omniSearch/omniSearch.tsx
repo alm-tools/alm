@@ -328,7 +328,7 @@ class SearchState {
         // Parse the query to see what type it is
         this.parsedFilterValue = ''
         let trimmed = value.trim();
-        if (trimmed.length > 2 && trimmed[1] == '>') {
+        if (trimmed.length > 1 && trimmed[1] == '>') {
             let mode = this._modeMap[trimmed[0]];
             if (!mode){
                 this.mode = SearchMode.Unknown
