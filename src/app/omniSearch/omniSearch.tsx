@@ -227,6 +227,7 @@ class SearchState {
      * Various search lists
      */
     filePaths: string [] = [];
+    filePathsFiltered: string[] = [];
 
     /**
      * Current mode
@@ -241,7 +242,10 @@ class SearchState {
     /**
      * if there are new search results the user might care about
      */
-    updatedSearchResults = new TypedEvent<{}>();
+    updatedSearchResults = new TypedEvent<{} >( );
+
+    /** for performance reasons */
+    maxShowCount = 15;
 
     constructor() {
         server.filePaths({}).then((res) => {
