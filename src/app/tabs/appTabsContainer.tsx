@@ -236,7 +236,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
         return (
             <div style={[csx.vertical,csx.flex]} className="app-tabs">
-                <div style={[csx.horizontal, tabHeaderContainer, {overflowX:'auto'}]} className="app-tabs-header">
+                <div style={[csx.horizontal, tabHeaderContainer]} className="app-tabs-header">
                     {titles}
                 </div>
                 <div style={[csx.flexRoot, csx.flex, csx.scroll]} className="app-tabs-body">
