@@ -4,6 +4,7 @@ import csx = require('csx');
 import {BaseComponent} from "../ui";
 import * as ui from "../ui";
 import * as utils from "../../common/utils";
+import * as styles from "../styles/styles";
 
 export interface Props extends React.Props<any> {
 
@@ -14,7 +15,7 @@ export interface State {
 
 var tipStyle = {
     fontSize: '2rem',
-    color: '#776666',
+    color: styles.successColor,
     fontWeight: 'bold',
     userSelect: 'none',
     whiteSpace: 'pre',
@@ -95,10 +96,10 @@ export class Tips extends BaseComponent<Props, State>{
             <ui.VelocityTransitionGroup
                 runOnMount={true}
                 enter={{animation: "transition.swoopIn"}} leave={{animation: "transition.whirlOut"}}
-                style={csx.extend(csx.flex,{position:'relative'})}>
+                style={csx.extend(csx.flex,{position:'relative'}, { background: 'radial-gradient(#444,transparent)' })}>
                 <div key={this.state.selected} style={csx.extend(csx.newLayer)}>
 
-                    <span style={csx.extend(csx.newLayer, csx.flexRoot)}>
+                    <span style={csx.extend(csx.newLayer, csx.flexRoot) }>
                         <span style={csx.extend(csx.flex, csx.centerCenter, tipStyle)}>
                             {tip.message} <span style={tipKeyboardStyle}> {tip.keyboard} </span>
                         </span>
