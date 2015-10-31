@@ -205,7 +205,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 this.closeTab(i);
                 event.stopPropagation();
             };
-            let titleCloseStyle = {width:'1.2rem', textAlign:'center'};
+            let titleCloseStyle = {width:'1rem', textAlign:'center', marginLeft: '.2rem'};
 
             let title: JSX.Element;
             if (!t.saved){
