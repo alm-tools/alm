@@ -14,16 +14,19 @@ import {Icon} from "../icon";
 import {TypedEvent} from "../../common/events";
 
 /** Stuff shared by the select list view */
-import {renderMatchedSegments, keyStrokeStyle} from ".././selectListView";
+import {renderMatchedSegments, keyStrokeStyle, getFilteredItems} from ".././selectListView";
 
 export interface Props {
 }
 export interface State {
 }
 
-enum Mode {
-    FileSearch,
-    ProjectSearch
+enum SearchMode {
+    /** Use if the user does something like `👎>` i.e. invalid mode key */
+    Unknown,
+    File,
+    Command,
+    Project,
 }
 
 let inputStyle = {
@@ -47,7 +50,7 @@ let listItemStyle = {
 
 @ui.Radium
 export class OmniSearch extends BaseComponent<Props, State>{
-    mode: Mode = Mode.FileSearch;
+    mode: SearchMode = SearchMode.File;
 
     searchState = new SearchState();
 
@@ -95,7 +98,9 @@ export class OmniSearch extends BaseComponent<Props, State>{
                 selected.scrollIntoViewIfNeeded(false);
             }
             // also keep the input in focus
-            (ReactDOM.findDOMNode(this.refs.omniSearchInput) as HTMLInputElement).focus();
+            if (this.searchState.isShown) {
+                (ReactDOM.findDOMNode(this.refs.omniSearchInput) as HTMLInputElement).focus();
+            }
         });
     }
 
@@ -178,12 +183,20 @@ class SearchState {
      * Various search lists
      */
     filePaths: string [] = [];
-    filePathsFiltered: string[] = [];
+    availableProjects: ActiveProjectConfigDetails[] = [];
+
+    /** Modes can use this to store their results */
+    filteredValues:any[] = [];
 
     /**
      * Current mode
      */
-    mode: Mode = Mode.FileSearch;
+    mode: SearchMode = SearchMode.File;
+    _modeMap: { [key: string]: SearchMode } = {
+        'f': SearchMode.File,
+        'c': SearchMode.Command,
+        'p': SearchMode.Project,
+    };
 
     /**
      * showing search results
@@ -206,21 +219,29 @@ class SearchState {
     constructor() {
         server.filePaths({}).then((res) => {
             this.filePaths = res.filePaths;
-            this._updateIfUserIsSearching(Mode.FileSearch);
+            this._updateIfUserIsSearching(SearchMode.File);
         });
 
         cast.filePathsUpdated.on((update) => {
             console.log(update);
             this.filePaths = update.filePaths;
-            this._updateIfUserIsSearching(Mode.FileSearch);
+            this._updateIfUserIsSearching(SearchMode.File);
         });
 
         commands.esc.on(()=>{
             this.closeOmniSearch();
         });
+
+        server.availableProjects({}).then(res => {
+            this.availableProjects = res;
+        });
+
+        cast.availableProjectsUpdated.on(res => {
+            this.availableProjects = res;
+        });
     }
 
-    private _updateIfUserIsSearching(mode:Mode){
+    private _updateIfUserIsSearching(mode:SearchMode){
         if (this.mode == mode && this.isShown){
             this.stateChanged.emit({});
         }
@@ -228,11 +249,17 @@ class SearchState {
 
     renderResults(): JSX.Element[] {
         let renderedResults: JSX.Element[] = [];
-        if (this.mode == Mode.FileSearch){
-            let fileList = this.filePathsFiltered;
+        if (this.mode == SearchMode.File){
+            let fileList: string[] = this.filteredValues;
             let fileListRendered = fileList.map((result, i) => this._renderFilteredFilePaths(result, this.rawFilterValue, this.selectedIndex === i, i, ()=>this.choseIndex(i)));
             renderedResults = fileListRendered;
         }
+
+        if (this.mode == SearchMode.Project){
+            let filteredProjects: ActiveProjectConfigDetails[] = this.filteredValues;
+            // rendered = <div>{highlitedText}</div>
+        }
+
         return renderedResults;
     }
 
@@ -253,9 +280,11 @@ class SearchState {
     }
 
     choseIndex = (index:number) => {
-        let filePath = this.filePathsFiltered[index];
-        if (filePath) {
-            commands.doOpenFile.emit({ filePath: filePath });
+        if (this.mode == SearchMode.File){
+            let filePath = this.filteredValues[index];
+            if (filePath) {
+                commands.doOpenFile.emit({ filePath: filePath });
+            }
         }
         this.closeOmniSearch();
     }
@@ -263,21 +292,44 @@ class SearchState {
     newValue(value:string){
         this.rawFilterValue = value;
 
-        // TODO: support non file queries
-        this.filePathsFiltered = fuzzyFilter(this.filePaths, value);
-        this.filePathsFiltered = this.filePathsFiltered.slice(0,this.maxShowCount);
+        // Parse the query to see what type it is
+        let parsedFilterValue = ''
+        let trimmed = value.trim();
+        if (trimmed.length > 2 && trimmed[1] == '>') {
+            let mode = this._modeMap[trimmed[0]];
+            if (!mode){
+                this.mode = SearchMode.Unknown
+                return;
+            }
+            else {
+                this.mode = mode;
+                parsedFilterValue = trimmed.substr(2);
+            }
+        }
+        else { // if not explicit fall back to file
+            this.mode = SearchMode.File;
+        }
+
+        if (this.mode == SearchMode.File){
+            this.filteredValues = fuzzyFilter(this.filePaths, value);
+            this.filteredValues = this.filteredValues.slice(0,this.maxShowCount);
+        }
+
+        if (this.mode == SearchMode.Project){
+            this.filteredValues = getFilteredItems<ActiveProjectConfigDetails>({ items: this.availableProjects, textify: (p) => p.name, filterValue: parsedFilterValue });
+        }
 
         this.selectedIndex = 0;
         this.stateChanged.emit({});
     }
 
     incrementSelected = () => {
-        this.selectedIndex = rangeLimited({ num: this.selectedIndex + 1, min: 0, max: Math.min(this.maxShowCount - 1, this.filePathsFiltered.length - 1), loopAround: true });
+        this.selectedIndex = rangeLimited({ num: this.selectedIndex + 1, min: 0, max: this.filteredValues.length - 1, loopAround: true });
         this.stateChanged.emit({});
     }
 
     decrementSelected = () => {
-        this.selectedIndex = rangeLimited({ num: this.selectedIndex - 1, min: 0, max: Math.min(this.maxShowCount - 1, this.filePathsFiltered.length - 1), loopAround: true });
+        this.selectedIndex = rangeLimited({ num: this.selectedIndex - 1, min: 0, max: this.filteredValues.length - 1, loopAround: true });
         this.stateChanged.emit({});
     }
 
