@@ -32,18 +32,6 @@ export var tabHeaderUnsaved = {
     background: "#777",
 };
 
-export var userTip = {
-    fontSize: '.9em'
-}
-
-export var keyStroke = csx.extend(userTip, {
-    background: 'grey',
-    color: 'white',
-    padding: '2px',
-    borderRadius: '5px'
-});
-
-
 export let fullWindow = {
     position: 'absolute',
     left: '10px',

@@ -11,6 +11,7 @@ import {cast, server} from "../../socket/socketClient";
 import * as commands from "../commands/commands";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
 import {renderMatchedSegments} from ".././selectListView";
+import {Icon} from "../icon";
 
 export interface Props {
 }
@@ -34,6 +35,25 @@ let inputStyle = {
     lineHeight: '2rem',
     fontFamily: 'monospace'
 }
+let selectedStyle = {
+    background: '#545454',
+    color: 'white'
+};
+let listItemStyle = {
+    fontFamily: 'monospace'
+};
+
+var keyStrokeStyle = {
+    fontSize: '0.9rem',
+    background: '#111',
+    paddingTop: '1px',
+    paddingBottom: '1px',
+    paddingLeft: '4px',
+    paddingRight: '4px',
+    borderRadius: '5px',
+    border: '2px solid'
+};
+
 
 @ui.Radium
 export class OmniSearch extends BaseComponent<Props, State>{
@@ -117,10 +137,10 @@ export class OmniSearch extends BaseComponent<Props, State>{
               isOpen={this.state.isOmniSearchOpen}
               onRequestClose={this.closeOmniSearch}>
                 <div style={[csx.vertical]}>
-                    <div style={[csx.horizontal]}>
-                        <h4>Omni Search</h4>
+                    <div style={[csx.horizontal, csx.center]}>
+                        <h4>Omni Search <Icon name="search"/></h4>
                         <div style={[csx.flex]}></div>
-                        <div style={[styles.userTip]}>Press <code style={styles.keyStroke}>esc</code> to close</div>
+                        <div style={{fontSize:'0.9rem', color:'grey'} as any}><code style={keyStrokeStyle}>Esc</code> to exit <code style={keyStrokeStyle}>Enter</code> to select</div>
                     </div>
 
                     <div style={[styles.padded1TopBottom,csx.vertical]}>
@@ -189,14 +209,11 @@ export class OmniSearch extends BaseComponent<Props, State>{
         let renderedPath = renderMatchedSegments(result,query);
         let renderedFileName = renderMatchedSegments(getFileName(result), query);
 
-        let selectedStyle = selected ? {
-            background: '#545454',
-            color: 'white'
-        } : {};
+        let style = selected ? selectedStyle : {};
 
         let ref = selected && "selected";
         return (
-            <div key={result} style={[selectedStyle,styles.padded2,styles.hand]} onClick={()=>this.selectIndex(index)} ref={ref}>
+            <div key={result} style={[style,styles.padded2,styles.hand, listItemStyle]} onClick={()=>this.selectIndex(index)} ref={ref}>
                 <div>{renderedFileName}</div>
                 {renderedPath}
             </div>
