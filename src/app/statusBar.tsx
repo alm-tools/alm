@@ -116,7 +116,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                      </span>
                     :<span
                         style={csx.extend(styles.noSelect,styles.statusBarError,styles.hand)}
-                        onClick={() => ui.notifyWarningNormalDisappear(`The file is not a part of the currently active TypeScript project <br/> <br/> ${projectTipKeboard}`, { onClick: () => commands.doSelectProject.emit({}) }) }
+                        onClick={() => ui.notifyWarningNormalDisappear(`The file is not a part of the currently active TypeScript project <br/> <br/> ${projectTipKeboard}`, { onClick: () => commands.selectProject.emit({}) }) }
                         title="File is not a part of the currently active project. Robots deactivated.">
                             <Icon name="eye-slash"/>
                      </span>}

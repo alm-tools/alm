@@ -133,12 +133,12 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             commands.doOpenFile.emit(e);
         });
 
-        commands.onCloseTab.on((e)=>{
+        commands.closeTab.on((e)=>{
             // Remove the selected
             this.closeTab(this.state.selected);
         });
 
-        commands.onSaveTab.on((e) => {
+        commands.saveTab.on((e) => {
             let component = this.getSelectedComponent();
             if (component) {
                 component.save();

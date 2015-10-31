@@ -92,7 +92,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
         commands.findCommand.on(() => {
             this.searchState.openOmniSearch(SearchMode.Command);
         });
-        commands.doSelectProject.on(() => {
+        commands.selectProject.on(() => {
             this.searchState.openOmniSearch(SearchMode.Project);
         });
     }
