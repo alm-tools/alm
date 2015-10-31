@@ -154,7 +154,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                         <PendingRequestsIndicator />
                     </span>
                     <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)}>
-                        <span style={{paddingRight: '2px'}} onClick={this.giveStar} title="If you like it then you should have put a star on it 🌟. Also, go here for support ⚠️">🌟</span>
+                        <span style={{paddingRight: '2px'} as any} onClick={this.giveStar} title="If you like it then you should have put a star on it 🌟. Also, go here for support ⚠️">🌟</span>
                         <span onClick={this.giveRose} title="Your love keep this rose alive 🌹">🌹</span>
                     </span>
                 </div>
