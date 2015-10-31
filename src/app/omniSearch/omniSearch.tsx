@@ -82,12 +82,13 @@ export class OmniSearch extends BaseComponent<Props, State>{
 
     componentDidMount() {
         commands.findFile.on(() => {
-            console.log('find file');
-            this.openOmniSearch();
+            this.searchState.openOmniSearch(SearchMode.File);
         });
         commands.findCommand.on(() => {
-            console.log('find command');
-            this.openOmniSearch();
+            this.searchState.openOmniSearch(SearchMode.Command);
+        });
+        commands.doSelectProject.on(() => {
+            this.searchState.openOmniSearch(SearchMode.Project);
         });
     }
 
@@ -121,6 +122,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
 
                     <div style={[styles.padded1TopBottom,csx.vertical]}>
                         <input
+                            defaultValue={this.searchState.rawFilterValue}
                             style={inputStyle}
                             type="text"
                             ref="omniSearchInput"
@@ -137,9 +139,6 @@ export class OmniSearch extends BaseComponent<Props, State>{
         </Modal>
     }
 
-    openOmniSearch = () => {
-        this.searchState.openOmniSearch();
-    };
     onChangeFilter = debounce((e)=>{
         let filterValue = (ReactDOM.findDOMNode(this.refs.omniSearchInput) as HTMLInputElement).value;
         this.searchState.newValue(filterValue);
@@ -369,7 +368,17 @@ class SearchState {
         this.stateChanged.emit({});
     }
 
-    openOmniSearch = () => {
+    openOmniSearch = (mode: SearchMode) => {
+        this.mode = mode;
+
+        this.rawFilterValue = mode == SearchMode.File
+            ? 'f>'
+            : mode == SearchMode.Command
+            ? 'c>'
+            : mode == SearchMode.Project
+            ? 'p>'
+            : '';
+
         this.isShown = true;
         this.stateChanged.emit({});
     }
