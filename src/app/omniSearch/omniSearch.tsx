@@ -60,6 +60,9 @@ export class OmniSearch extends BaseComponent<Props, State>{
         super(props);
 
         this.searchState.stateChanged.on(() => this.forceUpdate());
+        this.searchState.setParentUiRawFilterValue = (value) => {
+            this.setRawFilterValue(value);
+        };
 
         this.state = this.propsToState(props);
     }
@@ -82,13 +85,13 @@ export class OmniSearch extends BaseComponent<Props, State>{
 
     componentDidMount() {
         commands.findFile.on(() => {
-            this.openOmniSearch(SearchMode.File);
+            this.searchState.openOmniSearch(SearchMode.File);
         });
         commands.findCommand.on(() => {
-            this.openOmniSearch(SearchMode.Command);
+            this.searchState.openOmniSearch(SearchMode.Command);
         });
         commands.doSelectProject.on(() => {
-            this.openOmniSearch(SearchMode.Project);
+            this.searchState.openOmniSearch(SearchMode.Project);
         });
     }
 
@@ -142,19 +145,14 @@ export class OmniSearch extends BaseComponent<Props, State>{
         </Modal>
     }
 
-    openOmniSearch = (mode:SearchMode) =>{
-        this.searchState.openOmniSearch(mode);
-
+    setRawFilterValue = (value:string) => {
         // also scroll to the end of the input after loading
-        setTimeout(()=>{
-            let input = (ReactDOM.findDOMNode(this.refs.omniSearchInput) as HTMLInputElement)
-            if (!input) return;
-            let len = input.value.length;
-            input.setSelectionRange(len, len)
-        });
-
-        // TODO: if already shown and the mode reqested is different would be nice to just change a few leading characters
-    }
+        let input = (ReactDOM.findDOMNode(this.refs.omniSearchInput) as HTMLInputElement)
+        if (!input) return;
+        input.value = value;
+        let len = value.length;
+        input.setSelectionRange(len, len)
+    };
     onChangeFilter = debounce((e)=>{
         let filterValue = (ReactDOM.findDOMNode(this.refs.omniSearchInput) as HTMLInputElement).value;
         this.searchState.newValue(filterValue);
@@ -182,6 +180,11 @@ export class OmniSearch extends BaseComponent<Props, State>{
 
 }
 
+interface SearchModeDescription {
+    mode: SearchMode;
+    description : string;
+    shortcut: string;
+}
 
 /**
  * Omni search has a lot of UI work (debouncing and whatnot) in it,
@@ -200,6 +203,7 @@ class SearchState {
     /**
      * Various search lists
      */
+    modeDescriptions: SearchModeDescription[] = [];
     filePaths: string [] = [];
     availableProjects: ActiveProjectConfigDetails[] = [];
 
@@ -230,33 +234,51 @@ class SearchState {
      * if there are new search results the user might care about, or user selection changed or whatever
      */
     stateChanged = new TypedEvent<{} >( );
+    /** If we change the raw user value */
+    setParentUiRawFilterValue = (rawFilterValue:string)=>null;
 
     /** for performance reasons */
     maxShowCount = 15;
 
     constructor() {
+        commands.esc.on(()=>{
+            this.closeOmniSearch();
+        });
+
         server.filePaths({}).then((res) => {
             this.filePaths = res.filePaths;
             this._updateIfUserIsSearching(SearchMode.File);
         });
-
         cast.filePathsUpdated.on((update) => {
             console.log(update);
             this.filePaths = update.filePaths;
             this._updateIfUserIsSearching(SearchMode.File);
         });
 
-        commands.esc.on(()=>{
-            this.closeOmniSearch();
-        });
-
         server.availableProjects({}).then(res => {
             this.availableProjects = res;
         });
-
         cast.availableProjectsUpdated.on(res => {
             this.availableProjects = res;
         });
+
+        this.modeDescriptions = [
+            {
+                mode: SearchMode.File,
+                description: 'Search for a File in the working directory',
+                shortcut: 'f'
+            },
+            {
+                mode: SearchMode.Command,
+                description: 'Search for a Command',
+                shortcut: 'c'
+            },
+            {
+                mode: SearchMode.Project,
+                description: 'Search for a TypeScript Project to work on',
+                shortcut: 'p'
+            }
+        ]
     }
 
     private _updateIfUserIsSearching(mode:SearchMode){
@@ -297,6 +319,15 @@ class SearchState {
 
         if (this.mode == SearchMode.Unknown){
             // TODO: show a nice list of options ... and use that to drive the selection of that to set mode!
+            renderedResults = this.createRenderedForList(this.modeDescriptions,(modeDescription)=>{
+                // Create rendered
+                return (
+                    <div>
+                        <div>{modeDescription.shortcut}{'>'}</div>
+                        {modeDescription.description}
+                    </div>
+                );
+            });
         }
 
         return renderedResults;
@@ -318,11 +349,21 @@ class SearchState {
     }
 
     choseIndex = (index:number) => {
+        if (this.mode == SearchMode.Unknown){
+            let modeDescription = this.modeDescriptions[index];
+            this.rawFilterValue = modeDescription.shortcut+'>';
+            this.newValue(this.rawFilterValue);
+            this.setParentUiRawFilterValue(this.rawFilterValue);
+            return;
+        }
+
         if (this.mode == SearchMode.File){
             let filePath = this.filteredValues[index];
             if (filePath) {
                 commands.doOpenFile.emit({ filePath: filePath });
             }
+            this.closeOmniSearch();
+            return;
         }
 
         if (this.mode == SearchMode.Project){
@@ -332,9 +373,9 @@ class SearchState {
                 state.setActiveProject(activeProject.name);
                 state.setInActiveProject(types.TriState.Unknown);
             }
+            this.closeOmniSearch();
+            return;
         }
-
-        this.closeOmniSearch();
     }
 
     newValue(value:string){
@@ -347,24 +388,29 @@ class SearchState {
             let mode = this._modeMap[trimmed[0]];
             if (!mode){
                 this.mode = SearchMode.Unknown
-                return;
+                this.parsedFilterValue = trimmed;
             }
             else {
                 this.mode = mode;
                 this.parsedFilterValue = trimmed.substr(2);
             }
         }
-        else { // if not explicit fall back to file
-            this.mode = SearchMode.File;
+        else { // if not explicit fall back to modes
+            this.mode = SearchMode.Unknown;
             this.parsedFilterValue = trimmed;
         }
 
-        if (this.mode == SearchMode.File){
+
+        if (this.mode == SearchMode.Unknown) {
+            this.filteredValues = this.modeDescriptions;
+        }
+
+        if (this.mode == SearchMode.File) {
             this.filteredValues = fuzzyFilter(this.filePaths, this.parsedFilterValue);
             this.filteredValues = this.filteredValues.slice(0,this.maxShowCount);
         }
 
-        if (this.mode == SearchMode.Project){
+        if (this.mode == SearchMode.Project) {
             this.filteredValues = this.parsedFilterValue
                 ? getFilteredItems<ActiveProjectConfigDetails>({ items: this.availableProjects, textify: (p) => p.name, filterValue: this.parsedFilterValue })
                 : this.availableProjects;
@@ -387,6 +433,7 @@ class SearchState {
     openOmniSearch = (mode: SearchMode) => {
         this.mode = mode;
 
+        // TODO: if already shown and the mode reqested is different would be nice to just change a few leading characters
         this.rawFilterValue = mode == SearchMode.File
             ? 'f>'
             : mode == SearchMode.Command
@@ -397,6 +444,7 @@ class SearchState {
 
         this.isShown = true;
         this.newValue(this.rawFilterValue);
+        this.setParentUiRawFilterValue(this.rawFilterValue);
     }
 
     closeOmniSearch = () => {
