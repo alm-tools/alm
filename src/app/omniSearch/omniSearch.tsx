@@ -178,6 +178,7 @@ class SearchState {
      * Current raw user input value
      */
     rawFilterValue: string;
+    parsedFilterValue: string;
 
     /**
      * Various search lists
@@ -251,30 +252,36 @@ class SearchState {
         let renderedResults: JSX.Element[] = [];
         if (this.mode == SearchMode.File){
             let fileList: string[] = this.filteredValues;
-            let fileListRendered = fileList.map((result, i) => this._renderFilteredFilePaths(result, this.rawFilterValue, this.selectedIndex === i, i, ()=>this.choseIndex(i)));
+            let fileListRendered = fileList.map((filePath, i) => {
+
+                // Create rendered
+                let renderedPath = renderMatchedSegments(filePath,this.rawFilterValue);
+                let renderedFileName = renderMatchedSegments(getFileName(filePath), this.rawFilterValue);
+                let rendered = <div>
+                    <div>{renderedFileName}</div>
+                    {renderedPath}
+                </div>;
+
+                return this._wrapRenderedItemForSelection(rendered, i)
+            });
             renderedResults = fileListRendered;
         }
 
         if (this.mode == SearchMode.Project){
             let filteredProjects: ActiveProjectConfigDetails[] = this.filteredValues;
-            // rendered = <div>{highlitedText}</div>
         }
 
         return renderedResults;
     }
 
-    private _renderFilteredFilePaths(result: string, query: string, selected: boolean,index: number, onClick:()=>any): JSX.Element {
-        // Create rendered
-        let renderedPath = renderMatchedSegments(result,query);
-        let renderedFileName = renderMatchedSegments(getFileName(result), query);
-
+    private _wrapRenderedItemForSelection(rendered: JSX.Element, index: number): JSX.Element {
+        let selected = this.selectedIndex === index;
         let style = selected ? selectedStyle : {};
-
         let ref = selected && "selected";
+
         return (
-            <div key={result} style={[style,styles.padded2,styles.hand, listItemStyle]} onClick={onClick} ref={ref}>
-                <div>{renderedFileName}</div>
-                {renderedPath}
+            <div key={index} style={[style,styles.padded2,styles.hand, listItemStyle]} onClick={()=>this.choseIndex(index)} ref={ref}>
+                {rendered}
             </div>
         );
     }
@@ -293,7 +300,7 @@ class SearchState {
         this.rawFilterValue = value;
 
         // Parse the query to see what type it is
-        let parsedFilterValue = ''
+        this.parsedFilterValue = ''
         let trimmed = value.trim();
         if (trimmed.length > 2 && trimmed[1] == '>') {
             let mode = this._modeMap[trimmed[0]];
@@ -303,7 +310,7 @@ class SearchState {
             }
             else {
                 this.mode = mode;
-                parsedFilterValue = trimmed.substr(2);
+                this.parsedFilterValue = trimmed.substr(2);
             }
         }
         else { // if not explicit fall back to file
@@ -316,7 +323,7 @@ class SearchState {
         }
 
         if (this.mode == SearchMode.Project){
-            this.filteredValues = getFilteredItems<ActiveProjectConfigDetails>({ items: this.availableProjects, textify: (p) => p.name, filterValue: parsedFilterValue });
+            this.filteredValues = getFilteredItems<ActiveProjectConfigDetails>({ items: this.availableProjects, textify: (p) => p.name, filterValue: this.parsedFilterValue });
         }
 
         this.selectedIndex = 0;
