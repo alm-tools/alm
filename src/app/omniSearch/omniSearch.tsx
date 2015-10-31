@@ -49,6 +49,8 @@ let listItemStyle = {
     fontFamily: 'monospace'
 };
 
+let searchingNameStyle = { marginTop: '0', marginBottom: '0', marginLeft: '10px', border: '1px solid grey', padding: '4px 4px', background: 'black' };
+
 
 @ui.Radium
 export class OmniSearch extends BaseComponent<Props, State>{
@@ -123,7 +125,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
                 <div style={[csx.vertical]}>
                     <div style={[csx.horizontal,csx.center]}>
                         <h4 style={{marginTop:'1rem', marginBottom: '1rem'} as any}>Omni Search <Icon name="search"/></h4>
-                        {searchingName?<h5  style={{marginTop:'0', marginBottom: '0', marginLeft: '10px', border:'1px solid grey', padding: '4px 4px', background:'black'} as any}>{searchingName}</h5>:''}
+                        {searchingName ? <h5  style={searchingNameStyle}>{searchingName}</h5> : ''}
                         <div style={[csx.flex]}></div>
                         <div style={{fontSize:'0.9rem', color:'grey'} as any}><code style={keyStrokeStyle}>Esc</code> to exit <code style={keyStrokeStyle}>Enter</code> to select</div>
                     </div>
