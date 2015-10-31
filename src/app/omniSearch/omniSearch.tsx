@@ -82,13 +82,13 @@ export class OmniSearch extends BaseComponent<Props, State>{
 
     componentDidMount() {
         commands.findFile.on(() => {
-            this.searchState.openOmniSearch(SearchMode.File);
+            this.openOmniSearch(SearchMode.File);
         });
         commands.findCommand.on(() => {
-            this.searchState.openOmniSearch(SearchMode.Command);
+            this.openOmniSearch(SearchMode.Command);
         });
         commands.doSelectProject.on(() => {
-            this.searchState.openOmniSearch(SearchMode.Project);
+            this.openOmniSearch(SearchMode.Project);
         });
     }
 
@@ -102,7 +102,10 @@ export class OmniSearch extends BaseComponent<Props, State>{
             }
             // also keep the input in focus
             if (this.searchState.isShown) {
-                (ReactDOM.findDOMNode(this.refs.omniSearchInput) as HTMLInputElement).focus();
+                let input = (ReactDOM.findDOMNode(this.refs.omniSearchInput) as HTMLInputElement)
+                input.focus();
+                let len = input.value.length;
+                input.setSelectionRange(len, len)
             }
         });
     }
@@ -139,6 +142,19 @@ export class OmniSearch extends BaseComponent<Props, State>{
         </Modal>
     }
 
+    openOmniSearch = (mode:SearchMode) =>{
+        this.searchState.openOmniSearch(mode);
+
+        // also scroll to the end of the input after loading
+        setTimeout(()=>{
+            let input = (ReactDOM.findDOMNode(this.refs.omniSearchInput) as HTMLInputElement)
+            if (!input) return;
+            let len = input.value.length;
+            input.setSelectionRange(len, len)
+        });
+
+        // TODO: if already shown and the mode reqested is different would be nice to just change a few leading characters
+    }
     onChangeFilter = debounce((e)=>{
         let filterValue = (ReactDOM.findDOMNode(this.refs.omniSearchInput) as HTMLInputElement).value;
         this.searchState.newValue(filterValue);
@@ -380,7 +396,7 @@ class SearchState {
             : '';
 
         this.isShown = true;
-        this.stateChanged.emit({});
+        this.newValue(this.rawFilterValue);
     }
 
     closeOmniSearch = () => {
