@@ -5,7 +5,7 @@ import * as state from "../../state/state";
 
 // Docs https://codemirror.net/doc/manual.html#addon_lint
 import lint = require('./lint');
-var _import = lint.codeMirror;
+var _import = lint.CodeMirror;
 require('codemirror/addon/lint/lint.css');
 
 /** Enable linter for this code mirror */
