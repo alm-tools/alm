@@ -202,6 +202,8 @@ interface SearchModeDescription {
  * So ... created this class
  * Responsible for taking user input > parsing it and then > returning the rendered search results
  * Also maintains the selected index within the search results and takes approriate action if user commits to it
+ *
+ * functions marched with "mode" contain mode specific logic
  */
 class SearchState {
     /**
@@ -216,6 +218,7 @@ class SearchState {
     modeDescriptions: SearchModeDescription[] = []; // set in ctor
     filePaths: string [] = [];
     availableProjects: ActiveProjectConfigDetails[] = [];
+    commands = commands.commandRegistry;
 
     /** Modes can use this to store their results */
     filteredValues:any[] = [];
@@ -224,7 +227,7 @@ class SearchState {
      * Current mode
      */
     mode: SearchMode = SearchMode.File;
-    _modeMap: { [key: string]: SearchMode } = {}; // set in ctor
+    modeMap: { [key: string]: SearchMode } = {}; // set in ctor
 
     /**
      * showing search results
@@ -253,12 +256,12 @@ class SearchState {
 
         server.filePaths({}).then((res) => {
             this.filePaths = res.filePaths;
-            this._updateIfUserIsSearching(SearchMode.File);
+            this.updateIfUserIsSearching(SearchMode.File);
         });
         cast.filePathsUpdated.on((update) => {
             console.log(update);
             this.filePaths = update.filePaths;
-            this._updateIfUserIsSearching(SearchMode.File);
+            this.updateIfUserIsSearching(SearchMode.File);
         });
 
         server.availableProjects({}).then(res => {
@@ -290,15 +293,10 @@ class SearchState {
         ];
 
         // setup mode map
-        this.modeDescriptions.forEach(md => this._modeMap[md.shortcut] = md.mode);
+        this.modeDescriptions.forEach(md => this.modeMap[md.shortcut] = md.mode);
     }
 
-    private _updateIfUserIsSearching(mode:SearchMode){
-        if (this.mode == mode && this.isShown){
-            this.stateChanged.emit({});
-        }
-    }
-
+    /** Mode */
     renderResults(): JSX.Element[] {
         let renderedResults: JSX.Element[] = [];
         if (this.mode == SearchMode.File){
@@ -311,6 +309,20 @@ class SearchState {
                     <div>
                         <div>{renderedFileName}</div>
                         {renderedPath}
+                    </div>
+                );
+            });
+        }
+
+        if (this.mode == SearchMode.Command){
+            let filtered: commands.UICommand[] = this.filteredValues;
+            renderedResults = this.createRenderedForList(filtered,(command)=>{
+                // Create rendered
+                let matched = renderMatchedSegments(command.config.description,this.parsedFilterValue);
+                return (
+                    <div>
+                        <div>{matched}</div>
+                        <div>{commandShortcutToDisplayName(command.config.keyboardShortcut)}</div>
                     </div>
                 );
             });
@@ -345,27 +357,7 @@ class SearchState {
         return renderedResults;
     }
 
-    getSearchingName(): string {
-        let description = this.modeDescriptions.filter(x=>x.mode == this.mode)[0];
-        if (!description) return '';
-        else return description.searchingName;
-    }
-
-    private createRenderedForList<T>(items: T[], itemToRender: (item: T) => JSX.Element): JSX.Element[] {
-        return items.map((item, index) => {
-            let rendered = itemToRender(item);
-            let selected = this.selectedIndex === index;
-            let style = selected ? selectedStyle : {};
-            let ref = selected && "selected";
-
-            return (
-                <div key={index} style={[style, styles.padded2, styles.hand, listItemStyle]} onClick={() => this.choseIndex(index) } ref={ref}>
-                    {rendered}
-                </div>
-            );
-        });
-    }
-
+    /** Mode */
     choseIndex = (index:number) => {
         if (this.mode == SearchMode.Unknown){
             let modeDescription = this.modeDescriptions[index];
@@ -384,6 +376,15 @@ class SearchState {
             return;
         }
 
+        if (this.mode == SearchMode.Command){
+            let command:commands.UICommand = this.filteredValues[index];
+            if (command) {
+                command.emit({});
+            }
+            this.closeOmniSearch();
+            return;
+        }
+
         if (this.mode == SearchMode.Project){
             let activeProject:ActiveProjectConfigDetails = this.filteredValues[index];
             if (activeProject) {
@@ -396,6 +397,7 @@ class SearchState {
         }
     }
 
+    /** Mode */
     newValue(value:string){
         this.rawFilterValue = value;
 
@@ -403,7 +405,7 @@ class SearchState {
         this.parsedFilterValue = ''
         let trimmed = value.trim();
         if (trimmed.length > 1 && trimmed[1] == '>') {
-            let mode = this._modeMap[trimmed[0]];
+            let mode = this.modeMap[trimmed[0]];
             if (!mode){
                 this.mode = SearchMode.Unknown
                 this.parsedFilterValue = trimmed;
@@ -428,6 +430,12 @@ class SearchState {
             this.filteredValues = this.filteredValues.slice(0,this.maxShowCount);
         }
 
+        if (this.mode == SearchMode.Command) {
+            this.filteredValues = this.parsedFilterValue
+                ? getFilteredItems<commands.UICommand>({ items: this.commands, textify: (c) => c.config.description, filterValue: this.parsedFilterValue })
+                : this.commands;
+        }
+
         if (this.mode == SearchMode.Project) {
             this.filteredValues = this.parsedFilterValue
                 ? getFilteredItems<ActiveProjectConfigDetails>({ items: this.availableProjects, textify: (p) => p.name, filterValue: this.parsedFilterValue })
@@ -436,6 +444,33 @@ class SearchState {
 
         this.selectedIndex = 0;
         this.stateChanged.emit({});
+    }
+
+    getSearchingName(): string {
+        let description = this.modeDescriptions.filter(x=>x.mode == this.mode)[0];
+        if (!description) return '';
+        else return description.searchingName;
+    }
+
+    private createRenderedForList<T>(items: T[], itemToRender: (item: T) => JSX.Element): JSX.Element[] {
+        return items.map((item, index) => {
+            let rendered = itemToRender(item);
+            let selected = this.selectedIndex === index;
+            let style = selected ? selectedStyle : {};
+            let ref = selected && "selected";
+
+            return (
+                <div key={index} style={[style, styles.padded2, styles.hand, listItemStyle]} onClick={() => this.choseIndex(index) } ref={ref}>
+                    {rendered}
+                </div>
+            );
+        });
+    }
+
+    private updateIfUserIsSearching(mode:SearchMode){
+        if (this.mode == mode && this.isShown){
+            this.stateChanged.emit({});
+        }
     }
 
     incrementSelected = () => {
@@ -473,27 +508,13 @@ class SearchState {
     };
 }
 
-/** TODO: This exits to make creating new modes easier 🌹 */
-// interface OmniSearchModeImplementation<T>{
-//     /**
-//      * config stuff
-//      */
-//     mode: Mode,
-//     maxShowCount: number;
-//
-//     /**
-//      * User searching stuff
-//      */
-//     newValue(value: string);
-//     totalResultsNumber(): number;
-//
-//     /**
-//      * Render
-//      */
-//     renderResults(): JSX.Element[];
-//
-//     /**
-//      * Finally chose
-//      */
-//     choseIndex(index: number): void;
-// }
+/** Utility function for command display */
+function commandShortcutToDisplayName(shortcut: string): string {
+    let basic = shortcut
+        .replace(/mod/g,ui.modName)
+        .replace(/alt/g,'Alt')
+        .replace(/shift/g,'Shift');
+    let onPlus = basic.split('+');
+    onPlus[onPlus.length - 1] = onPlus[onPlus.length - 1].toUpperCase();
+    return onPlus.join(' + ');
+}

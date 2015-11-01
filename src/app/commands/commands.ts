@@ -16,7 +16,7 @@ interface UICommandConfig {
  * A command is just an event emitter with some useful properties relevant to the front end command registry
  * such commands cannot have a payload
  */
-class UICommand extends events.TypedEvent<{}>{
+export class UICommand extends events.TypedEvent<{}>{
     constructor(public config: UICommandConfig){
         super();
     }
@@ -76,11 +76,11 @@ export var findAndReplace = new UICommand({
 });
 export var findNext = new UICommand({
     keyboardShortcut: 'f3', // atom,sublime
-    description:"Show next search result",
+    description:"Find the next search result",
 });
 export var findPrevious = new UICommand({
     keyboardShortcut: 'shift+f3', // atom,sublime
-    description:"Show previous search result",
+    description:"Find the previous search result",
 });
 export var replaceNext = new events.TypedEvent<{ newText: string }>();
 export var replaceAll = new events.TypedEvent<{ newText: string }>();
