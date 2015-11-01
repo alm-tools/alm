@@ -135,5 +135,6 @@ export namespace errorsPanel {
         padding: '3px',
         background: 'black',
         border: '2px solid #999',
+        cursor: 'pointer',
     }
 }

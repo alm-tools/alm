@@ -521,7 +521,7 @@ class SearchState {
     };
 }
 
-let commandKeyStrokeStyle = {
+var commandKeyStrokeStyle = {
     fontSize: '.7rem',
     color: '#DDD',
     background: '#111',
