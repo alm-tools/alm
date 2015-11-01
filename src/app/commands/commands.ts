@@ -38,16 +38,34 @@ export var nextTab = new UICommand({
     keyboardShortcut: 'alt+k',
     description:"Focus on the next tab",
 });
-export var prevTab = new UICommand();
-export var closeTab = new UICommand();
-export var saveTab = new UICommand();
+export var prevTab = new UICommand({
+    keyboardShortcut: 'alt+j',
+    description:"Focus on the previous tab",
+});
+export var closeTab = new UICommand({
+    keyboardShortcut: 'alt+w', // c9
+    description:"Close current tab",
+});
+export var saveTab = new UICommand({
+    keyboardShortcut: 'mod+s', // c9
+    description:"Save current tab",
+});
 
 /**
  * OmniSearch
  */
-export var findFile = new UICommand();
-export var findCommand = new UICommand();
-export var selectProject = new UICommand();
+export var findFile = new UICommand({
+    keyboardShortcut: 'mod+p',  // atom,sublime
+    description:"Find a file in the working directory",
+});
+export var findCommand = new UICommand({
+    keyboardShortcut: 'mod+shift+p', // atom,sublime
+    description:"Find a command",
+});
+export var selectProject = new UICommand({
+    keyboardShortcut: 'alt+shift+p', // atom:projectmanager package
+    description:"Set active project",
+});
 
 /**
  * General purpose file opening
@@ -59,21 +77,34 @@ export var doOpenOrFocusFile = new events.TypedEvent<{ filePath: string, positio
 /**
  * FAR find and replace
  */
-export var findAndReplace = new UICommand();
-export var findNext = new UICommand();
-export var findPrevious = new UICommand();
+export var findAndReplace = new UICommand({
+    keyboardShortcut: 'mod+f', // atom,sublime,c9
+    description:"Show find and replace dialog",
+});
+export var findNext = new UICommand({
+    keyboardShortcut: 'f3', // atom,sublime
+    description:"Show next search result",
+});
+export var findPrevious = new UICommand({
+    keyboardShortcut: 'shift+f3', // atom,sublime
+    description:"Show previous search result",
+});
 export var replaceNext = new events.TypedEvent<{ newText: string }>();
 export var replaceAll = new events.TypedEvent<{ newText: string }>();
 
 /**
  * Error panel
  */
-export var toggleErrorMessagesPanel = new UICommand();
+export var toggleErrorMessagesPanel = new UICommand({
+    keyboardShortcut: 'mod+shift+m', // code
+    description:"Toggle error panel",
+});
 
 /**
  * The command registry composed of commands that are keyboard only
  */
 export var commandRegistry: UICommand[] = [
+    esc,
     nextTab,
     prevTab,
     closeTab,
@@ -88,6 +119,12 @@ export var commandRegistry: UICommand[] = [
 ];
 
 export function register() {
+
+    // TODO: enable at some point
+    // Mousetrap.bindGlobal('mod+h', function() { // atom,sublime,c9
+    //     findAndReplace.emit({});
+    //     return false;
+    // });
 
     /** General utility */
     Mousetrap.bindGlobal('esc', function() {
@@ -116,7 +153,7 @@ export function register() {
     /**
      * OmniSearch
      */
-    Mousetrap.bindGlobal('mod+p', function() { // atom,sublime
+    Mousetrap.bindGlobal('mod+p', function() {
         findFile.emit({});
         return false;
     });
@@ -140,10 +177,7 @@ export function register() {
         findAndReplace.emit({});
         return false;
     });
-    Mousetrap.bindGlobal('mod+h', function() { // atom,sublime,c9
-        findAndReplace.emit({});
-        return false;
-    });
+
     Mousetrap.bindGlobal('f3', function() { // atom,sublime
         findNext.emit({});
         return false;
