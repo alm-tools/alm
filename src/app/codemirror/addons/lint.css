@@ -1,0 +1,11 @@
+/** Just the Overrides of original lint.css (still included) */
+
+.CodeMirror-lint-tooltip {
+    background-color: #333;
+    color: #DDD;
+    border: 2px solid white;
+    padding: 3px 6px;
+
+    /* just more important than hover tooltip */
+    z-index: 1000;
+}
