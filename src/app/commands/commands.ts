@@ -17,7 +17,7 @@ interface UICommandConfig {
  * such commands cannot have a payload
  */
 class UICommand extends events.TypedEvent<{}>{
-    constructor(public config?: UICommandConfig){
+    constructor(public config: UICommandConfig){
         super();
     }
 }
@@ -126,72 +126,10 @@ export function register() {
     //     return false;
     // });
 
-    /** General utility */
-    Mousetrap.bindGlobal('esc', function() {
-        esc.emit({});
-        return false;
+    commandRegistry.forEach(c=>{
+        Mousetrap.bindGlobal(c.config.keyboardShortcut, function() {
+            c.emit({});
+            return false;
+        });
     });
-
-    /** Tabs */
-    Mousetrap.bindGlobal('alt+k', function() {
-        nextTab.emit({});
-        return false;
-    });
-    Mousetrap.bindGlobal('alt+j', function() {
-        prevTab.emit({});
-        return false;
-    });
-    Mousetrap.bindGlobal('alt+w', function() { // c9
-        closeTab.emit({});
-        return false;
-    });
-    Mousetrap.bindGlobal('mod+s', function() { // c9
-        saveTab.emit({});
-        return false;
-    });
-
-    /**
-     * OmniSearch
-     */
-    Mousetrap.bindGlobal('mod+p', function() {
-        findFile.emit({});
-        return false;
-    });
-    Mousetrap.bindGlobal('mod+shift+p', function() { // atom,sublime
-        findCommand.emit({});
-        return false;
-    });
-
-    /**
-     * Project
-     */
-    Mousetrap.bindGlobal('alt+shift+p', function() { // atom:ProjectManager
-        selectProject.emit({});
-        return false;
-    });
-
-    /**
-     * Find and replace
-     */
-    Mousetrap.bindGlobal('mod+f', function() { // atom,sublime,c9
-        findAndReplace.emit({});
-        return false;
-    });
-
-    Mousetrap.bindGlobal('f3', function() { // atom,sublime
-        findNext.emit({});
-        return false;
-    });
-    Mousetrap.bindGlobal('shift+f3', function() { // atom,sublime
-        findPrevious.emit({});
-        return false;
-    });
-
-    /**
-     * Error panel
-     */
-     Mousetrap.bindGlobal('mod+shift+m', function() { // code
-         toggleErrorMessagesPanel.emit({});
-         return false;
-     });
 }
