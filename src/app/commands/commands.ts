@@ -54,17 +54,17 @@ export var saveTab = new UICommand({
 /**
  * OmniSearch
  */
-export var findFile = new UICommand({
+export var omniFindFile = new UICommand({
     keyboardShortcut: 'mod+p',  // atom,sublime
     description:"Find a file in the working directory",
 });
-export var findCommand = new UICommand({
+export var omniFindCommand = new UICommand({
     keyboardShortcut: 'mod+shift+p', // atom,sublime
     description:"Find a command",
 });
-export var selectProject = new UICommand({
+export var omniSelectProject = new UICommand({
     keyboardShortcut: 'alt+shift+p', // atom:projectmanager package
-    description:"Set active project",
+    description:"Find and set active project",
 });
 
 /**
@@ -111,9 +111,9 @@ export var commandRegistry: UICommand[] = [
     prevTab,
     closeTab,
     saveTab,
-    findFile,
-    findCommand,
-    selectProject,
+    omniFindFile,
+    omniFindCommand,
+    omniSelectProject,
     findAndReplace,
     findNext,
     findPrevious,

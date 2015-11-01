@@ -91,13 +91,13 @@ export class OmniSearch extends BaseComponent<Props, State>{
     }
 
     componentDidMount() {
-        commands.findFile.on(() => {
+        commands.omniFindFile.on(() => {
             this.searchState.openOmniSearch(SearchMode.File);
         });
-        commands.findCommand.on(() => {
+        commands.omniFindCommand.on(() => {
             this.searchState.openOmniSearch(SearchMode.Command);
         });
-        commands.selectProject.on(() => {
+        commands.omniSelectProject.on(() => {
             this.searchState.openOmniSearch(SearchMode.Project);
         });
     }
@@ -384,7 +384,11 @@ class SearchState {
             if (command) {
                 command.emit({});
             }
-            this.closeOmniSearch();
+            if (command!==commands.omniFindFile
+                && command !== commands.omniFindCommand
+                && command !== commands.omniSelectProject){
+                    this.closeOmniSearch();
+                }
             return;
         }
 
