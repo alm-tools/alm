@@ -504,8 +504,10 @@ class SearchState {
         let description = this.modeDescriptions.filter(x=>x.mode == mode)[0];
         this.rawFilterValue = description?description.shortcut+'>':'';
 
-        // If already shown would be nice to just change a few leading characters
-        if (this.isShown && oldMode !== SearchMode.Unknown) {
+        // If already shown would be nice to preserve current user input
+        // And if the new mode is different
+        // And if the new mode is not *search* search mode
+        if (this.isShown && oldMode !== this.mode && oldMode !== SearchMode.Unknown) {
             this.rawFilterValue = this.rawFilterValue + oldRawFilterValue.trim().substr(2);
         }
 
