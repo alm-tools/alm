@@ -281,7 +281,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
         let options = state.getState().findOptions;
         if (!options.isShown || !options.query) {
-            component.clearSearch()
+            component.hideSearch()
         }
         else {
             component.search(options)

@@ -259,8 +259,8 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
         search.commands.search(this.codeMirror, query);
     }
 
-    clearSearch = () => {
-        search.commands.clearSearch(this.codeMirror);
+    hideSearch = () => {
+        search.commands.hideSearch(this.codeMirror);
     }
 
     findNext = () => {

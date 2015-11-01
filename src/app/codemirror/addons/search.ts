@@ -14,7 +14,7 @@ import CodeMirror = require('codemirror');
  */
 export let commands = {
   search: (cm:CodeMirror.EditorFromTextArea, query: RegExp) => startSearch(cm, getSearchState(cm), query),
-  clearSearch: (cm:CodeMirror.EditorFromTextArea) => clearSearch(cm),
+  hideSearch: (cm:CodeMirror.EditorFromTextArea) => hideSearch(cm),
   findNext: (cm:CodeMirror.EditorFromTextArea) => findNext(cm,false),
   findPrevious: (cm:CodeMirror.EditorFromTextArea) => findNext(cm,true),
   replaceNext: (cm: CodeMirror.EditorFromTextArea, newText: string) => simpleReplace(cm, newText, false),
@@ -58,6 +58,15 @@ function simpleReplace(codeMirror: CodeMirror.EditorFromTextArea, newText: strin
         };
     }
 }
+
+/** pulled from clearSearch below */
+function hideSearch(cm) {cm.operation(function() {
+  var state = getSearchState(cm);
+  if (state.overlay){
+      cm.removeOverlay(state.overlay);
+  }
+  return;
+});}
 
 
 /**
