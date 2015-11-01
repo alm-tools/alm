@@ -68,13 +68,6 @@ export var selectProject = new UICommand({
 });
 
 /**
- * General purpose file opening
- */
-export var doOpenFile = new events.TypedEvent<{ filePath: string, position?: EditorPosition }>();
-export var didOpenFile = new events.TypedEvent<{ filePath: string }>();
-export var doOpenOrFocusFile = new events.TypedEvent<{ filePath: string, position?: EditorPosition }>();
-
-/**
  * FAR find and replace
  */
 export var findAndReplace = new UICommand({
@@ -100,6 +93,15 @@ export var toggleErrorMessagesPanel = new UICommand({
     description:"Toggle error panel",
 });
 
+
+/**
+ * General purpose file opening
+ */
+export var doOpenFile = new events.TypedEvent<{ filePath: string, position?: EditorPosition }>();
+export var didOpenFile = new events.TypedEvent<{ filePath: string }>();
+export var doOpenOrFocusFile = new events.TypedEvent<{ filePath: string, position?: EditorPosition }>();
+
+
 /**
  * The command registry composed of commands that are keyboard only
  */
@@ -120,16 +122,17 @@ export var commandRegistry: UICommand[] = [
 
 export function register() {
 
-    // TODO: enable at some point
-    // Mousetrap.bindGlobal('mod+h', function() { // atom,sublime,c9
-    //     findAndReplace.emit({});
-    //     return false;
-    // });
-
     commandRegistry.forEach(c=>{
         Mousetrap.bindGlobal(c.config.keyboardShortcut, function() {
             c.emit({});
             return false;
         });
+    });
+
+    // Commands with multiple key bindings
+    // enable at some point
+    Mousetrap.bindGlobal('mod+h', function() { // atom,sublime,c9
+        findAndReplace.emit({});
+        return false;
     });
 }
