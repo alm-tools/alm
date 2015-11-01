@@ -249,7 +249,7 @@ class SearchState {
     setParentUiRawFilterValue = (rawFilterValue:string)=>null;
 
     /** for performance reasons */
-    maxShowCount = 15;
+    maxShowCount = 20;
 
     constructor() {
         commands.esc.on(()=>{
