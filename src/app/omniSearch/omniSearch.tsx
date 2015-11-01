@@ -345,8 +345,8 @@ class SearchState {
         }
 
         if (this.mode == SearchMode.Unknown){
-            // TODO: show a nice list of options ... and use that to drive the selection of that to set mode!
-            renderedResults = this.createRenderedForList(this.modeDescriptions,(modeDescription)=>{
+            let filtered: SearchModeDescription[] = this.filteredValues;
+            renderedResults = this.createRenderedForList(filtered,(modeDescription)=>{
                 // Create rendered
                 return (
                     <div>
@@ -361,16 +361,16 @@ class SearchState {
     }
 
     /** Mode */
-    choseIndex = (index:number) => {
-        if (this.mode == SearchMode.Unknown){
-            let modeDescription = this.modeDescriptions[index];
-            this.rawFilterValue = modeDescription.shortcut+'>';
+    choseIndex = (index: number) => {
+        if (this.mode == SearchMode.Unknown) {
+            let modeDescription: SearchModeDescription = this.filteredValues[index];
+            this.rawFilterValue = modeDescription.shortcut + '>';
             this.newValue(this.rawFilterValue);
             this.setParentUiRawFilterValue(this.rawFilterValue);
             return;
         }
 
-        if (this.mode == SearchMode.File){
+        if (this.mode == SearchMode.File) {
             let filePath = this.filteredValues[index];
             if (filePath) {
                 commands.doOpenFile.emit({ filePath: filePath });
@@ -379,21 +379,21 @@ class SearchState {
             return;
         }
 
-        if (this.mode == SearchMode.Command){
-            let command:commands.UICommand = this.filteredValues[index];
+        if (this.mode == SearchMode.Command) {
+            let command: commands.UICommand = this.filteredValues[index];
             if (command) {
                 command.emit({});
             }
-            if (command!==commands.omniFindFile
+            if (command !== commands.omniFindFile
                 && command !== commands.omniFindCommand
-                && command !== commands.omniSelectProject){
-                    this.closeOmniSearch();
-                }
+                && command !== commands.omniSelectProject) {
+                this.closeOmniSearch();
+            }
             return;
         }
 
-        if (this.mode == SearchMode.Project){
-            let activeProject:ActiveProjectConfigDetails = this.filteredValues[index];
+        if (this.mode == SearchMode.Project) {
+            let activeProject: ActiveProjectConfigDetails = this.filteredValues[index];
             if (activeProject) {
                 server.setActiveProjectName({ name: activeProject.name });
                 state.setActiveProject(activeProject.name);
@@ -429,7 +429,9 @@ class SearchState {
 
 
         if (this.mode == SearchMode.Unknown) {
-            this.filteredValues = this.modeDescriptions;
+            this.filteredValues = this.parsedFilterValue
+                ? getFilteredItems<SearchModeDescription>({ items: this.modeDescriptions, textify: (c) => c.description, filterValue: this.parsedFilterValue })
+                : this.modeDescriptions;
         }
 
         if (this.mode == SearchMode.File) {
@@ -454,6 +456,10 @@ class SearchState {
     }
 
     getSearchingName(): string {
+        if (this.mode == SearchMode.Unknown){
+            return 'Modes';
+        }
+
         let description = this.modeDescriptions.filter(x=>x.mode == this.mode)[0];
         if (!description) return '';
         else return description.searchingName;
