@@ -61,3 +61,25 @@ export function notifySuccessNormalDisappear(message: string){
 commands.esc.on(()=>{
     toastr.clear();
 });
+
+
+/**
+ * Keyboard handling
+ */
+ /** Utility function for keyboard handling */
+export function getKeyStates(e: React.SyntheticEvent) {
+    let event: KeyboardEvent = e as any; // This is a lie .... but a convinient one as react provides the same stuff
+    let nativeEvent: KeyboardEvent = e.nativeEvent as any; // This is the truth
+
+    let tab = event.key == 'Tab';
+    let shift = nativeEvent.shiftKey;
+    let mod = nativeEvent.metaKey || nativeEvent.ctrlKey;
+    let enter = event.key == 'Enter';
+    let up = event.key == 'ArrowUp';
+    let down = event.key == 'ArrowDown';
+
+    let tabNext = tab && !shift;
+    let tabPrevious = tab && shift;
+
+    return { tab, tabNext, tabPrevious, up, down, shift, mod, enter };
+}

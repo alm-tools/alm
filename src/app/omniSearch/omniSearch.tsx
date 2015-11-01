@@ -172,17 +172,19 @@ export class OmniSearch extends BaseComponent<Props, State>{
     decrementSelected = debounce(() => {
         this.searchState.decrementSelected();
     },0,true);
-    onChangeSelected = (e)=>{
-        if (e.key == 'ArrowUp'){
-            e.preventDefault();
+    onChangeSelected = (event) => {
+        let keyStates = ui.getKeyStates(event);
+
+        if (keyStates.up || keyStates.tabPrevious) {
+            event.preventDefault();
             this.decrementSelected();
         }
-        if (e.key == 'ArrowDown') {
-            e.preventDefault();
+        if (keyStates.down || keyStates.tabNext) {
+            event.preventDefault();
             this.incrementSelected();
         }
-        if (e.key == 'Enter'){
-            e.preventDefault();
+        if (keyStates.enter) {
+            event.preventDefault();
             this.searchState.choseIndex(this.searchState.selectedIndex);
         }
     };
@@ -320,9 +322,10 @@ class SearchState {
                 // Create rendered
                 let matched = renderMatchedSegments(command.config.description,this.parsedFilterValue);
                 return (
-                    <div>
-                        <div>{matched}</div>
-                        <div>{commandShortcutToDisplayName(command.config.keyboardShortcut)}</div>
+                    <div style={csx.horizontal}>
+                        <span>{matched}</span>
+                        <span style={csx.flex}></span>
+                        <div style={commandKeyStrokeStyle}>{commandShortcutToDisplayName(command.config.keyboardShortcut)}</div>
                     </div>
                 );
             });
@@ -507,6 +510,16 @@ class SearchState {
         this.stateChanged.emit({});
     };
 }
+
+let commandKeyStrokeStyle = {
+    fontSize: '.7rem',
+    color: '#DDD',
+    background: '#111',
+    paddingLeft: '4px',
+    paddingRight: '4px',
+    border: '2px solid',
+    borderRadius: '4px',
+};
 
 /** Utility function for command display */
 function commandShortcutToDisplayName(shortcut: string): string {

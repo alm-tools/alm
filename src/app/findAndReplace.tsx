@@ -132,22 +132,9 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         );
     }
 
-    /** Utility function for keyboard handling */
-    getKeyStates(e:React.SyntheticEvent){
-        let event: KeyboardEvent = e as any; // This is a lie .... but a convinient one
-        let nativeEvent: KeyboardEvent = e.nativeEvent as any;
-
-        let tab = event.key == 'Tab';
-        let shift = nativeEvent.shiftKey;
-        let mod = nativeEvent.metaKey || nativeEvent.ctrlKey;
-        let enter = event.key == 'Enter';
-
-        return {tab,shift,mod,enter};
-    }
-
     /** Tab key is only called on key down :) */
     findKeyDownHandler = (e:React.SyntheticEvent) => {
-        let {tab,shift,enter} = this.getKeyStates(e);
+        let {tab,shift,enter} = ui.getKeyStates(e);
 
         if (shift && tab) {
             this.fullWordInput().focus();
@@ -163,7 +150,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
     };
 
     fullWordKeyDownHandler = (e:React.SyntheticEvent) => {
-        let {tab,shift,enter} = this.getKeyStates(e);
+        let {tab,shift,enter} = ui.getKeyStates(e);
 
         if (tab && !shift) {
             this.findInput().focus();
@@ -173,7 +160,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
     };
 
     handleSearchKeys(e: React.SyntheticEvent) {
-        let {tab,shift,enter,mod} = this.getKeyStates(e);
+        let {tab,shift,enter,mod} = ui.getKeyStates(e);
 
         if (!state.getState().findOptions.query){
             return;
