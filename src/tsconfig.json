@@ -74,6 +74,7 @@
         "./typings/colors/colors.d.ts",
         "./typings/cookie-parser/cookie-parser.d.ts",
         "./typings/deep-equal/deep-equal.d.ts",
+        "./typings/escape-html/escape-html.d.ts",
         "./typings/express/express.d.ts",
         "./typings/function.d.ts",
         "./typings/fuzzaldrin.d.ts",

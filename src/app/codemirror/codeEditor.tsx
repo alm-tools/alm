@@ -45,8 +45,9 @@ import onresize = require('onresize');
 import * as styles from "../styles/styles";
 import * as csx from "csx";
 import * as ui from "../ui";
-import {cast} from "../../socket/socketClient";
+import {cast,server} from "../../socket/socketClient";
 import {createId,getFilePathFromUrl} from "../../common/utils";
+import escape = require("escape-html");
 
 import * as state from "../state/state";
 
@@ -136,13 +137,20 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
 	}
 
     getQuickInfo(pos:CodeMirror.Position): Promise<string | HTMLElement> {
-        // console.log(pos);
-        // let div = document.createElement('div');
-        // div.innerHTML = `<strong>Awesome, ${pos.line},${pos.ch}</strong>`;
-        // let def = Promise.defer();
-        // setTimeout(()=>{def.resolve(div)},1000);
-        // return def.promise;
-        return;
+        if (state.inActiveProject()) {
+            return server.quickInfo({ filePath: this.filePath, position: this.codeMirror.getDoc().indexFromPos(pos) }).then(resp=> {
+                if (!resp.valid) return;
+
+                var message = `<b>${escape(resp.name)}</b>`;
+                if (resp.comment) {
+                    message = message + `<br/><i>${escape(resp.comment).replace(/(?:\r\n|\r|\n)/g, '<br />')}</i>`;
+                }
+
+                let div = document.createElement('div');
+                div.innerHTML = message;
+                return div;
+            });
+        }
     }
 
 	getCodeMirror () {

@@ -154,3 +154,20 @@ function kindToColor(kind:string, lighten = false){
             return base;
     }
 }
+
+export function quickInfo(query: Types.QuickInfoQuery): Promise<Types.QuickInfoResponse> {
+        let project = getProject(query.filePath);
+    if (!project.includesSourceFile(query.filePath)) {
+        return Promise.resolve({ valid: false });
+    }
+    var info = project.languageService.getQuickInfoAtPosition(query.filePath, query.position);
+    if (!info) {
+        return Promise.resolve({ valid: false });
+    } else {
+        return resolve({
+            valid: true,
+            name: ts.displayPartsToString(info.displayParts || []),
+            comment: ts.displayPartsToString(info.documentation || [])
+        });
+    }
+}

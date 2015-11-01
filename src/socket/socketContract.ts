@@ -38,6 +38,7 @@ export var server = {
      * Project Service
      */
     getCompletionsAtPosition: {} as QRFunction<Types.GetCompletionsAtPositionQuery,Types.GetCompletionsAtPositionResponse>,
+    quickInfo: {} as QRFunction<Types.QuickInfoQuery,Types.QuickInfoResponse>,
 }
 
 export var client = {
@@ -103,5 +104,12 @@ export namespace Types {
     export interface GetCompletionsAtPositionResponse {
         completions: Completion[];
         endsInPunctuation: boolean;
+    }
+
+    export interface QuickInfoQuery extends FilePathPositionQuery { }
+    export interface QuickInfoResponse {
+        valid: boolean; // Do we have a valid response for this query
+        name?: string;
+        comment?: string;
     }
 }
