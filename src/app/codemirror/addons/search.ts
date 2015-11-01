@@ -15,8 +15,8 @@ import CodeMirror = require('codemirror');
 export let commands = {
   search: (cm:CodeMirror.EditorFromTextArea, query: RegExp) => startSearch(cm, getSearchState(cm), query),
   hideSearch: (cm:CodeMirror.EditorFromTextArea) => hideSearch(cm),
-  findNext: (cm:CodeMirror.EditorFromTextArea) => findNext(cm,false),
-  findPrevious: (cm:CodeMirror.EditorFromTextArea) => findNext(cm,true),
+  findNext: (cm:CodeMirror.EditorFromTextArea, query: RegExp) => findNextIfNotAlreadyDoing(cm,query,false),
+  findPrevious: (cm:CodeMirror.EditorFromTextArea, query: RegExp) => findNextIfNotAlreadyDoing(cm,query,true),
   replaceNext: (cm: CodeMirror.EditorFromTextArea, newText: string) => simpleReplace(cm, newText, false),
   replaceAll: (cm: CodeMirror.EditorFromTextArea, newText: string) => simpleReplace(cm, newText, true),
 }
@@ -68,6 +68,23 @@ function hideSearch(cm) {cm.operation(function() {
   return;
 });}
 
+function findNextIfNotAlreadyDoing(cm: CodeMirror.EditorFromTextArea, query: RegExp, rev = false) {
+    var state = getSearchState(cm);
+    if (!state.query || state.query.toString() !== query.toString()){
+        startSearchNoOverlay(cm,getSearchState(cm), query);
+    }
+    findNext(cm,rev);
+}
+
+/** same as startSearch but with no overlay */
+function startSearchNoOverlay(cm, state, query) {
+  state.queryText = query;
+  state.query = parseQuery(query);
+  if (cm.showMatchesOnScrollbar) {
+    if (state.annotate) { state.annotate.clear(); state.annotate = null; }
+    state.annotate = cm.showMatchesOnScrollbar(state.query, queryCaseInsensitive(state.query));
+  }
+}
 
 /**
  * See docs https://codemirror.net/doc/manual.html#addon_search

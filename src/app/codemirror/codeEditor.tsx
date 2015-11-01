@@ -231,7 +231,7 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
         }
     }
 
-    search = (options: FindOptions) => {
+    findOptionsToQueryRegex(options:FindOptions): RegExp{
         // Note that Code mirror only takes `query` string *tries* to detect case senstivity, regex on its own
         // So simpler if we just convert options into regex, and then code mirror will happy use the regex as is
         let str = options.query;
@@ -256,19 +256,23 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
         if (query.test("")){
             query = defaultQuery;
         }
-        search.commands.search(this.codeMirror, query);
+        return query;
+    }
+
+    search = (options: FindOptions) => {
+        search.commands.search(this.codeMirror, this.findOptionsToQueryRegex(options));
     }
 
     hideSearch = () => {
         search.commands.hideSearch(this.codeMirror);
     }
 
-    findNext = () => {
-        search.commands.findNext(this.codeMirror);
+    findNext = (options: FindOptions) => {
+        search.commands.findNext(this.codeMirror, this.findOptionsToQueryRegex(options));
     }
 
-    findPrevious = () => {
-        search.commands.findPrevious(this.codeMirror);
+    findPrevious = (options: FindOptions) => {
+        search.commands.findPrevious(this.codeMirror, this.findOptionsToQueryRegex(options));
     }
 
     replaceNext = (newText: string) => {

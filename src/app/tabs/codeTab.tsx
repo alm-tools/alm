@@ -97,20 +97,20 @@ export class Code extends ui.BaseComponent<Props, State> implements tab.Componen
         this.refs.editor.gotoPosition(position);
     }
 
-    search = (query: FindOptions) => {
-        this.refs.editor.search(query);
+    search = (options: FindOptions) => {
+        this.refs.editor.search(options);
     }
 
     hideSearch = () => {
         this.refs.editor.hideSearch();
     }
 
-    findNext = () => {
-        this.refs.editor.findNext();
+    findNext = (options: FindOptions) => {
+        this.refs.editor.findNext(options);
     }
 
-    findPrevious = () => {
-        this.refs.editor.findPrevious();
+    findPrevious = (options: FindOptions) => {
+        this.refs.editor.findPrevious(options);
     }
 
     replaceNext = (newText: string) => {

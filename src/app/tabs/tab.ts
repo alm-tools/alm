@@ -29,8 +29,8 @@ export interface Component extends React.Component<any, any> {
     search(options: FindOptions);
     /** Called to clear the search if the tab is in focus when that happens */
     hideSearch();
-    findNext();
-    findPrevious();
+    findNext(options: FindOptions);
+    findPrevious(options: FindOptions);
     replaceNext(newText: string);
     replaceAll(newText: string);
 }

@@ -155,14 +155,16 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         commands.findNext.on(()=>{
             let component = this.getSelectedComponent();
             if (component) {
-                component.findNext();
+                let findOptions = state.getState().findOptions;
+                component.findNext(findOptions);
             }
         });
 
         commands.findPrevious.on(()=>{
             let component = this.getSelectedComponent();
             if (component) {
-                component.findPrevious();
+                let findOptions = state.getState().findOptions;
+                component.findPrevious(findOptions);
             }
         });
 
