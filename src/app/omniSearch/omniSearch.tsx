@@ -32,14 +32,19 @@ enum SearchMode {
 }
 
 let inputStyle = {
-    backgroundColor: '#333',
+    backgroundColor: 'rgb(42,42,42)',
     color: 'white',
     outline: 'none',
     padding: '2px',
-    border: '2px solid #3C3C3C',
     fontSize: '1.5rem',
     lineHeight: '2rem',
-    fontFamily: 'monospace'
+    fontFamily: 'monospace',
+
+    border: '3px solid #3C3C3C',
+    transition: 'border .2s',
+    ':focus':{
+        boxShadow: '0px 0px 1px 1px #3C3C3C'
+    }
 }
 let selectedStyle = {
     background: '#545454',
