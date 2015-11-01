@@ -22,3 +22,13 @@
 /*.CodeMirror-hover {
 	outline: 2px solid grey;
 }*/
+
+/**
+ * Overrides from original
+ */
+ .CodeMirror-hover-tooltip {
+ 	background-color: #333;
+	color: #DDD;
+	border: 2px solid white;
+	padding: 3px 6px;
+}
