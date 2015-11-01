@@ -4,7 +4,8 @@ let CodeMirror = CM;
 import * as state from "../../state/state";
 
 // Docs https://codemirror.net/doc/manual.html#addon_lint
-require('codemirror/addon/lint/lint');
+import lint = require('./lint');
+var _import = lint.codeMirror;
 require('codemirror/addon/lint/lint.css');
 
 /** Enable linter for this code mirror */
