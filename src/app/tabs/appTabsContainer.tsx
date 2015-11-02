@@ -207,15 +207,16 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 this.closeTab(i);
                 event.stopPropagation();
             };
-            let titleCloseStyle = {width:'1rem', textAlign:'center', marginLeft: '.2rem'};
+            let titleTextStyle = { transition: 'color .2s', ":hover": { color: 'white' } };
+            let titleCloseStyle = {width:'1rem', textAlign:'center', marginLeft: '.2rem',transition:'color .2s' , ":hover": {color: styles.errorColor}};
 
             let title: JSX.Element;
             if (!t.saved){
                 style.push(tabHeaderUnsaved);
-                title = <span>{t.title} <Icon style={titleCloseStyle} name="life-ring" onClick={handleTitleClose}/></span>
+                title = <span> <span key={`tabHeaderTitle ${i}`} style={titleTextStyle}>{t.title}</span> <Icon style={titleCloseStyle} name="life-ring" onClick={handleTitleClose}/></span>
             }
             else {
-                title = <span>{t.title} <Icon style={titleCloseStyle} name="times" onClick={handleTitleClose}/></span>;
+                title = <span> <span key={`tabHeaderTitle ${i}`} style={titleTextStyle}>{t.title}</span> <Icon style={titleCloseStyle} name="times" onClick={handleTitleClose}/></span>;
             }
             return <span
                 key={`tabHeader ${i}`}
