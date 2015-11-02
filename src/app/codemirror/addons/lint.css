@@ -9,3 +9,30 @@
     /* just more important than hover tooltip */
     z-index: 1000;
 }
+
+.CodeMirror-lint-marker-error, .CodeMirror-lint-message-error {
+    /* clear what CM has */
+    background-image: none;
+}
+.CodeMirror-lint-message-error {
+    /* clear what CM has */
+    padding-left: 0px;
+}
+/* copy from font awesome */
+.CodeMirror-lint-marker-error:before, .CodeMirror-lint-message-error:before{
+    content: "\f057";
+    font: normal normal normal 10px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    /* our error color scheme */
+    color: #f92672;
+}
+.CodeMirror-lint-marker-error:before {
+    font-size: .7rem;
+}
+.CodeMirror-lint-message-error:before {
+    padding-right: 4px;
+}
