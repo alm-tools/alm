@@ -116,7 +116,7 @@ export namespace errorsPanel {
 
     export let perFileList = {
         paddingLeft: '6px',
-        borderLeft: '6px solid #f92672'
+        borderLeft: '6px solid ' + errorColor
     }
 
     export let errorDetailsContainer = {
