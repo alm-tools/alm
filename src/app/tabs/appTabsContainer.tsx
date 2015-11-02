@@ -194,6 +194,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             state.setActiveProject(res.activeProjectName);
             this.updateActiveFileInformation();
         });
+
+        commands.openFileFromDisk.on(() => {
+            ui.comingSoon("Open a file from the server disk");
+        });
     }
 
     render() {

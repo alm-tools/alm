@@ -100,7 +100,10 @@ export var toggleErrorMessagesPanel = new UICommand({
 export var doOpenFile = new events.TypedEvent<{ filePath: string, position?: EditorPosition }>();
 export var didOpenFile = new events.TypedEvent<{ filePath: string }>();
 export var doOpenOrFocusFile = new events.TypedEvent<{ filePath: string, position?: EditorPosition }>();
-
+export var openFileFromDisk = new UICommand({
+    keyboardShortcut: 'mod+o',
+    description: 'Open a file present on server disk'
+});
 
 /**
  * The command registry composed of commands that are keyboard only
@@ -118,6 +121,7 @@ export var commandRegistry: UICommand[] = [
     findNext,
     findPrevious,
     toggleErrorMessagesPanel,
+    openFileFromDisk
 ];
 
 export function register() {
