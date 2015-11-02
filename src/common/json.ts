@@ -55,6 +55,28 @@ export function parse<T>(str: string): ParsedData<T> {
     }
 }
 
+export function stringify(object: Object, eol: string = '\n'): string {
+    var cache = [];
+    var value = JSON.stringify(object,
+        // fixup circular reference
+        function(key, value) {
+            if (typeof value === 'object' && value !== null) {
+                if (cache.indexOf(value) !== -1) {
+                    // Circular reference found, discard key
+                    return;
+                }
+                // Store value in our collection
+                cache.push(value);
+            }
+            return value;
+        },
+        // indent 4 spaces
+        4);
+    value = value.split('\n').join(eol) + eol;
+    cache = null;
+    return value;
+}
+
 export function parseErrorToCodeError(filePath: string, error: ParseError) : CodeError {
     return {
         filePath,
