@@ -20,6 +20,11 @@ import equal = require('deep-equal');
 
 
 /** The active project name */
+// TODO:
+// replace this with ActiveProjectConfigDetails
+// Wire it up all the way to sending it to the client
+// Then in the client show the longer name (node_modules if present)
+// And on clicking it open the file from disk
 let activeProjectName = '';
 export let activeProjectNameUpdated = new TypedEvent<{ activeProjectName: string }>();
 
