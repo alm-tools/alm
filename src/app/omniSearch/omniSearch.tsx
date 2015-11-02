@@ -102,6 +102,11 @@ export class OmniSearch extends BaseComponent<Props, State>{
         });
     }
 
+    wasShown = false;
+    componentWillUpdate(){
+        this.wasShown = this.searchState.isShown;
+    }
+
     componentDidUpdate() {
         // get the dom node that is selected
         // make sure its parent scrolls to make this visible
@@ -114,8 +119,13 @@ export class OmniSearch extends BaseComponent<Props, State>{
             if (this.searchState.isShown) {
                 let input = (ReactDOM.findDOMNode(this.refs.omniSearchInput) as HTMLInputElement)
                 input.focus();
-                let len = input.value.length;
-                input.setSelectionRange(len, len)
+
+                // and scroll to the end if its just been shown
+                if (!this.wasShown){
+                    let len = input.value.length;
+                    input.setSelectionRange(len, len);
+                    this.wasShown = true;
+                }
             }
         });
     }
