@@ -4,7 +4,8 @@
  * Changes prefixed with `BAS`
  */
 
-export let CodeMirror = require('codemirror');
+export let imp = require('codemirror');
+let CodeMirror = imp; // This is to overcome an unreported bug in the compiler
 
   var GUTTER_ID = "CodeMirror-lint-markers";
 
