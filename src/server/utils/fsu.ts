@@ -45,6 +45,7 @@ export function removeExt(filePath: string) {
 export function readFile(filePath: string): string {
     return fs.readFileSync(filePath, 'utf8');
 }
+/** Will write the file and even make directories if needed */
 export function writeFile(filePath: string, content: string) {
     mkdirp.sync(path.dirname(filePath));
     fs.writeFileSync(filePath, content, 'utf8');
