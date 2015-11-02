@@ -207,22 +207,22 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 this.closeTab(i);
                 event.stopPropagation();
             };
-            let titleTextStyle = { transition: 'color .2s', ":hover": { color: 'white' } };
-            let titleCloseStyle = {width:'1rem', textAlign:'center', marginLeft: '.2rem',transition:'color .2s' , ":hover": {color: styles.errorColor}};
+            let titleCloseStyle = {width:'1rem', textAlign:'center', marginLeft: '.2rem', ":hover": {color: styles.errorColor}};
 
-            let title: JSX.Element;
+            let titleIcon: JSX.Element;
             if (!t.saved){
                 style.push(tabHeaderUnsaved);
-                title = <span> <span key={`tabHeaderTitle ${i}`} style={titleTextStyle}>{t.title}</span> <Icon style={titleCloseStyle} name="life-ring" onClick={handleTitleClose}/></span>
+                titleIcon = <Icon style={titleCloseStyle} name="life-ring" onClick={handleTitleClose}/>
             }
             else {
-                title = <span> <span key={`tabHeaderTitle ${i}`} style={titleTextStyle}>{t.title}</span> <Icon style={titleCloseStyle} name="times" onClick={handleTitleClose}/></span>;
+                titleIcon = <Icon style={titleCloseStyle} name="times" onClick={handleTitleClose}/>;
             }
+
             return <span
                 key={`tabHeader ${i}`}
                 style={style}
                 onClick={(event)=>this.onTabClicked(event.nativeEvent as MouseEvent,i)}>
-                {title}
+                <span key={`tabHeaderTitle ${i}`}>{t.title}</span> {titleIcon}
             </span>
         });
 
