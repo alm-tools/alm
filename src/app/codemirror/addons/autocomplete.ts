@@ -33,7 +33,8 @@ export function setupCodeMirror(cm: CodeMirror.EditorFromTextArea){
         ';', ',',
         '(', ')',
         '`','"',"'",
-        "{","}","[","]"
+        "{","}","[","]",
+        " "
     ]);
 
     cm.on("inputRead", function(ed: any, change: CodeMirror.EditorChange) {
