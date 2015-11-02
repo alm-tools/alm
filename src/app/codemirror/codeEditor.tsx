@@ -114,7 +114,7 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
         // lint
         linter.setupOptions(options,this.filePath);
         // also lint on errors changing
-        this.disposible.add(cast.errorsUpdated.on(()=>this.codeMirror.performLint()));
+        this.disposible.add(cast.errorsUpdated.on(()=> this.codeMirror && this.codeMirror.performLint()));
 
 		var textareaNode = ReactDOM.findDOMNode(this.refs.textarea);
 		this.codeMirror = CodeMirror.fromTextArea(textareaNode as any, options);
