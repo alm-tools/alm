@@ -9,6 +9,7 @@ import * as types from "../../common/types";
 import * as json from "../../common/json";
 import * as fsu from "../utils/fsu";
 import * as utils from "../../common/utils";
+import * as workingDir from "./workingDir";
 
 const sessionFile = types.cacheDir + '/sessionsV1.json'
 
@@ -37,10 +38,13 @@ export function getDefaultOrNewSession(): Promise<types.SessionOnDisk> {
 
 export function storeSession(session: types.SessionInUI) {
     let uiToDiskTab = (uiTab: types.SessionTabInUI): types.SessionTabOnDisk => {
-        // TODO:
         let url = uiTab.url;
+        let {filePath, protocol} = utils.getFilePathAndProtocolFromUrl(url);
 
-        return null;
+        return {
+            protocol: protocol,
+            relativePath: workingDir.makeRelative(filePath)
+        };
     }
 
     let diskSession: types.SessionOnDisk = {
@@ -49,5 +53,10 @@ export function storeSession(session: types.SessionInUI) {
         lastUsed: new Date().getTime(),
     }
 
-    // TODO: write to disk
+    // TODO: think about loading sessions that already exist there
+    let diskSessions: types.SessionsOnDisk = {
+        sessions: [diskSession]
+    };
+
+    fsu.writeFile(sessionFile, json.stringify(diskSessions));
 }
