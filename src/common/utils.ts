@@ -123,6 +123,8 @@ export function createId(): string {
         return v.toString(16);
     });
 }
+/** Creates a Guid (UUID v4) */
+export var createGuid = createId;
 
 // Not optimized
 export function selectMany<T>(arr: T[][]): T[] {
@@ -155,6 +157,14 @@ export function makeBlandError(filePath: string, error: string): CodeError {
 /** From `file://filePath` to `filePath` */
 export function getFilePathFromUrl(url: string) {
     return url && url.length > 'file://'.length ? url.substr('file://'.length): '';
+}
+
+/** We consistently have tabs with protocol + filePath */
+export function getFilePathAndProtocolFromUrl(url: string): {protocol: string; filePath:string}{
+    // TODO: error handling
+    let protocol = url.substr(0,url.indexOf('://'));
+    let filePath = url.substr((protocol + '://').length);
+    return {protocol, filePath};
 }
 
 /**

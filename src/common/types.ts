@@ -14,3 +14,37 @@ export enum TriState {
 export const errors = {
     CALLED_WHEN_NO_ACTIVE_PROJECT_FOR_FILE_PATH : "A query *that needs an active project* was made when there is no active project for given filePath"
 }
+
+
+
+/**
+ * Session related types
+ */
+export interface SessionTabOnDisk {
+    protocol: string;
+    relativePath: string;
+}
+export interface SessionOnDisk {
+    /** A unique Id for the session. Allows the UI to talk about the new state of this session */
+    sessionId: string;
+
+    openTabs: SessionTabOnDisk[];
+    /** Relative path to tsconfig.json including file name */
+    relativePathToTsconfig?: string;
+    /** Duration since epoch */
+    lastUsed: number;
+}
+export interface SessionsOnDisk {
+    sessions: SessionOnDisk[];
+}
+/**
+ * The UI version of session. Basically its all absolute paths and tab urls
+ * also UI is not in control of active project so it doesn't sent that
+ */
+export interface SessionTabInUI {
+    url: string;
+}
+export interface SessionInUI {
+    sessionId: string;
+    openTabs: SessionTabInUI[];
+}
