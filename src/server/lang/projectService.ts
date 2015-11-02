@@ -22,9 +22,9 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
     var completionList = completions ? completions.entries.filter(x=> !!x) : [];
     var endsInPunctuation = utils.prefixEndsInPunctuation(prefix);
 
-    if (prefix.length && !endsInPunctuation) {
+    if (prefix.length && prefix.trim().length && !endsInPunctuation) {
         // Didn't work good for punctuation
-        completionList = fuzzaldrin.filter(completionList, prefix, { key: 'name' });
+        completionList = fuzzaldrin.filter(completionList, prefix.trim(), { key: 'name' });
     }
 
     /** Doing too many suggestions is slowing us down in some cases */
