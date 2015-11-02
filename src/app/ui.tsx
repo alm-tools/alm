@@ -46,6 +46,9 @@ require('react-toggle/style.css')
  */
 import toastr = require("toastr");
 require('toastr/build/toastr.css');
+commands.esc.on(()=>{
+    toastr.clear();
+});
 export function notifyInfoQuickDisappear(message: string) {
     toastr.info(message, null, { timeOut: 600 });
 }
@@ -58,9 +61,9 @@ export function notifyWarningNormalDisappear(message: string, options:{onClick:(
 export function notifySuccessNormalDisappear(message: string){
     toastr.success(message);
 }
-commands.esc.on(()=>{
-    toastr.clear();
-});
+export function comingSoon(featureName: string) {
+    toastr.info(`Coming soon! : ${featureName}`);
+}
 
 
 /**
