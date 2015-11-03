@@ -200,6 +200,8 @@ declare module CodeMirror {
             showIfHidden: boolean;
         }): CodeMirror.LineWidget;
 
+        /** Removes a line widget */
+        removeLineWidget(widget: CodeMirror.LineWidget): void;
 
         /** Programatically set the size of the editor (overriding the applicable CSS rules).
         width and height height can be either numbers(interpreted as pixels) or CSS units ("100%", for example).
