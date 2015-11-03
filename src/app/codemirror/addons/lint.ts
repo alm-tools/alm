@@ -1,7 +1,8 @@
 /**
  * This is a straight copy of lint.js from codemirror source
- * Only change is to comment out the call to popOver lint (as user can use gutter anyways)
  * Changes prefixed with `BAS`
+ * - comment out the call to popOver lint (as user can use gutter anyways) and inline error hover conflicts with type hover
+ * - change the multiple error to add class to *same* dom node instead of adding a sub child as its easier to style
  */
 
 export let imp = require('codemirror');
@@ -79,8 +80,11 @@ let CodeMirror = imp; // This is to overcome an unreported bug in the compiler
     var marker = document.createElement("div"), inner:any = marker;
     marker.className = "CodeMirror-lint-marker-" + severity;
     if (multiple) {
-      inner = marker.appendChild(document.createElement("div"));
-      inner.className = "CodeMirror-lint-marker-multiple";
+      // BAS
+      marker.className = marker.className + " " + "CodeMirror-lint-marker-multiple";
+      // ORIGINAL:
+      //   inner = marker.appendChild(document.createElement("div"));
+      //   inner.className = "CodeMirror-lint-marker-multiple";
     }
 
     if (tooltips != false) CodeMirror.on(inner, "mouseover", function(e) {

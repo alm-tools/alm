@@ -36,3 +36,7 @@
 .CodeMirror-lint-message-error:before {
     padding-right: 4px;
 }
+/* change the style of multiple in gutter */
+.CodeMirror-lint-marker-multiple:before{
+    content: "\f05a";
+}
