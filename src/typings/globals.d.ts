@@ -34,6 +34,10 @@ interface ErrorsByFilePath {
     [filePath: string]: CodeError[]
 }
 
+/**
+ * I know config *details* is a horrible name. But it signifies the fact that the *Config* isn't located here
+ * It is details about the *Config* files
+ */
 interface ActiveProjectConfigDetails {
     name: string;
     isImplicit: boolean;

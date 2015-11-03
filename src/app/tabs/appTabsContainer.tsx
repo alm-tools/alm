@@ -186,12 +186,12 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.sendOrClearSearchOnCurrentComponent();
         }));
 
-        server.getActiveProjectName({}).then(res=>{
-            state.setActiveProject(res.name);
+        server.getActiveProjectConfigDetails({}).then(res=>{
+            state.setActiveProject(res);
         });
 
-        cast.activeProjectNameUpdated.on(res => {
-            state.setActiveProject(res.activeProjectName);
+        cast.activeProjectConfigDetailsUpdated.on(res => {
+            state.setActiveProject(res);
             this.updateActiveFileInformation();
         });
 

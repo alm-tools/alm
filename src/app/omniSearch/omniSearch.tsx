@@ -408,8 +408,8 @@ class SearchState {
         if (this.mode == SearchMode.Project) {
             let activeProject: ActiveProjectConfigDetails = this.filteredValues[index];
             if (activeProject) {
-                server.setActiveProjectName({ name: activeProject.name });
-                state.setActiveProject(activeProject.name);
+                server.setActiveProjectConfigDetails(activeProject);
+                state.setActiveProject(activeProject);
                 state.setInActiveProject(types.TriState.Unknown);
             }
             this.closeOmniSearch();

@@ -61,15 +61,11 @@ namespace Server {
     export var availableProjects: typeof contract.server.availableProjects = (data) => {
         return activeProject.availableProjects.current();
     };
-    export var getActiveProjectName: typeof contract.server.getActiveProjectName = (data) => {
-        return activeProject.activeProjectNameUpdated.current().then((res)=>{
-            return {
-                name: res.activeProjectName
-            };
-        });
+    export var getActiveProjectConfigDetails: typeof contract.server.getActiveProjectConfigDetails = (data) => {
+        return activeProject.activeProjectConfigDetailsUpdated.current();
     };
-    export var setActiveProjectName: typeof contract.server.setActiveProjectName = (data) => {
-        activeProject.setActiveProjectName(data.name);
+    export var setActiveProjectConfigDetails: typeof contract.server.setActiveProjectConfigDetails = (data) => {
+        activeProject.setActiveProjectConfigDetails(data);
         return resolve({});
     };
     export var isFilePathInActiveProject: typeof contract.server.isFilePathInActiveProject = (data) => {
@@ -117,7 +113,7 @@ export function register(app: http.Server) {
 
     errorCache.errorsUpdated.pipe(cast.errorsUpdated);
     activeProject.availableProjects.pipe(cast.availableProjectsUpdated);
-    activeProject.activeProjectNameUpdated.pipe(cast.activeProjectNameUpdated);
+    activeProject.activeProjectConfigDetailsUpdated.pipe(cast.activeProjectConfigDetailsUpdated);
 
     // For testing
     // setInterval(() => cast.hello.emit({ text: 'nice' }), 1000);

@@ -25,8 +25,8 @@ import equal = require('deep-equal');
 // Wire it up all the way to sending it to the client
 // Then in the client show the longer name (node_modules if present)
 // And on clicking it open the file from disk
-let activeProjectName = '';
-export let activeProjectNameUpdated = new TypedEvent<{ activeProjectName: string }>();
+let activeProjectConfigDetails: ActiveProjectConfigDetails = null;
+export let activeProjectConfigDetailsUpdated = new TypedEvent<ActiveProjectConfigDetails>();
 
 /** The name used if we don't find a project */
 let implicitProjectName = "__auto__";
@@ -79,9 +79,9 @@ export function start() {
   * Clear any previously reported errors and recalculate the errors
   * This is what the user should call if they want to manually sync as well
   */
-export function setActiveProjectName(name: string) {
-    activeProjectName = name;
-    activeProjectNameUpdated.emit({ activeProjectName });
+export function setActiveProjectConfigDetails(_activeProjectConfigDetails: ActiveProjectConfigDetails) {
+    activeProjectConfigDetails = _activeProjectConfigDetails;
+    activeProjectConfigDetailsUpdated.emit(activeProjectConfigDetails);
     clearErrors();
     sync();
 }
@@ -89,6 +89,7 @@ export function setActiveProjectName(name: string) {
 /** convert project name to current project */
 export function sync() {
     availableProjects.current().then((projectConfigs) => {
+        let activeProjectName = (activeProjectConfigDetails && activeProjectConfigDetails.name);
         // we are guaranteed as least one project config (which just might be the implicit one)
         let projectConfig = projectConfigs.filter(x=>x.name == activeProjectName)[0] || projectConfigs[0];
 
@@ -101,10 +102,11 @@ export function sync() {
             clearErrorsForFilePath(projectConfig.tsconfigFilePath);
         }
 
-        // Set the active project (the project we get returned might not be from the active project name)
+        // Set the active project (the project we get returned might not be the active project name)
+        // e.g. on initial load
         if (activeProjectName !== projectConfig.name) {
-            activeProjectName = projectConfig.name;
-            activeProjectNameUpdated.emit({ activeProjectName });
+            activeProjectConfigDetails = projectConfig;
+            activeProjectConfigDetailsUpdated.emit(activeProjectConfigDetails);
         }
 
         refreshAllProjectDiagnostics();
@@ -149,7 +151,8 @@ fmc.didEdit.on((evt) => {
     }
 
     // Also watch edits to the current config file
-    if (utils.getFolderAndFileName(evt.filePath) == activeProjectName){
+    let currentConfigFilePath = activeProjectConfigDetails && activeProjectConfigDetails.tsconfigFilePath;
+    if (evt.filePath == currentConfigFilePath){
         sync();
     }
 });

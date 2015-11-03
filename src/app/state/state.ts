@@ -3,7 +3,7 @@ import {SimpleRedux} from "./simpleRedux";
 
 /** make sure you update initial state */
 export interface StoreState {
-    activeProject?: string;
+    activeProject?: ActiveProjectConfigDetails;
     errorsExpanded?: boolean;
     errorsByFilePath?: ErrorsByFilePath;
     currentFilePath?: string;
@@ -17,7 +17,7 @@ export interface StoreState {
 }
 
 let initialStoreState: StoreState = {
-    activeProject: '',
+    activeProject: null,
     errorsExpanded: false,
     errorsByFilePath: {},
     currentFilePath: '',
@@ -38,7 +38,7 @@ export var getState = redux.getState;
 export var subscribe = redux.subscribe;
 export let subscribeSub = redux.subscribeSub;
 
-export let setActiveProject = redux.add('setActiveProject', (state, payload: string): StoreState => {
+export let setActiveProject = redux.add('setActiveProject', (state, payload: ActiveProjectConfigDetails): StoreState => {
     return {
         activeProject: payload,
     };
