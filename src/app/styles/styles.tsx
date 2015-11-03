@@ -10,6 +10,7 @@ export var tabHeaderContainer = {
 export var tabHeader = {
     base: {
         fontFamily: 'Roboto, sans-serif',
+        fontWeight: 'bold',
         paddingLeft: '10px',
         paddingRight: '10px',
         paddingTop: '5px',
