@@ -57,14 +57,10 @@ class Linter {
                 var err = codeErrors[i];
 
                 var msg = document.createElement("div");
-                var icon = document.createElement("span")
-                msg.appendChild(icon);
 
-                icon.innerHTML = "!!";
-                icon.className = "lint-error-icon";
-
-                msg.appendChild(document.createTextNode(err.message));
-                msg.className = "lint-error";
+                msg.innerHTML = `<div style="font-size: 0.7rem; padding: 3px; background-color: black;">
+                    🐛 ${err.message}
+                </div>`;
 
                 widgets.push(editor.addLineWidget(err.from.line, msg, { coverGutter: false, noHScroll: true }));
             }
