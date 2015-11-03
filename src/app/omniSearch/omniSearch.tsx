@@ -14,6 +14,7 @@ import {Icon} from "../icon";
 import {TypedEvent} from "../../common/events";
 import * as state from "../state/state";
 import * as types from "../../common/types";
+import * as CodeMirror from "codemirror";
 
 /** Stuff shared by the select list view */
 import {renderMatchedSegments, keyStrokeStyle, getFilteredItems} from ".././selectListView";
@@ -304,6 +305,8 @@ class SearchState {
             }
         ];
 
+        setupCodeMirrorKeyMapInfo();
+
         // setup mode map
         this.modeDescriptions.forEach(md => this.modeMap[md.shortcut] = md.mode);
     }
@@ -552,4 +555,15 @@ function commandShortcutToDisplayName(shortcut: string): string {
     let onPlus = basic.split('+');
     onPlus[onPlus.length - 1] = onPlus[onPlus.length - 1].toUpperCase();
     return onPlus.join(' + ');
+}
+
+
+/** Code mirror keymap parsing */
+function setupCodeMirrorKeyMapInfo(){
+    let keyMap = (CodeMirror as any).keyMap;
+    let defaultMap = keyMap.default;
+    let sublimeMap = keyMap.sublime;
+
+    // TODO: Use and display these
+    // console.log(defaultMap, sublimeMap);
 }
