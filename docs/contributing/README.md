@@ -57,3 +57,6 @@ Please see [CONVENTIONS.md]('./CONVENTIONS.md')
 
 * `server/workers` we run various background workers. They are present here.
 * `server/lang` our main API stuff on top of the core TypeScript Language Service.
+
+# Deployment
+Please see [DEPLOYMENT.md]('./DEPLOYMENT.md')
