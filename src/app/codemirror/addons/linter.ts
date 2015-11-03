@@ -39,6 +39,41 @@ class Linter {
     lint = (doc: string, options: any, cm: CodeMirror.EditorFromTextArea) => {
         let rawErrors = state.getState().errorsByFilePath[this.filePath] || [];
         let errors: LintError[] = rawErrors.map(codeErrorToLintError);
+        // this.updateInlineWidgets(cm, rawErrors);
         return errors;
+    }
+
+    // based on view-source:https://codemirror.net/demo/widget.html
+    widgets = []
+    updateInlineWidgets(editor: CodeMirror.EditorFromTextArea, codeErrors: CodeError[]) {
+        let widgets = this.widgets;
+        editor.operation(function() {
+            for (var i = 0; i < widgets.length; ++i) {
+                editor.removeLineWidget(widgets[i]);
+            }
+            widgets.length = 0;
+
+            for (var i = 0; i < codeErrors.length; ++i) {
+                var err = codeErrors[i];
+
+                var msg = document.createElement("div");
+                var icon = document.createElement("span")
+                msg.appendChild(icon);
+
+                icon.innerHTML = "!!";
+                icon.className = "lint-error-icon";
+
+                msg.appendChild(document.createTextNode(err.message));
+                msg.className = "lint-error";
+
+                widgets.push(editor.addLineWidget(err.from.line, msg, { coverGutter: false, noHScroll: true }));
+            }
+        });
+
+        var info = editor.getScrollInfo();
+        var after = editor.charCoords({ line: editor.getDoc().getCursor().line + 1, ch: 0 }, "local").top;
+        if (info.top + info.clientHeight < after){
+            editor.scrollTo(null, after - info.clientHeight + 3);
+        }
     }
 }
