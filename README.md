@@ -1,7 +1,11 @@
 # TypeScript Builder 🌹
-![TypeScript Builder](https://raw.githubusercontent.com/basarat/tsb/master/resources/icon.png)
+
 
 > Not just another general purpose IDE. The **best** TypeScript developer workflow.
+
+> Feel free to :star: it to help it move along :rose:
+
+> :warning: :rotating_light: This project is not ready. Lookout for final release by about 2017 (patience and persistence), just making it public to be clear on *what I am working on*. 
 
 **Why TypeScript?**
 
