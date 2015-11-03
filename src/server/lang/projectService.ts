@@ -52,8 +52,9 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
         else {
             display = '';
         }
-        var comment = (display ? display + '\n' : '') + ts.displayPartsToString(completionDetails.documentation || []);
+        display = display.trim();
 
+        var comment = ts.displayPartsToString(completionDetails.documentation || []);
         return { display: display, comment: comment };
     }
 
