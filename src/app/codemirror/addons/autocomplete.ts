@@ -10,6 +10,8 @@ import * as state from "../../state/state";
 require('./autocomplete.css');
 
 /// TODO: checkout the tern demo : http://codemirror.net/demo/tern.html to show docs next to selected item
+/** Needed *only* for Doc display classes */
+require('codemirror/addon/tern/tern.css');
 
 /** Enable showhint for this code mirror */
 export function setupOptions(cmOptions: any, filePath: string) {
@@ -69,6 +71,11 @@ export function setupCodeMirror(cm: CodeMirror.EditorFromTextArea){
     });
 }
 
+/** Exists to allow us to pass throught the `original` information around */
+interface ExtendedCodeMirrorHint extends CodeMirror.Hint{
+    original: Types.Completion
+}
+
 export class AutoCompleter {
     /** if not the last request ... don't show results */
     lastRequest: number;
@@ -96,11 +103,8 @@ export class AutoCompleter {
         let noCompletions: CodeMirror.Hints = null;
 
 
-        function render(elt: HTMLLIElement, data: CodeMirror.Hints, cur: CodeMirror.Hint) {
-
-            /** hacky push to render function */
-            let original: Types.Completion = cur['original'];
-
+        function render(elt: HTMLLIElement, data: CodeMirror.Hints, cur: ExtendedCodeMirrorHint) {
+            let original: Types.Completion = cur.original;
             elt.innerHTML = `
                 <strong class="hint left" style="color:${original.color};background:${original.colorBackground}">${original.kind}</strong>
                 <span class="hint main">${original.name}</span>
@@ -108,16 +112,55 @@ export class AutoCompleter {
             `.replace(/\s+/g,' ');
         }
 
-        function completionToCodeMirrorHint(completion: Types.Completion): CodeMirror.Hint {
-            let result: CodeMirror.Hint = {
+        function completionToCodeMirrorHint(completion: Types.Completion): ExtendedCodeMirrorHint {
+            let result: ExtendedCodeMirrorHint = {
                 text: completion.name,
-                render: render
+                render: render,
+                original: completion
             }
-
-            /** Hacky way to pass to render function */
-            result['original'] = completion;
-
             return result;
+        }
+
+        // This code is based on http://codemirror.net/addon/tern/tern.js `hint` function
+        function setupCompletionDocs<T>(obj:T):T{
+            var cls = "CodeMirror-Tern-"; // this was a global var that I pull *in*
+
+            var tooltip = null;
+            CodeMirror.on(obj, "close", function() { remove(tooltip); });
+            CodeMirror.on(obj, "update", function() { remove(tooltip); });
+            CodeMirror.on(obj, "select", function(cur: ExtendedCodeMirrorHint, node) {
+              remove(tooltip);
+              var content = cur.original.comment;
+              if (content) {
+                tooltip = makeTooltip(node.parentNode.getBoundingClientRect().right + window.pageXOffset,
+                                      node.getBoundingClientRect().top + window.pageYOffset, content);
+                tooltip.className += " " + cls + "hint-doc";
+              }
+            });
+            return obj;
+
+            // pulled in these functions as they were it is
+            function remove(node) {
+                var p = node && node.parentNode;
+                if (p) p.removeChild(node);
+            }
+            function makeTooltip(x, y, content) {
+                var node = (elt as any)("div", cls + "tooltip", content);
+                node.style.left = x + "px";
+                node.style.top = y + "px";
+                document.body.appendChild(node);
+                return node;
+            }
+            function elt(tagname, cls /*, ... elts*/) {
+                var e = document.createElement(tagname);
+                if (cls) e.className = cls;
+                for (var i = 2; i < arguments.length; ++i) {
+                    var elt = arguments[i];
+                    if (typeof elt == "string") elt = document.createTextNode(elt);
+                    e.appendChild(elt);
+                }
+                return e;
+            }
         }
 
         // if in active project
@@ -137,11 +180,15 @@ export class AutoCompleter {
                     from = to;
                 }
 
-                cb({
+                let completionInfo = {
                     from,
                     to,
                     list: res.completions.filter(x=>!x.snippet).map(completionToCodeMirrorHint)
-                });
+                };
+
+                setupCompletionDocs(completionInfo);
+
+                cb(completionInfo);
             });
             return;
         }
