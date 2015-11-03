@@ -31,7 +31,6 @@
     color: #f92672;
 }
 .CodeMirror-lint-marker-error:before {
-    float: left;
     font-size: .7rem;
 }
 .CodeMirror-lint-message-error:before {
