@@ -106,3 +106,42 @@ li.CodeMirror-hint-active {
 }
 .CodeMirror-hint-active .hint.right {
 }
+
+
+/**
+ * Code Mirror Documentation classes based on tern.css
+ */
+/* original */
+.CodeMirror-Tern-tooltip {
+    border: 1px solid silver;
+    border-radius: 3px;
+    color: #444;
+    padding: 2px 5px;
+    font-size: 90%;
+    font-family: monospace;
+    background-color: white;
+    white-space: pre-wrap;
+
+    max-width: 40em;
+    position: absolute;
+    z-index: 10;
+    -webkit-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
+    -moz-box-shadow: 2px 3px 5px rgba(0,0,0,.2);
+    box-shadow: 2px 3px 5px rgba(0,0,0,.2);
+
+    transition: opacity 1s;
+    -moz-transition: opacity 1s;
+    -webkit-transition: opacity 1s;
+    -o-transition: opacity 1s;
+    -ms-transition: opacity 1s;
+}
+.CodeMirror-Tern-hint-doc {
+    max-width: 25em;
+    margin-top: -3px;
+}
+/* extensions */
+.CodeMirror-Tern-tooltip {
+    background-color: #333;
+    color: #DDD;
+    border: 2px solid white;
+}

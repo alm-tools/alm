@@ -9,10 +9,6 @@ import * as state from "../../state/state";
 
 require('./autocomplete.css');
 
-/// TODO: checkout the tern demo : http://codemirror.net/demo/tern.html to show docs next to selected item
-/** Needed *only* for Doc display classes */
-require('codemirror/addon/tern/tern.css');
-
 /** Enable showhint for this code mirror */
 export function setupOptions(cmOptions: any, filePath: string) {
     cmOptions.showHint = true;
