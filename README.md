@@ -3,9 +3,7 @@
 
 > Not just another general purpose IDE. The **best** TypeScript developer workflow.
 
-> Feel free to :star: it to help it move along :rose:
-
-> :warning: :rotating_light: This project is not ready. Lookout for final release by about 2017 (patience and persistence), just making it public to be clear on *what I am working on*. 
+> :warning: This project is not ready. Lookout for final release by about 2017 (patience and persistence), just making it public to be clear on *what I am working on*. :star: it to help it move along :rose:
 
 **Why TypeScript?**
 
