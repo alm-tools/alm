@@ -1,6 +1,6 @@
 {
   "name": "tsb",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "The best TypeScript development environment",
   "main": "src/server.js",
   "bin": {
