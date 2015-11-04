@@ -22,7 +22,7 @@ preventBackspaceNav();
 require('normalize.css');
 
 // Load clipboard and enable for all things clipboard
-let Clipboard = require('clipboard/dist/clipboard');
+let Clipboard = require('clipboard/dist/clipboard.min');
 new Clipboard('[data-clipboard-text]');
 
 // Setup font awesome

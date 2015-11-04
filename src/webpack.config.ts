@@ -12,6 +12,7 @@ var config = {
         filename: 'bundle.js'
     },
     module: {
+        noParse: [/clipboard\.min/],
         loaders: [
             {
                 test: /\.css$/,
