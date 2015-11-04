@@ -70,6 +70,18 @@ export function debounce<T extends Function>(func: T, milliseconds: number, imme
     };
 };
 
+export function once<T extends Function>(func: T): T {
+    let ran = false;
+    let memo = undefined;
+    return function() {
+        if (ran) return memo;
+        ran = true;
+        memo = func.apply(this, arguments);
+        func = null;
+        return memo;
+    } as any;
+}
+
 export function rangeLimited(args: { num: number, min: number, max: number, loopAround?: boolean }) {
     let {num, min, max, loopAround} = args;
     var limited = Math.max(Math.min(num, max), min);

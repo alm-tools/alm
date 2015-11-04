@@ -6,12 +6,13 @@ import config = require('../webpack.config');
 import path = require('path');
 import fs = require('fs');
 import express = require('express');
+import * as utils from "../common/utils";
 import {cookies} from "./cookies";
 
 export const webpackPort = 8888;
 export const devtimeDetectionFile = __dirname + '/devtime.txt';
 
-function bundleDevTime() {
+let bundleDevTimeProxy = utils.once(() => {
     var Webpack = require('webpack');
     var WebpackDevServer = require('webpack-dev-server');
 
@@ -21,36 +22,34 @@ function bundleDevTime() {
     var devConfig = Object.create(config);
     // Makes sure errors in console map to the correct file and line number
     devConfig.devtool = 'eval';
+    // Add aditional entry points
     devConfig.entry = [
-    // For hot style updates
+        // For hot style updates
         require.resolve('webpack/hot/dev-server'),
         // The script refreshing the browser on hot updates
         `${require.resolve('webpack-dev-server/client')}?http://localhost:${webpackPort}`,
         // Also keep existing
     ].concat(config.entry);
 
-    // We have to manually add the Hot Replacement plugin when running
+    // Add the Hot Replacement plugin for hot style updates
     devConfig.plugins = [new Webpack.HotModuleReplacementPlugin()];
-    /** End changes of prod config */
 
-    // First we fire up Webpack an pass in the configuration we
-    // created
-    let bundleStart: number;
+    /**
+     * Standard webpack bundler stuff
+     */
     let compiler = Webpack(devConfig);
-
-    // We give notice in the terminal when it starts bundling and
-    // set the time it started
+    let bundleStart: number;
     compiler.plugin('compile', function() {
         console.log('Bundling...');
         bundleStart = Date.now();
     });
-
-    // We also give notice when it is done compiling, including the
-    // time it took. Nice to have
     compiler.plugin('done', function(result) {
         console.log('Bundled in ' + (Date.now() - bundleStart) + 'ms!');
     });
 
+    /**
+     * Wrap up the bundler in a dev server
+     */
     var bundler = new WebpackDevServer(compiler, {
 
         // We need to tell Webpack to serve our bundled application
@@ -67,13 +66,21 @@ function bundleDevTime() {
             colors: true
         }
     });
-
-    // We fire up the development server and give notice in the terminal
-    // that we are starting the initial bundle
     bundler.listen(webpackPort, 'localhost', function() {
         console.log('Bundling project, please wait...');
     });
-};
+
+    /**
+     * Provide a proxy server that will pass your requests to the dev server
+     */
+    var httpProxy = require('http-proxy');
+    let proxyServer = httpProxy.createProxyServer();
+    return function (req:express.Request,res:express.Response){
+        proxyServer.web(req, res, {
+            target: `http://localhost:${webpackPort}`
+        });
+    }
+});
 
 function bundleDeploy() {
     // build
@@ -88,23 +95,6 @@ function bundleDeploy() {
         }
     });
 }
-
-let {proxy} = new (class {
-    private _proxy: any;
-    private _startProxyOnlyOnce = () => {
-        if (this._proxy) return;
-
-        var httpProxy = require('http-proxy');
-        this._proxy = httpProxy.createProxyServer();
-        bundleDevTime();
-    }
-    proxy = (req,res) => {
-        this._startProxyOnlyOnce();
-        this._proxy.web(req, res, {
-            target: `http://localhost:${webpackPort}`
-        });
-    }
-})();
 
 function addDevHeaders(res: express.Response) {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
@@ -133,7 +123,7 @@ export function setup(app: express.Express) {
      */
     app.all('/build/*', function(req, res, next) {
         if (devTime) {
-            proxy(req,res);
+            bundleDevTimeProxy()(req,res);
         }
         else {
             next();
