@@ -21,16 +21,16 @@ function bundle() {
     var devConfig = Object.create(config);
     // Makes sure errors in console map to the correct file and line number
     devConfig.devtool = 'eval';
-    devConfig.entry = [        
+    devConfig.entry = [
     // For hot style updates
         require.resolve('webpack/hot/dev-server'),
         // The script refreshing the browser on hot updates
         `${require.resolve('webpack-dev-server/client')}?http://localhost:${webpackPort}`,
         // Also keep existing
     ].concat(config.entry);
-    
+
     // We have to manually add the Hot Replacement plugin when running
-    devConfig.plugins = [new Webpack.HotModuleReplacementPlugin()];    
+    devConfig.plugins = [new Webpack.HotModuleReplacementPlugin()];
     /** End changes of prod config */
 
     // First we fire up Webpack an pass in the configuration we
@@ -89,49 +89,60 @@ function rebundleDeploy() {
     });
 }
 
+let {proxy} = new (class {
+    private _proxy: any;
+    private _startProxyOnlyOnce = () => {
+        if (this._proxy) return;
+
+        var httpProxy = require('http-proxy');
+        this._proxy = httpProxy.createProxyServer();
+        bundle();
+    }
+    proxy = (req,res) => {
+        this._startProxyOnlyOnce();
+        this._proxy.web(req, res, {
+            target: `http://localhost:${webpackPort}`
+        });
+    }
+})();
+
+function addDevHeaders(res: express.Response) {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+}
+
 export function setup(app: express.Express) {
 
+    /**
+     * We always refresh the build bundle if it isn't there.
+     * This is to help *new repo clones*.
+     */
     var outFile = path.join(config.output.path, config.output.filename);
     if (!fs.existsSync(outFile)) {
         rebundleDeploy();
     }
 
-    // Either immediately. Or only if needed
-    var _proxy;
-    function startProxyAndBundleIfNeeded() {
-        if (_proxy) return;
-
-        var httpProxy = require('http-proxy');
-        _proxy = httpProxy.createProxyServer();
-        bundle();
-    }
-
+    /**
+     * Check for devtime
+     */
     var devTime = fs.existsSync(devtimeDetectionFile);
-    if (devTime) {
-        // Start immediately
-        startProxyAndBundleIfNeeded();
-    }
 
-    // Proxy handling
+    /**
+     * Proxies to dev server if devtime
+     */
     app.all('/build/*', function(req, res, next) {
         if (devTime) {
-            startProxyAndBundleIfNeeded();
-            _proxy.web(req, res, {
-                target: `http://localhost:${webpackPort}`
-            });
+            proxy(req,res);
         }
         else {
             next();
         }
     });
 
-    function addDevHeaders(res: express.Response) {
-        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-        res.setHeader('Pragma', 'no-cache');
-        res.setHeader('Expires', '0');
-    }
-
-    // Dev time no caching
+    /**
+     * Disables caching if devtime
+     */
     app.use('/', function(req, res, next) {
         if (devTime) {
             addDevHeaders(res);
@@ -139,13 +150,15 @@ export function setup(app: express.Express) {
         next();
     });
 
+    /**
+     * Dev time vs. prod time toggling
+     */
     app.use('/dev', (req, res, next) => {
         addDevHeaders(res);
         devTime = true;
         fs.writeFileSync(devtimeDetectionFile, 'If this file exists the server will start in dev mode');
         res.send('Hot Reload setup!')
     });
-
     app.use('/prod', (req, res, next) => {
         rebundleDeploy();
         addDevHeaders(res);
