@@ -1,7 +1,7 @@
 # Deployment
 Once you are happy with the code:
 * Just run [`npm version`](https://docs.npmjs.com/cli/version) with major/minor/patch. 
-* Push the outcome to github (`git push --tags`). Travis will automatically deploy tagged commits to NPM! 
+* Push the outcome to github (`git push --follow-tags`). Travis will automatically deploy tagged commits to NPM! 
 * Write release notes on Github https://github.com/TypeScriptBuilder/tsb/releases
 
 # Initial Travis Setup
