@@ -33,25 +33,30 @@ We presently use [`atom-typescript`](https://atom.io/packages/atom-typescript). 
 atom .
 ```
 
-# Webpack
-The workflow we are using is similar to [the one documented here](http://www.christianalfoni.com/articles/2015_04_19_The-ultimate-webpack-setup)
+We critically use it for fast `.ts` -> `.js` workflow.
 
-The meanings of these folders comes from that
+# Webpack
+All our front-end js gets minified into `bundle.js`. This is what gets npm deployed.
+
+For dev time we have a setup (all code in `devtime.ts`) where we start a `WebpackDevServer` and proxy the `bundle.js` requests to it, additionally loading the hot loader to refresh our UI if any front-end JS changes.
+
+The meanings of some key folders:
 ```
-src/app
-src/public
-src/server
-webpack.config.js
+src/app            -> all our front-end (main entry point called `main.ts`)
+src/public/build   -> bundle.js and other generated resources go here
+src/server         -> our backend code (main entry point called `server.ts`)
+src/common         -> Shared between server /client. No server or client only code.
+webpack.config.ts  -> our webpack config shared between devtime and what gets npm deployed
 ```
 
 In addition to that we make it easier to test the app as it would appear after npm publish:
 
-* Visit `/prod` to enable min js workflow and then test app. Live reload will be disabled.
+* Visit `/prod` to see the app as it would work after npm publish and then test app. Live reload will be disabled.
 * Visit `/dev` to go back to the dev time workflow.
 
-More Reading (I haven't read these....but I just read the code):
+More reading (You don't need to read these ... but if you are bored):
 * [Hot reloading docs](https://github.com/webpack/docs/wiki/hot-module-replacement-with-webpack)
-
+* [Some ideas borrowed from here]([the one documented here](http://www.christianalfoni.com/articles/2015_04_19_The-ultimate-webpack-setup)
 
 # Conventions
 Please see [CONVENTIONS.md]('./CONVENTIONS.md')
