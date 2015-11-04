@@ -104,6 +104,7 @@
         "./typings/tsd.d.ts",
         "./typings/v8promise.d.ts",
         "./typings/v8string.d.ts",
+        "./webpack.config.ts",
         "./app/clipboard.tsx",
         "./app/codemirror/codeEditor.tsx",
         "./app/devtemplate.tsx",

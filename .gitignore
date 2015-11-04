@@ -4,5 +4,3 @@ node_modules
 src/**/*.js
 src/**/*.js.map
 src/public/build/**
-!src/webpack.config.js
-!src/webpack.prod.config.js

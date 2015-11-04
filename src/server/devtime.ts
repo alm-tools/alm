@@ -1,12 +1,12 @@
 /**
  * Dev time server for front-end
  */
+import config = require('../webpack.config');
+
 import path = require('path');
 import fs = require('fs');
 import express = require('express');
 import {cookies} from "./cookies";
-
-var config = require('../webpack.config.js');
 
 export const webpackPort = 8888;
 export const devtimeDetectionFile = __dirname + '/devtime.txt';
