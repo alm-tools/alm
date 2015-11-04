@@ -11,7 +11,7 @@ import {cookies} from "./cookies";
 export const webpackPort = 8888;
 export const devtimeDetectionFile = __dirname + '/devtime.txt';
 
-function bundle() {
+function bundleDevTime() {
     var Webpack = require('webpack');
     var WebpackDevServer = require('webpack-dev-server');
 
@@ -75,7 +75,7 @@ function bundle() {
     });
 };
 
-function rebundleDeploy() {
+function bundleDeploy() {
     // build
     var Webpack = require('webpack');
     let compiler = Webpack(config);
@@ -96,7 +96,7 @@ let {proxy} = new (class {
 
         var httpProxy = require('http-proxy');
         this._proxy = httpProxy.createProxyServer();
-        bundle();
+        bundleDevTime();
     }
     proxy = (req,res) => {
         this._startProxyOnlyOnce();
@@ -116,11 +116,11 @@ export function setup(app: express.Express) {
 
     /**
      * We always refresh the build bundle if it isn't there.
-     * This is to help *new repo clones*.
+     * This is to help *new repo clones* . NPM installs get this file by default.
      */
     var outFile = path.join(config.output.path, config.output.filename);
     if (!fs.existsSync(outFile)) {
-        rebundleDeploy();
+        bundleDeploy();
     }
 
     /**
@@ -160,7 +160,7 @@ export function setup(app: express.Express) {
         res.send('Hot Reload setup!')
     });
     app.use('/prod', (req, res, next) => {
-        rebundleDeploy();
+        bundleDeploy();
         addDevHeaders(res);
         if (devTime) {
             devTime = false;
