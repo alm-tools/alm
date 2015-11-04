@@ -6,7 +6,7 @@ npm install
 npm link
 ```
 
-Now you can run `tsb`.
+Now you can run `tsb .`.
 
 We highly recommend you use [`nodemon`](https://github.com/remy/nodemon), just run it from the project root:
 
