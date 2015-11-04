@@ -9,7 +9,7 @@ import express = require('express');
 import * as utils from "../common/utils";
 import {cookies} from "./cookies";
 
-export const webpackPort = 8888;
+const webpackDevServerPort = 8888;
 export const devtimeDetectionFile = __dirname + '/devtime.txt';
 
 let bundleDevTimeProxy = utils.once(() => {
@@ -27,7 +27,7 @@ let bundleDevTimeProxy = utils.once(() => {
         // For hot style updates
         require.resolve('webpack/hot/dev-server'),
         // The script refreshing the browser on hot updates
-        `${require.resolve('webpack-dev-server/client')}?http://localhost:${webpackPort}`,
+        `${require.resolve('webpack-dev-server/client')}?http://localhost:${webpackDevServerPort}`,
         // Also keep existing
     ].concat(config.entry);
 
@@ -38,13 +38,11 @@ let bundleDevTimeProxy = utils.once(() => {
      * Standard webpack bundler stuff
      */
     let compiler = Webpack(devConfig);
-    let bundleStart: number;
     compiler.plugin('compile', function() {
         console.log('Bundling...');
-        bundleStart = Date.now();
     });
     compiler.plugin('done', function(result) {
-        console.log('Bundled in ' + (Date.now() - bundleStart) + 'ms!');
+        console.log('Bundled in ' + (result.endTime - result.startTime) + 'ms!');
     });
 
     /**
@@ -66,8 +64,9 @@ let bundleDevTimeProxy = utils.once(() => {
             colors: true
         }
     });
-    bundler.listen(webpackPort, 'localhost', function() {
-        console.log('Bundling project, please wait...');
+    bundler.listen(webpackDevServerPort, 'localhost', function() {
+        // TODO: better message for this
+        console.log('First request to dev server.');
     });
 
     /**
@@ -77,7 +76,7 @@ let bundleDevTimeProxy = utils.once(() => {
     let proxyServer = httpProxy.createProxyServer();
     return function (req:express.Request,res:express.Response){
         proxyServer.web(req, res, {
-            target: `http://localhost:${webpackPort}`
+            target: `http://localhost:${webpackDevServerPort}`
         });
     }
 });
