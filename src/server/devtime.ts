@@ -39,10 +39,10 @@ let bundleDevTimeProxy = utils.once(() => {
      */
     let compiler = Webpack(devConfig);
     compiler.plugin('compile', function() {
-        console.log('Bundling...');
+        console.log('WepackDev bundling ..... ')
     });
     compiler.plugin('done', function(result) {
-        console.log('Bundled in ' + (result.endTime - result.startTime) + 'ms!');
+        console.log('WebpackDev bundled in ' + (result.endTime - result.startTime) + 'ms!');
     });
 
     /**
@@ -65,8 +65,7 @@ let bundleDevTimeProxy = utils.once(() => {
         }
     });
     bundler.listen(webpackDevServerPort, 'localhost', function() {
-        // TODO: better message for this
-        console.log('First request to dev server.');
+        console.log(`WebpackDev server listening on port: ${webpackDevServerPort}`);
     });
 
     /**
@@ -116,6 +115,10 @@ export function setup(app: express.Express) {
      * Check for devtime
      */
     var devTime = fs.existsSync(devtimeDetectionFile);
+    if (devTime){
+        // if started with dev mode start the bundling process immediately
+        bundleDevTimeProxy();
+    }
 
     /**
      * Proxies to dev server if devtime
