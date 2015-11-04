@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/basarat/tsb.git"
+    "url": "git+https://github.com/TypeScriptBuilder/tsb.git"
   },
   "keywords": [
     "javascript",
@@ -26,10 +26,10 @@
   "author": "basaratali@gmail.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/basarat/tsb/issues"
+    "url": "https://github.com/TypeScriptBuilder/tsb/issues"
   },
   "preferGlobal": true,
-  "homepage": "https://github.com/basarat/tsb#readme",
+  "homepage": "https://github.com/TypeScriptBuilder/tsb#readme",
   "dependencies": {
     "basarat-text-buffer": "^6.0.0",
     "chokidar": "^1.0.5",
