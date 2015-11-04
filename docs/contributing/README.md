@@ -59,7 +59,7 @@ More reading (You don't need to read these ... but if you are bored):
 * [Some ideas borrowed from here](http://www.christianalfoni.com/articles/2015_04_19_The-ultimate-webpack-setup)
 
 # Conventions
-Please see [CONVENTIONS.md]('./CONVENTIONS.md')
+Please see [CONVENTIONS.md](./CONVENTIONS.md)
 
 
 # Server Folder Structure
@@ -68,4 +68,4 @@ Please see [CONVENTIONS.md]('./CONVENTIONS.md')
 * `server/lang` our main API stuff on top of the core TypeScript Language Service.
 
 # Deployment
-Please see [DEPLOYMENT.md]('./DEPLOYMENT.md')
+Please see [DEPLOYMENT.md](./DEPLOYMENT.md)
