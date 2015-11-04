@@ -15,6 +15,8 @@ npm install nodemon -g
 nodemon
 ```
 
+If you edit any front-end ts file our Webpack setup (more on this later) will reload the front end only. Make a change to some backend file and the app restarts :rose:
+
 # After moving a new machine
 I quite often work on my personal laptop during my 1 hour one way commute and need to setup the machine quickly, so on the new machine:
 
@@ -42,8 +44,10 @@ src/server
 webpack.config.js
 ```
 
-* Visit `/dev` to enable dev workflow and then test app
-* Visit `/prod` to enable min js workflow and then test app
+In addition to that we make it easier to test the app as it would appear after npm publish:
+
+* Visit `/prod` to enable min js workflow and then test app. Live reload will be disabled.
+* Visit `/dev` to go back to the dev time workflow.
 
 More Reading (I haven't read these....but I just read the code):
 * [Hot reloading docs](https://github.com/webpack/docs/wiki/hot-module-replacement-with-webpack)
