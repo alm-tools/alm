@@ -50,7 +50,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             tabs: []
         };
 
-        this.setupDemoTab();
+        // this.setupDemoTab();
     }
 
     componentWillReceiveProps(nextProps: Props) {
