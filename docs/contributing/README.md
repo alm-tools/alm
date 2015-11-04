@@ -56,7 +56,7 @@ In addition to that we make it easier to test the app as it would appear after n
 
 More reading (You don't need to read these ... but if you are bored):
 * [Hot reloading docs](https://github.com/webpack/docs/wiki/hot-module-replacement-with-webpack)
-* [Some ideas borrowed from here]([the one documented here](http://www.christianalfoni.com/articles/2015_04_19_The-ultimate-webpack-setup)
+* [Some ideas borrowed from here](http://www.christianalfoni.com/articles/2015_04_19_The-ultimate-webpack-setup)
 
 # Conventions
 Please see [CONVENTIONS.md]('./CONVENTIONS.md')
