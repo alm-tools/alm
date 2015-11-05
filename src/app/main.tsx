@@ -28,6 +28,9 @@ new Clipboard('[data-clipboard-text]');
 // Setup font awesome
 require('font-awesome/css/font-awesome.css');
 
+// Setup ntypescript
+require('ntypescript');
+
 document.addEventListener('DOMContentLoaded', () => {
     // The main app element
     var appElement = document.getElementById('app');
