@@ -26,9 +26,12 @@ require('codemirror/addon/selection/active-line');
 require('codemirror/addon/edit/matchbrackets');
 // Auto close brackets and strings
 require('codemirror/addon/edit/closebrackets');
+// Auto match tags (great for TSX!)
+require('codemirror/addon/edit/matchtags');
 
 // modes
 require('codemirror/mode/javascript/javascript')
+require('codemirror/mode/xml/xml')
 
 // keymaps
 require('codemirror/keymap/sublime')
@@ -87,7 +90,7 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
 
         var options: CodeMirror.EditorConfiguration = {
             lineNumbers: true,
-            mode: 'javascript',
+            mode: 'javascript', // | text/html
             keyMap: 'sublime',
             theme: 'monokai',
 
@@ -104,8 +107,11 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
             // Match bracket addon
             matchBrackets: true,
 
-            // Auto close these things
+            // Auto close brackets and strings
             autoCloseBrackets: true,
+
+            // Match tags (great for tsx!)
+            matchTags: {bothTags: true},
 
             // Text hover
             textHover: (cm, data, e: MouseEvent) => {
