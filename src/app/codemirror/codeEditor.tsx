@@ -50,7 +50,7 @@ import typescriptMode = require("./mode/typescript");
 typescriptMode.register();
 
 // Sample addon usage
-console.log(CodeMirror.findModeByFileName('asdf/foo.js'))
+// console.log(CodeMirror.findModeByFileName('asdf/foo.js'))
 
 import React = require('react');
 var ReactDOM = require('react-dom');
