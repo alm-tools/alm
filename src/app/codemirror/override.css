@@ -22,3 +22,6 @@
 .cm-s-monokai .CodeMirror-nonmatchingbracket {
     background-color: #32332b;
 }
+
+/* cm-s-monokai has nothing for qualifier */
+.cm-s-monokai span.cm-qualifier { color: rgb(0, 208, 255); }

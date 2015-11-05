@@ -80,6 +80,8 @@ function getStyleForToken(token: Token, textBefore: string): string {
 				case 'function':
 				case 'module':
 				case 'var':
+				case 'let':
+				case 'const':
 					return 'def';
 				default:
 					return 'keyword';
