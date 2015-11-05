@@ -24,6 +24,8 @@ require('codemirror/addon/fold/foldgutter.css');
 require('codemirror/addon/selection/active-line');
 // Highlight matching brackets
 require('codemirror/addon/edit/matchbrackets');
+// Auto close brackets and strings
+require('codemirror/addon/edit/closebrackets');
 
 // modes
 require('codemirror/mode/javascript/javascript')
@@ -101,6 +103,9 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
 
             // Match bracket addon
             matchBrackets: true,
+
+            // Auto close these things
+            autoCloseBrackets: true,
 
             // Text hover
             textHover: (cm, data, e: MouseEvent) => {
