@@ -4,9 +4,9 @@ import csx = require('csx');
 import {BaseComponent} from "./ui";
 import * as ui from "./ui";
 
-export interface Props extends React.DOMAttributes {
+export interface Props extends React.HTMLAttributes {
     name: string;
-    size?: string; // 1g,2x,3x,4x,5x
+    size?: any; // 1g,2x,3x,4x,5x
     rotate?: string; // '45', '90', '135', '180', '225', '270', '315'
     flip?: string; // vertical,horizontal
     fixedWidth?: boolean;

@@ -160,7 +160,9 @@ export class StatusBar extends BaseComponent<Props, State>{
                         <PendingRequestsIndicator />
                     </span>
                     <span style={csx.extend(styles.statusBarSection)}>
-                        Connected : {this.props.socketConnected.toString()}
+                        {this.props.socketConnected?
+                            <Icon style={{color:styles.successColor, cursor:'pointer'}} name="flash" title="Connected to server" onClick={()=>ui.notifySuccessNormalDisappear("Connected to tsb")}/>
+                            :<Icon style={{color:styles.errorColor, cursor:'pointer'}} name="spinner" spin={true} title="Disconnected from server" onClick={()=>ui.notifyWarningNormalDisappear("Disconneted from tsb")}/>}
                     </span>
                     <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)}>
                         <span style={{paddingRight: '2px'} as any} onClick={this.giveStar} title="If you like it then you should have put a star on it 🌟. Also, go here for support ⚠️">🌟</span>

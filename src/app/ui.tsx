@@ -55,8 +55,8 @@ export function notifyInfoQuickDisappear(message: string) {
 export function notifyInfoNormalDisappear(message: string) {
     toastr.info(message);
 }
-export function notifyWarningNormalDisappear(message: string, options:{onClick:()=>void}) {
-    toastr.warning(message, null, { onclick: options.onClick });
+export function notifyWarningNormalDisappear(message: string, options?:{onClick:()=>void}) {
+    toastr.warning(message, null, options && { onclick: options.onClick });
 }
 export function notifySuccessNormalDisappear(message: string){
     toastr.success(message);
