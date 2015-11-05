@@ -95,10 +95,11 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
             mode: 'typescript', // | text/html
             keyMap: 'sublime',
             theme: 'monokai',
+            indentUnit: 4,
 
             extraKeys: {
                 "Ctrl-Space": "autocomplete",
-                "Cmd-Space": "autocomplete"
+                "Cmd-Space": "autocomplete",
             },
 
             gutters: ["CodeMirror-linenumbers"],
