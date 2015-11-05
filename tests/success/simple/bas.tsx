@@ -13,6 +13,14 @@ function test(a,b);
 function test(a,b?,c?){
 
 }
+
 let dom = <div>
     <img/>
 </div>
+
+class Test {
+  private foo = 123;
+  test(){
+    return 'asdf' + `${this.foo}`;
+  }
+}
