@@ -14,6 +14,7 @@ export function run<TServer, TCast>(config: {
         server: TServer;
         cast: TCast;
         pendingRequestsChanged: TypedEvent<{pending:string[]}>;
+        connectionStatusChanged: TypedEvent<{connected:boolean}>;
     } {
 
     let client = new Client(config.clientImplementation);
@@ -21,12 +22,14 @@ export function run<TServer, TCast>(config: {
     let cast = client.setupAllCast(config.cast);
     let pendingRequestsChanged = new TypedEvent<{pending:string[]}>();
     client.pendingRequestsChanged = pending => pendingRequestsChanged.emit({pending});
-    return { client, server, cast, pendingRequestsChanged };
+
+    return { client, server, cast, pendingRequestsChanged, connectionStatusChanged: client.connectionStatusChanged };
 }
 
 export class Client extends RequesterResponder {
     protected getSocket = () => this.socket;
     private socket: SocketIOClient.Socket;
+    public connectionStatusChanged = new TypedEvent<{connected:boolean}>();
 
     constructor(clientImplementation: any) {
         super();
@@ -39,6 +42,15 @@ export class Client extends RequesterResponder {
         this.socket.on(anycastMessageName,(msg:CastMessage<any>)=>{
             this.typedEvents[msg.message].emit(msg.data);
         });
+
+        let connected = false;
+        setInterval(() => {
+            let newConnected = this.socket.connected;
+            if (newConnected != connected) {
+                connected = newConnected;
+                this.connectionStatusChanged.emit({ connected });
+            }
+        }, 2000);
     }
 
     private typedEvents:{[key:string]:TypedEvent<any>} = {};

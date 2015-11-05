@@ -33,6 +33,7 @@ export interface Props extends React.Props<any> {
     inActiveProject?: types.TriState;
     currentFilePath?: string;
     errorsByFilePath?: ErrorsByFilePath;
+    socketConnected?: boolean;
 }
 export interface State {
 }
@@ -49,6 +50,7 @@ export var statusBar: StatusBar;
         inActiveProject: state.inActiveProject,
         currentFilePath: state.currentFilePath,
         errorsByFilePath: state.errorsByFilePath,
+        socketConnected: state.socketConnected
     };
 })
 export class StatusBar extends BaseComponent<Props, State>{
@@ -156,6 +158,9 @@ export class StatusBar extends BaseComponent<Props, State>{
                     {/* Right sections */}
                     <span style={csx.extend(styles.statusBarSection)}>
                         <PendingRequestsIndicator />
+                    </span>
+                    <span style={csx.extend(styles.statusBarSection)}>
+                        Connected : {this.props.socketConnected.toString()}
                     </span>
                     <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)}>
                         <span style={{paddingRight: '2px'} as any} onClick={this.giveStar} title="If you like it then you should have put a star on it 🌟. Also, go here for support ⚠️">🌟</span>

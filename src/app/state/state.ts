@@ -14,6 +14,9 @@ export interface StoreState {
 
     /** Find and replace */
     findOptions?: FindOptions;
+
+    /** Socket IO */
+    socketConnected?: boolean;
 }
 
 let initialStoreState: StoreState = {
@@ -30,6 +33,7 @@ let initialStoreState: StoreState = {
         isCaseSensitive: false,
         isFullWord: false
     },
+    socketConnected: false
 };
 
 let redux = new SimpleRedux<StoreState>(initialStoreState);
@@ -118,5 +122,11 @@ export let setFindOptionsIsShown = redux.add('setFindOptionsIsShown', (state:Sto
     let newFindQuery = redux.updateFields({isShown: payload})(findQuery);
     return {
         findOptions: newFindQuery
+    };
+});
+
+export let setSocketConnected = redux.add('setSocketConnected', (state, payload: boolean): StoreState => {
+    return {
+        socketConnected: payload
     };
 });

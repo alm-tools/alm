@@ -10,7 +10,7 @@ import * as state from "./state/state";
 import {store} from "./state/state";
 import * as ui from "./ui";
 
-import {server, cast, pendingRequestsChanged} from "../socket/socketClient";
+import {server, cast, pendingRequestsChanged, connectionStatusChanged} from "../socket/socketClient";
 var Modal = require('react-modal');
 
 
@@ -56,5 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     pendingRequestsChanged.on((r)=>{
         state.setPendingRequests(r.pending);
+    });
+    connectionStatusChanged.on(r=> {
+        state.setSocketConnected(r.connected);
     });
 });
