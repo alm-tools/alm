@@ -41,3 +41,11 @@ server.listen(port, function(e) {
     // open(`http://localhost:${port}`,'chrome');
     serverStarted.started();
 });
+
+/**
+ * Notify user of updates
+ */
+var pkg = JSON.parse(fs.readFileSync(__dirname + '/../package.json'));
+require('update-notifier')({
+  pkg,
+}).notify();
