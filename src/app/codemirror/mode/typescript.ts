@@ -38,6 +38,10 @@ function getClassificationsForLine(text: string, eolState: ts.EndOfLineState ) {
 			classification: entry.classification,
 			position: currentPosition
 		};
+
+		// For debugging the Typescript classifier
+		// console.log(token.string,ts.TokenClass[entry.classification]); // DEBUG
+
 		tokens.push(token);
 		currentPosition += entry.length;
 	}
