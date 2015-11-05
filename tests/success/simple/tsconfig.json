@@ -20,8 +20,8 @@
         "!node_modules/**"
     ],
     "files": [
-        "bas.ts",
-        "foo.ts"
+        "foo.ts",
+        "bas.tsx"
     ],
     "exclude": []
 }
