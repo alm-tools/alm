@@ -163,7 +163,7 @@ function getLineDescriptorInfo(text: string, eolState: ts.EndOfLineState, indent
 
 
 
-    if(closedBrackets.length) {
+    if (closedBrackets.length) {
         var newStack: string[][] = [];
         for (var i = bracketsStack.length -1; i >=0; i--) {
             var item = bracketsStack[i];
