@@ -1,4 +1,7 @@
 import ts = require('ntypescript');
+
+
+/** Just a convinient wrapper around ts.TokenClass */
 type Token  = {
 	string: string;
 	classification: ts.TokenClass;
