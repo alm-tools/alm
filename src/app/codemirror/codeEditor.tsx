@@ -46,6 +46,8 @@ require('./override.css')
 import autocomplete = require('./addons/autocomplete');
 import linter = require('./addons/linter');
 import search = require("./addons/search");
+import typescriptMode = require("./mode/typescript");
+typescriptMode.register();
 
 // Sample addon usage
 console.log(CodeMirror.findModeByFileName('asdf/foo.js'))
@@ -90,7 +92,7 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
 
         var options: CodeMirror.EditorConfiguration = {
             lineNumbers: true,
-            mode: 'javascript', // | text/html
+            mode: 'typescript', // | text/html
             keyMap: 'sublime',
             theme: 'monokai',
 

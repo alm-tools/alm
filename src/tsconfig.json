@@ -25,6 +25,7 @@
         "./app/codemirror/addons/linter.ts",
         "./app/codemirror/addons/search.ts",
         "./app/codemirror/addons/text-hover.ts",
+        "./app/codemirror/mode/typescript.ts",
         "./app/commands/commands.ts",
         "./app/state/simpleRedux.ts",
         "./app/state/state.ts",
