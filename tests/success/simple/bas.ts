@@ -9,4 +9,8 @@ let bar = foo;
 /** This is test comment */
 function test(a);
 function test(a,b);
-function test(a,b?,c?){}
+function test(a,b?,c?){
+	
+}
+
+

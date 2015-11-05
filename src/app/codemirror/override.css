@@ -1,0 +1,24 @@
+/* Make code mirror flex boxy */
+.CodeMirror {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+.CodeMirror-scroll {
+    flex: 1;
+}
+
+/* Make code mirror selections a bit more popping */
+.cm-s-monokai div.CodeMirror-selected {
+    background: #58574B;
+}
+
+/* matchbrackets addon */
+.cm-s-monokai .CodeMirror-matchingbracket {
+    color: #4f0 !important;
+    background-color: #32332b;
+    text-decoration: none;
+}
+.cm-s-monokai .CodeMirror-nonmatchingbracket {
+    background-color: #32332b;
+}

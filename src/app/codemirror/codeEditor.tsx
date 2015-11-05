@@ -22,6 +22,8 @@ require('codemirror/addon/fold/comment-fold');
 require('codemirror/addon/fold/foldgutter.css');
 // Highlight active line
 require('codemirror/addon/selection/active-line');
+// Highlight matching brackets
+require('codemirror/addon/edit/matchbrackets');
 
 // modes
 require('codemirror/mode/javascript/javascript')
@@ -32,6 +34,10 @@ require('codemirror/keymap/sublime')
 // Our Addons
 require('./addons/text-hover');
 require('./addons/text-hover.css');
+
+// Css overrides
+require('./override.css')
+
 import autocomplete = require('./addons/autocomplete');
 import linter = require('./addons/linter');
 import search = require("./addons/search");
@@ -92,6 +98,9 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
 
             // Active line addon
             styleActiveLine: true,
+
+            // Match bracket addon
+            matchBrackets: true,
 
             // Text hover
             textHover: (cm, data, e: MouseEvent) => {
