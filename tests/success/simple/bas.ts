@@ -12,5 +12,3 @@ function test(a,b);
 function test(a,b?,c?){
 	
 }
-
-
