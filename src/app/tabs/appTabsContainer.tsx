@@ -78,7 +78,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         server.makeAbsolute({ relativeFilePath: 'tests/success/simple/foo.ts'}).then(abs => {
             commands.doOpenFile.emit({ filePath: abs.filePath });
         });
-        server.makeAbsolute({ relativeFilePath: 'tests/success/simple/bas.ts'}).then(abs => {
+        server.makeAbsolute({ relativeFilePath: 'tests/success/simple/bas.tsx'}).then(abs => {
             commands.doOpenFile.emit({ filePath: abs.filePath });
         });
     }
