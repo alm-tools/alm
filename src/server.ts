@@ -45,7 +45,7 @@ server.listen(port, function(e) {
 /**
  * Notify user of updates
  */
-var pkg = JSON.parse(fs.readFileSync(__dirname + '/../package.json'));
+var pkg = require(__dirname + '/../package.json');
 require('update-notifier')({
   pkg,
 }).notify();
