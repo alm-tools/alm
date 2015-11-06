@@ -64,7 +64,7 @@
     "codemirror": "^5.7.0",
     "onresize": "^1.0.1",
     "toastr": "^2.1.2",
-    "css-loader": "^0.16.0",
+    "css-loader": "^0.17.0",
     "http-proxy": "^1.11.1",
     "style-loader": "^0.12.3",
     "velocity-animate": "^1.2.3",
