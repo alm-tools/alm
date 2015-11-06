@@ -1,7 +1,12 @@
 // for keyboard shortcuts watch out for:
 // https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts
 //
-// c9: means keyboard shortcut is consistent with cloud9 ide so don't change these
+// Keyboard shortcut origins:
+// c9: cloud9 IDE
+// ca: CodeAnywhere
+// atom: github atom
+// sublime: sublime text
+// code: VScode
 
 import * as Mousetrap from "mousetrap";
 require("mousetrap/plugins/global-bind/mousetrap-global-bind");
@@ -45,6 +50,10 @@ export var prevTab = new UICommand({
 export var closeTab = new UICommand({
     keyboardShortcut: 'alt+w', // c9
     description:"Close current tab",
+});
+export var undoCloseTab = new UICommand({
+    keyboardShortcut: 'shift+alt+w', // Couldn't find IDEs that do this. c9/ca have this bound to close all tabs
+    description:"Undo close tab",
 });
 export var saveTab = new UICommand({
     keyboardShortcut: 'mod+s', // c9
