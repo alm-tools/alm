@@ -199,6 +199,23 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         commands.openFileFromDisk.on(() => {
             ui.comingSoon("Open a file from the server disk");
         });
+
+        /** Restore any open tabs from last session */
+        server.getOpenUITabs({}).then((res)=>{
+            let openTabs = res.openTabs;
+            let codeTabs: tab.TabInstance[] = openTabs.map(t=>{
+                return {
+                    id: createId(),
+                    url: t.url,
+                    title: getFileName(t.url),
+                    saved: true
+                };
+            });
+
+            this.state.tabs = this.state.tabs.concat(codeTabs);
+            this.setState({ tabs: this.state.tabs });
+            this.selectTab(this.state.tabs.length - 1);
+        });
     }
 
     render() {
@@ -373,7 +390,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
     private sendTabInfoToServer(){
         server.setOpenUITabs({
-            tabs: this.state.tabs.map(t=>({
+            openTabs: this.state.tabs.map(t=>({
                 url: t.url
             }))
         });

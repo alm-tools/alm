@@ -74,8 +74,11 @@ namespace Server {
         return resolve({inActiveProject});
     };
     export var setOpenUITabs: typeof contract.server.setOpenUITabs = (data) => {
-        session.setOpenUITabs(data.tabs);
+        session.setOpenUITabs(data.openTabs);
         return resolve({});
+    };
+    export var getOpenUITabs: typeof contract.server.getOpenUITabs = (data) => {
+        return session.getOpenUITabs();
     };
 
     /**

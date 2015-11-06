@@ -44,6 +44,13 @@ function uiToDiskTab(uiTab: types.SessionTabInUI): types.SessionTabOnDisk {
     };
 }
 
+function diskTabToUITab(diskTab: types.SessionTabOnDisk): types.SessionTabInUI {
+    let url = diskTab.protocol + '://' + workingDir.makeAbsolute(diskTab.relativePath);
+    return {
+        url
+    };
+}
+
 function writeDiskSession(session: types.SessionOnDisk){
     session.lastUsed = new Date().getTime();
     fsu.writeFile(sessionFile, json.stringify(session));
@@ -62,4 +69,12 @@ export function setOpenUITabs(tabs: types.SessionTabInUI[]) {
         ses.openTabs = tabs.map(uiToDiskTab);
         writeDiskSession(ses);
     });
+}
+
+export function getOpenUITabs() {
+    let session = getDefaultOrNewSession();
+    return session
+        .then((ses) => {
+            return { openTabs: ses.openTabs.map(diskTabToUITab) }
+        });
 }

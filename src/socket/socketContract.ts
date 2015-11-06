@@ -29,7 +29,8 @@ export var server = {
     getActiveProjectConfigDetails: {} as QRFunction<{}, ActiveProjectConfigDetails>,
     setActiveProjectConfigDetails: {} as QRFunction<ActiveProjectConfigDetails, {}>,
     isFilePathInActiveProject: {} as QRFunction<{ filePath: string }, { inActiveProject: boolean }>,
-    setOpenUITabs: {} as QRFunction<{tabs:types.SessionTabInUI[]},{}>,
+    setOpenUITabs: {} as QRFunction<{openTabs:types.SessionTabInUI[]},{}>,
+    getOpenUITabs: {} as QRFunction<{},{openTabs:types.SessionTabInUI[]}>,
 
     /**
      * Error stuff
