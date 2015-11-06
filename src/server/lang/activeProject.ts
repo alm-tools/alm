@@ -17,6 +17,8 @@ import {diagnosticToCodeError} from "./building";
 import {makeBlandError} from "../../common/utils";
 import {TypedEvent} from "../../common/events";
 import equal = require('deep-equal');
+import * as session from "../disk/session";
+import * as workingDir from "../disk/workingDir";
 
 
 /** The active project name */
@@ -47,13 +49,7 @@ function refreshAvailableProjects() {
             return a.length - b.length;
         });
 
-        let projectConfigs: ActiveProjectConfigDetails[] = tsconfigs.map(tsconfig=> {
-            return {
-                name: utils.getFolderAndFileName(tsconfig),
-                isImplicit: false,
-                tsconfigFilePath: tsconfig
-            };
-        });
+        let projectConfigs: ActiveProjectConfigDetails[] = tsconfigs.map(Utils.tsconfigToActiveProjectConfigDetails);
 
         // If no tsconfigs add an implicit one!
         if (projectConfigs.length == 0) {
@@ -69,8 +65,27 @@ function refreshAvailableProjects() {
 
 /** on server start */
 export function start() {
-    refreshAvailableProjects();
-    sync();
+
+    // Keep session on disk in sync
+    activeProjectConfigDetailsUpdated.on((ap)=>{
+        if (ap.tsconfigFilePath) {
+            session.setTsconfigPath(ap.tsconfigFilePath);
+        }
+    });
+
+    // Resume session
+    session.getDefaultOrNewSession()
+        .then((ses) => {
+            if (ses.relativePathToTsconfig) {
+                let tsconfig = workingDir.makeAbsolute(ses.relativePathToTsconfig);
+                if (fs.existsSync(tsconfig)) {
+                    activeProjectConfigDetails = Utils.tsconfigToActiveProjectConfigDetails(tsconfig);
+                    activeProjectConfigDetailsUpdated.emit(activeProjectConfigDetails);
+                }
+            }
+        })
+        .then(() => refreshAvailableProjects())
+        .then(() => sync());
 }
 
 
@@ -279,5 +294,16 @@ export namespace GetProject {
         }
 
         return proj;
+    }
+}
+
+/** General purpose utility functions specific to this file */
+namespace Utils {
+    export function tsconfigToActiveProjectConfigDetails(tsconfig: string): ActiveProjectConfigDetails {
+        return {
+            name: utils.getFolderAndFileName(tsconfig),
+            isImplicit: false,
+            tsconfigFilePath: tsconfig
+        };
     }
 }
