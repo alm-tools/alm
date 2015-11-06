@@ -38,7 +38,6 @@ export interface Component extends React.Component<any, any> {
 export interface TabInstance {
     id: string;
     url: string;
-    title: string,
     saved: boolean,
 }
 

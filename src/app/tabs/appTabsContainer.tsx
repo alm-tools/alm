@@ -97,7 +97,6 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             let codeTab: tab.TabInstance = {
                 id: createId(),
                 url: `file://${e.filePath}`,
-                title: `${getFileName(e.filePath)}`,
                 saved: true
             }
 
@@ -207,7 +206,6 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 return {
                     id: createId(),
                     url: t.url,
-                    title: getFileName(t.url),
                     saved: true
                 };
             });
@@ -223,6 +221,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         let selectedIndex = this.state.selected;
 
         let titles = this.state.tabs.map((t, i) =>{
+            let title = utils.getFileName(t.url);
+
             var style = [tabHeader.base, i == selectedIndex ? tabHeaderActive : {}];
 
             let handleTitleClose = (event:React.SyntheticEvent) => {
@@ -244,7 +244,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 key={`tabHeader ${i}`}
                 style={style}
                 onClick={(event)=>this.onTabClicked(event.nativeEvent as MouseEvent,i)}>
-                <span key={`tabHeaderTitle ${i}`}>{t.title}</span> {titleIcon}
+                <span key={`tabHeaderTitle ${i}`}>{title}</span> {titleIcon}
             </span>
         });
 
