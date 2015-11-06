@@ -38,7 +38,3 @@ export interface SessionOnDisk {
 export interface SessionTabInUI {
     url: string;
 }
-export interface SessionInUI {
-    sessionId: string;
-    openTabs: SessionTabInUI[];
-}

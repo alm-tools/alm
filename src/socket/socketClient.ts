@@ -13,7 +13,8 @@ namespace Client {
 // Ensure that the namespace follows the contract
 var _checkTypes: typeof contract.client = Client;
 // launch client
-export let {server, cast, pendingRequestsChanged, connectionStatusChanged} = slc.run({ clientImplementation: Client, serverContract: contract.server, cast: contract.cast });
+export let {server, cast, pendingRequestsChanged, connectionStatusChanged}
+    = slc.run({ clientImplementation: Client, serverContract: contract.server, cast: contract.cast });
 
 // Sample usage
 cast.hello.on((p) => { console.log(p) });

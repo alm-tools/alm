@@ -56,7 +56,7 @@ export function setTsconfigPath(tsconfigFilePath: string) {
         writeDiskSession(ses);
     });
 }
-export function setUITabs(tabs: types.SessionTabInUI[]) {
+export function setOpenUITabs(tabs: types.SessionTabInUI[]) {
     let session = getDefaultOrNewSession();
     session.then((ses)=>{
         ses.openTabs = tabs.map(uiToDiskTab);

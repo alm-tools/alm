@@ -103,6 +103,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
             this.state.tabs.push(codeTab);
             this.setState({ tabs: this.state.tabs });
+            this.sendTabInfoToServer();
             this.selectTab(this.state.tabs.length - 1);
 
             if (e.position) {
@@ -351,6 +352,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
         this.state.tabs.splice(index, 1);
         this.setState({ tabs: this.state.tabs });
+        this.sendTabInfoToServer();
 
         // If this is the selected tab, Figure out the next:
         if (index == this.state.selected) {
@@ -367,6 +369,14 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.state.selected--;
             this.setState({ selected: this.state.selected });
         }
+    }
+
+    private sendTabInfoToServer(){
+        server.setOpenUITabs({
+            tabs: this.state.tabs.map(t=>({
+                url: t.url
+            }))
+        });
     }
 }
 

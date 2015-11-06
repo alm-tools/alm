@@ -7,6 +7,7 @@ import * as workingDir from "../server/disk/workingDir";
 import {FileModel} from "../server/disk/fileModel";
 import * as activeProject from "../server/lang/activeProject";
 import * as projectService from "../server/lang/projectService";
+import * as session from "../server/disk/session";
 let resolve = sls.resolve;
 
 import * as fmc from "../server/disk/fileModelCache";
@@ -72,12 +73,14 @@ namespace Server {
         let inActiveProject = !!activeProject.GetProject.ifCurrent(data.filePath);
         return resolve({inActiveProject});
     };
-
+    export var setOpenUITabs: typeof contract.server.setOpenUITabs = (data) => {
+        session.setOpenUITabs(data.tabs);
+        return resolve({});
+    };
 
     /**
      * Error handling
      */
-
     export var getErrors: typeof contract.server.getErrors = (data) => {
         return resolve(errorCache.getErrors());
     }

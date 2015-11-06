@@ -1,5 +1,6 @@
 import * as sl from "../socketLib/socketLib";
 import {QRFunction, QRServerFunction, TypedEvent} from "../socketLib/socketLib";
+import * as types from "../common/types";
 
 /**
  * Consists of the following contracts
@@ -28,6 +29,7 @@ export var server = {
     getActiveProjectConfigDetails: {} as QRFunction<{}, ActiveProjectConfigDetails>,
     setActiveProjectConfigDetails: {} as QRFunction<ActiveProjectConfigDetails, {}>,
     isFilePathInActiveProject: {} as QRFunction<{ filePath: string }, { inActiveProject: boolean }>,
+    setOpenUITabs: {} as QRFunction<{tabs:types.SessionTabInUI[]},{}>,
 
     /**
      * Error stuff
