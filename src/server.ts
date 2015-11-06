@@ -32,14 +32,22 @@ import serverStarted = require('./server/serverStarted');
 
 import open = require('open');
 // Start listening
-server.listen(port, function(e) {
-    if (e) {
-        console.error(e);
+var portfinder = require('portfinder');
+portfinder.basePort = port;
+portfinder.getPort(function (err, port) {
+    if (err) {
+        console.error(err);
         exit(errorCodes.couldNotListen);
     }
-    console.log(`Dashboard at http://localhost:${port}`);
-    // open(`http://localhost:${port}`,'chrome');
-    serverStarted.started();
+    server.listen(port, function(err) {
+        if (err) {
+            console.error(err);
+            exit(errorCodes.couldNotListen);
+        }
+        console.log(`Dashboard at http://localhost:${port}`);
+        // open(`http://localhost:${port}`,'chrome');
+        serverStarted.started();
+    });
 });
 
 /**
