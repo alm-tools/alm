@@ -79,7 +79,6 @@ function getStyleForToken(token: Token, textBefore: string): string {
 				case 'static':
 				case 'public':
 				case 'private':
-				case 'export':
 				case 'get':
 				case 'set':
 					return 'qualifier';
