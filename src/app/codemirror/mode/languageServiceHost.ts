@@ -366,27 +366,6 @@ function createScriptInfo(content: string): ScriptInfo {
     var isOpen = false
 
     /**
-     * An array mapping the start of lines in the script to their position in the file.
-     */
-    var _lineStarts: number[];
-
-    /**
-     * A flag true if `_lineStarts` needs to be recomputed
-     */
-    var _lineStartIsDirty = true;
-
-    /**
-     * Retrieve the script `_lineStarts`, recompute them if needed.
-     */
-    function getLineStarts() {
-        if (_lineStartIsDirty) {
-            _lineStarts = (<any>ts).computeLineStarts(content);
-            _lineStartIsDirty = false;
-        }
-        return _lineStarts;
-    }
-
-    /**
      * Update the script content.
      *
      * @param newContent the new content of the file associated to the script.
@@ -394,7 +373,6 @@ function createScriptInfo(content: string): ScriptInfo {
     function updateContent(newContent: string): void {
         if (newContent !== content) {
             content = newContent;
-            _lineStartIsDirty = true;
             editRanges = [];
             scriptVersion++;
         }
@@ -413,8 +391,6 @@ function createScriptInfo(content: string): ScriptInfo {
         var middle = newText;
         var suffix = content.substring(limChar);
         content = prefix + middle + suffix;
-        _lineStartIsDirty = true;
-
 
         // Store edit range + new length of script
         editRanges.push({
@@ -431,7 +407,6 @@ function createScriptInfo(content: string): ScriptInfo {
      */
     function getScriptSnapshot(): ts.IScriptSnapshot {
         // save the state of the script
-        var lineStarts = getLineStarts();
         var textSnapshot = content;
         var version = scriptVersion;
         var snapshotRanges = editRanges.slice();
