@@ -13,6 +13,7 @@ type BracketsStackItem = {
     indent: number ; brackets: string[]
 }
 
+/** Our state per line for CodeMirror mode */
 interface LineDescriptor {
     tokenMap: { [position: number]: Token };
     eolState: ts.EndOfLineState;
