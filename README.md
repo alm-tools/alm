@@ -34,9 +34,16 @@ Run it from the directory you want to serve up:
 tsb
 ```
 
-Now open it in your favorite browser (pssst `chrome`) at the URL mentioned in your console.
+Now open it in your favorite browser (pssst `chrome`) at the URL mentioned in your console. (**protip** use `tsb -o`)
 
 ![main](https://raw.githubusercontent.com/TypeScriptBuilder/screenshots/master/main.png)
+
+## Command Line
+All of these are **optional**:
+
+* `-o`: Open the browser on the server
+* `-d <directory>` : Specify a working directory
+* `-p <port>`: Specify a custom port number
 
 ## License
 

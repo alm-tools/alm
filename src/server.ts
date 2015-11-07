@@ -6,8 +6,11 @@ import cookieParser = require('cookie-parser');
 import {errorCodes, exit} from "./server/errorCodes";
 import path = require('path');
 import fs = require("fs");
+import open = require('open');
+import serverStarted = require('./server/serverStarted');
+import cl = require('./server/commandLine');
+import workingDir = require('./server/disk/workingDir');
 
-let port = 3000;
 var publicPath = path.resolve(__dirname, 'public');
 
 // Create express app and http server
@@ -28,12 +31,12 @@ app.use(express.static(publicPath, {}));
 import {register} from "./socket/socketServer";
 register(server);
 
-import serverStarted = require('./server/serverStarted');
 
-import open = require('open');
 // Start listening
+let clOptions = cl.getOptions();
+workingDir.setProjectRoot(clOptions.dir);
 var portfinder = require('portfinder');
-portfinder.basePort = port;
+portfinder.basePort = clOptions.port;
 portfinder.getPort(function (err, port) {
     if (err) {
         console.error(err);
@@ -45,7 +48,9 @@ portfinder.getPort(function (err, port) {
             exit(errorCodes.couldNotListen);
         }
         console.log(`Dashboard at http://localhost:${port}`);
-        // open(`http://localhost:${port}`,'chrome');
+        if (clOptions.open) {
+            open(`http://localhost:${port}`);
+        }
         serverStarted.started();
     });
 });
