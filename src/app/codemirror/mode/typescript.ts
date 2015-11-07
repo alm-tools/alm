@@ -242,7 +242,7 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
             }
         },
 
-        token(stream: CodeMirror.StringStream, lineDescriptor: LineDescriptor) {
+        token(stream: CodeMirror.StringStream, lineDescriptor: LineDescriptor): string {
             if (stream.sol()) {
                 var info = getLineDescriptorInfo(stream.string, lineDescriptor.eolState, lineDescriptor.nextLineIndent, lineDescriptor.bracketsStack);
 
