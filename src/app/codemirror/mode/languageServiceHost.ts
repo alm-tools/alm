@@ -1,31 +1,6 @@
 'use strict';
 
 /**
- * Clone an object (shallow).
- *
- * @param target the object to clone
- */
-function clone<T>(target: T): T {
-    return assign(Array.isArray(target) ? [] : {}, target);
-}
-
-/**
- * Assign all properties of a list of object to an object.
- *
- * @param target the object that will receive properties.
- * @param items objects which properties will be assigned to a target.
- */
-function assign(target: any, ...items: any[]): any {
-    return items.reduce(function (target: any, source: any) {
-        return Object.keys(source).reduce((target: any, key: string) => {
-            target[key] = source[key];
-            return target;
-        }, target);
-    }, target);
-}
-
-
-/**
  * The LanguageServiceHost module provides an ts.LanguageServiceHost implementations
  */
 export interface LanguageServiceHost extends ts.LanguageServiceHost {
@@ -211,7 +186,7 @@ export function createLanguageServiceHost(currentDir: string, defaultLibFileName
      * @param the settings to be applied to the host
      */
     function setCompilationSettings(settings: ts.CompilerOptions): void{
-        compilationSettings = Object.freeze(clone(settings));
+        compilationSettings = settings;
     }
 
     /**
