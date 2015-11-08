@@ -91,6 +91,9 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
 	componentDidMount () {
 
         var options: CodeMirror.EditorConfiguration = {
+            // our extension
+            filePath: this.filePath,
+
             lineNumbers: true,
             mode: 'typescript', // | text/html
             keyMap: 'sublime',

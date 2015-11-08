@@ -10,3 +10,10 @@ declare module CodeMirror {
     interface SearchCursor {
     }
 }
+
+/** Our extension to code mirror config. We like to keep the filePath in there */
+declare module CodeMirror {
+    interface EditorConfiguration {
+        filePath: string;
+    }
+}
