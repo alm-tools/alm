@@ -21,8 +21,7 @@ export const errors = {
  * Session related types
  */
 export interface SessionTabOnDisk {
-    protocol: string;
-    relativePath: string;
+    relativeUrl: string;
 }
 export interface SessionOnDisk {
     openTabs: SessionTabOnDisk[];

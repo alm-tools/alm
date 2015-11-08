@@ -3,6 +3,7 @@
  */
 
 import * as fsu from "../utils/fsu";
+import * as utils from "../../common/utils";
 
 let projectRoot = process.cwd();
 
@@ -21,4 +22,15 @@ export function makeRelative(filePath: string) {
 
 export function makeAbsolute(relativeFilePath: string) {
     return fsu.resolve(projectRoot, relativeFilePath)
+}
+
+export function makeRelativeUrl(url: string) {
+    let {filePath, protocol} = utils.getFilePathAndProtocolFromUrl(url);
+    let relativeFilePath = makeRelative(filePath);
+    return utils.getUrlFromFilePathAndProtocol({ protocol, filePath: relativeFilePath });
+}
+export function makeAbsoluteUrl(relativeUrl: string) {
+    let {filePath: relativeFilePath, protocol} = utils.getFilePathAndProtocolFromUrl(relativeUrl);
+    let filePath = makeAbsolute(relativeFilePath);
+    return utils.getUrlFromFilePathAndProtocol({ protocol, filePath });
 }

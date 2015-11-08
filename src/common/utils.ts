@@ -178,6 +178,9 @@ export function getFilePathAndProtocolFromUrl(url: string): {protocol: string; f
     let filePath = url.substr((protocol + '://').length);
     return {protocol, filePath};
 }
+export function getUrlFromFilePathAndProtocol(config:{protocol:string,filePath:string}){
+    return config.protocol + '://' + config.filePath;
+}
 
 /**
  * Promise.resolve is something I call the time (allows you to take x|promise and return promise ... aka make sync prog async if needed)

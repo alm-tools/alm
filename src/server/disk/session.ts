@@ -11,7 +11,7 @@ import * as fsu from "../utils/fsu";
 import * as utils from "../../common/utils";
 import * as workingDir from "./workingDir";
 
-const sessionFile = types.cacheDir + '/sessionV1.json'
+const sessionFile = types.cacheDir + '/sessionV2.json'
 
 /**
  * If there is no session then a default one will be created for you and sent over
@@ -35,17 +35,15 @@ export function getDefaultOrNewSession(): Promise<types.SessionOnDisk> {
 }
 
 function uiToDiskTab(uiTab: types.SessionTabInUI): types.SessionTabOnDisk {
-    let url = uiTab.url;
-    let {filePath, protocol} = utils.getFilePathAndProtocolFromUrl(url);
+    let relativeUrl = workingDir.makeRelativeUrl(uiTab.url);
 
     return {
-        protocol: protocol,
-        relativePath: workingDir.makeRelative(filePath)
+        relativeUrl
     };
 }
 
 function diskTabToUITab(diskTab: types.SessionTabOnDisk): types.SessionTabInUI {
-    let url = diskTab.protocol + '://' + workingDir.makeAbsolute(diskTab.relativePath);
+    let url = workingDir.makeAbsoluteUrl(diskTab.relativeUrl);
     return {
         url
     };
