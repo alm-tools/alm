@@ -20,6 +20,10 @@ interface LineDescriptor {
     indent: number;
     nextLineIndent: number;
     bracketsStack: BracketsStackItem[]
+
+	/** Things that would help us know where we are in the file */
+	lineNumber: number;
+	lineStartIndex: number;
 }
 
 
@@ -229,29 +233,41 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
                 eolState: ts.EndOfLineState.None,
                 indent: 0,
                 nextLineIndent: 0,
-                bracketsStack: []
+                bracketsStack: [],
+				lineNumber: 0,
+				lineStartIndex: 0,
             };
         },
 
-        copyState(lineDescriptor: LineDescriptor) {
+        copyState(lineDescriptor: LineDescriptor): LineDescriptor {
             return {
                 tokenMap: lineDescriptor.tokenMap,
                 eolState: lineDescriptor.eolState,
                 indent: lineDescriptor.indent,
                 nextLineIndent: lineDescriptor.nextLineIndent,
-                bracketsStack: lineDescriptor.bracketsStack
+                bracketsStack: lineDescriptor.bracketsStack,
+				lineNumber: lineDescriptor.lineNumber,
+				lineStartIndex: lineDescriptor.lineStartIndex,
             }
         },
 
+		blankLine(lineDescriptor: LineDescriptor){
+			lineDescriptor.lineNumber++;
+			lineDescriptor.lineStartIndex++;
+		},
+
         token(stream: CodeMirror.StringStream, lineDescriptor: LineDescriptor): string {
             if (stream.sol()) {
-                var info = getLineDescriptorInfo(stream.string, lineDescriptor.eolState, lineDescriptor.nextLineIndent, lineDescriptor.bracketsStack);
+                let info = getLineDescriptorInfo(stream.string, lineDescriptor.eolState, lineDescriptor.nextLineIndent, lineDescriptor.bracketsStack);
 
+				// Update info for next call
                 lineDescriptor.eolState = info.eolState;
                 lineDescriptor.tokenMap = info.tokenMap;
                 lineDescriptor.bracketsStack = info.bracketsStack;
                 lineDescriptor.indent = info.indent;
                 lineDescriptor.nextLineIndent = info.hasOpening ? info.indent + 1 : info.indent;
+				lineDescriptor.lineNumber++;
+				lineDescriptor.lineStartIndex = lineDescriptor.lineStartIndex + stream.string.length;
             }
 
             var token = lineDescriptor.tokenMap[stream.pos];

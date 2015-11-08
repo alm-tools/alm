@@ -48,6 +48,7 @@ import linter = require('./addons/linter');
 import search = require("./addons/search");
 import typescriptMode = require("./mode/typescript");
 typescriptMode.register();
+import * as classifierCache from "./mode/classifierCache";
 
 // Sample addon usage
 // console.log(CodeMirror.findModeByFileName('asdf/foo.js'))
@@ -234,6 +235,10 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
             return;
         }
 
+        // Keep the classifier in sync
+        // TODO: WARNING this will break as soon as we have two tabs open
+        // classifierCache.editFile(this.filePath, codeEdit);
+
         // Send the edit
         this.props.onEdit(codeEdit);
 
@@ -244,6 +249,11 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
 
     private _setCodemirrorValue: string;
     setValue(value: string, clearHistory = false){
+        // if (clearHistory){
+        //     /** Initial load */
+        //     classifierCache.addFile(this.filePath, value);
+        // }
+
         let cursor = this.codeMirror.getDoc().getCursor();
         this._setCodemirrorValue = value;
         this.codeMirror.getDoc().setValue(value);
