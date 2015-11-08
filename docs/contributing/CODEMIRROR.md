@@ -10,8 +10,7 @@ Notes:
  * Code mirror position `line` is zero based. So is `ch`.
 
 # Position vs Index
-Quite commonly we need a zero based *string* index into the file. Codemirror has functions `indexFromPos` and `posFromIndex`.
-
+Quite commonly we need a zero based *string* index into the file. Codemirror has functions `indexFromPos` and `posFromIndex`. Warning : internally cm only tracks lines, so calling these loops (slowly) through relevant lines so be careful.
 
 # Selecting
 ```

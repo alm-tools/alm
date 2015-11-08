@@ -31,4 +31,5 @@ export function editFile(filePath: string, codeEdit: CodeEdit) {
 }
 export function getClassificationsForLine(filePath:string, lineStart: number, lineLength: number){
     let classifications = languageService.getSyntacticClassifications(filePath, { start: lineStart, length: lineLength });
+    return classifications;
 }

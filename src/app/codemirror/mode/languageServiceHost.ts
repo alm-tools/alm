@@ -78,11 +78,8 @@ export interface LanguageServiceHost extends ts.LanguageServiceHost {
 
 /**
  * LanguageServiceHost factory.
- *
- * @param currentDir the current directory opened in the editor
- * @param defaultLibFileName the absolute file name of the `lib.d.ts` files associated to the language service host instance.
  */
-export function createLanguageServiceHost(currentDir: string, defaultLibFileName: string): LanguageServiceHost {
+export function createLanguageServiceHost(): LanguageServiceHost {
 
     /**
      * CompilationSettings;
@@ -256,8 +253,8 @@ export function createLanguageServiceHost(currentDir: string, defaultLibFileName
         // ts.LanguageServiceHost implementation
         getCompilationSettings: () => compilationSettings,
         getScriptFileNames: () => Object.keys(fileNameToScript),
-        getCurrentDirectory: () => currentDir,
-        getDefaultLibFileName: () => defaultLibFileName,
+        getCurrentDirectory: () => '',
+        getDefaultLibFileName: () => null,
         getScriptVersion,
         getScriptSnapshot,
     };
