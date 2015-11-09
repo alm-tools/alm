@@ -36,7 +36,7 @@ export function getDefaultOrNewSession(): types.SessionOnDisk {
     }
 
     // Update the session on disk for future calls to be stable
-    if (commandLineTabs) {
+    if (commandLineTabs.length) {
         session.openTabs = session.openTabs.concat(commandLineTabs);
         writeDiskSession(session);
     }
