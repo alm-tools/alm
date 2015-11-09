@@ -5,9 +5,9 @@
 
 import {TypedEvent} from "../../common/events";
 import {createMapByKey,debounce} from "../../common/utils";
+import equal = require('deep-equal');
 
-
-export let errorsUpdated = new TypedEvent<ErrorsByFilePath>()
+export let errorsUpdated = new TypedEvent<ErrorsByFilePath>();
 
 /**
  * current errors
@@ -36,20 +36,28 @@ let sendErrors = debounce(()=>{
 
 /** The pased errors are considered *the only current* errors for the filePath */
 export function setErrorsByFilePaths(filePaths: string[], errors: CodeError[]) {
+    let somethingNew = false;
+
     // For all found errors add them
     let errorsByFile = createMapByKey(errors, (e) => e.filePath);
     for (let filePath in errorsByFile) {
-        _errorsByFilePath[filePath] = errorsByFile[filePath];
+        if (!equal(_errorsByFilePath[filePath], errorsByFile[filePath])){
+            somethingNew = true;
+            _errorsByFilePath[filePath] = errorsByFile[filePath];
+        }
     }
 
     // For not found errors clear them
     for (let filePath of filePaths) {
-        if (!errorsByFile[filePath]) {
+        if (!errorsByFile[filePath] && (_errorsByFilePath[filePath] && _errorsByFilePath[filePath].length)) {
+            somethingNew = true;
             _errorsByFilePath[filePath] = [];
         }
     }
 
-    sendErrors();
+    if (somethingNew) {
+        sendErrors();
+    }
 }
 
 export function getErrors() {

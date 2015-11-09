@@ -155,7 +155,7 @@ fmc.didEdit.on((evt) => {
         // console.log(proj.languageService.getSourceFile(evt.filePath).text);
 
         // update errors for this file
-        refreshFileDiagnostics(evt.filePath);
+        // refreshFileDiagnostics(evt.filePath);
 
         // After a while update all project diagnostics as well
         refreshAllProjectDiagnostics();
@@ -180,7 +180,7 @@ var refreshAllProjectDiagnostics = utils.debounce(() => {
         let filePaths = currentProject.getProjectSourceFiles().map(x=> x.fileName);
         setErrorsByFilePaths(filePaths, errors);
     }
-}, 2000);
+}, 3000);
 
 /**
  * Constantly streaming this is slow for large files so this is debounced as well
