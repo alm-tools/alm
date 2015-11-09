@@ -42,6 +42,8 @@ export interface State {
 @ui.Radium
 export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
+    closedTabs: tab.TabInstance[] = [];
+
     constructor(props: Props) {
         super(props);
 
@@ -197,6 +199,16 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
         commands.openFileFromDisk.on(() => {
             ui.comingSoon("Open a file from the server disk");
+        });
+
+        commands.undoCloseTab.on(() => {
+            if (this.closedTabs.length) {
+                let tab = this.closedTabs.pop();
+                this.state.tabs.push(tab);
+                this.setState({ tabs: this.state.tabs });
+                this.selectTab(this.state.tabs.length - 1);
+                this.sendTabInfoToServer();
+            }
         });
 
         /** Restore any open tabs from last session */
@@ -367,7 +379,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         let component = this.refs[this.state.tabs[index].id];
         component.close();
 
-        this.state.tabs.splice(index, 1);
+        let closed = this.state.tabs.splice(index, 1);
+        this.closedTabs.push(closed[0]);
         this.setState({ tabs: this.state.tabs });
         this.sendTabInfoToServer();
 
