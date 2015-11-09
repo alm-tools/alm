@@ -155,9 +155,7 @@ fmc.didEdit.on((evt) => {
         // console.log(proj.languageService.getSourceFile(evt.filePath).text);
 
         // update errors for this file
-        let diagnostics = proj.getDiagnosticsForFile(evt.filePath);
-        let errors = diagnostics.map(diagnosticToCodeError);
-        setErrorsByFilePaths([evt.filePath], errors);
+        refreshFileDiagnostics(evt.filePath);
 
         // After a while update all project diagnostics as well
         refreshAllProjectDiagnostics();
@@ -184,6 +182,17 @@ var refreshAllProjectDiagnostics = utils.debounce(() => {
     }
 }, 2000);
 
+/**
+ * Constantly streaming this is slow for large files so this is debounced as well
+ */
+var refreshFileDiagnostics = utils.debounce((filePath:string) => {
+    let proj = GetProject.ifCurrent(filePath)
+    if (proj) {
+        let diagnostics = proj.getDiagnosticsForFile(filePath);
+        let errors = diagnostics.map(diagnosticToCodeError);
+        setErrorsByFilePaths([filePath], errors);
+    }
+}, 1000);
 
 /**
  * Utility functions to convert a `configFile` to a `project`
