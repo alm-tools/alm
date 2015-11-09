@@ -94,7 +94,9 @@ export class StatusBar extends BaseComponent<Props, State>{
                             ));
 
                     return <div key={i}>
-                        <div style={styles.errorsPanel.filePath} onClick={()=>this.openErrorLocation(this.props.errorsByFilePath[filePath][0])}>{filePath}</div>
+                        <div style={styles.errorsPanel.filePath} onClick={()=>this.openErrorLocation(this.props.errorsByFilePath[filePath][0])}>
+                            {filePath}
+                        </div>
 
                         <div style={styles.errorsPanel.perFileList}>
                             {errors}
