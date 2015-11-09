@@ -42,11 +42,10 @@ function refreshAvailableProjects() {
     return flm.filePathsUpdated.current().then((list) => {
         // Detect some tsconfig.json
         let tsconfigs = list.filePaths.filter(t=> t.endsWith('tsconfig.json'));
-        // exclude node_modules
-        tsconfigs = tsconfigs.filter(t=> !t.includes('node_modules'));
-        // sort by shortest lenght first:
+        // sort by shortest length first (with extra big weight for node_modules):
+        let weightConfig = (config: string) => config.includes('node_modules') ? config.length + 100 : config.length;
         tsconfigs = tsconfigs.sort(function(a, b) {
-            return a.length - b.length;
+            return weightConfig(a) - weightConfig(b);
         });
 
         let projectConfigs: ActiveProjectConfigDetails[] = tsconfigs.map(Utils.tsconfigToActiveProjectConfigDetails);
@@ -299,8 +298,10 @@ export namespace GetProject {
 /** General purpose utility functions specific to this file */
 namespace Utils {
     export function tsconfigToActiveProjectConfigDetails(tsconfig: string): ActiveProjectConfigDetails {
+        let relative = workingDir.makeRelative(tsconfig);
+        let isNodeModule = relative.includes('node_modules');
         return {
-            name: utils.getFolderAndFileName(tsconfig),
+            name: isNodeModule ? relative : utils.getFolderAndFileName(tsconfig),
             isImplicit: false,
             tsconfigFilePath: tsconfig
         };
