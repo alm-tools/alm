@@ -26,6 +26,7 @@
         "./app/codemirror/addons/search.ts",
         "./app/codemirror/addons/text-hover.ts",
         "./app/codemirror/mode/classifierCache.ts",
+        "./app/codemirror/mode/docCache.ts",
         "./app/codemirror/mode/languageServiceHost.ts",
         "./app/codemirror/mode/typescript.ts",
         "./app/commands/commands.ts",
