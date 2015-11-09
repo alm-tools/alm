@@ -1,5 +1,6 @@
 import {FileModel} from "./fileModel";
 import {TypedEvent} from "../../common/events";
+import * as fsu from "../utils/fsu";
 
 export var savedFileChangedOnDisk = new TypedEvent<{ filePath: string; contents: string }>();
 export var didEdit = new TypedEvent<{ filePath: string; edit: CodeEdit }>();
@@ -11,9 +12,14 @@ export function getOpenFile(filePath: string) {
         return openFiles.filter(f=> f.config.filePath == filePath)[0];
     }
 }
-export function getOrCreateOpenFile(filePath: string) {
+export function getOrCreateOpenFile(filePath: string, autoCreate = false) {
     var file = getOpenFile(filePath);
     if (!file) {
+        /** If you request a file that isn't there ... we are going to create it */
+        if (!fsu.existsSync(filePath) && autoCreate) {
+            fsu.writeFile(filePath, '');
+        }
+
         file = new FileModel({
             filePath: filePath
         });
