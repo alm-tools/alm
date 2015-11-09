@@ -34,7 +34,6 @@ register(server);
 
 // Start listening
 let clOptions = cl.getOptions();
-workingDir.setProjectRoot(clOptions.dir);
 var portfinder = require('portfinder');
 portfinder.basePort = clOptions.port;
 portfinder.getPort(function (err, port) {

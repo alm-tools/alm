@@ -51,4 +51,8 @@ export function writeFile(filePath: string, content: string) {
     fs.writeFileSync(filePath, content, 'utf8');
 }
 
+/** see if a file exists */
 export var existsSync = (filePath: string) => fs.existsSync(filePath);
+
+/** see if path is absolute */
+export var isAbsolute = (filePath: string) => path.isAbsolute(filePath);

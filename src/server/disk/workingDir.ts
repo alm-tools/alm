@@ -24,6 +24,15 @@ export function makeAbsolute(relativeFilePath: string) {
     return fsu.resolve(projectRoot, relativeFilePath)
 }
 
+export function makeAbsoluteIfNeeded(filePathOrRelativeFilePath: string){
+    if (fsu.isAbsolute(filePathOrRelativeFilePath)){
+        return makeAbsolute(filePathOrRelativeFilePath);
+    }
+    else {
+        return filePathOrRelativeFilePath;
+    }
+}
+
 export function makeRelativeUrl(url: string) {
     let {filePath, protocol} = utils.getFilePathAndProtocolFromUrl(url);
     let relativeFilePath = makeRelative(filePath);

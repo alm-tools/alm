@@ -15,6 +15,7 @@ export const devtimeDetectionFile = __dirname + '/devtime.txt';
 let bundleDevTimeProxy = utils.once(() => {
     var Webpack = require('webpack');
     var WebpackDevServer = require('webpack-dev-server');
+    let notification = '[WDS]'; // Webpack dev server
 
     /**
      * Update the prod config for dev time ease
@@ -39,10 +40,10 @@ let bundleDevTimeProxy = utils.once(() => {
      */
     let compiler = Webpack(devConfig);
     compiler.plugin('compile', function() {
-        console.log('WepackDev bundling ..... ')
+        console.log(`${notification} bundling ..... `)
     });
     compiler.plugin('done', function(result) {
-        console.log('WebpackDev bundled in ' + (result.endTime - result.startTime) + 'ms!');
+        console.log(`${notification} bundled in  + ${(result.endTime - result.startTime)} ms!`);
     });
 
     /**
@@ -65,7 +66,7 @@ let bundleDevTimeProxy = utils.once(() => {
         }
     });
     bundler.listen(webpackDevServerPort, 'localhost', function() {
-        console.log(`WebpackDev server listening on port: ${webpackDevServerPort}`);
+        console.log(`${notification} server listening on port: ${webpackDevServerPort}`);
     });
 
     /**

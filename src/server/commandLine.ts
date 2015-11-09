@@ -1,5 +1,7 @@
 import minimist = require('minimist');
 import * as path from "path";
+import * as utils from "../common/utils";
+import * as workingDir from "./disk/workingDir";
 
 let defaultPort = 4444;
 
@@ -27,26 +29,25 @@ interface CommandLineOptions {
     port: number;
     dir: string;
     open: boolean;
+    filePaths: string[];
 }
-export function getOptions(): CommandLineOptions {
-    let options = {
+export let getOptions = utils.once((): CommandLineOptions => {
+    let options: CommandLineOptions = {
         port: argv.p,
         dir: argv.d,
         open: argv.o,
+        filePaths: [],
     }
     if (typeof options.port !== 'number') {
         options.port = defaultPort;
     }
-    if (argv.d){
-        if (path.isAbsolute(argv.d)){
-            options.dir = argv.d;
-        } else {
-            options.dir = path.resolve(process.cwd(), argv.d);
-        }
+    if (argv.d) {
+        options.dir = workingDir.makeAbsoluteIfNeeded(argv.d);
+        workingDir.setProjectRoot(options.dir);
     }
-    if (argv._ && argv._.length){
-        console.log('Additinal arguments beyond p/d/o not supported')
+    if (argv._ && argv._.length) {
+        options.filePaths = argv._.map(x=> workingDir.makeAbsoluteIfNeeded(x));
     }
 
     return options;
-}
+});

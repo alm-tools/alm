@@ -212,9 +212,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         });
 
         /** Restore any open tabs from last session */
-        server.getOpenUITabs({}).then((res)=>{
+        server.getOpenUITabs({}).then((res) => {
             let openTabs = res.openTabs;
-            let codeTabs: tab.TabInstance[] = openTabs.map(t=>{
+            let codeTabs: tab.TabInstance[] = openTabs.map(t=> {
                 return {
                     id: createId(),
                     url: t.url,
