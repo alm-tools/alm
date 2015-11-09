@@ -95,7 +95,7 @@ export class StatusBar extends BaseComponent<Props, State>{
 
                     return <div key={i}>
                         <div style={styles.errorsPanel.filePath} onClick={()=>this.openErrorLocation(this.props.errorsByFilePath[filePath][0])}>
-                            {filePath}
+                            <Icon name="file-code-o" style={{fontSize: '.8rem'} as any}/> {filePath}
                         </div>
 
                         <div style={styles.errorsPanel.perFileList}>

@@ -111,7 +111,7 @@ export namespace errorsPanel {
     export let filePath = {
         fontSize: '1rem',
         fontWeight: 'bold',
-        padding: '3px',
+        padding: '8px 8px 8px 0px',
         cursor: hand.cursor,
     }
 
