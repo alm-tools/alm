@@ -78,7 +78,7 @@ namespace Server {
         return resolve({});
     };
     export var getOpenUITabs: typeof contract.server.getOpenUITabs = (data) => {
-        return session.getOpenUITabs();
+        return resolve(session.getOpenUITabs());
     };
 
     /**

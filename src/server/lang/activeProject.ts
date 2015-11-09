@@ -74,17 +74,16 @@ export function start() {
     });
 
     // Resume session
-    session.getDefaultOrNewSession()
-        .then((ses) => {
-            if (ses.relativePathToTsconfig) {
-                let tsconfig = workingDir.makeAbsolute(ses.relativePathToTsconfig);
-                if (fs.existsSync(tsconfig)) {
-                    activeProjectConfigDetails = Utils.tsconfigToActiveProjectConfigDetails(tsconfig);
-                    activeProjectConfigDetailsUpdated.emit(activeProjectConfigDetails);
-                }
-            }
-        })
-        .then(() => refreshAvailableProjects())
+    let ses = session.getDefaultOrNewSession()
+    if (ses.relativePathToTsconfig) {
+        let tsconfig = workingDir.makeAbsolute(ses.relativePathToTsconfig);
+        if (fs.existsSync(tsconfig)) {
+            activeProjectConfigDetails = Utils.tsconfigToActiveProjectConfigDetails(tsconfig);
+            activeProjectConfigDetailsUpdated.emit(activeProjectConfigDetails);
+        }
+    }
+
+    refreshAvailableProjects()
         .then(() => sync());
 }
 
