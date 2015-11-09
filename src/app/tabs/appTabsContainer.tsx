@@ -116,7 +116,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             // if open and focused ignore
             // if open and not focused then focus
             // If not hand over to doOpenFile
-            if (utils.getFilePathFromUrl(this.state.tabs[this.state.selected].url) == e.filePath){
+            if (this.state.tabs.length
+                && utils.getFilePathFromUrl(this.state.tabs[this.state.selected].url) == e.filePath){
                 if (e.position) {
                     this.gotoPositionOnSelectedTab(e.position)
                 }
