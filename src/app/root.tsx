@@ -13,6 +13,7 @@ import {cast, server} from "../socket/socketClient";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
 import {debounce,createMap,rangeLimited,getFileName} from "../common/utils";
 import {OmniSearch} from "./omniSearch/omniSearch";
+import {FileTree} from "./fileTree";
 
 import {SelectListView} from "./selectListView";
 import slv = require("./selectListView");
@@ -58,7 +59,8 @@ export class Root extends ui.BaseComponent<{}, State>{
 
                 <SelectListView ref="selectListView"/>
 
-                <div style={[csx.flex, csx.flexRoot]}>
+                <div style={[csx.flex, csx.horizontal]}>
+                    {/*<FileTree/>*/}
                     <AppTabsContainer/>
                 </div>
 

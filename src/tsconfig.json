@@ -116,6 +116,7 @@
         "./app/clipboard.tsx",
         "./app/codemirror/codeEditor.tsx",
         "./app/devtemplate.tsx",
+        "./app/fileTree.tsx",
         "./app/findAndReplace.tsx",
         "./app/icon.tsx",
         "./app/main.tsx",
