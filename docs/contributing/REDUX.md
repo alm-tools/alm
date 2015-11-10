@@ -35,3 +35,6 @@ And then connect your component:
     };
 })
 ```
+
+## Global state that comes from server
+We setup such state in `main.tsx` basically setting it initially and updating it on new data recieved from server.
