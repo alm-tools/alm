@@ -30,7 +30,8 @@ export function editFile(filePath: string, codeEdit: CodeEdit) {
 }
 export function getClassificationsForLine(filePath: string, lineStart: number, string: string): ClassifiedSpan[] {
     let lineLength = string.length;
-    let classifications: ClassifiedSpan[] = languageService.getSyntacticClassifications(filePath, { start: lineStart, length: lineLength });
+    let encodedClassifications = languageService.getEncodedSyntacticClassifications(filePath, { start: lineStart, length: lineLength });
+    let classifications: ClassifiedSpan[] = unencodeClassifications(encodedClassifications);
 
     // Trim to the query region
     classifications = classifications
@@ -70,8 +71,56 @@ export function getClassificationsForLine(filePath: string, lineStart: number, s
     return classifications;
 }
 
-/** Just a convinient wrapper around ts.ClassifiedSpan */
-export interface ClassifiedSpan extends ts.ClassifiedSpan {
+/**
+  * Just a convinient wrapper around ts.ClassifiedSpan
+  * that keeps the enum `classificationType` intact
+  **/
+export interface ClassifiedSpan {
+    textSpan: ts.TextSpan;
+    classificationType: ts.ClassificationType;
+    classificationTypeName: string;
+
+    // Stuff we load for debugging
     string?: string;
     startInLine?: number;
+}
+
+/** ported from services.ts convertClassifications */
+function unencodeClassifications(classifications: ts.Classifications): ClassifiedSpan[] {
+    let dense = classifications.spans;
+    let result: ClassifiedSpan[] = [];
+    for (let i = 0, n = dense.length; i < n; i += 3) {
+        result.push({
+            textSpan: ts.createTextSpan(dense[i], dense[i + 1]),
+            classificationType: dense[i + 2],
+            classificationTypeName: getClassificationTypeName(dense[i + 2]),
+        });
+    }
+
+    return result;
+}
+
+/** brought in as it is */
+import ClassificationType = ts.ClassificationType;
+let ClassificationTypeNames = ts.ClassificationTypeNames;
+function getClassificationTypeName(type: ClassificationType) {
+    switch (type) {
+        case ClassificationType.comment: return ClassificationTypeNames.comment;
+        case ClassificationType.identifier: return ClassificationTypeNames.identifier;
+        case ClassificationType.keyword: return ClassificationTypeNames.keyword;
+        case ClassificationType.numericLiteral: return ClassificationTypeNames.numericLiteral;
+        case ClassificationType.operator: return ClassificationTypeNames.operator;
+        case ClassificationType.stringLiteral: return ClassificationTypeNames.stringLiteral;
+        case ClassificationType.whiteSpace: return ClassificationTypeNames.whiteSpace;
+        case ClassificationType.text: return ClassificationTypeNames.text;
+        case ClassificationType.punctuation: return ClassificationTypeNames.punctuation;
+        case ClassificationType.className: return ClassificationTypeNames.className;
+        case ClassificationType.enumName: return ClassificationTypeNames.enumName;
+        case ClassificationType.interfaceName: return ClassificationTypeNames.interfaceName;
+        case ClassificationType.moduleName: return ClassificationTypeNames.moduleName;
+        case ClassificationType.typeParameterName: return ClassificationTypeNames.typeParameterName;
+        case ClassificationType.typeAliasName: return ClassificationTypeNames.typeAliasName;
+        case ClassificationType.parameterName: return ClassificationTypeNames.parameterName;
+        case ClassificationType.docCommentTagName: return ClassificationTypeNames.docCommentTagName;
+    }
 }

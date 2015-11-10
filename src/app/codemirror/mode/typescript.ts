@@ -261,9 +261,9 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
         token(stream: CodeMirror.StringStream, lineDescriptor: LineDescriptor): string {
             if (stream.sol()) {
                 let info = getLineDescriptorInfo(stream.string, lineDescriptor.eolState, lineDescriptor.nextLineIndent, lineDescriptor.bracketsStack);
-                // let classifications = classifierCache.getClassificationsForLine(options.filePath, lineDescriptor.lineStartIndex, stream.string);
+                let classifications = classifierCache.getClassificationsForLine(options.filePath, lineDescriptor.lineStartIndex, stream.string);
                 // console.log('%c'+stream.string,"font-size: 20px");
-                // console.table(classifications.map(c=> ({ str: c.string, cls: c.classificationType,c:c })));
+                // console.table(classifications.map(c=> ({ str: c.string, cls: c.classificationTypeName,c:c })));
 
 				// Update info for next call
                 lineDescriptor.eolState = info.eolState;
