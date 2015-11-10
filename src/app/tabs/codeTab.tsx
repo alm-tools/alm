@@ -48,10 +48,6 @@ export class Code extends ui.BaseComponent<Props, State> implements tab.Componen
             path={this.props.url}
             />
         );
-
-        return <div>
-            Code to go here: {this.props.url}
-            </div>;
     }
 
     focus = () => {

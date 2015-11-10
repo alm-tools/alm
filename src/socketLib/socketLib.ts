@@ -64,8 +64,6 @@ export class RequesterResponder {
             emit?: <T>(messageType: string, message: Message<T>) => any
         }
     }
-    = () => { throw new Error('getSocket is abstract'); return null; }
-
 
     startListening() {
         try {

@@ -191,8 +191,8 @@ let CodeMirror = imp; // This is to overcome an unreported bug in the compiler
     // BAS early return 🌹
     return;
 
-    var target = e.target || e.srcElement;
-    showTooltipFor(e, annotationTooltip(ann), target);
+    // var target = e.target || e.srcElement;
+    // showTooltipFor(e, annotationTooltip(ann), target);
   }
 
   function onMouseOver(cm, e) {
