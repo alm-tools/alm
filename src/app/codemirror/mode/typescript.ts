@@ -23,6 +23,7 @@ interface LineDescriptor {
     nextLineIndent: number;
     bracketsStack: BracketsStackItem[]
 
+	classifications: classifierCache.ClassifiedSpan[];
 	/** Things that would help us know where we are in the file */
 	lineNumber: number;
 	lineStartIndex: number;
@@ -238,6 +239,7 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
                 bracketsStack: [],
 				lineNumber: 0,
 				lineStartIndex: 0,
+				classifications: [],
             };
         },
 
@@ -250,6 +252,7 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
                 bracketsStack: lineDescriptor.bracketsStack,
 				lineNumber: lineDescriptor.lineNumber,
 				lineStartIndex: lineDescriptor.lineStartIndex,
+				classifications: lineDescriptor.classifications,
             }
         },
 
@@ -273,6 +276,7 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
                 lineDescriptor.nextLineIndent = info.hasOpening ? info.indent + 1 : info.indent;
 				lineDescriptor.lineNumber++;
 				lineDescriptor.lineStartIndex = lineDescriptor.lineStartIndex + stream.string.length + 1;
+				lineDescriptor.classifications = classifications;
             }
 
             var token = lineDescriptor.tokenMap[stream.pos];
@@ -284,7 +288,6 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
                 return getStyleForToken(token, textBefore);
             } else {
                 stream.skipToEnd();
-
             }
 
             return null;
