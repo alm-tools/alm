@@ -43,7 +43,7 @@ let bundleDevTimeProxy = utils.once(() => {
         console.log(`${notification} bundling ..... `)
     });
     compiler.plugin('done', function(result) {
-        console.log(`${notification} bundled in  + ${(result.endTime - result.startTime)} ms!`);
+        console.log(`${notification} bundled in ${(result.endTime - result.startTime)} ms!`);
     });
 
     /**
