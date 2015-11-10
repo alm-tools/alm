@@ -60,4 +60,10 @@ document.addEventListener('DOMContentLoaded', () => {
     connectionStatusChanged.on(r=> {
         state.setSocketConnected(r.connected);
     });
+    server.filePaths({}).then((res) => {
+        state.setFilePaths(res.filePaths);
+    });
+    cast.filePathsUpdated.on((update) => {
+        state.setFilePaths(update.filePaths);
+    });
 });

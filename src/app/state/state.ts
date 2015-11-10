@@ -17,6 +17,8 @@ export interface StoreState {
 
     /** Socket IO */
     socketConnected?: boolean;
+
+    filePaths?: string[];
 }
 
 let initialStoreState: StoreState = {
@@ -33,7 +35,8 @@ let initialStoreState: StoreState = {
         isCaseSensitive: false,
         isFullWord: false
     },
-    socketConnected: false
+    socketConnected: false,
+    filePaths: []
 };
 
 let redux = new SimpleRedux<StoreState>(initialStoreState);
@@ -128,5 +131,11 @@ export let setFindOptionsIsShown = redux.add('setFindOptionsIsShown', (state:Sto
 export let setSocketConnected = redux.add('setSocketConnected', (state, payload: boolean): StoreState => {
     return {
         socketConnected: payload
+    };
+});
+
+export let setFilePaths = redux.add('setFilePaths', (state, filePaths: string[]): StoreState => {
+    return {
+        filePaths
     };
 });

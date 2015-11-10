@@ -267,13 +267,9 @@ class SearchState {
             this.closeOmniSearch();
         });
 
-        server.filePaths({}).then((res) => {
-            this.filePaths = res.filePaths;
-            this.updateIfUserIsSearching(SearchMode.File);
-        });
-        cast.filePathsUpdated.on((update) => {
-            console.log(update);
-            this.filePaths = update.filePaths;
+        this.filePaths = state.getState().filePaths;
+        state.subscribeSub(state=> state.filePaths, (filePaths) => {
+            this.filePaths = filePaths;
             this.updateIfUserIsSearching(SearchMode.File);
         });
 
