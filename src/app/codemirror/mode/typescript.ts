@@ -260,9 +260,9 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
         token(stream: CodeMirror.StringStream, lineDescriptor: LineDescriptor): string {
             if (stream.sol()) {
                 let info = getLineDescriptorInfo(stream.string, lineDescriptor.eolState, lineDescriptor.nextLineIndent, lineDescriptor.bracketsStack);
-				// console.time('c');
-                // let classifications = classifierCache.getClassificationsForLine(options.filePath, lineDescriptor.lineNumber, stream.string.length);
-				// console.timeEnd('c');
+                // let classifications = classifierCache.getClassificationsForLine(options.filePath, lineDescriptor.lineStartIndex, stream.string);
+                // console.log('%c'+stream.string,"font-size: 20px");
+                // console.table(classifications.map(c=> ({ str: c.string, cls: c.classificationType,c:c })));
 
 				// Update info for next call
                 lineDescriptor.eolState = info.eolState;
@@ -271,7 +271,7 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
                 lineDescriptor.indent = info.indent;
                 lineDescriptor.nextLineIndent = info.hasOpening ? info.indent + 1 : info.indent;
 				lineDescriptor.lineNumber++;
-				lineDescriptor.lineStartIndex = lineDescriptor.lineStartIndex + stream.string.length;
+				lineDescriptor.lineStartIndex = lineDescriptor.lineStartIndex + stream.string.length + 1;
             }
 
             var token = lineDescriptor.tokenMap[stream.pos];

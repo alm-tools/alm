@@ -24,11 +24,54 @@ export function addFile(filePath: string, contents: string) {
     languageServiceHost.addScript(filePath, contents);
 }
 export function editFile(filePath: string, codeEdit: CodeEdit) {
-    let from = languageServiceHost.getPositionOfLineAndCharacter(filePath,codeEdit.from.line, codeEdit.from.ch);
-    let to = languageServiceHost.getPositionOfLineAndCharacter(filePath,codeEdit.to.line, codeEdit.to.ch);
+    let from = languageServiceHost.getPositionOfLineAndCharacter(filePath, codeEdit.from.line, codeEdit.from.ch);
+    let to = languageServiceHost.getPositionOfLineAndCharacter(filePath, codeEdit.to.line, codeEdit.to.ch);
     languageServiceHost.editScript(filePath, from, to, codeEdit.newText);
 }
-export function getClassificationsForLine(filePath:string, lineStart: number, lineLength: number){
-    let classifications = languageService.getSyntacticClassifications(filePath, { start: lineStart, length: lineLength });
+export function getClassificationsForLine(filePath: string, lineStart: number, string: string): ClassifiedSpan[] {
+    let lineLength = string.length;
+    let classifications: ClassifiedSpan[] = languageService.getSyntacticClassifications(filePath, { start: lineStart, length: lineLength });
+
+    // Trim to the query region
+    classifications = classifications
+        .map(c=> {
+            // completely outside the range on the left
+            if ((c.textSpan.start + c.textSpan.length) <= lineStart) {
+                return null;
+            }
+
+            // completely outside the range on the right
+            if (c.textSpan.start > (lineStart + lineLength)) {
+                return null;
+            }
+
+            // trim the left
+            if (c.textSpan.start < lineStart) {
+                c.textSpan.length = c.textSpan.start + c.textSpan.length - lineStart;
+                c.textSpan.start = lineStart;
+            }
+
+            // trim the right
+            if ((c.textSpan.start + c.textSpan.length) > (lineStart + lineLength)) {
+                 c.textSpan.length = (lineStart + lineLength) - (c.textSpan.start);
+            }
+
+            return c;
+        })
+        .filter(c=> !!c);
+
+    // Add a string for easier debugging
+    classifications.forEach(c => {
+        c.startInLine = c.textSpan.start - lineStart;
+        c.string = string.substr(c.startInLine, c.textSpan.length)
+    });
+
+
     return classifications;
+}
+
+/** Just a convinient wrapper around ts.ClassifiedSpan */
+export interface ClassifiedSpan extends ts.ClassifiedSpan {
+    string?: string;
+    startInLine?: number;
 }
