@@ -33,9 +33,13 @@ export function getClassificationsForLine(filePath: string, lineStart: number, s
     let encodedClassifications = languageService.getEncodedSyntacticClassifications(filePath, { start: lineStart, length: lineLength });
     let classifications: ClassifiedSpan[] = unencodeClassifications(encodedClassifications);
 
+    /** for some reason we have dupes on first token sometimes. this helps remove them */
+    let lastStartSet = false;
+    let lastStart = 0;
+
     // Trim to the query region
     classifications = classifications
-        .map(c=> {
+        .map((c,i)=> {
             // completely outside the range on the left
             if ((c.textSpan.start + c.textSpan.length) <= lineStart) {
                 return null;
@@ -57,6 +61,17 @@ export function getClassificationsForLine(filePath: string, lineStart: number, s
                  c.textSpan.length = (lineStart + lineLength) - (c.textSpan.start);
             }
 
+            // dedupe...first token only
+            if (!lastStartSet) {
+                lastStartSet = true;
+                lastStart = c.textSpan.start;
+            }
+            else {
+                if (c.textSpan.start == lastStart) {
+                    return null;
+                }
+            }
+
             return c;
         })
         .filter(c=> !!c);
@@ -66,7 +81,6 @@ export function getClassificationsForLine(filePath: string, lineStart: number, s
         c.startInLine = c.textSpan.start - lineStart;
         c.string = string.substr(c.startInLine, c.textSpan.length)
     });
-
 
     return classifications;
 }
