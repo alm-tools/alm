@@ -1,3 +1,4 @@
+"use strict";
 import ts = require('ntypescript');
 import * as classifierCache from "./classifierCache";
 
