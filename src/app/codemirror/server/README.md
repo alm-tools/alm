@@ -6,3 +6,4 @@ Port steps:
 
 * brought in `ScriptInfo` and then follow the compiler errors from there.
 * Anything that used `project` was removed
+* moved line stuff as is into liner.ts

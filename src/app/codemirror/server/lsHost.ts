@@ -221,52 +221,6 @@ namespace ts.awesome {
     export interface ServerHost extends ts.System {
     }
 
-    /**
-     * Format options
-     */
-    export interface FormatOptions extends EditorOptions {
-
-        /** Defines space handling after a comma delimiter. Default value is true. */
-        insertSpaceAfterCommaDelimiter?: boolean;
-
-        /** Defines space handling after a semicolon in a for statemen. Default value is true */
-        insertSpaceAfterSemicolonInForStatements?: boolean;
-
-        /** Defines space handling after a binary operator. Default value is true. */
-        insertSpaceBeforeAndAfterBinaryOperators?: boolean;
-
-        /** Defines space handling after keywords in control flow statement. Default value is true. */
-        insertSpaceAfterKeywordsInControlFlowStatements?: boolean;
-
-        /** Defines space handling after function keyword for anonymous functions. Default value is false. */
-        insertSpaceAfterFunctionKeywordForAnonymousFunctions?: boolean;
-
-        /** Defines space handling after opening and before closing non empty parenthesis. Default value is false. */
-        insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis?: boolean;
-
-        /** Defines space handling after opening and before closing non empty brackets. Default value is false. */
-        insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets?: boolean;
-
-        /** Defines whether an open brace is put onto a new line for functions or not. Default value is false. */
-        placeOpenBraceOnNewLineForFunctions?: boolean;
-
-        /** Defines whether an open brace is put onto a new line for control blocks or not. Default value is false. */
-        placeOpenBraceOnNewLineForControlBlocks?: boolean;
-
-        /** Index operator */
-        [key: string] : string | number | boolean;
-    }
-
-    function mergeFormatOptions(formatCodeOptions: FormatCodeOptions, formatOptions: FormatOptions): void {
-        const hasOwnProperty = Object.prototype.hasOwnProperty;
-        Object.keys(formatOptions).forEach((key) => {
-            const codeKey = key.charAt(0).toUpperCase() + key.substring(1);
-            if (hasOwnProperty.call(formatCodeOptions, codeKey)) {
-                formatCodeOptions[codeKey] = formatOptions[key];
-            }
-        });
-    }
-
     // text change information
     export class TextChange {
         constructor(public pos: number, public deleteLen: number, public insertedText?: string) {
