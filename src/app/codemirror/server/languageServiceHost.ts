@@ -299,6 +299,17 @@ namespace ts.client {
         }
 
         /**
+         * Add a file with contents
+         */
+        addFileWithContents(filePath: string, contents: string) {
+            let path = toSimplePath(filePath);
+            if (!this.filenameToScript.contains(path)) {
+                let info = new ScriptInfo(filePath, contents);
+                this.addRoot(info);
+            }
+        }
+
+        /**
          *  @param line 1 based index
          */
         lineToTextSpan(filename: string, line: number): ts.TextSpan {
