@@ -13,6 +13,7 @@ export interface Props extends React.Props<any> {
 export interface State {
     /** Width of the tree view in pixels */
     width: number;
+    treeRoot: TreeItemModel;
 }
 
 let resizerStyle = {
@@ -30,7 +31,8 @@ export class FileTree extends BaseComponent<Props, State>{
     constructor(props: Props){
         super(props);
         this.state = {
-            width: 100
+            width: 100,
+            treeRoot:{}
         };
     }
     render() {
@@ -57,5 +59,6 @@ export class FileTree extends BaseComponent<Props, State>{
 }
 
 interface TreeItemModel {
-
+    name?: string;
+    subItems?: TreeItemModel[];
 }
