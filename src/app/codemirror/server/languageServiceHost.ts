@@ -9,6 +9,14 @@ interface ILineInfo extends liner.ILineInfo { }
 let createFileMap = ts.createFileMap;
 /** BAS : a function I added, useful as we are working without true fs host */
 const toSimplePath = (fileName:string):Path => toPath(fileName, '', (x) => x);
+/** our compiler settings for simple tokenization */
+const compilationSettings: ts.CompilerOptions = {
+    jsx: ts.JsxEmit.React,
+    module: ts.ModuleKind.CommonJS,
+    target: ts.ScriptTarget.Latest,
+    experimentalDecorators: true,
+    noLib: true,
+}
 
 /**
  * These classes are modified version of session.ts
@@ -228,8 +236,9 @@ export class LSHost implements ts.LanguageServiceHost {
     ls: ts.LanguageService;
     filenameToScript: ts.FileMap<ScriptInfo>;
     roots: ScriptInfo[] = [];
+    public compilationSettings: ts.CompilerOptions = compilationSettings;
 
-    constructor(public compilationSettings: ts.CompilerOptions) {
+    constructor() {
         this.filenameToScript = createFileMap<ScriptInfo>();
     }
 
@@ -305,7 +314,7 @@ export class LSHost implements ts.LanguageServiceHost {
     /**
      * Add a file with contents
      */
-    addFileWithContents(filePath: string, contents: string) {
+    addScript(filePath: string, contents: string) {
         let path = toSimplePath(filePath);
         if (!this.filenameToScript.contains(path)) {
             let info = new ScriptInfo(filePath, contents);
@@ -357,5 +366,9 @@ export class LSHost implements ts.LanguageServiceHost {
         const index = script.snap().index;
         const lineOffset = index.charOffsetToLineNumberAndPos(position);
         return { line: lineOffset.line, offset: lineOffset.offset + 1 };
+    }
+
+    getPositionOfLineAndCharacter(filePath: string, line: number, ch: number){
+        return this.lineOffsetToPosition(filePath, line + 1, ch + 1);
     }
 }

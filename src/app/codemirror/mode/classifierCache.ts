@@ -15,18 +15,17 @@
  */
 import {TypedEvent} from "../../../common/events";
 import ts = require('ntypescript');
-import * as lsh from "./languageServiceHost";
+import * as lsh from "../server/languageServiceHost";
 
-const languageServiceHost = lsh.createLanguageServiceHost();
+const languageServiceHost = new lsh.LSHost();
 const languageService = ts.createLanguageService(languageServiceHost);
 
 export function addFile(filePath: string, contents: string) {
     languageServiceHost.addScript(filePath, contents);
 }
 export function editFile(filePath: string, codeEdit: CodeEdit) {
-    let sourceFile = languageService.getSourceFile(filePath);
-    let from = sourceFile.getPositionOfLineAndCharacter(codeEdit.from.line, codeEdit.from.ch);
-    let to = sourceFile.getPositionOfLineAndCharacter(codeEdit.to.line, codeEdit.to.ch);
+    let from = languageServiceHost.getPositionOfLineAndCharacter(filePath,codeEdit.from.line, codeEdit.from.ch);
+    let to = languageServiceHost.getPositionOfLineAndCharacter(filePath,codeEdit.to.line, codeEdit.to.ch);
     languageServiceHost.editScript(filePath, from, to, codeEdit.newText);
 }
 export function getClassificationsForLine(filePath:string, lineStart: number, lineLength: number){

@@ -1,4 +1,5 @@
 import ts = require('ntypescript');
+import * as classifierCache from "./classifierCache";
 
 
 /** Just a convinient wrapper around ts.TokenClass */
@@ -259,6 +260,9 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
         token(stream: CodeMirror.StringStream, lineDescriptor: LineDescriptor): string {
             if (stream.sol()) {
                 let info = getLineDescriptorInfo(stream.string, lineDescriptor.eolState, lineDescriptor.nextLineIndent, lineDescriptor.bracketsStack);
+				// console.time('c');
+                // let classifications = classifierCache.getClassificationsForLine(options.filePath, lineDescriptor.lineNumber, stream.string.length);
+				// console.timeEnd('c');
 
 				// Update info for next call
                 lineDescriptor.eolState = info.eolState;
