@@ -48,7 +48,7 @@ import linter = require('./addons/linter');
 import search = require("./addons/search");
 import typescriptMode = require("./mode/typescript");
 typescriptMode.register();
-import * as classifierCache from "./mode/classifierCache";
+import * as docCache from "./mode/docCache";
 
 // Sample addon usage
 // console.log(CodeMirror.findModeByFileName('asdf/foo.js'))
@@ -67,7 +67,6 @@ import * as state from "../state/state";
 
 
 interface Props extends React.Props<any> {
-    onEdit: (edit: CodeEdit) => any;
 	onFocusChange?: (focused: boolean) => any;
 	path: string;
 }
@@ -147,7 +146,6 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
 
 		var textareaNode = ReactDOM.findDOMNode(this.refs.textarea);
 		this.codeMirror = CodeMirror.fromTextArea(textareaNode as any, options);
-		this.codeMirror.on('change', this.codemirrorValueChanged);
 		this.codeMirror.on('focus', this.focusChanged.bind(this, true));
 		this.codeMirror.on('blur', this.focusChanged.bind(this, false));
 
@@ -155,6 +153,11 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
         autocomplete.setupCodeMirror(this.codeMirror);
 
         this.disposible.add(onresize.on(() => this.refresh()));
+
+        // Load the document
+        docCache.getOrOpenDoc(this.filePath).then((doc)=>{
+            this.codeMirror.swapDoc(doc);
+        });
 	}
 
 	componentWillUnmount () {
@@ -214,67 +217,8 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
 		this.props.onFocusChange && this.props.onFocusChange(focused);
 	}
 
-    codemirrorValueChanged = (cm: CodeMirror.EditorFromTextArea, change: CodeMirror.EditorChange) => {
-        // console.log(JSON.stringify({val:cm.getDoc().getValue()}));
-        // console.log(change);
-
-        // This is just code mirror passing us back changes that we applied ourselves
-        if (change.origin == this.sourceId) {
-            return;
-        }
-
-        let codeEdit: CodeEdit = {
-            from: { line: change.from.line, ch: change.from.ch },
-            to: { line: change.to.line, ch: change.to.ch },
-            newText: change.text.join('\n'),
-            sourceId: this.sourceId
-        };
-
-        // This is just code mirror telling us what we already know
-        if (codeEdit.newText == this._setCodemirrorValue) {
-            return;
-        }
-
-        // Keep the classifier in sync
-        // TODO: WARNING this will break as soon as we have two tabs open
-        // classifierCache.editFile(this.filePath, codeEdit);
-
-        // Send the edit
-        this.props.onEdit(codeEdit);
-
-		// var newValue = doc.getValue();
-		// this._currentCodemirrorValue = newValue;
-		// this.props.onChange && this.props.onChange(newValue);
-	}
-
-    private _setCodemirrorValue: string;
-    setValue(value: string, clearHistory = false){
-        // if (clearHistory){
-        //     /** Initial load */
-        //     classifierCache.addFile(this.filePath, value);
-        // }
-
-        let cursor = this.codeMirror.getDoc().getCursor();
-        this._setCodemirrorValue = value;
-        this.codeMirror.getDoc().setValue(value);
-        this.codeMirror.getDoc().setCursor(cursor);
-
-        if (clearHistory) {
-            this.codeMirror.getDoc().clearHistory();
-        }
-    }
-
     getValue(){
         return this.codeMirror.getDoc().getValue();
-    }
-
-    /** Used to track code edits originating from this tab */
-    sourceId = `+${createId()}`;
-    applyCodeEdit(codeEdit: CodeEdit) {
-        if (codeEdit.sourceId !== this.sourceId){
-            // Note that we use *our source id* as this is now a change *we are making to code mirror* :)
-            this.codeMirror.getDoc().replaceRange(codeEdit.newText, codeEdit.from, codeEdit.to, this.sourceId);
-        }
     }
 
     findOptionsToQueryRegex(options:FindOptions): RegExp{

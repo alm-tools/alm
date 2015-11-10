@@ -516,7 +516,7 @@ declare module CodeMirror {
             so that for example a subview starting at line 10 will refer to its first line as line 10, not 0. */
             to?: number;
             /** By default, the new document inherits the mode of the parent. This option can be set to a mode spec to give it a different mode. */
-            mode: any;
+            mode?: any;
         }): CodeMirror.Doc;
 
         /** Break the link between two documents. After calling this , changes will no longer propagate between the documents,

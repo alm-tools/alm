@@ -124,7 +124,6 @@ commandRegistry.push(toggleErrorMessagesPanel);
  * General purpose file opening
  */
 export var doOpenFile = new events.TypedEvent<{ filePath: string, position?: EditorPosition }>();
-export var didOpenFile = new events.TypedEvent<{ filePath: string }>();
 export var doOpenOrFocusFile = new events.TypedEvent<{ filePath: string, position?: EditorPosition }>();
 export var openFileFromDisk = new UICommand({
     keyboardShortcut: 'mod+o',

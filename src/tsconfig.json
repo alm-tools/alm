@@ -31,7 +31,6 @@
         "./app/codemirror/mode/typescript.ts",
         "./app/codemirror/server/languageServiceHost.ts",
         "./app/codemirror/server/liner.ts",
-        "./app/codemirror/server/lsHost.ts",
         "./app/commands/commands.ts",
         "./app/state/simpleRedux.ts",
         "./app/state/state.ts",

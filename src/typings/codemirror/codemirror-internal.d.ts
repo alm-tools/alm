@@ -11,8 +11,9 @@ declare module CodeMirror {
     }
 }
 
-/** Our extension to code mirror config. We like to keep the filePath in there */
+/** Our extension to code mirror*/
 declare module CodeMirror {
+    /** We like to keep the filePath in there. Helps us with tokenization */
     interface EditorConfiguration {
         filePath: string;
     }

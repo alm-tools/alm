@@ -31,25 +31,6 @@ export class Code extends ui.BaseComponent<Props, State> implements tab.Componen
     componentDidMount() {
         this.filePath = utils.getFilePathFromUrl(this.props.url);
 
-        server.openFile({ filePath: this.filePath }).then((res) => {
-            this.refs.editor.setValue(res.contents, true);
-            commands.didOpenFile.emit({ filePath: this.props.url });
-            this.props.onSavedChanged(res.saved);
-        });
-
-        this.disposible.add(cast.savedFileChangedOnDisk.on((res)=>{
-            if (res.filePath == this.filePath
-                && this.refs.editor.getValue() !== res.contents) {
-                this.refs.editor.setValue(res.contents, false);
-            }
-        }));
-
-        this.disposible.add(cast.didEdit.on(res=> {
-            if (res.filePath == this.filePath) {
-                this.refs.editor.applyCodeEdit(res.edit);
-            }
-        }));
-
         this.disposible.add(cast.didStatusChange.on(res=>{
             if (res.filePath == this.filePath) {
                 this.props.onSavedChanged(res.saved);
@@ -65,20 +46,12 @@ export class Code extends ui.BaseComponent<Props, State> implements tab.Componen
             <CodeEditor
             ref='editor'
             path={this.props.url}
-            onEdit={this.onEdit}
             />
         );
 
         return <div>
             Code to go here: {this.props.url}
             </div>;
-    }
-
-
-    onEdit = (edit: CodeEdit) => {
-        server.editFile({ filePath: this.filePath, edit: edit }).then((res)=>{
-            this.props.onSavedChanged(res.saved);
-        });
     }
 
     focus = () => {
