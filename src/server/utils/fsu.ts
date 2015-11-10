@@ -56,3 +56,6 @@ export var existsSync = (filePath: string) => fs.existsSync(filePath);
 
 /** see if path is absolute */
 export var isAbsolute = (filePath: string) => path.isAbsolute(filePath);
+
+/** is the filePath a directory? */
+export var isDir = (filePath: string): boolean => fs.lstatSync(filePath).isDirectory();
