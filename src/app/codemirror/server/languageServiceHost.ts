@@ -1,17 +1,23 @@
 require('ntypescript');
 require('./liner');
 
-namespace ts.awesome {
+/**
+ * These classes are modified version of session.ts
+ * Same names but modified to not use `fs` / `sys` / `host`
+ */
+namespace ts.client {
+
+    /** BAS : a function I added, useful as we are working without true fs host */
+    const toSimplePath = (fileName:string):Path => toPath(fileName, '', (x) => x);
 
     export class ScriptInfo {
         svc: ScriptVersionCache;
         children: ScriptInfo[] = [];     // files referenced by this file
-        fileWatcher: FileWatcher;
         path: Path;
 
-        constructor(private host: ServerHost, public fileName: string, public content: string, public isOpen = false) {
-            this.path = toPath(fileName, host.getCurrentDirectory(), createGetCanonicalFileName(host.useCaseSensitiveFileNames));
-            this.svc = ScriptVersionCache.fromString(host, content);
+        constructor(public fileName: string, public content: string, public isOpen = false) {
+            this.path = toSimplePath(fileName);
+            this.svc = ScriptVersionCache.fromString(content);
         }
 
         close() {
@@ -54,7 +60,6 @@ namespace ts.awesome {
         versions: LineIndexSnapshot[] = [];
         minVersion = 0;  // no versions earlier than min version will maintain change history
         private currentVersion = 0;
-        private host: ServerHost;
 
         static changeNumberThreshold = 8;
         static changeLengthThreshold = 256;
@@ -81,13 +86,6 @@ namespace ts.awesome {
             return this.currentVersion;
         }
 
-        reloadFromFile(filename: string, cb?: () => any) {
-            const content = this.host.readFile(filename);
-            this.reload(content);
-            if (cb)
-                cb();
-        }
-
         // reload whole script, leaving no change history behind reload
         reload(script: string) {
             this.currentVersion++;
@@ -102,7 +100,6 @@ namespace ts.awesome {
                 this.versions[i] = undefined;
             }
             this.minVersion = this.currentVersion;
-
         }
 
         getSnapshot() {
@@ -152,11 +149,10 @@ namespace ts.awesome {
             }
         }
 
-        static fromString(host: ServerHost, script: string) {
+        static fromString(script: string) {
             const svc = new ScriptVersionCache();
             const snap = new LineIndexSnapshot(0, svc);
             svc.versions[svc.currentVersion] = snap;
-            svc.host = host;
             snap.index = new LineIndex();
             const lm = LineIndex.linesFromText(script);
             snap.index.load(lm.lines);
@@ -212,15 +208,6 @@ namespace ts.awesome {
         }
     }
 
-    export interface ProjectOptions {
-        // these fields can be present in the project file
-        files?: string[];
-        compilerOptions?: ts.CompilerOptions;
-    }
-
-    export interface ServerHost extends ts.System {
-    }
-
     // text change information
     export class TextChange {
         constructor(public pos: number, public deleteLen: number, public insertedText?: string) {
@@ -232,96 +219,23 @@ namespace ts.awesome {
         }
     }
 
-    interface TimestampedResolvedModule extends ResolvedModuleWithFailedLookupLocations {
-        lastCheckTime: number;
-    }
 
     export class LSHost implements ts.LanguageServiceHost {
         ls: ts.LanguageService;
-        compilationSettings: ts.CompilerOptions;
         filenameToScript: ts.FileMap<ScriptInfo>;
         roots: ScriptInfo[] = [];
-        private resolvedModuleNames: ts.FileMap<Map<TimestampedResolvedModule>>;
-        private moduleResolutionHost: ts.ModuleResolutionHost;
-        private getCanonicalFileName: (fileName: string) => string;
 
-        constructor(public host: ServerHost) {
-            this.getCanonicalFileName = createGetCanonicalFileName(host.useCaseSensitiveFileNames);
-            this.resolvedModuleNames = createFileMap<Map<TimestampedResolvedModule>>();
+        constructor(public compilationSettings: ts.CompilerOptions) {
             this.filenameToScript = createFileMap<ScriptInfo>();
-            this.moduleResolutionHost = {
-                fileExists: fileName => this.fileExists(fileName),
-                readFile: fileName => this.host.readFile(fileName)
-            };
         }
 
-        resolveModuleNames(moduleNames: string[], containingFile: string): ResolvedModule[] {
-            const path = toPath(containingFile, this.host.getCurrentDirectory(), this.getCanonicalFileName);
-            const currentResolutionsInFile = this.resolvedModuleNames.get(path);
-
-            const newResolutions: Map<TimestampedResolvedModule> = {};
-            const resolvedModules: ResolvedModule[] = [];
-
-            const compilerOptions = this.getCompilationSettings();
-
-            for (const moduleName of moduleNames) {
-                // check if this is a duplicate entry in the list
-                let resolution = lookUp(newResolutions, moduleName);
-                if (!resolution) {
-                    const existingResolution = currentResolutionsInFile && ts.lookUp(currentResolutionsInFile, moduleName);
-                    if (moduleResolutionIsValid(existingResolution)) {
-                        // ok, it is safe to use existing module resolution results
-                        resolution = existingResolution;
-                    }
-                    else {
-                        resolution = <TimestampedResolvedModule>resolveModuleName(moduleName, containingFile, compilerOptions, this.moduleResolutionHost);
-                        resolution.lastCheckTime = Date.now();
-                        newResolutions[moduleName] = resolution;
-                    }
-                }
-
-                ts.Debug.assert(resolution !== undefined);
-
-                resolvedModules.push(resolution.resolvedModule);
-            }
-
-            // replace old results with a new one
-            this.resolvedModuleNames.set(path, newResolutions);
-            return resolvedModules;
-
-            function moduleResolutionIsValid(resolution: TimestampedResolvedModule): boolean {
-                if (!resolution) {
-                    return false;
-                }
-
-                if (resolution.resolvedModule) {
-                    // TODO: consider checking failedLookupLocations
-                    // TODO: use lastCheckTime to track expiration for module name resolution
-                    return true;
-                }
-
-                // consider situation if we have no candidate locations as valid resolution.
-                // after all there is no point to invalidate it if we have no idea where to look for the module.
-                return resolution.failedLookupLocations.length === 0;
-            }
-        }
-
-        getDefaultLibFileName() {
-            const nodeModuleBinDir = ts.getDirectoryPath(ts.normalizePath(this.host.getExecutingFilePath()));
-            return ts.combinePaths(nodeModuleBinDir, ts.getDefaultLibFileName(this.compilationSettings));
-        }
+        getDefaultLibFileName = () => null;
 
         getScriptSnapshot(filename: string): ts.IScriptSnapshot {
             const scriptInfo = this.getScriptInfo(filename);
             if (scriptInfo) {
                 return scriptInfo.snap();
             }
-        }
-
-        setCompilationSettings(opt: ts.CompilerOptions) {
-            this.compilationSettings = opt;
-            // conservatively assume that changing compiler options might affect module resolution strategy
-            this.resolvedModuleNames.clear();
         }
 
         lineAffectsRefs(filename: string, line: number) {
@@ -354,22 +268,9 @@ namespace ts.awesome {
             return this.getScriptInfo(filename).isOpen;
         }
 
-        removeReferencedFile(info: ScriptInfo) {
-            if (!info.isOpen) {
-                this.filenameToScript.remove(info.path);
-                this.resolvedModuleNames.remove(info.path);
-            }
-        }
-
         getScriptInfo(filename: string): ScriptInfo {
-            const path = toPath(filename, this.host.getCurrentDirectory(), this.getCanonicalFileName);
+            const path = toSimplePath(filename);
             let scriptInfo = this.filenameToScript.get(path);
-            if (!scriptInfo) {
-                // TODO bas scriptInfo = this.project.openReferencedFile(filename);
-                if (scriptInfo) {
-                    this.filenameToScript.set(path, scriptInfo);
-                }
-            }
             return scriptInfo;
         }
 
@@ -384,22 +285,6 @@ namespace ts.awesome {
             if (!this.filenameToScript.contains(info.path)) {
                 this.filenameToScript.remove(info.path);
                 this.roots = copyListRemovingItem(info, this.roots);
-                this.resolvedModuleNames.remove(info.path);
-            }
-        }
-
-        saveTo(filename: string, tmpfilename: string) {
-            const script = this.getScriptInfo(filename);
-            if (script) {
-                const snap = script.snap();
-                this.host.writeFile(tmpfilename, snap.getText(0, snap.getLength()));
-            }
-        }
-
-        reloadScript(filename: string, tmpfilename: string, cb: () => any) {
-            const script = this.getScriptInfo(filename);
-            if (script) {
-                script.svc.reloadFromFile(tmpfilename, cb);
             }
         }
 
@@ -413,27 +298,11 @@ namespace ts.awesome {
             throw new Error("No script with name '" + filename + "'");
         }
 
-        resolvePath(path: string): string {
-            const start = new Date().getTime();
-            const result = this.host.resolvePath(path);
-            return result;
-        }
-
-        fileExists(path: string): boolean {
-            const start = new Date().getTime();
-            const result = this.host.fileExists(path);
-            return result;
-        }
-
-        directoryExists(path: string): boolean {
-            return this.host.directoryExists(path);
-        }
-
         /**
          *  @param line 1 based index
          */
         lineToTextSpan(filename: string, line: number): ts.TextSpan {
-            const path = toPath(filename, this.host.getCurrentDirectory(), this.getCanonicalFileName);
+            const path = toSimplePath(filename);
             const script: ScriptInfo = this.filenameToScript.get(path);
             const index = script.snap().index;
 
@@ -454,7 +323,7 @@ namespace ts.awesome {
          * @param offset 1 based index
          */
         lineOffsetToPosition(filename: string, line: number, offset: number): number {
-            const path = toPath(filename, this.host.getCurrentDirectory(), this.getCanonicalFileName);
+            const path = toSimplePath(filename);
             const script: ScriptInfo = this.filenameToScript.get(path);
             const index = script.snap().index;
 
@@ -468,7 +337,7 @@ namespace ts.awesome {
          * @param offset 1-based index
          */
         positionToLineOffset(filename: string, position: number): ILineInfo {
-            const path = toPath(filename, this.host.getCurrentDirectory(), this.getCanonicalFileName);
+            const path = toSimplePath(filename);
             const script: ScriptInfo = this.filenameToScript.get(path);
             const index = script.snap().index;
             const lineOffset = index.charOffsetToLineNumberAndPos(position);
