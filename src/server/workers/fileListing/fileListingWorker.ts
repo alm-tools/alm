@@ -9,7 +9,7 @@ import {debounce} from "../../../common/utils";
 import path = require('path');
 import {TypedEvent}  from "../../../common/events";
 
-let listing = new TypedEvent<{relativeFilePaths: string[]}>();
+let listing = new TypedEvent<{filePaths: string[]}>();
 
 namespace Worker {
     export var echo: typeof contract.worker.echo = (q) => {
@@ -43,8 +43,10 @@ namespace Worker {
                     return mg.cache[p] && mg.cache[p] == 'FILE';
                 });
 
+                newList = newList.map(x=> fsu.resolve(q.directory, x))
+
                 sentOnce = true;
-                listing.emit({ relativeFilePaths: newList });
+                listing.emit({ filePaths: newList });
             });
         }),500);
 

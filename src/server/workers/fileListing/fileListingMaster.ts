@@ -15,9 +15,7 @@ namespace Master {
     }
     /** warning, this function is named differently from the event filePathsUpdated for a reason */
     export var fileListUpdated: typeof contract.master.fileListUpdated = (q) => {
-        let filePaths =  q.relativeFilePaths.map(rfp => workingDir.makeAbsolute(rfp));
-        filePathsUpdated.emit({ filePaths });
-
+        filePathsUpdated.emit({ filePaths: q.filePaths });
         return Promise.resolve({});
     }
     export var fileChanged: typeof contract.master.fileChanged = (q) => {
