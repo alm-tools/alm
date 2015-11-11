@@ -88,3 +88,11 @@ export function getKeyStates(e: React.SyntheticEvent) {
 }
 
 export let {DraggableCore} = require('react-draggable');
+
+/**
+ * General react utilities
+ */
+ /** 0 based length */
+ export function indent(indent: number) {
+     return Array(indent + 1).join().split('').map(i => "\u00a0\u00a0\u00a0\u00a0");
+ }

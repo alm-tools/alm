@@ -37,7 +37,7 @@ let treeListStyle = {
     background: '#333'
 }
 
-let treeDirItemStyle = {
+let treeItemStyle = {
     color: 'white',
 }
 
@@ -76,14 +76,14 @@ export class FileTree extends BaseComponent<Props, State>{
 
         // Too soon
         if (!this.state.treeRoot)
-            return <div>Loading</div>;
+            return <div></div>;
 
         let hideStyle = !this.state.shown && { display: 'none' };
         return (
             <div style={[csx.flexRoot, csx.horizontal, { width: this.state.width }, hideStyle]}>
 
                 <div style={[csx.flex, csx.vertical, treeListStyle]}>
-                    {this.renderDir(this.state.treeRoot)}
+                    {this.renderItem(this.state.treeRoot)}
                 </div>
 
                 <DraggableCore onDrag={this.handleDrag} onStop={this.handleStop}>
@@ -93,20 +93,24 @@ export class FileTree extends BaseComponent<Props, State>{
             </div>
         );
     }
-    renderDir(item:TreeItemModel) {
+    renderItem(item:TreeItemModel,depth = 0) {
+        let iconName = item.isDir
+            ? 'folder'
+            : 'file'
+
         return (
-            <div style={treeDirItemStyle}>
-                <Icon name="folder"/> {item.name}
-                {this.renderDirSub(item)}
+            <div style={treeItemStyle} key={item.filePath}>
+                {ui.indent(depth)} <Icon name={iconName}/> {item.name}
+                {this.renderItemSub(item,depth)}
             </div>
         );
     }
-    renderDirSub(item:TreeItemModel){
+    renderItemSub(item:TreeItemModel, depth: number){
         if (!item.isExpanded || !item.subItems || !item.subItems.length)
             return;
 
-        // TODO
-        return ;
+
+        return item.subItems.map(item => this.renderItem(item,depth+1));
     }
 
     handleDrag = (evt, ui: {
@@ -132,17 +136,20 @@ export class FileTree extends BaseComponent<Props, State>{
         if (!filePaths.length) { // initial boot up
             return;
         }
-        let rootDir = utils.getDirectory(filePaths[0]);
-        let root: TreeItemModel = {
-            name: utils.getFileName(rootDir),
-            filePath: rootDir,
+        let rootDirPath = utils.getDirectory(filePaths[0]);
+        let rootDir: TreeItemModel = {
+            name: utils.getFileName(rootDirPath),
+            filePath: rootDirPath,
             isDir: true,
             isExpanded: true,
             subItems: []
         }
 
-        let currentDir = rootDir;
-        let currentNode = root;
+        let dirLookup:{[dirPath:string]:TreeItemModel} = {};
+        dirLookup[rootDirPath] = rootDir;
+
+        let currentDir = rootDirPath;
+        let currentNode = rootDir;
         for (let filePath of filePaths) {
             let dir = getDirectory(filePath);
             let fileName = getFileName(filePath);
@@ -151,18 +158,20 @@ export class FileTree extends BaseComponent<Props, State>{
                 let subItem = {
                     name: fileName,
                     filePath: filePath,
-                    isDir: false, // we don't know for sure
+                    isDir: false,
                     isExpanded: false,
                     subItems: []
                 };
                 currentNode.subItems.push(subItem);
             }
             else {
-
+                // TODO: lookup exisiting dir
+                // if not found create a new dir and set its parent
+                // (recursively e.g. last was /foo and new is /foo/bar/baz/quz)
             }
         }
 
-        this.setState({treeRoot:root});
+        this.setState({treeRoot:rootDir});
     }
 }
 
