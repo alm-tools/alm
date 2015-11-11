@@ -33,8 +33,15 @@ namespace Worker {
 
         // Utility to send new file list
         var sendNewFileList = () => {
+            let filePaths = Object.keys(liveList)
+                // Remove .git we have no use for that here
+                .filter(x=>!x.includes('/.git/'))
+                // filePaths sorted by shortest length first
+                .sort((a, b) => a.length - b.length)
+                // Also sort alphabetically
+                .sort();
             master.fileListUpdated({
-                filePaths: Object.keys(liveList),
+                filePaths,
                 completed
             });
         };
