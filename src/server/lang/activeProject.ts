@@ -313,7 +313,7 @@ namespace Utils {
         let relative = workingDir.makeRelative(tsconfig);
         let isNodeModule = relative.includes('node_modules');
         return {
-            name: isNodeModule ? relative : utils.getFolderAndFileName(tsconfig),
+            name: isNodeModule ? relative : utils.getDirectoryAndFileName(tsconfig),
             isImplicit: false,
             tsconfigFilePath: tsconfig
         };

@@ -11,6 +11,7 @@ import {StoreState} from "./state/state";
 import {Icon} from "./icon";
 import * as commands from "./commands/commands";
 let {DraggableCore} = ui;
+import {getDirectory,getFileName} from "../common/utils";
 
 export interface Props extends React.Props<any> {
     // from react-redux ... connected below
@@ -95,7 +96,7 @@ export class FileTree extends BaseComponent<Props, State>{
     renderDir(item:TreeItemModel) {
         return (
             <div style={treeDirItemStyle}>
-                {item.name}
+                <Icon name="folder"/> {item.name}
                 {this.renderDirSub(item)}
             </div>
         );
@@ -125,6 +126,9 @@ export class FileTree extends BaseComponent<Props, State>{
 
     setupTree(props:Props){
         let filePaths = props.filePaths;
+        // TODO: make expaded state stable across searches
+        // Perhaps by creating expanded[filePath] a state member
+
         if (!filePaths.length) { // initial boot up
             return;
         }
@@ -137,6 +141,27 @@ export class FileTree extends BaseComponent<Props, State>{
             subItems: []
         }
 
+        let currentDir = rootDir;
+        let currentNode = root;
+        for (let filePath of filePaths) {
+            let dir = getDirectory(filePath);
+            let fileName = getFileName(filePath);
+
+            if (dir == currentDir) {
+                let subItem = {
+                    name: fileName,
+                    filePath: filePath,
+                    isDir: false, // we don't know for sure
+                    isExpanded: false,
+                    subItems: []
+                };
+                currentNode.subItems.push(subItem);
+            }
+            else {
+
+            }
+        }
+
         this.setState({treeRoot:root});
     }
 }
@@ -145,7 +170,7 @@ interface TreeItemModel {
     name: string;
     filePath: string;
     isDir: boolean;
-    subItems?: TreeItemModel[];
+    subItems: TreeItemModel[];
 
     isExpanded: boolean;
 }
