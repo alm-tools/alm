@@ -383,11 +383,16 @@ class SearchState {
             let messageStyle = {
                 fontSize: '.6rem',
                 textAlign: 'center',
-                background: 'grey',
+                background: '#333',
+                color: "#ddd",
                 padding: '5px',
                 fontWeight: 'bold',
-            }
-            return <div style={messageStyle}>Indexed ({this.filePaths.length})</div>;
+                boxShadow: 'inset 0 0 6px black',
+
+                // Sloppy!
+                marginBottom: '5px',
+            };
+            return <div style={messageStyle}>Indexing ({this.filePaths.length})</div>;
         }
 
         return null;
