@@ -236,7 +236,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         let titles = this.state.tabs.map((t, i) =>{
             let title = utils.getFileName(t.url);
 
-            var style = [tabHeader.base, i == selectedIndex ? tabHeaderActive : {}];
+            var style = [tabHeader, i == selectedIndex ? tabHeaderActive : {}];
 
             let handleTitleClose = (event:React.SyntheticEvent) => {
                 this.closeTab(i);
