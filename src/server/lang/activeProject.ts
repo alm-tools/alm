@@ -154,8 +154,11 @@ fmc.didEdit.on((evt) => {
         // For debugging
         // console.log(proj.languageService.getSourceFile(evt.filePath).text);
 
-        // update errors for this file
-        // refreshFileDiagnostics(evt.filePath);
+        // update errors for this file if its *heuristically* small
+        if (evt.edit.from.line < 1000)
+        {
+            refreshFileDiagnostics(evt.filePath);
+        }
 
         // After a while update all project diagnostics as well
         refreshAllProjectDiagnostics();
