@@ -7,6 +7,7 @@ import * as utils from "../common/utils";
 import * as styles from "./styles/styles";
 import * as state from "./state/state";
 import {Icon} from "./icon";
+import * as commands from "./commands/commands";
 let {DraggableCore} = ui;
 
 export interface Props extends React.Props<any> {
@@ -14,7 +15,8 @@ export interface Props extends React.Props<any> {
 }
 export interface State {
     /** Width of the tree view in pixels */
-    width: number;
+    width?: number;
+    shown?: boolean;
     treeRoot?: TreeItemModel;
 }
 
@@ -36,12 +38,22 @@ export class FileTree extends BaseComponent<Props, State>{
         super(props);
         this.state = {
             width: 200,
+            shown: false,
             treeRoot:{}
         };
     }
+
+    componentDidMount() {
+        this.disposible.add(commands.toggleTreeView.on(()=>{
+            this.setState({ shown: !this.state.shown });
+        }));
+    }
+
+
     render() {
+        let hideStyle = !this.state.shown && { display: 'none' };
         return (
-            <div style={[csx.flexRoot, csx.horizontal, { width: this.state.width }]}>
+            <div style={[csx.flexRoot, csx.horizontal, { width: this.state.width }, hideStyle]}>
 
                 <div style={[csx.flex, csx.vertical, treeListStyle]}>
                     {this.renderTree() }

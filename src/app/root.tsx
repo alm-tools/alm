@@ -60,7 +60,7 @@ export class Root extends ui.BaseComponent<{}, State>{
                 <SelectListView ref="selectListView"/>
 
                 <div style={[csx.flex, csx.horizontal]}>
-                    {/*<FileTree/>*/}
+                    <FileTree/>
                     <AppTabsContainer/>
                 </div>
 

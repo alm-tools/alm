@@ -114,11 +114,20 @@ export var replaceAll = new events.TypedEvent<{ newText: string }>();
 /**
  * Error panel
  */
-export var toggleErrorMessagesPanel = new UICommand({
+export let toggleErrorMessagesPanel = new UICommand({
     keyboardShortcut: 'mod+shift+m', // code
     description:"Toggle error panel",
 });
 commandRegistry.push(toggleErrorMessagesPanel);
+
+/**
+ * Tree view
+ */
+export let toggleTreeView = new UICommand({
+ keyboardShortcut: 'mod+\\',    // atom
+ description:"Toggle file tree",
+});
+commandRegistry.push(toggleTreeView);
 
 /**
  * General purpose file opening
