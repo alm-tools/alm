@@ -86,3 +86,5 @@ export function getKeyStates(e: React.SyntheticEvent) {
 
     return { tab, tabNext, tabPrevious, up, down, shift, mod, enter };
 }
+
+export let {DraggableCore} = require('react-draggable');
