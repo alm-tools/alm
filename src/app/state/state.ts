@@ -19,6 +19,7 @@ export interface StoreState {
     socketConnected?: boolean;
 
     filePaths?: string[];
+    filePathsCompleted?: boolean;
 }
 
 let initialStoreState: StoreState = {
@@ -36,7 +37,8 @@ let initialStoreState: StoreState = {
         isFullWord: false
     },
     socketConnected: false,
-    filePaths: []
+    filePaths: [],
+    filePathsCompleted: false,
 };
 
 let redux = new SimpleRedux<StoreState>(initialStoreState);
@@ -134,8 +136,16 @@ export let setSocketConnected = redux.add('setSocketConnected', (state, payload:
     };
 });
 
-export let setFilePaths = redux.add('setFilePaths', (state, filePaths: string[]): StoreState => {
+export let setCompleteFilePaths = redux.add('setCompleteFilePaths', (state, filePaths: string[]): StoreState => {
     return {
-        filePaths
+        filePaths: filePaths,
+        filePathsCompleted: true
+    };
+});
+
+export let setPartialFilePaths = redux.add('setPartialFilePaths', (state, filePaths: string[]): StoreState => {
+    return {
+        filePaths: filePaths,
+        filePathsCompleted: false
     };
 });

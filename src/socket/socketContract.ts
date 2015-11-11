@@ -53,7 +53,8 @@ export var cast = {
     hello: new TypedEvent<{ text: string }>(),
 
     /** If the file worker notices a change */
-    filePathsUpdated: new TypedEvent<{ filePaths: string[] }>(),
+    filePathsCompleted: new TypedEvent<{ filePaths: string[] }>(),
+    filePathsPartial: new TypedEvent<{ filePaths: string[] }>(),
 
     /** If an open and already saved file changes on disk  */
     savedFileChangedOnDisk: new TypedEvent<{ filePath: string; contents: string }>(),

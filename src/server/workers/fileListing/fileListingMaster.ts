@@ -4,7 +4,8 @@ import * as contract from "./fileListingContract";
 import {TypedEvent} from "../../../common/events";
 import * as workingDir from "../../disk/workingDir";
 
-export var filePathsUpdated = new TypedEvent<{ filePaths: string[] }>();
+export var filePathsPartial = new TypedEvent<{ filePaths: string[]; }>()
+export var filePathsCompleted = new TypedEvent<{ filePaths: string[]; }>();
 export var fileChangedOnDisk = new TypedEvent<{filePath:string}>();
 
 namespace Master {
@@ -15,7 +16,12 @@ namespace Master {
     }
     /** warning, this function is named differently from the event filePathsUpdated for a reason */
     export var fileListUpdated: typeof contract.master.fileListUpdated = (q) => {
-        filePathsUpdated.emit({ filePaths: q.filePaths });
+        if (q.completed) {
+            filePathsCompleted.emit({ filePaths: q.filePaths });
+        }
+        else {
+            filePathsPartial.emit({ filePaths: q.filePaths });
+        }
         return Promise.resolve({});
     }
     export var fileChanged: typeof contract.master.fileChanged = (q) => {

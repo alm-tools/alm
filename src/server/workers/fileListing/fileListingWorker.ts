@@ -9,8 +9,6 @@ import {debounce} from "../../../common/utils";
 import path = require('path');
 import {TypedEvent}  from "../../../common/events";
 
-let listing = new TypedEvent<{filePaths: string[]}>();
-
 namespace Worker {
     export var echo: typeof contract.worker.echo = (q) => {
         return master.increment(q).then((res) => {
@@ -21,67 +19,81 @@ namespace Worker {
         });
     }
 
-    export var fileList: typeof contract.worker.fileList = (q) => {
-        return listing.current();
-    }
+    // export var fileList: typeof contract.worker.fileList = (q) => {
+    //     return listing.current();
+    // }
 
     var directoryUnderWatch: string;
 
     export var setupWatch: typeof contract.worker.setupWatch = (q) => {
         directoryUnderWatch = q.directory;
-        let sentOnce = false;
 
-        var sendNewFileList = debounce((function () {
-            var mg = new glob.Glob('**', { cwd: q.directory }, (e, newList) => {
-                if (e) {
-                    console.error('Globbing error:', e);
-                }
-
-                /** Filter out directories */
-                newList = newList.filter(nl=> {
-                    let p = path.resolve(q.directory,nl);
-                    return mg.cache[p] && mg.cache[p] == 'FILE';
-                });
-
-                newList = newList.map(x=> fsu.resolve(q.directory, x))
-
-                sentOnce = true;
-                listing.emit({ filePaths: newList });
-            });
-        }),500);
-
-        sendNewFileList();
-
-        function sendNewFileListIfSentOnce(){
-            if (!sentOnce) return;
-
-            sendNewFileList();
-        }
-
-        let watcher = chokidar.watch(directoryUnderWatch, { ignoreInitial: false });
-
+        let completed = false;
         let liveList: { [filePath: string]: boolean } = {};
+
+        // Utility to send new file list
+        var sendNewFileList = () => {
+            master.fileListUpdated({
+                filePaths: Object.keys(liveList),
+                completed
+            });
+        };
+
+        // create initial list using 10x faster glob.Glob!
+        (function () {
+           var mg = new glob.Glob('**', { cwd: q.directory }, (e, newList) => {
+               if (e) {
+                   console.error('Globbing error:', e);
+               }
+
+               /** Filter out directories */
+               newList = newList.filter(nl=> {
+                   let p = path.resolve(q.directory,nl);
+                   return mg.cache[p] && mg.cache[p] == 'FILE';
+               });
+
+               // Make absolute & consistent
+               newList = newList.map(x=> fsu.resolve(q.directory, x))
+
+               // Initial search complete!
+               completed = true;
+               newList.forEach(filePath=>liveList[filePath] = true);
+               sendNewFileList();
+           });
+       })();
+
+       /**
+        * Slower version for
+        * - initial partial serach
+        * - later updates which might be complete directory of files removed
+        */
+       let sendNewFileListDebounced = debounce(sendNewFileList,500);
 
         function fileAdded(filePath: string, stat: fs.Stats) {
             filePath = fsu.consistentPath(filePath);
-            liveList[filePath] = true;
 
-            sendNewFileListIfSentOnce();
+            // if we don't know about this already (because of faster initial scan)
+            if (!liveList[filePath]) {
+                liveList[filePath] = true;
+                sendNewFileListDebounced();
+            }
         }
 
         function fileDeleted(filePath: string) {
             filePath = fsu.consistentPath(filePath);
             delete liveList[filePath];
-
-            sendNewFileListIfSentOnce();
+            sendNewFileListDebounced();
         }
+
+        /** Create watcher */
+        let watcher = chokidar.watch(directoryUnderWatch, { ignoreInitial: false });
 
         // Just the ones that impact file listing
         // https://github.com/paulmillr/chokidar#methods--events
         watcher.on('add', fileAdded);
-        watcher.on('addDir', sendNewFileListIfSentOnce);
+        // watcher.on('addDir', );
         watcher.on('unlink', fileDeleted);
-        watcher.on('unlinkDir', sendNewFileListIfSentOnce);
+        // watcher.on('unlinkDir', );
 
         // Just for changes
         watcher.on('change', (filePath) => {
@@ -97,4 +109,3 @@ namespace Worker {
 var _checkTypes: typeof contract.worker = Worker;
 // run worker
 export var {master} = sw.runWorker(Worker, contract.master);
-listing.on(master.fileListUpdated);

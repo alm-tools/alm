@@ -13,6 +13,9 @@ export class SimpleRedux<State>{
     }
 
     add<Payload>(usefulNameForDebugging: string, reducer: (state: State, payload: Payload) => State): { (payload: Payload): void; } {
+
+        if (this._listeners[usefulNameForDebugging]) throw new Error(`REDUX: already have reducer "${usefulNameForDebugging}"`);
+
         let dispatcher = (payload) => this.store.dispatch({
             type: usefulNameForDebugging,
             payload: payload

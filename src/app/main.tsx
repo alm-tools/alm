@@ -61,9 +61,12 @@ document.addEventListener('DOMContentLoaded', () => {
         state.setSocketConnected(r.connected);
     });
     server.filePaths({}).then((res) => {
-        state.setFilePaths(res.filePaths);
+        state.setCompleteFilePaths(res.filePaths);
     });
-    cast.filePathsUpdated.on((update) => {
-        state.setFilePaths(update.filePaths);
+    cast.filePathsCompleted.on((update) => {
+        state.setCompleteFilePaths(update.filePaths);
+    });
+    cast.filePathsPartial.on((update) => {
+        state.setPartialFilePaths(update.filePaths);
     });
 });

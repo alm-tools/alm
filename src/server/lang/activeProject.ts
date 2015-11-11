@@ -39,7 +39,7 @@ let currentProject: project.Project = null;
 /** All the available projects */
 export let availableProjects = new TypedEvent<ActiveProjectConfigDetails[]>();
 function refreshAvailableProjects() {
-    return flm.filePathsUpdated.current().then((list) => {
+    return flm.filePathsCompleted.current().then((list) => {
         // Detect some tsconfig.json
         let tsconfigs = list.filePaths.filter(t=> t.endsWith('tsconfig.json'));
         // sort by shortest length first (with extra big weight for node_modules):
@@ -129,7 +129,7 @@ export function sync() {
 /**
  * As soon as we get a new file listing refresh available projects
  */
-flm.filePathsUpdated.on(function(data) {
+flm.filePathsCompleted.on(function(data) {
     refreshAvailableProjects();
 });
 

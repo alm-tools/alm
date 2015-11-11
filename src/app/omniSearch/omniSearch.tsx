@@ -230,6 +230,7 @@ class SearchState {
      */
     modeDescriptions: SearchModeDescription[] = []; // set in ctor
     filePaths: string [] = [];
+    filePathsCompleted: boolean = false;
     availableProjects: ActiveProjectConfigDetails[] = [];
     commands = commands.commandRegistry;
 
@@ -270,6 +271,11 @@ class SearchState {
         this.filePaths = state.getState().filePaths;
         state.subscribeSub(state=> state.filePaths, (filePaths) => {
             this.filePaths = filePaths;
+            this.updateIfUserIsSearching(SearchMode.File);
+        });
+        this.filePathsCompleted = state.getState().filePathsCompleted;
+        state.subscribeSub(state=> state.filePathsCompleted, (filePathsCompleted) => {
+            this.filePathsCompleted = filePathsCompleted;
             this.updateIfUserIsSearching(SearchMode.File);
         });
 
@@ -323,6 +329,17 @@ class SearchState {
                     </div>
                 );
             });
+
+            if (!this.filePathsCompleted){
+                let messageStyle = {
+                    fontSize: '.6rem',
+                    textAlign: 'center',
+                    background: 'grey',
+                    padding: '5px',
+                    fontWeight: 'bold',
+                }
+                renderedResults.unshift(<div key="IndexingMessage" style={messageStyle}>SERVER STILL INDEXING</div>);
+            }
         }
 
         if (this.mode == SearchMode.Command){
