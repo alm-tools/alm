@@ -32,6 +32,10 @@ let treeListStyle = {
     background: '#333'
 }
 
+let treeDirItemStyle = {
+    color: 'white',
+}
+
 @ui.Radium
 export class FileTree extends BaseComponent<Props, State>{
     constructor(props: Props){
@@ -69,8 +73,8 @@ export class FileTree extends BaseComponent<Props, State>{
     renderTree() {
 
         return (
-            <div>
-                asdf
+            <div style={treeDirItemStyle}>
+                File Tree coming soon
             </div>
         );
     }
