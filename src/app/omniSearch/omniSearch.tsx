@@ -158,6 +158,8 @@ export class OmniSearch extends BaseComponent<Props, State>{
                         />
                     </div>
 
+                    {this.searchState.optionalMessage()}
+
                     <div className="scrollContainer" style={[csx.vertical,csx.flex,{overflow:'auto'}]}>
                         {renderedResults}
                     </div>
@@ -329,17 +331,6 @@ class SearchState {
                     </div>
                 );
             });
-
-            if (!this.filePathsCompleted){
-                let messageStyle = {
-                    fontSize: '.6rem',
-                    textAlign: 'center',
-                    background: 'grey',
-                    padding: '5px',
-                    fontWeight: 'bold',
-                }
-                renderedResults.unshift(<div key="IndexingMessage" style={messageStyle}>SERVER STILL INDEXING</div>);
-            }
         }
 
         if (this.mode == SearchMode.Command){
@@ -384,6 +375,22 @@ class SearchState {
         }
 
         return renderedResults;
+    }
+
+    /** Mode */
+    optionalMessage(): JSX.Element {
+        if (this.mode == SearchMode.File && !this.filePathsCompleted){
+            let messageStyle = {
+                fontSize: '.6rem',
+                textAlign: 'center',
+                background: 'grey',
+                padding: '5px',
+                fontWeight: 'bold',
+            }
+            return <div style={messageStyle}>Indexed ({this.filePaths.length})</div>;
+        }
+
+        return null;
     }
 
     /** Mode */
@@ -508,7 +515,7 @@ class SearchState {
 
     private updateIfUserIsSearching(mode:SearchMode){
         if (this.mode == mode && this.isShown){
-            this.stateChanged.emit({});
+            this.newValue(this.rawFilterValue);
         }
     }
 
