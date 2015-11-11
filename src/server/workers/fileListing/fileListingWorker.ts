@@ -1,5 +1,7 @@
 import * as sw from "../../utils/simpleWorker";
 import * as contract from "./fileListingContract";
+import * as fs from "fs";
+import * as fsu from "../../utils/fsu";
 
 import * as glob from "glob";
 import chokidar = require('chokidar');
@@ -27,6 +29,7 @@ namespace Worker {
 
     export var setupWatch: typeof contract.worker.setupWatch = (q) => {
         directoryUnderWatch = q.directory;
+        let sentOnce = false;
 
         var sendNewFileList = debounce((function () {
             var mg = new glob.Glob('**', { cwd: q.directory }, (e, newList) => {
@@ -40,24 +43,48 @@ namespace Worker {
                     return mg.cache[p] && mg.cache[p] == 'FILE';
                 });
 
+                sentOnce = true;
                 listing.emit({ relativeFilePaths: newList });
             });
         }),500);
 
         sendNewFileList();
 
-        let watcher = chokidar.watch(directoryUnderWatch, { ignoreInitial: true });
+        function sendNewFileListIfSentOnce(){
+            if (!sentOnce) return;
+
+            sendNewFileList();
+        }
+
+        let watcher = chokidar.watch(directoryUnderWatch, { ignoreInitial: false });
+
+        let liveList: { [filePath: string]: boolean } = {};
+
+        function fileAdded(filePath: string, stat: fs.Stats) {
+            filePath = fsu.consistentPath(filePath);
+            liveList[filePath] = true;
+
+            sendNewFileListIfSentOnce();
+        }
+
+        function fileDeleted(filePath: string) {
+            filePath = fsu.consistentPath(filePath);
+            delete liveList[filePath];
+
+            sendNewFileListIfSentOnce();
+        }
 
         // Just the ones that impact file listing
         // https://github.com/paulmillr/chokidar#methods--events
-        watcher.on('add', sendNewFileList);
-        watcher.on('addDir', sendNewFileList);
-        watcher.on('unlink', sendNewFileList);
-        watcher.on('unlinkDir', sendNewFileList);
+        watcher.on('add', fileAdded);
+        watcher.on('addDir', sendNewFileListIfSentOnce);
+        watcher.on('unlink', fileDeleted);
+        watcher.on('unlinkDir', sendNewFileListIfSentOnce);
 
         // Just for changes
-        watcher.on('change', (path) => {
-            master.fileChanged({ filePath: path });
+        watcher.on('change', (filePath) => {
+            filePath = fsu.consistentPath(filePath);
+            master.fileChanged({ filePath });
         });
 
         return Promise.resolve({});
