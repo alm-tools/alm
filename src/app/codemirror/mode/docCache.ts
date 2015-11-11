@@ -57,7 +57,7 @@ export function getOrOpenDoc(filePath: string): Promise<codemirror.Doc> {
 
             // setup loading saved files changing on disk
             cast.savedFileChangedOnDisk.on((res)=>{
-                if (res.filePath == this.filePath
+                if (res.filePath == filePath
                     && doc.getValue() !== res.contents) {
                     doc.setValue(res.contents);
                 }
