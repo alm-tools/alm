@@ -55,6 +55,9 @@ export class FileTree extends BaseComponent<Props, State>{
             shown: false,
         };
         this.setupTree(props);
+
+        // debug
+        // this.state.shown = true; // debug
     }
 
     componentWillReceiveProps(props: Props) {
@@ -69,12 +72,17 @@ export class FileTree extends BaseComponent<Props, State>{
 
 
     render() {
+
+        // Too soon
+        if (!this.state.treeRoot)
+            return <div>Loading</div>;
+
         let hideStyle = !this.state.shown && { display: 'none' };
         return (
             <div style={[csx.flexRoot, csx.horizontal, { width: this.state.width }, hideStyle]}>
 
                 <div style={[csx.flex, csx.vertical, treeListStyle]}>
-                    {this.renderTree() }
+                    {this.renderDir(this.state.treeRoot)}
                 </div>
 
                 <DraggableCore onDrag={this.handleDrag} onStop={this.handleStop}>
@@ -84,13 +92,20 @@ export class FileTree extends BaseComponent<Props, State>{
             </div>
         );
     }
-    renderTree() {
-
+    renderDir(item:TreeItemModel) {
         return (
             <div style={treeDirItemStyle}>
-                File Tree coming soon
+                {item.name}
+                {this.renderDirSub(item)}
             </div>
         );
+    }
+    renderDirSub(item:TreeItemModel){
+        if (!item.isExpanded || !item.subItems || !item.subItems.length)
+            return;
+
+        // TODO
+        return ;
     }
 
     handleDrag = (evt, ui: {
@@ -109,12 +124,28 @@ export class FileTree extends BaseComponent<Props, State>{
     }
 
     setupTree(props:Props){
-        // console.log(props.filePaths);
+        let filePaths = props.filePaths;
+        if (!filePaths.length) { // initial boot up
+            return;
+        }
+        let rootDir = utils.getDirectory(filePaths[0]);
+        let root: TreeItemModel = {
+            name: utils.getFileName(rootDir),
+            filePath: rootDir,
+            isDir: true,
+            isExpanded: true,
+            subItems: []
+        }
+
+        this.setState({treeRoot:root});
     }
 }
 
 interface TreeItemModel {
     name: string;
+    filePath: string;
     isDir: boolean;
     subItems?: TreeItemModel[];
+
+    isExpanded: boolean;
 }
