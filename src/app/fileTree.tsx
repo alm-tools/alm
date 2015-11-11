@@ -6,12 +6,16 @@ import * as ui from "./ui";
 import * as utils from "../common/utils";
 import * as styles from "./styles/styles";
 import * as state from "./state/state";
+import {connect} from "react-redux";
+import {StoreState} from "./state/state";
 import {Icon} from "./icon";
 import * as commands from "./commands/commands";
 let {DraggableCore} = ui;
 
 export interface Props extends React.Props<any> {
-
+    // from react-redux ... connected below
+    filePaths?: string[];
+    filePathsCompleted?: boolean;
 }
 export interface State {
     /** Width of the tree view in pixels */
@@ -36,6 +40,12 @@ let treeDirItemStyle = {
     color: 'white',
 }
 
+@connect((state: StoreState): Props => {
+    return {
+        filePaths: state.filePaths,
+        filePathsCompleted: state.filePathsCompleted,
+    };
+})
 @ui.Radium
 export class FileTree extends BaseComponent<Props, State>{
     constructor(props: Props){
@@ -43,8 +53,12 @@ export class FileTree extends BaseComponent<Props, State>{
         this.state = {
             width: 200,
             shown: false,
-            treeRoot:{}
         };
+        this.setupTree(props);
+    }
+
+    componentWillReceiveProps(props: Props) {
+        this.setupTree(props);
     }
 
     componentDidMount() {
@@ -93,9 +107,14 @@ export class FileTree extends BaseComponent<Props, State>{
     handleStop = () => {
         // TODO store as user setting
     }
+
+    setupTree(props:Props){
+        // console.log(props.filePaths);
+    }
 }
 
 interface TreeItemModel {
-    name?: string;
+    name: string;
+    isDir: boolean;
     subItems?: TreeItemModel[];
 }
