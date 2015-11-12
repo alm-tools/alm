@@ -34,11 +34,14 @@ let resizerStyle = {
 }
 
 let treeListStyle = {
-    background: '#333'
+    background: '#333',
+    color: '#eee',
+    fontSize:'.8rem',
+    padding:'5px'
 }
 
 let treeItemStyle = {
-    color: 'white',
+
 }
 
 @connect((state: StoreState): Props => {
