@@ -23,7 +23,8 @@ export interface State {
     /** Width of the tree view in pixels */
     width?: number;
     shown?: boolean;
-    treeRoot?: TreeItemModel;
+    treeRoot?: TreeDirItem;
+    expansionState?: { [filePath: string]: boolean };
 }
 
 let resizerWidth = 5;
@@ -45,7 +46,8 @@ let treeListStyle = {
 let treeItemStyle = {
     whiteSpace: 'nowrap',
     cursor:'pointer',
-    padding: '3px'
+    padding: '3px',
+    userSelect: 'none',
 }
 
 @connect((state: StoreState): Props => {
@@ -61,6 +63,7 @@ export class FileTree extends BaseComponent<Props, State>{
         this.state = {
             width: 200,
             shown: false,
+            expansionState: {},
         };
         this.setupTree(props);
 
@@ -91,7 +94,7 @@ export class FileTree extends BaseComponent<Props, State>{
 
                 <div style={[csx.flex, csx.vertical, treeListStyle]}>
                     {this.props.filePathsCompleted || <Robocop/>}
-                    {this.renderItem(this.state.treeRoot)}
+                    {this.renderDir(this.state.treeRoot)}
                 </div>
 
                 <DraggableCore onDrag={this.handleDrag} onStop={this.handleStop}>
@@ -101,23 +104,27 @@ export class FileTree extends BaseComponent<Props, State>{
             </div>
         );
     }
-    renderItem(item:TreeItemModel,depth = 0) {
-        let iconName = item.isDir
-            ? 'folder'
-            : 'file'
-
+    renderDir(item:TreeDirItem,depth = 0) {
         return (
-            <div style={treeItemStyle} key={item.filePath}>
-                {ui.indent(depth,2)} <Icon name={iconName}/> {item.name}
-                {this.renderItemSub(item,depth)}
+            <div style={treeItemStyle} key={item.filePath} onClick={(evt)=>this.handleToggleDir(evt,item)}>
+                {ui.indent(depth,2)} <Icon name="folder"/> {item.name}
+                {this.renderDirSub(item,depth)}
             </div>
         );
     }
-    renderItemSub(item:TreeItemModel, depth: number){
-        if (!item.isExpanded || !item.subItems || !item.subItems.length)
+    renderDirSub(item:TreeDirItem, depth: number){
+        if (!this.state.expansionState[item.filePath])
             return;
 
-        return item.subItems.map(item => this.renderItem(item,depth+1));
+        return item.subDirs.map(item => this.renderDir(item,depth+1))
+            .concat(item.files.map(file => this.renderFile(file,depth+1)));
+    }
+    renderFile(item:TreeFileItem,depth:number){
+        return (
+            <div style={treeItemStyle} key={item.filePath}>
+                {ui.indent(depth,2)} <Icon name="file-text-o"/> {item.name}
+            </div>
+        );
     }
 
     handleDrag = (evt, ui: {
@@ -137,22 +144,22 @@ export class FileTree extends BaseComponent<Props, State>{
 
     setupTree(props:Props){
         let filePaths = props.filePaths;
-        // TODO: make expaded state stable across searches
-        // Perhaps by creating expanded[filePath] a state member
 
         if (!filePaths.length) { // initial boot up
             return;
         }
         let rootDirPath = utils.getDirectory(filePaths[0]);
-        let rootDir: TreeItemModel = {
+        let rootDir: TreeDirItem = {
             name: utils.getFileName(rootDirPath),
             filePath: rootDirPath,
-            isDir: true,
-            isExpanded: true,
-            subItems: []
+            subDirs: [],
+            files: []
         }
 
-        let dirLookup:{[dirPath:string]:TreeItemModel} = {};
+        // Always expand root
+        this.state.expansionState[rootDirPath] = true;
+
+        let dirLookup:{[dirPath:string]:TreeDirItem} = {};
         dirLookup[rootDirPath] = rootDir;
 
         for (let filePath of filePaths) {
@@ -161,52 +168,56 @@ export class FileTree extends BaseComponent<Props, State>{
             let subItem = {
                 name: fileName,
                 filePath: filePath,
-                isDir: false,
-                isExpanded: false,
-                subItems: []
             };
 
             // if not found create a new dir and set its parent
             // (recursively e.g. last was /foo and new is /foo/bar/baz/quz)
-            function createDirAndMakeSureAllParentExits(dir: string): TreeItemModel {
-                let newDir = {
+            function createDirAndMakeSureAllParentExits(dir: string): TreeDirItem {
+                let dirTree: TreeDirItem = {
                     name: getFileName(dir),
                     filePath: dir,
-                    isDir: true,
-                    isExpanded: false,
-                    subItems: []
+                    subDirs: [],
+                    files: []
                 }
-                dirLookup[dir] = newDir;
+                dirLookup[dir] = dirTree;
 
                 let parentDir = getDirectory(dir);
                 let parentDirTree = dirLookup[parentDir]
                 if (!parentDirTree) {
                     parentDirTree = createDirAndMakeSureAllParentExits(parentDir);
                 }
-                parentDirTree.subItems.unshift(newDir);
+                parentDirTree.subDirs.push(dirTree);
 
-                return newDir;
+                return dirTree;
             }
-
 
             // lookup existing dir
             let treeDir = dirLookup[dir];
             if (!treeDir) {
                 treeDir = createDirAndMakeSureAllParentExits(dir);
             }
-
-            treeDir.subItems.push(subItem);
+            treeDir.files.push(subItem);
         }
 
-        this.setState({treeRoot:rootDir});
+        this.setState({ treeRoot: rootDir, expansionState: this.state.expansionState });
+    }
+
+    handleToggleDir = (evt:React.SyntheticEvent,item:TreeDirItem) => {
+        evt.stopPropagation();
+        let dirPath = item.filePath;
+        this.state.expansionState[dirPath] = !this.state.expansionState[dirPath];
+        this.setState({expansionState: this.state.expansionState });
     }
 }
 
-interface TreeItemModel {
+interface TreeDirItem {
     name: string;
     filePath: string;
-    isDir: boolean;
-    subItems: TreeItemModel[];
+    subDirs: TreeDirItem[];
+    files : TreeFileItem[];
+}
 
-    isExpanded: boolean;
+interface TreeFileItem {
+    name: string;
+    filePath: string;
 }
