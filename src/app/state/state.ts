@@ -168,10 +168,12 @@ export let setTabs = redux.add('setTabs', (state, tabs: TabInstance[]): StoreSta
     };
 });
 
-export let addTab = redux.add('addTab', (state:StoreState, tab: TabInstance): StoreState => {
+export let addTabAndSelect = redux.add('addTabAndSelect', (state:StoreState, tab: TabInstance): StoreState => {
     let tabs = state.tabs.concat([tab]);
+    let selectedTabIndex = tabs.length - 1;
     return {
-        tabs
+        tabs,
+        selectedTabIndex
     };
 });
 
@@ -195,5 +197,18 @@ export let removeTab = redux.add('removeTab', (state: StoreState, index: number)
     let tabs = state.tabs.map((x, i) => i == index ? null : x).filter(x=> !!x);
     return {
         tabs
+    };
+});
+
+export let selectPreviousTab = redux.add('selectPreviousTab', (state: StoreState, payload: {}): StoreState => {
+    let selectedTabIndex = state.selectedTabIndex > 0 ? state.selectedTabIndex - 1 : -1;
+    return {
+        selectedTabIndex
+    };
+});
+
+export let selectTab = redux.add('selectTab', (state: StoreState, payload: number): StoreState => {
+    return {
+        selectedTabIndex: payload
     };
 });
