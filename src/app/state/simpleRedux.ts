@@ -101,4 +101,9 @@ export class SimpleRedux<State>{
         }
         return result;
     }
+
+    // Update the item at index
+    updateArrayItem<T>(array:T[],index:number,item:T){
+        return array.map((x, i) => i == index ? item : x);
+    }
 }

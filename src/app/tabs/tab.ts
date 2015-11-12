@@ -35,11 +35,6 @@ export interface Component extends React.Component<any, any> {
     replaceAll(newText: string);
 }
 
-export interface TabInstance {
-    id: string;
-    url: string;
-    saved: boolean,
-}
 
 /** If no filepath is provided `cwd` is used */
 export function getUrl(protocol: string, filePath?: string) {

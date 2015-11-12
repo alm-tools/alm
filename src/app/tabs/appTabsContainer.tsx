@@ -28,30 +28,29 @@ import {Icon} from "../icon";
 import {cast} from "../../socket/socketClient";
 
 export interface Props extends React.Props<any> {
-    errorsExpanded?: boolean
+    // redux connected below
+    tabs?: state.TabInstance[];
 }
 
 export interface State {
     selected?: number;
-    tabs?: tab.TabInstance[];
 }
 
 @connect((state: state.StoreState): Props => {
     return {
-        errorsExpanded: state.errorsExpanded
+        tabs: state.tabs
     };
 })
 @ui.Radium
 export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
-    closedTabs: tab.TabInstance[] = [];
+    closedTabs: state.TabInstance[] = [];
 
     constructor(props: Props) {
         super(props);
 
         this.state = {
             selected: 0,
-            tabs: []
         };
 
         // this.setupDemoTab();
@@ -89,25 +88,25 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
     componentDidMount() {
         commands.nextTab.on(() => {
-            let selected = rangeLimited({ min: 0, max: this.state.tabs.length - 1, num: ++this.state.selected, loopAround: true });
+            let selected = rangeLimited({ min: 0, max: this.props.tabs.length - 1, num: ++this.state.selected, loopAround: true });
             this.selectTab(selected);
         });
         commands.prevTab.on(() => {
-            let selected = rangeLimited({ min: 0, max: this.state.tabs.length - 1, num: --this.state.selected, loopAround: true });
+            let selected = rangeLimited({ min: 0, max: this.props.tabs.length - 1, num: --this.state.selected, loopAround: true });
             this.selectTab(selected);
         });
 
         commands.doOpenFile.on((e) =>{
-            let codeTab: tab.TabInstance = {
+            let codeTab: state.TabInstance = {
                 id: createId(),
                 url: `file://${e.filePath}`,
                 saved: true
             }
 
-            this.state.tabs.push(codeTab);
-            this.setState({ tabs: this.state.tabs });
+            state.addTab(codeTab);
             this.sendTabInfoToServer();
-            this.selectTab(this.state.tabs.length - 1);
+
+            this.selectTab(this.props.tabs.length - 1);
 
             if (e.position) {
                 setTimeout(() => this.gotoPositionOnSelectedTab(e.position), 500);
@@ -118,15 +117,15 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             // if open and focused ignore
             // if open and not focused then focus
             // If not hand over to doOpenFile
-            if (this.state.tabs.length
-                && utils.getFilePathFromUrl(this.state.tabs[this.state.selected].url) == e.filePath){
+            if (this.props.tabs.length
+                && utils.getFilePathFromUrl(this.props.tabs[this.state.selected].url) == e.filePath){
                 if (e.position) {
                     this.gotoPositionOnSelectedTab(e.position)
                 }
                 return;
             }
 
-            let openTabIndex = this.state.tabs.map(t=> utils.getFilePathFromUrl(t.url) == e.filePath).indexOf(true);
+            let openTabIndex = this.props.tabs.map(t=> utils.getFilePathFromUrl(t.url) == e.filePath).indexOf(true);
             if (openTabIndex !== -1) {
                 this.selectTab(openTabIndex);
                 if (e.position) {
@@ -207,9 +206,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         commands.undoCloseTab.on(() => {
             if (this.closedTabs.length) {
                 let tab = this.closedTabs.pop();
-                this.state.tabs.push(tab);
-                this.setState({ tabs: this.state.tabs });
-                this.selectTab(this.state.tabs.length - 1);
+                state.addTab(tab);
+                this.selectTab(this.props.tabs.length - 1);
                 this.sendTabInfoToServer();
             }
         });
@@ -217,7 +215,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         /** Restore any open tabs from last session */
         server.getOpenUITabs({}).then((res) => {
             let openTabs = res.openTabs;
-            let codeTabs: tab.TabInstance[] = openTabs.map(t=> {
+            let tabInstances: state.TabInstance[] = openTabs.map(t=> {
                 return {
                     id: createId(),
                     url: t.url,
@@ -225,9 +223,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 };
             });
 
-            this.state.tabs = this.state.tabs.concat(codeTabs);
-            this.setState({ tabs: this.state.tabs });
-            this.selectTab(this.state.tabs.length - 1);
+            state.addTabs(tabInstances);
+            this.selectTab(this.props.tabs.length - 1);
         });
     }
 
@@ -235,7 +232,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
         let selectedIndex = this.state.selected;
 
-        let titles = this.state.tabs.map((t, i) =>{
+        let titles = this.props.tabs.map((t, i) =>{
             let title = utils.getFileName(t.url);
 
             var style = [tabHeader, i == selectedIndex ? tabHeaderActive : {}];
@@ -263,7 +260,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             </span>
         });
 
-        let rederedTabs = this.state.tabs.map((t,i)=>{
+        let rederedTabs = this.props.tabs.map((t,i)=>{
             let isSelected = selectedIndex == i;
             let style = ( isSelected ? {} : { display: 'none' });
 
@@ -302,9 +299,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     onSavedChanged = (saved: boolean, index: number) => {
-        let state = this.state;
-        state.tabs[index].saved = saved;
-        this.setState({ tabs: state.tabs });
+        state.setTabSaveStatus({index,saved});
     }
 
     gotoPositionOnSelectedTab(position: EditorPosition) {
@@ -332,12 +327,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         /** Set timeout to allow the next tab to render */
         setTimeout(() => {
             // cant select what aint there
-            if (this.state.tabs.length == 0) {
+            if (this.props.tabs.length == 0) {
                 return;
             }
 
             this.setState({ selected: selected });
-            this.state.selected = selected;
             this.updateActiveFileInformation();
         });
     }
@@ -347,7 +341,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         if (component) {
             component.focus();
             this.sendOrClearSearchOnCurrentComponent();
-            let url = this.state.tabs[this.state.selected].url;
+            let url = this.props.tabs[this.state.selected].url;
             let filePath = utils.getFilePathFromUrl(url);
             if (filePath){
                 state.setCurrentFilePath(filePath);
@@ -364,7 +358,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
     getSelectedComponent(): tab.Component {
         let selected = this.state.selected;
-        let tab = this.state.tabs[selected];
+        let tab = this.props.tabs[selected];
         return tab && tab.id ? this.refs[tab.id] : undefined;
     }
 
@@ -374,27 +368,28 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         state.setInActiveProject(types.TriState.Unknown);
 
         // If no tabs
-        if (!this.state.tabs.length) {
+        if (!this.props.tabs.length) {
             return;
         }
 
         // inform the component
-        let component = this.refs[this.state.tabs[index].id];
+        let component = this.refs[this.props.tabs[index].id];
         component.close();
 
-        let closed = this.state.tabs.splice(index, 1);
-        this.closedTabs.push(closed[0]);
-        this.setState({ tabs: this.state.tabs });
+        let closed = this.props.tabs[index];
+        this.closedTabs.push(closed);
+
+        state.removeTab(index);
         this.sendTabInfoToServer();
 
         // If this is the selected tab, Figure out the next:
         if (index == this.state.selected) {
             // Nothing to do
-            if (!this.state.tabs.length) {
+            if (!this.props.tabs.length) {
                 return;
             }
             // Previous
-            let next = rangeLimited({ num: --index, min: 0, max: this.state.tabs.length });
+            let next = rangeLimited({ num: --index, min: 0, max: this.props.tabs.length });
             this.selectTab(next);
         }
         // If this is a tab before the selected, decrement selected
@@ -406,7 +401,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
     private sendTabInfoToServer(){
         server.setOpenUITabs({
-            openTabs: this.state.tabs.map(t=>({
+            openTabs: this.props.tabs.map(t=>({
                 url: t.url
             }))
         });

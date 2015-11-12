@@ -1,6 +1,12 @@
 import * as types from "../../common/types";
 import {SimpleRedux} from "./simpleRedux";
 
+export interface TabInstance {
+    id: string;
+    url: string;
+    saved: boolean,
+}
+
 /** make sure you update initial state */
 export interface StoreState {
     activeProject?: ActiveProjectConfigDetails;
@@ -20,6 +26,10 @@ export interface StoreState {
 
     filePaths?: string[];
     filePathsCompleted?: boolean;
+
+    /** Tabs are managed globally as its significat to other sections */
+    tabs?: TabInstance[];
+    selectedTabIndex?: number;
 }
 
 let initialStoreState: StoreState = {
@@ -39,6 +49,8 @@ let initialStoreState: StoreState = {
     socketConnected: false,
     filePaths: [],
     filePathsCompleted: false,
+    tabs: [],
+    selectedTabIndex: -1,
 };
 
 let redux = new SimpleRedux<StoreState>(initialStoreState);
@@ -147,5 +159,41 @@ export let setPartialFilePaths = redux.add('setPartialFilePaths', (state, filePa
     return {
         filePaths: filePaths,
         filePathsCompleted: false
+    };
+});
+
+export let setTabs = redux.add('setTabs', (state, tabs: TabInstance[]): StoreState => {
+    return {
+        tabs
+    };
+});
+
+export let addTab = redux.add('addTab', (state:StoreState, tab: TabInstance): StoreState => {
+    let tabs = state.tabs.concat([tab]);
+    return {
+        tabs
+    };
+});
+
+export let addTabs = redux.add('addTabs', (state:StoreState, tabs: TabInstance[]): StoreState => {
+    tabs = state.tabs.concat(tabs);
+    return {
+        tabs
+    };
+});
+
+export let setTabSaveStatus = redux.add('setTabSaveStatus', (state: StoreState, payload: { index: number, saved: boolean }): StoreState => {
+    let tab = state.tabs[payload.index];
+    tab = redux.updateFields({ saved: payload.saved })(tab);
+    let tabs = redux.updateArrayItem(state.tabs, payload.index, tab);
+    return {
+        tabs
+    };
+});
+
+export let removeTab = redux.add('removeTab', (state: StoreState, index: number): StoreState => {
+    let tabs = state.tabs.map((x, i) => i == index ? null : x).filter(x=> !!x);
+    return {
+        tabs
     };
 });
