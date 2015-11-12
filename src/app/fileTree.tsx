@@ -25,6 +25,9 @@ export interface State {
     shown?: boolean;
     treeRoot?: TreeDirItem;
     expansionState?: { [filePath: string]: boolean };
+
+     // TODO: support multiple selections at some point, hence a dict
+    selectedPaths?: { [filePath: string]: boolean };
 }
 
 let resizerWidth = 5;
@@ -50,6 +53,10 @@ let treeItemStyle = {
     userSelect: 'none',
 }
 
+let treeItemSelectedStyle = {
+    backgroundColor:'#444',
+}
+
 @connect((state: StoreState): Props => {
     return {
         filePaths: state.filePaths,
@@ -64,6 +71,7 @@ export class FileTree extends BaseComponent<Props, State>{
             width: 200,
             shown: false,
             expansionState: {},
+            selectedPaths: {}
         };
         this.setupTree(props);
 
@@ -105,23 +113,24 @@ export class FileTree extends BaseComponent<Props, State>{
         );
     }
     renderDir(item:TreeDirItem,depth = 0) {
+        let expanded = this.state.expansionState[item.filePath];
+        let icon = expanded ? 'folder-open' : 'folder';
+        let sub = expanded ? this.renderDirSub(item, depth) : [];
+        let selectedStyle = this.state.selectedPaths[item.filePath] ? treeItemSelectedStyle : {};
         return (
-            <div style={treeItemStyle} key={item.filePath} onClick={(evt)=>this.handleToggleDir(evt,item)}>
-                {ui.indent(depth,2)} <Icon name="folder"/> {item.name}
-                {this.renderDirSub(item,depth)}
-            </div>
+            [<div style={[treeItemStyle, selectedStyle]} key={item.filePath} onClick={(evt) => this.handleToggleDir(evt, item) }>
+                {ui.indent(depth,2)} <Icon name={icon}/> {item.name}
+            </div>].concat(sub)
         );
     }
     renderDirSub(item:TreeDirItem, depth: number){
-        if (!this.state.expansionState[item.filePath])
-            return;
-
         return item.subDirs.map(item => this.renderDir(item,depth+1))
             .concat(item.files.map(file => this.renderFile(file,depth+1)));
     }
     renderFile(item:TreeFileItem,depth:number){
+        let selectedStyle = this.state.selectedPaths[item.filePath] ? treeItemSelectedStyle : {};
         return (
-            <div style={treeItemStyle} key={item.filePath}>
+            <div style={[treeItemStyle, selectedStyle]} key={item.filePath} onClick={(evt) => this.handleSelectFile(evt, item) }>
                 {ui.indent(depth,2)} <Icon name="file-text-o"/> {item.name}
             </div>
         );
@@ -205,8 +214,25 @@ export class FileTree extends BaseComponent<Props, State>{
     handleToggleDir = (evt:React.SyntheticEvent,item:TreeDirItem) => {
         evt.stopPropagation();
         let dirPath = item.filePath;
+
+        this.state.selectedPaths = {};
+        this.state.selectedPaths[dirPath] = true;
+
         this.state.expansionState[dirPath] = !this.state.expansionState[dirPath];
-        this.setState({expansionState: this.state.expansionState });
+
+        this.setState({expansionState: this.state.expansionState, selectedPaths:this.state.selectedPaths });
+    }
+
+    handleSelectFile = (evt:React.SyntheticEvent,item:TreeFileItem) => {
+        evt.stopPropagation();
+        let filePath = item.filePath;
+
+        this.state.selectedPaths = {};
+        this.state.selectedPaths[filePath] = true;
+
+        this.setState({ selectedPaths:this.state.selectedPaths });
+
+        commands.doOpenFile.emit({ filePath });
     }
 }
 
