@@ -229,6 +229,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     private _shouldSendTabInfoToServer = false;
+    private _shouldFocusSelectedTab = false;
     componentWillUpdate(){
         if (this._shouldSendTabInfoToServer){
             server.setOpenUITabs({
@@ -237,6 +238,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 }))
             });
             this._shouldSendTabInfoToServer = false;
+        }
+        if (this._shouldFocusSelectedTab){
+            this._shouldFocusSelectedTab = false;
+            this.updateActiveFileInformation();
         }
     }
 
@@ -341,7 +346,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         }
 
         state.selectTab(selected);
-        this.updateActiveFileInformation();
+        this._shouldFocusSelectedTab = true;
     }
 
     updateActiveFileInformation() {
