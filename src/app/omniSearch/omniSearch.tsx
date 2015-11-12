@@ -15,6 +15,7 @@ import {TypedEvent} from "../../common/events";
 import * as state from "../state/state";
 import * as types from "../../common/types";
 import * as CodeMirror from "codemirror";
+import {Robocop} from "../robocop";
 
 /** Stuff shared by the select list view */
 import {renderMatchedSegments, keyStrokeStyle, getFilteredItems} from ".././selectListView";
@@ -388,11 +389,13 @@ class SearchState {
                 padding: '5px',
                 fontWeight: 'bold',
                 boxShadow: 'inset 0 0 6px black',
-
-                // Sloppy!
-                marginBottom: '5px',
             };
-            return <div style={messageStyle}>Indexing ({this.filePaths.length})</div>;
+            return (
+                <div>
+                    <div style={messageStyle}>Indexing ({this.filePaths.length})</div>
+                    <Robocop/>
+                </div>
+            );
         }
 
         return null;

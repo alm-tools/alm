@@ -122,6 +122,7 @@
         "./app/main.tsx",
         "./app/omniSearch/omniSearch.tsx",
         "./app/pendingRequestsIndicator.tsx",
+        "./app/robocop.tsx",
         "./app/root.tsx",
         "./app/selectListView.tsx",
         "./app/statusBar.tsx",
