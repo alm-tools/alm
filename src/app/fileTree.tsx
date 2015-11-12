@@ -38,11 +38,12 @@ let treeListStyle = {
     background: '#333',
     color: '#eee',
     fontSize:'.8rem',
-    padding:'5px'
+    padding:'5px',
+    overflow: 'auto'
 }
 
 let treeItemStyle = {
-
+    whiteSpace: 'nowrap',
 }
 
 @connect((state: StoreState): Props => {
