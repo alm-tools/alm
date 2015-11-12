@@ -155,27 +155,47 @@ export class FileTree extends BaseComponent<Props, State>{
         let dirLookup:{[dirPath:string]:TreeItemModel} = {};
         dirLookup[rootDirPath] = rootDir;
 
-        let currentDir = rootDirPath;
-        let currentNode = rootDir;
         for (let filePath of filePaths) {
             let dir = getDirectory(filePath);
             let fileName = getFileName(filePath);
+            let subItem = {
+                name: fileName,
+                filePath: filePath,
+                isDir: false,
+                isExpanded: false,
+                subItems: []
+            };
 
-            if (dir == currentDir) {
-                let subItem = {
-                    name: fileName,
-                    filePath: filePath,
-                    isDir: false,
+            // if not found create a new dir and set its parent
+            // (recursively e.g. last was /foo and new is /foo/bar/baz/quz)
+            function createDirAndMakeSureAllParentExits(dir: string): TreeItemModel {
+                let newDir = {
+                    name: getFileName(dir),
+                    filePath: dir,
+                    isDir: true,
                     isExpanded: false,
                     subItems: []
-                };
-                currentNode.subItems.push(subItem);
+                }
+                dirLookup[dir] = newDir;
+
+                let parentDir = getDirectory(dir);
+                let parentDirTree = dirLookup[parentDir]
+                if (!parentDirTree) {
+                    parentDirTree = createDirAndMakeSureAllParentExits(parentDir);
+                }
+                parentDirTree.subItems.unshift(newDir);
+
+                return newDir;
             }
-            else {
-                // TODO: lookup exisiting dir
-                // if not found create a new dir and set its parent
-                // (recursively e.g. last was /foo and new is /foo/bar/baz/quz)
+
+
+            // lookup existing dir
+            let treeDir = dirLookup[dir];
+            if (!treeDir) {
+                treeDir = createDirAndMakeSureAllParentExits(dir);
             }
+
+            treeDir.subItems.push(subItem);
         }
 
         this.setState({treeRoot:rootDir});
