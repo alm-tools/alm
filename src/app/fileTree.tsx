@@ -12,6 +12,7 @@ import {Icon} from "./icon";
 import * as commands from "./commands/commands";
 let {DraggableCore} = ui;
 import {getDirectory,getFileName} from "../common/utils";
+import {Robocop} from "./robocop";
 
 export interface Props extends React.Props<any> {
     // from react-redux ... connected below
@@ -86,6 +87,7 @@ export class FileTree extends BaseComponent<Props, State>{
             <div style={[csx.flexRoot, csx.horizontal, { width: this.state.width }, hideStyle]}>
 
                 <div style={[csx.flex, csx.vertical, treeListStyle]}>
+                    {this.props.filePathsCompleted || <Robocop/>}
                     {this.renderItem(this.state.treeRoot)}
                 </div>
 
