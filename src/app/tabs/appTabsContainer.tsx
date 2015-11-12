@@ -37,7 +37,9 @@ export interface State {
 }
 
 @connect((state: state.StoreState): Props => {
-    return { errorsExpanded: state.errorsExpanded };
+    return {
+        errorsExpanded: state.errorsExpanded
+    };
 })
 @ui.Radium
 export class AppTabsContainer extends ui.BaseComponent<Props, State>{

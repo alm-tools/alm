@@ -24,7 +24,7 @@ var config = {
             {
                 test: /\.(otf|eot|png|svg|ttf|woff|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
                 loader: 'url-loader?limit=100000'
-          },
+            },
         ]
     }
 };
