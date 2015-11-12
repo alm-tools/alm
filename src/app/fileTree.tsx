@@ -44,6 +44,8 @@ let treeListStyle = {
 
 let treeItemStyle = {
     whiteSpace: 'nowrap',
+    cursor:'pointer',
+    padding: '3px'
 }
 
 @connect((state: StoreState): Props => {
@@ -106,7 +108,7 @@ export class FileTree extends BaseComponent<Props, State>{
 
         return (
             <div style={treeItemStyle} key={item.filePath}>
-                {ui.indent(depth)} <Icon name={iconName}/> {item.name}
+                {ui.indent(depth,2)} <Icon name={iconName}/> {item.name}
                 {this.renderItemSub(item,depth)}
             </div>
         );
@@ -114,7 +116,6 @@ export class FileTree extends BaseComponent<Props, State>{
     renderItemSub(item:TreeItemModel, depth: number){
         if (!item.isExpanded || !item.subItems || !item.subItems.length)
             return;
-
 
         return item.subItems.map(item => this.renderItem(item,depth+1));
     }
