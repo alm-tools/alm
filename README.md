@@ -44,6 +44,7 @@ All of these are **optional**:
 * `-o`: Open the browser on the server
 * `-d <directory>` : Specify a working directory
 * `-p <port>`: Specify a custom port number
+* `--safe`: To ignore any previous session data in `.tsb` folder
 
 ## License
 

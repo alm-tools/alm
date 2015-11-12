@@ -21,7 +21,7 @@ export function getDefaultOrNewSession(): types.SessionOnDisk {
     let session: types.SessionOnDisk = null;
     let commandLineTabs = getCommandLineTabs();
 
-    if (fsu.existsSync(sessionFile)) {
+    if (fsu.existsSync(sessionFile) && !commandLine.getOptions().safe) {
         let contents = json.parse<types.SessionOnDisk>(fsu.readFile(sessionFile));
         if (contents.data && contents.data.lastUsed) {
             session = contents.data;

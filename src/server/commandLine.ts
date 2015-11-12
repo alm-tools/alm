@@ -9,10 +9,11 @@ var argv: {
     p?: number;
     d?: string;
     o?: boolean;
+    safe?: boolean;
     _?: string[];
 } = minimist(process.argv.slice(2),{
     string: ['dir'],
-    boolean: ['open'],
+    boolean: ['open','safe'],
     alias: {
         'p': 'port',
         'd': 'dir',
@@ -29,6 +30,7 @@ interface CommandLineOptions {
     port: number;
     dir: string;
     open: boolean;
+    safe: boolean;
     filePaths: string[];
 }
 export let getOptions = utils.once((): CommandLineOptions => {
@@ -36,6 +38,7 @@ export let getOptions = utils.once((): CommandLineOptions => {
         port: argv.p,
         dir: argv.d,
         open: argv.o,
+        safe: argv.safe,
         filePaths: [],
     }
     if (typeof options.port !== 'number') {
@@ -47,6 +50,9 @@ export let getOptions = utils.once((): CommandLineOptions => {
     }
     if (argv._ && argv._.length) {
         options.filePaths = argv._.map(x=> workingDir.makeAbsoluteIfNeeded(x));
+    }
+    if (options.safe){
+        console.log("---SAFE MODE---")
     }
 
     return options;
