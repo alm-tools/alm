@@ -11,7 +11,7 @@ import * as types from "../common/types";
  */
 export var server = {
     echo: {} as QRServerFunction<{ text: string, num: number }, { text: string, num: number }, typeof client>,
-    filePaths: {} as QRFunction<{}, { filePaths: string[] }>,
+    filePaths: {} as QRFunction<{}, { filePaths: string[], completed: boolean }>,
     makeAbsolute: {} as QRFunction<{ relativeFilePath: string }, { filePath: string }>,
 
     /**

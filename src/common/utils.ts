@@ -70,6 +70,39 @@ export function debounce<T extends Function>(func: T, milliseconds: number, imme
     };
 };
 
+export function throttle<T extends Function>(func: T, milliseconds: number, options?: { leading?: boolean; trailing?: boolean }) {
+    var context, args, result;
+    var timeout = null;
+    var previous = 0;
+    if (!options) options = {};
+    let gnow = now;
+    var later = function() {
+        previous = options.leading === false ? 0 : gnow();
+        timeout = null;
+        result = func.apply(context, args);
+        if (!timeout) context = args = null;
+    };
+    return function() {
+        var now = gnow();
+        if (!previous && options.leading === false) previous = now;
+        var remaining = milliseconds - (now - previous);
+        context = this;
+        args = arguments;
+        if (remaining <= 0 || remaining > milliseconds) {
+            if (timeout) {
+                clearTimeout(timeout);
+                timeout = null;
+            }
+            previous = now;
+            result = func.apply(context, args);
+            if (!timeout) context = args = null;
+        } else if (!timeout && options.trailing !== false) {
+            timeout = setTimeout(later, remaining);
+        }
+        return result;
+    };
+};
+
 export function once<T extends Function>(func: T): T {
     let ran = false;
     let memo = undefined;

@@ -5,7 +5,7 @@ import * as fsu from "../../utils/fsu";
 
 import * as glob from "glob";
 import chokidar = require('chokidar');
-import {debounce} from "../../../common/utils";
+import {throttle} from "../../../common/utils";
 import path = require('path');
 import {TypedEvent}  from "../../../common/events";
 
@@ -74,7 +74,7 @@ namespace Worker {
         * - initial partial serach
         * - later updates which might be complete directory of files removed
         */
-       let sendNewFileListDebounced = debounce(sendNewFileList,500);
+        let sendNewFileListThrottled = throttle(sendNewFileList, 500);
 
         function fileAdded(filePath: string, stat: fs.Stats) {
             filePath = fsu.consistentPath(filePath);
@@ -82,14 +82,14 @@ namespace Worker {
             // if we don't know about this already (because of faster initial scan)
             if (!liveList[filePath]) {
                 liveList[filePath] = true;
-                sendNewFileListDebounced();
+                sendNewFileListThrottled();
             }
         }
 
         function fileDeleted(filePath: string) {
             filePath = fsu.consistentPath(filePath);
             delete liveList[filePath];
-            sendNewFileListDebounced();
+            sendNewFileListThrottled();
         }
 
         /** Create watcher */
