@@ -247,7 +247,6 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     render() {
-
         let selectedIndex = this.props.selectedTabIndex;
 
         let titles = this.props.tabs.map((t, i) =>{
@@ -346,8 +345,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             return;
         }
 
-        state.selectTab(selected);
         this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
+        state.selectTab(selected);
     }
 
     focusAndUpdateStuffWeKnowAboutCurrentTab = () => {

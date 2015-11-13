@@ -17,7 +17,12 @@ export class BaseComponent<Props, State> extends React.Component<Props, State>{
     }
 
     private _afterComponentDidUpdateQueue = [];
-    /** register stuff to call after component did update */
+    /**
+     * Register stuff to call after component did update
+     * Note: For redux-connected component,
+     * - call this *before* calling state action
+     *   (as its a bit undeterministic and sometimes runs render / didUpdate immediately after calling action)
+     */
     afterComponentDidUpdate(cb:()=>void):void{
         this._afterComponentDidUpdateQueue.push(cb);
     }
