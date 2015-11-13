@@ -266,6 +266,11 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
                 ConvertTabsToSpaces: !options.indentWithTabs
             }
             let indent = classifierCache.getIndentationAtPosition(options.filePath, lineDescriptor.lineStartIndex, indentOptions);
+            // if called for a } decrease the indent
+            if (textAfter.trim() == '}'){
+                indent -= options.indentUnit;
+            }
+
             // if (textAfter) {
             //     indent = getLineDescriptorInfo(textAfter, lineDescriptor.classifications, lineDescriptor.nextLineIndent, lineDescriptor.bracketsStack).indent;
             // }
