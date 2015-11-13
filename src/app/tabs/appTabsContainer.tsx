@@ -373,8 +373,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         let closed = this.props.tabs[index];
         this.closedTabs.push(closed);
 
-        state.removeTab(index);
         this.afterComponentDidUpdate(this.sendTabInfoToServer);
+        state.removeTab(index);
 
         // If this is the selected tab, Figure out the next:
         if (index == this.props.selectedTabIndex) {
@@ -388,7 +388,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         }
         // If this is a tab before the selected, decrement selected
         else if (index < this.props.selectedTabIndex){
-            state.selectPreviousTab({})
+            this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
+            state.selectPreviousTab({});
         }
     }
 }
