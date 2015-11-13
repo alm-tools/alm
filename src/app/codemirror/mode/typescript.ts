@@ -2,28 +2,19 @@
 import ts = require('ntypescript');
 import * as classifierCache from "./classifierCache";
 
-
-/** Just a convinient wrapper around ts.TokenClass */
-type Token  = {
-	string: string;
-	classification: ts.TokenClass;
-	length: number;
-	position: number;
-}
-
 type BracketsStackItem = {
     indent: number ; brackets: string[]
 }
 
 /** Our state per line for CodeMirror mode */
 interface LineDescriptor {
-    tokenMap: { [position: number]: Token };
-    eolState: ts.EndOfLineState;
+    classificationMap: { [position: number]: classifierCache.ClassifiedSpan };
+	classifications: classifierCache.ClassifiedSpan[];
+
     indent: number;
     nextLineIndent: number;
     bracketsStack: BracketsStackItem[]
 
-	classifications: classifierCache.ClassifiedSpan[];
 	/** Things that would help us know where we are in the file */
 	lineNumber: number;
 	lineStartIndex: number;
@@ -34,49 +25,20 @@ function last<T>(arr: T[]) {
     return arr[arr.length -1];
 }
 
-var classifier: ts.Classifier = ts.createClassifier();
-
-function getClassificationsForLine(text: string, eolState: ts.EndOfLineState ) {
-	var classificationResult = classifier.getClassificationsForLine(text, eolState, true),
-		currentPosition = 0,
-		tokens: Token[]  = [];
-
-	for (var i = 0, l = classificationResult.entries.length; i < l ; i++) {
-		var entry = classificationResult.entries[i];
-		var token = {
-			string: text.substr(currentPosition, entry.length),
-			length: entry.length,
-			classification: entry.classification,
-			position: currentPosition
-		};
-
-		// For debugging the Typescript classifier
-		// console.log(token.string,ts.TokenClass[entry.classification]); // DEBUG
-
-		tokens.push(token);
-		currentPosition += entry.length;
-	}
-
-	return {
-		tokens: tokens,
-		eolState: classificationResult.finalLexState
-	};
-}
-
-function getStyleForToken(token: Token, textBefore: string): string {
-	var TokenClass = ts.TokenClass;
-	switch (token.classification) {
-		case TokenClass.NumberLiteral:
+function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: string): string {
+	var ClassificationType = ts.ClassificationType;
+	switch (token.classificationType) {
+		case ClassificationType.numericLiteral:
 			return 'number';
-		case TokenClass.StringLiteral:
+		case ClassificationType.stringLiteral:
 			return 'string';
-		case TokenClass.RegExpLiteral:
+		case ClassificationType.regularExpressionLiteral:
 			return 'string-2';
-		case TokenClass.Operator:
+		case ClassificationType.operator:
 			return 'operator';
-		case TokenClass.Comment:
+		case ClassificationType.comment:
 			return 'comment';
-		case TokenClass.Keyword:
+		case ClassificationType.keyword:
 			switch (token.string) {
 				case 'string':
 				case 'number':
@@ -101,16 +63,20 @@ function getStyleForToken(token: Token, textBefore: string): string {
 					return 'keyword';
 			}
 
-		case TokenClass.Identifier:
+		case ClassificationType.identifier:
 			// Show types (indentifiers in PascalCase) as variable-2, other types (camelCase) as variable
 			if (token.string.charAt(0).toLowerCase() !== token.string.charAt(0)) {
 				return 'variable-2';
 			} else {
 				return 'variable';
 			}
-		case TokenClass.Punctuation:
+		case ClassificationType.punctuation:
 			return 'bracket';
-		case TokenClass.Whitespace:
+		case ClassificationType.jsxOpenTagName:
+		case ClassificationType.jsxCloseTagName:
+		case ClassificationType.jsxSelfClosingTagName:
+			return 'tag';
+		case ClassificationType.whiteSpace:
 		default:
 			return null;
 	}
@@ -134,15 +100,13 @@ function isPair(opening: string, closing: string) {
 }
 
 
-function getLineDescriptorInfo(text: string, eolState: ts.EndOfLineState, indent: number, bracketsStack: BracketsStackItem[]) {
+function getLineDescriptorInfo(text: string, classifications: classifierCache.ClassifiedSpan[], indent: number, bracketsStack: BracketsStackItem[]) {
     bracketsStack = bracketsStack.map(item => ({
         indent: item.indent,
         brackets: item.brackets.slice()
     }));
 
-    var classificationResult = getClassificationsForLine(text, eolState);
-    var tokens = classificationResult.tokens;
-    var tokenMap: { [position: number]: Token } = {};
+    var classificationMap: { [position: number]: classifierCache.ClassifiedSpan } = {};
 
     var openedBrackets: string[] = [];
     var closedBrackets: string[] = []
@@ -163,14 +127,14 @@ function getLineDescriptorInfo(text: string, eolState: ts.EndOfLineState, indent
     }
 
 
-    for (var i = 0, l = tokens.length; i < l; i++) {
-        var token = tokens[i];
-        tokenMap[token.position] = token;
-        if (token.classification === ts.TokenClass.Punctuation) {
-            if (isClosing(token.string)) {
-                closeBracket(token.string);
-            } else if (isOpening(token.string)) {
-                openBracket(token.string);
+    for (var i = 0, l = classifications.length; i < l; i++) {
+        var classification = classifications[i];
+        classificationMap[classification.startInLine] = classification;
+        if (classification.classificationType === ts.ClassificationType.punctuation) {
+            if (isClosing(classification.string)) {
+                closeBracket(classification.string);
+            } else if (isOpening(classification.string)) {
+                openBracket(classification.string);
             }
         }
     }
@@ -215,8 +179,7 @@ function getLineDescriptorInfo(text: string, eolState: ts.EndOfLineState, indent
     }
 
     return {
-        eolState: classificationResult.eolState,
-        tokenMap: tokenMap,
+        classificationMap: classificationMap,
         indent: indent,
         bracketsStack: bracketsStack,
         hasOpening: !!openedBrackets.length
@@ -232,8 +195,7 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
 
         startState(): LineDescriptor {
             return {
-                tokenMap: {},
-                eolState: ts.EndOfLineState.None,
+                classificationMap: {},
                 indent: 0,
                 nextLineIndent: 0,
                 bracketsStack: [],
@@ -245,8 +207,7 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
 
         copyState(lineDescriptor: LineDescriptor): LineDescriptor {
             return {
-                tokenMap: lineDescriptor.tokenMap,
-                eolState: lineDescriptor.eolState,
+                classificationMap: lineDescriptor.classificationMap,
                 indent: lineDescriptor.indent,
                 nextLineIndent: lineDescriptor.nextLineIndent,
                 bracketsStack: lineDescriptor.bracketsStack,
@@ -263,29 +224,31 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
 
         token(stream: CodeMirror.StringStream, lineDescriptor: LineDescriptor): string {
             if (stream.sol()) {
-                let info = getLineDescriptorInfo(stream.string, lineDescriptor.eolState, lineDescriptor.nextLineIndent, lineDescriptor.bracketsStack);
-                let classifications = classifierCache.getClassificationsForLine(options.filePath, lineDescriptor.lineStartIndex, stream.string);
+
+				let classifications = classifierCache.getClassificationsForLine(options.filePath, lineDescriptor.lineStartIndex, stream.string);
+                let info = getLineDescriptorInfo(stream.string, classifications, lineDescriptor.nextLineIndent, lineDescriptor.bracketsStack);
+
                 // console.log('%c'+stream.string,"font-size: 20px");
                 // console.table(classifications.map(c=> ({ str: c.string, cls: c.classificationTypeName,startInLine:c.startInLine })));
 
 				// Update info for next call
-                lineDescriptor.eolState = info.eolState;
-                lineDescriptor.tokenMap = info.tokenMap;
+                lineDescriptor.classificationMap = info.classificationMap;
+				lineDescriptor.classifications = classifications;
                 lineDescriptor.bracketsStack = info.bracketsStack;
                 lineDescriptor.indent = info.indent;
                 lineDescriptor.nextLineIndent = info.hasOpening ? info.indent + 1 : info.indent;
 				lineDescriptor.lineNumber++;
 				lineDescriptor.lineStartIndex = lineDescriptor.lineStartIndex + stream.string.length + 1;
-				lineDescriptor.classifications = classifications;
             }
 
-            var token = lineDescriptor.tokenMap[stream.pos];
-            if (token) {
+            var classifiedSpan = lineDescriptor.classificationMap[stream.pos];
+			// console.log(lineDescriptor.lineNumber, stream.pos,lineDescriptor.classificationMap);
+            if (classifiedSpan) {
                 var textBefore: string  = stream.string.substr(0, stream.pos);
-                for (var i = 0; i < token.length; i++) {
+                for (var i = 0; i < classifiedSpan.string.length; i++) {
                     stream.next();
                 }
-                return getStyleForToken(token, textBefore);
+                return getStyleForToken(classifiedSpan, textBefore);
             } else {
                 stream.skipToEnd();
             }
@@ -295,16 +258,18 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
 
 
         indent(lineDescriptor: LineDescriptor , textAfter: string): number {
-            if (lineDescriptor.eolState !== ts.EndOfLineState.None) {
-                return CodeMirror.Pass;
+            let indentOptions: ts.EditorOptions = {
+                IndentSize: options.indentUnit,
+                TabSize: options.tabSize,
+                NewLineCharacter: '\n',
+                IndentStyle : ts.IndentStyle.Smart,
+                ConvertTabsToSpaces: !options.indentWithTabs
             }
-
-            var indent = lineDescriptor.nextLineIndent;
-            if (textAfter) {
-                indent = getLineDescriptorInfo(textAfter, lineDescriptor.eolState, lineDescriptor.nextLineIndent, lineDescriptor.bracketsStack).indent;
-            }
-
-            return indent * options.indentUnit
+            let indent = classifierCache.getIndentationAtPosition(options.filePath, lineDescriptor.lineStartIndex, indentOptions);
+            // if (textAfter) {
+            //     indent = getLineDescriptorInfo(textAfter, lineDescriptor.classifications, lineDescriptor.nextLineIndent, lineDescriptor.bracketsStack).indent;
+            // }
+            return indent;
         }
     }
 }

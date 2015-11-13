@@ -85,6 +85,10 @@ export function getClassificationsForLine(filePath: string, lineStart: number, s
     return classifications;
 }
 
+export function getIndentationAtPosition(filePath: string, lineStart: number, options: ts.EditorOptions) {
+    return languageService.getIndentationAtPosition(filePath, lineStart, options);
+}
+
 /**
   * Just a convinient wrapper around ts.ClassifiedSpan
   * that keeps the enum `classificationType` intact
@@ -99,16 +103,29 @@ export interface ClassifiedSpan {
     startInLine?: number;
 }
 
-/** ported from services.ts convertClassifications */
+/**
+ * ported from services.ts convertClassifications
+ * encoding is [[start,lenght,type]......]
+ * also added whitespace support
+ */
 function unencodeClassifications(classifications: ts.Classifications): ClassifiedSpan[] {
     let dense = classifications.spans;
     let result: ClassifiedSpan[] = [];
+    let expectedStart = 0; // used for whitespace
     for (let i = 0, n = dense.length; i < n; i += 3) {
+        if (dense[i] > expectedStart){
+            result.push({
+                textSpan: ts.createTextSpan(expectedStart,dense[i]-expectedStart),
+                classificationType: ts.ClassificationType.whiteSpace,
+                classificationTypeName: ts.ClassificationTypeNames.whiteSpace,
+            });
+        }
         result.push({
             textSpan: ts.createTextSpan(dense[i], dense[i + 1]),
             classificationType: dense[i + 2],
             classificationTypeName: getClassificationTypeName(dense[i + 2]),
         });
+        expectedStart = dense[i] + dense[i + 1];
     }
 
     return result;
