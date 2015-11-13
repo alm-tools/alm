@@ -83,11 +83,12 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 saved: true
             }
 
-            state.addTabAndSelect(codeTab);
             this.afterComponentDidUpdate(this.sendTabInfoToServer);
+            this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
             if (e.position) {
                 this.afterComponentDidUpdate(() => this.gotoPositionOnSelectedTab(e.position));
             }
+            state.addTabAndSelect(codeTab);
         });
 
         commands.doOpenOrFocusFile.on((e)=>{
@@ -116,11 +117,12 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 url: `file://${e.filePath}`,
                 saved: true
             }
-            state.addTabAndSelect(codeTab);
             this.afterComponentDidUpdate(this.sendTabInfoToServer);
+            this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
             if (e.position) {
                 this.afterComponentDidUpdate(() => this.gotoPositionOnSelectedTab(e.position));
             }
+            state.addTabAndSelect(codeTab);
         });
 
         commands.closeTab.on((e)=>{
