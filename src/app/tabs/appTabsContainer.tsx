@@ -105,18 +105,16 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             }
 
             state.addTabAndSelect(codeTab);
-            this._shouldSendTabInfoToServer = true;
-
-
+            this.afterComponentDidUpdate(this.sendTabInfoToServer);
             if (e.position) {
-                setTimeout(() => this.gotoPositionOnSelectedTab(e.position), 500);
+                this.afterComponentDidUpdate(() => this.gotoPositionOnSelectedTab(e.position));
             }
         });
 
         commands.doOpenOrFocusFile.on((e)=>{
-            // if open and focused ignore
-            // if open and not focused then focus
-            // If not hand over to doOpenFile
+            // if open and focused just goto pos
+            // if open and not focused then focus and goto pos
+            // if not open the file and focus and goto pos
             if (this.props.tabs.length
                 && utils.getFilePathFromUrl(this.props.tabs[this.props.selectedTabIndex].url) == e.filePath){
                 if (e.position) {
@@ -129,12 +127,21 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             if (openTabIndex !== -1) {
                 this.selectTab(openTabIndex);
                 if (e.position) {
-                    setTimeout(() => this.gotoPositionOnSelectedTab(e.position));
+                    this.afterComponentDidUpdate(() => this.gotoPositionOnSelectedTab(e.position));
                 }
                 return;
             }
 
-            commands.doOpenFile.emit(e);
+            let codeTab: state.TabInstance = {
+                id: createId(),
+                url: `file://${e.filePath}`,
+                saved: true
+            }
+            state.addTabAndSelect(codeTab);
+            this.afterComponentDidUpdate(this.sendTabInfoToServer);
+            if (e.position) {
+                this.afterComponentDidUpdate(() => this.gotoPositionOnSelectedTab(e.position));
+            }
         });
 
         commands.closeTab.on((e)=>{
@@ -196,7 +203,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
         cast.activeProjectConfigDetailsUpdated.on(res => {
             state.setActiveProject(res);
-            this.updateActiveFileInformation();
+            this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
         });
 
         commands.openFileFromDisk.on(() => {
@@ -208,12 +215,14 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 let tab = this.closedTabs.pop();
                 state.addTabAndSelect(tab);
                 this.selectTab(this.props.tabs.length - 1);
-                this._shouldSendTabInfoToServer = true;
+                this.afterComponentDidUpdate(this.sendTabInfoToServer);
             }
         });
 
         /** Restore any open tabs from last session */
         server.getOpenUITabs({}).then((res) => {
+            if (!res.openTabs.length) return;
+
             let openTabs = res.openTabs;
             let tabInstances: state.TabInstance[] = openTabs.map(t=> {
                 return {
@@ -224,25 +233,17 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             });
 
             state.addTabs(tabInstances);
-            this.selectTab(this.props.tabs.length - 1);
+            state.selectTab(this.props.tabs.length - 1);
+            this.focusAndUpdateStuffWeKnowAboutCurrentTab();
         });
     }
 
-    private _shouldSendTabInfoToServer = false;
-    private _shouldFocusSelectedTab = false;
-    componentWillUpdate(){
-        if (this._shouldSendTabInfoToServer){
-            server.setOpenUITabs({
-                openTabs: this.props.tabs.map(t=>({
-                    url: t.url
-                }))
-            });
-            this._shouldSendTabInfoToServer = false;
-        }
-        if (this._shouldFocusSelectedTab){
-            this._shouldFocusSelectedTab = false;
-            this.updateActiveFileInformation();
-        }
+    private sendTabInfoToServer = () => {
+        server.setOpenUITabs({
+            openTabs: this.props.tabs.map(t=>({
+                url: t.url
+            }))
+        });
     }
 
     render() {
@@ -346,10 +347,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         }
 
         state.selectTab(selected);
-        this._shouldFocusSelectedTab = true;
+        this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
     }
 
-    updateActiveFileInformation() {
+    focusAndUpdateStuffWeKnowAboutCurrentTab = () => {
         let component = this.getSelectedComponent();
         if (component) {
             component.focus();
@@ -393,7 +394,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         this.closedTabs.push(closed);
 
         state.removeTab(index);
-        this._shouldSendTabInfoToServer = true;
+        this.afterComponentDidUpdate(this.sendTabInfoToServer);
 
         // If this is the selected tab, Figure out the next:
         if (index == this.props.selectedTabIndex) {

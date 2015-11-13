@@ -15,6 +15,19 @@ export class BaseComponent<Props, State> extends React.Component<Props, State>{
     componentWillUnmount() {
         this.disposible.dispose();
     }
+
+    private _afterComponentDidUpdateQueue = [];
+    /** register stuff to call after component did update */
+    afterComponentDidUpdate(cb:()=>void):void{
+        this._afterComponentDidUpdateQueue.push(cb);
+    }
+    /**
+     * You generally want afterComponentDidUpdate.
+     */
+    componentDidUpdate(){
+        this._afterComponentDidUpdateQueue.forEach(cb=>cb());
+        this._afterComponentDidUpdateQueue = [];
+    }
 }
 
 // Setup VelocityReact
