@@ -136,5 +136,8 @@ function getClassificationTypeName(type: ClassificationType) {
         case ClassificationType.typeAliasName: return ClassificationTypeNames.typeAliasName;
         case ClassificationType.parameterName: return ClassificationTypeNames.parameterName;
         case ClassificationType.docCommentTagName: return ClassificationTypeNames.docCommentTagName;
+        case ClassificationType.jsxOpenTagName: return ClassificationTypeNames.jsxOpenTagName;
+        case ClassificationType.jsxCloseTagName: return ClassificationTypeNames.jsxCloseTagName;
+        case ClassificationType.jsxSelfClosingTagName: return ClassificationTypeNames.jsxSelfClosingTagName;
     }
 }
