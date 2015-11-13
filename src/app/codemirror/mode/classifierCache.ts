@@ -28,6 +28,10 @@ export function editFile(filePath: string, codeEdit: CodeEdit) {
     let to = languageServiceHost.getPositionOfLineAndCharacter(filePath, codeEdit.to.line, codeEdit.to.ch);
     languageServiceHost.editScript(filePath, from, to, codeEdit.newText);
 }
+export function setContents(filePath:string, contents:string){
+    languageServiceHost.setContents(filePath,contents);
+}
+
 export function getClassificationsForLine(filePath: string, lineStart: number, string: string): ClassifiedSpan[] {
     let lineLength = string.length;
     let encodedClassifications = languageService.getEncodedSyntacticClassifications(filePath, { start: lineStart, length: lineLength });

@@ -311,6 +311,16 @@ export class LSHost implements ts.LanguageServiceHost {
         throw new Error("No script with name '" + filename + "'");
     }
 
+    /** bas */
+    setContents(filename: string, contents: string){
+        const script = this.getScriptInfo(filename);
+        if (script) {
+            script.svc.reload(contents);
+            return;
+        }
+        throw new Error("No script with name '" + filename + "'");
+    }
+
     /**
      * Add a file with contents
      */

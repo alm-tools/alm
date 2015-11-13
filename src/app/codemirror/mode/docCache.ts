@@ -60,6 +60,9 @@ export function getOrOpenDoc(filePath: string): Promise<codemirror.Doc> {
                 if (res.filePath == filePath
                     && doc.getValue() !== res.contents) {
 
+                    // Keep the classifier in sync
+                    classifierCache.setContents(filePath, res.contents);
+
                     // preserve cursor
                     let cursor = doc.getCursor();
 
