@@ -5,7 +5,6 @@ import * as classifierCache from "./classifierCache";
 /** Our state per line for CodeMirror mode */
 interface LineDescriptor {
     classificationMap: { [position: number]: classifierCache.ClassifiedSpan };
-	classifications: classifierCache.ClassifiedSpan[];
 
 	/** Things that would help us know where we are in the file */
 	lineNumber: number;
@@ -89,7 +88,6 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
 
         startState(): LineDescriptor {
             return {
-                classifications: [],
                 classificationMap: {},
 				lineNumber: 0,
 				lineStartIndex: 0,
@@ -101,7 +99,6 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
                 classificationMap: lineDescriptor.classificationMap,
 				lineNumber: lineDescriptor.lineNumber,
 				lineStartIndex: lineDescriptor.lineStartIndex,
-				classifications: lineDescriptor.classifications,
             }
         },
 
@@ -121,7 +118,6 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
 
 				// Update info for next call
                 lineDescriptor.classificationMap = classificationMap;
-				lineDescriptor.classifications = classifications;
 				lineDescriptor.lineNumber++;
 				lineDescriptor.lineStartIndex = lineDescriptor.lineStartIndex + stream.string.length + 1;
             }
