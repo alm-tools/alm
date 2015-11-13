@@ -53,8 +53,6 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         this.state = {
             selected: 0,
         };
-
-        // this.setupDemoTab();
     }
 
     componentWillReceiveProps(nextProps: Props) {
@@ -67,25 +65,6 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     refs: { [string: string]: tab.Component; }
-
-    /** For Demo only */
-    setupDemoTab(){
-        server.makeAbsolute({ relativeFilePath: 'node_modules/ntypescript/src/compiler/checker.ts' }).then(abs => {
-            commands.doOpenFile.emit({ filePath: abs.filePath });
-        });
-        server.makeAbsolute({ relativeFilePath: 'src/app/root.tsx'}).then(abs => {
-            commands.doOpenFile.emit({ filePath: abs.filePath });
-        });
-        server.makeAbsolute({ relativeFilePath: 'src/app/root.js'}).then(abs => {
-            commands.doOpenFile.emit({ filePath: abs.filePath });
-        });
-        server.makeAbsolute({ relativeFilePath: 'tests/success/simple/foo.ts'}).then(abs => {
-            commands.doOpenFile.emit({ filePath: abs.filePath });
-        });
-        server.makeAbsolute({ relativeFilePath: 'tests/success/simple/bas.tsx'}).then(abs => {
-            commands.doOpenFile.emit({ filePath: abs.filePath });
-        });
-    }
 
     componentDidMount() {
         commands.nextTab.on(() => {
