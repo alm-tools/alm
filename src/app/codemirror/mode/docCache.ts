@@ -59,7 +59,18 @@ export function getOrOpenDoc(filePath: string): Promise<codemirror.Doc> {
             cast.savedFileChangedOnDisk.on((res)=>{
                 if (res.filePath == filePath
                     && doc.getValue() !== res.contents) {
-                    doc.setValue(res.contents);
+
+                    // preserve cursor
+                    let cursor = doc.getCursor();
+
+                    // Note that we use *our source id* as this is now a change *we are making to code mirror* :)
+                    // Not using setValue as it doesn't take sourceId
+                    let lastLine = doc.lastLine();
+                    let lastCh = doc.getLine(lastLine).length;
+                    doc.replaceRange(res.contents, { line: 0, ch: 0 }, { line: lastLine, ch: lastCh }, sourceId);
+
+                    // restore cursor
+                    doc.setCursor(cursor);
                 }
             })
 
