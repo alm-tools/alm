@@ -65,6 +65,7 @@ function hideSearch(cm) {cm.operation(function() {
   if (state.overlay){
       cm.removeOverlay(state.overlay);
   }
+  if (state.annotate) { state.annotate.clear(); state.annotate = null; }
   return;
 });}
 
