@@ -31,6 +31,10 @@ export class Code extends ui.BaseComponent<Props, State> implements tab.Componen
     componentDidMount() {
         this.filePath = utils.getFilePathFromUrl(this.props.url);
 
+        server.getFileStatus({filePath:this.filePath}).then((res)=>{
+            this.props.onSavedChanged(res.saved);
+        });
+
         this.disposible.add(cast.didStatusChange.on(res=>{
             if (res.filePath == this.filePath) {
                 this.props.onSavedChanged(res.saved);

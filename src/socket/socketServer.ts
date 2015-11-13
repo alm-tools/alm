@@ -57,6 +57,10 @@ namespace Server {
         file.save();
         return resolve({});
     }
+    export var getFileStatus: typeof contract.server.openFile = (data) => {
+        let file = fmc.getOrCreateOpenFile(data.filePath, /*autoCreate*/ true);
+        return resolve({ saved: file.saved() });
+    }
 
     /**
      * Config stuff
