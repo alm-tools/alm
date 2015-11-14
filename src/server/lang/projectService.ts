@@ -105,7 +105,7 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
 }
 
 export function quickInfo(query: Types.QuickInfoQuery): Promise<Types.QuickInfoResponse> {
-        let project = getProject(query.filePath);
+    let project = getProject(query.filePath);
     if (!project.includesSourceFile(query.filePath)) {
         return Promise.resolve({ valid: false });
     }
@@ -117,6 +117,37 @@ export function quickInfo(query: Types.QuickInfoQuery): Promise<Types.QuickInfoR
             valid: true,
             name: ts.displayPartsToString(info.displayParts || []),
             comment: ts.displayPartsToString(info.documentation || [])
+        });
+    }
+}
+
+export function getRenameInfo(query: Types.GetRenameInfoQuery): Promise<Types.GetRenameInfoResponse> {
+    let project = getProject(query.filePath);
+    var findInStrings = false, findInComments = false;
+    var info = project.languageService.getRenameInfo(query.filePath, query.position);
+    if (info && info.canRename) {
+        var locations: { [filePath: string]: ts.TextSpan[] } = {};
+        project.languageService.findRenameLocations(query.filePath, query.position, findInStrings, findInComments)
+            .forEach(loc=> {
+                if (!locations[loc.fileName]) locations[loc.fileName] = [];
+
+                // Using unshift makes them with maximum value on top ;)
+                locations[loc.fileName].unshift(loc.textSpan);
+            });
+        return resolve({
+            canRename: true,
+            localizedErrorMessage: info.localizedErrorMessage,
+            displayName: info.displayName,
+            fullDisplayName: info.fullDisplayName,
+            kind: info.kind,
+            kindModifiers: info.kindModifiers,
+            triggerSpan: info.triggerSpan,
+            locations: locations
+        });
+    }
+    else {
+        return resolve({
+            canRename: false
         });
     }
 }

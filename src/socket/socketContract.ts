@@ -43,6 +43,7 @@ export var server = {
      */
     getCompletionsAtPosition: {} as QRFunction<Types.GetCompletionsAtPositionQuery,Types.GetCompletionsAtPositionResponse>,
     quickInfo: {} as QRFunction<Types.QuickInfoQuery,Types.QuickInfoResponse>,
+    getRenameInfo: {} as QRFunction<Types.GetRenameInfoQuery, Types.GetRenameInfoResponse>,
 }
 
 export var client = {
@@ -108,10 +109,31 @@ export namespace Types {
         endsInPunctuation: boolean;
     }
 
+    /**
+     * Mouse hover
+     */
     export interface QuickInfoQuery extends FilePathPositionQuery { }
     export interface QuickInfoResponse {
         valid: boolean; // Do we have a valid response for this query
         name?: string;
         comment?: string;
+    }
+
+    /**
+     * Rename refactoring
+     */
+    export interface GetRenameInfoQuery extends FilePathPositionQuery { }
+    export interface GetRenameInfoResponse {
+        canRename: boolean;
+        localizedErrorMessage?: string;
+        displayName?: string;
+        fullDisplayName?: string; // this includes the namespace name
+        kind?: string;
+        kindModifiers?: string;
+        triggerSpan?: ts.TextSpan;
+        locations?: {
+            /** Note that the Text Spans are from bottom of file to top of file */
+            [filePath: string]: ts.TextSpan[]
+        };
     }
 }
