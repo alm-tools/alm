@@ -118,8 +118,8 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
 				let classifications = classifierCache.getClassificationsForLine(options.filePath, lineDescriptor.lineStartIndex, stream.string);
                 let classificationMap = getClassificationMap(classifications);
 
-                console.log('%c'+stream.string,"font-size: 20px");
-                console.table(classifications.map(c=> ({ str: c.string, cls: c.classificationTypeName,startInLine:c.startInLine })));
+                // console.log('%c'+stream.string,"font-size: 20px");
+                // console.table(classifications.map(c=> ({ str: c.string, cls: c.classificationTypeName,startInLine:c.startInLine })));
 
 				// Update info for next call
                 lineDescriptor.classificationMap = classificationMap;
