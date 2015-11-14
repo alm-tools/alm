@@ -38,9 +38,7 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: str
 				case 'get':
 				case 'set':
 					return 'qualifier';
-				case 'class':
 				case 'function':
-				case 'module':
 				case 'var':
 				case 'let':
 				case 'const':
