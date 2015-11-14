@@ -140,6 +140,21 @@ export var openFileFromDisk = new UICommand({
 });
 commandRegistry.push(openFileFromDisk);
 
+/**
+ * Refactoring.
+ * Workflow is user presses f2, relevant code paths (editor tree view) check to see if they are in focus.
+ * if they are, then they launch relevant secondary commands that are used by `root` to show relevant UI
+ */
+export var renameVariable = new events.TypedEvent<{ filePath: string, position: number }>();
+export var rename = new UICommand({
+    keyboardShortcut: 'f2',
+    description: 'Rename item selected in view'
+});
+commandRegistry.push(rename);
+
+/**
+ * Registration
+ */
 export function register() {
 
     commandRegistry.forEach(c=>{

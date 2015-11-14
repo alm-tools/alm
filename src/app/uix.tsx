@@ -6,18 +6,39 @@ import * as state from "./state/state";
 import {RefactoringsByFilePath} from "../common/types";
 import * as utils from "../common/utils";
 
-namespace API {
-    export function applyRefactorings(refactorings: RefactoringsByFilePath) {
+/** Cant this in these UI components. Will cause cycles! */
+import * as codeEditor from "./codemirror/codeEditor";
+import {Code} from "./tabs/codeTab";
+import {appTabsContainer} from "./tabs/appTabsContainer";
+
+export namespace API {
+
+    export function getRefactoringImpact(refactorings: RefactoringsByFilePath) {
         /** lookup all the *file* tabs that are open */
         let alreadyOpen = state.getState().tabs
-            .filter(tab=>utils.getFilePathAndProtocolFromUrl(tab.url).protocol == 'file');
+            .filter(tab=> tab.url.startsWith('file:'));
 
         let alreadyOpenFilePaths = alreadyOpen.map(x=> utils.getFilePathFromUrl(x.url));
-
         let wantedFilePaths = Object.keys(refactorings);
+        let currentlyClosedFilePaths = wantedFilePaths.filter(x=> !!alreadyOpenFilePaths.find(ao=> ao == x));
 
-        let toOpen = wantedFilePaths.filter(x=> !!alreadyOpenFilePaths.find(ao=>ao == x));
+        return { alreadyOpenFilePaths, currentlyClosedFilePaths };
+    }
 
-        console.log(toOpen);
+    export function applyRefactorings(refactorings: RefactoringsByFilePath) {
+        console.log(getRefactoringImpact(refactorings));
+    }
+
+    export function getFocusedCodeEditorIfAny(): codeEditor.CodeEditor {
+        let {tabs, selectedTabIndex} = state.getState();
+        if (tabs.length == 0) return undefined;
+
+        let focusedTab = tabs[selectedTabIndex];
+        if (!focusedTab.url.startsWith('file:')) return undefined;
+
+        let focusedTabComponent:Code = appTabsContainer.refs[focusedTab.id] as Code;
+        let editor = focusedTabComponent.refs.editor;
+
+        return editor;
     }
 }

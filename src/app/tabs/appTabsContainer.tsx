@@ -36,6 +36,11 @@ export interface Props extends React.Props<any> {
 export interface State {
 }
 
+/**
+ * The singleton
+ */
+export var appTabsContainer: AppTabsContainer;
+
 @connect((state: state.StoreState): Props => {
     return {
         tabs: state.tabs,
@@ -67,6 +72,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     refs: { [string: string]: tab.Component; }
 
     componentDidMount() {
+        appTabsContainer = this;
+
         commands.nextTab.on(() => {
             let selected = rangeLimited({ min: 0, max: this.props.tabs.length - 1, num: this.props.selectedTabIndex + 1, loopAround: true });
             this.selectTab(selected);

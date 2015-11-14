@@ -14,6 +14,7 @@ import {match, filter as fuzzyFilter} from "fuzzaldrin";
 import {debounce,createMap,rangeLimited,getFileName} from "../common/utils";
 import {OmniSearch} from "./omniSearch/omniSearch";
 import {FileTree} from "./fileTree";
+import {RenameVariable} from "./renameVariable";
 
 import {SelectListView} from "./selectListView";
 import slv = require("./selectListView");
@@ -48,8 +49,6 @@ export class Root extends ui.BaseComponent<{}, State>{
     }
 
     componentDidMount() {
-        sb.statusBar = this.refs.statusBar;
-        slv.selectListView = this.refs.selectListView;
     }
 
     render() {
@@ -63,6 +62,8 @@ export class Root extends ui.BaseComponent<{}, State>{
                     <FileTree/>
                     <AppTabsContainer/>
                 </div>
+
+                <RenameVariable/>
 
                 <FindAndReplace/>
 

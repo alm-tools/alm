@@ -61,6 +61,8 @@ export class StatusBar extends BaseComponent<Props, State>{
     }
 
     componentDidMount() {
+        statusBar = this;
+
         this.disposible.add(commands.toggleErrorMessagesPanel.on(()=>{
             state.getState().errorsExpanded?state.collapseErrors({}):state.expandErrors({});
         }));

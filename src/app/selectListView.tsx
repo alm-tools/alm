@@ -118,6 +118,8 @@ export class SelectListView extends BaseComponent<Props, State>{
     }
 
     componentDidMount() {
+        selectListView = this;
+
         commands.esc.on(()=>{
             this.closeOmniSearch();
         });

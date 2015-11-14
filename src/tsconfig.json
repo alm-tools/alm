@@ -123,6 +123,7 @@
         "./app/main.tsx",
         "./app/omniSearch/omniSearch.tsx",
         "./app/pendingRequestsIndicator.tsx",
+        "./app/renameVariable.tsx",
         "./app/robocop.tsx",
         "./app/root.tsx",
         "./app/selectListView.tsx",
