@@ -20,10 +20,17 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: str
 			return 'string';
 		case ClassificationType.regularExpressionLiteral:
 			return 'string-2';
-		case ClassificationType.operator:
-			return 'operator';
-		case ClassificationType.comment:
-			return 'comment';
+        case ClassificationType.operator:
+            return 'operator';
+        case ClassificationType.comment:
+            return 'comment';
+        case ClassificationType.className:
+        case ClassificationType.enumName:
+        case ClassificationType.interfaceName:
+        case ClassificationType.moduleName:
+        case ClassificationType.typeParameterName:
+        case ClassificationType.typeAliasName:
+            return 'variable-2';
 		case ClassificationType.keyword:
 			switch (token.string) {
 				case 'string':
@@ -111,8 +118,8 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
 				let classifications = classifierCache.getClassificationsForLine(options.filePath, lineDescriptor.lineStartIndex, stream.string);
                 let classificationMap = getClassificationMap(classifications);
 
-                // console.log('%c'+stream.string,"font-size: 20px");
-                // console.table(classifications.map(c=> ({ str: c.string, cls: c.classificationTypeName,startInLine:c.startInLine })));
+                console.log('%c'+stream.string,"font-size: 20px");
+                console.table(classifications.map(c=> ({ str: c.string, cls: c.classificationTypeName,startInLine:c.startInLine })));
 
 				// Update info for next call
                 lineDescriptor.classificationMap = classificationMap;
