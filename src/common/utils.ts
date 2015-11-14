@@ -201,7 +201,8 @@ export function makeBlandError(filePath: string, error: string): CodeError {
 
 /** From `file://filePath` to `filePath` */
 export function getFilePathFromUrl(url: string) {
-    return url && url.length > 'file://'.length ? url.substr('file://'.length): '';
+    let {filePath} = getFilePathAndProtocolFromUrl(url);
+    return filePath;
 }
 
 /** We consistently have tabs with protocol + filePath */

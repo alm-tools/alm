@@ -37,3 +37,43 @@ export interface SessionOnDisk {
 export interface SessionTabInUI {
     url: string;
 }
+
+/**
+ * Refactoring related stuff
+ */
+export interface Refactoring extends ts.TextChange {
+    filePath: string;
+
+    /** If you want to insert a snippet. Be careful that you shouldn't return more than one refatoring if you want to use this */
+    // isNewTextSnippet?: boolean;
+}
+
+/**
+ * Because you generally want to transact per file
+ * You don't need to create this manually. Just use `getRefactoringsByFilePath`
+ */
+export interface RefactoringsByFilePath {
+    [filePath: string]: Refactoring[];
+}
+
+/**
+ * Reason is we want to transact by file path
+ * Also, this function sorts per file so you can apply refactorings in order 🌹
+ */
+export function getRefactoringsByFilePath(refactorings: Refactoring[]) {
+    var loc: RefactoringsByFilePath = {};
+    for (let refac of refactorings) {
+        if (!loc[refac.filePath]) loc[refac.filePath] = [];
+        loc[refac.filePath].push(refac);
+    }
+
+    // sort each of these in descending by start location
+    for (let filePath in loc) {
+        let refactorings = loc[filePath];
+        refactorings.sort((a: Refactoring, b: Refactoring) => {
+            return (b.span.start - a.span.start);
+        });
+    }
+
+    return loc;
+}

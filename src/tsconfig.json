@@ -110,6 +110,7 @@
         "./typings/socket.io/socket.io.d.ts",
         "./typings/toastr/toastr.d.ts",
         "./typings/tsd.d.ts",
+        "./typings/v8array.d.ts",
         "./typings/v8promise.d.ts",
         "./typings/v8string.d.ts",
         "./webpack.config.ts",
@@ -132,7 +133,8 @@
         "./app/tabs/codeTab.tsx",
         "./app/tabs/dashboardTab.tsx",
         "./app/tabs/tips.tsx",
-        "./app/ui.tsx"
+        "./app/ui.tsx",
+        "./app/uix.tsx"
     ],
     "exclude": []
 }
