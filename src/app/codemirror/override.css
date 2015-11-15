@@ -25,3 +25,8 @@
 
 /* cm-s-monokai has nothing for qualifier */
 .cm-s-monokai span.cm-qualifier { color: rgb(0, 208, 255); }
+
+/* make overrite (insert) mode visually different */
+.CodeMirror-overwrite .CodeMirror-cursor{
+    border-left:2px solid red !important;
+}
