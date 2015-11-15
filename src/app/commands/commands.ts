@@ -15,9 +15,15 @@ import * as Mousetrap from "mousetrap";
 require("mousetrap/plugins/global-bind/mousetrap-global-bind");
 import * as events from "../../common/events";
 
+enum CommandContext {
+    Global,
+    Editor
+}
+
 interface UICommandConfig {
     keyboardShortcut: string;
     description: string;
+    context: CommandContext;
 }
 
 /**
@@ -26,8 +32,10 @@ interface UICommandConfig {
  */
 
 export class UICommand extends events.TypedEvent<{}>{
+    static commandRegistry:UICommand[] = [];
     constructor(public config: UICommandConfig){
         super();
+        commandRegistry.push(this);
     }
 }
 
@@ -42,8 +50,8 @@ export let commandRegistry: UICommand[] = [];
 export var esc = new UICommand({
     keyboardShortcut: 'esc', // atom
     description:"Close any open dialogs and focus back to any open tab",
+    context: CommandContext.Global,
 });
-commandRegistry.push(esc);
 
 /**
  * Tabs
@@ -51,28 +59,28 @@ commandRegistry.push(esc);
 export var nextTab = new UICommand({
     keyboardShortcut: 'alt+k',
     description:"Focus on the next tab",
+    context: CommandContext.Global,
 });
-commandRegistry.push(nextTab);
 export var prevTab = new UICommand({
     keyboardShortcut: 'alt+j',
     description:"Focus on the previous tab",
+    context: CommandContext.Global,
 });
-commandRegistry.push(prevTab);
 export var closeTab = new UICommand({
     keyboardShortcut: 'alt+w', // c9
     description:"Close current tab",
+    context: CommandContext.Global,
 });
-commandRegistry.push(closeTab);
 export var undoCloseTab = new UICommand({
     keyboardShortcut: 'shift+alt+w', // Couldn't find IDEs that do this. c9/ca have this bound to close all tabs
     description:"Undo close tab",
+    context: CommandContext.Global,
 });
-commandRegistry.push(undoCloseTab);
 export var saveTab = new UICommand({
     keyboardShortcut: 'mod+s', // c9
     description:"Save current tab",
+    context: CommandContext.Global,
 });
-commandRegistry.push(saveTab);
 
 /**
  * OmniSearch
@@ -80,18 +88,18 @@ commandRegistry.push(saveTab);
 export var omniFindFile = new UICommand({
     keyboardShortcut: 'mod+p',  // atom,sublime
     description:"Find a file in the working directory",
+    context: CommandContext.Global,
 });
-commandRegistry.push(omniFindFile);
 export var omniFindCommand = new UICommand({
     keyboardShortcut: 'mod+shift+p', // atom,sublime
     description:"Find a command",
+    context: CommandContext.Global,
 });
-commandRegistry.push(omniFindCommand);
 export var omniSelectProject = new UICommand({
     keyboardShortcut: 'alt+shift+p', // atom:projectmanager package
     description:"Find and set active project",
+    context: CommandContext.Global,
 });
-commandRegistry.push(omniSelectProject);
 
 /**
  * FAR find and replace
@@ -99,18 +107,18 @@ commandRegistry.push(omniSelectProject);
 export var findAndReplace = new UICommand({
     keyboardShortcut: 'mod+f', // atom,sublime,c9
     description:"Show find and replace dialog",
+    context: CommandContext.Global,
 });
-commandRegistry.push(findAndReplace);
 export var findNext = new UICommand({
     keyboardShortcut: 'f3', // atom,sublime
     description:"Find the next search result",
+    context: CommandContext.Global,
 });
-commandRegistry.push(findNext);
 export var findPrevious = new UICommand({
     keyboardShortcut: 'shift+f3', // atom,sublime
     description:"Find the previous search result",
+    context: CommandContext.Global,
 });
-commandRegistry.push(findPrevious);
 export var replaceNext = new events.TypedEvent<{ newText: string }>();
 export var replaceAll = new events.TypedEvent<{ newText: string }>();
 
@@ -120,17 +128,17 @@ export var replaceAll = new events.TypedEvent<{ newText: string }>();
 export let toggleErrorMessagesPanel = new UICommand({
     keyboardShortcut: 'mod+shift+m', // code
     description:"Toggle error panel",
+    context: CommandContext.Global,
 });
-commandRegistry.push(toggleErrorMessagesPanel);
 
 /**
  * Tree view
  */
 export let toggleTreeView = new UICommand({
- keyboardShortcut: 'mod+\\',    // atom
- description:"Toggle file tree",
+    keyboardShortcut: 'mod+\\',    // atom
+    description: "Toggle file tree",
+    context: CommandContext.Global,
 });
-commandRegistry.push(toggleTreeView);
 
 /**
  * General purpose file opening
@@ -139,9 +147,9 @@ export var doOpenFile = new events.TypedEvent<{ filePath: string, position?: Edi
 export var doOpenOrFocusFile = new events.TypedEvent<{ filePath: string, position?: EditorPosition }>();
 export var openFileFromDisk = new UICommand({
     keyboardShortcut: 'mod+o',
-    description: 'Open a file present on server disk'
+    description: 'Open a file present on server disk',
+    context: CommandContext.Global,
 });
-commandRegistry.push(openFileFromDisk);
 
 /**
  * Refactoring.
@@ -151,9 +159,9 @@ commandRegistry.push(openFileFromDisk);
 export var renameVariable = new events.TypedEvent<{ filePath: string, position: number }>();
 export var rename = new UICommand({
     keyboardShortcut: 'f2',
-    description: 'Rename item selected in view'
+    description: 'Rename item selected in view',
+    context: CommandContext.Global,
 });
-commandRegistry.push(rename);
 
 /**
  * Registration
