@@ -5,11 +5,28 @@
 import * as state from "./state/state";
 import {RefactoringsByFilePath} from "../common/types";
 import * as utils from "../common/utils";
+import * as commands from "./commands/commands";
+import CodeMirror = require('codemirror');
 
 /** Cant this in these UI components. Will cause cycles! */
 import * as codeEditor from "./codemirror/codeEditor";
 import {Code} from "./tabs/codeTab";
 import {appTabsContainer} from "./tabs/appTabsContainer";
+
+
+/**
+ * Setup all the CM commands to go to the right place
+ */
+commands.commandRegistry
+    .filter(x=>x.config.context == commands.CommandContext.Editor)
+    .forEach(cmd=>{
+        cmd.on(()=>{
+            let editor = API.getFocusedCodeEditorIfAny();
+            if (editor && editor.codeMirror) {
+                CodeMirror.commands[cmd.config.editorCommandName](editor.codeMirror);
+            }
+        });
+    });
 
 export namespace API {
 
