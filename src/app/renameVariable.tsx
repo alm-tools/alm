@@ -8,6 +8,7 @@ import * as styles from "./styles/styles";
 import * as state from "./state/state";
 import * as uix from "./uix";
 import * as commands from "./commands/commands";
+import CodeMirror = require('codemirror');
 
 export interface Props extends React.Props<any> {
 
@@ -28,13 +29,11 @@ export class RenameVariable extends BaseComponent<Props, State>{
     }
 
     componentDidMount() {
-        commands.rename.on(() => {
-            let editor = uix.API.getFocusedCodeEditorIfAny();
-            if (editor) {
-                console.log(editor); // Debug
-                this.setState({ isShown: true });
-            }
-        });
+        // Wire up the code mirror command to come here
+        CodeMirror.commands[commands.additionalEditorCommands.renameVariable] = (editor: CodeMirror.EditorFromTextArea) => {
+            this.setState({ isShown: true });
+        }
+
         this.disposible.add(commands.esc.on(() => {
             this.setState({ isShown: false });
         }));
@@ -44,7 +43,7 @@ export class RenameVariable extends BaseComponent<Props, State>{
         let shownStyle = this.state.isShown ? {} : { display: 'none' };
 
         return (
-            <div style={shownStyle}>
+            <div style={[shownStyle,{color:'white'}]}>
                 Rename
             </div>
         );

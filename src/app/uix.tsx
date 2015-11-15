@@ -15,19 +15,27 @@ import {appTabsContainer} from "./tabs/appTabsContainer";
 
 
 /**
- * Setup all the CM commands to go to the right place
+ * After the app boots up
  */
-commands.commandRegistry
-    .filter(x=>x.config.context == commands.CommandContext.Editor)
-    .forEach(cmd=>{
-        cmd.on(()=>{
-            let editor = API.getFocusedCodeEditorIfAny();
-            if (editor && editor.codeMirror) {
-                CodeMirror.commands[cmd.config.editorCommandName](editor.codeMirror);
-            }
+export function setup() {
+    /**
+     * Setup all the CM commands to go to the right place
+     */
+    commands.commandRegistry
+        .filter(x=> x.config.context == commands.CommandContext.Editor)
+        .forEach(cmd=> {
+            cmd.on(() => {
+                let editor = API.getFocusedCodeEditorIfAny();
+                if (editor && editor.codeMirror) {
+                    CodeMirror.commands[cmd.config.editorCommandName](editor.codeMirror);
+                }
+            });
         });
-    });
+}
 
+/**
+ * Functions that can be provided as API
+ */
 export namespace API {
 
     export function getRefactoringImpact(refactorings: RefactoringsByFilePath) {
@@ -53,7 +61,7 @@ export namespace API {
         let focusedTab = tabs[selectedTabIndex];
         if (!focusedTab.url.startsWith('file:')) return undefined;
 
-        let focusedTabComponent:Code = appTabsContainer.refs[focusedTab.id] as Code;
+        let focusedTabComponent: Code = appTabsContainer.refs[focusedTab.id] as Code;
         let editor = focusedTabComponent.refs.editor;
 
         return editor;

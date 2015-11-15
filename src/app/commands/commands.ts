@@ -155,18 +155,6 @@ export var openFileFromDisk = new UICommand({
 });
 
 /**
- * Refactoring.
- * Workflow is user presses f2, relevant code paths (editor tree view) check to see if they are in focus.
- * if they are, then they launch relevant secondary commands that are used by `root` to show relevant UI
- */
-export var renameVariable = new events.TypedEvent<{ filePath: string, position: number }>();
-export var rename = new UICommand({
-    keyboardShortcut: 'f2',
-    description: 'Rename item selected in view',
-    context: CommandContext.Global,
-});
-
-/**
  * Registration
  */
 export function register() {
@@ -204,6 +192,12 @@ export var windows = /win/i.test(navigator.platform);
 export var modName = mac ? '⌘' : 'Ctrl';
 let mod = mac ? 'Cmd' : 'Ctrl';
 
+/** Commands *we* authored */
+export let additionalEditorCommands = {
+    renameVariable: ''
+}
+utils.stringEnum(additionalEditorCommands);
+
 /** Load CM and keymaps */
 import CodeMirror = require('codemirror');
 require('codemirror/keymap/sublime')
@@ -213,8 +207,12 @@ let keyMap = (CodeMirror as any).keyMap;
 let basicMap = keyMap.basic;
 let defaultMap = keyMap.default;
 let sublimeMap = keyMap.sublime;
-// Extensions : We just add to highest priority
+
+/** Extensions : We just add to highest priority, here sublimeMap */
+// Additional key bindings for existing commands
 sublimeMap[`${mod}-Space`] = "autocomplete";
+// Our additionalEditorCommands
+sublimeMap[`F2`] = additionalEditorCommands.renameVariable;
 
 /** Comamnds we don't support as an editor command */
 let unsupportedNames = utils.createMap([

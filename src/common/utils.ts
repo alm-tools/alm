@@ -226,3 +226,9 @@ export var resolve: typeof Promise.resolve = Promise.resolve.bind(Promise);
 var punctuations = createMap([';', '{', '}', '(', ')', '.', ':', '<', '>', "'", '"']);
 /** Does the prefix end in punctuation */
 export var prefixEndsInPunctuation = (prefix: string) => prefix.length && prefix.trim().length && punctuations[prefix.trim()[prefix.trim().length - 1]];
+
+/** String based enum pattern */
+export function stringEnum(x){
+    // make values same as keys
+    Object.keys(x).map((key) => x[key] = key);
+}
