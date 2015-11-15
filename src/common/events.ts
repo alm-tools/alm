@@ -19,12 +19,17 @@ export class CompositeDisposible implements Disposable {
 /** passes through events as they happen. You will not get events from before you start listening */
 export class TypedEvent<T> {
     private listeners: Listener<T>[] = [];
+    private listenersOncer: Listener<T>[] = [];
 
     on = (listener: Listener<T>): Disposable => {
         this.listeners.push(listener);
         return {
             dispose: () => this.off(listener)
         };
+    }
+
+    once = (listener: Listener<T>): void => {
+        this.listenersOncer.push(listener);
     }
 
     off = (listener: Listener<T>) => {
@@ -34,6 +39,8 @@ export class TypedEvent<T> {
 
     emit = (event: T) => {
         this.listeners.forEach((listener) => listener(event));
+        this.listenersOncer.forEach((listener) => listener(event));
+        this.listenersOncer = [];
 
         this._last = event;
         while (this._currentQueue.length) {
