@@ -235,7 +235,7 @@ class SearchState {
     filePaths: string [] = [];
     filePathsCompleted: boolean = false;
     availableProjects: ActiveProjectConfigDetails[] = [];
-    commands = commands.commandRegistry;
+    commands = commands.commandRegistry.filter(x=>x.config.context == commands.CommandContext.Global);
 
     /** Modes can use this to store their results */
     filteredValues:any[] = [];
@@ -309,8 +309,6 @@ class SearchState {
                 searchingName: "Projects"
             }
         ];
-
-        setupCodeMirrorKeyMapInfo();
 
         // setup mode map
         this.modeDescriptions.forEach(md => this.modeMap[md.shortcut] = md.mode);
@@ -583,16 +581,4 @@ function commandShortcutToDisplayName(shortcut: string): string {
     let onPlus = basic.split('+');
     onPlus[onPlus.length - 1] = onPlus[onPlus.length - 1].toUpperCase();
     return onPlus.join(' + ');
-}
-
-
-/** Code mirror keymap parsing */
-function setupCodeMirrorKeyMapInfo(){
-    let keyMap = (CodeMirror as any).keyMap;
-    let basicMap = keyMap.basic;
-    let defaultMap = keyMap.default;
-    let sublimeMap = keyMap.sublime;
-
-    // TODO: Use and display these
-    console.log(basicMap,defaultMap, sublimeMap);
 }

@@ -15,7 +15,7 @@ import * as Mousetrap from "mousetrap";
 require("mousetrap/plugins/global-bind/mousetrap-global-bind");
 import * as events from "../../common/events";
 
-enum CommandContext {
+export enum CommandContext {
     Global,
     Editor
 }
@@ -27,22 +27,20 @@ interface UICommandConfig {
 }
 
 /**
+ * The command registry composed of commands that are keyboard only
+ */
+export let commandRegistry: UICommand[] = [];
+
+/**
  * A command is just an event emitter with some useful properties relevant to the front end command registry
  * such commands cannot have a payload
  */
-
 export class UICommand extends events.TypedEvent<{}>{
-    static commandRegistry:UICommand[] = [];
     constructor(public config: UICommandConfig){
         super();
         commandRegistry.push(this);
     }
 }
-
-/**
- * The command registry composed of commands that are keyboard only
- */
-export let commandRegistry: UICommand[] = [];
 
 /**
  * General purpose UI escape
@@ -168,11 +166,13 @@ export var rename = new UICommand({
  */
 export function register() {
 
-    commandRegistry.forEach(c=>{
-        Mousetrap.bindGlobal(c.config.keyboardShortcut, function() {
-            c.emit({});
-            return false;
-        });
+    commandRegistry.forEach(c=> {
+        if (c.config.context == CommandContext.Global) {
+            Mousetrap.bindGlobal(c.config.keyboardShortcut, function() {
+                c.emit({});
+                return false;
+            });
+        }
     });
 
     // Commands with multiple key bindings
@@ -201,8 +201,8 @@ export var windows = /win/i.test(navigator.platform);
 export var modName = mac ? '⌘' : 'Ctrl';
 let mod = mac ? 'Cmd' : 'Ctrl';
 
+/** Load CM and keymaps */
 import CodeMirror = require('codemirror');
-// keymaps
 require('codemirror/keymap/sublime')
 
 // The key is like sublime -> default -> basic
@@ -210,6 +210,5 @@ let keyMap = (CodeMirror as any).keyMap;
 let basicMap = keyMap.basic;
 let defaultMap = keyMap.default;
 let sublimeMap = keyMap.sublime;
-
-/** We just add to default keybindings for now */
+// Extensions : We just add to default keybindings for now
 defaultMap[`${mod}-Space`] = "autocomplete";
