@@ -28,6 +28,8 @@ require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/closebrackets');
 // Auto match tags (great for TSX!)
 require('codemirror/addon/edit/matchtags');
+// Auto highlight same words selected
+require('codemirror/addon/search/match-highlighter');
 
 // modes
 require('codemirror/mode/javascript/javascript')
@@ -103,6 +105,9 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
 
             // Match bracket addon
             matchBrackets: true,
+
+			// match-highlighter
+			highlightSelectionMatches: {showToken: /\w/},
 
             // Auto close brackets and strings
             autoCloseBrackets: true,

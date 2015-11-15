@@ -30,3 +30,8 @@
 .CodeMirror-overwrite .CodeMirror-cursor{
     border-left:2px solid red !important;
 }
+
+/* match-highlight from demo : https://codemirror.net/demo/matchhighlighter.html */
+.cm-matchhighlight {
+    text-decoration: underline;
+}
