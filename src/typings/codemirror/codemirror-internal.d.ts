@@ -17,4 +17,9 @@ declare module CodeMirror {
     interface EditorConfiguration {
         filePath: string;
     }
+
+    /** We like to keep the filePath in here. Helps us in command handling */
+    interface Editor {
+        filePath: string;
+    }
 }

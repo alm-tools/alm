@@ -144,6 +144,7 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
 
 		var textareaNode = ReactDOM.findDOMNode(this.refs.textarea);
 		this.codeMirror = CodeMirror.fromTextArea(textareaNode as any, options);
+		this.codeMirror.filePath = this.filePath;
 		this.codeMirror.on('focus', this.focusChanged.bind(this, true));
 		this.codeMirror.on('blur', this.focusChanged.bind(this, false));
 
