@@ -5,6 +5,7 @@ import {BaseComponent} from "../ui";
 import * as ui from "../ui";
 import * as utils from "../../common/utils";
 import * as styles from "../styles/styles";
+import * as commands from "../commands/commands";
 
 export interface Props extends React.Props<any> {
 
@@ -43,7 +44,7 @@ export class Tips extends BaseComponent<Props, State>{
     tips: TipMessage[] = [
         {
             message: 'Find a file to work with',
-            keyboard: `${ui.modName}+P`
+            keyboard: `${commands.modName}+P`
         },
         {
             message: 'Set active project',

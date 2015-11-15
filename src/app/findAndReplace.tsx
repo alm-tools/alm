@@ -125,8 +125,8 @@ export class FindAndReplace extends BaseComponent<Props, State>{
                     <span style={keyboardShortCutStyle}>Esc</span> to exit
                     {' '}<span style={keyboardShortCutStyle}>Enter</span> to find next
                     {' '}<span style={keyboardShortCutStyle}>Shift + Enter</span> to find previous
-                    {' '}<span style={keyboardShortCutStyle}>{ui.modName} + Enter</span> to replace
-                    {' '}<span style={keyboardShortCutStyle}>Shift + {ui.modName} + Enter</span> to replace all
+                    {' '}<span style={keyboardShortCutStyle}>{commands.modName} + Enter</span> to replace
+                    {' '}<span style={keyboardShortCutStyle}>Shift + {commands.modName} + Enter</span> to replace all
                 </div>
             </div>
         );

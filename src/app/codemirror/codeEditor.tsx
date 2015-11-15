@@ -33,9 +33,6 @@ require('codemirror/addon/edit/matchtags');
 require('codemirror/mode/javascript/javascript')
 require('codemirror/mode/xml/xml')
 
-// keymaps
-require('codemirror/keymap/sublime')
-
 // Our Addons
 require('./addons/text-hover');
 require('./addons/text-hover.css');
@@ -99,11 +96,6 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
             keyMap: 'sublime',
             theme: 'monokai',
             indentUnit: 4,
-
-            extraKeys: {
-                "Ctrl-Space": "autocomplete",
-                "Cmd-Space": "autocomplete",
-            },
 
             gutters: ["CodeMirror-linenumbers"],
 

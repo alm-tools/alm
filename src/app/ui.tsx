@@ -43,15 +43,6 @@ let VelocityReact = require('velocity-react');
 export let {VelocityTransitionGroup, VelocityComponent} = VelocityReact;
 
 /**
- * Straight out of codemirror.js
- */
-export var ios = /AppleWebKit/.test(navigator.userAgent) && /Mobile\/\w+/.test(navigator.userAgent);
-export var mac = ios || /Mac/.test(navigator.platform);
-export var windows = /win/i.test(navigator.platform);
-/** Nice display name for the mod by user platform */
-export var modName = mac ? '⌘' : 'Ctrl';
-
-/**
  * Toggle component
  * http://instructure-react.github.io/react-toggle/
  */

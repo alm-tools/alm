@@ -7,6 +7,9 @@
 // atom: github atom
 // sublime: sublime text
 // code: VScode
+//---------------------------------------------
+//
+// This file also sets up CodeMirror keybindings
 
 import * as Mousetrap from "mousetrap";
 require("mousetrap/plugins/global-bind/mousetrap-global-bind");
@@ -171,3 +174,34 @@ export function register() {
         return false;
     });
 }
+
+
+
+/**
+ *
+ * CODE MIRROR
+ *
+ */
+
+/**
+* Straight out of codemirror.js
+*/
+export var ios = /AppleWebKit/.test(navigator.userAgent) && /Mobile\/\w+/.test(navigator.userAgent);
+export var mac = ios || /Mac/.test(navigator.platform);
+export var windows = /win/i.test(navigator.platform);
+/** Nice display name for the mod by user platform */
+export var modName = mac ? '⌘' : 'Ctrl';
+let mod = mac ? 'Cmd' : 'Ctrl';
+
+import CodeMirror = require('codemirror');
+// keymaps
+require('codemirror/keymap/sublime')
+
+// The key is like sublime -> default -> basic
+let keyMap = (CodeMirror as any).keyMap;
+let basicMap = keyMap.basic;
+let defaultMap = keyMap.default;
+let sublimeMap = keyMap.sublime;
+
+/** We just add to default keybindings for now */
+defaultMap[`${mod}-Space`] = "autocomplete";

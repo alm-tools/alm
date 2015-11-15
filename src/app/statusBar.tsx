@@ -148,7 +148,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                     {this.props.currentFilePath
                         ?<span
                             title="Click to copy"
-                            data-clipboard-text={this.props.currentFilePath.replace(/\//g,ui.windows?'\\':'/')}
+                            data-clipboard-text={this.props.currentFilePath.replace(/\//g,commands.windows?'\\':'/')}
                             onClick={()=>ui.notifyInfoQuickDisappear("File path copied to clipboard")}
                             style={csx.extend(styles.statusBarSection,styles.noSelect,styles.hand)}>
                                 {this.props.currentFilePath}

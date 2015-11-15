@@ -577,7 +577,7 @@ var commandKeyStrokeStyle = {
 /** Utility function for command display */
 function commandShortcutToDisplayName(shortcut: string): string {
     let basic = shortcut
-        .replace(/mod/g,ui.modName)
+        .replace(/mod/g,commands.modName)
         .replace(/alt/g,'Alt')
         .replace(/shift/g,'Shift');
     let onPlus = basic.split('+');
@@ -589,9 +589,10 @@ function commandShortcutToDisplayName(shortcut: string): string {
 /** Code mirror keymap parsing */
 function setupCodeMirrorKeyMapInfo(){
     let keyMap = (CodeMirror as any).keyMap;
+    let basicMap = keyMap.basic;
     let defaultMap = keyMap.default;
     let sublimeMap = keyMap.sublime;
 
     // TODO: Use and display these
-    // console.log(defaultMap, sublimeMap);
+    console.log(basicMap,defaultMap, sublimeMap);
 }
