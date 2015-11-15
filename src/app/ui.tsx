@@ -2,6 +2,7 @@
  * Convinient base component and ui utilities
  */
 export import React = require("react");
+export import ReactDOM = require("react-dom");
 export import Radium = require('radium');
 export import csx = require('csx');
 import * as theme from "./styles/theme";
@@ -32,6 +33,16 @@ export class BaseComponent<Props, State> extends React.Component<Props, State>{
     componentDidUpdate(){
         this._afterComponentDidUpdateQueue.forEach(cb=>cb());
         this._afterComponentDidUpdateQueue = [];
+    }
+
+    /**
+     * Certain components control when they unmount themselves
+     * e.g. inline CodeMirror stuff, Modals
+     * This gives a convinient point for this logic
+     */
+    unmount = () => {
+        let node = ReactDOM.findDOMNode(this);
+        ReactDOM.unmountComponentAtNode(node.parentElement);
     }
 }
 

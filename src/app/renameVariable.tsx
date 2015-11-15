@@ -13,8 +13,6 @@ import CodeMirror = require('codemirror');
 import Modal = require('react-modal');
 
 export interface Props extends React.Props<any> {
-    /** Where this component is mounted */
-    node: HTMLElement;
 }
 export interface State {
     isShown?: boolean;
@@ -32,19 +30,15 @@ export class RenameVariable extends BaseComponent<Props, State>{
 
     componentDidMount() {
         this.disposible.add(commands.esc.on(() => {
-            this.unMount();
+            this.unmount();
         }));
-    }
-
-    unMount = () => {
-        ReactDOM.unmountComponentAtNode(this.props.node);
     }
 
     render() {
         return (
             <Modal
                   isOpen={true}
-                  onRequestClose={this.unMount}>
+                  onRequestClose={this.unmount}>
                 <div>
                     Rename
                 </div>
@@ -59,5 +53,5 @@ CodeMirror.commands[commands.additionalEditorCommands.renameVariable] = (editor:
     // TODO: query server
 
     let node = document.createElement('div');
-    ReactDOM.render(<RenameVariable node={node}/>, node);
+    ReactDOM.render(<RenameVariable/>, node);
 }
