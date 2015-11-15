@@ -16,6 +16,7 @@ import {debounce,createMap,rangeLimited,getFileName} from "../common/utils";
 import {OmniSearch} from "./omniSearch/omniSearch";
 import {FileTree} from "./fileTree";
 import {RenameVariable} from "./renameVariable";
+var renameVariable = require("./renameVariable");
 
 import {SelectListView} from "./selectListView";
 import slv = require("./selectListView");
@@ -64,8 +65,6 @@ export class Root extends ui.BaseComponent<{}, State>{
                     <FileTree/>
                     <AppTabsContainer/>
                 </div>
-
-                <RenameVariable/>
 
                 <FindAndReplace/>
 

@@ -1,4 +1,5 @@
 import React = require("react");
+import ReactDOM = require("react-dom");
 import Radium = require('radium');
 import csx = require('csx');
 import {BaseComponent} from "./ui";
@@ -9,9 +10,11 @@ import * as state from "./state/state";
 import * as uix from "./uix";
 import * as commands from "./commands/commands";
 import CodeMirror = require('codemirror');
+import Modal = require('react-modal');
 
 export interface Props extends React.Props<any> {
-
+    /** Where this component is mounted */
+    node: HTMLElement;
 }
 export interface State {
     isShown?: boolean;
@@ -24,39 +27,37 @@ export class RenameVariable extends BaseComponent<Props, State>{
         super(props);
 
         this.state = {
-            isShown: false
         };
     }
 
     componentDidMount() {
-        // Wire up the code mirror command to come here
-        CodeMirror.commands[commands.additionalEditorCommands.renameVariable] = (editor: CodeMirror.EditorFromTextArea) => {
-            this.setState({ isShown: true });
-        }
-
         this.disposible.add(commands.esc.on(() => {
-            this.setState({ isShown: false });
+            this.unMount();
         }));
     }
 
-    render() {
-        let shownStyle = this.state.isShown ? {} : { display: 'none' };
+    unMount = () => {
+        ReactDOM.unmountComponentAtNode(this.props.node);
+    }
 
+    render() {
         return (
-            <div style={[shownStyle,{color:'white'}]}>
-                Rename
-            </div>
+            <Modal
+                  isOpen={true}
+                  onRequestClose={this.unMount}>
+                <div>
+                    Rename
+                </div>
+            </Modal>
         );
     }
 }
 
-// This can work too
-// // Wire up the code mirror command to come here
-// CodeMirror.commands[commands.additionalEditorCommands.renameVariable] = (editor: CodeMirror.EditorFromTextArea) => {
-//     let cursor = editor.getDoc().getCursor();
-//     // TODO: query server
-//
-//     let node = document.createElement('div');
-//     ReactDOM.render(<RenameVariable/>, node);
-//     editor.addLineWidget(cursor.line,node);
-// }
+// Wire up the code mirror command to come here
+CodeMirror.commands[commands.additionalEditorCommands.renameVariable] = (editor: CodeMirror.EditorFromTextArea) => {
+    let cursor = editor.getDoc().getCursor();
+    // TODO: query server
+
+    let node = document.createElement('div');
+    ReactDOM.render(<RenameVariable node={node}/>, node);
+}
