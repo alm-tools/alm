@@ -4,10 +4,11 @@ export function log() {
 
 type MapKey = string|number;
 type MapableArray = MapKey[];
+export type TruthTable = { [string: string]: boolean;[number: number]: boolean };
 /**
  * Create a quick lookup map from list
  */
-export function createMap(arr: MapableArray): { [string: string]: boolean;[number: number]: boolean } {
+export function createMap(arr: MapableArray): TruthTable {
     return arr.reduce((result: { [string: string]: boolean }, key: string) => {
         result[key] = true;
         return result;

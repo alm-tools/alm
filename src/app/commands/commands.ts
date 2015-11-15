@@ -14,6 +14,7 @@
 import * as Mousetrap from "mousetrap";
 require("mousetrap/plugins/global-bind/mousetrap-global-bind");
 import * as events from "../../common/events";
+import * as utils from "../../common/utils";
 
 export enum CommandContext {
     Global,
@@ -24,6 +25,10 @@ interface UICommandConfig {
     keyboardShortcut: string;
     description: string;
     context: CommandContext;
+
+    // only valid for editor commands
+    // we use this to trigger the command on the editor
+    editorCommandName?: string;
 }
 
 /**
@@ -36,7 +41,7 @@ export let commandRegistry: UICommand[] = [];
  * such commands cannot have a payload
  */
 export class UICommand extends events.TypedEvent<{}>{
-    constructor(public config: UICommandConfig){
+    constructor(public config: UICommandConfig) {
         super();
         commandRegistry.push(this);
     }
@@ -47,7 +52,7 @@ export class UICommand extends events.TypedEvent<{}>{
  */
 export var esc = new UICommand({
     keyboardShortcut: 'esc', // atom
-    description:"Close any open dialogs and focus back to any open tab",
+    description: "Close any open dialogs and focus back to any open tab",
     context: CommandContext.Global,
 });
 
@@ -56,27 +61,27 @@ export var esc = new UICommand({
  */
 export var nextTab = new UICommand({
     keyboardShortcut: 'alt+k',
-    description:"Focus on the next tab",
+    description: "Focus on the next tab",
     context: CommandContext.Global,
 });
 export var prevTab = new UICommand({
     keyboardShortcut: 'alt+j',
-    description:"Focus on the previous tab",
+    description: "Focus on the previous tab",
     context: CommandContext.Global,
 });
 export var closeTab = new UICommand({
     keyboardShortcut: 'alt+w', // c9
-    description:"Close current tab",
+    description: "Close current tab",
     context: CommandContext.Global,
 });
 export var undoCloseTab = new UICommand({
     keyboardShortcut: 'shift+alt+w', // Couldn't find IDEs that do this. c9/ca have this bound to close all tabs
-    description:"Undo close tab",
+    description: "Undo close tab",
     context: CommandContext.Global,
 });
 export var saveTab = new UICommand({
     keyboardShortcut: 'mod+s', // c9
-    description:"Save current tab",
+    description: "Save current tab",
     context: CommandContext.Global,
 });
 
@@ -85,17 +90,17 @@ export var saveTab = new UICommand({
  */
 export var omniFindFile = new UICommand({
     keyboardShortcut: 'mod+p',  // atom,sublime
-    description:"Find a file in the working directory",
+    description: "Find a file in the working directory",
     context: CommandContext.Global,
 });
 export var omniFindCommand = new UICommand({
     keyboardShortcut: 'mod+shift+p', // atom,sublime
-    description:"Find a command",
+    description: "Find a command",
     context: CommandContext.Global,
 });
 export var omniSelectProject = new UICommand({
     keyboardShortcut: 'alt+shift+p', // atom:projectmanager package
-    description:"Find and set active project",
+    description: "Find and set active project",
     context: CommandContext.Global,
 });
 
@@ -104,17 +109,17 @@ export var omniSelectProject = new UICommand({
  */
 export var findAndReplace = new UICommand({
     keyboardShortcut: 'mod+f', // atom,sublime,c9
-    description:"Show find and replace dialog",
+    description: "Show find and replace dialog",
     context: CommandContext.Global,
 });
 export var findNext = new UICommand({
     keyboardShortcut: 'f3', // atom,sublime
-    description:"Find the next search result",
+    description: "Find the next search result",
     context: CommandContext.Global,
 });
 export var findPrevious = new UICommand({
     keyboardShortcut: 'shift+f3', // atom,sublime
-    description:"Find the previous search result",
+    description: "Find the previous search result",
     context: CommandContext.Global,
 });
 export var replaceNext = new events.TypedEvent<{ newText: string }>();
@@ -124,8 +129,8 @@ export var replaceAll = new events.TypedEvent<{ newText: string }>();
  * Error panel
  */
 export let toggleErrorMessagesPanel = new UICommand({
-    keyboardShortcut: 'mod+shift+m', // code
-    description:"Toggle error panel",
+    keyboardShortcut: 'alt+shift+m', // code (ctrl+shift+m) conflicts with sublime
+    description: "Toggle error panel",
     context: CommandContext.Global,
 });
 
@@ -183,8 +188,6 @@ export function register() {
     });
 }
 
-
-
 /**
  *
  * CODE MIRROR
@@ -210,5 +213,97 @@ let keyMap = (CodeMirror as any).keyMap;
 let basicMap = keyMap.basic;
 let defaultMap = keyMap.default;
 let sublimeMap = keyMap.sublime;
-// Extensions : We just add to default keybindings for now
-defaultMap[`${mod}-Space`] = "autocomplete";
+// Extensions : We just add to highest priority
+sublimeMap[`${mod}-Space`] = "autocomplete";
+
+/** Comamnds we don't support as an editor command */
+let unsupportedNames = utils.createMap([
+    '...',
+    'replace',
+    'find', // already list this elsewhere
+    'findPrev',
+    'findNext',
+    'findUnder',
+    'indentAuto',
+    'replaceAll',
+
+    'transposeChars', // Ctrl + T doesn't work
+
+    "nextBookmark",
+    "prevBookmark",
+    "toggleBookmark",
+    "clearBookmarks",
+    "selectBookmarks",
+
+    "delLineLeft", // didn't work
+
+    "setSublimeMark", // don't care
+    "setSublimeMark",
+    "selectToSublimeMark",
+    "deleteToSublimeMark",
+    "swapWithSublimeMark",
+    "sublimeYank",
+
+    "unfoldAll", // Didn't work
+    "findIncremental",
+    "findIncrementalReverse",
+
+    "save", // already elsewhere
+]);
+
+/** Some commands are duplicated with different keys(e.g redo ctrl y and ctrl + shift + z)*/
+let alreadyAddedCommand: utils.TruthTable = {};
+/** Keys already added do not fall throught */
+let alreadyAddedShortcut: utils.TruthTable = {};
+
+function addEditorMapToCommands(map: { [shortcut: string]: string }) {
+    let listed = Object.keys(map).map((k) => ({ shortcut: k, commandName: map[k] }));
+
+    for (let item of listed) {
+        // fall through
+        if (item.shortcut == 'fallthrough') {
+            continue;
+        }
+        // commands we don't support
+        if (unsupportedNames[item.commandName]){
+            continue;
+        }
+        // dupes
+        if (alreadyAddedCommand[item.commandName]){
+            continue;
+        }
+        alreadyAddedCommand[item.commandName] = true;
+        if (alreadyAddedShortcut[item.shortcut]){
+            continue;
+        }
+        alreadyAddedShortcut[item.shortcut] = true;
+
+        let shortcut = item.shortcut
+            .replace(/-/g, '+');
+
+        let commandDisplayName = item.commandName
+            .split(/(?=[A-Z])/) // split on uppercase
+            .map(x => x[0].toUpperCase() + x.substr(1)) // uppercase first character
+            .join(' ');
+
+        new UICommand({
+            keyboardShortcut: shortcut,
+            description: `Editor: ${commandDisplayName}`,
+            context: CommandContext.Editor,
+            editorCommandName: item.commandName,
+        });
+    }
+}
+
+// Add in order of priority
+addEditorMapToCommands(sublimeMap);
+addEditorMapToCommands(defaultMap);
+addEditorMapToCommands(basicMap);
+
+//* DEBUG
+// console.table(
+//     commandRegistry
+//         .filter(c=>c.config.context == CommandContext.Editor)
+//         .map(c=>({cmd:c.config.description, shortcut:c.config.keyboardShortcut}))
+// );
+/* DEBUG */

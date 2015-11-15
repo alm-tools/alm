@@ -235,7 +235,7 @@ class SearchState {
     filePaths: string [] = [];
     filePathsCompleted: boolean = false;
     availableProjects: ActiveProjectConfigDetails[] = [];
-    commands = commands.commandRegistry.filter(x=>x.config.context == commands.CommandContext.Global);
+    commands = commands.commandRegistry;
 
     /** Modes can use this to store their results */
     filteredValues:any[] = [];
