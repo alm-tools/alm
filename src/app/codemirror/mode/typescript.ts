@@ -62,6 +62,10 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: str
 				return 'variable';
 			}
 		case ClassificationType.punctuation:
+            // Only for JSX. Otherwise these would be operator
+            if (token.string == '>' || token.string == '<' || token.string == '/>'){
+                return 'tag.bracket'; // we need tag + bracket for CM's tag matching
+            }
 			return 'bracket';
 		case ClassificationType.jsxOpenTagName:
 		case ClassificationType.jsxCloseTagName:
