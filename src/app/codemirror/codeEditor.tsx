@@ -92,7 +92,6 @@ export class CodeEditor extends ui.BaseComponent<Props,any>{
             filePath: this.filePath,
 
             lineNumbers: true,
-            mode: 'typescript', // | text/html
             keyMap: 'sublime',
             theme: 'monokai',
             indentUnit: 4,

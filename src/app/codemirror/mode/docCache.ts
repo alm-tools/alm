@@ -14,7 +14,7 @@ export function getOrOpenDoc(filePath: string): Promise<codemirror.Doc> {
     }
     else {
         return server.openFile({ filePath: filePath }).then((res) => {
-            let mode = 'typescript';
+            let mode = 'typescript'; // text/html
             let sourceId = utils.createId();
 
             // Add to classifier cache
