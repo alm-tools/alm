@@ -49,3 +49,14 @@ export class RenameVariable extends BaseComponent<Props, State>{
         );
     }
 }
+
+// This can work too
+// // Wire up the code mirror command to come here
+// CodeMirror.commands[commands.additionalEditorCommands.renameVariable] = (editor: CodeMirror.EditorFromTextArea) => {
+//     let cursor = editor.getDoc().getCursor();
+//     // TODO: query server
+//
+//     let node = document.createElement('div');
+//     ReactDOM.render(<RenameVariable/>, node);
+//     editor.addLineWidget(cursor.line,node);
+// }
