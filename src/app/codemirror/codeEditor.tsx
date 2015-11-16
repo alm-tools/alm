@@ -67,6 +67,7 @@ import * as state from "../state/state";
 
 interface Props extends React.Props<any> {
 	onFocusChange?: (focused: boolean) => any;
+	readOnly?: boolean | "nocursor";
 	filePath: string;
 }
 
@@ -87,6 +88,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
         var options: CodeMirror.EditorConfiguration = {
             // our extension
             filePath: this.props.filePath,
+			readOnly : this.props.readOnly,
 
             lineNumbers: true,
             keyMap: 'sublime',

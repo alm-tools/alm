@@ -76,7 +76,7 @@ export class RenameVariable extends BaseComponent<Props, State>{
             );
         });
 
-        let codeEditorRendered = <CodeEditor key={selectedFilePath} filePath={selectedFilePath}/>
+        let codeEditorRendered = <CodeEditor key={selectedFilePath} filePath={selectedFilePath} readOnly={"nocursor"}/>
 
         return (
             <Modal
