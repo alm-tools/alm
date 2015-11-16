@@ -4,7 +4,7 @@ import Radium = require('radium');
 import csx = require('csx');
 import {BaseComponent} from "../ui";
 import * as ui from "../ui";
-var Modal = require('react-modal');
+import Modal = require('react-modal');
 import * as styles from "../styles/styles";
 import {debounce,createMap,rangeLimited,getFileName} from "../../common/utils";
 import {cast, server} from "../../socket/socketClient";
@@ -123,7 +123,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
         return <Modal
               isOpen={this.searchState.isShown}
               onRequestClose={this.searchState.closeOmniSearch}>
-                <div style={[csx.vertical]}>
+                <div style={[csx.vertical, csx.flex]}>
                     <div style={[csx.horizontal,csx.center]}>
                         <h4 style={{marginTop:'1rem', marginBottom: '1rem'} as any}>Omni Search <Icon name="search"/></h4>
                         {searchingName ? <h5  style={searchingNameStyle}>{searchingName}</h5> : ''}

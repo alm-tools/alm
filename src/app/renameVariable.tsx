@@ -51,8 +51,8 @@ export class RenameVariable extends BaseComponent<Props, State>{
         }));
 
         setTimeout(() => {
+            this.focus();
             let input = (ReactDOM.findDOMNode(this.refs.mainInput) as HTMLInputElement)
-            input.focus();
             let len = input.value.length;
             input.setSelectionRange(0, len);
         });
@@ -68,10 +68,10 @@ export class RenameVariable extends BaseComponent<Props, State>{
         let selectedFilePath = filePaths[this.state.selectedIndex];
 
         let filePathsRendered = filePaths.map((filePath,i)=>{
-
+            let active = i == this.state.selectedIndex ? styles.tabHeaderActive : {}
             return (
-                <div key={filePath}>
-                    <div>{utils.getFileName(filePath)} ({this.props.info.locations[filePath].length})</div>
+                <div key={filePath} style={[styles.tabHeader,active,{overflow:'auto'}]} onClick={()=>this.selectAndRefocus(i)}>
+                    <div>{utils.getFileName(filePath)} (count: {this.props.info.locations[filePath].length})</div>
                 </div>
             );
         });
@@ -82,7 +82,7 @@ export class RenameVariable extends BaseComponent<Props, State>{
             <Modal
                   isOpen={true}
                   onRequestClose={this.unmount}>
-                  <div style={[csx.vertical]}>
+                  <div style={[csx.vertical, csx.flex]}>
                       <div style={[csx.horizontal]}>
                           <h4>Rename</h4>
                           <div style={[csx.flex]}></div>
@@ -109,11 +109,15 @@ export class RenameVariable extends BaseComponent<Props, State>{
                           <div style={validationErrorStyle}>{this.state.invalidMessage}</div>
                       }
 
-                      <div style={[csx.vertical, csx.flex, { overflow: 'auto' }]}>
-                          <div style={[csx.vertical]}>
-                              {filePathsRendered}
+                      <div style={[csx.vertical, csx.flex, { overflow: 'hidden' }]}>
+                          <div style={[csx.horizontal, csx.flex]}>
+                              <div style={{width:'200px'} as any}>
+                                {filePathsRendered}
+                              </div>
+                              <div style={[csx.flex,csx.flexRoot]}>
+                                {codeEditorRendered}
+                              </div>
                           </div>
-                          {codeEditorRendered}
                       </div>
                   </div>
             </Modal>
@@ -152,6 +156,16 @@ export class RenameVariable extends BaseComponent<Props, State>{
             // TODO:
         }
     };
+
+    selectAndRefocus = (index: number) => {
+        this.setState({selectedIndex:index});
+        this.focus();
+    };
+
+    focus = () => {
+        let input = (ReactDOM.findDOMNode(this.refs.mainInput) as HTMLInputElement)
+        input.focus();
+    }
 }
 
 // Wire up the code mirror command to come here

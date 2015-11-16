@@ -8,7 +8,7 @@ import Radium = require('radium');
 import csx = require('csx');
 import {BaseComponent} from "./ui";
 import * as ui from "./ui";
-var Modal = require('react-modal');
+import Modal = require('react-modal');
 import * as styles from "./styles/styles";
 import {debounce, createMap, rangeLimited, getFileName} from "../common/utils";
 import {cast, server} from "../socket/socketClient";
@@ -134,7 +134,7 @@ export class SelectListView extends BaseComponent<Props, State>{
         return <Modal
             isOpen={this.state.isOpen}
             onRequestClose={this.closeOmniSearch}>
-                <div style={[csx.vertical]}>
+                <div style={[csx.vertical, csx.flex]}>
                     <div style={[csx.horizontal]}>
                         <h4>{this.state.header}</h4>
                         <div style={[csx.flex]}></div>
