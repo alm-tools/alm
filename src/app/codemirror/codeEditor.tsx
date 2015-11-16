@@ -88,7 +88,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
         var options: CodeMirror.EditorConfiguration = {
             // our extension
             filePath: this.props.filePath,
-			readOnly : this.props.readOnly,
+            readOnly: this.props.readOnly,
 
             lineNumbers: true,
             keyMap: 'sublime',
