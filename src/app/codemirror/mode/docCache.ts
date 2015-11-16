@@ -18,7 +18,7 @@ export function getLinkedDoc(filePath: string, preview?: ts.TextSpan): Promise<c
                 let from = doc.posFromIndex(preview.start);
                 let to = doc.posFromIndex(preview.start + preview.length);
                 // TODO: Currently *from* line breaks our classifier cache :-/
-                return doc.linkedDoc({ sharedHist: true, from:from.line - 1, to:to.line});
+                return doc.linkedDoc({ sharedHist: true,from:from.line,to:from.line + 1});
             }
         });
 }
