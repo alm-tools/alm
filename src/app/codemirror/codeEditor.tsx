@@ -68,6 +68,7 @@ import * as state from "../state/state";
 interface Props extends React.Props<any> {
 	onFocusChange?: (focused: boolean) => any;
 	readOnly?: boolean | "nocursor";
+	preview?: ts.TextSpan;
 	filePath: string;
 }
 
@@ -151,7 +152,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
         this.disposible.add(onresize.on(() => this.refresh()));
 
         // Load the document
-        docCache.getLinkedDoc(this.props.filePath).then((doc)=>{
+        docCache.getLinkedDoc(this.props.filePath, this.props.preview).then((doc)=>{
             this.codeMirror.swapDoc(doc);
         });
 	}

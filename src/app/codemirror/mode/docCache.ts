@@ -11,7 +11,15 @@ let docByFilePath: { [filePath: string]: codemirror.Doc } = {};
 export function getLinkedDoc(filePath: string, preview?: ts.TextSpan): Promise<codemirror.Doc> {
     return getOrCreateDoc(filePath)
         .then(doc=> {
-            return doc.linkedDoc({ sharedHist: true });
+            if (!preview){
+                return doc.linkedDoc({ sharedHist: true });
+            }
+            else {
+                let from = doc.posFromIndex(preview.start);
+                let to = doc.posFromIndex(preview.start + preview.length);
+                // TODO: Currently *from* line breaks our classifier cache :-/
+                return doc.linkedDoc({ sharedHist: true, from:from.line - 1, to:to.line});
+            }
         });
 }
 

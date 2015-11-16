@@ -77,7 +77,15 @@ export class RenameVariable extends BaseComponent<Props, State>{
             );
         });
 
-        let codeEditorRendered = <CodeEditor key={selectedFilePath} filePath={selectedFilePath} readOnly={"nocursor"}/>
+        let previewsRenderd = this.props.info.locations[selectedFilePath].map(preview=>{
+            return <div key={selectedFilePath + preview.start} style={[{height:'21px'}]}>
+                <CodeEditor
+                filePath={selectedFilePath}
+                readOnly={"nocursor"}
+                preview={preview}
+                />
+            </div>
+        });
 
         return (
             <Modal
@@ -110,14 +118,12 @@ export class RenameVariable extends BaseComponent<Props, State>{
                           <div style={validationErrorStyle}>{this.state.invalidMessage}</div>
                       }
 
-                      <div style={[csx.vertical, csx.flex, { overflow: 'hidden' }]}>
-                          <div style={[csx.horizontal, csx.flex]}>
-                              <div style={{width:'200px'} as any}>
-                                {filePathsRendered}
-                              </div>
-                              <div style={[csx.flex,csx.flexRoot]}>
-                                {codeEditorRendered}
-                              </div>
+                      <div style={[csx.horizontal, csx.flex, { overflow: 'hidden' }]}>
+                          <div style={{width:'200px'} as any}>
+                            {filePathsRendered}
+                          </div>
+                          <div style={[csx.flex]}>
+                                {previewsRenderd}
                           </div>
                       </div>
                   </div>
