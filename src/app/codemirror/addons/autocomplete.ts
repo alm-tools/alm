@@ -162,7 +162,7 @@ export class AutoCompleter {
         }
 
         // if in active project
-        if (state.inActiveProject()) {
+        if (state.inActiveProject(editor.filePath)) {
             server.getCompletionsAtPosition({ filePath: this.filePath, position, prefix }).then(res=> {
                 if (this.lastRequest !== position){
                     cb(null);

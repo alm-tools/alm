@@ -140,7 +140,6 @@ export class RenameVariable extends BaseComponent<Props, State>{
         if (keyStates.up || keyStates.tabPrevious) {
             event.preventDefault();
             let selectedIndex = utils.rangeLimited({ num: this.state.selectedIndex - 1, min: 0, max: this.state.filePaths.length - 1, loopAround: true });
-            console.log('here',selectedIndex,this.state.selectedIndex)
             this.setState({selectedIndex});
         }
         if (keyStates.down || keyStates.tabNext) {

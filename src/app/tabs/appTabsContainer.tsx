@@ -185,13 +185,20 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.sendOrClearSearchOnCurrentComponent();
         }));
 
+        let loadActiveProjectFiles = ()=>{
+            server.getFilePathsInActiveProject({}).then(res=>{
+                state.setFilePathsInActiveProject(res.filePaths);
+            });
+        }
+        loadActiveProjectFiles();
+
         server.getActiveProjectConfigDetails({}).then(res=>{
             state.setActiveProject(res);
         });
 
         cast.activeProjectConfigDetailsUpdated.on(res => {
             state.setActiveProject(res);
-            this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
+            loadActiveProjectFiles();
         });
 
         commands.openFileFromDisk.on(() => {
@@ -346,14 +353,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             let filePath = utils.getFilePathFromUrl(url);
             if (filePath){
                 state.setCurrentFilePath(filePath);
-                server.isFilePathInActiveProject({filePath}).then(res=>{
-                    res.inActiveProject ? state.setInActiveProject(types.TriState.True) : state.setInActiveProject(types.TriState.False);
-                });
             }
         }
         else {
             state.setCurrentFilePath('');
-            state.setInActiveProject(types.TriState.Unknown);
         }
     }
 
@@ -366,7 +369,6 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     closeTab(index: number) {
         // Always clear the status bar
         state.setCurrentFilePath('');
-        state.setInActiveProject(types.TriState.Unknown);
 
         // If no tabs
         if (!this.props.tabs.length) {

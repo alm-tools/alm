@@ -420,7 +420,7 @@ class SearchState {
             if (activeProject) {
                 server.setActiveProjectConfigDetails(activeProject);
                 state.setActiveProject(activeProject);
-                state.setInActiveProject(types.TriState.Unknown);
+                state.setFilePathsInActiveProject([]);
             }
             this.closeOmniSearch();
             return;

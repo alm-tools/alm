@@ -30,7 +30,7 @@ export interface Props extends React.Props<any> {
     // from react-redux ... connected below
     errorsExpanded?: boolean;
     activeProject?: ActiveProjectConfigDetails;
-    inActiveProject?: types.TriState;
+    activeProjectFiles?: { [filePath: string]: boolean };
     currentFilePath?: string;
     errorsByFilePath?: ErrorsByFilePath;
     socketConnected?: boolean;
@@ -47,7 +47,7 @@ export var statusBar: StatusBar;
     return {
         errorsExpanded: state.errorsExpanded,
         activeProject: state.activeProject,
-        inActiveProject: state.inActiveProject,
+        activeProjectFiles: state.activeProjectFilePathTruthTable,
         currentFilePath: state.currentFilePath,
         errorsByFilePath: state.errorsByFilePath,
         socketConnected: state.socketConnected
@@ -111,10 +111,10 @@ export class StatusBar extends BaseComponent<Props, State>{
 
         let projectTipKeboard = ReactDOMServer.renderToString(<div style={notificationKeyboardStyle}>Alt+Shift+P</div>);
         let inActiveProjectSection =
-            this.props.inActiveProject == types.TriState.Unknown
+            !this.props.currentFilePath
             ? ''
             : <span style={styles.statusBarSection}>
-                {this.props.inActiveProject == types.TriState.True
+                {state.inActiveProject(this.props.currentFilePath)
                     ?<span style={csx.extend(styles.noSelect,styles.statusBarSuccess, styles.hand)}
                         onClick={()=>ui.notifySuccessNormalDisappear(`The file is a part of the currently active TypeScript project and we are actively providing code intelligence`)}
                         title="File is part of the currently active project. Robots providing code intelligence.">

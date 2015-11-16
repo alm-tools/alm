@@ -23,8 +23,8 @@ declare module CodeMirror {
         filePath: string;
     }
 
-    /** We like to keep the filePath in here. Helps us in using the doc */
     interface Doc {
+        /** We like to keep the filePath in here. Helps us in using the doc */
         filePath: string;
     }
 }

@@ -305,6 +305,16 @@ export namespace GetProject {
 
         return proj;
     }
+
+    /**
+     * All the filePaths in the current compilation context
+     */
+    export function allFilePaths(): string[] {
+        if (currentProject) {
+            return currentProject.getProjectSourceFiles().map(x=> x.fileName);
+        }
+        return [];
+    }
 }
 
 /** General purpose utility functions specific to this file */

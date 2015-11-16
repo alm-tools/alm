@@ -86,6 +86,11 @@ namespace Server {
     export var getOpenUITabs: typeof contract.server.getOpenUITabs = (data) => {
         return resolve(session.getOpenUITabs());
     };
+    export var getFilePathsInActiveProject: typeof contract.server.getFilePathsInActiveProject = (data) => {
+        return activeProject.activeProjectConfigDetailsUpdated
+            .current()
+            .then(() => ({ filePaths: activeProject.GetProject.allFilePaths() }));
+    };
 
     /**
      * Error handling

@@ -1,5 +1,6 @@
 import * as types from "../../common/types";
 import {SimpleRedux} from "./simpleRedux";
+import * as utils from "../../common/utils";
 
 export interface TabInstance {
     id: string;
@@ -14,7 +15,7 @@ export interface StoreState {
     errorsByFilePath?: ErrorsByFilePath;
     currentFilePath?: string;
     /** Is the current file in the activeProject */
-    inActiveProject?: types.TriState;
+    activeProjectFilePathTruthTable?: { [filePath: string]: boolean };
 
     pendingRequests?: string[];
 
@@ -37,7 +38,7 @@ let initialStoreState: StoreState = {
     errorsExpanded: false,
     errorsByFilePath: {},
     currentFilePath: '',
-    inActiveProject: types.TriState.Unknown,
+    activeProjectFilePathTruthTable: {},
     pendingRequests: [],
     findOptions: {
         isShown: false,
@@ -65,12 +66,15 @@ export let setActiveProject = redux.add('setActiveProject', (state, payload: Act
     };
 });
 
-export let setInActiveProject = redux.add('setInActiveProject', (state, payload: types.TriState): StoreState => {
+export let inActiveProject = (filePath:string) => !!getState().activeProjectFilePathTruthTable[filePath];
+
+export let setFilePathsInActiveProject = redux.add('setActiveProjectFiles', (state, payload: string[]): StoreState => {
+    let truthTable = utils.createMap(payload);
     return {
-        inActiveProject: payload,
+        activeProjectFilePathTruthTable: truthTable
     };
 });
-export let inActiveProject = () => getState().inActiveProject === types.TriState.True;
+
 
 export let setCurrentFilePath = redux.add('setCurrentFilePath', (state, payload: string): StoreState => {
     return {
