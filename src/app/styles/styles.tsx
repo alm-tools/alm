@@ -137,3 +137,37 @@ export namespace errorsPanel {
         cursor: 'pointer',
     }
 }
+
+/**
+ * Used by all our modals
+ */
+export namespace modal {
+    /** Keyboard shortcuts */
+    export var keyStrokeStyle = {
+        fontSize: '0.9rem',
+        background: '#111',
+        paddingTop: '1px',
+        paddingBottom: '1px',
+        paddingLeft: '4px',
+        paddingRight: '4px',
+        borderRadius: '5px',
+        border: '2px solid'
+    };
+
+    /** Big input */
+    export let inputStyle = {
+        backgroundColor: 'rgb(42,42,42)',
+        color: 'white',
+        outline: 'none',
+        padding: '2px',
+        fontSize: '1.5rem',
+        lineHeight: '2rem',
+        fontFamily: 'monospace',
+
+        border: '3px solid #3C3C3C',
+        transition: 'border .2s',
+        ':focus':{
+            boxShadow: '0px 0px 1px 1px #3C3C3C'
+        }
+    }
+}

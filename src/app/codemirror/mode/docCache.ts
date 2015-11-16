@@ -22,6 +22,7 @@ export function getOrOpenDoc(filePath: string): Promise<codemirror.Doc> {
 
             // create the doc
             let doc = docByFilePath[filePath] = new codemirror.Doc(res.contents, mode);
+            doc.filePath = filePath;
 
             // setup to push doc changes to server
             (doc as any).on('change', (doc: codemirror.Doc, change: CodeMirror.EditorChange) => {
@@ -81,4 +82,16 @@ export function getOrOpenDoc(filePath: string): Promise<codemirror.Doc> {
             return doc;
         });
     }
+}
+
+/**
+ * Just thought it was good to have ... haven't needed to use it yet though, so not exported
+ */
+function getOrOpenDocs(filePaths:string[]) : Promise<{[filePath:string]:codemirror.Doc}> {
+    let promises = filePaths.map(fp => getOrOpenDoc(fp));
+    return Promise.all(promises).then(docs => {
+        let res: {[filePath:string]:codemirror.Doc} = {};
+        docs.forEach(doc => res[doc.filePath] = doc);
+        return res;
+    });
 }

@@ -18,7 +18,7 @@ import * as CodeMirror from "codemirror";
 import {Robocop} from "../robocop";
 
 /** Stuff shared by the select list view */
-import {renderMatchedSegments, keyStrokeStyle, getFilteredItems} from ".././selectListView";
+import {renderMatchedSegments, getFilteredItems} from ".././selectListView";
 
 export interface Props {
 }
@@ -33,21 +33,6 @@ enum SearchMode {
     Project,
 }
 
-let inputStyle = {
-    backgroundColor: 'rgb(42,42,42)',
-    color: 'white',
-    outline: 'none',
-    padding: '2px',
-    fontSize: '1.5rem',
-    lineHeight: '2rem',
-    fontFamily: 'monospace',
-
-    border: '3px solid #3C3C3C',
-    transition: 'border .2s',
-    ':focus':{
-        boxShadow: '0px 0px 1px 1px #3C3C3C'
-    }
-}
 let selectedStyle = {
     background: '#545454',
     color: 'white'
@@ -57,7 +42,6 @@ let listItemStyle = {
 };
 
 let searchingNameStyle = { marginTop: '0', marginBottom: '0', marginLeft: '10px', border: '1px solid grey', padding: '4px 4px', background: 'black' };
-
 
 @ui.Radium
 export class OmniSearch extends BaseComponent<Props, State>{
@@ -144,13 +128,13 @@ export class OmniSearch extends BaseComponent<Props, State>{
                         <h4 style={{marginTop:'1rem', marginBottom: '1rem'} as any}>Omni Search <Icon name="search"/></h4>
                         {searchingName ? <h5  style={searchingNameStyle}>{searchingName}</h5> : ''}
                         <div style={[csx.flex]}></div>
-                        <div style={{fontSize:'0.9rem', color:'grey'} as any}><code style={keyStrokeStyle}>Esc</code> to exit <code style={keyStrokeStyle}>Enter</code> to select</div>
+                        <div style={{fontSize:'0.9rem', color:'grey'} as any}><code style={styles.modal.keyStrokeStyle}>Esc</code> to exit <code style={styles.modal.keyStrokeStyle}>Enter</code> to select</div>
                     </div>
 
                     <div style={[styles.padded1TopBottom,csx.vertical]}>
                         <input
                             defaultValue={this.searchState.rawFilterValue}
-                            style={inputStyle}
+                            style={styles.modal.inputStyle}
                             type="text"
                             ref="omniSearchInput"
                             placeholder="Filter"

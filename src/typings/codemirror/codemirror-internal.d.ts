@@ -22,4 +22,9 @@ declare module CodeMirror {
     interface Editor {
         filePath: string;
     }
+
+    /** We like to keep the filePath in here. Helps us in using the doc */
+    interface Doc {
+        filePath: string;
+    }
 }

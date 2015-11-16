@@ -70,7 +70,7 @@ interface Props extends React.Props<any> {
 	path: string;
 }
 
-export class CodeEditor extends ui.BaseComponent<Props,any>{
+export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 
     public filePath: string;
 
