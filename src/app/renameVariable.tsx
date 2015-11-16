@@ -77,7 +77,7 @@ export class RenameVariable extends BaseComponent<Props, State>{
             );
         });
 
-        let previewsRenderd = this.props.info.locations[selectedFilePath].map(preview=>{
+        let previewsRendered = this.props.info.locations[selectedFilePath].slice().reverse().map(preview=>{
             return <div key={selectedFilePath + preview.start} style={[{height:'21px'}]}>
                 <CodeEditor
                 filePath={selectedFilePath}
@@ -123,7 +123,7 @@ export class RenameVariable extends BaseComponent<Props, State>{
                             {filePathsRendered}
                           </div>
                           <div style={[csx.flex]}>
-                                {previewsRenderd}
+                                {previewsRendered}
                           </div>
                       </div>
                   </div>
