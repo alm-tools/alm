@@ -24,6 +24,7 @@ export interface Props extends React.Props<any> {
 export interface State {
     filePaths?: string[];
     invalidMessage?: string;
+    selectedIndex?: number;
 }
 
 let validationErrorStyle = {
@@ -39,7 +40,8 @@ export class RenameVariable extends BaseComponent<Props, State>{
         super(props);
 
         this.state = {
-            filePaths : Object.keys(props.info.locations)
+            filePaths : Object.keys(props.info.locations),
+            selectedIndex: 0
         };
     }
 
@@ -63,15 +65,18 @@ export class RenameVariable extends BaseComponent<Props, State>{
 
     render() {
         let filePaths = this.state.filePaths;
+        let selectedFilePath = filePaths[this.state.selectedIndex];
 
-        let filePathsRendered = filePaths.map(filePath=>{
+        let filePathsRendered = filePaths.map((filePath,i)=>{
+
             return (
                 <div key={filePath}>
-                    <div>{(filePath)}</div>
-                    <CodeEditor filePath={filePath}/>
+                    <div>{utils.getFileName(filePath)} ({this.props.info.locations[filePath].length})</div>
                 </div>
             );
         });
+
+        let codeEditorRendered = <CodeEditor key={selectedFilePath} filePath={selectedFilePath}/>
 
         return (
             <Modal
@@ -108,6 +113,7 @@ export class RenameVariable extends BaseComponent<Props, State>{
                           <div style={[csx.vertical]}>
                               {filePathsRendered}
                           </div>
+                          {codeEditorRendered}
                       </div>
                   </div>
             </Modal>
@@ -133,11 +139,14 @@ export class RenameVariable extends BaseComponent<Props, State>{
 
         if (keyStates.up || keyStates.tabPrevious) {
             event.preventDefault();
-            // TODO:
+            let selectedIndex = utils.rangeLimited({ num: this.state.selectedIndex - 1, min: 0, max: this.state.filePaths.length - 1, loopAround: true });
+            console.log('here',selectedIndex,this.state.selectedIndex)
+            this.setState({selectedIndex});
         }
         if (keyStates.down || keyStates.tabNext) {
             event.preventDefault();
-            // TODO:
+            let selectedIndex = utils.rangeLimited({ num: this.state.selectedIndex + 1, min: 0, max: this.state.filePaths.length - 1, loopAround: true });
+            this.setState({selectedIndex});
         }
         if (keyStates.enter) {
             event.preventDefault();

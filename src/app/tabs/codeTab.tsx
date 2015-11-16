@@ -46,7 +46,6 @@ export class Code extends ui.BaseComponent<Props, State> implements tab.Componen
     }
 
     render() {
-        console.log(this.filePath);
         return (
             <CodeEditor
             ref='editor'
