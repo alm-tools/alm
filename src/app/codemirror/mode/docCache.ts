@@ -8,9 +8,16 @@ import * as utils from "../../../common/utils";
 import * as classifierCache from "./classifierCache";
 
 let docByFilePath: { [filePath: string]: codemirror.Doc } = {};
-export function getOrOpenDoc(filePath: string): Promise<codemirror.Doc> {
+export function getLinkedDoc(filePath: string, preview?: ts.TextSpan): Promise<codemirror.Doc> {
+    return getOrCreateDoc(filePath)
+        .then(doc=> {
+            return doc.linkedDoc({ sharedHist: true });
+        });
+}
+
+function getOrCreateDoc(filePath: string) {
     if (docByFilePath[filePath]) {
-        return Promise.resolve(docByFilePath[filePath].linkedDoc({sharedHist:true}));
+        return Promise.resolve(docByFilePath[filePath]);
     }
     else {
         return server.openFile({ filePath: filePath }).then((res) => {
@@ -57,7 +64,7 @@ export function getOrOpenDoc(filePath: string): Promise<codemirror.Doc> {
             });
 
             // setup loading saved files changing on disk
-            cast.savedFileChangedOnDisk.on((res)=>{
+            cast.savedFileChangedOnDisk.on((res) => {
                 if (res.filePath == filePath
                     && doc.getValue() !== res.contents) {
 
@@ -87,10 +94,10 @@ export function getOrOpenDoc(filePath: string): Promise<codemirror.Doc> {
 /**
  * Just thought it was good to have ... haven't needed to use it yet though, so not exported
  */
-function getOrOpenDocs(filePaths:string[]) : Promise<{[filePath:string]:codemirror.Doc}> {
-    let promises = filePaths.map(fp => getOrOpenDoc(fp));
+function getOrOpenDocs(filePaths: string[]): Promise<{ [filePath: string]: codemirror.Doc }> {
+    let promises = filePaths.map(fp => getLinkedDoc(fp));
     return Promise.all(promises).then(docs => {
-        let res: {[filePath:string]:codemirror.Doc} = {};
+        let res: { [filePath: string]: codemirror.Doc } = {};
         docs.forEach(doc => res[doc.filePath] = doc);
         return res;
     });

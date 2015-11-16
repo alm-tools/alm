@@ -151,7 +151,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
         this.disposible.add(onresize.on(() => this.refresh()));
 
         // Load the document
-        docCache.getOrOpenDoc(this.props.filePath).then((doc)=>{
+        docCache.getLinkedDoc(this.props.filePath).then((doc)=>{
             this.codeMirror.swapDoc(doc);
         });
 	}
