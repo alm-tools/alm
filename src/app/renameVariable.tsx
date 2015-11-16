@@ -67,7 +67,8 @@ export class RenameVariable extends BaseComponent<Props, State>{
         let filePathsRendered = filePaths.map(filePath=>{
             return (
                 <div key={filePath}>
-                    <div>{utils.getFileName(filePath)}</div>
+                    <div>{(filePath)}</div>
+                    <CodeEditor filePath={filePath}/>
                 </div>
             );
         });

@@ -21,6 +21,7 @@ export class Code extends ui.BaseComponent<Props, State> implements tab.Componen
 
     constructor(props: Props) {
         super(props);
+        this.filePath = utils.getFilePathFromUrl(props.url);
         this.state = {
         };
     }
@@ -29,7 +30,6 @@ export class Code extends ui.BaseComponent<Props, State> implements tab.Componen
 
     filePath: string;
     componentDidMount() {
-        this.filePath = utils.getFilePathFromUrl(this.props.url);
 
         server.getFileStatus({filePath:this.filePath}).then((res)=>{
             this.props.onSavedChanged(res.saved);
@@ -46,10 +46,11 @@ export class Code extends ui.BaseComponent<Props, State> implements tab.Componen
     }
 
     render() {
+        console.log(this.filePath);
         return (
             <CodeEditor
             ref='editor'
-            path={this.props.url}
+            filePath={this.filePath}
             />
         );
     }

@@ -67,17 +67,12 @@ import * as state from "../state/state";
 
 interface Props extends React.Props<any> {
 	onFocusChange?: (focused: boolean) => any;
-	path: string;
+	filePath: string;
 }
 
 export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
-
-    public filePath: string;
-
 	constructor(props){
 		super(props);
-
-        this.filePath = getFilePathFromUrl(this.props.path);
 
 		this.state = {
 			isFocused: false
@@ -91,7 +86,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 
         var options: CodeMirror.EditorConfiguration = {
             // our extension
-            filePath: this.filePath,
+            filePath: this.props.filePath,
 
             lineNumbers: true,
             keyMap: 'sublime',
@@ -129,14 +124,14 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
         } as any;
 
         // setup hint / autocomplete options
-        autocomplete.setupOptions(options, this.filePath);
+        autocomplete.setupOptions(options, this.props.filePath);
 
         // fold
         (options as any).foldGutter = true;
         options.gutters.push("CodeMirror-foldgutter");
 
         // lint
-        linter.setupOptions(options,this.filePath);
+        linter.setupOptions(options,this.props.filePath);
         // also lint on errors changing
         this.disposible.add(cast.errorsUpdated.on(()=> this.codeMirror && this.codeMirror.performLint()));
 		// and initially
@@ -144,7 +139,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 
 		var textareaNode = ReactDOM.findDOMNode(this.refs.textarea);
 		this.codeMirror = CodeMirror.fromTextArea(textareaNode as any, options);
-		this.codeMirror.filePath = this.filePath;
+		this.codeMirror.filePath = this.props.filePath;
 		this.codeMirror.on('focus', this.focusChanged.bind(this, true));
 		this.codeMirror.on('blur', this.focusChanged.bind(this, false));
 
@@ -154,7 +149,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
         this.disposible.add(onresize.on(() => this.refresh()));
 
         // Load the document
-        docCache.getOrOpenDoc(this.filePath).then((doc)=>{
+        docCache.getOrOpenDoc(this.props.filePath).then((doc)=>{
             this.codeMirror.swapDoc(doc);
         });
 	}
@@ -169,7 +164,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 
     getQuickInfo(pos:CodeMirror.Position): Promise<string | HTMLElement> {
         if (state.inActiveProject()) {
-            return server.quickInfo({ filePath: this.filePath, position: this.codeMirror.getDoc().indexFromPos(pos) }).then(resp=> {
+            return server.quickInfo({ filePath: this.props.filePath, position: this.codeMirror.getDoc().indexFromPos(pos) }).then(resp=> {
                 if (!resp.valid) return;
 
                 var message = `<b>${escape(resp.name)}</b>`;
@@ -279,7 +274,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 		}
 		return (
 			<div className={className} style={csx.extend(csx.vertical,csx.flex)}>
-				<textarea ref="textarea" name={this.props.path} autoComplete={false} />
+				<textarea ref="textarea" name={this.props.filePath} autoComplete={false} />
 			</div>
 		);
 	}
