@@ -30,7 +30,8 @@ export interface State {
 let validationErrorStyle = {
     color: 'red',
     fontFamily: 'monospace',
-    fontSize: '1.2rem'
+    fontSize: '1.2rem',
+    padding: '5px',
 }
 
 @ui.Radium
