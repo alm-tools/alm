@@ -8,46 +8,49 @@ import * as utils from "../../../common/utils";
 import * as classifierCache from "./classifierCache";
 import {RefactoringsByFilePath,Refactoring} from "../../../common/types";
 
-let docByFilePath: { [filePath: string]: codemirror.Doc } = {};
-let localSourceIdByFilePath : { [filePath: string]: string } = {};
+let docByFilePathPromised: { [filePath: string]: Promise<codemirror.Doc> } = {};
+
 export function getLinkedDoc(filePath: string): Promise<codemirror.Doc> {
     return getOrCreateDoc(filePath)
         .then(doc=> {
 
             // some housekeeping, clear previous links that no longer seem active
-            let markForRemove: codemirror.Doc[] = [];
-            doc.iterLinkedDocs((linked)=>{
-                if (!linked.getEditor()){
-                    markForRemove.push(linked)
-                }
-            });
-            markForRemove.forEach(linked=>{doc.unlinkDoc(linked);});
+            // let markForRemove: codemirror.Doc[] = [];
+            // doc.iterLinkedDocs((linked)=>{
+            //     if (!linked.getEditor()){
+            //         markForRemove.push(linked)
+            //     }
+            // });
+            // markForRemove.forEach(linked=>{doc.unlinkDoc(linked);});
 
             return doc.linkedDoc({ sharedHist: true })
         });
 }
 
 function getOrCreateDoc(filePath: string) {
-    if (docByFilePath[filePath]) {
-        return Promise.resolve(docByFilePath[filePath]);
+    if (docByFilePathPromised[filePath]) {
+        return docByFilePathPromised[filePath];
     }
     else {
-        return server.openFile({ filePath: filePath }).then((res) => {
+        return docByFilePathPromised[filePath] = server.openFile({ filePath: filePath }).then((res) => {
             let mode = 'typescript'; // text/html
 
-            // we need this by file path because linked docs get their own id for some reason
-            localSourceIdByFilePath[filePath] = utils.createId();
+            // to track the source of changes , local vs. network
+            let sourceId = utils.createId();
 
             // Add to classifier cache
             classifierCache.addFile(filePath, res.contents);
 
             // create the doc
-            let doc = docByFilePath[filePath] = new codemirror.Doc(res.contents, mode);
+            let doc = new codemirror.Doc(res.contents, mode);
             doc.filePath = filePath;
 
             // setup to push doc changes to server
             (doc as any).on('change', (doc: codemirror.Doc, change: CodeMirror.EditorChange) => {
-                if (change.origin == localSourceIdByFilePath[filePath]) {
+
+                // console.log('sending server edit', sourceId)
+
+                if (change.origin == sourceId) {
                     return;
                 }
 
@@ -55,7 +58,7 @@ function getOrCreateDoc(filePath: string) {
                     from: { line: change.from.line, ch: change.from.ch },
                     to: { line: change.to.line, ch: change.to.ch },
                     newText: change.text.join('\n'),
-                    sourceId: localSourceIdByFilePath[filePath]
+                    sourceId: sourceId
                 };
 
                 // Keep the classifier in sync
@@ -67,13 +70,17 @@ function getOrCreateDoc(filePath: string) {
 
             // setup to get doc changes from server
             cast.didEdit.on(res=> {
+
+                // console.log('got server edit', res.edit.sourceId,'our', sourceId)
+
                 let codeEdit = res.edit;
-                if (res.filePath == filePath && codeEdit.sourceId !== localSourceIdByFilePath[filePath]) {
+
+                if (res.filePath == filePath && codeEdit.sourceId !== sourceId) {
                     // Keep the classifier in sync
                     classifierCache.editFile(filePath, codeEdit);
 
                     // Note that we use *our source id* as this is now a change *we are making to code mirror* :)
-                    doc.replaceRange(codeEdit.newText, codeEdit.from, codeEdit.to, localSourceIdByFilePath[filePath]);
+                    doc.replaceRange(codeEdit.newText, codeEdit.from, codeEdit.to, sourceId);
                 }
             });
 
@@ -92,7 +99,7 @@ function getOrCreateDoc(filePath: string) {
                     // Not using setValue as it doesn't take sourceId
                     let lastLine = doc.lastLine();
                     let lastCh = doc.getLine(lastLine).length;
-                    doc.replaceRange(res.contents, { line: 0, ch: 0 }, { line: lastLine, ch: lastCh }, localSourceIdByFilePath[filePath]);
+                    doc.replaceRange(res.contents, { line: 0, ch: 0 }, { line: lastLine, ch: lastCh }, sourceId);
 
                     // restore cursor
                     doc.setCursor(cursor);
