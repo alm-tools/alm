@@ -126,7 +126,7 @@ export class RenameVariable extends BaseComponent<Props, State>{
                       }
 
                       <div style={[csx.horizontal, csx.flex, { overflow: 'hidden' }]}>
-                          <div style={{width:'200px'} as any}>
+                          <div style={{width:'200px', overflow:'auto'} as any}>
                               {filePathsRendered}
                           </div>
                           <div style={[csx.flex, csx.flexRoot]}>

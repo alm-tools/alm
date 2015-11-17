@@ -53,7 +53,7 @@ import * as docCache from "./mode/docCache";
 // console.log(CodeMirror.findModeByFileName('asdf/foo.js'))
 
 import React = require('react');
-var ReactDOM = require('react-dom');
+import ReactDOM = require('react-dom');
 import onresize = require('onresize');
 import * as styles from "../styles/styles";
 import * as csx from "csx";
