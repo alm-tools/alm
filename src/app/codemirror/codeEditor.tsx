@@ -152,8 +152,16 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
         this.disposible.add(onresize.on(() => this.refresh()));
 
         // Load the document
-        docCache.getLinkedDoc(this.props.filePath, this.props.preview).then((doc)=>{
+        docCache.getLinkedDoc(this.props.filePath).then((doc)=>{
             this.codeMirror.swapDoc(doc);
+
+            if (this.props.preview) {
+                let preview = this.props.preview;
+                let from = doc.posFromIndex(preview.start);
+                let to = doc.posFromIndex(preview.start + preview.length);
+                doc.setSelection(from,to);
+				this.codeMirror.scrollIntoView(from);
+            }
         });
 	}
 

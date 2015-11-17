@@ -68,17 +68,28 @@ export class RenameVariable extends BaseComponent<Props, State>{
         let filePaths = this.state.filePaths;
         let selectedFilePath = filePaths[this.state.selectedIndex];
 
-        let filePathsRendered = filePaths.map((filePath,i)=>{
-            let active = i == this.state.selectedIndex ? styles.tabHeaderActive : {}
+        let flattended = utils.selectMany(filePaths.map(filePath => {
+            let refs = this.props.info.locations[selectedFilePath].slice().reverse();
+            return refs.map(preview => {
+                return {
+                    filePath,
+                    preview
+                };
+            });
+        }));
+
+        let filePathsRendered = flattended.map((item,i)=>{
+            let active = i == this.state.selectedIndex ? styles.tabHeaderActive : {};
             return (
-                <div key={filePath} style={[styles.tabHeader,active,{overflow:'auto'}]} onClick={()=>this.selectAndRefocus(i)}>
-                    <div>{utils.getFileName(filePath)} (count: {this.props.info.locations[filePath].length})</div>
+                <div key={item.filePath + i} style={[styles.tabHeader,active,{overflow:'auto'}]} onClick={()=>this.selectAndRefocus(i)}>
+                    <div>{utils.getFileName(item.filePath)} ({item.preview.start})</div>
                 </div>
             );
         });
 
-        let previewsRendered = this.props.info.locations[selectedFilePath].slice().reverse().map(preview=>{
-            return <div key={selectedFilePath + preview.start} style={[{height:'21px'}]}>
+        let previewsRendered = flattended.map(item=>{
+            let preview = item.preview;
+            return <div key={selectedFilePath + preview.start} style={[csx.flex, csx.flexRoot]}>
                 <CodeEditor
                 filePath={selectedFilePath}
                 readOnly={"nocursor"}
@@ -120,10 +131,10 @@ export class RenameVariable extends BaseComponent<Props, State>{
 
                       <div style={[csx.horizontal, csx.flex, { overflow: 'hidden' }]}>
                           <div style={{width:'200px'} as any}>
-                            {filePathsRendered}
+                              {filePathsRendered}
                           </div>
-                          <div style={[csx.flex]}>
-                                {previewsRendered}
+                          <div style={[csx.flex, csx.flexRoot]}>
+                              {previewsRendered}
                           </div>
                       </div>
                   </div>
