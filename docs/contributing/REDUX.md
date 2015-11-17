@@ -19,6 +19,15 @@ The magic is the `add` function. You pass in a `reducer` ... and you get the `ac
 
 The main gain : the `actionCreator` argument + `reducer -> state` transform is all type checked.
 
+```ts
+export let addTabs = redux.add('addTabs', (state:StoreState, tabs: TabInstance[]): StoreState => {
+    tabs = state.tabs.concat(tabs);
+    return {
+        tabs
+    };
+});
+```
+
 ## Creating a component
 Define your props like :
 ```ts
