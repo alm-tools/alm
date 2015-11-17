@@ -160,7 +160,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
                 let from = doc.posFromIndex(preview.start);
                 let to = doc.posFromIndex(preview.start + preview.length);
 				doc.setCursor(from);
-				this.codeMirror.scrollIntoView({line:from.line+5,ch:0});
+				this.codeMirror.scrollIntoView(from);
             }
         });
 	}
