@@ -137,7 +137,7 @@ export function applyRefactoringsToDocs(refactorings: RefactoringsByFilePath) {
             for (let change of changes) {
                 let from = classifierCache.getLineAndCharacterOfPosition(fp,change.span.start);
                 let to = classifierCache.getLineAndCharacterOfPosition(fp,change.span.start + change.span.length);
-                doc.replaceRange(change.newText, from, to, 'refactor');
+                doc.replaceRange(change.newText, from, to, '+refactor');
             }
         });
     });
