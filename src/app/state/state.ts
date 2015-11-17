@@ -216,3 +216,6 @@ export let selectTab = redux.add('selectTab', (state: StoreState, payload: numbe
         selectedTabIndex: payload
     };
 });
+
+/** gets the currently open file paths in tabs */
+export let getOpenFilePaths = () => getState().tabs.filter(t=>t.url.startsWith('file://')).map(t=>utils.getFilePathFromUrl(t.url));

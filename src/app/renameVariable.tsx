@@ -20,6 +20,8 @@ import {CodeEditor} from "./codemirror/codeEditor";
 
 export interface Props extends React.Props<any> {
     info: Types.GetRenameInfoResponse;
+    alreadyOpenFilePaths: string[];
+    currentlyClosedFilePaths: string[];
 }
 export interface State {
     invalidMessage?: string;
@@ -32,6 +34,13 @@ let validationErrorStyle = {
     fontFamily: 'monospace',
     fontSize: '1.2rem',
     padding: '5px',
+}
+
+let summaryStyle = {
+    padding: '5px',
+    backgroundColor: '#222',
+    color: '#CCC',
+    fontSize: '.8rem',
 }
 
 @ui.Radium
@@ -118,7 +127,7 @@ export class RenameVariable extends BaseComponent<Props, State>{
                           <div style={[csx.flex]}></div>
                           <div style={{fontSize:'0.9rem', color:'grey'} as any}>
                             <code style={modal.keyStrokeStyle}>Esc</code> to exit <code style={modal.keyStrokeStyle}>Enter</code> to select
-                            {' '}<code style={modal.keyStrokeStyle}>Tab / Shift Tab</code> to see usages
+                            {' '}<code style={modal.keyStrokeStyle}>Up / Down</code> to see usages
                           </div>
                       </div>
 
@@ -138,6 +147,10 @@ export class RenameVariable extends BaseComponent<Props, State>{
                           this.state.invalidMessage &&
                           <div style={validationErrorStyle}>{this.state.invalidMessage}</div>
                       }
+
+                      <div style={summaryStyle}>
+                        {this.state.flattened.length} usages, {this.props.alreadyOpenFilePaths.length} files open,  {this.props.currentlyClosedFilePaths.length} files closed
+                      </div>
 
                       <div style={[csx.horizontal, csx.flex, { overflow: 'hidden' }]}>
                           <div style={{width:'200px', overflow:'auto'} as any}>
@@ -159,7 +172,7 @@ export class RenameVariable extends BaseComponent<Props, State>{
             this.setState({ invalidMessage: 'The new variable must not contain a space' });
         }
         else if (!newText.trim()) {
-            this.setState({ invalidMessage: 'Press esc to abort or continue typing' });
+            this.setState({ invalidMessage: 'Press esc to abort rename' });
         }
         else {
             this.setState({ invalidMessage: '' });
@@ -206,8 +219,13 @@ CodeMirror.commands[commands.additionalEditorCommands.renameVariable] = (editor:
             ui.notifyInfoNormalDisappear("Rename not available at cursor location");
         }
         else {
+            let filePaths = Object.keys(res.locations);
+            let allOpen = state.getOpenFilePaths();
+            let alreadyOpenFilePaths = filePaths.filter(fp => allOpen.indexOf(fp) != -1);
+            let currentlyClosedFilePaths = filePaths.filter(fp => allOpen.indexOf(fp) == -1);
+
             let node = document.createElement('div');
-            ReactDOM.render(<RenameVariable info={res}/>, node);
+            ReactDOM.render(<RenameVariable info={res} alreadyOpenFilePaths={alreadyOpenFilePaths} currentlyClosedFilePaths={currentlyClosedFilePaths} />, node);
         }
     });
 }
