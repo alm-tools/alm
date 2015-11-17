@@ -1,1 +1,2 @@
-export let foo = 123;
+foo;
+export var foo = 123;
