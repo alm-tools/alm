@@ -70,18 +70,30 @@ export class RenameVariable extends BaseComponent<Props, State>{
         });
     }
 
+    componentDidUpdate() {
+        setTimeout(() => {
+            let selected = ReactDOM.findDOMNode(this.refs.selectedTabTitle) as HTMLDivElement;
+            if (selected) {
+                selected.scrollIntoViewIfNeeded(false);
+            }
+        });
+    }
+
     refs: {
         [string: string]: any;
         mainInput: any;
+        selectedTabTitle: any;
     }
 
     render() {
         let selectedPreview = this.state.flattened[this.state.selectedIndex];
 
         let filePathsRendered = this.state.flattened.map((item,i)=>{
-            let active = i == this.state.selectedIndex ? styles.tabHeaderActive : {};
+            let selected = i == this.state.selectedIndex;
+            let active = selected ? styles.tabHeaderActive : {};
+            let ref = selected && "selectedTabTitle";
             return (
-                <div key={item.filePath + i} style={[styles.tabHeader,active,{overflow:'auto'}]} onClick={()=>this.selectAndRefocus(i)}>
+                <div ref={ref} key={item.filePath + i} style={[styles.tabHeader,active,{overflow:'auto'}]} onClick={()=>this.selectAndRefocus(i)}>
                     <div>{utils.getFileName(item.filePath)}</div>
                 </div>
             );
