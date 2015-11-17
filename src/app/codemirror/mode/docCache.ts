@@ -14,14 +14,18 @@ export function getLinkedDoc(filePath: string): Promise<codemirror.Doc> {
     return getOrCreateDoc(filePath)
         .then(doc=> {
 
-            // some housekeeping, clear previous links that no longer seem active
-            // let markForRemove: codemirror.Doc[] = [];
-            // doc.iterLinkedDocs((linked)=>{
-            //     if (!linked.getEditor()){
-            //         markForRemove.push(linked)
-            //     }
-            // });
-            // markForRemove.forEach(linked=>{doc.unlinkDoc(linked);});
+            // Some housekeeping: clear previous links that no longer seem active
+            // SetTimeout because we might have created the doc but not the CM instance yet
+            setTimeout(() => {
+                let markForRemove: codemirror.Doc[] = [];
+                doc.iterLinkedDocs((linked) => {
+                    if (!linked.getEditor()) {
+                        markForRemove.push(linked)
+                    }
+                });
+                console.log('marked for clearing', markForRemove.length)
+                markForRemove.forEach(linked=> { doc.unlinkDoc(linked); });
+            }, 2000);
 
             return doc.linkedDoc({ sharedHist: true })
         });
