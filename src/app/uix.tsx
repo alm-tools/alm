@@ -27,7 +27,7 @@ export function setup() {
             cmd.on(() => {
                 let editor = API.getFocusedCodeEditorIfAny();
                 if (editor && editor.codeMirror) {
-                    CodeMirror.commands[cmd.config.editorCommandName](editor.codeMirror);
+                    editor.codeMirror.execCommand(cmd.config.editorCommandName);
                 }
             });
         });

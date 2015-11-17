@@ -95,6 +95,8 @@ declare module CodeMirror {
     function signal(target: any, name: string, ...args: any[]): void;
 
     interface Editor {
+        /** Runs the command with the given name on the editor */
+        execCommand(name: string): void;
 
         /** Tells you whether the editor currently has focus. */
         hasFocus(): boolean;
