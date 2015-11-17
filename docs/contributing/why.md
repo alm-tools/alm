@@ -22,5 +22,5 @@ We did some previous work on atom-typescript : Now atom is a *seriously* great p
 * Intercept the symbol provider to show typescript project wide symbols
 * Have a background worker doing our analysis for us, this has performance and platform issues if you use *atom as node*.
 * Plus some things like a *build server* support doesn't seem like a valid thing to add as atom plugin.
-* There are lots of times when it breakes due to no fault of our own, (we totally appreciate the effort atom team puts in this but nonetheless). Examples [here](https://github.com/TypeStrong/atom-typescript/issues/596), [here](https://github.com/TypeStrong/atom-typescript/issues/583), [here](https://github.com/TypeStrong/atom-typescript/issues/611#issuecomment-142780859)
+* There are lots of times when it breakes due to no fault of our own, (we totally appreciate the effort atom team puts in this but nonetheless). Examples [here](https://github.com/TypeStrong/atom-typescript/issues/596), [here](https://github.com/TypeStrong/atom-typescript/issues/583), [here](https://github.com/TypeStrong/atom-typescript/issues/611#issuecomment-142780859), [here](https://github.com/TypeStrong/atom-typescript/issues/728#issuecomment-157255806)
 * Also an atom *plugin* should work *the way you want it to work*. This software will come with its own *strong* opinions to give a consistent workflow.
