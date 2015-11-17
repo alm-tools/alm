@@ -238,6 +238,14 @@ CodeMirror.commands[commands.additionalEditorCommands.renameVariable] = (editor:
         }
         else {
             let filePaths = Object.keys(res.locations);
+
+            // TODO:
+            // if there is only a single file path and that is the current and there aren't that many usages
+            // we do the rename inline
+            // if (filePaths.length == 1
+            //     && filePaths[0] == filePath
+            //     && res.locations[filePath])
+
             let {alreadyOpenFilePaths, currentlyClosedFilePaths} = uix.API.getClosedVsOpenFilePaths(filePaths);
 
             let node = document.createElement('div');
