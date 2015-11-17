@@ -12,14 +12,16 @@ let localSourceIdByFilePath : { [filePath: string]: string } = {};
 export function getLinkedDoc(filePath: string): Promise<codemirror.Doc> {
     return getOrCreateDoc(filePath)
         .then(doc=> {
-            // some housekeeping
-            // let markForRemove: codemirror.Doc[] = [];
-            // doc.iterLinkedDocs((linked)=>{
-            //     if (!linked.getEditor()){
-            //         markForRemove.push(linked)
-            //     }
-            // });
-            // markForRemove.forEach(linked=>{doc.unlinkDoc(linked);});
+
+            // some housekeeping, clear previous links that no longer seem active
+            let markForRemove: codemirror.Doc[] = [];
+            doc.iterLinkedDocs((linked)=>{
+                if (!linked.getEditor()){
+                    markForRemove.push(linked)
+                }
+            });
+            markForRemove.forEach(linked=>{doc.unlinkDoc(linked);});
+
             return doc.linkedDoc({ sharedHist: true })
         });
 }

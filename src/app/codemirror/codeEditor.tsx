@@ -169,7 +169,11 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 		// todo: is there a lighter-weight way to remove the cm instance?
 		if (this.codeMirror) {
 			this.codeMirror.toTextArea();
-			// this.codeMirror.swapDoc(new CodeMirror.Doc(''));
+			/**
+			 * Very hacky way to unlink docs from CM
+			 * If we don't do this then the doc stays in memory and so does cm :-/
+			 */
+			(this.codeMirror.getDoc() as any).cm = null;
 		}
 		this.disposible.dispose();
 	}
