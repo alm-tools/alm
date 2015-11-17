@@ -38,21 +38,31 @@ export function setup() {
  */
 export namespace API {
 
-    export function getRefactoringImpact(refactorings: RefactoringsByFilePath) {
+    export function getClosedVsOpenFilePaths(filePaths: string[]) {
         /** lookup all the *file* tabs that are open */
-        let alreadyOpen = state.getState().tabs
-            .filter(tab=> tab.url.startsWith('file:'));
-
-        let alreadyOpenFilePaths = alreadyOpen.map(x=> utils.getFilePathFromUrl(x.url));
-        let wantedFilePaths = Object.keys(refactorings);
-        let currentlyClosedFilePaths = wantedFilePaths.filter(x=> !!alreadyOpenFilePaths.find(ao=> ao == x));
+        let allOpen = state.getOpenFilePaths();
+        let alreadyOpenFilePaths = filePaths.filter(fp => allOpen.indexOf(fp) != -1);
+        let currentlyClosedFilePaths = filePaths.filter(fp => allOpen.indexOf(fp) == -1);
 
         return { alreadyOpenFilePaths, currentlyClosedFilePaths };
     }
 
     export function applyRefactorings(refactorings: RefactoringsByFilePath) {
-        console.log(getRefactoringImpact(refactorings));
-        // TODO: traact on docs && open tabs that are not open
+        let {currentlyClosedFilePaths} = getClosedVsOpenFilePaths(Object.keys(refactorings));
+
+        // TODO: wire up as a call to app tabs container otherwise we do not send to server
+        // + code is duplicated
+        let tabs = currentlyClosedFilePaths.map(fp => {
+            let codeTab: state.TabInstance = {
+                id: utils.createId(),
+                url: `file://${fp}`,
+                saved: true
+            }
+            return codeTab;
+        });
+        state.addTabs(tabs);
+
+        // TODO: transact on docs
     }
 
     export function getFocusedCodeEditorIfAny(): codeEditor.CodeEditor {

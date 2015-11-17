@@ -212,6 +212,7 @@ export class RenameVariable extends BaseComponent<Props, State>{
             });
 
             uix.API.applyRefactorings(refactorings);
+            setTimeout(()=>{this.unmount()});
         }
     };
 
@@ -237,9 +238,7 @@ CodeMirror.commands[commands.additionalEditorCommands.renameVariable] = (editor:
         }
         else {
             let filePaths = Object.keys(res.locations);
-            let allOpen = state.getOpenFilePaths();
-            let alreadyOpenFilePaths = filePaths.filter(fp => allOpen.indexOf(fp) != -1);
-            let currentlyClosedFilePaths = filePaths.filter(fp => allOpen.indexOf(fp) == -1);
+            let {alreadyOpenFilePaths, currentlyClosedFilePaths} = uix.API.getClosedVsOpenFilePaths(filePaths);
 
             let node = document.createElement('div');
             ReactDOM.render(<RenameVariable info={res} alreadyOpenFilePaths={alreadyOpenFilePaths} currentlyClosedFilePaths={currentlyClosedFilePaths} />, node);
