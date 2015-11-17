@@ -159,8 +159,8 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
                 let preview = this.props.preview;
                 let from = doc.posFromIndex(preview.start);
                 let to = doc.posFromIndex(preview.start + preview.length);
-                doc.setSelection(from,to);
-				this.codeMirror.scrollIntoView(from);
+				doc.setCursor(from);
+				this.codeMirror.scrollIntoView({line:from.line+5,ch:0});
             }
         });
 	}

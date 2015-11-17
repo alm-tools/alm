@@ -22,9 +22,9 @@ export interface Props extends React.Props<any> {
     info: Types.GetRenameInfoResponse;
 }
 export interface State {
-    filePaths?: string[];
     invalidMessage?: string;
     selectedIndex?: number;
+    flattened?: { filePath: string, preview: ts.TextSpan }[];
 }
 
 let validationErrorStyle = {
@@ -40,9 +40,20 @@ export class RenameVariable extends BaseComponent<Props, State>{
     constructor(props: Props) {
         super(props);
 
+
+        let flattended = utils.selectMany(Object.keys(props.info.locations).map(filePath => {
+            let refs = props.info.locations[filePath].slice().reverse();
+            return refs.map(preview => {
+                return {
+                    filePath,
+                    preview
+                };
+            });
+        }));
+
         this.state = {
-            filePaths : Object.keys(props.info.locations),
-            selectedIndex: 0
+            selectedIndex: 0,
+            flattened: flattended
         };
     }
 
@@ -65,38 +76,23 @@ export class RenameVariable extends BaseComponent<Props, State>{
     }
 
     render() {
-        let filePaths = this.state.filePaths;
-        let selectedFilePath = filePaths[this.state.selectedIndex];
+        let selectedPreview = this.state.flattened[this.state.selectedIndex];
 
-        let flattended = utils.selectMany(filePaths.map(filePath => {
-            let refs = this.props.info.locations[selectedFilePath].slice().reverse();
-            return refs.map(preview => {
-                return {
-                    filePath,
-                    preview
-                };
-            });
-        }));
-
-        let filePathsRendered = flattended.map((item,i)=>{
+        let filePathsRendered = this.state.flattened.map((item,i)=>{
             let active = i == this.state.selectedIndex ? styles.tabHeaderActive : {};
             return (
                 <div key={item.filePath + i} style={[styles.tabHeader,active,{overflow:'auto'}]} onClick={()=>this.selectAndRefocus(i)}>
-                    <div>{utils.getFileName(item.filePath)} ({item.preview.start})</div>
+                    <div>{utils.getFileName(item.filePath)}</div>
                 </div>
             );
         });
 
-        let previewsRendered = flattended.map(item=>{
-            let preview = item.preview;
-            return <div key={selectedFilePath + preview.start} style={[csx.flex, csx.flexRoot]}>
-                <CodeEditor
-                filePath={selectedFilePath}
+        let previewRendered = <CodeEditor
+                key={this.state.selectedIndex}
+                filePath={selectedPreview.filePath}
                 readOnly={"nocursor"}
-                preview={preview}
-                />
-            </div>
-        });
+                preview={selectedPreview.preview}
+                />;
 
         return (
             <Modal
@@ -134,7 +130,7 @@ export class RenameVariable extends BaseComponent<Props, State>{
                               {filePathsRendered}
                           </div>
                           <div style={[csx.flex, csx.flexRoot]}>
-                              {previewsRendered}
+                                {previewRendered}
                           </div>
                       </div>
                   </div>
@@ -161,12 +157,12 @@ export class RenameVariable extends BaseComponent<Props, State>{
 
         if (keyStates.up || keyStates.tabPrevious) {
             event.preventDefault();
-            let selectedIndex = utils.rangeLimited({ num: this.state.selectedIndex - 1, min: 0, max: this.state.filePaths.length - 1, loopAround: true });
+            let selectedIndex = utils.rangeLimited({ num: this.state.selectedIndex - 1, min: 0, max: this.state.flattened.length - 1, loopAround: true });
             this.setState({selectedIndex});
         }
         if (keyStates.down || keyStates.tabNext) {
             event.preventDefault();
-            let selectedIndex = utils.rangeLimited({ num: this.state.selectedIndex + 1, min: 0, max: this.state.filePaths.length - 1, loopAround: true });
+            let selectedIndex = utils.rangeLimited({ num: this.state.selectedIndex + 1, min: 0, max: this.state.flattened.length - 1, loopAround: true });
             this.setState({selectedIndex});
         }
         if (keyStates.enter) {
