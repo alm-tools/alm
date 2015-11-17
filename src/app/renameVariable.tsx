@@ -24,7 +24,7 @@ export interface Props extends React.Props<any> {
 export interface State {
     invalidMessage?: string;
     selectedIndex?: number;
-    flattened?: { filePath: string, preview: ts.TextSpan }[];
+    flattened?: { filePath: string, preview: ts.TextSpan, indexForFilePath: number, totalForFilePath: number }[];
 }
 
 let validationErrorStyle = {
@@ -43,10 +43,12 @@ export class RenameVariable extends BaseComponent<Props, State>{
 
         let flattended = utils.selectMany(Object.keys(props.info.locations).map(filePath => {
             let refs = props.info.locations[filePath].slice().reverse();
-            return refs.map(preview => {
+            return refs.map((preview,i) => {
                 return {
                     filePath,
-                    preview
+                    preview,
+                    indexForFilePath: i + 1,
+                    totalForFilePath: refs.length,
                 };
             });
         }));
@@ -94,7 +96,7 @@ export class RenameVariable extends BaseComponent<Props, State>{
             let ref = selected && "selectedTabTitle";
             return (
                 <div ref={ref} key={item.filePath + i} style={[styles.tabHeader,active,{overflow:'auto'}]} onClick={()=>this.selectAndRefocus(i)}>
-                    <div>{utils.getFileName(item.filePath)}</div>
+                    <div>{utils.getFileName(item.filePath)} ({item.indexForFilePath} of {item.totalForFilePath})</div>
                 </div>
             );
         });
