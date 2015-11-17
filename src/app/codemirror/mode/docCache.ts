@@ -23,7 +23,6 @@ export function getLinkedDoc(filePath: string): Promise<codemirror.Doc> {
                         markForRemove.push(linked)
                     }
                 });
-                console.log('marked for clearing', markForRemove.length)
                 markForRemove.forEach(linked=> { doc.unlinkDoc(linked); });
             }, 2000);
 
