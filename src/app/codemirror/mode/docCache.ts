@@ -44,6 +44,7 @@ function getOrCreateDoc(filePath: string) {
             // create the doc
             let doc = new codemirror.Doc(res.contents, mode);
             doc.filePath = filePath;
+            doc.rootDoc = true;
 
             // setup to push doc changes to server
             (doc as any).on('change', (doc: codemirror.Doc, change: CodeMirror.EditorChange) => {

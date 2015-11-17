@@ -26,5 +26,7 @@ declare module CodeMirror {
     interface Doc {
         /** We like to keep the filePath in here. Helps us in using the doc */
         filePath: string;
+        /** The root doc is the doc we keep in memory and don't link to any CM instance */
+        rootDoc: boolean;
     }
 }
