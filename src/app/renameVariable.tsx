@@ -17,6 +17,7 @@ import {modal} from "./styles/styles";
 import {Robocop} from "./robocop";
 import * as docCache from "./codemirror/mode/docCache";
 import {CodeEditor} from "./codemirror/codeEditor";
+import {RefactoringsByFilePath, Refactoring} from "../common/types";
 
 export interface Props extends React.Props<any> {
     info: Types.GetRenameInfoResponse;
@@ -194,7 +195,23 @@ export class RenameVariable extends BaseComponent<Props, State>{
         }
         if (keyStates.enter) {
             event.preventDefault();
-            // TODO:
+            let newText = (ReactDOM.findDOMNode(this.refs.mainInput) as HTMLInputElement).value.trim();
+
+            let refactorings: RefactoringsByFilePath = {};
+            Object.keys(this.props.info.locations).map(filePath => {
+                refactorings[filePath] = [];
+                let forPath = refactorings[filePath];
+                this.props.info.locations[filePath].forEach(loc=>{
+                    let refactoring: Refactoring = {
+                        filePath: filePath,
+                        span: loc,
+                        newText
+                    }
+                    forPath.push(refactoring);
+                });
+            });
+
+            uix.API.applyRefactorings(refactorings);
         }
     };
 

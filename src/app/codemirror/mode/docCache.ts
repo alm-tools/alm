@@ -6,6 +6,7 @@ import * as codemirror from "codemirror";
 import {cast, server} from "../../../socket/socketClient";
 import * as utils from "../../../common/utils";
 import * as classifierCache from "./classifierCache";
+import {RefactoringsByFilePath,Refactoring} from "../../../common/types";
 
 let docByFilePath: { [filePath: string]: codemirror.Doc } = {};
 let localSourceIdByFilePath : { [filePath: string]: string } = {};
@@ -108,10 +109,15 @@ function getOrCreateDoc(filePath: string) {
  * Just thought it was good to have ... haven't needed to use it yet though, so not exported
  */
 function getOrOpenDocs(filePaths: string[]): Promise<{ [filePath: string]: codemirror.Doc }> {
-    let promises = filePaths.map(fp => getLinkedDoc(fp));
+    let promises = filePaths.map(fp => getOrCreateDoc(fp));
     return Promise.all(promises).then(docs => {
         let res: { [filePath: string]: codemirror.Doc } = {};
         docs.forEach(doc => res[doc.filePath] = doc);
         return res;
     });
+}
+
+export function applyRefactoringsToDocs(refactorings: RefactoringsByFilePath) {
+    console.log(refactorings);
+    // TODO: trasact on editors
 }

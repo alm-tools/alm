@@ -52,6 +52,7 @@ export namespace API {
 
     export function applyRefactorings(refactorings: RefactoringsByFilePath) {
         console.log(getRefactoringImpact(refactorings));
+        // TODO: traact on docs && open tabs that are not open
     }
 
     export function getFocusedCodeEditorIfAny(): codeEditor.CodeEditor {
