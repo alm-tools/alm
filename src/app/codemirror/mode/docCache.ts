@@ -106,9 +106,9 @@ function getOrCreateDoc(filePath: string) {
 }
 
 /**
- * Just thought it was good to have ... haven't needed to use it yet though, so not exported
+ * Don't plan to export as giving others our true docs can have horrible consequences if they mess them up
  */
-function getOrOpenDocs(filePaths: string[]): Promise<{ [filePath: string]: codemirror.Doc }> {
+function getOrCreateDocs(filePaths: string[]): Promise<{ [filePath: string]: codemirror.Doc }> {
     let promises = filePaths.map(fp => getOrCreateDoc(fp));
     return Promise.all(promises).then(docs => {
         let res: { [filePath: string]: codemirror.Doc } = {};
@@ -118,6 +118,16 @@ function getOrOpenDocs(filePaths: string[]): Promise<{ [filePath: string]: codem
 }
 
 export function applyRefactoringsToDocs(refactorings: RefactoringsByFilePath) {
-    console.log(refactorings);
-    // TODO: trasact on editors
+    let filePaths = Object.keys(refactorings);
+    getOrCreateDocs(filePaths).then(docsByFilePath => {
+        filePaths.forEach(fp=>{
+            let doc = docsByFilePath[fp];
+            let changes = refactorings[fp];
+            for (let change of changes) {
+                let from = classifierCache.getLineAndCharacterOfPosition(fp,change.span.start);
+                let to = classifierCache.getLineAndCharacterOfPosition(fp,change.span.start + change.span.length);
+                doc.replaceRange(change.newText, from, to, 'refactor');
+            }
+        });
+    });
 }

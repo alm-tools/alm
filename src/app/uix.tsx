@@ -12,7 +12,7 @@ import CodeMirror = require('codemirror');
 import * as codeEditor from "./codemirror/codeEditor";
 import {Code} from "./tabs/codeTab";
 import {appTabsContainer} from "./tabs/appTabsContainer";
-
+import * as docCache from "./codemirror/mode/docCache";
 
 /**
  * After the app boots up
@@ -63,6 +63,7 @@ export namespace API {
         state.addTabs(tabs);
 
         // TODO: transact on docs
+        docCache.applyRefactoringsToDocs(refactorings);
     }
 
     export function getFocusedCodeEditorIfAny(): codeEditor.CodeEditor {

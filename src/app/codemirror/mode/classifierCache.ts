@@ -31,7 +31,9 @@ export function editFile(filePath: string, codeEdit: CodeEdit) {
 export function setContents(filePath:string, contents:string){
     languageServiceHost.setContents(filePath,contents);
 }
-
+export function getLineAndCharacterOfPosition(filePath: string, pos: number): EditorPosition {
+    return languageServiceHost.getLineAndCharacterOfPosition(filePath, pos);
+}
 export function getClassificationsForLine(filePath: string, lineStart: number, string: string): ClassifiedSpan[] {
     let lineLength = string.length;
     let encodedClassifications = languageService.getEncodedSyntacticClassifications(filePath, { start: lineStart, length: lineLength });

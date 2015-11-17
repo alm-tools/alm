@@ -381,4 +381,8 @@ export class LSHost implements ts.LanguageServiceHost {
     getPositionOfLineAndCharacter(filePath: string, line: number, ch: number){
         return this.lineOffsetToPosition(filePath, line + 1, ch + 1);
     }
+    getLineAndCharacterOfPosition(filePath: string, pos: number): EditorPosition{
+        let res = this.positionToLineOffset(filePath,pos);
+        return {line: res.line - 1, ch: res.offset - 1};
+    }
 }
