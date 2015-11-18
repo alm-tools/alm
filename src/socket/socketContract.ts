@@ -137,4 +137,16 @@ export namespace Types {
             [filePath: string]: ts.TextSpan[]
         };
     }
+
+    /**
+     * Goto definition
+     */
+    export interface GetDefinitionsAtPositionQuery extends FilePathPositionQuery { }
+    export interface GetDefinitionsAtPositionResponse {
+        projectFileDirectory: string;
+        definitions: {
+            filePath: string;
+            position: EditorPosition
+        }[]
+    }
 }

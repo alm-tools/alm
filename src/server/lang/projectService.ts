@@ -151,3 +151,22 @@ export function getRenameInfo(query: Types.GetRenameInfoQuery): Promise<Types.Ge
         });
     }
 }
+
+export function getDefinitionsAtPosition(query: Types.GetDefinitionsAtPositionQuery): Promise<Types.GetDefinitionsAtPositionResponse> {
+    let project = getProject(query.filePath);
+    var definitions = project.languageService.getDefinitionAtPosition(query.filePath, query.position);
+    var projectFileDirectory = project.configFile.projectFileDirectory;
+    if (!definitions || !definitions.length) return resolve({ projectFileDirectory: projectFileDirectory, definitions: [] });
+
+    return resolve({
+        projectFileDirectory: projectFileDirectory,
+        definitions: definitions.map(d=> {
+            // If we can get the filename *we are in the same program :P*
+            var pos = project.languageServiceHost.getPositionFromIndex(d.fileName, d.textSpan.start);
+            return {
+                filePath: d.fileName,
+                position: pos
+            };
+        })
+    });
+}
