@@ -30,24 +30,6 @@ export interface State {
     flattened?: { filePath: string, preview: ts.TextSpan, indexForFilePath: number, totalForFilePath: number }[];
 }
 
-let validationErrorStyle = {
-    color: 'red',
-    fontFamily: 'monospace',
-    fontSize: '1.2rem',
-    padding: '5px',
-}
-
-let summaryStyle = {
-    padding: '5px',
-    backgroundColor: '#222',
-    color: '#CCC',
-    fontSize: '.8rem',
-}
-
-let previewContainerStyle = {
-    background: styles.tabHeader.background,
-    padding: '5px',
-}
 
 @ui.Radium
 export class GotoDefinition extends BaseComponent<Props, State>{
@@ -149,20 +131,11 @@ export class GotoDefinition extends BaseComponent<Props, State>{
                               />
                       </div>
 
-                      {
-                          this.state.invalidMessage &&
-                          <div style={validationErrorStyle}>{this.state.invalidMessage}</div>
-                      }
-
-                      <div style={summaryStyle}>
-                        {this.state.flattened.length} usages, {this.props.alreadyOpenFilePaths.length} files open,  {this.props.currentlyClosedFilePaths.length} files closed
-                      </div>
-
                       <div style={[csx.horizontal, csx.flex, { overflow: 'hidden' }]}>
                           <div style={{width:'200px', overflow:'auto'} as any}>
                               {filePathsRendered}
                           </div>
-                          <div style={[csx.flex, csx.flexRoot, previewContainerStyle]}>
+                          <div style={[csx.flex, csx.flexRoot, styles.modal.previewContainerStyle]}>
                                 {previewRendered}
                           </div>
                       </div>

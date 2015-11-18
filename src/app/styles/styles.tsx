@@ -170,4 +170,10 @@ export namespace modal {
             boxShadow: '0px 0px 1px 1px #3C3C3C'
         }
     }
+
+    /** The container around code samples */
+    export let previewContainerStyle = {
+        background: tabHeader.background,
+        padding: '5px',
+    }
 }
