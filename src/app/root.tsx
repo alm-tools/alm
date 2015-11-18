@@ -15,9 +15,6 @@ import {match, filter as fuzzyFilter} from "fuzzaldrin";
 import {debounce,createMap,rangeLimited,getFileName} from "../common/utils";
 import {OmniSearch} from "./omniSearch/omniSearch";
 import {FileTree} from "./fileTree";
-import {RenameVariable} from "./renameVariable";
-var renameVariable = require("./renameVariable");
-
 import {SelectListView} from "./selectListView";
 import slv = require("./selectListView");
 
@@ -25,6 +22,13 @@ import {StatusBar} from "./statusBar";
 import sb = require('./statusBar');
 import {FindAndReplace} from "./findAndReplace";
 import * as state from "./state/state";
+
+/** Force require  */
+import {RenameVariable} from "./renameVariable";
+var renameVariable = require("./renameVariable");
+import {GotoDefinition} from "./gotoDefinition";
+var gotoDefinition = require("./gotoDefinition");
+
 
 export interface State {
     isOmniSearchOpen?: boolean;

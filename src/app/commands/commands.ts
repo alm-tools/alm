@@ -194,7 +194,8 @@ let mod = mac ? 'Cmd' : 'Ctrl';
 
 /** Commands *we* authored */
 export let additionalEditorCommands = {
-    renameVariable: ''
+    renameVariable: '',
+    gotoDefinition: '',
 }
 utils.stringEnum(additionalEditorCommands);
 
@@ -213,6 +214,7 @@ let sublimeMap = keyMap.sublime;
 sublimeMap[`${mod}-Space`] = "autocomplete";
 // Our additionalEditorCommands
 sublimeMap[`F2`] = additionalEditorCommands.renameVariable;
+sublimeMap[`${mod}-B`] = additionalEditorCommands.gotoDefinition;
 // Fallback to default `singleSelection` as sublime `singleSelectionTop` is bad
 delete sublimeMap['Esc'];
 
