@@ -44,6 +44,11 @@ let summaryStyle = {
     fontSize: '.8rem',
 }
 
+let previewContainerStyle = {
+    background: styles.tabHeader.background,
+    padding: '5px',
+}
+
 @ui.Radium
 export class RenameVariable extends BaseComponent<Props, State>{
 
@@ -157,7 +162,7 @@ export class RenameVariable extends BaseComponent<Props, State>{
                           <div style={{width:'200px', overflow:'auto'} as any}>
                               {filePathsRendered}
                           </div>
-                          <div style={[csx.flex, csx.flexRoot]}>
+                          <div style={[csx.flex, csx.flexRoot, previewContainerStyle]}>
                                 {previewRendered}
                           </div>
                       </div>
