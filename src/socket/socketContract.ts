@@ -147,7 +147,8 @@ export namespace Types {
         projectFileDirectory: string;
         definitions: {
             filePath: string;
-            position: EditorPosition
+            position: EditorPosition;
+            span: ts.TextSpan;
         }[]
     }
 }

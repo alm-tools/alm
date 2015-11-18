@@ -177,3 +177,13 @@ export namespace modal {
         padding: '5px',
     }
 }
+
+/** Sometimes we need a keyboard input to handle our keyboard events but not be visible in any way */
+export let hiddenInput = {
+    height: '0px',
+    width: '0px',
+    color: 'transparent',
+    background: 'transparent',
+    position: 'absolute',
+    top: '0px'
+}

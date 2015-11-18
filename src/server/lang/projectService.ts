@@ -165,7 +165,8 @@ export function getDefinitionsAtPosition(query: Types.GetDefinitionsAtPositionQu
             var pos = project.languageServiceHost.getPositionFromIndex(d.fileName, d.textSpan.start);
             return {
                 filePath: d.fileName,
-                position: pos
+                position: pos,
+                span: d.textSpan,
             };
         })
     });

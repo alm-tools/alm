@@ -20,14 +20,10 @@ import {CodeEditor} from "./codemirror/codeEditor";
 import {RefactoringsByFilePath, Refactoring} from "../common/types";
 
 export interface Props extends React.Props<any> {
-    info: Types.GetRenameInfoResponse;
-    alreadyOpenFilePaths: string[];
-    currentlyClosedFilePaths: string[];
+    data: Types.GetDefinitionsAtPositionResponse;
 }
 export interface State {
-    invalidMessage?: string;
     selectedIndex?: number;
-    flattened?: { filePath: string, preview: ts.TextSpan, indexForFilePath: number, totalForFilePath: number }[];
 }
 
 
@@ -37,22 +33,8 @@ export class GotoDefinition extends BaseComponent<Props, State>{
     constructor(props: Props) {
         super(props);
 
-
-        let flattended = utils.selectMany(Object.keys(props.info.locations).map(filePath => {
-            let refs = props.info.locations[filePath].slice().reverse();
-            return refs.map((preview,i) => {
-                return {
-                    filePath,
-                    preview,
-                    indexForFilePath: i + 1,
-                    totalForFilePath: refs.length,
-                };
-            });
-        }));
-
         this.state = {
             selectedIndex: 0,
-            flattened: flattended
         };
     }
 
@@ -80,20 +62,21 @@ export class GotoDefinition extends BaseComponent<Props, State>{
 
     refs: {
         [string: string]: any;
-        mainInput: any;
         selectedTabTitle: any;
+        mainInput: any;
     }
 
     render() {
-        let selectedPreview = this.state.flattened[this.state.selectedIndex];
+        let definitions = this.props.data.definitions;
+        let selectedPreview = this.props.data.definitions[this.state.selectedIndex];
 
-        let filePathsRendered = this.state.flattened.map((item,i)=>{
+        let filePathsRendered = definitions.map((item,i)=>{
             let selected = i == this.state.selectedIndex;
             let active = selected ? styles.tabHeaderActive : {};
             let ref = selected && "selectedTabTitle";
             return (
                 <div ref={ref} key={item.filePath + i} style={[styles.tabHeader,active,{overflow:'auto'}]} onClick={()=>this.selectAndRefocus(i)}>
-                    <div>{utils.getFileName(item.filePath)} ({item.indexForFilePath} of {item.totalForFilePath})</div>
+                    <div>{utils.getFileName(item.filePath)} (line: {item.position.line + 1})</div>
                 </div>
             );
         });
@@ -102,7 +85,7 @@ export class GotoDefinition extends BaseComponent<Props, State>{
                 key={this.state.selectedIndex}
                 filePath={selectedPreview.filePath}
                 readOnly={"nocursor"}
-                preview={selectedPreview.preview}
+                preview={selectedPreview.span}
                 />;
 
         return (
@@ -111,7 +94,7 @@ export class GotoDefinition extends BaseComponent<Props, State>{
                   onRequestClose={this.unmount}>
                   <div style={[csx.vertical, csx.flex]}>
                       <div style={[csx.horizontal]}>
-                          <h4>Rename</h4>
+                          <h4>Multiple Definitions Found</h4>
                           <div style={[csx.flex]}></div>
                           <div style={{fontSize:'0.9rem', color:'grey'} as any}>
                             <code style={modal.keyStrokeStyle}>Esc</code> to exit <code style={modal.keyStrokeStyle}>Enter</code> to select
@@ -119,17 +102,14 @@ export class GotoDefinition extends BaseComponent<Props, State>{
                           </div>
                       </div>
 
-                      <div style={[styles.padded1TopBottom, csx.vertical]}>
-                          <input
-                              defaultValue={this.props.info.displayName}
-                              style={styles.modal.inputStyle}
-                              type="text"
-                              ref="mainInput"
-                              placeholder="Filter"
-                              onChange={this.onChangeFilter}
-                              onKeyDown={this.onChangeSelected}
-                              />
-                      </div>
+                      <input
+                          defaultValue={''}
+                          style={styles.hiddenInput}
+                          type="text"
+                          ref="mainInput"
+                          placeholder="Filter"
+                          onKeyDown={this.onChangeSelected}
+                          />
 
                       <div style={[csx.horizontal, csx.flex, { overflow: 'hidden' }]}>
                           <div style={{width:'200px', overflow:'auto'} as any}>
@@ -144,52 +124,29 @@ export class GotoDefinition extends BaseComponent<Props, State>{
         );
     }
 
-    onChangeFilter = (e) => {
-        let newText = (ReactDOM.findDOMNode(this.refs.mainInput) as HTMLInputElement).value;
-
-        if (newText.replace(/\s/g, '') !== newText.trim()) {
-            this.setState({ invalidMessage: 'The new variable must not contain a space' });
-        }
-        else if (!newText.trim()) {
-            this.setState({ invalidMessage: 'Press esc to abort rename' });
-        }
-        else {
-            this.setState({ invalidMessage: '' });
-        }
-    };
-
     onChangeSelected = (event) => {
         let keyStates = ui.getKeyStates(event);
 
         if (keyStates.up || keyStates.tabPrevious) {
             event.preventDefault();
-            let selectedIndex = utils.rangeLimited({ num: this.state.selectedIndex - 1, min: 0, max: this.state.flattened.length - 1, loopAround: true });
+            let selectedIndex = utils.rangeLimited({ num: this.state.selectedIndex - 1, min: 0, max: this.props.data.definitions.length - 1, loopAround: true });
             this.setState({selectedIndex});
         }
         if (keyStates.down || keyStates.tabNext) {
             event.preventDefault();
-            let selectedIndex = utils.rangeLimited({ num: this.state.selectedIndex + 1, min: 0, max: this.state.flattened.length - 1, loopAround: true });
+            let selectedIndex = utils.rangeLimited({ num: this.state.selectedIndex + 1, min: 0, max: this.props.data.definitions.length - 1, loopAround: true });
             this.setState({selectedIndex});
         }
         if (keyStates.enter) {
             event.preventDefault();
             let newText = (ReactDOM.findDOMNode(this.refs.mainInput) as HTMLInputElement).value.trim();
 
-            let refactorings: RefactoringsByFilePath = {};
-            Object.keys(this.props.info.locations).map(filePath => {
-                refactorings[filePath] = [];
-                let forPath = refactorings[filePath];
-                this.props.info.locations[filePath].forEach(loc=>{
-                    let refactoring: Refactoring = {
-                        filePath: filePath,
-                        span: loc,
-                        newText
-                    }
-                    forPath.push(refactoring);
-                });
+            let def = this.props.data.definitions[this.state.selectedIndex];
+            commands.doOpenOrFocusFile.emit({
+                filePath: def.filePath,
+                position: def.position
             });
 
-            uix.API.applyRefactorings(refactorings);
             setTimeout(()=>{this.unmount()});
         }
     };
@@ -223,8 +180,8 @@ CodeMirror.commands[commands.additionalEditorCommands.gotoDefinition] = (editor:
             });
         }
         else {
-            // TODO: write rest
-            ui.notifyInfoNormalDisappear('Multi defs coming Soon!');
+            let node = document.createElement('div');
+            ReactDOM.render(<GotoDefinition data={res}/>, node);
         }
     });
 }
