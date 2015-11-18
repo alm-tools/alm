@@ -22,7 +22,7 @@ export enum CommandContext {
 }
 
 interface UICommandConfig {
-    keyboardShortcut: string;
+    keyboardShortcut?: string;
     description: string;
     context: CommandContext;
 
@@ -82,6 +82,10 @@ export var undoCloseTab = new UICommand({
 export var saveTab = new UICommand({
     keyboardShortcut: 'mod+s', // c9
     description: "Save current tab",
+    context: CommandContext.Global,
+});
+export var closeOtherTabs = new UICommand({
+    description: "Close other tabs",
     context: CommandContext.Global,
 });
 
@@ -160,7 +164,8 @@ export var openFileFromDisk = new UICommand({
 export function register() {
 
     commandRegistry.forEach(c=> {
-        if (c.config.context == CommandContext.Global) {
+        if (c.config.context == CommandContext.Global
+            && c.config.keyboardShortcut) {
             Mousetrap.bindGlobal(c.config.keyboardShortcut, function() {
                 c.emit({});
                 return false;

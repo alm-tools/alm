@@ -325,7 +325,8 @@ class SearchState {
                     <div style={csx.horizontal}>
                         <span>{matched}</span>
                         <span style={csx.flex}></span>
-                        <div style={commandKeyStrokeStyle}>{commandShortcutToDisplayName(command.config.keyboardShortcut)}</div>
+                        {command.config.keyboardShortcut &&
+                            <div style={commandKeyStrokeStyle}>{commandShortcutToDisplayName(command.config.keyboardShortcut)}</div>}
                     </div>
                 );
             });

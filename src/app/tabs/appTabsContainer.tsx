@@ -137,6 +137,14 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.closeTab(this.props.selectedTabIndex);
         });
 
+        commands.closeOtherTabs.on((e)=>{
+            let tabs = this.props.tabs.filter((t,i)=>i == this.props.selectedTabIndex);
+            this.afterComponentDidUpdate(this.sendTabInfoToServer);
+            this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
+            state.setTabs(tabs);
+            this.selectTab(0);
+        });
+
         commands.saveTab.on((e) => {
             let component = this.getSelectedComponent();
             if (component) {
