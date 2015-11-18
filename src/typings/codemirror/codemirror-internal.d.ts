@@ -4,6 +4,10 @@
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
 
 declare module CodeMirror {
+
+    /** Not doced but used in tern demo : http://codemirror.net/addon/tern/tern.js  */
+    function cmpPos(a:Position, b:Position):number;
+
     /** @internal Utility function inside code mirror to stop events */
     function e_stop(event:any);
 

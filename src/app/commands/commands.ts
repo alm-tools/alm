@@ -213,6 +213,8 @@ let sublimeMap = keyMap.sublime;
 sublimeMap[`${mod}-Space`] = "autocomplete";
 // Our additionalEditorCommands
 sublimeMap[`F2`] = additionalEditorCommands.renameVariable;
+// Fallback to default `singleSelection` as sublime `singleSelectionTop` is bad
+delete sublimeMap['Esc'];
 
 /** Comamnds we don't support as an editor command */
 let unsupportedNames = utils.createMap([
