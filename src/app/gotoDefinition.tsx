@@ -237,6 +237,21 @@ CodeMirror.commands[commands.additionalEditorCommands.gotoDefinition] = (editor:
     let cursor = editor.getDoc().getCursor();
     let filePath = editor.filePath;
     let position = editor.getDoc().indexFromPos(cursor);
-    console.log('write the rest');
-    ui.notifyInfoQuickDisappear('Goto Definition coming soon!')
+    server.getDefinitionsAtPosition({filePath,position}).then((res)=>{
+        if (res.definitions.length == 0){
+            ui.notifyInfoNormalDisappear('No TypeScript definition at cursor location');
+        }
+        else if (res.definitions.length == 1) {
+            // Go directly 🌹
+            let def = res.definitions[0];
+            commands.doOpenOrFocusFile.emit({
+                filePath: def.filePath,
+                position: def.position
+            });
+        }
+        else {
+            // TODO: write rest
+            ui.notifyInfoNormalDisappear('Multi defs coming Soon!');
+        }
+    });
 }

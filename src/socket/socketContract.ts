@@ -45,6 +45,7 @@ export var server = {
     getCompletionsAtPosition: {} as QRFunction<Types.GetCompletionsAtPositionQuery,Types.GetCompletionsAtPositionResponse>,
     quickInfo: {} as QRFunction<Types.QuickInfoQuery,Types.QuickInfoResponse>,
     getRenameInfo: {} as QRFunction<Types.GetRenameInfoQuery, Types.GetRenameInfoResponse>,
+    getDefinitionsAtPosition: {} as QRFunction<Types.GetDefinitionsAtPositionQuery, Types.GetDefinitionsAtPositionResponse>,
 }
 
 export var client = {

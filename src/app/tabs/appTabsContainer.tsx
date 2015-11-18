@@ -112,10 +112,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
             let openTabIndex = this.props.tabs.map(t=> utils.getFilePathFromUrl(t.url) == e.filePath).indexOf(true);
             if (openTabIndex !== -1) {
-                this.selectTab(openTabIndex);
                 if (e.position) {
                     this.afterComponentDidUpdate(() => this.gotoPositionOnSelectedTab(e.position));
                 }
+                this.selectTab(openTabIndex);
                 return;
             }
 
@@ -127,6 +127,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.afterComponentDidUpdate(this.sendTabInfoToServer);
             this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
             if (e.position) {
+                console.log('why you no go!');// TODO
                 this.afterComponentDidUpdate(() => this.gotoPositionOnSelectedTab(e.position));
             }
             state.addTabAndSelect(codeTab);
