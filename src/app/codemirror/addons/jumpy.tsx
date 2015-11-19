@@ -27,41 +27,43 @@ for (let c1 of lowerCharacters) {
 type Editor = CodeMirror.EditorFromTextArea;
 
 interface JumpyState {
-    overlay?: CodeMirror.Mode<any>;
+    overlay?: HTMLDivElement;
 }
 
-function getState(editor:Editor): JumpyState{
-    return (editor as any).state.jumpy || ((editor as any).state.jumpy = {});
+function getState(cm:Editor): JumpyState{
+    return (cm as any).state.jumpy || ((cm as any).state.jumpy = {});
 }
 
-function createOverlay(editor: Editor) {
-    let {from,to} = editor.getViewport();
+function createOverlay(cm: Editor) {
+    let doc = cm.getDoc();
+    let {from,to} = cm.getViewport();
+    let text = cm.getDoc().getRange({line:from,ch:0},{line:to,ch:0});
+    let splitRegex = /^[A-Z]?[0-9a-z]+|^[\{\};]+/;
 
-    interface OverlayState {
-        lineNumber: number;
+    let node = document.createElement('div');
+    let scrollInfo = cm.getScrollInfo();
+    let topLine = cm.coordsChar({top:scrollInfo.top,left: scrollInfo.left}, 'local').line;
+    let bottomLine = cm.coordsChar({ top: scrollInfo.top + scrollInfo.clientHeight, left: scrollInfo.left }, 'local').line;
+    let rowPixelSize = (scrollInfo.clientHeight)/(bottomLine-topLine);
+    console.log(rowPixelSize,scrollInfo,bottomLine-topLine);
+    let lines = [];
+    for (let i = 0; i < bottomLine - topLine; i++) {
+        lines.push(i);
     }
+    let overlayByLines = lines.map((x)=>{
+        return <div style={{position:'absolute',top:`${(x)*rowPixelSize}px`} as any}>{x}</div>
+    });
 
-    let index = 0;
+    let overlay = ReactDOM.render(<div>
+        {overlayByLines}
+    </div>,node);
 
-    return {
-        name: 'jumpyOverlayMode',
-        token: function(stream: CodeMirror.StringStream) {
-            var matches = /^[A-Z]?[0-9a-z]+|^[\{\};]+/.exec(stream.string.substr(stream.pos));
-            if (matches && matches.length) {
-                let matched = matches[0];
-                stream.pos += matched.length;
-                console.log('here', matched, stream.pos);
-                return "jumpy jumpy-" + keys[index++];
-            } else {
-                stream.next();
-            }
-        }
-    };
+    return node;
 }
 
 function clearAnyOverlay(cm: Editor) {
     if (getState(cm).overlay) {
-        cm.removeOverlay(getState(cm).overlay);
+        getState(cm).overlay.parentElement.removeChild(getState(cm).overlay);
         getState(cm).overlay = null;
     }
 }
@@ -69,7 +71,11 @@ function clearAnyOverlay(cm: Editor) {
 function addOverlay(cm: Editor) {
     clearAnyOverlay(cm);
     let overlay = getState(cm).overlay = createOverlay(cm);
-    cm.addOverlay(overlay);
+
+    let scrollInfo = cm.getScrollInfo();
+    let pos = cm.coordsChar({top:scrollInfo.top,left: scrollInfo.left}, 'local');
+
+    cm.addWidget(pos, overlay, false);
 }
 
 // Wire up the code mirror command to come here
@@ -82,5 +88,7 @@ CodeMirror.commands[commands.additionalEditorCommands.jumpy] = (editor: CodeMirr
     commands.esc.once(()=>{
         clearAnyOverlay(editor);
     });
+
+
     addOverlay(editor);
 }
