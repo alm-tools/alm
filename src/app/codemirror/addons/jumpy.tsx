@@ -58,17 +58,8 @@ function createOverlays(cm: Editor) {
     }
 
     let keysIndex = 0;
-    let charPxWidth = cm.defaultCharWidth();
-    let charPxHeight = cm.defaultTextHeight() + 7;
 
     let overlayByLines = utils.selectMany(lines.map((x)=>{
-        // Note `left` is coming out wrong after first line :-/
-        // So we fudge it
-        function getPxPos(line:number,ch:number){
-            let pxPos = cm.charCoords(CodeMirror.Pos(line,ch),"local");
-            return {top:pxPos.top - charPxHeight , left: charPxWidth * ch};
-        }
-
         let trueLine = x + topLine;
         let string = doc.getLine(trueLine);
 
@@ -79,10 +70,7 @@ function createOverlays(cm: Editor) {
             if (matches && matches.length) {
                 let matched = matches[0];
                 let name = keys[keysIndex++];
-                let pxPos = getPxPos(x,pos);
-                // console.log('here', matched, pos,pxPos.left);
-
-                let nodeRendered = <div key={x+':'+pos} className="cm-jumpy" style={{top:'-1.8em'} as any}>{name}</div>;
+                let nodeRendered = <div key={x+':'+pos} className="cm-jumpy" style={{top:'-1rem'} as any}>{name}</div>;
                 let node = document.createElement('div'); ReactDOM.render(nodeRendered,node);
 
                 let widget: JumpyWidget = {
@@ -103,6 +91,7 @@ function createOverlays(cm: Editor) {
         return lineOverlays;
     }));
 
+    // Add to CM + State
     overlayByLines.forEach(wg=>cm.addWidget({line:wg.line,ch:wg.ch},wg.node,false));
     getState(cm).widgets = overlayByLines;
 }
@@ -117,11 +106,6 @@ function clearAnyOverlay(cm: Editor) {
 function addOverlay(cm: Editor) {
     clearAnyOverlay(cm);
     createOverlays(cm);
-
-    // let scrollInfo = cm.getScrollInfo();
-    // let pos = cm.coordsChar({top:scrollInfo.top,left: scrollInfo.left}, 'local');
-    //
-    // cm.addWidget(pos, overlay, false);
 }
 
 // Wire up the code mirror command to come here
