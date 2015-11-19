@@ -43,15 +43,18 @@ function createOverlay(cm: Editor) {
     let node = document.createElement('div');
     let scrollInfo = cm.getScrollInfo();
     let topLine = cm.coordsChar({top:scrollInfo.top,left: scrollInfo.left}, 'local').line;
-    let bottomLine = cm.coordsChar({ top: scrollInfo.top + scrollInfo.clientHeight, left: scrollInfo.left }, 'local').line;
-    let rowPixelSize = (scrollInfo.clientHeight)/(bottomLine-topLine);
-    console.log(rowPixelSize,scrollInfo,bottomLine-topLine);
+    let bottomLine = cm.coordsChar({ top: scrollInfo.top + scrollInfo.clientHeight + 1, left: scrollInfo.left }, 'local').line;
+    // console.log(scrollInfo,bottomLine-topLine);
     let lines = [];
     for (let i = 0; i < bottomLine - topLine; i++) {
         lines.push(i);
     }
     let overlayByLines = lines.map((x)=>{
-        return <div style={{position:'absolute',top:`${(x)*rowPixelSize}px`} as any}>{x}</div>
+        let pos = cm.charCoords({line:x,ch:0},"local");
+        let trueLine = x + topLine;
+        let string = doc.getLine(trueLine);
+        console.log(string);
+        return <div key={x} style={{position:'absolute',top:`${pos.top - 20}px`} as any}>{x}</div>
     });
 
     let overlay = ReactDOM.render(<div>
