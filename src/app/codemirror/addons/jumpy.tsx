@@ -35,7 +35,6 @@ interface JumpyWidget{
 }
 
 interface JumpyState {
-    overlay?: HTMLDivElement;
     widgets?: JumpyWidget[];
 }
 
@@ -43,13 +42,12 @@ function getState(cm:Editor): JumpyState{
     return (cm as any).state.jumpy || ((cm as any).state.jumpy = { widgets: [] });
 }
 
-function createOverlay(cm: Editor) {
+function createOverlays(cm: Editor) {
     let doc = cm.getDoc();
     let {from,to} = cm.getViewport();
     let text = cm.getDoc().getRange({line:from,ch:0},{line:to,ch:0});
     let splitRegex = /^[A-Z]?[0-9a-z]+|^[\{\};]+/;
 
-    let node = document.createElement('div');
     let scrollInfo = cm.getScrollInfo();
     let topLine = cm.coordsChar({top:scrollInfo.top,left: scrollInfo.left}, 'local').line;
     let bottomLine = cm.coordsChar({ top: scrollInfo.top + scrollInfo.clientHeight, left: scrollInfo.left }, 'local').line + 1;
@@ -75,7 +73,7 @@ function createOverlay(cm: Editor) {
         let string = doc.getLine(trueLine);
 
         let pos = 0;
-        let lineOverlays = [];
+        let lineOverlays:JumpyWidget[] = [];
         while (pos !== string.length) {
             var matches = /^[A-Z]?[0-9a-z]+|^[\{\};]+/.exec(string.substr(pos));
             if (matches && matches.length) {
@@ -83,8 +81,19 @@ function createOverlay(cm: Editor) {
                 let name = keys[keysIndex++];
                 let pxPos = getPxPos(x,pos);
                 // console.log('here', matched, pos,pxPos.left);
-                let overlay = <div key={x+':'+pos} className="cm-jumpy" style={{top:`${pxPos.top}px`, left:`${pxPos.left}px`} as any}>{name}</div>;
-                lineOverlays.push(overlay);
+
+                let nodeRendered = <div key={x+':'+pos} className="cm-jumpy" style={{top:'-1.8em'} as any}>{name}</div>;
+                let node = document.createElement('div'); ReactDOM.render(nodeRendered,node);
+
+                let widget: JumpyWidget = {
+                    node,
+                    line: trueLine,
+                    ch: pos,
+                    key1: name[0],
+                    key2: name[1],
+                }
+
+                lineOverlays.push(widget);
                 pos += matched.length;
             } else {
                 pos++;
@@ -94,28 +103,25 @@ function createOverlay(cm: Editor) {
         return lineOverlays;
     }));
 
-    let overlay = ReactDOM.render(<div>
-        {overlayByLines}
-    </div>,node);
-
-    return node;
+    overlayByLines.forEach(wg=>cm.addWidget({line:wg.line,ch:wg.ch},wg.node,false));
+    getState(cm).widgets = overlayByLines;
 }
 
 function clearAnyOverlay(cm: Editor) {
-    if (getState(cm).overlay) {
-        getState(cm).overlay.parentElement.removeChild(getState(cm).overlay);
-        getState(cm).overlay = null;
+    if (getState(cm).widgets.length) {
+        getState(cm).widgets.forEach(wg => wg.node.parentElement.removeChild(wg.node));
+        getState(cm).widgets = [];
     }
 }
 
 function addOverlay(cm: Editor) {
     clearAnyOverlay(cm);
-    let overlay = getState(cm).overlay = createOverlay(cm);
+    createOverlays(cm);
 
-    let scrollInfo = cm.getScrollInfo();
-    let pos = cm.coordsChar({top:scrollInfo.top,left: scrollInfo.left}, 'local');
-
-    cm.addWidget(pos, overlay, false);
+    // let scrollInfo = cm.getScrollInfo();
+    // let pos = cm.coordsChar({top:scrollInfo.top,left: scrollInfo.left}, 'local');
+    //
+    // cm.addWidget(pos, overlay, false);
 }
 
 // Wire up the code mirror command to come here
