@@ -51,11 +51,15 @@ function createOverlay(cm: Editor) {
     }
 
     let keysIndex = 0;
+    let charPxWidth = cm.defaultCharWidth();
+    let charPxHeight = cm.defaultTextHeight() + 7;
 
     let overlayByLines = utils.selectMany(lines.map((x)=>{
+        // Note `left` is coming out wrong after first line :-/
+        // So we fudge it
         function getPxPos(line:number,ch:number){
-            let pxPos = cm.charCoords({line:line,ch:ch},"local");
-            return {top:pxPos.top - 20 , left: pxPos.left - 5};
+            let pxPos = cm.charCoords(CodeMirror.Pos(line,ch),"local");
+            return {top:pxPos.top - charPxHeight , left: charPxWidth * ch};
         }
 
         let trueLine = x + topLine;
@@ -67,9 +71,9 @@ function createOverlay(cm: Editor) {
             var matches = /^[A-Z]?[0-9a-z]+|^[\{\};]+/.exec(string.substr(pos));
             if (matches && matches.length) {
                 let matched = matches[0];
-                console.log('here', matched, pos);
                 let name = keys[keysIndex++];
                 let pxPos = getPxPos(x,pos);
+                // console.log('here', matched, pos,pxPos.left);
                 let overlay = <div key={x+':'+pos} className="cm-jumpy" style={{top:`${pxPos.top}px`, left:`${pxPos.left}px`} as any}>{name}</div>;
                 lineOverlays.push(overlay);
                 pos += matched.length;
