@@ -55,7 +55,7 @@ function createOverlay(cm: Editor) {
     let overlayByLines = utils.selectMany(lines.map((x)=>{
         function getPxPos(line:number,ch:number){
             let pxPos = cm.charCoords({line:line,ch:ch},"local");
-            return {top:pxPos.top - 20 , left: pxPos.left};
+            return {top:pxPos.top - 20 , left: pxPos.left - 5};
         }
 
         let trueLine = x + topLine;
@@ -67,16 +67,18 @@ function createOverlay(cm: Editor) {
             var matches = /^[A-Z]?[0-9a-z]+|^[\{\};]+/.exec(string.substr(pos));
             if (matches && matches.length) {
                 let matched = matches[0];
-                pos += matched.length;
                 console.log('here', matched, pos);
                 let name = keys[keysIndex++];
-                lineOverlays.push(<div>{name}</div>);
+                let pxPos = getPxPos(x,pos);
+                let overlay = <div key={x+':'+pos} className="cm-jumpy" style={{top:`${pxPos.top}px`, left:`${pxPos.left}px`} as any}>{name}</div>;
+                lineOverlays.push(overlay);
+                pos += matched.length;
             } else {
                 pos++;
             }
         }
 
-        return [<div key={x} className="cm-jumpy" style={{top:`${getPxPos(x,0).top}px`} as any}>{x}</div>]
+        return lineOverlays;
     }));
 
     let overlay = ReactDOM.render(<div>
