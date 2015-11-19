@@ -1,4 +1,4 @@
-.cm-jumpy:before {
+.cm-jumpy {
     position: absolute;
     font-size: 9.4px;
     background: white;
@@ -6,6 +6,5 @@
     border-radius: 3px;
     padding: 1px;
     box-shadow: 1px 1px 1px 1px black;
-
-    content: attr(content);
+    z-index: 1000;
 }

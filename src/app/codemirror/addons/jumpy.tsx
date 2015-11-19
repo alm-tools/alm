@@ -43,19 +43,41 @@ function createOverlay(cm: Editor) {
     let node = document.createElement('div');
     let scrollInfo = cm.getScrollInfo();
     let topLine = cm.coordsChar({top:scrollInfo.top,left: scrollInfo.left}, 'local').line;
-    let bottomLine = cm.coordsChar({ top: scrollInfo.top + scrollInfo.clientHeight + 1, left: scrollInfo.left }, 'local').line;
+    let bottomLine = cm.coordsChar({ top: scrollInfo.top + scrollInfo.clientHeight, left: scrollInfo.left }, 'local').line + 1;
     // console.log(scrollInfo,bottomLine-topLine);
     let lines = [];
     for (let i = 0; i < bottomLine - topLine; i++) {
         lines.push(i);
     }
-    let overlayByLines = lines.map((x)=>{
-        let pos = cm.charCoords({line:x,ch:0},"local");
+
+    let keysIndex = 0;
+
+    let overlayByLines = utils.selectMany(lines.map((x)=>{
+        function getPxPos(line:number,ch:number){
+            let pxPos = cm.charCoords({line:line,ch:ch},"local");
+            return {top:pxPos.top - 20 , left: pxPos.left};
+        }
+
         let trueLine = x + topLine;
         let string = doc.getLine(trueLine);
-        console.log(string);
-        return <div key={x} style={{position:'absolute',top:`${pos.top - 20}px`} as any}>{x}</div>
-    });
+
+        let pos = 0;
+        let lineOverlays = [];
+        while (pos !== string.length) {
+            var matches = /^[A-Z]?[0-9a-z]+|^[\{\};]+/.exec(string.substr(pos));
+            if (matches && matches.length) {
+                let matched = matches[0];
+                pos += matched.length;
+                console.log('here', matched, pos);
+                let name = keys[keysIndex++];
+                lineOverlays.push(<div>{name}</div>);
+            } else {
+                pos++;
+            }
+        }
+
+        return [<div key={x} className="cm-jumpy" style={{top:`${getPxPos(x,0).top}px`} as any}>{x}</div>]
+    }));
 
     let overlay = ReactDOM.render(<div>
         {overlayByLines}
