@@ -4,17 +4,8 @@
     background: white;
     color: black;
     border-radius: 3px;
-    font-weight: bold;
-}
-.cm-jumpy-aa:before {
-    content: "aa";
-}
-.cm-jumpy-ab:before {
-    content: "ab";
-}
-.cm-jumpy-aa:before {
-    content: "aa";
-}
-.cm-jumpy-aa:before {
-    content: "aa";
+    padding: 1px;
+    box-shadow: 1px 1px 1px 1px black;
+
+    content: attr(content);
 }
