@@ -26,12 +26,21 @@ for (let c1 of lowerCharacters) {
 
 type Editor = CodeMirror.EditorFromTextArea;
 
+interface JumpyWidget{
+    node: HTMLDivElement;
+    line: number;
+    ch: number;
+    key1: string;
+    key2: string;
+}
+
 interface JumpyState {
     overlay?: HTMLDivElement;
+    widgets?: JumpyWidget[];
 }
 
 function getState(cm:Editor): JumpyState{
-    return (cm as any).state.jumpy || ((cm as any).state.jumpy = {});
+    return (cm as any).state.jumpy || ((cm as any).state.jumpy = { widgets: [] });
 }
 
 function createOverlay(cm: Editor) {
