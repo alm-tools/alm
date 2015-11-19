@@ -38,6 +38,7 @@ require('codemirror/mode/xml/xml')
 // Our Addons
 require('./addons/text-hover');
 require('./addons/text-hover.css');
+require('./addons/jumpy');
 
 // Css overrides
 require('./override.css')

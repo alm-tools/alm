@@ -116,6 +116,7 @@
         "./typings/v8string.d.ts",
         "./webpack.config.ts",
         "./app/clipboard.tsx",
+        "./app/codemirror/addons/jumpy.tsx",
         "./app/codemirror/codeEditor.tsx",
         "./app/devtemplate.tsx",
         "./app/fileTree.tsx",
@@ -139,5 +140,8 @@
         "./app/ui.tsx",
         "./app/uix.tsx"
     ],
-    "exclude": []
+    "exclude": [],
+    "atom": {
+        "rewriteTsconfig": true
+    }
 }
