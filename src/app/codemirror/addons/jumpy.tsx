@@ -30,16 +30,18 @@ interface JumpyWidget{
     node: HTMLDivElement;
     line: number;
     ch: number;
-    key1: string;
-    key2: string;
+    keys: string;
 }
 
 interface JumpyState {
+    shown: boolean;
     widgets?: JumpyWidget[];
+    key1?: string;
+    key2?: string;
 }
 
-function getState(cm:Editor): JumpyState{
-    return (cm as any).state.jumpy || ((cm as any).state.jumpy = { widgets: [] });
+export function getState(cm:Editor): JumpyState{
+    return (cm as any).state.jumpy || ((cm as any).state.jumpy = { widgets: [], shown: false });
 }
 
 function createOverlays(cm: Editor) {
@@ -77,8 +79,7 @@ function createOverlays(cm: Editor) {
                     node,
                     line: trueLine,
                     ch: pos,
-                    key1: name[0],
-                    key2: name[1],
+                    keys: name,
                 }
 
                 lineOverlays.push(widget);
@@ -93,32 +94,60 @@ function createOverlays(cm: Editor) {
 
     // Add to CM + State
     overlayByLines.forEach(wg=>cm.addWidget({line:wg.line,ch:wg.ch},wg.node,false));
-    getState(cm).widgets = overlayByLines;
+    let state = getState(cm);
+    state.widgets = overlayByLines;
+    state.shown = true;
 }
 
 function clearAnyOverlay(cm: Editor) {
-    if (getState(cm).widgets.length) {
-        getState(cm).widgets.forEach(wg => wg.node.parentElement.removeChild(wg.node));
-        getState(cm).widgets = [];
+    let state = getState(cm);
+    if (state.widgets.length) {
+        state.widgets.forEach(wg => wg.node.parentElement.removeChild(wg.node));
+        state.widgets = [];
+        state.key1 = null;
+        state.key2 = null;
+        state.shown = false;
+        (cm as any).off('beforeChange', handleBeforeChange);
+        (cm as any).off('scroll', clearAnyOverlay);
     }
 }
 
 function addOverlay(cm: Editor) {
     clearAnyOverlay(cm);
     createOverlays(cm);
-}
-
-// Wire up the code mirror command to come here
-CodeMirror.commands[commands.additionalEditorCommands.jumpy] = (editor: CodeMirror.EditorFromTextArea) => {
-    let cursor = editor.getDoc().getCursor();
-    let filePath = editor.filePath;
-    let position = editor.getDoc().indexFromPos(cursor);
 
     // Subscribe to esc *once* to clear
     commands.esc.once(()=>{
-        clearAnyOverlay(editor);
+        clearAnyOverlay(cm);
     });
+    (cm as any).on('beforeChange', handleBeforeChange);
+    (cm as any).on('scroll', clearAnyOverlay);
+}
 
+function handleBeforeChange(cm: Editor, changeObj: { from: CodeMirror.Position, to: CodeMirror.Position, text: string, origin: string, cancel: () => void}) {
+    changeObj.cancel(); // don't propogate further
+    let state = getState(cm);
+    if (!state.key1) {
+        state.key1 = changeObj.text;
+    }
+    else {
+        // setTimout becuase from docs : you may not do anything changes the document or its visualization
+        setTimeout(()=>{
+            let total = state.key1 + changeObj.text;
+            let matched = state.widgets.find(wg=>wg.keys == total);
+            if (matched){
+                cm.getDoc().setCursor({ line: matched.line, ch: matched.ch });
+            }
+            clearAnyOverlay(cm);
+        })
+    }
+}
 
-    addOverlay(editor);
+// Wire up the code mirror command to come here
+CodeMirror.commands[commands.additionalEditorCommands.jumpy] = (cm: CodeMirror.EditorFromTextArea) => {
+    let doc = cm.getDoc();
+    let cursor = cm.getDoc().getCursor();
+    let filePath = cm.filePath;
+    let position = cm.getDoc().indexFromPos(cursor);
+    addOverlay(cm);
 }
