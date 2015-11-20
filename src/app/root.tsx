@@ -19,6 +19,7 @@ import {SelectListView} from "./selectListView";
 import slv = require("./selectListView");
 
 import {StatusBar} from "./statusBar";
+import {ActiveLists} from "./activeLists";
 import sb = require('./statusBar');
 import {FindAndReplace} from "./findAndReplace";
 import * as state from "./state/state";
@@ -71,6 +72,8 @@ export class Root extends ui.BaseComponent<{}, State>{
                 </div>
 
                 <FindAndReplace/>
+
+                <ActiveLists/>
 
                 <StatusBar ref="statusBar"/>
             </div>;

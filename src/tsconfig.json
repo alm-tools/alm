@@ -115,6 +115,7 @@
         "./typings/v8promise.d.ts",
         "./typings/v8string.d.ts",
         "./webpack.config.ts",
+        "./app/activeLists.tsx",
         "./app/clipboard.tsx",
         "./app/codemirror/addons/jumpy.tsx",
         "./app/codemirror/codeEditor.tsx",

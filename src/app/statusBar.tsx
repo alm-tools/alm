@@ -62,53 +62,11 @@ export class StatusBar extends BaseComponent<Props, State>{
 
     componentDidMount() {
         statusBar = this;
-
-        this.disposible.add(commands.toggleErrorMessagesPanel.on(()=>{
-            state.getState().errorsExpanded?state.collapseErrors({}):state.expandErrors({});
-        }));
     }
 
     render(){
 
         let errorCount = utils.selectMany(Object.keys(this.props.errorsByFilePath).map((k)=>this.props.errorsByFilePath[k])).length;
-
-        let errorPanel = undefined;
-        if (this.props.errorsExpanded){
-            errorPanel = <div style={styles.errorsPanel.main}>
-            {
-                errorCount?
-                Object.keys(this.props.errorsByFilePath)
-                .filter(filePath=>!!this.props.errorsByFilePath[filePath].length)
-                .map((filePath,i)=>{
-
-                    let errors =
-                        this.props.errorsByFilePath[filePath]
-                            .map((e, j) => (
-                                <div key={`${i}:${j}`} style={[styles.hand, styles.errorsPanel.errorDetailsContainer]} onClick={()=>this.openErrorLocation(e)}>
-                                    <div style={styles.errorsPanel.errorDetailsContent}>
-                                        <div style={styles.errorsPanel.errorMessage}>
-                                            🐛({e.from.line+1}:{e.from.ch+1}) {e.message}
-                                            {' '}<Clipboard text={`${e.filePath}:${e.from.line+1} ${e.message}`}/>
-                                        </div>
-                                        {e.preview?<div style={styles.errorsPanel.errorPreview}>{e.preview}</div>:''}
-                                    </div>
-                                </div>
-                            ));
-
-                    return <div key={i}>
-                        <div style={styles.errorsPanel.filePath} onClick={()=>this.openErrorLocation(this.props.errorsByFilePath[filePath][0])}>
-                            <Icon name="file-code-o" style={{fontSize: '.8rem'} as any}/> {filePath}
-                        </div>
-
-                        <div style={styles.errorsPanel.perFileList}>
-                            {errors}
-                        </div>
-                    </div>
-                }): <div style={styles.errorsPanel.success}>No Errors ❤</div>
-            }
-            </div>
-        }
-
         let projectTipKeboard = ReactDOMServer.renderToString(<div style={notificationKeyboardStyle}>Alt+Shift+P</div>);
         let inActiveProjectSection =
             !this.props.currentFilePath
@@ -129,11 +87,6 @@ export class StatusBar extends BaseComponent<Props, State>{
             </span>
         return (
             <div>
-                <ui.VelocityTransitionGroup
-                    enter={{animation: "slideDown", duration: 150}}
-                    leave={{animation: "slideUp", duration: 150}}>
-                    {errorPanel}
-                </ui.VelocityTransitionGroup>
                 <div style={csx.extend(styles.statusBar,csx.horizontal,csx.center)}>
                     {/* Left sections */}
                     <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)} onClick={this.toggleErrors} title={`${errorCount} errors. Click to toggle error panel.`}>
