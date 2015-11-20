@@ -79,13 +79,13 @@ export class ActiveLists extends BaseComponent<Props, State>{
 
         let errorPanel = undefined;
         if (this.props.errorsExpanded){
-            errorPanel = <div style={{ height: this.state.height, overflow: 'auto' } as any}>
+            errorPanel = <div>
 
             <DraggableCore onDrag={this.handleDrag} onStop={this.handleStop}>
                 <div style={csx.extend(csx.flexRoot, csx.centerCenter, resizerStyle)}><Icon name="ellipsis-h"/></div>
             </DraggableCore>
 
-            <div style={styles.errorsPanel.main}>
+            <div style={csx.extend(styles.errorsPanel.main,{height: this.state.height})}>
                 {errorCount?
                     Object.keys(this.props.errorsByFilePath)
                     .filter(filePath=>!!this.props.errorsByFilePath[filePath].length)
