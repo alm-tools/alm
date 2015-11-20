@@ -132,8 +132,8 @@ export var replaceAll = new events.TypedEvent<{ newText: string }>();
 /**
  * Error panel
  */
-export let toggleErrorMessagesPanel = new UICommand({
-    keyboardShortcut: 'alt+shift+m', // code (ctrl+shift+m) conflicts with sublime
+export let toggleMessagesPanel = new UICommand({
+    keyboardShortcut: 'ctrl+shift+m', // code
     description: "Toggle error panel",
     context: CommandContext.Global,
 });
@@ -233,6 +233,7 @@ let unsupportedNames = utils.createMap([
     'findPrev',
     'findNext',
     'findUnder',
+    'findUnderPrevious',
     'indentAuto',
     'replaceAll',
 
@@ -243,6 +244,8 @@ let unsupportedNames = utils.createMap([
     "toggleBookmark",
     "clearBookmarks",
     "selectBookmarks",
+
+    "selectBetweenBrackets", // Ctrl + Shift + M is better left to messages
 
     "delLineLeft", // didn't work
 

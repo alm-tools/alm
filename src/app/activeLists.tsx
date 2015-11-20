@@ -56,8 +56,7 @@ export class ActiveLists extends BaseComponent<Props, State>{
     }
 
     componentDidMount() {
-
-        this.disposible.add(commands.toggleErrorMessagesPanel.on(()=>{
+        this.disposible.add(commands.toggleMessagesPanel.on(()=>{
             state.getState().errorsExpanded?state.collapseErrors({}):state.expandErrors({});
         }));
     }
