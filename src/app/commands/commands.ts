@@ -15,6 +15,7 @@ import * as Mousetrap from "mousetrap";
 require("mousetrap/plugins/global-bind/mousetrap-global-bind");
 import * as events from "../../common/events";
 import * as utils from "../../common/utils";
+import * as csx from "csx";
 
 export enum CommandContext {
     Global,
@@ -222,8 +223,10 @@ sublimeMap[`${mod}-Space`] = "autocomplete";
 sublimeMap[`F2`] = additionalEditorCommands.renameVariable;
 sublimeMap[`${mod}-B`] = additionalEditorCommands.gotoDefinition;
 sublimeMap[`Shift-Enter`] = additionalEditorCommands.jumpy;
-// Fallback to default `singleSelection` as sublime `singleSelectionTop` is bad
-delete sublimeMap['Esc'];
+
+delete sublimeMap['Esc']; // Fallback to default `singleSelection` as sublime `singleSelectionTop` is bad
+sublimeMap[`Shift-${mod}-M`] = '...'; // Ignore this input 
+// console.log(csx.extend({},basicMap,defaultMap,sublimeMap)); // DEBUG
 
 /** Comamnds we don't support as an editor command */
 let unsupportedNames = utils.createMap([
