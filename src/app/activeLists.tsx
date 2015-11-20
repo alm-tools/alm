@@ -155,7 +155,7 @@ export class ActiveLists extends BaseComponent<Props, State>{
             clientX: number, clientY: number
         }
     }) => {
-        this.setState({ height: this.state.height - ui.position.deltaY });
+        this.setState({ height: utils.rangeLimited({ num: this.state.height - ui.position.deltaY, min: 100, max: window.innerHeight - 100 }) });
     };
 
     handleStop = () => {
