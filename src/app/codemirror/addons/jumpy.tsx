@@ -165,5 +165,6 @@ CodeMirror.commands[commands.additionalEditorCommands.jumpy] = (cm: CodeMirror.E
     let cursor = cm.getDoc().getCursor();
     let filePath = cm.filePath;
     let position = cm.getDoc().indexFromPos(cursor);
+    doc.setSelection(cursor,cursor); // clear selection otherwise we end up replacing the selection
     addOverlay(cm);
 }
