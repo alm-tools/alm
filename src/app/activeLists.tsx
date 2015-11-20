@@ -12,6 +12,7 @@ import * as types from "../common/types";
 import {Clipboard} from "./clipboard";
 import {PendingRequestsIndicator} from "./pendingRequestsIndicator";
 import {Icon} from "./icon";
+let {DraggableCore} = ui;
 
 import {connect} from "react-redux";
 import {StoreState,expandErrors,collapseErrors} from "./state/state";
@@ -36,6 +37,16 @@ export interface Props extends React.Props<any> {
     socketConnected?: boolean;
 }
 export interface State {
+    /** height in pixels */
+    height?: number;
+}
+
+let resizerWidth = 5;
+let resizerStyle = {
+    background: 'radial-gradient(#444,transparent)',
+    height: resizerWidth+'px',
+    cursor:'ns-resize',
+    color: '#666',
 }
 
 @connect((state: StoreState): Props => {
@@ -52,6 +63,7 @@ export class ActiveLists extends BaseComponent<Props, State>{
     constructor(props:Props){
         super(props);
         this.state = {
+            height: 150,
         }
     }
 
@@ -67,7 +79,12 @@ export class ActiveLists extends BaseComponent<Props, State>{
 
         let errorPanel = undefined;
         if (this.props.errorsExpanded){
-            errorPanel = <div style={styles.errorsPanel.main}>
+            errorPanel = <div style={csx.extend(styles.errorsPanel.main,{ height: this.state.height })}>
+
+            <DraggableCore onDrag={this.handleDrag} onStop={this.handleStop}>
+                <div style={csx.extend(csx.flexRoot, csx.centerCenter, resizerStyle)}><Icon name="ellipsis-h"/></div>
+            </DraggableCore>
+
             {
                 errorCount?
                 Object.keys(this.props.errorsByFilePath)
@@ -77,7 +94,7 @@ export class ActiveLists extends BaseComponent<Props, State>{
                     let errors =
                         this.props.errorsByFilePath[filePath]
                             .map((e, j) => (
-                                <div key={`${i}:${j}`} style={[styles.hand, styles.errorsPanel.errorDetailsContainer]} onClick={()=>this.openErrorLocation(e)}>
+                                <div key={`${i}:${j}`} style={csx.extend(styles.hand, styles.errorsPanel.errorDetailsContainer)} onClick={()=>this.openErrorLocation(e)}>
                                     <div style={styles.errorsPanel.errorDetailsContent}>
                                         <div style={styles.errorsPanel.errorMessage}>
                                             🐛({e.from.line+1}:{e.from.ch+1}) {e.message}
@@ -128,5 +145,20 @@ export class ActiveLists extends BaseComponent<Props, State>{
 
     openFile = (filePath: string) => {
         commands.doOpenOrFocusFile.emit({ filePath });
+    }
+
+    handleDrag = (evt, ui: {
+        node: Node, position: {
+            // lastX + deltaX === clientX
+            deltaX: number, deltaY: number,
+            lastX: number, lastY: number,
+            clientX: number, clientY: number
+        }
+    }) => {
+        this.setState({ height: this.state.height - ui.position.deltaY });
+    };
+
+    handleStop = () => {
+        // TODO store as user setting
     }
 }

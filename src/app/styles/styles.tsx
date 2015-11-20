@@ -101,8 +101,6 @@ export namespace errorsPanel {
         color: '#999',
         fontFamily: codeFont.fontFamily,
         padding: '6px',
-        borderTop: '2px solid grey',
-        height: '150px',
         overflow: 'auto'
     }
 
