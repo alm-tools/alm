@@ -101,7 +101,6 @@ export namespace errorsPanel {
         color: '#999',
         fontFamily: codeFont.fontFamily,
         padding: '6px',
-        overflow: 'auto'
     }
 
     export let filePath = {

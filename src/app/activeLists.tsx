@@ -79,43 +79,44 @@ export class ActiveLists extends BaseComponent<Props, State>{
 
         let errorPanel = undefined;
         if (this.props.errorsExpanded){
-            errorPanel = <div style={csx.extend(styles.errorsPanel.main,{ height: this.state.height })}>
+            errorPanel = <div style={{ height: this.state.height, overflow: 'auto' } as any}>
 
             <DraggableCore onDrag={this.handleDrag} onStop={this.handleStop}>
                 <div style={csx.extend(csx.flexRoot, csx.centerCenter, resizerStyle)}><Icon name="ellipsis-h"/></div>
             </DraggableCore>
 
-            {
-                errorCount?
-                Object.keys(this.props.errorsByFilePath)
-                .filter(filePath=>!!this.props.errorsByFilePath[filePath].length)
-                .map((filePath,i)=>{
+            <div style={styles.errorsPanel.main}>
+                {errorCount?
+                    Object.keys(this.props.errorsByFilePath)
+                    .filter(filePath=>!!this.props.errorsByFilePath[filePath].length)
+                    .map((filePath,i)=>{
 
-                    let errors =
-                        this.props.errorsByFilePath[filePath]
-                            .map((e, j) => (
-                                <div key={`${i}:${j}`} style={csx.extend(styles.hand, styles.errorsPanel.errorDetailsContainer)} onClick={()=>this.openErrorLocation(e)}>
-                                    <div style={styles.errorsPanel.errorDetailsContent}>
-                                        <div style={styles.errorsPanel.errorMessage}>
-                                            🐛({e.from.line+1}:{e.from.ch+1}) {e.message}
-                                            {' '}<Clipboard text={`${e.filePath}:${e.from.line+1} ${e.message}`}/>
+                        let errors =
+                            this.props.errorsByFilePath[filePath]
+                                .map((e, j) => (
+                                    <div key={`${i}:${j}`} style={csx.extend(styles.hand, styles.errorsPanel.errorDetailsContainer)} onClick={()=>this.openErrorLocation(e)}>
+                                        <div style={styles.errorsPanel.errorDetailsContent}>
+                                            <div style={styles.errorsPanel.errorMessage}>
+                                                🐛({e.from.line+1}:{e.from.ch+1}) {e.message}
+                                                {' '}<Clipboard text={`${e.filePath}:${e.from.line+1} ${e.message}`}/>
+                                            </div>
+                                            {e.preview?<div style={styles.errorsPanel.errorPreview}>{e.preview}</div>:''}
                                         </div>
-                                        {e.preview?<div style={styles.errorsPanel.errorPreview}>{e.preview}</div>:''}
                                     </div>
-                                </div>
-                            ));
+                                ));
 
-                    return <div key={i}>
-                        <div style={styles.errorsPanel.filePath} onClick={()=>this.openErrorLocation(this.props.errorsByFilePath[filePath][0])}>
-                            <Icon name="file-code-o" style={{fontSize: '.8rem'} as any}/> {filePath}
-                        </div>
+                        return <div key={i}>
+                            <div style={styles.errorsPanel.filePath} onClick={()=>this.openErrorLocation(this.props.errorsByFilePath[filePath][0])}>
+                                <Icon name="file-code-o" style={{fontSize: '.8rem'} as any}/> {filePath}
+                            </div>
 
-                        <div style={styles.errorsPanel.perFileList}>
-                            {errors}
+                            <div style={styles.errorsPanel.perFileList}>
+                                {errors}
+                            </div>
                         </div>
-                    </div>
-                }): <div style={styles.errorsPanel.success}>No Errors ❤</div>
-            }
+                    }): <div style={styles.errorsPanel.success}>No Errors ❤</div>
+                }
+            </div>
             </div>
         }
 
