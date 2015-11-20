@@ -378,8 +378,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     closeTab(index: number) {
-        // Always clear the status bar
-        state.setCurrentFilePath('');
+        // Clear the status bar if this was the current tab
+        if (index === this.props.selectedTabIndex){
+            state.setCurrentFilePath('');    
+        }
 
         // If no tabs
         if (!this.props.tabs.length) {
