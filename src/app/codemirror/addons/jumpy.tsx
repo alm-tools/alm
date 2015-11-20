@@ -101,7 +101,7 @@ function createOverlays(cm: Editor) {
 
 function clearAnyOverlay(cm: Editor) {
     let state = getState(cm);
-    if (state.widgets.length) {
+    if (state.shown) {
         state.widgets.forEach(wg => wg.node.parentElement.removeChild(wg.node));
         state.widgets = [];
         state.key1 = null;
@@ -125,13 +125,29 @@ function addOverlay(cm: Editor) {
 }
 
 function handleBeforeChange(cm: Editor, changeObj: { from: CodeMirror.Position, to: CodeMirror.Position, text: string, origin: string, cancel: () => void}) {
+    // Note:
+    // setTimeout becuase from docs : you may not do anything changes the document or its visualization
+
     changeObj.cancel(); // don't propogate further
+
     let state = getState(cm);
     if (!state.key1) {
         state.key1 = changeObj.text;
+        setTimeout(()=>{
+            // remove not matched
+            state.widgets.filter(wg=>!wg.keys.startsWith(state.key1)).forEach(wg => wg.node.parentElement.removeChild(wg.node));
+
+            // only keep matched
+            state.widgets = state.widgets.filter(wg=>wg.keys.startsWith(state.key1));
+
+            // remove all if nothing matched
+            if (state.widgets.length == 0){
+                clearAnyOverlay(cm);
+            }
+        });
     }
     else {
-        // setTimout becuase from docs : you may not do anything changes the document or its visualization
+
         setTimeout(()=>{
             let total = state.key1 + changeObj.text;
             let matched = state.widgets.find(wg=>wg.keys == total);
