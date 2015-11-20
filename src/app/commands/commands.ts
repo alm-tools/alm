@@ -133,9 +133,15 @@ export var replaceAll = new events.TypedEvent<{ newText: string }>();
 /**
  * Error panel
  */
-export let toggleMessagesPanel = new UICommand({
-    keyboardShortcut: 'ctrl+shift+m', // code
-    description: "Toggle error panel",
+export let toggleMessagePanel = new UICommand({
+    keyboardShortcut: 'mod+;', //
+    description: "Toggle message panel",
+    context: CommandContext.Global,
+});
+
+export let cycleMessagesPanel = new UICommand({
+    keyboardShortcut: 'mod+shift+;', //
+    description: "Cycle message panel",
     context: CommandContext.Global,
 });
 
@@ -225,12 +231,11 @@ sublimeMap[`${mod}-B`] = additionalEditorCommands.gotoDefinition;
 sublimeMap[`Shift-Enter`] = additionalEditorCommands.jumpy;
 
 delete sublimeMap['Esc']; // Fallback to default `singleSelection` as sublime `singleSelectionTop` is bad
-sublimeMap[`Shift-${mod}-M`] = '...'; // Ignore this input 
 // console.log(csx.extend({},basicMap,defaultMap,sublimeMap)); // DEBUG
 
 /** Comamnds we don't support as an editor command */
 let unsupportedNames = utils.createMap([
-    '...',
+    '...', // General command to ignore some input
     'replace',
     'find', // already list this elsewhere
     'findPrev',
@@ -247,8 +252,6 @@ let unsupportedNames = utils.createMap([
     "toggleBookmark",
     "clearBookmarks",
     "selectBookmarks",
-
-    "selectBetweenBrackets", // Ctrl + Shift + M is better left to messages
 
     "delLineLeft", // didn't work
 
