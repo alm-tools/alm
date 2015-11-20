@@ -6,6 +6,7 @@ require('codemirror/addon/hint/javascript-hint');
 import {createMap} from "../../../common/utils";
 import {server,cast,Types} from "../../../socket/socketClient";
 import * as state from "../../state/state";
+import * as jumpy from "./jumpy";
 
 require('./autocomplete.css');
 
@@ -45,6 +46,11 @@ export function setupCodeMirror(cm: CodeMirror.EditorFromTextArea){
 
         /** only on user input (e.g. exclude `cut`) */
         if (change.origin !== '+input'){
+            return;
+        }
+
+        /** Also ignore jumpy :-/ cancelling it from jumpy still causes this to get called */
+        if (jumpy.getState(ed).shown) {
             return;
         }
 
