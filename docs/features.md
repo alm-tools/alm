@@ -10,7 +10,9 @@ Sublime users will feel right at home as they get to use all their favorite feat
 ![](https://raw.githubusercontent.com/TypeScriptBuilder/tsb-docs/gh-pages/screens/rectangular.gif)
 
 # Disk Watching
-You can use this side by side with your favorite editor. *The disk on file will set you free*.
+> The file on disk will set you free
+
+You can use this side by side with your favorite editor.
 
 ![](https://raw.githubusercontent.com/TypeScriptBuilder/tsb-docs/gh-pages/screens/seemlessExternalEditing.gif)
 
