@@ -185,7 +185,7 @@ declare module CodeMirror {
         /** Puts node, which should be an absolutely positioned DOM node, into the editor, positioned right below the given { line , ch } position.
         When scrollIntoView is true, the editor will ensure that the entire node is visible (if possible).
         To remove the widget again, simply use DOM methods (move it somewhere else, or call removeChild on its parent). */
-        addWidget(pos: CodeMirror.Position, node: HTMLElement, scrollIntoView: boolean): void;
+        addWidget(pos: CodeMirror.Position, node: HTMLElement, scrollIntoView?: boolean): void;
 
         /** Adds a line widget, an element shown below a line, spanning the whole of the editor's width, and moving the lines below it downwards.
         line should be either an integer or a line handle, and node should be a DOM node, which will be displayed below the given line.
