@@ -117,6 +117,7 @@
         "./webpack.config.ts",
         "./app/activeLists.tsx",
         "./app/clipboard.tsx",
+        "./app/codemirror/addons/docu.tsx",
         "./app/codemirror/addons/jumpy.tsx",
         "./app/codemirror/codeEditor.tsx",
         "./app/devtemplate.tsx",

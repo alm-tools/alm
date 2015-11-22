@@ -62,6 +62,7 @@ import * as ui from "../ui";
 import {cast,server} from "../../socket/socketClient";
 import {createId,getFilePathFromUrl} from "../../common/utils";
 import escape = require("escape-html");
+import * as docu from "./addons/docu";
 
 import * as state from "../state/state";
 
@@ -83,7 +84,11 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 	}
 
 	codeMirror: CodeMirror.EditorFromTextArea;
-	refs: { [string: string]: any; textarea: any; }
+	refs: {
+		[string: string]: any;
+		textarea: any;
+		docu: any;
+	}
 
 	componentDidMount () {
 
@@ -152,7 +157,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 
         this.disposible.add(onresize.on(() => this.refresh()));
 
-        // Load the document
+		// Load the document
         docCache.getLinkedDoc(this.props.filePath).then((doc)=>{
             this.codeMirror.swapDoc(doc);
 
@@ -290,7 +295,8 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 			className += ' ReactCodeMirror--focused';
 		}
 		return (
-			<div className={className} style={csx.extend(csx.vertical,csx.flex)}>
+			<div className={className} style={csx.extend(csx.vertical,csx.flex,{position:'relative'})}>
+				<docu.Docu cm={this.codeMirror} filePath={this.props.filePath}/>
 				<textarea ref="textarea" name={this.props.filePath} autoComplete={false} />
 			</div>
 		);
