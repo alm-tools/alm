@@ -2,6 +2,7 @@ import minimist = require('minimist');
 import * as path from "path";
 import * as utils from "../common/utils";
 import * as workingDir from "./disk/workingDir";
+import * as fsu from "./utils/fsu";
 
 let defaultPort = 4444;
 
@@ -51,6 +52,13 @@ export let getOptions = utils.once((): CommandLineOptions => {
     if (argv._ && argv._.length) {
         options.filePaths = argv._.map(x=> workingDir.makeAbsoluteIfNeeded(x));
     }
+    // Common usage user does `tsb ./srcFolder`
+    // So if there was only one filePath detected and its a dir ... user probably meant `-d`
+    if (options.filePaths.length == 1 && fsu.isDir(options.filePaths[0])){
+        workingDir.setProjectRoot(options.filePaths[0]);
+        options.filePaths = [];
+    }
+
     if (options.safe){
         console.log("---SAFE MODE---")
     }
