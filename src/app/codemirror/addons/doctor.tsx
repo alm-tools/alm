@@ -40,6 +40,7 @@ interface State {
     onBottom?: boolean; // or on bottom ... depending upon cursor
     cursor?: EditorPosition;
     doctorInfo?: Types.GetDoctorInfoResponse;
+    searching?: boolean;
 }
 
 let docuStyle = {
@@ -68,7 +69,7 @@ let docuStyle = {
     maxHeight: '400px',
     minHeight: '100px',
 
-    opacity: '0.8', // Light as this is not the user's focus
+    opacity: '0.7', // Light as this is not the user's focus
     transition: 'opacity .2s',
     ':hover':{
         opacity: '1'
@@ -107,6 +108,11 @@ export class Doctor extends ui.BaseComponent<Props,State> {
         super.componentWillUnmount();
         this.props.cm.off('cursorActivity', this.handleCursorActivity);
     }
+    componentWillReceiveProps(props:Props,oldProps:Props){
+        if (props.showDoctor && !oldProps.showDoctor){
+            this.handleCursorActivity();
+        }
+    }
 
     handleCursorActivity = () => {
         let cm = this.props.cm;
@@ -128,12 +134,11 @@ export class Doctor extends ui.BaseComponent<Props,State> {
         let bottomLine = cm.coordsChar({ top: scrollInfo.top + scrollInfo.clientHeight, left: scrollInfo.left }, 'local').line + 1;
 
         if (cursor.line - topLine < bottomLine - cursor.line){
-            this.setState({onBottom: true,cursor, doctorInfo: null});
+            this.setState({ onBottom: true, cursor, doctorInfo: null, searching: true });
         }
         else {
-            this.setState({onBottom: false,cursor, doctorInfo: null});
+            this.setState({onBottom: false,cursor, doctorInfo: null, searching: true});
         }
-
         this.updateLazyInformation();
     }
 
@@ -145,11 +150,10 @@ export class Doctor extends ui.BaseComponent<Props,State> {
         let cm = this.props.cm;
         let doc = cm.getDoc();
         server.getDoctorInfo({ filePath: this.props.filePath, editorPosition: this.state.cursor }).then(res=>{
-            console.log(res);
-            this.setState({ doctorInfo: res });
+            this.setState({ doctorInfo: res, searching: false });
         });
 
-    }, 1500);
+    }, 1000);
 
     render(){
         if (!this.props.showDoctor || !this.state.singleCursor){
@@ -163,18 +167,20 @@ export class Doctor extends ui.BaseComponent<Props,State> {
 
         let doctorInfo = this.state.doctorInfo;
         let definitions: JSX.Element;
-        let quickInfo: JSX.Element;
+        let typeInfo: JSX.Element;
+        let comment: JSX.Element;
         if (doctorInfo && doctorInfo.quickInfo){
-             quickInfo = <div style={doctorRow}>
-                <strong style={{fontFamily:'monospace'} as any}>{doctorInfo.quickInfo.name}</strong> <br/>
+             typeInfo = <div style={doctorRow}>
+                    <strong>Sig</strong> <strong style={{fontFamily:'monospace'} as any}>{doctorInfo.quickInfo.name}</strong>
+                </div>;
+             comment = doctorInfo.quickInfo.comment &&
                 <i>
                     {doctorInfo.quickInfo.comment}
-                </i>
-            </div>
+                </i>;
         }
         if (doctorInfo && doctorInfo.definitions && doctorInfo.definitions.length){
             definitions = <div style={doctorRow}>
-                <strong>Defined:</strong> {doctorInfo.definitions.map(def => utils.getFileName(def.filePath) + ":" + def.position.line).join(' ')}
+                <strong>Defs </strong> {doctorInfo.definitions.map(def => utils.getFileName(def.filePath) + ":" + (def.position.line + 1)).join(' ')}
             </div>
         }
 
@@ -189,10 +195,19 @@ export class Doctor extends ui.BaseComponent<Props,State> {
                 })
             }
             {
-                quickInfo
+                typeInfo
+            }
+            {
+                comment
             }
             {
                 definitions
+            }
+            {
+                this.state.searching && <i>Searching...</i>
+            }
+            {
+                this.state.doctorInfo && !this.state.doctorInfo.valid && <i>Nothing worthwhile</i>
             }
             </div>
         </div>;

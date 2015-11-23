@@ -164,6 +164,7 @@ export namespace Types {
      */
      export interface GetDoctorInfoQuery extends FilePathEditorPositionQuery { }
      export interface GetDoctorInfoResponse {
+         valid: boolean;
          definitions: {
              filePath: string;
              position: EditorPosition;

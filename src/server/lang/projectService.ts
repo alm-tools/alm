@@ -184,6 +184,7 @@ export function getDoctorInfo(query: Types.GetDoctorInfoQuery): Promise<Types.Ge
     return defPromised.then((defRes) => {
         return quickInfoPromised.then((infoRes) => {
             return {
+                valid: !!defRes.definitions.length || infoRes.valid,
                 definitions: defRes.definitions,
                 quickInfo: infoRes.valid ? {
                     name: infoRes.name,
