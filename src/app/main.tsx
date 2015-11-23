@@ -71,5 +71,11 @@ document.addEventListener('DOMContentLoaded', () => {
     cast.filePathsPartial.on((update) => {
         state.setPartialFilePaths(update.filePaths);
     });
-    commands.toggleDoctor.on(()=>{state.toggleDoctor({})});
+    commands.toggleDoctor.on(()=>{
+        if (!state.inActiveProject(state.getSelectedFilePath())){
+            ui.notifyWarningNormalDisappear('Doctor is only available for files in active project');
+            return;
+        }
+        state.toggleDoctor({});
+    });
 });

@@ -101,7 +101,7 @@ export class Doctor extends ui.BaseComponent<Props,State> {
         this.props.cm.off('cursorActivity', this.handleCursorActivity);
     }
     componentWillReceiveProps(props:Props,oldProps:Props){
-        if (props.showDoctor && !oldProps.showDoctor){
+        if (props.showDoctor && !oldProps.showDoctor && oldProps.cm){
             this.handleCursorActivity();
         }
     }
@@ -148,8 +148,12 @@ export class Doctor extends ui.BaseComponent<Props,State> {
     }, 1000);
 
     render(){
-        if (!this.props.showDoctor || !this.state.singleCursor){
+        if (!this.props.showDoctor || !this.state.singleCursor || !this.state.cursor){
             return <div />;
+        }
+
+        if (!state.inActiveProject(this.props.filePath)) {
+            return <div/>;
         }
 
         let rawErrors = this.props.errorsByFilePath[this.props.filePath] || [];
@@ -163,7 +167,7 @@ export class Doctor extends ui.BaseComponent<Props,State> {
         let comment: JSX.Element;
         if (doctorInfo && doctorInfo.quickInfo){
              typeInfo = <div style={doctorRow}>
-                    <strong>Sig</strong> <br/> <strong style={{fontFamily:'monospace'} as any}>{doctorInfo.quickInfo.name}</strong>
+                    <strong>Sig</strong> <strong style={{fontFamily:'monospace', padding:'5px'} as any}>{doctorInfo.quickInfo.name}</strong>
                 </div>;
              comment = doctorInfo.quickInfo.comment &&
                 <i>
