@@ -63,8 +63,9 @@ import {cast,server} from "../../socket/socketClient";
 import {createId,getFilePathFromUrl} from "../../common/utils";
 import escape = require("escape-html");
 import * as doctor from "./addons/doctor";
-
 import * as state from "../state/state";
+import { Provider } from 'react-redux';
+
 
 
 interface Props extends React.Props<any> {
@@ -87,7 +88,6 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 	refs: {
 		[string: string]: any;
 		textarea: any;
-		docu: any;
 	}
 
 	componentDidMount () {
@@ -296,7 +296,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 		}
 		return (
 			<div className={className} style={csx.extend(csx.vertical,csx.flex,{position:'relative'})}>
-				<doctor.Doctor cm={this.codeMirror} filePath={this.props.filePath}/>
+				{!this.props.readOnly && <doctor.Doctor cm={this.codeMirror} filePath={this.props.filePath}/>}
 				<textarea ref="textarea" name={this.props.filePath} autoComplete={false} />
 			</div>
 		);

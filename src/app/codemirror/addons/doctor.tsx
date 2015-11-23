@@ -66,6 +66,7 @@ let doctorRow ={
 
 
 interface Props {
+    ref?: any,
     cm?: Editor,
     filePath?: string,
 
@@ -90,19 +91,16 @@ interface State {
 })
 @ui.Radium
 export class Doctor extends ui.BaseComponent<Props,State> {
-    componentDidMount() {
-        setTimeout(()=>{
-            this.props.cm.on('cursorActivity', this.handleCursorActivity);
-            this.handleCursorActivity();
-        });
-    }
     componentWillUnmount() {
         super.componentWillUnmount();
         this.props.cm.off('cursorActivity', this.handleCursorActivity);
     }
     componentWillReceiveProps(props:Props,oldProps:Props){
-        if (props.showDoctor && !oldProps.showDoctor && oldProps.cm){
+        if (props.showDoctor && !oldProps.showDoctor){
             this.handleCursorActivity();
+        }
+        if (!oldProps.cm && props.cm){
+            props.cm.on('cursorActivity', this.handleCursorActivity);
         }
     }
 
