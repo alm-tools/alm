@@ -85,6 +85,11 @@ let docuOnBottomStyle = {
     bottom: '0px'
 }
 
+let doctorRow ={
+    paddingTop: '3px',
+    paddingBottom: '3px',
+}
+
 @connect((state: state.StoreState): Props => {
     return {
         showDoctor: state.showDoctor,
@@ -148,13 +153,30 @@ export class Doctor extends ui.BaseComponent<Props,State> {
 
     render(){
         if (!this.props.showDoctor || !this.state.singleCursor){
-            return <div/>;
+            return <div />;
         }
 
         let rawErrors = state.getState().errorsByFilePath[this.props.filePath] || [];
         let errors = rawErrors.filter(re=> re.from.line == this.state.cursor.line).filter(re=> re.from.ch <= this.state.cursor.ch && this.state.cursor.ch <= re.to.ch);
 
         let positionStyle = this.state.onBottom?docuOnBottomStyle:docuOnTopStyle;
+
+        let doctorInfo = this.state.doctorInfo;
+        let definitions: JSX.Element;
+        let quickInfo: JSX.Element;
+        if (doctorInfo && doctorInfo.quickInfo){
+             quickInfo = <div style={doctorRow}>
+                <strong style={{fontFamily:'monospace'} as any}>{doctorInfo.quickInfo.name}</strong> <br/>
+                <i>
+                    {doctorInfo.quickInfo.comment}
+                </i>
+            </div>
+        }
+        if (doctorInfo && doctorInfo.definitions && doctorInfo.definitions.length){
+            definitions = <div style={doctorRow}>
+                <strong>Defined:</strong> {doctorInfo.definitions.map(def => utils.getFileName(def.filePath) + ":" + def.position.line).join(' ')}
+            </div>
+        }
 
         return <div style={csx.extend(csx.newLayer,docuStyle,positionStyle,csx.vertical)}>
             <div style={csx.vertical}>
@@ -167,9 +189,10 @@ export class Doctor extends ui.BaseComponent<Props,State> {
                 })
             }
             {
-                this.state.doctorInfo
-                ?`Definitions: ${this.state.doctorInfo.definitions.length}`
-                :undefined
+                quickInfo
+            }
+            {
+                definitions
             }
             </div>
         </div>;
