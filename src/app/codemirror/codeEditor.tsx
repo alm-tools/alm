@@ -62,7 +62,7 @@ import * as ui from "../ui";
 import {cast,server} from "../../socket/socketClient";
 import {createId,getFilePathFromUrl} from "../../common/utils";
 import escape = require("escape-html");
-import * as docu from "./addons/docu";
+import * as doctor from "./addons/doctor";
 
 import * as state from "../state/state";
 
@@ -296,7 +296,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 		}
 		return (
 			<div className={className} style={csx.extend(csx.vertical,csx.flex,{position:'relative'})}>
-				<docu.Docu cm={this.codeMirror} filePath={this.props.filePath}/>
+				<doctor.Doctor cm={this.codeMirror} filePath={this.props.filePath}/>
 				<textarea ref="textarea" name={this.props.filePath} autoComplete={false} />
 			</div>
 		);

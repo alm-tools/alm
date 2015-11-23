@@ -146,6 +146,15 @@ export let cycleMessagesPanel = new UICommand({
 });
 
 /**
+ * Editor inline features
+ */
+export let toggleDoctor = new UICommand({
+    keyboardShortcut: "mod+'", //
+    description: "Editor: toggle doctor",
+    context: CommandContext.Global,
+});
+
+/**
  * Tree view
  */
 export let toggleTreeView = new UICommand({

@@ -32,7 +32,7 @@ export interface StoreState {
     tabs?: TabInstance[];
     selectedTabIndex?: number;
 
-    showDocu?: boolean;
+    showDoctor?: boolean;
 }
 
 let initialStoreState: StoreState = {
@@ -54,7 +54,7 @@ let initialStoreState: StoreState = {
     filePathsCompleted: false,
     tabs: [],
     selectedTabIndex: -1,
-    showDocu: false,
+    showDoctor: false,
 };
 
 let redux = new SimpleRedux<StoreState>(initialStoreState);
@@ -223,8 +223,8 @@ export let selectTab = redux.add('selectTab', (state: StoreState, payload: numbe
 /** gets the currently open file paths in tabs */
 export let getOpenFilePaths = () => getState().tabs.filter(t=>t.url.startsWith('file://')).map(t=>utils.getFilePathFromUrl(t.url));
 
-export let setShowDocu = redux.add('setShowDocu', (state: StoreState, payload: boolean): StoreState => {
+export let toggleDoctor = redux.add('toggleDoctor', (state: StoreState, payload: {}): StoreState => {
     return {
-        showDocu: payload
+        showDoctor: !state.showDoctor
     };
 });

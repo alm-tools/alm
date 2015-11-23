@@ -71,4 +71,5 @@ document.addEventListener('DOMContentLoaded', () => {
     cast.filePathsPartial.on((update) => {
         state.setPartialFilePaths(update.filePaths);
     });
+    commands.toggleDoctor.on(()=>{state.toggleDoctor({})});
 });
