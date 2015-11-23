@@ -14,34 +14,7 @@ import * as utils from "../../../common/utils";
 import {server} from "../../../socket/socketClient";
 import {Types} from "../../../socket/socketContract";
 
-enum Features {
-    Type,
-    Signature,
-    JSDoc,
-    Error,
-}
-
-interface DocuState {
-    cursor: EditorPosition;
-}
-
 type Editor = CodeMirror.EditorFromTextArea;
-
-interface Props {
-    cm?: Editor,
-    filePath?: string,
-
-    // Connected below
-    showDoctor?: boolean,
-}
-
-interface State {
-    singleCursor?: boolean;
-    onBottom?: boolean; // or on bottom ... depending upon cursor
-    cursor?: EditorPosition;
-    doctorInfo?: Types.GetDoctorInfoResponse;
-    searching?: boolean;
-}
 
 let docuStyle = {
     zIndex : '4', // To come over CM
@@ -91,9 +64,28 @@ let doctorRow ={
     paddingBottom: '3px',
 }
 
+
+interface Props {
+    cm?: Editor,
+    filePath?: string,
+
+    // Connected below
+    showDoctor?: boolean,
+    errorsByFilePath?: ErrorsByFilePath;
+}
+
+interface State {
+    singleCursor?: boolean;
+    onBottom?: boolean; // or on bottom ... depending upon cursor
+    cursor?: EditorPosition;
+    doctorInfo?: Types.GetDoctorInfoResponse;
+    searching?: boolean;
+}
+
 @connect((state: state.StoreState): Props => {
     return {
         showDoctor: state.showDoctor,
+        errorsByFilePath: state.errorsByFilePath,
     };
 })
 @ui.Radium
@@ -160,7 +152,7 @@ export class Doctor extends ui.BaseComponent<Props,State> {
             return <div />;
         }
 
-        let rawErrors = state.getState().errorsByFilePath[this.props.filePath] || [];
+        let rawErrors = this.props.errorsByFilePath[this.props.filePath] || [];
         let errors = rawErrors.filter(re=> re.from.line == this.state.cursor.line).filter(re=> re.from.ch <= this.state.cursor.ch && this.state.cursor.ch <= re.to.ch);
 
         let positionStyle = this.state.onBottom?docuOnBottomStyle:docuOnTopStyle;
@@ -171,7 +163,7 @@ export class Doctor extends ui.BaseComponent<Props,State> {
         let comment: JSX.Element;
         if (doctorInfo && doctorInfo.quickInfo){
              typeInfo = <div style={doctorRow}>
-                    <strong>Sig</strong> <strong style={{fontFamily:'monospace'} as any}>{doctorInfo.quickInfo.name}</strong>
+                    <strong>Sig</strong> <br/> <strong style={{fontFamily:'monospace'} as any}>{doctorInfo.quickInfo.name}</strong>
                 </div>;
              comment = doctorInfo.quickInfo.comment &&
                 <i>
