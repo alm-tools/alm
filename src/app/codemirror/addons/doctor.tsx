@@ -63,7 +63,7 @@ let docuOnBottomStyle = {
 let doctorRow =csx.extend({
     paddingTop: '3px',
     paddingBottom: '3px',
-}, csx.flex,csx.center)
+})
 
 let fileLinkStyle = {
     textDecoration: 'underline',
@@ -170,7 +170,7 @@ export class Doctor extends ui.BaseComponent<Props,State> {
         let comment: JSX.Element;
         if (doctorInfo && doctorInfo.quickInfo){
              typeInfo = <div style={doctorRow}>
-                    <strong>Sig</strong> <strong style={{fontFamily:'monospace'} as any}>{doctorInfo.quickInfo.name}</strong>
+                    <strong>SIG</strong> <strong style={{fontFamily:'monospace'} as any}>{doctorInfo.quickInfo.name}</strong>
                 </div>;
              comment = doctorInfo.quickInfo.comment &&
                 <div style={doctorRow}>
@@ -179,10 +179,12 @@ export class Doctor extends ui.BaseComponent<Props,State> {
         }
         if (doctorInfo && doctorInfo.definitions && doctorInfo.definitions.length){
             definitions = <div style={doctorRow}>
-                <strong>Defs </strong>
+                <strong>DEF</strong>{' '}
                 {doctorInfo.definitions.map(def => {
                     return (
-                        <span style={fileLinkStyle} onClick={()=>this.openLocation(def.filePath,def.position)}> {utils.getFileName(def.filePath) + ":" + (def.position.line + 1)} </span>
+                        <span style={fileLinkStyle}
+                        onClick={()=>this.openLocation(def.filePath,def.position)}
+                        >{utils.getFileName(def.filePath) + ":" + (def.position.line + 1)}</span>
                     )
                 })}
             </div>
