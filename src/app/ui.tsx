@@ -13,8 +13,10 @@ import * as commands from "./commands/commands";
 /** The base component that provides an easy access point for overall app behaviour changes */
 export class BaseComponent<Props, State> extends React.Component<Props, State>{
     disposible = new CompositeDisposible();
+    isUnmounted: boolean = false;
     componentWillUnmount() {
         this.disposible.dispose();
+        this.isUnmounted = true;
     }
 
     private _afterComponentDidUpdateQueue = [];

@@ -28,7 +28,8 @@ let buttonStyle = {
 }
 
 let clippy = {
-    width: '12px'
+    width: '12px',
+    height: '10px'
 }
 
 @ui.Radium

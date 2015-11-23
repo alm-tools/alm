@@ -171,3 +171,25 @@ export function getDefinitionsAtPosition(query: Types.GetDefinitionsAtPositionQu
         })
     });
 }
+
+export function getDoctorInfo(query: Types.GetDoctorInfoQuery): Promise<Types.GetDoctorInfoResponse> {
+    let project = getProject(query.filePath);
+    let filePath = query.filePath;
+    let position = project.languageServiceHost.getIndexFromPosition(query.filePath, query.editorPosition);
+
+    // Just collect other responses
+    let defPromised = getDefinitionsAtPosition({ filePath, position });
+    let quickInfoPromised = quickInfo({ filePath, position });
+
+    return defPromised.then((defRes) => {
+        return quickInfoPromised.then((infoRes) => {
+            return {
+                definitions: defRes.definitions,
+                quickInfo: infoRes.valid ? {
+                    name: infoRes.name,
+                    comment: infoRes.comment
+                } : null
+            }
+        });
+    });
+}

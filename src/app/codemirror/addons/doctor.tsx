@@ -9,6 +9,10 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as state from "../../state/state";
 import {connect} from "react-redux";
+import * as clipboard from "../../clipboard";
+import * as utils from "../../../common/utils";
+import {server} from "../../../socket/socketClient";
+import {Types} from "../../../socket/socketContract";
 
 enum Features {
     Type,
@@ -34,6 +38,8 @@ interface Props {
 interface State {
     singleCursor?: boolean;
     onBottom?: boolean; // or on bottom ... depending upon cursor
+    cursor?: EditorPosition;
+    doctorInfo?: Types.GetDoctorInfoResponse;
 }
 
 let docuStyle = {
@@ -63,7 +69,7 @@ let docuStyle = {
     minHeight: '100px',
 
     opacity: '0.8', // Light as this is not the user's focus
-    transition: 'opacity .2s, top .2s, bottom .2s',
+    transition: 'opacity .2s',
     ':hover':{
         opacity: '1'
     }
@@ -81,7 +87,7 @@ let docuOnBottomStyle = {
 
 @connect((state: state.StoreState): Props => {
     return {
-        showDoctor: state.showDoctor
+        showDoctor: state.showDoctor,
     };
 })
 @ui.Radium
@@ -93,6 +99,7 @@ export class Doctor extends ui.BaseComponent<Props,State> {
         });
     }
     componentWillUnmount() {
+        super.componentWillUnmount();
         this.props.cm.off('cursorActivity', this.handleCursorActivity);
     }
 
@@ -115,28 +122,65 @@ export class Doctor extends ui.BaseComponent<Props,State> {
         let topLine = cm.coordsChar({top:scrollInfo.top,left: scrollInfo.left}, 'local').line;
         let bottomLine = cm.coordsChar({ top: scrollInfo.top + scrollInfo.clientHeight, left: scrollInfo.left }, 'local').line + 1;
 
-
         if (cursor.line - topLine < bottomLine - cursor.line){
-            this.setState({onBottom: true});
+            this.setState({onBottom: true,cursor, doctorInfo: null});
         }
         else {
-            this.setState({onBottom: false});
+            this.setState({onBottom: false,cursor, doctorInfo: null});
         }
 
-        console.log()
+        this.updateLazyInformation();
     }
+
+    updateLazyInformation = utils.debounce(() => {
+        if (this.isUnmounted) return;
+        if (!this.props.showDoctor || !this.state.singleCursor) return;
+        if (!state.inActiveProject(this.props.filePath)) return;
+
+        let cm = this.props.cm;
+        let doc = cm.getDoc();
+        server.getDoctorInfo({ filePath: this.props.filePath, editorPosition: this.state.cursor }).then(res=>{
+            console.log(res);
+            this.setState({ doctorInfo: res });
+        });
+
+    }, 1500);
+
     render(){
         if (!this.props.showDoctor || !this.state.singleCursor){
             return <div/>;
         }
 
+        let rawErrors = state.getState().errorsByFilePath[this.props.filePath] || [];
+        let errors = rawErrors.filter(re=> re.from.line == this.state.cursor.line).filter(re=> re.from.ch <= this.state.cursor.ch && this.state.cursor.ch <= re.to.ch);
+
         let positionStyle = this.state.onBottom?docuOnBottomStyle:docuOnTopStyle;
 
-        return <div style={csx.extend(csx.newLayer,docuStyle,positionStyle)}>
+        return <div style={csx.extend(csx.newLayer,docuStyle,positionStyle,csx.vertical)}>
+            <div style={csx.vertical}>
+            {
+                errors.map(e=>{
+                    return <div style={{padding:'5px'} as any} key={e.from.ch}>
+                        🐛({e.from.line+1}:{e.from.ch+1}) {e.message}
+                        {' '}<clipboard.Clipboard text={`${e.filePath}:${e.from.line+1} ${e.message}`}/>
+                    </div>;
+                })
+            }
+            {
+                this.state.doctorInfo
+                ?`Definitions: ${this.state.doctorInfo.definitions.length}`
+                :undefined
+            }
+            </div>
+        </div>;
+
+        { /* For debugging styles
+        return <div >
             DocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocu DocuDocuDocuDocuDocu <br/>
             DocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocu DocuDocuDocuDocuDocu <br/>
             DocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocu DocuDocuDocuDocuDocu <br/>
             DocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocuDocu DocuDocuDocuDocuDocu <br/>
         </div>;
+        */}
     }
 }

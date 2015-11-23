@@ -296,10 +296,10 @@ export class LanguageServiceHost implements ts.LanguageServiceHost {
         return !!this.fileNameToScript[fileName];
     }
 
-    getIndexFromPosition = (fileName: string, position: { col: number; line: number }): number => {
+    getIndexFromPosition = (fileName: string, position: { ch: number; line: number }): number => {
         var script = this.fileNameToScript[fileName];
         if (script) {
-            return script.getPositionFromLine(position.line, position.col);
+            return script.getPositionFromLine(position.line, position.ch);
         }
         return -1;
     }

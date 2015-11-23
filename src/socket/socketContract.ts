@@ -46,6 +46,7 @@ export var server = {
     quickInfo: {} as QRFunction<Types.QuickInfoQuery,Types.QuickInfoResponse>,
     getRenameInfo: {} as QRFunction<Types.GetRenameInfoQuery, Types.GetRenameInfoResponse>,
     getDefinitionsAtPosition: {} as QRFunction<Types.GetDefinitionsAtPositionQuery, Types.GetDefinitionsAtPositionResponse>,
+    getDoctorInfo: {} as QRFunction<Types.GetDoctorInfoQuery, Types.GetDoctorInfoResponse>,
 }
 
 export var client = {
@@ -88,6 +89,12 @@ export namespace Types {
     export interface FilePathPositionQuery {
         filePath: string;
         position: number;
+    }
+
+    /** Used a lot in project service */
+    export interface FilePathEditorPositionQuery {
+        filePath: string;
+        editorPosition: EditorPosition;
     }
 
     /**
@@ -151,4 +158,20 @@ export namespace Types {
             span: ts.TextSpan;
         }[]
     }
+
+    /**
+     * Doctor
+     */
+     export interface GetDoctorInfoQuery extends FilePathEditorPositionQuery { }
+     export interface GetDoctorInfoResponse {
+         definitions: {
+             filePath: string;
+             position: EditorPosition;
+             span: ts.TextSpan;
+         }[];
+         quickInfo?: {
+             name: string;
+             comment: string;
+         }
+     }
 }

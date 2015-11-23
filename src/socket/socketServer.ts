@@ -106,6 +106,7 @@ namespace Server {
     export var quickInfo : typeof contract.server.quickInfo = projectService.quickInfo;
     export var getRenameInfo : typeof contract.server.getRenameInfo = projectService.getRenameInfo;
     export var getDefinitionsAtPosition : typeof contract.server.getDefinitionsAtPosition = projectService.getDefinitionsAtPosition;
+    export var getDoctorInfo : typeof contract.server.getDoctorInfo = projectService.getDoctorInfo;
 }
 
 // Ensure that the namespace follows the contract
