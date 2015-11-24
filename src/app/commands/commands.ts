@@ -258,7 +258,7 @@ let unsupportedNames = utils.createMap([
 
     'transposeChars', // Ctrl + T doesn't work
 
-    // These have been deprecated by using cursor history
+    // These have been deprecated by using cursor history, from defaultMap
     "undoSelection", // Mod + U
     "redoSelection", // Shift + Mod + U
 
