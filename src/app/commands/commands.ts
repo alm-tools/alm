@@ -155,6 +155,20 @@ export let toggleDoctor = new UICommand({
 });
 
 /**
+ * Cursor history
+ */
+export let previousCursorLocation = new UICommand({
+    keyboardShortcut: "mod+u", // CM undo cursor
+    description: "Cursor: Previous Cursor Location",
+    context: CommandContext.Global,
+});
+export let nextCursorLocation = new UICommand({
+    keyboardShortcut: "mod+shift+u", // CM redo cursor
+    description: "Cursor: Next Cursor Location",
+    context: CommandContext.Global,
+});
+
+/**
  * Tree view
  */
 export let toggleTreeView = new UICommand({
