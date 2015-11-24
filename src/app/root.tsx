@@ -29,6 +29,8 @@ import {RenameVariable} from "./renameVariable";
 var renameVariable = require("./renameVariable");
 import {GotoDefinition} from "./gotoDefinition";
 var gotoDefinition = require("./gotoDefinition");
+import {FindReferences} from "./findReferences";
+var findReferences = require("./findReferences");
 
 
 export interface State {

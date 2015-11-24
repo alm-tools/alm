@@ -46,6 +46,7 @@ export var server = {
     quickInfo: {} as QRFunction<Types.QuickInfoQuery,Types.QuickInfoResponse>,
     getRenameInfo: {} as QRFunction<Types.GetRenameInfoQuery, Types.GetRenameInfoResponse>,
     getDefinitionsAtPosition: {} as QRFunction<Types.GetDefinitionsAtPositionQuery, Types.GetDefinitionsAtPositionResponse>,
+    getReferences: {} as QRFunction<Types.GetReferencesQuery, Types.GetReferencesResponse>,
     getDoctorInfo: {} as QRFunction<Types.GetDoctorInfoQuery, Types.GetDoctorInfoResponse>,
 }
 
@@ -175,4 +176,12 @@ export namespace Types {
              comment: string;
          }
      }
+
+     /**
+      * References
+      */
+      export interface GetReferencesQuery extends FilePathPositionQuery { }
+      export interface GetReferencesResponse {
+         references: ReferenceDetails[];
+      }
 }

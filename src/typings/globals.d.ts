@@ -54,3 +54,11 @@ interface FindOptions {
     isCaseSensitive: boolean;
     isFullWord: boolean;
 }
+
+
+interface ReferenceDetails {
+    filePath: string;
+    position: EditorPosition;
+    span: ts.TextSpan;
+    preview: string;
+}

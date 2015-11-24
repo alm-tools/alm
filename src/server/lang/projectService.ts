@@ -194,3 +194,20 @@ export function getDoctorInfo(query: Types.GetDoctorInfoQuery): Promise<Types.Ge
         });
     });
 }
+
+export function getReferences(query: Types.GetReferencesQuery): Promise<Types.GetReferencesResponse> {
+    let project = getProject(query.filePath);
+    var languageService = project.languageService;
+
+    var references: ReferenceDetails[] = [];
+    var refs = languageService.getReferencesAtPosition(query.filePath, query.position) || [];
+
+    references = refs.map(r=> {
+        var res = project.languageServiceHost.getPositionFromTextSpanWithLinePreview(r.fileName, r.textSpan);
+        return { filePath: r.fileName, position: res.position, span: r.textSpan, preview: res.preview }
+    });
+
+    return resolve({
+        references
+    })
+}

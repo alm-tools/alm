@@ -73,3 +73,15 @@ Matching tags and brackets and words are highlighted automatically, this means l
 All the joys of inline information without the frustrations of keyboard shortcut, shifting text or dialog overloads. Toggle : `Ctrl / ⌘  '`
 
 ![](https://raw.githubusercontent.com/TypeScriptBuilder/tsb-docs/gh-pages/screens/doctor.png)
+
+# Goto Definition
+
+Easy as `Ctrl|⌘ + B`
+
+![](https://raw.githubusercontent.com/TypeScriptBuilder/tsb-docs/gh-pages/screens/gotoDefinition.gif)
+
+# Find References
+
+Easy as `Ctrl|⌘ + Shift + B`
+
+![](https://raw.githubusercontent.com/TypeScriptBuilder/tsb-docs/gh-pages/screens/findReferences.gif)

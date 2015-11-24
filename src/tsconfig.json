@@ -123,6 +123,7 @@
         "./app/devtemplate.tsx",
         "./app/fileTree.tsx",
         "./app/findAndReplace.tsx",
+        "./app/findReferences.tsx",
         "./app/gotoDefinition.tsx",
         "./app/icon.tsx",
         "./app/main.tsx",
