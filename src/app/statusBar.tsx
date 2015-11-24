@@ -92,7 +92,7 @@ export class StatusBar extends BaseComponent<Props, State>{
             <div>
                 <div style={csx.extend(styles.statusBar,csx.horizontal,csx.center)}>
                     {/* Left sections */}
-                    <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)} onClick={this.toggleErrors} className="hint--top" data-hint={`${errorCount} errors. Click to toggle error panel.`}>
+                    <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)} onClick={this.toggleErrors} className="hint--top" data-hint={`${errorCount} errors. Click to toggle message panel.`}>
                         <span style={csx.extend(errorCount?styles.statusBarError:styles.statusBarSuccess,{transition: 'color .4s'})}>{errorCount} <Icon name="times-circle"/></span>
                     </span>
                     {this.props.activeProject
