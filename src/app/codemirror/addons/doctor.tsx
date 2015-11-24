@@ -60,14 +60,16 @@ let docuOnBottomStyle = {
     bottom: '0px'
 }
 
-let doctorRow =csx.extend({
+let doctorRow = csx.extend({
     paddingTop: '3px',
     paddingBottom: '3px',
-})
+    whiteSpace: 'pre'
+}, csx.flexRoot, csx.center)
 
 let fileLinkStyle = {
     textDecoration: 'underline',
     cursor: 'pointer',
+    fontFamily: 'monospace',
 }
 
 interface Props {
@@ -183,6 +185,7 @@ export class Doctor extends ui.BaseComponent<Props,State> {
                 {doctorInfo.definitions.map(def => {
                     return (
                         <span style={fileLinkStyle}
+                        key={def.filePath+def.position.line}
                         onClick={()=>this.openLocation(def.filePath,def.position)}
                         >{utils.getFileName(def.filePath) + ":" + (def.position.line + 1)}</span>
                     )
