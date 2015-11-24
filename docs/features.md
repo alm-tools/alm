@@ -70,7 +70,7 @@ Matching tags and brackets and words are highlighted automatically, this means l
 ![](https://raw.githubusercontent.com/TypeScriptBuilder/tsb-docs/gh-pages/screens/matching.gif)
 
 # Doctor
-All the joys of inline information without the frustrations of keyboard shortcut, shifting text or dialog overloads. Toggle : `Ctrl / ⌘  '`
+All the joys of inline information without the frustrations of keyboard shortcut, shifting text or dialog overloads. Toggle : `Ctrl|⌘ + '`
 
 ![](https://raw.githubusercontent.com/TypeScriptBuilder/tsb-docs/gh-pages/screens/doctor.png)
 
