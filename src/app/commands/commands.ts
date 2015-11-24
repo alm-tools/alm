@@ -62,31 +62,31 @@ export var esc = new UICommand({
  */
 export var nextTab = new UICommand({
     keyboardShortcut: 'alt+k',
-    description: "Focus on the next tab",
+    description: "Tabs: Focus on the Next",
     context: CommandContext.Global,
 });
 export var prevTab = new UICommand({
     keyboardShortcut: 'alt+j',
-    description: "Focus on the previous tab",
+    description: "Tabs: Focus on the Previous",
     context: CommandContext.Global,
 });
 export var closeTab = new UICommand({
     keyboardShortcut: 'alt+w', // c9
-    description: "Close current tab",
+    description: "Tabs: Close current tab",
     context: CommandContext.Global,
 });
 export var undoCloseTab = new UICommand({
     keyboardShortcut: 'shift+alt+w', // Couldn't find IDEs that do this. c9/ca have this bound to close all tabs
-    description: "Undo close tab",
+    description: "Tabs: Undo close tab",
     context: CommandContext.Global,
 });
 export var saveTab = new UICommand({
     keyboardShortcut: 'mod+s', // c9
-    description: "Save current tab",
+    description: "Tabs: Save current tab",
     context: CommandContext.Global,
 });
 export var closeOtherTabs = new UICommand({
-    description: "Close other tabs",
+    description: "Tabs: Close other tabs",
     context: CommandContext.Global,
 });
 
@@ -257,6 +257,10 @@ let unsupportedNames = utils.createMap([
     'replaceAll',
 
     'transposeChars', // Ctrl + T doesn't work
+
+    // These have been deprecated by using cursor history
+    "undoSelection", // Mod + U
+    "redoSelection", // Shift + Mod + U
 
     "nextBookmark",
     "prevBookmark",
