@@ -68,3 +68,8 @@ And if its a local change we will even allow you to do it inline.
 Matching tags and brackets and words are highlighted automatically, this means less searching, more doing
 
 ![](https://raw.githubusercontent.com/TypeScriptBuilder/tsb-docs/gh-pages/screens/matching.gif)
+
+# Doctor
+All the joys of inline information without the frustrations of keyboard shortcut, shifting text or dialog overloads. Toggle : `Ctrl / ⌘  '`
+
+![](https://raw.githubusercontent.com/TypeScriptBuilder/tsb-docs/gh-pages/screens/doctor.png)
