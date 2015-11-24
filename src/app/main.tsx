@@ -25,6 +25,9 @@ require('normalize.css');
 let Clipboard = require('clipboard/dist/clipboard.min');
 new Clipboard('[data-clipboard-text]');
 
+// Load hint.css for fancy (styleable) titles
+require('hint.css/hint.css');
+
 // Setup font awesome
 require('font-awesome/css/font-awesome.css');
 

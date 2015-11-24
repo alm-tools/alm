@@ -73,15 +73,18 @@ export class StatusBar extends BaseComponent<Props, State>{
             ? ''
             : <span style={styles.statusBarSection}>
                 {state.inActiveProject(this.props.currentFilePath)
-                    ?<span style={csx.extend(styles.noSelect,styles.statusBarSuccess, styles.hand)}
+                    ?<span
+                        className="hint--top hint--success"
+                        style={csx.extend(styles.noSelect,styles.statusBarSuccess, styles.hand)}
                         onClick={()=>ui.notifySuccessNormalDisappear(`The file is a part of the currently active TypeScript project and we are actively providing code intelligence`)}
-                        title="File is part of the currently active project. Robots providing code intelligence.">
+                        data-hint="File is part of the currently active project. 💻 providing code intelligence.">
                         <Icon name="eye"/>
                      </span>
                     :<span
+                        className="hint--top"
                         style={csx.extend(styles.noSelect,styles.statusBarError,styles.hand)}
                         onClick={() => ui.notifyWarningNormalDisappear(`The file is not a part of the currently active TypeScript project <br/> <br/> ${projectTipKeboard}`, { onClick: () => commands.omniSelectProject.emit({}) }) }
-                        title="File is not a part of the currently active project. Robots deactivated.">
+                        data-hint="File is not a part of the currently active project. Robots deactivated.">
                             <Icon name="eye-slash"/>
                      </span>}
             </span>
@@ -89,7 +92,7 @@ export class StatusBar extends BaseComponent<Props, State>{
             <div>
                 <div style={csx.extend(styles.statusBar,csx.horizontal,csx.center)}>
                     {/* Left sections */}
-                    <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)} onClick={this.toggleErrors} title={`${errorCount} errors. Click to toggle error panel.`}>
+                    <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)} onClick={this.toggleErrors} className="hint--top" data-hint={`${errorCount} errors. Click to toggle error panel.`}>
                         <span style={csx.extend(errorCount?styles.statusBarError:styles.statusBarSuccess,{transition: 'color .4s'})}>{errorCount} <Icon name="times-circle"/></span>
                     </span>
                     {this.props.activeProject
@@ -100,7 +103,8 @@ export class StatusBar extends BaseComponent<Props, State>{
                     {inActiveProjectSection}
                     {this.props.currentFilePath
                         ?<span
-                            title="Click to copy"
+                            className="hint--top"
+                            data-hint="Click to copy the file path to clipboard"
                             data-clipboard-text={this.props.currentFilePath.replace(/\//g,commands.windows?'\\':'/')}
                             onClick={()=>ui.notifyInfoQuickDisappear("File path copied to clipboard")}
                             style={csx.extend(styles.statusBarSection,styles.noSelect,styles.hand)}>
@@ -118,12 +122,12 @@ export class StatusBar extends BaseComponent<Props, State>{
                     </span>
                     <span style={csx.extend(styles.statusBarSection)}>
                         {this.props.socketConnected?
-                            <Icon style={{color:styles.successColor, cursor:'pointer'}} name="flash" title="Connected to server" onClick={()=>ui.notifySuccessNormalDisappear("Connected to tsb")}/>
-                            :<Icon style={{color:styles.errorColor, cursor:'pointer'}} name="spinner" spin={true} title="Disconnected from server" onClick={()=>ui.notifyWarningNormalDisappear("Disconneted from tsb")}/>}
+                             <span className="hint--left hint--success" data-hint="Connected to server"> <Icon style={{color:styles.successColor, cursor:'pointer'}} name="flash" onClick={()=>ui.notifySuccessNormalDisappear("Connected to tsb")}/></span>
+                            :<span className="hint--left hint--error" data-hint="Disconnected from server"> <Icon style={{color:styles.errorColor, cursor:'pointer'}} name="spinner" spin={true} onClick={()=>ui.notifyWarningNormalDisappear("Disconneted from tsb")}/></span>}
                     </span>
                     <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)}>
-                        <span style={{paddingRight: '2px'} as any} onClick={this.giveStar} title="If you like it then you should have put a star on it 🌟. Also, go here for support ⚠️">🌟</span>
-                        <span onClick={this.giveRose} title="Your love keep this rose alive 🌹">🌹</span>
+                        <span style={{paddingRight: '2px'} as any} onClick={this.giveStar} className="hint--left" data-hint="If you like it then you should have put a star on it 🌟. Also, go here for support ⚠️">🌟</span>
+                        <span onClick={this.giveRose} className="hint--left" data-hint="Your love keep this rose alive 🌹">🌹</span>
                     </span>
                 </div>
             </div>
