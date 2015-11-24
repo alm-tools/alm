@@ -70,6 +70,7 @@ let fileLinkStyle = {
     textDecoration: 'underline',
     cursor: 'pointer',
     fontFamily: 'monospace',
+    margin: '0px 3px',
 }
 
 interface Props {
@@ -167,27 +168,41 @@ export class Doctor extends ui.BaseComponent<Props,State> {
         let positionStyle = this.state.onBottom?docuOnBottomStyle:docuOnTopStyle;
 
         let doctorInfo = this.state.doctorInfo;
-        let definitions: JSX.Element;
         let typeInfo: JSX.Element;
         let comment: JSX.Element;
+        let references: JSX.Element;
+        let definitions: JSX.Element;
         if (doctorInfo && doctorInfo.quickInfo){
              typeInfo = <div style={doctorRow}>
                     <strong>SIG</strong> <strong style={{fontFamily:'monospace'} as any}>{doctorInfo.quickInfo.name}</strong>
                 </div>;
              comment = doctorInfo.quickInfo.comment &&
                 <div style={doctorRow}>
-                    <div style={{background:'#222', padding: '3px 6px 3px 3px', fontFamily:'monospace'} as any}>{doctorInfo.quickInfo.comment}</div>
+                    <div style={{background:'#222', padding: '3px', fontFamily:'monospace'} as any}>{doctorInfo.quickInfo.comment}</div>
                 </div>;
+        }
+        if (doctorInfo && doctorInfo.references && doctorInfo.references.length){
+            references = <div style={doctorRow}>
+                <strong>REF</strong>{' '}
+                {doctorInfo.references.map(item => {
+                    return (
+                        <span style={fileLinkStyle}
+                        key={item.filePath+item.position.line}
+                        onClick={()=>this.openLocation(item.filePath,item.position)}
+                        >{utils.getFileName(item.filePath) + ":" + (item.position.line + 1)}</span>
+                    )
+                })}
+            </div>
         }
         if (doctorInfo && doctorInfo.definitions && doctorInfo.definitions.length){
             definitions = <div style={doctorRow}>
                 <strong>DEF</strong>{' '}
-                {doctorInfo.definitions.map(def => {
+                {doctorInfo.definitions.map(item => {
                     return (
                         <span style={fileLinkStyle}
-                        key={def.filePath+def.position.line}
-                        onClick={()=>this.openLocation(def.filePath,def.position)}
-                        >{utils.getFileName(def.filePath) + ":" + (def.position.line + 1)}</span>
+                        key={item.filePath+item.position.line}
+                        onClick={()=>this.openLocation(item.filePath,item.position)}
+                        >{utils.getFileName(item.filePath) + ":" + (item.position.line + 1)}</span>
                     )
                 })}
             </div>
@@ -208,6 +223,9 @@ export class Doctor extends ui.BaseComponent<Props,State> {
             }
             {
                 comment
+            }
+            {
+                references
             }
             {
                 definitions

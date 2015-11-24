@@ -174,7 +174,8 @@ export namespace Types {
          quickInfo?: {
              name: string;
              comment: string;
-         }
+         };
+         references: ReferenceDetails[];
      }
 
      /**
