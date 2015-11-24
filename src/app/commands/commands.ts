@@ -135,13 +135,13 @@ export var replaceAll = new events.TypedEvent<{ newText: string }>();
  */
 export let toggleMessagePanel = new UICommand({
     keyboardShortcut: 'mod+;', //
-    description: "Toggle message panel",
+    description: "Toggle Message Panel",
     context: CommandContext.Global,
 });
 
 export let cycleMessagesPanel = new UICommand({
     keyboardShortcut: 'mod+shift+;', //
-    description: "Cycle message panel",
+    description: "Cycle Message Panel",
     context: CommandContext.Global,
 });
 
@@ -150,7 +150,7 @@ export let cycleMessagesPanel = new UICommand({
  */
 export let toggleDoctor = new UICommand({
     keyboardShortcut: "mod+'", //
-    description: "Editor: toggle doctor",
+    description: "Editor: Toggle Doctor",
     context: CommandContext.Global,
 });
 
@@ -159,7 +159,7 @@ export let toggleDoctor = new UICommand({
  */
 export let toggleTreeView = new UICommand({
     keyboardShortcut: 'mod+\\',    // atom
-    description: "Toggle file tree",
+    description: "Toggle File Tree",
     context: CommandContext.Global,
 });
 
