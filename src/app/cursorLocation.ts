@@ -6,7 +6,7 @@ import * as utils from "../common/utils";
 import * as state from "./state/state";
 
 /** The current cursor location */
-let currentIndex = 0;
+let currentIndex = -1;
 let history: CursorHistoryEntry[] = [];
 const insignificantLines = 3;
 
@@ -27,10 +27,20 @@ interface CursorHistoryEntry {
 
 export function previous() {
     console.log('goto previous');
+    currentIndex = utils.rangeLimited({min:0,max:history.length-1,num:currentIndex-1});
+    let tab = history[currentIndex];
+    if (tab){
+        commands.doOpenOrFocusTab.emit({ tabId: tab.tabId, tabUrl: tab.tabUrl, position: tab.lastContact });
+    }
 }
 
 export function next() {
     console.log('goto next');
+    currentIndex = utils.rangeLimited({min:0,max:history.length-1,num:currentIndex+1});
+    let tab = history[currentIndex];
+    if (tab){
+        commands.doOpenOrFocusTab.emit({ tabId: tab.tabId, tabUrl: tab.tabUrl, position: tab.lastContact });
+    }
 }
 
 
@@ -59,7 +69,7 @@ export function addEntry(editorPosition: EditorPosition){
 
     // perhaps all we need is to update the final contact of the last entry
     // This also prevents us adding a new history for what we already know e.g. when we ask the UI to select a tab
-    let lastActiveEntry = history[currentIndex-1];
+    let lastActiveEntry = history[currentIndex];
     if (lastActiveEntry && lastActiveEntry.tabId == potentialNewEntry.tabId) {
         if (editorPosition.line < (lastActiveEntry.firstContact.line + insignificantLines) && editorPosition.line > (lastActiveEntry.firstContact.line - insignificantLines)) {
             lastActiveEntry.lastContact = editorPosition;
@@ -70,5 +80,5 @@ export function addEntry(editorPosition: EditorPosition){
     currentIndex++;
     history.splice(currentIndex,0, potentialNewEntry);
 
-    console.log(history);
+    // console.log(currentIndex,history); // Debug
 }

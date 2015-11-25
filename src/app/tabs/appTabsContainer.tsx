@@ -135,6 +135,43 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             state.addTabAndSelect(codeTab);
         });
 
+        commands.doOpenOrFocusTab.on(e=>{
+            // if open and focused just goto pos
+            // if open and not focused then focus and goto pos
+            // if not open the file and focus and goto pos
+            if (this.props.tabs.length
+                && this.props.tabs[this.props.selectedTabIndex].id == e.tabId){
+                if (e.position) {
+                    this.gotoPositionOnSelectedTab(e.position)
+                }
+                return;
+            }
+
+            let openTabIndex = this.props.tabs.map(t=> t.url == e.tabUrl).indexOf(true);
+            if (openTabIndex !== -1) {
+                if (e.position) {
+                    this.afterComponentDidUpdate(() => this.gotoPositionOnSelectedTab(e.position));
+                }
+                this.selectTab(openTabIndex);
+                return;
+            }
+
+            let codeTab: state.TabInstance = {
+                id: e.tabId,
+                url: e.tabUrl,
+                saved: true
+            }
+            this.afterComponentDidUpdate(this.sendTabInfoToServer);
+            this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
+            if (e.position) {
+                this.afterComponentDidUpdate(() =>
+                    setTimeout( // I know right ...
+                        ()=>this.gotoPositionOnSelectedTab(e.position)
+                    ));
+            }
+            state.addTabAndSelect(codeTab);
+        });
+
         commands.closeTab.on((e)=>{
             // Remove the selected
             this.closeTab(this.props.selectedTabIndex);
@@ -380,7 +417,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     closeTab(index: number) {
         // Clear the status bar if this was the current tab
         if (index === this.props.selectedTabIndex){
-            state.setCurrentFilePath('');    
+            state.setCurrentFilePath('');
         }
 
         // If no tabs

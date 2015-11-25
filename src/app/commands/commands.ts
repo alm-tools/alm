@@ -187,6 +187,8 @@ export var openFileFromDisk = new UICommand({
     description: 'Open a file present on server disk',
     context: CommandContext.Global,
 });
+/** needed by cursor history */
+export var doOpenOrFocusTab = new events.TypedEvent<{ tabId: string, tabUrl: string, position: EditorPosition }>();
 
 /**
  * Registration
