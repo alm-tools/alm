@@ -29,9 +29,9 @@ Get it:
 npm install tsb -g
 ```
 
-Run it from any directory you want to serve up:
+Run it passing in the directory you want to serve up:
 ```
-tsb
+tsb .
 ```
 
 Now open it in your favorite browser (pssst `chrome`) at the URL mentioned in your console. (**protip** use `tsb -o`)
