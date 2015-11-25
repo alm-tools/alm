@@ -29,7 +29,7 @@ Get it:
 npm install tsb -g
 ```
 
-Run it from the directory you want to serve up:
+Run it from any directory you want to serve up:
 ```
 tsb
 ```
