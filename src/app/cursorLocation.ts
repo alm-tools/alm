@@ -58,6 +58,7 @@ export function addEntry(editorPosition: EditorPosition){
     }
 
     // perhaps all we need is to update the final contact of the last entry
+    // This also prevents us adding a new history for what we already know e.g. when we ask the UI to select a tab
     let lastActiveEntry = history[currentIndex-1];
     if (lastActiveEntry && lastActiveEntry.tabId == potentialNewEntry.tabId) {
         if (editorPosition.line < (lastActiveEntry.firstContact.line + insignificantLines) && editorPosition.line > (lastActiveEntry.firstContact.line - insignificantLines)) {
