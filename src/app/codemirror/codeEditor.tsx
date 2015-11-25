@@ -157,10 +157,12 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 
         this.disposible.add(onresize.on(() => this.refresh()));
 
-		// cursor history
-		this.codeMirror.on('cursorActivity', this.handleCursorActivity);
-        this.disposible.add({ dispose: () => this.codeMirror.off('cursorActivity', this.handleCursorActivity) });
-
+        // cursor history
+        if (!this.props.readOnly) {
+            this.codeMirror.on('cursorActivity', this.handleCursorActivity);
+            this.disposible.add({ dispose: () => this.codeMirror.off('cursorActivity', this.handleCursorActivity) });
+        }
+		
 		// Load the document
         docCache.getLinkedDoc(this.props.filePath).then((doc)=>{
             this.codeMirror.swapDoc(doc);
@@ -212,6 +214,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 	focus = () => {
 		if (this.codeMirror) {
 			this.codeMirror.focus();
+			this.handleCursorActivity();
             this.refresh();
             setTimeout(this.refresh,500);
 		}
