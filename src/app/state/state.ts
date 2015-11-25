@@ -224,8 +224,8 @@ export let selectTab = redux.add('selectTab', (state: StoreState, payload: numbe
 export let getOpenFilePaths = () => getState().tabs.filter(t=>t.url.startsWith('file://')).map(t=>utils.getFilePathFromUrl(t.url));
 /** gets the currently selectedFilePath if any */
 export let getSelectedFilePath = () => {
-    let selected = getState().tabs[getState().selectedTabIndex];
-    if (selected){
+    let selected = getSelectedTab();
+    if (selected) {
         let url = selected.url;
         if (url.startsWith('file://')){
             return utils.getFilePathFromUrl(url);
@@ -233,6 +233,10 @@ export let getSelectedFilePath = () => {
     }
 }
 
+export function getSelectedTab(){
+    let selected = getState().tabs[getState().selectedTabIndex];
+    return selected;
+}
 
 export let toggleDoctor = redux.add('toggleDoctor', (state: StoreState, payload: {}): StoreState => {
     return {
