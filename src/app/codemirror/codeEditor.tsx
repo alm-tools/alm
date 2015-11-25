@@ -162,7 +162,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
             this.codeMirror.on('cursorActivity', this.handleCursorActivity);
             this.disposible.add({ dispose: () => this.codeMirror.off('cursorActivity', this.handleCursorActivity) });
         }
-		
+
 		// Load the document
         docCache.getLinkedDoc(this.props.filePath).then((doc)=>{
             this.codeMirror.swapDoc(doc);
@@ -299,7 +299,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 	handleCursorActivity = utils.debounce(()=>{
 		let cursor = this.codeMirror.getDoc().getCursor();
 		cursorLocation.addEntry(cursor);
-	},500);
+	},800);
 
 	render () {
 		var className = 'ReactCodeMirror';
