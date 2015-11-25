@@ -260,7 +260,7 @@ delete defaultMap[`${mod}-U`];
 delete defaultMap[`Shift-${mod}-U`];
 // Fallback to default `singleSelection` as sublime `singleSelectionTop` is bad
 delete sublimeMap['Esc'];
-console.log(csx.extend(basicMap,defaultMap,sublimeMap)); // DEBUG
+// console.log(csx.extend(basicMap,defaultMap,sublimeMap)); // DEBUG
 
 /** Comamnds we don't support as an editor command */
 let unsupportedNames = utils.createMap([
