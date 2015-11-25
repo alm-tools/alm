@@ -262,6 +262,17 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             }
         });
 
+        let gotoIndex = (index) => this.props.tabs[index] && this.selectTab(index);
+        commands.gotoTab1.on(() => gotoIndex(0));
+        commands.gotoTab2.on(() => gotoIndex(1));
+        commands.gotoTab3.on(() => gotoIndex(2));
+        commands.gotoTab4.on(() => gotoIndex(3));
+        commands.gotoTab5.on(() => gotoIndex(4));
+        commands.gotoTab6.on(() => gotoIndex(5));
+        commands.gotoTab7.on(() => gotoIndex(6));
+        commands.gotoTab8.on(() => gotoIndex(7));
+        commands.gotoTab9.on(() => gotoIndex(8));
+
         /** Restore any open tabs from last session */
         server.getOpenUITabs({}).then((res) => {
             if (!res.openTabs.length) return;

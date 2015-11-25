@@ -91,6 +91,56 @@ export var closeOtherTabs = new UICommand({
 });
 
 /**
+ * Tab indexing
+ * // c9, chrome, atom
+ */
+export var gotoTab1 = new UICommand({
+    keyboardShortcut: 'mod+1',
+    description: "Tabs: Goto Tab 1",
+    context: CommandContext.Global,
+});
+export var gotoTab2 = new UICommand({
+    keyboardShortcut: 'mod+2',
+    description: "Tabs: Goto Tab 2",
+    context: CommandContext.Global,
+});
+export var gotoTab3 = new UICommand({
+    keyboardShortcut: 'mod+3',
+    description: "Tabs: Goto Tab 3",
+    context: CommandContext.Global,
+});
+export var gotoTab4 = new UICommand({
+    keyboardShortcut: 'mod+4',
+    description: "Tabs: Goto Tab 4",
+    context: CommandContext.Global,
+});
+export var gotoTab5 = new UICommand({
+    keyboardShortcut: 'mod+5',
+    description: "Tabs: Goto Tab 5",
+    context: CommandContext.Global,
+});
+export var gotoTab6 = new UICommand({
+    keyboardShortcut: 'mod+6',
+    description: "Tabs: Goto Tab 6",
+    context: CommandContext.Global,
+});
+export var gotoTab7 = new UICommand({
+    keyboardShortcut: 'mod+7',
+    description: "Tabs: Goto Tab 7",
+    context: CommandContext.Global,
+});
+export var gotoTab8 = new UICommand({
+    keyboardShortcut: 'mod+8',
+    description: "Tabs: Goto Tab 8",
+    context: CommandContext.Global,
+});
+export var gotoTab9 = new UICommand({
+    keyboardShortcut: 'mod+9',
+    description: "Tabs: Goto Tab 9",
+    context: CommandContext.Global,
+});
+
+/**
  * OmniSearch
  */
 export var omniFindFile = new UICommand({
