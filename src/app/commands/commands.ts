@@ -255,8 +255,12 @@ sublimeMap[`${mod}-B`] = additionalEditorCommands.gotoDefinition;
 sublimeMap[`Shift-Enter`] = additionalEditorCommands.jumpy;
 sublimeMap[`Shift-${mod}-B`] = additionalEditorCommands.findReferences;
 
-delete sublimeMap['Esc']; // Fallback to default `singleSelection` as sublime `singleSelectionTop` is bad
-// console.log(csx.extend(basicMap,defaultMap,sublimeMap)); // DEBUG
+// we have our own cursor history
+delete defaultMap[`${mod}-U`];
+delete defaultMap[`Shift-${mod}-U`];
+// Fallback to default `singleSelection` as sublime `singleSelectionTop` is bad
+delete sublimeMap['Esc'];
+console.log(csx.extend(basicMap,defaultMap,sublimeMap)); // DEBUG
 
 /** Comamnds we don't support as an editor command */
 let unsupportedNames = utils.createMap([

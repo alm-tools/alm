@@ -65,8 +65,8 @@ import escape = require("escape-html");
 import * as doctor from "./addons/doctor";
 import * as state from "../state/state";
 import { Provider } from 'react-redux';
-
-
+import * as utils from "../../common/utils";
+import * as cursorLocation from "../cursorLocation";
 
 interface Props extends React.Props<any> {
 	onFocusChange?: (focused: boolean) => any;
@@ -156,6 +156,10 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
         autocomplete.setupCodeMirror(this.codeMirror);
 
         this.disposible.add(onresize.on(() => this.refresh()));
+
+		// cursor history
+		this.codeMirror.on('cursorActivity', this.handleCursorActivity);
+        this.disposible.add({ dispose: () => this.codeMirror.off('cursorActivity', this.handleCursorActivity) });
 
 		// Load the document
         docCache.getLinkedDoc(this.props.filePath).then((doc)=>{
@@ -288,6 +292,11 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
     replaceAll = (newText: string) => {
         search.commands.replaceAll(this.codeMirror, newText);
     }
+
+	handleCursorActivity = utils.debounce(()=>{
+		let cursor = this.codeMirror.getDoc().getCursor();
+		cursorLocation.addEntry(cursor);
+	},500);
 
 	render () {
 		var className = 'ReactCodeMirror';

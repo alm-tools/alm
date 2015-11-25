@@ -22,7 +22,7 @@ interface CursorHistoryEntry {
     tabId: string;
     tabUrl: string; // for a possible future extension where we open the tabUrl if tabId is no longer valid
     firstContact: EditorPosition; // We move this around for the same cursor hitory entry
-    finalContact: EditorPosition; // This is the point that is finally saved for this entry
+    lastContact: EditorPosition; // This is the point that is finally saved for this entry
 }
 
 export function previous() {
@@ -54,17 +54,20 @@ export function addEntry(editorPosition: EditorPosition){
         tabId: selectedTab.id,
         tabUrl: selectedTab.url,
         firstContact: editorPosition,
-        finalContact: editorPosition,
+        lastContact: editorPosition,
     }
 
     // perhaps all we need is to update the final contact of the last entry
-    let lastActiveEntry = history[currentIndex];
+    let lastActiveEntry = history[currentIndex-1];
     if (lastActiveEntry && lastActiveEntry.tabId == potentialNewEntry.tabId) {
         if (editorPosition.line < (lastActiveEntry.firstContact.line + insignificantLines) && editorPosition.line > (lastActiveEntry.firstContact.line - insignificantLines)) {
-            lastActiveEntry.finalContact = editorPosition;
+            lastActiveEntry.lastContact = editorPosition;
             return;
         }
     }
 
+    currentIndex++;
     history.splice(currentIndex,0, potentialNewEntry);
+
+    console.log(history);
 }
