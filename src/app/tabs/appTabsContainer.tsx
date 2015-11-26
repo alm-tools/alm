@@ -399,6 +399,13 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             return;
         }
 
+        if (this.props.selectedTabIndex == selected){
+            let component = this.getSelectedComponent();
+            if (component){
+                component.focus();
+            }
+        }
+
         this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
         state.selectTab(selected);
     }
