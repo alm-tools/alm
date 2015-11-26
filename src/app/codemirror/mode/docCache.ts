@@ -8,6 +8,18 @@ import * as utils from "../../../common/utils";
 import * as classifierCache from "./classifierCache";
 import {RefactoringsByFilePath,Refactoring} from "../../../common/types";
 
+import CodeMirror = require("codemirror");
+// modes
+require('codemirror/mode/javascript/javascript');
+require('codemirror/mode/xml/xml');
+require('codemirror/mode/css/css');
+require('codemirror/mode/sass/sass');
+// meta
+require('codemirror/mode/meta');
+// Sample addon usage
+//console.log(CodeMirror.findModeByFileName('asdf/foo.js'))
+
+
 let docByFilePathPromised: { [filePath: string]: Promise<codemirror.Doc> } = {};
 
 export function getLinkedDoc(filePath: string): Promise<codemirror.Doc> {

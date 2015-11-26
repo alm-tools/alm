@@ -8,8 +8,6 @@ require('codemirror/theme/monokai.css')
 /**
  *  addons
  */
-// meta
-require('codemirror/mode/meta');
 // comments (single / multiline)
 require('codemirror/addon/comment/comment');
 // code folding
@@ -31,10 +29,6 @@ require('codemirror/addon/edit/matchtags');
 // Auto highlight same words selected
 require('codemirror/addon/search/match-highlighter');
 
-// modes
-require('codemirror/mode/javascript/javascript')
-require('codemirror/mode/xml/xml')
-
 // Our Addons
 require('./addons/text-hover');
 require('./addons/text-hover.css');
@@ -49,9 +43,6 @@ import search = require("./addons/search");
 import typescriptMode = require("./mode/typescript");
 typescriptMode.register();
 import * as docCache from "./mode/docCache";
-
-// Sample addon usage
-// console.log(CodeMirror.findModeByFileName('asdf/foo.js'))
 
 import React = require('react');
 import ReactDOM = require('react-dom');
