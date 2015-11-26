@@ -2,34 +2,47 @@
  * We should have all the CM docs cached for consistent history and stuff
  */
 import {TypedEvent} from "../../../common/events";
-import * as codemirror from "codemirror";
+import * as CodeMirror from "codemirror";
 import {cast, server} from "../../../socket/socketClient";
 import * as utils from "../../../common/utils";
 import * as classifierCache from "./classifierCache";
 import {RefactoringsByFilePath,Refactoring} from "../../../common/types";
 
-import CodeMirror = require("codemirror");
-// modes
+/**
+ * Modes
+ */
+// meta
+require('codemirror/mode/meta');
+// supported
+const supportedModes = [
+    'xml',
+    'css',
+    'sass',
+    'dart',
+    'haml',
+    'gfm',
+]
+
 require('codemirror/mode/javascript/javascript');
 require('codemirror/mode/xml/xml');
 require('codemirror/mode/css/css');
 require('codemirror/mode/sass/sass');
-// meta
-require('codemirror/mode/meta');
-// Sample addon usage
-//console.log(CodeMirror.findModeByFileName('asdf/foo.js'))
+require('codemirror/mode/dart/dart');
+
+// console.log(CodeMirror.findModeByFileName('asdf/foo.js'))
+// console.log(CodeMirror.findModeByFileName('asdf/foo.less'))
 
 
-let docByFilePathPromised: { [filePath: string]: Promise<codemirror.Doc> } = {};
+let docByFilePathPromised: { [filePath: string]: Promise<CodeMirror.Doc> } = {};
 
-export function getLinkedDoc(filePath: string): Promise<codemirror.Doc> {
+export function getLinkedDoc(filePath: string): Promise<CodeMirror.Doc> {
     return getOrCreateDoc(filePath)
         .then(doc=> {
 
             // Some housekeeping: clear previous links that no longer seem active
             // SetTimeout because we might have created the doc but not the CM instance yet
             setTimeout(() => {
-                let markForRemove: codemirror.Doc[] = [];
+                let markForRemove: CodeMirror.Doc[] = [];
                 doc.iterLinkedDocs((linked) => {
                     if (!linked.getEditor()) {
                         markForRemove.push(linked)
@@ -57,12 +70,12 @@ function getOrCreateDoc(filePath: string) {
             classifierCache.addFile(filePath, res.contents);
 
             // create the doc
-            let doc = new codemirror.Doc(res.contents, mode);
+            let doc = new CodeMirror.Doc(res.contents, mode);
             doc.filePath = filePath;
             doc.rootDoc = true;
 
             // setup to push doc changes to server
-            (doc as any).on('change', (doc: codemirror.Doc, change: CodeMirror.EditorChange) => {
+            (doc as any).on('change', (doc: CodeMirror.Doc, change: CodeMirror.EditorChange) => {
 
                 // console.log('sending server edit', sourceId)
 
@@ -131,10 +144,10 @@ function getOrCreateDoc(filePath: string) {
 /**
  * Don't plan to export as giving others our true docs can have horrible consequences if they mess them up
  */
-function getOrCreateDocs(filePaths: string[]): Promise<{ [filePath: string]: codemirror.Doc }> {
+function getOrCreateDocs(filePaths: string[]): Promise<{ [filePath: string]: CodeMirror.Doc }> {
     let promises = filePaths.map(fp => getOrCreateDoc(fp));
     return Promise.all(promises).then(docs => {
-        let res: { [filePath: string]: codemirror.Doc } = {};
+        let res: { [filePath: string]: CodeMirror.Doc } = {};
         docs.forEach(doc => res[doc.filePath] = doc);
         return res;
     });
