@@ -73,6 +73,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
         omniSearch: any;
         omniSearchInput: any;
 
+        searchScroll: Element;
         selected: Element;
     }
 
@@ -99,6 +100,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
         setTimeout(()=>{
             if (this.refs.selected) {
                 let selected = ReactDOM.findDOMNode(this.refs.selected) as HTMLDivElement;
+                let searchScroll = ReactDOM.findDOMNode(this.refs.selected) as HTMLDivElement;
                 selected.scrollIntoViewIfNeeded(false);
             }
             // also keep the input in focus
@@ -145,7 +147,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
 
                     {this.searchState.optionalMessage()}
 
-                    <div className="scrollContainer" style={[csx.vertical,csx.flex,{overflow:'auto'}]}>
+                    <div ref="searchScroll" className="scrollContainer" style={[csx.vertical,csx.flex,{overflow:'auto'}]}>
                         {renderedResults}
                     </div>
                 </div>
