@@ -110,3 +110,9 @@ export function addEntry(editorPosition: EditorPosition) {
     // console.log(`Added total:${history.length}, current: ${currentIndex}, tab: ${potentialNewEntry.tabUrl}:${potentialNewEntry.position.line}:${potentialNewEntry.position.ch}`); // Debug
     // console.log(currentIndex,history); // Debug
 }
+
+let debug = function(){
+    console.log(history.map(h=>h.tabUrl+':'+h.position.line+':'+h.position.ch))
+    console.log(currentIndex);
+}
+// window.debug = debug;
