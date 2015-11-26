@@ -40,11 +40,19 @@ namespace Worker {
                 .sort((a, b) => a.length - b.length)
                 // Also sort alphabetically
                 .sort();
+
             master.fileListUpdated({
                 filePaths,
                 completed
             });
         };
+
+        /**
+         * Slower version for
+         * - initial partial serach
+         * - later updates which might be complete directory of files removed
+         */
+         let sendNewFileListThrottled = throttle(sendNewFileList, 500);
 
         // create initial list using 10x faster glob.Glob!
         (function () {
@@ -67,19 +75,20 @@ namespace Worker {
                newList.forEach(filePath=>liveList[filePath] = true);
                sendNewFileList();
            });
+           mg.on('match',(match)=>{
+               let p = path.resolve(q.directory,match);
+               if (mg.cache[p] && mg.cache[p] == 'FILE'){
+                  liveList[match] = true;
+                  sendNewFileListThrottled();
+               }
+           });
        })();
 
-       /**
-        * Slower version for
-        * - initial partial serach
-        * - later updates which might be complete directory of files removed
-        */
-        let sendNewFileListThrottled = throttle(sendNewFileList, 500);
 
         function fileAdded(filePath: string, stat: fs.Stats) {
             filePath = fsu.consistentPath(filePath);
 
-            // if we don't know about this already (because of faster initial scan)
+            // Only send if we don't know about this already (because of faster initial scan)
             if (!liveList[filePath]) {
                 liveList[filePath] = true;
                 sendNewFileListThrottled();
@@ -93,7 +102,7 @@ namespace Worker {
         }
 
         /** Create watcher */
-        let watcher = chokidar.watch(directoryUnderWatch, { ignoreInitial: false });
+        let watcher = chokidar.watch(directoryUnderWatch, { ignoreInitial: true });
 
         // Just the ones that impact file listing
         // https://github.com/paulmillr/chokidar#methods--events
