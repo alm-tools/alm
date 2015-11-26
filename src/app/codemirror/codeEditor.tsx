@@ -296,10 +296,10 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
         search.commands.replaceAll(this.codeMirror, newText);
     }
 
-	handleCursorActivity = utils.debounce(()=>{
-		let cursor = this.codeMirror.getDoc().getCursor();
-		cursorLocation.addEntry(cursor);
-	},800);
+    handleCursorActivity = () => {
+        let cursor = this.codeMirror.getDoc().getCursor();
+        cursorLocation.addEntry(cursor);
+    };
 
 	render () {
 		var className = 'ReactCodeMirror';

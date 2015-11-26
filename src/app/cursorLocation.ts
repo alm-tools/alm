@@ -28,25 +28,25 @@ export function previous() {
     currentIndex = utils.rangeLimited({ min: 0, max: history.length - 1, num: currentIndex - 1 });
     let tab = history[currentIndex];
     if (tab) {
-        // console.log('goto previous', currentIndex);
         commands.doOpenOrFocusTab.emit({ tabId: tab.tabId, tabUrl: tab.tabUrl, position: tab.position });
     }
+    //  debug();
 }
 
 export function next() {
     currentIndex = utils.rangeLimited({ min: 0, max: history.length - 1, num: currentIndex + 1 });
     let tab = history[currentIndex];
     if (tab) {
-        // console.log('goto next', currentIndex);
         commands.doOpenOrFocusTab.emit({ tabId: tab.tabId, tabUrl: tab.tabUrl, position: tab.position });
     }
+    // debug();
 }
 
 
 /**
  * The current tab with id is fetched from state. So all you need is editorPosition
  */
-export function addEntry(editorPosition: EditorPosition) {
+export let addEntry = utils.debounce((editorPosition: EditorPosition) => {
     let selectedTab = state.getSelectedTab();
     if (!selectedTab) {
         console.error('adding a cursor history should not have been called if there is no active tab');
@@ -108,8 +108,7 @@ export function addEntry(editorPosition: EditorPosition) {
     }
 
     // console.log(`Added total:${history.length}, current: ${currentIndex}, tab: ${potentialNewEntry.tabUrl}:${potentialNewEntry.position.line}:${potentialNewEntry.position.ch}`); // Debug
-    // console.log(currentIndex,history); // Debug
-}
+},800);
 
 let debug = function(){
     console.log(history.map(h=>h.tabUrl+':'+h.position.line+':'+h.position.ch))
