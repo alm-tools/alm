@@ -25,19 +25,19 @@ interface CursorHistoryEntry {
 }
 
 export function previous() {
-    console.log('goto previous');
     currentIndex = utils.rangeLimited({ min: 0, max: history.length - 1, num: currentIndex - 1 });
     let tab = history[currentIndex];
     if (tab) {
+        // console.log('goto previous', currentIndex);
         commands.doOpenOrFocusTab.emit({ tabId: tab.tabId, tabUrl: tab.tabUrl, position: tab.position });
     }
 }
 
 export function next() {
-    console.log('goto next');
     currentIndex = utils.rangeLimited({ min: 0, max: history.length - 1, num: currentIndex + 1 });
     let tab = history[currentIndex];
     if (tab) {
+        // console.log('goto next', currentIndex);
         commands.doOpenOrFocusTab.emit({ tabId: tab.tabId, tabUrl: tab.tabUrl, position: tab.position });
     }
 }
@@ -65,10 +65,28 @@ export function addEntry(editorPosition: EditorPosition) {
         position: editorPosition
     }
 
+    let isSame = (pos1:EditorPosition,pos2:EditorPosition) => pos1.line == pos2.line && pos1.ch == pos2.ch;
+
     // This prevents us adding a new history for what we already know e.g. when we ask the UI to select a tab
-    let lastActiveEntry = history[currentIndex];
-    if (lastActiveEntry && lastActiveEntry.tabId == potentialNewEntry.tabId) {
-        if (editorPosition.line == lastActiveEntry.position.line && editorPosition.ch == lastActiveEntry.position.ch) {
+    let testEntry = history[currentIndex];
+    if (testEntry && testEntry.tabId == potentialNewEntry.tabId) {
+        if (isSame(editorPosition,testEntry.position)) {
+            return;
+        }
+    }
+    // if the users action is same as what there would be one before we just take them there in index
+    testEntry = history[currentIndex-1];
+    if (testEntry && testEntry.tabId == potentialNewEntry.tabId) {
+        if (isSame(editorPosition,testEntry.position)) {
+            currentIndex--;
+            return;
+        }
+    }
+    // if the users action is same as what there would be one after we just take them there in index
+    testEntry = history[currentIndex+1];
+    if (testEntry && testEntry.tabId == potentialNewEntry.tabId) {
+        if (isSame(editorPosition,testEntry.position)) {
+            currentIndex++;
             return;
         }
     }
@@ -89,6 +107,6 @@ export function addEntry(editorPosition: EditorPosition) {
         }
     }
 
-    // console.log('Adding',potentialNewEntry.tabUrl,potentialNewEntry.position.line,potentialNewEntry.position.ch); // Debug
+    // console.log(`Added total:${history.length}, current: ${currentIndex}, tab: ${potentialNewEntry.tabUrl}:${potentialNewEntry.position.line}:${potentialNewEntry.position.ch}`); // Debug
     // console.log(currentIndex,history); // Debug
 }
