@@ -57,7 +57,7 @@ import * as doctor from "./addons/doctor";
 import * as state from "../state/state";
 import { Provider } from 'react-redux';
 import * as utils from "../../common/utils";
-import * as cursorLocation from "../cursorLocation";
+import * as cursorLocation from "../cursorHistory";
 
 interface Props extends React.Props<any> {
 	onFocusChange?: (focused: boolean) => any;

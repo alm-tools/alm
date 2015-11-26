@@ -32,7 +32,7 @@
         "./app/codemirror/server/languageServiceHost.ts",
         "./app/codemirror/server/liner.ts",
         "./app/commands/commands.ts",
-        "./app/cursorLocation.ts",
+        "./app/cursorHistory.ts",
         "./app/state/simpleRedux.ts",
         "./app/state/state.ts",
         "./app/tabs/tab.ts",
