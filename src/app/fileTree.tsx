@@ -114,7 +114,25 @@ export class FileTree extends BaseComponent<Props, State>{
             let selectedTab = state.getSelectedTab();
             if (selectedTab && selectedTab.url.startsWith('file://')){
                 let filePath = utils.getFilePathFromUrl(selectedTab.url);
-                // TODO: expand the tree to make sure this file is visible
+
+                // expand the tree to make sure this file is visible
+                let root = this.state.treeRoot.filePath;
+                let remainderAfterRoot = filePath.substr(root.length + 1 /* for `/` */);
+                let dirPortionsAfterRoot = utils.getDirectory(remainderAfterRoot).split('/');
+                let runningPortion = '';
+                let expanded = {};
+                for (let portion of dirPortionsAfterRoot) {
+                    runningPortion = runningPortion+'/'+portion;
+                    let fullPath = root + runningPortion;
+                    expanded[fullPath] = true;
+                }
+                let expansionState: any = csx.extend(this.state.expansionState,expanded);
+
+                // also select this node
+                let selectedPaths: any = {};
+                selectedPaths[filePath] = true;
+
+                this.setState({expansionState,selectedPaths});
                 this.ref(filePath).focus();
             }
             else {
