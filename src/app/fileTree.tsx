@@ -86,12 +86,49 @@ export class FileTree extends BaseComponent<Props, State>{
     }
 
     componentDidMount() {
-        this.disposible.add(commands.toggleTreeView.on(()=>{
+
+        let handleFocusRequestBasic = ()=>{
+            let selectedFilePaths = Object.keys(this.state.selectedPaths);
+            let pathToFocus = selectedFilePaths.length > 0
+                ? selectedFilePaths[0]
+                : this.state.treeRoot.filePath;
+
+            this.ref(pathToFocus).focus();
+            return false;
+        }
+
+        this.disposible.add(commands.treeViewToggle.on(()=>{
             this.setState({ shown: !this.state.shown });
+            if (this.state.shown) {
+                handleFocusRequestBasic();
+            }
+            else {
+                commands.esc.emit({});
+            }
+        }));
+
+        this.disposible.add(commands.treeViewRevealActiveFile.on(()=>{
+            if (!this.state.shown) {
+                this.setState({ shown: true });
+            }
+            let selectedTab = state.getSelectedTab();
+            if (selectedTab && selectedTab.url.startsWith('file://')){
+                let filePath = utils.getFilePathFromUrl(selectedTab.url);
+                // TODO: expand the tree to make sure this file is visible
+                this.ref(filePath).focus();
+            }
+            else {
+                handleFocusRequestBasic();
+            }
+            return false;
+        }));
+
+        this.disposible.add(commands.treeViewFocus.on(()=>{
+            handleFocusRequestBasic();
         }));
 
         // Setup all the tree specific command to be handled here
-        let treeRoot = this.ref(this.refNames.treeRoot);
+        let treeRoot = this.ref(this.refNames.treeRootNode);
         let handlers = new Mousetrap(treeRoot);
         handlers.bind(commands.treeAddFile.config.keyboardShortcut,()=>{
             console.log('add File');
@@ -109,13 +146,29 @@ export class FileTree extends BaseComponent<Props, State>{
             console.log('delete File');
             return false;
         });
+        handlers.bind('up',()=>{
+            console.log('Up');
+            return false;
+        });
+        handlers.bind('down',()=>{
+            console.log('Down');
+            return false;
+        });
+        handlers.bind('left',()=>{
+            console.log('left');
+            return false;
+        });
+        handlers.bind('right',()=>{
+            console.log('right');
+            return false;
+        });
     }
-    refNames = {treeRoot:'1'}
+    refNames = {treeRootNode:'1'}
 
     render() {
         let hideStyle = !this.state.shown && { display: 'none' };
         return (
-            <div ref={this.refNames.treeRoot} style={[csx.flexRoot, csx.horizontal, { width: this.state.width }, hideStyle]}>
+            <div ref={this.refNames.treeRootNode} style={[csx.flexRoot, csx.horizontal, { width: this.state.width }, hideStyle]}>
 
                 <div style={[csx.flex, csx.vertical, treeListStyle]}>
                     {this.props.filePathsCompleted || <Robocop/>}
@@ -135,7 +188,7 @@ export class FileTree extends BaseComponent<Props, State>{
         let sub = expanded ? this.renderDirSub(item, depth) : [];
         let selectedStyle = this.state.selectedPaths[item.filePath] ? treeItemSelectedStyle : {};
         return (
-            [<div style={[treeItemStyle, selectedStyle]} key={item.filePath} tabIndex={-1} onClick={(evt) => this.handleToggleDir(evt, item) }>
+            [<div style={[treeItemStyle, selectedStyle]} key={item.filePath} ref={item.filePath} tabIndex={-1} onClick={(evt) => this.handleToggleDir(evt, item) }>
                 {ui.indent(depth,2)} <Icon name={icon}/> {item.name}
             </div>].concat(sub)
         );
@@ -147,7 +200,7 @@ export class FileTree extends BaseComponent<Props, State>{
     renderFile(item:TreeFileItem,depth:number){
         let selectedStyle = this.state.selectedPaths[item.filePath] ? treeItemSelectedStyle : {};
         return (
-            <div style={[treeItemStyle, selectedStyle]} key={item.filePath} onClick={(evt) => this.handleSelectFile(evt, item) }>
+            <div style={[treeItemStyle, selectedStyle]} key={item.filePath} ref={item.filePath} tabIndex={-1} onClick={(evt) => this.handleSelectFile(evt, item) }>
                 {ui.indent(depth,2)} <Icon name="file-text-o"/> {item.name}
             </div>
         );

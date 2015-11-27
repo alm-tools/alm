@@ -222,9 +222,19 @@ export let nextCursorLocation = new UICommand({
 /**
  * Tree view
  */
-export let toggleTreeView = new UICommand({
+export let treeViewToggle = new UICommand({
     keyboardShortcut: 'mod+\\',    // atom
     description: "Tree View: Toggle",
+    context: CommandContext.Global,
+});
+export let treeViewRevealActiveFile = new UICommand({
+    keyboardShortcut: 'mod+shift+\\',    // atom
+    description: "Tree View: Reveal Active File",
+    context: CommandContext.Global,
+});
+export let treeViewFocus = new UICommand({
+    keyboardShortcut: 'mod+0',    // atom, code
+    description: "Tree View: Focus",
     context: CommandContext.Global,
 });
 export let treeAddFile = new UICommand({
