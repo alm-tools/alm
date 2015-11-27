@@ -147,7 +147,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 return;
             }
 
-            let openTabIndex = this.props.tabs.map(t=> t.url == e.tabUrl).indexOf(true);
+            let openTabIndex = this.props.tabs.map(t=> t.id == e.tabId).indexOf(true);
             if (openTabIndex !== -1) {
                 if (e.position) {
                     this.afterComponentDidUpdate(() => this.gotoPositionOnSelectedTab(e.position));

@@ -30,7 +30,7 @@ export function previous() {
     if (tab) {
         commands.doOpenOrFocusTab.emit({ tabId: tab.tabId, tabUrl: tab.tabUrl, position: tab.position });
     }
-    //  debug();
+    // debug();
 }
 
 export function next() {
@@ -65,27 +65,27 @@ export let addEntry = utils.debounce((editorPosition: EditorPosition) => {
         position: editorPosition
     }
 
-    let isSame = (pos1:EditorPosition,pos2:EditorPosition) => pos1.line == pos2.line && pos1.ch == pos2.ch;
+    let isSame = (pos1: EditorPosition, pos2: EditorPosition) => pos1.line == pos2.line && pos1.ch == pos2.ch;
 
     // This prevents us adding a new history for what we already know e.g. when we ask the UI to select a tab
     let testEntry = history[currentIndex];
     if (testEntry && testEntry.tabId == potentialNewEntry.tabId) {
-        if (isSame(editorPosition,testEntry.position)) {
+        if (isSame(editorPosition, testEntry.position)) {
             return;
         }
     }
     // if the users action is same as what there would be one before we just take them there in index
-    testEntry = history[currentIndex-1];
+    testEntry = history[currentIndex - 1];
     if (testEntry && testEntry.tabId == potentialNewEntry.tabId) {
-        if (isSame(editorPosition,testEntry.position)) {
+        if (isSame(editorPosition, testEntry.position)) {
             currentIndex--;
             return;
         }
     }
     // if the users action is same as what there would be one after we just take them there in index
-    testEntry = history[currentIndex+1];
+    testEntry = history[currentIndex + 1];
     if (testEntry && testEntry.tabId == potentialNewEntry.tabId) {
-        if (isSame(editorPosition,testEntry.position)) {
+        if (isSame(editorPosition, testEntry.position)) {
             currentIndex++;
             return;
         }
@@ -107,11 +107,11 @@ export let addEntry = utils.debounce((editorPosition: EditorPosition) => {
         }
     }
 
-    // console.log(`Added total:${history.length}, current: ${currentIndex}, tab: ${potentialNewEntry.tabUrl}:${potentialNewEntry.position.line}:${potentialNewEntry.position.ch}`); // Debug
-},800);
+    // console.log(`Added tab: ${potentialNewEntry.tabUrl}:${potentialNewEntry.position.line}:${potentialNewEntry.position.ch}`); debug(); // Debug
+}, 800);
 
-let debug = function(){
-    console.log(history.map(h=>h.tabUrl+':'+h.position.line+':'+h.position.ch))
+let debug = function() {
+    console.log(history.map(h=> h.tabUrl + ':' + h.position.line + ':' + h.position.ch))
     console.log(currentIndex);
 }
 // window.debug = debug;
