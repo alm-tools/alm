@@ -62,8 +62,8 @@ export namespace API {
         });
         state.addTabs(tabs);
 
-        // TODO: transact on docs
-        docCache.applyRefactoringsToDocs(refactorings);
+        // Transact on docs
+        docCache.applyRefactoringsToTsDocs(refactorings);
     }
 
     export function getFocusedCodeEditorIfAny(): codeEditor.CodeEditor {

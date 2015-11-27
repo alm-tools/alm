@@ -6,32 +6,31 @@ import * as CodeMirror from "codemirror";
 import {cast, server} from "../../../socket/socketClient";
 import * as utils from "../../../common/utils";
 import * as classifierCache from "./classifierCache";
-import {RefactoringsByFilePath,Refactoring} from "../../../common/types";
+import {RefactoringsByFilePath, Refactoring} from "../../../common/types";
 
 /**
- * Modes
+ * Modes. New modes need to be added
+ * - to the require call
+ * - to all the extensions that map to that mode name or its specialization
  */
-// meta
-require('codemirror/mode/meta');
-// supported
-const supportedModes = [
-    'xml',
-    'css',
-    'sass',
-    'dart',
-    'haml',
-    'gfm',
-]
-
 require('codemirror/mode/javascript/javascript');
 require('codemirror/mode/xml/xml');
 require('codemirror/mode/css/css');
 require('codemirror/mode/sass/sass');
 require('codemirror/mode/dart/dart');
-
-// console.log(CodeMirror.findModeByFileName('asdf/foo.js'))
-// console.log(CodeMirror.findModeByFileName('asdf/foo.less'))
-
+require('codemirror/mode/haml/haml');
+require('codemirror/mode/gfm/gfm');
+require('codemirror/mode/coffeescript/coffeescript');
+let supportedModesMap = {
+    js: 'javascript', json: 'javascript',
+    xml: 'text/html', html: 'text/html',
+    css: 'css', less: 'text/x-less', gss: 'text/x-gss',
+    sass: 'sass',
+    dart: 'dart',
+    haml: 'haml',
+    markdown: 'gfm', md: 'gfm',
+    coffee: 'coffeescript', coffeescript: 'coffeescript',
+};
 
 let docByFilePathPromised: { [filePath: string]: Promise<CodeMirror.Doc> } = {};
 
@@ -61,13 +60,22 @@ function getOrCreateDoc(filePath: string) {
     }
     else {
         return docByFilePathPromised[filePath] = server.openFile({ filePath: filePath }).then((res) => {
-            let mode = 'typescript'; // text/html
+            let ext = utils.getExt(filePath);
+            let isTsFile = utils.isTsFile(filePath);
+
+            let mode = isTsFile
+                        ? 'typescript'
+                        : supportedModesMap[ext]
+                        ? supportedModesMap[ext]
+                        : 'text';
+
+            // console.log(mode,supportedModesMap[ext]); // Debug mode
 
             // to track the source of changes , local vs. network
             let sourceId = utils.createId();
 
             // Add to classifier cache
-            classifierCache.addFile(filePath, res.contents);
+            if (isTsFile) { classifierCache.addFile(filePath, res.contents); }
 
             // create the doc
             let doc = new CodeMirror.Doc(res.contents, mode);
@@ -91,7 +99,7 @@ function getOrCreateDoc(filePath: string) {
                 };
 
                 // Keep the classifier in sync
-                classifierCache.editFile(filePath, codeEdit);
+                if (isTsFile) { classifierCache.editFile(filePath, codeEdit); }
 
                 // Send the edit
                 server.editFile({ filePath: filePath, edit: codeEdit });
@@ -106,7 +114,7 @@ function getOrCreateDoc(filePath: string) {
 
                 if (res.filePath == filePath && codeEdit.sourceId !== sourceId) {
                     // Keep the classifier in sync
-                    classifierCache.editFile(filePath, codeEdit);
+                    if (isTsFile) { classifierCache.editFile(filePath, codeEdit); }
 
                     // Note that we use *our source id* as this is now a change *we are making to code mirror* :)
                     doc.replaceRange(codeEdit.newText, codeEdit.from, codeEdit.to, sourceId);
@@ -119,7 +127,7 @@ function getOrCreateDoc(filePath: string) {
                     && doc.getValue() !== res.contents) {
 
                     // Keep the classifier in sync
-                    classifierCache.setContents(filePath, res.contents);
+                    if (isTsFile) { classifierCache.setContents(filePath, res.contents); }
 
                     // preserve cursor
                     let cursor = doc.getCursor();
@@ -153,15 +161,15 @@ function getOrCreateDocs(filePaths: string[]): Promise<{ [filePath: string]: Cod
     });
 }
 
-export function applyRefactoringsToDocs(refactorings: RefactoringsByFilePath) {
+export function applyRefactoringsToTsDocs(refactorings: RefactoringsByFilePath) {
     let filePaths = Object.keys(refactorings);
     getOrCreateDocs(filePaths).then(docsByFilePath => {
-        filePaths.forEach(fp=>{
+        filePaths.forEach(fp=> {
             let doc = docsByFilePath[fp];
             let changes = refactorings[fp];
             for (let change of changes) {
-                let from = classifierCache.getLineAndCharacterOfPosition(fp,change.span.start);
-                let to = classifierCache.getLineAndCharacterOfPosition(fp,change.span.start + change.span.length);
+                let from = classifierCache.getLineAndCharacterOfPosition(fp, change.span.start);
+                let to = classifierCache.getLineAndCharacterOfPosition(fp, change.span.start + change.span.length);
                 doc.replaceRange(change.newText, from, to, '*refactor');
             }
         });

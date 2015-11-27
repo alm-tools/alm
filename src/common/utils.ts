@@ -128,6 +128,18 @@ export function rangeLimited(args: { num: number, min: number, max: number, loop
     return limited;
 }
 
+/** is file path a ts file path */
+export function isTsFile(filePath: string): boolean {
+    let ext = getExt(filePath);
+    return ext == 'ts' || ext == 'tsx';
+}
+
+/** `/asdf/bar/j.ts` => `ts` */
+export function getExt(filePath: string) {
+    let parts = filePath.split('.');
+    return parts[parts.length - 1].toLowerCase();
+}
+
 /** `/asdf/bar/j.ts` => `j.ts` */
 export function getFileName(fullFilePath:string){
     let parts = fullFilePath.split('/');
