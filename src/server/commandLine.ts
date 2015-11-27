@@ -54,9 +54,12 @@ export let getOptions = utils.once((): CommandLineOptions => {
     }
     // Common usage user does `tsb ./srcFolder`
     // So if there was only one filePath detected and its a dir ... user probably meant `-d`
-    if (options.filePaths.length == 1 && fsu.isDir(options.filePaths[0])){
-        workingDir.setProjectRoot(options.filePaths[0]);
-        options.filePaths = [];
+    if (options.filePaths.length == 1) {
+        let filePath = workingDir.makeAbsoluteIfNeeded(options.filePaths[0]);
+        if (fsu.isDir(filePath)) {
+            workingDir.setProjectRoot(filePath);
+            options.filePaths = [];
+        }
     }
 
     if (options.safe){

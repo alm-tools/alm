@@ -25,7 +25,7 @@ export function makeAbsolute(relativeFilePath: string) {
 }
 
 export function makeAbsoluteIfNeeded(filePathOrRelativeFilePath: string){
-    if (fsu.isAbsolute(filePathOrRelativeFilePath)){
+    if (!fsu.isAbsolute(filePathOrRelativeFilePath)){
         return makeAbsolute(filePathOrRelativeFilePath);
     }
     else {
