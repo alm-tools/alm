@@ -19,7 +19,8 @@ import * as csx from "csx";
 
 export enum CommandContext {
     Global,
-    Editor
+    Editor,
+    TreeView,
 }
 
 interface UICommandConfig {
@@ -223,8 +224,28 @@ export let nextCursorLocation = new UICommand({
  */
 export let toggleTreeView = new UICommand({
     keyboardShortcut: 'mod+\\',    // atom
-    description: "Toggle File Tree",
+    description: "Tree View: Toggle",
     context: CommandContext.Global,
+});
+export let addFile = new UICommand({
+    keyboardShortcut: 'mod+a',    // atom inspired but with 'mod'
+    description: "Tree View: Add File",
+    context: CommandContext.TreeView,
+});
+export let duplicateFile = new UICommand({
+    keyboardShortcut: 'mod+d',    // atom inspired but with 'mod'
+    description: "Tree View: Duplicate File|Folder",
+    context: CommandContext.TreeView,
+});
+export let moveFile = new UICommand({
+    keyboardShortcut: 'mod+m',    // atom inspired but with 'mod'
+    description: "Tree View: Move File|Folder",
+    context: CommandContext.TreeView,
+});
+export let deleteFile = new UICommand({
+    keyboardShortcut: 'del',    // atom
+    description: "Tree View: Delete File|Folder",
+    context: CommandContext.TreeView,
 });
 
 /**

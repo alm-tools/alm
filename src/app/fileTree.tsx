@@ -87,8 +87,15 @@ export class FileTree extends BaseComponent<Props, State>{
         this.disposible.add(commands.toggleTreeView.on(()=>{
             this.setState({ shown: !this.state.shown });
         }));
+
+        // Setup all the tree specific command to be handled here
+
     }
 
+    refs: {
+        [string: string]: any;
+        treeRoot: any;
+    }
 
     render() {
 
@@ -98,7 +105,7 @@ export class FileTree extends BaseComponent<Props, State>{
 
         let hideStyle = !this.state.shown && { display: 'none' };
         return (
-            <div style={[csx.flexRoot, csx.horizontal, { width: this.state.width }, hideStyle]}>
+            <div ref="treeRoot" style={[csx.flexRoot, csx.horizontal, { width: this.state.width }, hideStyle]}>
 
                 <div style={[csx.flex, csx.vertical, treeListStyle]}>
                     {this.props.filePathsCompleted || <Robocop/>}
