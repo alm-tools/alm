@@ -19,6 +19,11 @@ export class BaseComponent<Props, State> extends React.Component<Props, State>{
         this.isUnmounted = true;
     }
 
+    // Making it easier to deal with refs
+    ref(name: string): HTMLElement {
+        return ReactDOM.findDOMNode(this.refs[name]) as any;
+    }
+
     private _afterComponentDidUpdateQueue = [];
     /**
      * Register stuff to call after component did update

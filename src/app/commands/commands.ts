@@ -227,22 +227,22 @@ export let toggleTreeView = new UICommand({
     description: "Tree View: Toggle",
     context: CommandContext.Global,
 });
-export let addFile = new UICommand({
+export let treeAddFile = new UICommand({
     keyboardShortcut: 'mod+a',    // atom inspired but with 'mod'
     description: "Tree View: Add File",
     context: CommandContext.TreeView,
 });
-export let duplicateFile = new UICommand({
+export let treeDuplicateFile = new UICommand({
     keyboardShortcut: 'mod+d',    // atom inspired but with 'mod'
     description: "Tree View: Duplicate File|Folder",
     context: CommandContext.TreeView,
 });
-export let moveFile = new UICommand({
+export let treeMoveFile = new UICommand({
     keyboardShortcut: 'mod+m',    // atom inspired but with 'mod'
     description: "Tree View: Move File|Folder",
     context: CommandContext.TreeView,
 });
-export let deleteFile = new UICommand({
+export let treeDeleteFile = new UICommand({
     keyboardShortcut: 'del',    // atom
     description: "Tree View: Delete File|Folder",
     context: CommandContext.TreeView,

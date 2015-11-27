@@ -13,6 +13,7 @@ import * as commands from "./commands/commands";
 let {DraggableCore} = ui;
 import {getDirectory,getFileName} from "../common/utils";
 import {Robocop} from "./robocop";
+import * as Mousetrap from "mousetrap";
 
 export interface Props extends React.Props<any> {
     // from react-redux ... connected below
@@ -71,7 +72,8 @@ export class FileTree extends BaseComponent<Props, State>{
             width: 200,
             shown: false,
             expansionState: {},
-            selectedPaths: {}
+            selectedPaths: {},
+            treeRoot: { name: 'loading', filePath: 'loading', subDirs: [], files: [] }
         };
         this.setupTree(props);
 
@@ -89,23 +91,31 @@ export class FileTree extends BaseComponent<Props, State>{
         }));
 
         // Setup all the tree specific command to be handled here
-
+        let treeRoot = this.ref(this.refNames.treeRoot);
+        let handlers = new Mousetrap(treeRoot);
+        handlers.bind(commands.treeAddFile.config.keyboardShortcut,()=>{
+            console.log('add File');
+            return false;
+        });
+        handlers.bind(commands.treeDuplicateFile.config.keyboardShortcut,()=>{
+            console.log('duplicate File');
+            return false;
+        });
+        handlers.bind(commands.treeMoveFile.config.keyboardShortcut,()=>{
+            console.log('move File');
+            return false;
+        });
+        handlers.bind([commands.treeDeleteFile.config.keyboardShortcut,"backspace"],()=>{
+            console.log('delete File');
+            return false;
+        });
     }
-
-    refs: {
-        [string: string]: any;
-        treeRoot: any;
-    }
+    refNames = {treeRoot:'1'}
 
     render() {
-
-        // Too soon
-        if (!this.state.treeRoot)
-            return <div></div>;
-
         let hideStyle = !this.state.shown && { display: 'none' };
         return (
-            <div ref="treeRoot" style={[csx.flexRoot, csx.horizontal, { width: this.state.width }, hideStyle]}>
+            <div ref={this.refNames.treeRoot} style={[csx.flexRoot, csx.horizontal, { width: this.state.width }, hideStyle]}>
 
                 <div style={[csx.flex, csx.vertical, treeListStyle]}>
                     {this.props.filePathsCompleted || <Robocop/>}
@@ -125,7 +135,7 @@ export class FileTree extends BaseComponent<Props, State>{
         let sub = expanded ? this.renderDirSub(item, depth) : [];
         let selectedStyle = this.state.selectedPaths[item.filePath] ? treeItemSelectedStyle : {};
         return (
-            [<div style={[treeItemStyle, selectedStyle]} key={item.filePath} onClick={(evt) => this.handleToggleDir(evt, item) }>
+            [<div style={[treeItemStyle, selectedStyle]} key={item.filePath} tabIndex={-1} onClick={(evt) => this.handleToggleDir(evt, item) }>
                 {ui.indent(depth,2)} <Icon name={icon}/> {item.name}
             </div>].concat(sub)
         );
