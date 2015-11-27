@@ -14,6 +14,7 @@ let {DraggableCore} = ui;
 import {getDirectory,getFileName} from "../common/utils";
 import {Robocop} from "./robocop";
 import * as Mousetrap from "mousetrap";
+type TruthTable = utils.TruthTable;
 
 export interface Props extends React.Props<any> {
     // from react-redux ... connected below
@@ -90,7 +91,7 @@ export class FileTree extends BaseComponent<Props, State>{
         let handleFocusRequestBasic = ()=>{
             let selectedFilePaths = Object.keys(this.state.selectedPaths);
             let pathToFocus = selectedFilePaths.length > 0
-                ? selectedFilePaths[0]
+                ? selectedFilePaths[selectedFilePaths.length - 1]
                 : this.state.treeRoot.filePath;
 
             this.ref(pathToFocus).focus();
@@ -120,16 +121,16 @@ export class FileTree extends BaseComponent<Props, State>{
                 let remainderAfterRoot = filePath.substr(root.length + 1 /* for `/` */);
                 let dirPortionsAfterRoot = utils.getDirectory(remainderAfterRoot).split('/');
                 let runningPortion = '';
-                let expanded = {};
+                let expanded: TruthTable = {};
                 for (let portion of dirPortionsAfterRoot) {
                     runningPortion = runningPortion+'/'+portion;
                     let fullPath = root + runningPortion;
                     expanded[fullPath] = true;
                 }
-                let expansionState: any = csx.extend(this.state.expansionState,expanded);
+                let expansionState = csx.extend(this.state.expansionState,expanded) as TruthTable;
 
-                // also select this node
-                let selectedPaths: any = {};
+                // also only select this node
+                let selectedPaths: TruthTable = {};
                 selectedPaths[filePath] = true;
 
                 this.setState({expansionState,selectedPaths});
@@ -144,6 +145,24 @@ export class FileTree extends BaseComponent<Props, State>{
         this.disposible.add(commands.treeViewFocus.on(()=>{
             handleFocusRequestBasic();
         }));
+
+        // Utility: takes you down two the last item selected
+        let goDownToSmallestSelection = () => {
+            let selectedFilePaths = Object.keys(this.state.selectedPaths);
+            if (selectedFilePaths.length == 0){
+                let selectedPaths: TruthTable = {};
+                selectedPaths[this.state.treeRoot.filePath] = true;
+                this.setState({selectedPaths});
+            }
+            else if (selectedFilePaths.length > 1) {
+                let selectedPaths: TruthTable = {};
+                selectedPaths[selectedFilePaths.length - 1] = true;
+                this.setState({selectedPaths});
+            }
+            else {
+                // already single selection :)
+            }
+        }
 
         // Setup all the tree specific command to be handled here
         let treeRoot = this.ref(this.refNames.treeRootNode);
@@ -165,10 +184,24 @@ export class FileTree extends BaseComponent<Props, State>{
             return false;
         });
         handlers.bind('up',()=>{
+            goDownToSmallestSelection();
+            let selectedFilePath = Object.keys(this.state.selectedPaths)[0];
+            // TODO:
+            // if root do nothing
+            //
+            // find the parent dir
+            //
+            // find this in the parent dir
+            //
+            // if not first, select previous
+            // if is this is the first select the parent dir
+             
+            console.log(selectedFilePath);
             console.log('Up');
             return false;
         });
         handlers.bind('down',()=>{
+            goDownToSmallestSelection();
             console.log('Down');
             return false;
         });
