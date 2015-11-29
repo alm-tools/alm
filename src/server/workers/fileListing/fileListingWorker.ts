@@ -76,7 +76,7 @@ namespace Worker {
                sendNewFileList();
            });
            mg.on('match',(match)=>{
-               let p = path.resolve(q.directory,match);
+               let p = fsu.resolve(q.directory,match);
                if (mg.cache[p] && mg.cache[p] == 'FILE'){
                   liveList[match] = true;
                   sendNewFileListThrottled();
