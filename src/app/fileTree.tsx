@@ -28,11 +28,13 @@ interface TreeDirItem {
     subDirs: TreeDirItem[];
     files : TreeFileItem[];
 }
-
 interface TreeFileItem {
     name: string;
     filePath: string;
 }
+type SelectedPaths = { [filePath: string]: {isDir:boolean} };
+let dirSelected = { isDir: true };
+let fileSelected = { isDir: false };
 
 export interface State {
     /** Width of the tree view in pixels */
@@ -42,7 +44,7 @@ export interface State {
     expansionState?: { [filePath: string]: boolean };
 
      // TODO: support multiple selections at some point, hence a dict
-    selectedPaths?: { [filePath: string]: boolean };
+    selectedPaths?: SelectedPaths;
 }
 
 let resizerWidth = 5;
@@ -147,8 +149,8 @@ export class FileTree extends BaseComponent<Props, State>{
                 let expansionState = csx.extend(this.state.expansionState,expanded) as TruthTable;
 
                 // also only select this node
-                let selectedPaths: TruthTable = {};
-                selectedPaths[filePath] = true;
+                let selectedPaths: SelectedPaths = {};
+                selectedPaths[filePath] = fileSelected;
 
                 this.setState({expansionState,selectedPaths});
                 this.ref(filePath).focus();
@@ -167,13 +169,14 @@ export class FileTree extends BaseComponent<Props, State>{
         let goDownToSmallestSelection = () => {
             let selectedFilePaths = Object.keys(this.state.selectedPaths);
             if (selectedFilePaths.length == 0){
-                let selectedPaths: TruthTable = {};
-                selectedPaths[this.state.treeRoot.filePath] = true;
+                let selectedPaths: SelectedPaths = {};
+                selectedPaths[this.state.treeRoot.filePath] = dirSelected;
                 this.setState({selectedPaths});
             }
             else if (selectedFilePaths.length > 1) {
-                let selectedPaths: TruthTable = {};
-                selectedPaths[selectedFilePaths.length - 1] = true;
+                let selectedPaths: SelectedPaths = {};
+                let path = selectedFilePaths[selectedFilePaths.length - 1];
+                selectedPaths[path] = this.state.selectedPaths[path];
                 this.setState({selectedPaths});
             }
             else {
@@ -365,8 +368,7 @@ export class FileTree extends BaseComponent<Props, State>{
         let dirPath = item.filePath;
 
         this.state.selectedPaths = {};
-        this.state.selectedPaths[dirPath] = true;
-
+        this.state.selectedPaths[dirPath] = dirSelected;
         this.state.expansionState[dirPath] = !this.state.expansionState[dirPath];
 
         this.setState({expansionState: this.state.expansionState, selectedPaths:this.state.selectedPaths });
@@ -377,7 +379,7 @@ export class FileTree extends BaseComponent<Props, State>{
         let filePath = item.filePath;
 
         this.state.selectedPaths = {};
-        this.state.selectedPaths[filePath] = true;
+        this.state.selectedPaths[filePath] = fileSelected;
 
         this.setState({ selectedPaths:this.state.selectedPaths });
 
