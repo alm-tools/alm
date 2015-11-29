@@ -62,7 +62,7 @@ Need to use more than one monitor? Just open a new browser window! As many as yo
 ![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/multiMonitor.gif)
 
 # Cursor History
-Your cursor history is preserved across all open files
+Your cursor history is preserved across all open files. `Ctrl|⌘ + U` and `Ctrl|⌘ + Shift + U`.
 
 ![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/cursorHistory.gif)
 
