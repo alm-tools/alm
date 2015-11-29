@@ -165,7 +165,7 @@ export class FileTree extends BaseComponent<Props, State>{
             handleFocusRequestBasic();
         }));
 
-        // Utility: takes you down two the last item selected
+        /** Utility: takes you down two the last item selected */
         let goDownToSmallestSelection = () => {
             let selectedFilePaths = Object.keys(this.state.selectedPaths);
             if (selectedFilePaths.length == 0){
@@ -182,6 +182,17 @@ export class FileTree extends BaseComponent<Props, State>{
             else {
                 // already single selection :)
             }
+            let selectedFilePath = Object.keys(this.state.selectedPaths)[0];
+            let selectedFilePathDetails = this.state.selectedPaths[selectedFilePath];
+            return {selectedFilePath,isDir:selectedFilePathDetails.isDir};
+        }
+
+        /** Utility : set an item as the only selected */
+        let setAsOnlySelected = (filePath:string, isDir:boolean) => {
+            let selectedPaths: SelectedPaths = {};
+            selectedPaths[filePath] = {isDir};
+            this.setState({selectedPaths});
+            this.ref(filePath).focus();
         }
 
         // Setup all the tree specific command to be handled here
@@ -204,31 +215,31 @@ export class FileTree extends BaseComponent<Props, State>{
             return false;
         });
         handlers.bind('up',()=>{
-            goDownToSmallestSelection();
-            let selectedFilePath = Object.keys(this.state.selectedPaths)[0];
-            // TODO:
-            //
-            //
-            //
-            // if not first, select previous
-            // if is this is the first select the parent dir
+            let {selectedFilePath,isDir} = goDownToSmallestSelection();
 
             // if root do nothing
             if (selectedFilePath == this.state.treeRoot.filePath){
                 return;
             }
+
             // find the parent dir &&
             // find this in the parent dir
             let parentDirFilePath = utils.getDirectory(selectedFilePath);
             let parentDirTreeItem = this.dirLookup[parentDirFilePath];
-            // TODO: would be great if we already knew it was a folder or file
-            let lookupInFiles = parentDirTreeItem.files.map(x=>x.filePath).indexOf(selectedFilePath);
-            let lookupInFolders = parentDirTreeItem.subDirs.map(x=>x.filePath).indexOf(selectedFilePath);
-            let indexInParentDir = (lookupInFiles !== -1)?lookupInFiles:lookupInFolders;
+            let indexInParentDir = isDir
+                                    ?parentDirTreeItem.subDirs.map(x=>x.filePath).indexOf(selectedFilePath)
+                                    :parentDirTreeItem.files.map(x=>x.filePath).indexOf(selectedFilePath);
 
-
-            console.log(selectedFilePath,indexInParentDir);
-            console.log('Up');
+            // if is this is the first select the parent dir
+            if (indexInParentDir == 0) {
+                setAsOnlySelected(parentDirFilePath, true);
+            }
+            // Select previous
+            else {
+                isDir
+                ? setAsOnlySelected(parentDirTreeItem.subDirs[indexInParentDir-1].filePath,isDir)
+                : setAsOnlySelected(parentDirTreeItem.files[indexInParentDir-1].filePath,isDir)
+            }
             return false;
         });
         handlers.bind('down',()=>{
