@@ -2,6 +2,22 @@
 
 **TIP** Keyboard shortcut `Mod` means `Ctrl` on windows and `⌘` on Mac.
 
+# Features
+
+* [Sublime Text Users](#sublime)
+* [Seamless external editing](#disk-watching)
+* [Multi Monitor](#multi-monitor)
+* [Editing First](#focus)
+* [Jumpy](#jumpy)
+* [Omni Search](#omnisearch)
+* [Errors](#errors)
+* [Syntax Highlighting](#syntax-highlighting)
+* [Rename Refactoring](#rename-refactoring)
+* [Tag, Bracket and Text matching](#matching)
+* [Doctor](#doctor)
+* [Go to Definition](#goto-definition)
+* [Find References](#find-references)
+
 # Sublime
 > Imitation is the sincerest form of flattery
 
@@ -45,7 +61,7 @@ We don't just lint your current file, *we do the entire active project*. No blac
 ![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/liveLinting.gif)
 
 # Syntax Highlighting
-Not just another text mate based grammar which [despite a lot of love](https://github.com/Microsoft/TypeScript-TmLanguage/blob/ab17d24fed148cd789fd632d74f170c7308d75ff/TypeScriptReact.tmLanguage) can still fall short. Compare
+Not just another text mate based grammar which [despite a lot of love](https://github.com/Microsoft/TypeScript-TmLanguage/blob/ab17d24fed148cd789fd632d74f170c7308d75ff/TypeScriptReact.tmLanguage) can still fall short. Compare:
 
 ### Textmate
 ![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/grammarBad.png)
