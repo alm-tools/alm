@@ -36,7 +36,7 @@ tsb .
 
 Now open it in your favorite browser (pssst `chrome`) at the URL mentioned in your console. (**protip** use `tsb -o`)
 
-![main](https://raw.githubusercontent.com/TypeScriptBuilder/tsb-docs/gh-pages/screens/main.png)
+![main](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/main.png)
 
 ## Command Line
 All of these are **optional**:
