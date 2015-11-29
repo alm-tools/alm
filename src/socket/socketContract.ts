@@ -199,13 +199,13 @@ export namespace Types {
     export interface FormatDocumentQuery extends FilePathQuery {
     }
     export interface FormatDocumentResponse {
-        edits: CodeEdit[];
+        refactorings: types.RefactoringsByFilePath
     }
     export interface FormatDocumentRangeQuery extends FilePathQuery {
         from: EditorPosition;
         to: EditorPosition;
     }
     export interface FormatDocumentRangeResponse {
-        edits: CodeEdit[];
+        refactorings: types.RefactoringsByFilePath
     }
 }
