@@ -4,19 +4,21 @@
 
 # Features
 
-* [Sublime Text Users](#sublime)
-* [Seamless external editing](#disk-watching)
-* [Multi Monitor](#multi-monitor)
-* [Editing First](#focus)
-* [Jumpy](#jumpy)
-* [Omni Search](#omnisearch)
-* [Errors](#errors)
-* [Syntax Highlighting](#syntax-highlighting)
-* [Rename Refactoring](#rename-refactoring)
-* [Tag, Bracket and Text matching](#matching)
-* [Doctor](#doctor)
-* [Go to Definition](#goto-definition)
-* [Find References](#find-references)
+* [Editor](#sublime)
+    * [Sublime Text Users](#sublime)
+    * [Seamless external editing](#disk-watching)
+    * [Editing First](#focus)
+    * [Jumpy](#jumpy)
+    * [Multi Monitor](#multi-monitor)
+    * [Omni Search](#omnisearch)
+* [TypeScript](#errors)
+    * [Errors](#errors)
+    * [Syntax Highlighting](#syntax-highlighting)
+    * [Rename Refactoring](#rename-refactoring)
+    * [Tag, Bracket and Text matching](#matching)
+    * [Doctor](#doctor)
+    * [Go to Definition](#goto-definition)
+    * [Find References](#find-references)
 
 # Sublime
 > Imitation is the sincerest form of flattery
@@ -32,11 +34,6 @@ You can use this side by side with your favorite editor.
 
 ![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/seemlessExternalEditing.gif)
 
-# Multi Monitor
-Need to use more than one monitor? Just open a new browser window! As many as you like, cause they all sync up!
-
-![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/multiMonitor.gif)
-
 # Focus
 No matter where you are, `esc` will always take you to the currently focused editor, so you can do what you do best, **write code**.
 
@@ -46,6 +43,11 @@ No matter where you are, `esc` will always take you to the currently focused edi
 Just press `shift+enter` and you can jump anywhere in the current editor.
 
 ![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/jumpy.gif)
+
+# Multi Monitor
+Need to use more than one monitor? Just open a new browser window! As many as you like, cause they all sync up!
+
+![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/multiMonitor.gif)
 
 # OmniSearch
 Single place for common search queries
