@@ -31,6 +31,7 @@ import {GotoDefinition} from "./gotoDefinition";
 var gotoDefinition = require("./gotoDefinition");
 import {FindReferences} from "./findReferences";
 var findReferences = require("./findReferences");
+var format = require("./format");
 
 export interface State {
     isOmniSearchOpen?: boolean;

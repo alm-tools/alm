@@ -316,6 +316,7 @@ export let additionalEditorCommands = {
     gotoDefinition: '',
     findReferences: '',
     jumpy: '',
+    format: '',
 }
 utils.stringEnum(additionalEditorCommands);
 
@@ -337,6 +338,7 @@ sublimeMap[`F2`] = additionalEditorCommands.renameVariable;
 sublimeMap[`${mod}-B`] = additionalEditorCommands.gotoDefinition;
 sublimeMap[`Shift-Enter`] = additionalEditorCommands.jumpy;
 sublimeMap[`Shift-${mod}-B`] = additionalEditorCommands.findReferences;
+sublimeMap[`${mod}-Alt-L`] = additionalEditorCommands.format;
 
 // we have our own cursor history
 delete defaultMap[`${mod}-U`];
