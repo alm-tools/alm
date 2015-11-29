@@ -1,16 +1,17 @@
 > Not all these features might be pushed to npm yet. Remember the planned release is 2017 :rose:
 
-**TIP** Keyboard shortcut `Mod` means `Ctrl` on windows and `⌘` on Mac.
+**TIP** Keyboard shortcut `Ctrl|⌘` means `Ctrl` on windows and `⌘` on Mac.
 
 # Features
 
-* [Editor](#sublime)
+* [Editor](#omni-search)
+    * [Omni Search](#omni-search)
     * [Sublime Text Users](#sublime)
     * [Seamless external editing](#disk-watching)
     * [Editing First](#focus)
     * [Jumpy](#jumpy)
     * [Multi Monitor](#multi-monitor)
-    * [Omni Search](#omnisearch)
+    * [Cursor History](#cursor-history)
 * [TypeScript](#errors)
     * [Errors](#errors)
     * [Syntax Highlighting](#syntax-highlighting)
@@ -19,6 +20,17 @@
     * [Doctor](#doctor)
     * [Go to Definition](#goto-definition)
     * [Find References](#find-references)
+
+
+# Omni Search
+Single place for common search queries
+
+![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/omnisearch.gif)
+
+Use the command search (`Ctrl|⌘ + Shift + P`) to see all the shortcuts at your disposal.
+
+![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/commandSearch.gif)
+
 
 # Sublime
 > Imitation is the sincerest form of flattery
@@ -49,12 +61,10 @@ Need to use more than one monitor? Just open a new browser window! As many as yo
 
 ![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/multiMonitor.gif)
 
-# OmniSearch
-Single place for common search queries
+# Cursor History
+Your cursor history is preserved across all open files
 
-![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/omnisearch.gif)
-
-> Search for `Editor` in the command search (`Ctrl + Shift + P` or `⌘ + Shift + P`) to see all the shortcuts at your disposal.
+![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/cursorHistory.gif)
 
 # Errors
 
