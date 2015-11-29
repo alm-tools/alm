@@ -21,6 +21,19 @@ export interface Props extends React.Props<any> {
     filePaths?: string[];
     filePathsCompleted?: boolean;
 }
+
+interface TreeDirItem {
+    name: string;
+    filePath: string;
+    subDirs: TreeDirItem[];
+    files : TreeFileItem[];
+}
+
+interface TreeFileItem {
+    name: string;
+    filePath: string;
+}
+
 export interface State {
     /** Width of the tree view in pixels */
     width?: number;
@@ -67,6 +80,10 @@ let treeItemSelectedStyle = {
 })
 @ui.Radium
 export class FileTree extends BaseComponent<Props, State>{
+
+    /** makes it easier to lookup directories */
+    dirLookup:{[dirPath:string]:TreeDirItem} = {};
+
     constructor(props: Props){
         super(props);
         this.state = {
@@ -187,16 +204,27 @@ export class FileTree extends BaseComponent<Props, State>{
             goDownToSmallestSelection();
             let selectedFilePath = Object.keys(this.state.selectedPaths)[0];
             // TODO:
-            // if root do nothing
             //
-            // find the parent dir
             //
-            // find this in the parent dir
             //
             // if not first, select previous
             // if is this is the first select the parent dir
-             
-            console.log(selectedFilePath);
+
+            // if root do nothing
+            if (selectedFilePath == this.state.treeRoot.filePath){
+                return;
+            }
+            // find the parent dir &&
+            // find this in the parent dir
+            let parentDirFilePath = utils.getDirectory(selectedFilePath);
+            let parentDirTreeItem = this.dirLookup[parentDirFilePath];
+            // TODO: would be great if we already knew it was a folder or file
+            let lookupInFiles = parentDirTreeItem.files.map(x=>x.filePath).indexOf(selectedFilePath);
+            let lookupInFolders = parentDirTreeItem.subDirs.map(x=>x.filePath).indexOf(selectedFilePath);
+            let indexInParentDir = (lookupInFiles !== -1)?lookupInFiles:lookupInFolders;
+
+
+            console.log(selectedFilePath,indexInParentDir);
             console.log('Up');
             return false;
         });
@@ -272,7 +300,7 @@ export class FileTree extends BaseComponent<Props, State>{
         // TODO store as user setting
     }
 
-    setupTree(props:Props){
+    setupTree = (props:Props) => {
         let filePaths = props.filePaths;
 
         if (!filePaths.length) { // initial boot up
@@ -289,8 +317,8 @@ export class FileTree extends BaseComponent<Props, State>{
         // Always expand root
         this.state.expansionState[rootDirPath] = true;
 
-        let dirLookup:{[dirPath:string]:TreeDirItem} = {};
-        dirLookup[rootDirPath] = rootDir;
+        this.dirLookup= {};
+        this.dirLookup[rootDirPath] = rootDir;
 
         for (let filePath of filePaths) {
             let dir = getDirectory(filePath);
@@ -302,17 +330,17 @@ export class FileTree extends BaseComponent<Props, State>{
 
             // if not found create a new dir and set its parent
             // (recursively e.g. last was /foo and new is /foo/bar/baz/quz)
-            function createDirAndMakeSureAllParentExits(dir: string): TreeDirItem {
+            let createDirAndMakeSureAllParentExits = (dir: string): TreeDirItem => {
                 let dirTree: TreeDirItem = {
                     name: getFileName(dir),
                     filePath: dir,
                     subDirs: [],
                     files: []
                 }
-                dirLookup[dir] = dirTree;
+                this.dirLookup[dir] = dirTree;
 
                 let parentDir = getDirectory(dir);
-                let parentDirTree = dirLookup[parentDir]
+                let parentDirTree = this.dirLookup[parentDir]
                 if (!parentDirTree) {
                     parentDirTree = createDirAndMakeSureAllParentExits(parentDir);
                 }
@@ -322,7 +350,7 @@ export class FileTree extends BaseComponent<Props, State>{
             }
 
             // lookup existing dir
-            let treeDir = dirLookup[dir];
+            let treeDir = this.dirLookup[dir];
             if (!treeDir) {
                 treeDir = createDirAndMakeSureAllParentExits(dir);
             }
@@ -353,18 +381,6 @@ export class FileTree extends BaseComponent<Props, State>{
 
         this.setState({ selectedPaths:this.state.selectedPaths });
 
-        commands.doOpenFile.emit({ filePath });
+        commands.doOpenOrFocusFile.emit({ filePath });
     }
-}
-
-interface TreeDirItem {
-    name: string;
-    filePath: string;
-    subDirs: TreeDirItem[];
-    files : TreeFileItem[];
-}
-
-interface TreeFileItem {
-    name: string;
-    filePath: string;
 }
