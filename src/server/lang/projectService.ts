@@ -214,3 +214,13 @@ export function getReferences(query: Types.GetReferencesQuery): Promise<Types.Ge
         references
     })
 }
+
+import * as formatting from "./modules/formatting";
+export function formatDocument(query: Types.FormatDocumentQuery): Promise<Types.FormatDocumentResponse> {
+    let project = getProject(query.filePath);
+    return resolve({ edits: formatting.formatDocument(project, query.filePath) });
+}
+export function formatDocumentRange(query: Types.FormatDocumentRangeQuery): Promise<Types.FormatDocumentRangeResponse> {
+    let project = getProject(query.filePath);
+    return resolve({ edits: formatting.formatDocumentRange(project, query.filePath, query.from, query.to) });
+}

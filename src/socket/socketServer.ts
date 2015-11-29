@@ -108,6 +108,8 @@ namespace Server {
     export var getDefinitionsAtPosition : typeof contract.server.getDefinitionsAtPosition = projectService.getDefinitionsAtPosition;
     export var getDoctorInfo : typeof contract.server.getDoctorInfo = projectService.getDoctorInfo;
     export var getReferences : typeof contract.server.getReferences = projectService.getReferences;
+    export var formatDocument : typeof contract.server.formatDocument = projectService.formatDocument;
+    export var formatDocumentRange : typeof contract.server.formatDocumentRange = projectService.formatDocumentRange;
 }
 
 // Ensure that the namespace follows the contract

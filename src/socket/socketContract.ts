@@ -30,8 +30,8 @@ export var server = {
     getActiveProjectConfigDetails: {} as QRFunction<{}, ActiveProjectConfigDetails>,
     setActiveProjectConfigDetails: {} as QRFunction<ActiveProjectConfigDetails, {}>,
     isFilePathInActiveProject: {} as QRFunction<{ filePath: string }, { inActiveProject: boolean }>,
-    setOpenUITabs: {} as QRFunction<{openTabs:types.SessionTabInUI[]},{}>,
-    getOpenUITabs: {} as QRFunction<{},{openTabs:types.SessionTabInUI[]}>,
+    setOpenUITabs: {} as QRFunction<{ openTabs: types.SessionTabInUI[] }, {}>,
+    getOpenUITabs: {} as QRFunction<{}, { openTabs: types.SessionTabInUI[] }>,
     getFilePathsInActiveProject: {} as QRFunction<{}, { filePaths: string[] }>,
 
     /**
@@ -42,12 +42,14 @@ export var server = {
     /**
      * Project Service
      */
-    getCompletionsAtPosition: {} as QRFunction<Types.GetCompletionsAtPositionQuery,Types.GetCompletionsAtPositionResponse>,
-    quickInfo: {} as QRFunction<Types.QuickInfoQuery,Types.QuickInfoResponse>,
+    getCompletionsAtPosition: {} as QRFunction<Types.GetCompletionsAtPositionQuery, Types.GetCompletionsAtPositionResponse>,
+    quickInfo: {} as QRFunction<Types.QuickInfoQuery, Types.QuickInfoResponse>,
     getRenameInfo: {} as QRFunction<Types.GetRenameInfoQuery, Types.GetRenameInfoResponse>,
     getDefinitionsAtPosition: {} as QRFunction<Types.GetDefinitionsAtPositionQuery, Types.GetDefinitionsAtPositionResponse>,
     getReferences: {} as QRFunction<Types.GetReferencesQuery, Types.GetReferencesResponse>,
     getDoctorInfo: {} as QRFunction<Types.GetDoctorInfoQuery, Types.GetDoctorInfoResponse>,
+    formatDocument: {} as QRFunction<Types.FormatDocumentQuery, Types.FormatDocumentResponse>,
+    formatDocumentRange: {} as QRFunction<Types.FormatDocumentRangeQuery, Types.FormatDocumentRangeResponse>,
 }
 
 export var client = {
@@ -66,10 +68,10 @@ export var cast = {
     savedFileChangedOnDisk: new TypedEvent<{ filePath: string; contents: string }>(),
 
     /** If a user does a code edit */
-    didEdit: new TypedEvent<{filePath: string, edit: CodeEdit}>(),
+    didEdit: new TypedEvent<{ filePath: string, edit: CodeEdit }>(),
 
     /** If any of the file status changes */
-    didStatusChange: new TypedEvent<{filePath: string, saved: boolean}>(),
+    didStatusChange: new TypedEvent<{ filePath: string, saved: boolean }>(),
 
     /** Errors for a file path */
     errorsUpdated: new TypedEvent<ErrorsByFilePath>(),
@@ -86,6 +88,11 @@ export var cast = {
  * General utility interfaces
  */
 export namespace Types {
+    /** Used a lot in project service */
+    export interface FilePathQuery {
+        filePath: string;
+    }
+
     /** Used a lot in project service */
     export interface FilePathPositionQuery {
         filePath: string;
@@ -163,26 +170,42 @@ export namespace Types {
     /**
      * Doctor
      */
-     export interface GetDoctorInfoQuery extends FilePathEditorPositionQuery { }
-     export interface GetDoctorInfoResponse {
-         valid: boolean;
-         definitions: {
-             filePath: string;
-             position: EditorPosition;
-             span: ts.TextSpan;
-         }[];
-         quickInfo?: {
-             name: string;
-             comment: string;
-         };
-         references: ReferenceDetails[];
-     }
+    export interface GetDoctorInfoQuery extends FilePathEditorPositionQuery { }
+    export interface GetDoctorInfoResponse {
+        valid: boolean;
+        definitions: {
+            filePath: string;
+            position: EditorPosition;
+            span: ts.TextSpan;
+        }[];
+        quickInfo?: {
+            name: string;
+            comment: string;
+        };
+        references: ReferenceDetails[];
+    }
 
-     /**
-      * References
-      */
-      export interface GetReferencesQuery extends FilePathPositionQuery { }
-      export interface GetReferencesResponse {
-         references: ReferenceDetails[];
-      }
+    /**
+     * References
+     */
+    export interface GetReferencesQuery extends FilePathPositionQuery { }
+    export interface GetReferencesResponse {
+        references: ReferenceDetails[];
+    }
+
+    /**
+     * Formatting
+     */
+    export interface FormatDocumentQuery extends FilePathQuery {
+    }
+    export interface FormatDocumentResponse {
+        edits: CodeEdit[];
+    }
+    export interface FormatDocumentRangeQuery extends FilePathQuery {
+        from: EditorPosition;
+        to: EditorPosition;
+    }
+    export interface FormatDocumentRangeResponse {
+        edits: CodeEdit[];
+    }
 }
