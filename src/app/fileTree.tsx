@@ -281,27 +281,20 @@ export class FileTree extends BaseComponent<Props, State>{
 
             // TODO: special handling for root
 
-            /** Goes to next sibling on any parent folder */
+            /** Goes to next sibling on any (recursive) parent folder */
             let gotoNextSiblingHighUp = (treeItem: TreeDirItem) => {
                 let parentDirFilePath = utils.getDirectory(treeItem.filePath);
                 let parentTreeItem = this.dirLookup[parentDirFilePath];
 
-                while (true){
-                    // TODO: continue, break
-                    let indexInParent = parentTreeItem.subDirs.map(x=>x.filePath).indexOf(treeItem.filePath);
-
-                    if (indexInParent !== (parentTreeItem.subDirs.length - 1)){ // If not last we have a winner
-                        setAsOnlySelected(parentTreeItem.subDirs[indexInParent + 1].filePath, true);
-                        break;
-                    }
-                    else if(parentTreeItem.files.length){ // if parent has files move on to files
-                        setAsOnlySelected(parentTreeItem.files[0].filePath, false);
-                        break;
-                    }
-                    else { // Look at next parent
-                        gotoNextSiblingHighUp(treeItem);
-                        continue;
-                    }
+                let indexInParent = parentTreeItem.subDirs.map(x=>x.filePath).indexOf(treeItem.filePath);
+                if (indexInParent !== (parentTreeItem.subDirs.length - 1)){ // If not last we have a winner
+                    setAsOnlySelected(parentTreeItem.subDirs[indexInParent + 1].filePath, true);
+                }
+                else if(parentTreeItem.files.length){ // if parent has files move on to files
+                    setAsOnlySelected(parentTreeItem.files[0].filePath, false);
+                }
+                else { // Look at next parent
+                    gotoNextSiblingHighUp(parentTreeItem);
                 }
             }
 
