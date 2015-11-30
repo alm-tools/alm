@@ -21,7 +21,7 @@ export class BaseComponent<Props, State> extends React.Component<Props, State>{
 
     // Making it easier to deal with refs
     ref(name: string): HTMLElement {
-        return ReactDOM.findDOMNode(this.refs[name]) as any;
+        return this.refs[name] as any;
     }
 
     private _afterComponentDidUpdateQueue = [];

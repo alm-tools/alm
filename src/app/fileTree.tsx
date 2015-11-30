@@ -248,11 +248,32 @@ export class FileTree extends BaseComponent<Props, State>{
             return false;
         });
         handlers.bind('left',()=>{
-            console.log('left');
+            let {selectedFilePath,isDir} = goDownToSmallestSelection();
+            if (isDir){
+                // if expanded then collapse
+                if (this.state.expansionState[selectedFilePath]){
+                    delete this.state.expansionState[selectedFilePath];
+                    this.setState({ expansionState: this.state.expansionState });
+                    return;
+                }
+                // if root ... leave
+                if (this.state.treeRoot.filePath == selectedFilePath){
+                    return;
+                }
+            }
+            // Goto the parent directory
+            setAsOnlySelected(utils.getDirectory(selectedFilePath), true);
+
             return false;
         });
-        handlers.bind('right',()=>{
-            console.log('right');
+        handlers.bind('right', () => {
+            let {selectedFilePath, isDir} = goDownToSmallestSelection();
+            if (isDir) {
+                // just expand
+                this.state.expansionState[selectedFilePath] = true;
+                this.setState({ expansionState: this.state.expansionState });
+                return;
+            }
             return false;
         });
     }

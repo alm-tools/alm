@@ -99,13 +99,13 @@ export class OmniSearch extends BaseComponent<Props, State>{
         // make sure its parent scrolls to make this visible
         setTimeout(()=>{
             if (this.refs.selected) {
-                let selected = ReactDOM.findDOMNode(this.refs.selected) as HTMLDivElement;
-                let searchScroll = ReactDOM.findDOMNode(this.refs.selected) as HTMLDivElement;
+                let selected = this.refs.selected as HTMLDivElement;
+                let searchScroll = this.refs.selected as HTMLDivElement;
                 selected.scrollIntoViewIfNeeded(false);
             }
             // also keep the input in focus
             if (this.searchState.isShown) {
-                let input = (ReactDOM.findDOMNode(this.refs.omniSearchInput) as HTMLInputElement)
+                let input = this.refs.omniSearchInput as HTMLInputElement
                 input.focus();
 
                 // and scroll to the end if its just been shown
