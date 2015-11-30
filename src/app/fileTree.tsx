@@ -231,15 +231,48 @@ export class FileTree extends BaseComponent<Props, State>{
                                     ?parentDirTreeItem.subDirs.map(x=>x.filePath).indexOf(selectedFilePath)
                                     :parentDirTreeItem.files.map(x=>x.filePath).indexOf(selectedFilePath);
 
-            // if is this is the first select the parent dir
-            if (indexInParentDir == 0) {
-                setAsOnlySelected(parentDirFilePath, true);
+            /** Goes to the bottom file / folder */
+            let gotoBottomOfFolder = (closestDir: TreeDirItem) => {
+                while (true){
+                    if (!this.state.expansionState[closestDir.filePath]){ // if not expanded, we have a winner
+                        setAsOnlySelected(closestDir.filePath,true);
+                        break;
+                    }
+                    if (closestDir.files.length) { // Lucky previous expanded dir has files, select last!
+                        setAsOnlySelected(closestDir.files[closestDir.files.length-1].filePath,false);
+                        break;
+                    }
+                    else if (closestDir.subDirs.length) { // does it have folders? ... check last folder next
+                        closestDir = closestDir.subDirs[closestDir.subDirs.length - 1];
+                        continue;
+                    }
+                    else { // no folders no files ... we don't care if you are expanded or not
+                        setAsOnlySelected(closestDir.filePath,true);
+                        break;
+                    }
+                }
             }
-            // Select previous
+
+            // if first
+            if (indexInParentDir == 0){
+                if (isDir){
+                    setAsOnlySelected(parentDirFilePath, true);
+                }
+                else if (parentDirTreeItem.subDirs.length == 0){
+                    setAsOnlySelected(parentDirFilePath, true);
+                }
+                else {
+                    gotoBottomOfFolder(parentDirTreeItem.subDirs[parentDirTreeItem.subDirs.length - 1]);
+                }
+            }
+            // if this is not the first file in the folder select the previous file
+            else if (!isDir){
+                setAsOnlySelected(parentDirTreeItem.files[indexInParentDir-1].filePath, false);
+            }
+            // Else select the deepest item in the previous directory
             else {
-                isDir
-                ? setAsOnlySelected(parentDirTreeItem.subDirs[indexInParentDir-1].filePath,isDir)
-                : setAsOnlySelected(parentDirTreeItem.files[indexInParentDir-1].filePath,isDir)
+                let closestDir = parentDirTreeItem.subDirs[indexInParentDir-1];
+                gotoBottomOfFolder(closestDir);
             }
             return false;
         });
