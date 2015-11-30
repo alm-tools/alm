@@ -2,6 +2,7 @@ import * as sw from "../../utils/simpleWorker";
 import * as contract from "./fileListingContract";
 import * as fs from "fs";
 import * as fsu from "../../utils/fsu";
+import * as utils from "../../../common/utils";
 
 import * as glob from "glob";
 import chokidar = require('chokidar');
@@ -37,10 +38,15 @@ namespace Worker {
             let filePaths = Object.keys(liveList)
                 // Remove .git we have no use for that here
                 .filter(x=>!x.includes('/.git/'))
-                // filePaths sorted by shortest length first
-                .sort((a, b) => a.length - b.length)
-                // Also sort alphabetically
-                .sort((name1, name2) => name1.toLowerCase().localeCompare(name2.toLowerCase()))
+
+                // Sorting is SLOWWWW
+                // // filePaths sorted by shortest length first
+                // .sort((a, b) => a.length - b.length)
+                // // Also sort alphabetically
+                // .sort((name1, name2) => {
+                //     return fp1.toLowerCase().localeCompare(fp2.toLowerCase())
+                // })
+
                 // Convert ot file path type
                 .map(filePath => {
                     let type = liveList[filePath];
