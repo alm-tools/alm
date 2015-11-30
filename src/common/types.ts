@@ -77,3 +77,13 @@ export function getRefactoringsByFilePath(refactorings: Refactoring[]) {
 
     return loc;
 }
+
+/** For file listing we like to know if its a dir or file */
+export enum FilePathType {
+    File,
+    Dir
+}
+export interface FilePath {
+    filePath: string;
+    type: FilePathType
+}

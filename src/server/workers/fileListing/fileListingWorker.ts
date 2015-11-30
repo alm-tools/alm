@@ -8,6 +8,7 @@ import chokidar = require('chokidar');
 import {throttle} from "../../../common/utils";
 import path = require('path');
 import {TypedEvent}  from "../../../common/events";
+import * as types from "../../../common/types";
 
 namespace Worker {
     export var echo: typeof contract.worker.echo = (q) => {
@@ -29,7 +30,7 @@ namespace Worker {
         directoryUnderWatch = q.directory;
 
         let completed = false;
-        let liveList: { [filePath: string]: boolean } = {};
+        let liveList: { [filePath: string]: types.FilePathType } = {};
 
         // Utility to send new file list
         var sendNewFileList = () => {
@@ -39,7 +40,12 @@ namespace Worker {
                 // filePaths sorted by shortest length first
                 .sort((a, b) => a.length - b.length)
                 // Also sort alphabetically
-                .sort();
+                .sort()
+                // Convert ot file path type
+                .map(filePath => {
+                    let type = liveList[filePath];
+                    return {filePath, type};
+                });
 
             master.fileListUpdated({
                 filePaths,
@@ -61,24 +67,24 @@ namespace Worker {
                    console.error('Globbing error:', e);
                }
 
-               /** Filter out directories */
-               newList = newList.filter(nl=> {
+               let list = newList.map(nl=> {
                    let p = path.resolve(q.directory,nl);
-                   return mg.cache[p] && mg.cache[p] == 'FILE';
+                   let type = mg.cache[p] && mg.cache[p] == 'FILE' ? types.FilePathType.File : types.FilePathType.Dir;
+                   return {
+                       filePath: fsu.consistentPath(p),
+                       type,
+                   }
                });
-
-               // Make absolute & consistent
-               newList = newList.map(x=> fsu.resolve(q.directory, x))
 
                // Initial search complete!
                completed = true;
-               newList.forEach(filePath=>liveList[filePath] = true);
+               list.forEach(entry => liveList[entry.filePath] = entry.type);
                sendNewFileList();
            });
            mg.on('match',(match)=>{
-               let p = fsu.resolve(q.directory,match);
-               if (mg.cache[p] && mg.cache[p] == 'FILE'){
-                  liveList[match] = true;
+               let p = path.resolve(q.directory,match);
+               if (mg.cache[p]){
+                  liveList[fsu.consistentPath(p)] = mg.cache[p] == 'FILE' ? types.FilePathType.File : types.FilePathType.Dir;
                   sendNewFileListThrottled();
                }
            });
@@ -90,7 +96,7 @@ namespace Worker {
 
             // Only send if we don't know about this already (because of faster initial scan)
             if (!liveList[filePath]) {
-                liveList[filePath] = true;
+                liveList[filePath] = stat.isFile() ? types.FilePathType.File : types.FilePathType.Dir;
                 sendNewFileListThrottled();
             }
         }
@@ -112,9 +118,10 @@ namespace Worker {
         // watcher.on('unlinkDir', );
 
         // Just for changes
-        watcher.on('change', (filePath) => {
+        watcher.on('change', (filePath, stat: fs.Stats) => {
             filePath = fsu.consistentPath(filePath);
-            master.fileChanged({ filePath });
+            let type = stat.isFile() ? types.FilePathType.File : types.FilePathType.Dir;
+            master.fileChanged({ filePath, type });
         });
 
         return Promise.resolve({});

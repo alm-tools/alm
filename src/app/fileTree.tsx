@@ -1,3 +1,4 @@
+import * as types from "../common/types";
 import React = require("react");
 import Radium = require('radium');
 import csx = require('csx');
@@ -18,7 +19,7 @@ type TruthTable = utils.TruthTable;
 
 export interface Props extends React.Props<any> {
     // from react-redux ... connected below
-    filePaths?: string[];
+    filePaths?: types.FilePath[];
     filePathsCompleted?: boolean;
 }
 
@@ -336,7 +337,7 @@ export class FileTree extends BaseComponent<Props, State>{
     }
 
     setupTree = (props:Props) => {
-        let filePaths = props.filePaths;
+        let filePaths = props.filePaths.filter(fp=> fp.type == types.FilePathType.File).map(fp=> fp.filePath);
 
         if (!filePaths.length) { // initial boot up
             return;

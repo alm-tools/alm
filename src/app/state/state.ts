@@ -25,7 +25,7 @@ export interface StoreState {
     /** Socket IO */
     socketConnected?: boolean;
 
-    filePaths?: string[];
+    filePaths?: types.FilePath[];
     filePathsCompleted?: boolean;
 
     /** Tabs are managed globally as its significat to other sections */
@@ -155,14 +155,14 @@ export let setSocketConnected = redux.add('setSocketConnected', (state, payload:
     };
 });
 
-export let setCompleteFilePaths = redux.add('setCompleteFilePaths', (state, filePaths: string[]): StoreState => {
+export let setCompleteFilePaths = redux.add('setCompleteFilePaths', (state, filePaths: types.FilePath[]): StoreState => {
     return {
         filePaths: filePaths,
         filePathsCompleted: true
     };
 });
 
-export let setPartialFilePaths = redux.add('setPartialFilePaths', (state, filePaths: string[]): StoreState => {
+export let setPartialFilePaths = redux.add('setPartialFilePaths', (state, filePaths: types.FilePath[]): StoreState => {
     return {
         filePaths: filePaths,
         filePathsCompleted: false

@@ -41,7 +41,7 @@ export let availableProjects = new TypedEvent<ActiveProjectConfigDetails[]>();
 function refreshAvailableProjects() {
     return flm.filePathsCompleted.current().then((list) => {
         // Detect some tsconfig.json
-        let tsconfigs = list.filePaths.filter(t=> t.endsWith('tsconfig.json'));
+        let tsconfigs = list.filePaths.map(t=> t.filePath).filter(t=> t.endsWith('tsconfig.json'));
         // sort by shortest length first (with extra big weight for node_modules):
         let weightConfig = (config: string) => config.includes('node_modules') ? config.length + 100 : config.length;
         tsconfigs = tsconfigs.sort(function(a, b) {

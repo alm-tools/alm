@@ -257,9 +257,9 @@ class SearchState {
             this.closeOmniSearch();
         });
 
-        this.filePaths = state.getState().filePaths;
+        this.filePaths = state.getState().filePaths.filter(fp=> fp.type == types.FilePathType.File).map(fp=> fp.filePath);
         state.subscribeSub(state=> state.filePaths, (filePaths) => {
-            this.filePaths = filePaths;
+            this.filePaths = filePaths.filter(fp=> fp.type == types.FilePathType.File).map(fp=> fp.filePath);
             this.updateIfUserIsSearching(SearchMode.File);
         });
         this.filePathsCompleted = state.getState().filePathsCompleted;

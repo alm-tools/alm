@@ -1,4 +1,5 @@
 import * as sw from "../../utils/simpleWorker";
+import * as types from "../../../common/types";
 
 /**
  * A worker consists of two contracts
@@ -12,6 +13,6 @@ export var worker = {
 
 export var master = {
     increment: {} as sw.QRFunction<{ num: number }, { num: number }>,
-    fileListUpdated: {} as sw.QRFunction<({ filePaths: string[], completed: boolean }), any>,
-    fileChanged: {} as sw.QRFunction<({ filePath: string }), any>
+    fileListUpdated: {} as sw.QRFunction<({ filePaths: types.FilePath[], completed: boolean }), any>,
+    fileChanged: {} as sw.QRFunction<types.FilePath, any>
 }

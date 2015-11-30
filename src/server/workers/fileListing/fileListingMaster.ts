@@ -3,9 +3,10 @@ import * as contract from "./fileListingContract";
 
 import {TypedEvent} from "../../../common/events";
 import * as workingDir from "../../disk/workingDir";
+import * as types from "../../../common/types";
 
-export var filePathsPartial = new TypedEvent<{ filePaths: string[]; }>()
-export var filePathsCompleted = new TypedEvent<{ filePaths: string[]; }>();
+export var filePathsPartial = new TypedEvent<{ filePaths: types.FilePath[]; }>()
+export var filePathsCompleted = new TypedEvent<{ filePaths: types.FilePath[]; }>();
 export var fileChangedOnDisk = new TypedEvent<{filePath:string}>();
 export let initialIndexComplete = false;
 
