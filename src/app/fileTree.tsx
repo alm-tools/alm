@@ -279,6 +279,32 @@ export class FileTree extends BaseComponent<Props, State>{
         handlers.bind('down', () => {
             let {selectedFilePath, isDir} = goDownToSmallestSelection();
 
+            // TODO: special handling for root
+
+            /** Goes to next sibling on any parent folder */
+            let gotoNextSiblingHighUp = (treeItem: TreeDirItem) => {
+                let parentDirFilePath = utils.getDirectory(treeItem.filePath);
+                let parentTreeItem = this.dirLookup[parentDirFilePath];
+
+                while (true){
+                    // TODO: continue, break
+                    let indexInParent = parentTreeItem.subDirs.map(x=>x.filePath).indexOf(treeItem.filePath);
+
+                    if (indexInParent !== (parentTreeItem.subDirs.length - 1)){ // If not last we have a winner
+                        setAsOnlySelected(parentTreeItem.subDirs[indexInParent + 1].filePath, true);
+                        break;
+                    }
+                    else if(parentTreeItem.files.length){ // if parent has files move on to files
+                        setAsOnlySelected(parentTreeItem.files[0].filePath, false);
+                        break;
+                    }
+                    else { // Look at next parent
+                        gotoNextSiblingHighUp(treeItem);
+                        continue;
+                    }
+                }
+            }
+
             if (isDir) {
                 let dirTreeItem = this.dirLookup[selectedFilePath];
                 // If expanded and has children, select first relevant child
@@ -289,12 +315,23 @@ export class FileTree extends BaseComponent<Props, State>{
                         : setAsOnlySelected(dirTreeItem.files[0].filePath, false)
                 }
                 else {
-                    // TODO: move on to the next sibling file / folder
-                    // If not found move on to the first parent sibling file / folder recursively
+                    // Else find the next sibling dir
+                    gotoNextSiblingHighUp(dirTreeItem);
                 }
             }
-            else {
-                // TODO:
+            else { // for files
+                let parentDirFilePath = utils.getDirectory(selectedFilePath);
+                let parentTreeItem = this.dirLookup[parentDirFilePath];
+                let indexInParent = parentTreeItem.files.map(f=>f.filePath).indexOf(selectedFilePath);
+
+                // if not last select next sibling
+                if (indexInParent !== (parentTreeItem.files.length - 1)){
+                    setAsOnlySelected(parentTreeItem.files[indexInParent + 1].filePath, false);
+                }
+                // If is last go on to parent dir sibling algo
+                else {
+                    gotoNextSiblingHighUp(parentTreeItem);
+                }
             }
             //
             // let parentDirFilePath = utils.getDirectory(selectedFilePath);
