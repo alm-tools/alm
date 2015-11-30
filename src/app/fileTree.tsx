@@ -281,9 +281,12 @@ export class FileTree extends BaseComponent<Props, State>{
 
             if (isDir) {
                 let dirTreeItem = this.dirLookup[selectedFilePath];
+                // If expanded and has children, select first relevant child
                 if (this.state.expansionState[selectedFilePath]
                     && (dirTreeItem.files.length || dirTreeItem.subDirs.length)) {
-                    // TODO: select the first child file or folder
+                    dirTreeItem.subDirs[0]
+                        ? setAsOnlySelected(dirTreeItem.subDirs[0].filePath, true)
+                        : setAsOnlySelected(dirTreeItem.files[0].filePath, false)
                 }
                 else {
                     // TODO: move on to the next sibling file / folder
