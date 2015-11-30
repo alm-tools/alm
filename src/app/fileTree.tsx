@@ -366,12 +366,19 @@ export class FileTree extends BaseComponent<Props, State>{
     refNames = {treeRootNode:'1'}
 
     render() {
+
+        let singlePathSelected = Object.keys(this.state.selectedPaths).length == 1
+            && this.state.selectedPaths[Object.keys(this.state.selectedPaths)[0]];
+
         let hideStyle = !this.state.shown && { display: 'none' };
         return (
             <div ref={this.refNames.treeRootNode} style={[csx.flexRoot, csx.horizontal, { width: this.state.width }, hideStyle]}>
 
                 <div style={[csx.flex, csx.vertical, treeListStyle]}>
                     {this.props.filePathsCompleted || <Robocop/>}
+                    {
+                        // TODO: Copy single path selected
+                    }
                     {this.renderDir(this.state.treeRoot)}
                 </div>
 
