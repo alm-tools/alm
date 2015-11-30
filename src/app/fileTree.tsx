@@ -279,10 +279,14 @@ export class FileTree extends BaseComponent<Props, State>{
         handlers.bind('down', () => {
             let {selectedFilePath, isDir} = goDownToSmallestSelection();
 
-            // TODO: special handling for root
 
             /** Goes to next sibling on any (recursive) parent folder */
             let gotoNextSiblingHighUp = (treeItem: TreeDirItem) => {
+                // Special handling for root. Don't change selection :)
+                if (treeItem.filePath == this.state.treeRoot.filePath){
+                    return;
+                }
+
                 let parentDirFilePath = utils.getDirectory(treeItem.filePath);
                 let parentTreeItem = this.dirLookup[parentDirFilePath];
 
@@ -326,11 +330,7 @@ export class FileTree extends BaseComponent<Props, State>{
                     gotoNextSiblingHighUp(parentTreeItem);
                 }
             }
-            //
-            // let parentDirFilePath = utils.getDirectory(selectedFilePath);
-            // let parentDirTreeItem = this.dirLookup[parentDirFilePath];
 
-            console.log('Down');
             return false;
         });
         handlers.bind('left',()=>{
