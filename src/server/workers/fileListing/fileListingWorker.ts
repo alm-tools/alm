@@ -38,14 +38,24 @@ namespace Worker {
             let filePaths = Object.keys(liveList)
                 // Remove .git we have no use for that here
                 .filter(x=>!x.includes('/.git/'))
+                // sort
+                .sort((a, b) => {
+                    // sub dir wins!
+                    if (b.startsWith(a)){
+                        return -1;
+                    }
+                    if (a.startsWith(b)){
+                        return 1;
+                    }
 
-                // Sorting is SLOWWWW
-                // // filePaths sorted by shortest length first
-                // .sort((a, b) => a.length - b.length)
-                // // Also sort alphabetically
-                // .sort((name1, name2) => {
-                //     return fp1.toLowerCase().localeCompare(fp2.toLowerCase())
-                // })
+                    // The next sorts are slow and only done after initial listing!
+                    if (!completed) {
+                        return a.length - b.length;
+                    }
+
+                    // sort by name
+                    return a.toLowerCase().localeCompare(b.toLowerCase());
+                })
 
                 // Convert ot file path type
                 .map(filePath => {
