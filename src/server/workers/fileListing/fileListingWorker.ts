@@ -40,7 +40,7 @@ namespace Worker {
                 // filePaths sorted by shortest length first
                 .sort((a, b) => a.length - b.length)
                 // Also sort alphabetically
-                .sort()
+                .sort((name1, name2) => name1.toLowerCase().localeCompare(name2.toLowerCase()))
                 // Convert ot file path type
                 .map(filePath => {
                     let type = liveList[filePath];
