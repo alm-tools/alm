@@ -276,8 +276,27 @@ export class FileTree extends BaseComponent<Props, State>{
             }
             return false;
         });
-        handlers.bind('down',()=>{
-            goDownToSmallestSelection();
+        handlers.bind('down', () => {
+            let {selectedFilePath, isDir} = goDownToSmallestSelection();
+
+            if (isDir) {
+                let dirTreeItem = this.dirLookup[selectedFilePath];
+                if (this.state.expansionState[selectedFilePath]
+                    && (dirTreeItem.files.length || dirTreeItem.subDirs.length)) {
+                    // TODO: select the first child file or folder
+                }
+                else {
+                    // TODO: move on to the next sibling file / folder
+                    // If not found move on to the first parent sibling file / folder recursively
+                }
+            }
+            else {
+                // TODO:
+            }
+            //
+            // let parentDirFilePath = utils.getDirectory(selectedFilePath);
+            // let parentDirTreeItem = this.dirLookup[parentDirFilePath];
+
             console.log('Down');
             return false;
         });
