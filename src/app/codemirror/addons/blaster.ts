@@ -63,9 +63,8 @@ import CodeMirror = require('codemirror');
 
  	function spawnParticles(type) {
  		var cursorPos = cm.getDoc().getCursor();
- 		var pos = (cm as any).cursorCoords();
- 		var node = document.elementFromPoint(pos.left - 5 , pos.top + 5); // TODO: this is wrong
-        // console.log(node);
+ 		var pos = cm.cursorCoords(cursorPos,'window');
+ 		var node = document.elementFromPoint(pos.left - 5, pos.top + 5);
  		type = cm.getTokenAt(cursorPos);
  		if (type) { type = type.type; };
  		var numParticles = random(PARTICLE_NUM_RANGE.min, PARTICLE_NUM_RANGE.max);

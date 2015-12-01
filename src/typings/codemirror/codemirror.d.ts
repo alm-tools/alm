@@ -236,12 +236,6 @@ declare module CodeMirror {
         If mode is "local" , they will be relative to the top-left corner of the editable document.
         If it is "page" or not given, they are relative to the top-left corner of the page.
         where is a boolean indicating whether you want the start(true) or the end(false) of the selection. */
-        cursorCoords(mode?: string): { left: number; top: number; bottom: number; };
-
-        /** Returns an { left , top , bottom } object containing the coordinates of the cursor position.
-        If mode is "local" , they will be relative to the top-left corner of the editable document.
-        If it is "page" or not given, they are relative to the top-left corner of the page.
-        where is a boolean indicating whether you want the start(true) or the end(false) of the selection. */
         cursorCoords(where: boolean, mode?: string): { left: number; top: number; bottom: number; };
 
         /** Returns an { left , top , bottom } object containing the coordinates of the cursor position.
