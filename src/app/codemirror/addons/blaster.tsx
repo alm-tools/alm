@@ -19,7 +19,7 @@ export class Blaster extends ui.BaseComponent<Props,any>{
 
     canvas = ():HTMLCanvasElement => this.refs['canvas'] as any;
     render(){
-        let style = this.props.cm || {display:'none'};
+        let style = this.props.cm?{}:{display:'none'};
 
         return <canvas style={style} ref="canvas" />
     }
