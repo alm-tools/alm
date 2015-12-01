@@ -236,13 +236,19 @@ declare module CodeMirror {
         If mode is "local" , they will be relative to the top-left corner of the editable document.
         If it is "page" or not given, they are relative to the top-left corner of the page.
         where is a boolean indicating whether you want the start(true) or the end(false) of the selection. */
-        cursorCoords(where: boolean, mode: string): { left: number; top: number; bottom: number; };
+        cursorCoords(mode?: string): { left: number; top: number; bottom: number; };
+
+        /** Returns an { left , top , bottom } object containing the coordinates of the cursor position.
+        If mode is "local" , they will be relative to the top-left corner of the editable document.
+        If it is "page" or not given, they are relative to the top-left corner of the page.
+        where is a boolean indicating whether you want the start(true) or the end(false) of the selection. */
+        cursorCoords(where: boolean, mode?: string): { left: number; top: number; bottom: number; };
 
         /** Returns an { left , top , bottom } object containing the coordinates of the cursor position.
         If mode is "local" , they will be relative to the top-left corner of the editable document.
         If it is "page" or not given, they are relative to the top-left corner of the page.
         where specifies the precise position at which you want to measure. */
-        cursorCoords(where: CodeMirror.Position, mode: string): { left: number; top: number; bottom: number; };
+        cursorCoords(where: CodeMirror.Position, mode?: string): { left: number; top: number; bottom: number; };
 
         /** Returns the position and dimensions of an arbitrary character.pos should be a { line , ch } object.
         This differs from cursorCoords in that it'll give the size of the whole character,
