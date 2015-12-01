@@ -48,16 +48,16 @@ import CodeMirror = require('codemirror');
  		document.body.appendChild(canvas);
  	}
 
- 	function getRGBComponents(node):[number,number,number] {
- 		var color = getComputedStyle(node).color;
- 		if (color) {
+ 	function getRGBComponents(node):[string,string,string] {
+ 		if (node) {
  			try {
+                var color = getComputedStyle(node).color;
  				return color.match(/(\d+), (\d+), (\d+)/).slice(1) as any;
  			} catch(e) {
- 				return [255, 255, 255];
+                return ['255', '255', '255'];
  			}
  		} else {
- 			return [255, 255, 255];
+            return ['255', '255', '255'];
  		}
  	}
 
