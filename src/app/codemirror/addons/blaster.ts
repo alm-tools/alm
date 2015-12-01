@@ -193,7 +193,7 @@ import CodeMirror = require('codemirror');
  	CodeMirror.defineOption("blastCode", false, function(c, val, old) {
  		if (val) {
  			cm = c;
- 			cm.state.blastCode = true;
+ 			(cm as any).state.blastCode = true;
  			effect = val.effect || 2;
  			cmNode = cm.getWrapperElement();
  			initCanvas();
