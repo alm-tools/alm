@@ -43,8 +43,8 @@ export class Blaster extends ui.BaseComponent<Props,any>{
  		this.ctx = canvas.getContext('2d'),
 
  		canvas.style.position = 'absolute';
- 		canvas.style.top = '0';
- 		canvas.style.left = '0';
+ 		canvas.style.width = "100%";
+ 		canvas.style.height = "100%";
  		canvas.style.zIndex = '1';
  		canvas.style.pointerEvents = 'none';
  	}
@@ -127,14 +127,16 @@ export class Blaster extends ui.BaseComponent<Props,any>{
     MAX_PARTICLES = 500;
     throttledSpawnParticles = throttle((type) => {
         let cm = this.props.cm;
-
         var cursorPos = cm.getDoc().getCursor();
-        var pos = cm.cursorCoords(cursorPos,'window');
-        var node = document.elementFromPoint(pos.left - 5, pos.top + 5);
+
+        let posForNode = cm.cursorCoords(cursorPos,'window');
+        var node = document.elementFromPoint(posForNode.left - 5, posForNode.top + 5);
+
         type = cm.getTokenAt(cursorPos);
         if (type) { type = type.type; };
         var numParticles = random(this.PARTICLE_NUM_RANGE.min, this.PARTICLE_NUM_RANGE.max);
         let color = getRGBComponents(node);
+        let pos = cm.cursorCoords(cursorPos,'page');
         for (var i = numParticles; i--;) {
             this.particles[this.particlePointer] = this.createParticle(pos.left + 10, pos.top, color);
             this.particlePointer = (this.particlePointer + 1) % this.MAX_PARTICLES;
