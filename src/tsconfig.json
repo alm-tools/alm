@@ -21,7 +21,6 @@
     ],
     "files": [
         "./app/codemirror/addons/autocomplete.ts",
-        "./app/codemirror/addons/blaster.ts",
         "./app/codemirror/addons/lint.ts",
         "./app/codemirror/addons/linter.ts",
         "./app/codemirror/addons/search.ts",
@@ -120,6 +119,7 @@
         "./webpack.config.ts",
         "./app/activeLists.tsx",
         "./app/clipboard.tsx",
+        "./app/codemirror/addons/blaster.tsx",
         "./app/codemirror/addons/doctor.tsx",
         "./app/codemirror/addons/jumpy.tsx",
         "./app/codemirror/codeEditor.tsx",

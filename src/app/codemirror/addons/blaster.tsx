@@ -7,6 +7,63 @@
   */
 
 import CodeMirror = require('codemirror');
+import ui = require('../../ui');
+import * as React from "react";
+type Editor = CodeMirror.EditorFromTextArea;
+
+interface Props {
+    cm: Editor;
+}
+
+export class Blaster extends ui.BaseComponent<Props,any>{
+
+    canvas = ():HTMLCanvasElement => this.refs['canvas'] as any;
+    render(){
+        if (!this.props.cm) {
+            return <div style={{display:'none'} as any} />;
+        }
+        else {
+            return <canvas ref="canvas" />
+        }
+    }
+
+    componentWillReceiveProps(props:Props,oldProps:Props){
+        if (!oldProps.cm && props.cm){
+            props.cm.on('change', this.handleChange);
+            this.loop();
+        }
+    }
+
+    componentWillUnmount() {
+        super.componentWillUnmount();
+        this.props.cm.off('change', this.handleChange);
+    }
+
+    loop = () => {
+ 	// 	ctx.clearRect(0, 0, w, h);
+        //
+ 	// 	// get the time past the previous frame
+ 	// 	var current_time = new Date().getTime();
+        // var last_time;
+ 	// 	if (!lastTime) last_time = current_time;
+ 	// 	var dt = (current_time - lastTime) / 1000;
+ 	// 	lastTime = current_time;
+        //
+ 	// 	if (shakeTime > 0) {
+ 	// 		shakeTime -= dt;
+ 	// 		var magnitude = (shakeTime / shakeTimeMax) * shakeIntensity;
+ 	// 		var shakeX = random(-magnitude, magnitude);
+ 	// 		var shakeY = random(-magnitude, magnitude);
+ 	// 		cmNode.style.transform = 'translate(' + shakeX + 'px,' + shakeY + 'px)';
+ 	// 	}
+ 	// 	drawParticles();
+ 	// 	requestAnimationFrame(loop);
+ 	}
+
+    handleChange = () => {
+
+    };
+}
 
  ;(function () {
  	var shakeTime = 0,

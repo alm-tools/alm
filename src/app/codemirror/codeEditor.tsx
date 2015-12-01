@@ -33,7 +33,7 @@ require('codemirror/addon/search/match-highlighter');
 require('./addons/text-hover');
 require('./addons/text-hover.css');
 require('./addons/jumpy');
-require('./addons/blaster');
+import blaster = require('./addons/blaster');
 
 // Css overrides
 require('./override.css')
@@ -304,6 +304,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 		return (
 			<div className={className} style={csx.extend(csx.vertical,csx.flex,{position:'relative'})}>
 				{!this.props.readOnly && <doctor.Doctor cm={this.codeMirror} filePath={this.props.filePath}/>}
+				{!this.props.readOnly && <blaster.Blaster cm={this.codeMirror}/>}
 				<textarea ref="textarea" name={this.props.filePath} autoComplete={false} />
 			</div>
 		);
