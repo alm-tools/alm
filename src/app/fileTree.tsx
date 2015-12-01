@@ -368,7 +368,8 @@ export class FileTree extends BaseComponent<Props, State>{
     render() {
 
         let singlePathSelected = Object.keys(this.state.selectedPaths).length == 1
-            && this.state.selectedPaths[Object.keys(this.state.selectedPaths)[0]];
+            && Object.keys(this.state.selectedPaths)[0];
+
 
         let hideStyle = !this.state.shown && { display: 'none' };
         return (
