@@ -21,6 +21,7 @@
     ],
     "files": [
         "./app/codemirror/addons/autocomplete.ts",
+        "./app/codemirror/addons/blaster.ts",
         "./app/codemirror/addons/lint.ts",
         "./app/codemirror/addons/linter.ts",
         "./app/codemirror/addons/search.ts",

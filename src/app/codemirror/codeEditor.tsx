@@ -33,6 +33,7 @@ require('codemirror/addon/search/match-highlighter');
 require('./addons/text-hover');
 require('./addons/text-hover.css');
 require('./addons/jumpy');
+require('./addons/blaster');
 
 // Css overrides
 require('./override.css')
@@ -118,6 +119,9 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
                     return this.getQuickInfo(data.pos);
                 }
             },
+
+			// Blaster
+			// blastCode: { effect: 2 }, // `effect` can be 1 or 2
 
             /** Overcomes horizontal scrolling for now */
             lineWrapping: true,
