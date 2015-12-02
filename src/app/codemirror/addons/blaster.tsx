@@ -123,7 +123,6 @@ export class Blaster extends ui.BaseComponent<Props,any>{
  	}, 100);
 
     PARTICLE_NUM_RANGE = { min: 5, max: 10 };
-    MAX_PARTICLES = 500;
     throttledSpawnParticles = throttle((type) => {
         let cm = this.props.cm;
         var cursorPos = cm.getDoc().getCursor();
