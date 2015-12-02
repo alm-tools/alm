@@ -34,7 +34,7 @@ export class Blaster extends ui.BaseComponent<Props, any>{
     componentWillReceiveProps(props: Props) {
         if (!this.props.cm && props.cm) {
             props.cm.on('change', this.handleChange);
-            this.initCanvas();
+            this.initCanvas(props.cm);
             this.loop();
         }
     }
@@ -45,7 +45,7 @@ export class Blaster extends ui.BaseComponent<Props, any>{
     }
 
     ctx: CanvasRenderingContext2D;
-    initCanvas = () => {
+    initCanvas = (cm:Editor) => {
         let canvas = this.canvas();
         this.ctx = canvas.getContext('2d');
 
@@ -55,12 +55,13 @@ export class Blaster extends ui.BaseComponent<Props, any>{
         canvas.style.zIndex = '1';
         canvas.style.pointerEvents = 'none';
 
-        let measureCanvas = ()=>{
+        let measureCanvas = () => {
             let parent = this.getParentDomNode();
             this.canvas().width = parent.clientWidth
             this.canvas().height = parent.clientHeight;
         }
         this.disposible.add(onresize.on(measureCanvas));
+        cm.refresh = utils.intercepted({context:cm,orig:cm.refresh,intercept:measureCanvas});
         measureCanvas();
     }
 
