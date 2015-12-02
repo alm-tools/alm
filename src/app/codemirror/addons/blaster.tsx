@@ -70,12 +70,20 @@ export class Blaster extends ui.BaseComponent<Props, any>{
     shakeTimeMax = 0;
     shakeIntensity = 5;
     loop = () => {
+        // If unmounted stop
         if (this.isUnmounted) return;
+
+        // Setup for next loop
+        requestAnimationFrame(this.loop);
+
+        // If not enabled right now try again later
+        if (!enabled){
+            return;
+        }
 
         this.ctx.clearRect(0, 0, this.canvas().width, this.canvas().height);
         this.drawShake();
         this.drawParticles();
-        requestAnimationFrame(this.loop);
     }
 
     drawShake(){
@@ -199,7 +207,14 @@ export class Blaster extends ui.BaseComponent<Props, any>{
     }
 
     handleChange = (doc: any, change: CodeMirror.EditorChange) => {
+        if (!enabled){
+            return;
+        }
+
+        // setup shake
         this.throttledShake(0.3);
+
+        // setup particles
         if (change.text.join('')){
             this.throttledSpawnParticles(Effect.Add);
         }
@@ -243,4 +258,10 @@ function getRGBComponents(node: Element): [string, string, string] {
     } else {
         return ['255', '255', '255'];
     }
+}
+
+let enabled = false;
+import * as commands from "../../commands/commands";
+CodeMirror.commands[commands.additionalEditorCommands.toggleBlaster] = (editor: CodeMirror.EditorFromTextArea) => {
+    enabled = !enabled;
 }
