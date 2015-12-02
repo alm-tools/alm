@@ -136,7 +136,7 @@ namespace Worker {
         // Just for changes
         watcher.on('change', (filePath, stat: fs.Stats) => {
             filePath = fsu.consistentPath(filePath);
-            let type = stat.isFile() ? types.FilePathType.File : types.FilePathType.Dir;
+            let type = stat && stat.isDirectory() ? types.FilePathType.Dir : types.FilePathType.File;
             master.fileChanged({ filePath, type });
         });
 
