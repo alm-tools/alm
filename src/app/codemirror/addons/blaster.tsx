@@ -40,9 +40,9 @@ export class Blaster extends ui.BaseComponent<Props, any>{
     ctx: CanvasRenderingContext2D;
     initCanvas = () => {
         let canvas = this.canvas();
-        this.ctx = canvas.getContext('2d'),
+        this.ctx = canvas.getContext('2d');
 
-            canvas.style.position = 'absolute';
+        canvas.style.position = 'absolute';
         canvas.style.width = "100%";
         canvas.style.height = "100%";
         canvas.style.zIndex = '1';
