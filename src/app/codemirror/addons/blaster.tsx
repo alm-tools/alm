@@ -86,11 +86,10 @@ export class Blaster extends ui.BaseComponent<Props, any>{
     effect = 2; // 1 or 2
     drawParticles = (timeDelta?: number) => {
         for (let particle of this.particles) {
-            if (!particle || particle.alpha < 0.01 || particle.size <= 0.5) { continue; }
-
             if (this.effect === 1) { this.effect1(particle); }
             else if (this.effect === 2) { this.effect2(particle); }
         }
+        this.particles = this.particles.filter(particle => particle && particle.alpha > 0.01 && particle.size > 0.5);
     }
 
     PARTICLE_GRAVITY = 0.08;
