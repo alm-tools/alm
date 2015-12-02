@@ -138,21 +138,20 @@ export class Blaster extends ui.BaseComponent<Props, any>{
     }, 100);
 
     PARTICLE_NUM_RANGE = { min: 5, max: 10 };
-    throttledSpawnParticles = throttle((type) => {
+    throttledSpawnParticles = throttle(() => {
         let cm = this.props.cm;
         var cursorPos = cm.getDoc().getCursor();
 
+        // Get color from the node
         let posForNode = cm.cursorCoords(cursorPos, 'window');
         var node = document.elementFromPoint(posForNode.left - 5, posForNode.top + 5);
-
-        type = cm.getTokenAt(cursorPos);
-        if (type) { type = type.type; };
-        var numParticles = random(this.PARTICLE_NUM_RANGE.min, this.PARTICLE_NUM_RANGE.max);
         let color = getRGBComponents(node);
-        let pos = cm.cursorCoords(cursorPos, 'page');
 
+        // Now create the particles
+        var numParticles = random(this.PARTICLE_NUM_RANGE.min, this.PARTICLE_NUM_RANGE.max);
+        let pos = cm.cursorCoords(cursorPos, 'page');
         for (var i = 0; i < numParticles; i++) {
-            this.particles.push(this.createParticle(pos.left + 10, pos.top, color));
+            this.particles.push(this.createParticle(pos.left + 10, pos.top - 20, color));
         }
     }, 100);
 
