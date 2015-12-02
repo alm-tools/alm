@@ -85,10 +85,16 @@ export class Blaster extends ui.BaseComponent<Props, any>{
     particles: Particle[] = [];
     effect = 2; // 1 or 2
     drawParticles = (timeDelta?: number) => {
+        // return if no particles
+        if (!this.particles.length) return;
+
+        // animate the particles
         for (let particle of this.particles) {
             if (this.effect === 1) { this.effect1(particle); }
             else if (this.effect === 2) { this.effect2(particle); }
         }
+
+        // clear out the particles that are no longer relevant post animation
         this.particles = this.particles.filter(particle => particle && particle.alpha > 0.01 && particle.size > 0.5);
     }
 
