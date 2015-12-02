@@ -116,14 +116,14 @@ export class Blaster extends ui.BaseComponent<Props, any>{
         particle.y += particle.vy;
         particle.vx *= particle.drag;
         particle.vy *= particle.drag;
-        particle.theta += random(-0.5, 0.5);
+        particle.theta += random(-0.5, 0.5); // TODO: pretty sure this is not used
         particle.vx += Math.sin(particle.theta) * 0.1;
         particle.vy += Math.cos(particle.theta) * 0.1;
         particle.size *= 0.96;
 
         this.ctx.fillStyle = 'rgba(' + particle.color[0] + ',' + particle.color[1] + ',' + particle.color[2] + ',' + particle.alpha + ')';
         this.ctx.beginPath();
-        this.ctx.arc(Math.round(particle.x - 1), Math.round(particle.y - 1), particle.size, 0, 2 * Math.PI);
+        this.ctx.arc(particle.x - particle.size/2, particle.y - particle.size/2, particle.size, 0, 2 * Math.PI);
         this.ctx.fill();
     }
 
