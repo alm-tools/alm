@@ -16,6 +16,11 @@ interface Props {
     cm: Editor;
 }
 
+enum Effect {
+    Add = 1,
+    Delete = 2,
+}
+
 export class Blaster extends ui.BaseComponent<Props, any>{
 
     canvas = (): HTMLCanvasElement => this.refs['canvas'] as any;
@@ -89,15 +94,14 @@ export class Blaster extends ui.BaseComponent<Props, any>{
     }
 
     particles: Particle[] = [];
-    effect = 2; // 1 or 2
     drawParticles = (timeDelta?: number) => {
         // return if no particles
         if (!this.particles.length) return;
 
         // animate the particles
         for (let particle of this.particles) {
-            if (this.effect === 1) { this.effect1(particle); }
-            else if (this.effect === 2) { this.effect2(particle); }
+            if (particle.effect === Effect.Add) { this.effect1(particle); }
+            else if (particle.effect === Effect.Delete) { this.effect2(particle); }
         }
 
         // clear out the particles that are no longer relevant post animation
@@ -138,7 +142,7 @@ export class Blaster extends ui.BaseComponent<Props, any>{
     }, 100);
 
     PARTICLE_NUM_RANGE = { min: 5, max: 10 };
-    throttledSpawnParticles = throttle(() => {
+    throttledSpawnParticles = throttle((effect: Effect) => {
         let cm = this.props.cm;
         var cursorPos = cm.getDoc().getCursor();
 
@@ -151,7 +155,7 @@ export class Blaster extends ui.BaseComponent<Props, any>{
         var numParticles = random(this.PARTICLE_NUM_RANGE.min, this.PARTICLE_NUM_RANGE.max);
         let pos = cm.cursorCoords(cursorPos, 'page');
         for (var i = 0; i < numParticles; i++) {
-            this.particles.push(this.createParticle(pos.left + 10, pos.top - 20, color));
+            this.particles.push(this.createParticle(pos.left + 10, pos.top - 20, color, effect));
         }
     }, 100);
 
@@ -159,12 +163,13 @@ export class Blaster extends ui.BaseComponent<Props, any>{
         x: [-1, 1],
         y: [-3.5, -1.5]
     }
-    createParticle(x: number, y: number, color: [string, string, string]) {
+    createParticle(x: number, y: number, color: [string, string, string], effect: Effect) {
         var p: Particle = {
             x: x,
             y: y + 10,
             alpha: 1,
             color: color,
+            effect: effect,
 
             // modifed below
             drag: 0,
@@ -174,13 +179,13 @@ export class Blaster extends ui.BaseComponent<Props, any>{
             vx: 0,
             vy: 0,
         };
-        if (this.effect === 1) {
+        if (effect == Effect.Add) {
             p.size = random(2, 4);
             p.vx = this.PARTICLE_VELOCITY_RANGE.x[0] + Math.random() *
                 (this.PARTICLE_VELOCITY_RANGE.x[1] - this.PARTICLE_VELOCITY_RANGE.x[0]);
             p.vy = this.PARTICLE_VELOCITY_RANGE.y[0] + Math.random() *
                 (this.PARTICLE_VELOCITY_RANGE.y[1] - this.PARTICLE_VELOCITY_RANGE.y[0]);
-        } else if (this.effect === 2) {
+        } else if (effect == Effect.Delete) {
             p.size = random(2, 8);
             p.drag = 0.92;
             p.vx = random(-3, 3);
@@ -193,7 +198,7 @@ export class Blaster extends ui.BaseComponent<Props, any>{
 
     handleChange = () => {
         this.throttledShake(0.3);
-        this.throttledSpawnParticles();
+        this.throttledSpawnParticles(Effect.Delete);
     };
 }
 
@@ -202,8 +207,9 @@ interface Particle {
     y: number;
     alpha: number;
     color: [string, string, string];
+    effect: Effect;
 
-    // modifed below
+    // Based on effect
     drag?: number;
     wander?: number;
     theta?: number;
