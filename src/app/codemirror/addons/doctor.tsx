@@ -103,11 +103,11 @@ export class Doctor extends ui.BaseComponent<Props,State> {
         super.componentWillUnmount();
         this.props.cm.off('cursorActivity', this.handleCursorActivity);
     }
-    componentWillReceiveProps(props:Props,oldProps:Props){
-        if (props.showDoctor && !oldProps.showDoctor){
+    componentWillReceiveProps(props:Props){
+        if (props.showDoctor && !this.props.showDoctor){
             this.handleCursorActivity();
         }
-        if (!oldProps.cm && props.cm){
+        if (!this.props.cm && props.cm){
             props.cm.on('cursorActivity', this.handleCursorActivity);
         }
     }
