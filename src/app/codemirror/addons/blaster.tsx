@@ -116,7 +116,7 @@ export class Blaster extends ui.BaseComponent<Props, any>{
         particle.y += particle.vy;
         particle.vx *= particle.drag;
         particle.vy *= particle.drag;
-        particle.theta += random(-0.5, 0.5); // TODO: pretty sure this is not used
+        particle.theta += random(-0.5, 0.5);
         particle.vx += Math.sin(particle.theta) * 0.1;
         particle.vy += Math.cos(particle.theta) * 0.1;
         particle.size *= 0.96;
@@ -155,7 +155,7 @@ export class Blaster extends ui.BaseComponent<Props, any>{
         y: [-3.5, -1.5]
     }
     createParticle(x: number, y: number, color: [string, string, string]) {
-        var p = {
+        var p: Particle = {
             x: x,
             y: y + 10,
             alpha: 1,
