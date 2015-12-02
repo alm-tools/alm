@@ -56,7 +56,9 @@ export class Blaster extends ui.BaseComponent<Props,any>{
     loop = () => {
         if(this.isUnmounted) return;
 
- 		this.ctx.clearRect(0,0,this.canvas().clientHeight,this.canvas().clientWidth);
+        this.canvas().width = this.canvas().clientWidth;
+        this.canvas().height = this.canvas().clientHeight;
+        this.ctx.clearRect(0,0,this.canvas().clientHeight,this.canvas().clientWidth);
 
  		// get the time past the previous frame
  		var current_time = new Date().getTime();
@@ -77,7 +79,7 @@ export class Blaster extends ui.BaseComponent<Props,any>{
  	}
 
     particles:Particle[] = [];
-    effect = 1; // or 2
+    effect = 2; // 1 or 2
     drawParticles = (timeDelta?:number) => {
  		var particle;
  		for (var i = this.particles.length; i--;) {
@@ -147,7 +149,7 @@ export class Blaster extends ui.BaseComponent<Props,any>{
         x: [-1, 1],
         y: [-3.5, -1.5]
     }
-    createParticle(x, y, color) {
+    createParticle(x:number, y: number, color:[string,string,string]) {
  		var p = {
  			x: x,
  			y: y + 10,
