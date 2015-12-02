@@ -145,7 +145,7 @@ export class Blaster extends ui.BaseComponent<Props, any>{
         let color = getRGBComponents(node);
         let pos = cm.cursorCoords(cursorPos, 'page');
 
-        for (var i = 0; i <= numParticles; i++) {
+        for (var i = 0; i < numParticles; i++) {
             this.particles.push(this.createParticle(pos.left + 10, pos.top, color));
         }
     }, 100);
