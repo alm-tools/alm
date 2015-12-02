@@ -81,14 +81,12 @@ export class Blaster extends ui.BaseComponent<Props,any>{
     particles:Particle[] = [];
     effect = 2; // 1 or 2
     drawParticles = (timeDelta?:number) => {
- 		var particle;
- 		for (var i = this.particles.length; i--;) {
- 			particle = this.particles[i];
- 			if (!particle || particle.alpha < 0.01 || particle.size <= 0.5) { continue; }
+        for (let particle of this.particles) {
+            if (!particle || particle.alpha < 0.01 || particle.size <= 0.5) { continue; }
 
  			if (this.effect === 1) { this.effect1(particle); }
  			else if (this.effect === 2) { this.effect2(particle); }
- 		}
+        }
  	}
 
     PARTICLE_GRAVITY = 0.08;
@@ -125,7 +123,6 @@ export class Blaster extends ui.BaseComponent<Props,any>{
  	}, 100);
 
     PARTICLE_NUM_RANGE = { min: 5, max: 10 };
-    particlePointer = 0;
     MAX_PARTICLES = 500;
     throttledSpawnParticles = throttle((type) => {
         let cm = this.props.cm;
@@ -139,9 +136,9 @@ export class Blaster extends ui.BaseComponent<Props,any>{
         var numParticles = random(this.PARTICLE_NUM_RANGE.min, this.PARTICLE_NUM_RANGE.max);
         let color = getRGBComponents(node);
         let pos = cm.cursorCoords(cursorPos,'page');
+
         for (var i = numParticles; i--;) {
-            this.particles[this.particlePointer] = this.createParticle(pos.left + 10, pos.top, color);
-            this.particlePointer = (this.particlePointer + 1) % this.MAX_PARTICLES;
+            this.particles[i] = this.createParticle(pos.left + 10, pos.top, color);
         }
     }, 100);
 
