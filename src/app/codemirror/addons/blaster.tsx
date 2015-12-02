@@ -60,6 +60,12 @@ export class Blaster extends ui.BaseComponent<Props, any>{
         this.canvas().height = this.canvas().clientHeight;
         this.ctx.clearRect(0, 0, this.canvas().clientHeight, this.canvas().clientWidth);
 
+        this.drawShake();
+        this.drawParticles();
+        requestAnimationFrame(this.loop);
+    }
+
+    drawShake(){
         // get the time past the previous frame
         var current_time = new Date().getTime();
         var last_time;
@@ -74,8 +80,6 @@ export class Blaster extends ui.BaseComponent<Props, any>{
             var shakeY = random(-magnitude, magnitude);
             this.props.cm.getWrapperElement().style.transform = 'translate(' + shakeX + 'px,' + shakeY + 'px)';
         }
-        this.drawParticles();
-        requestAnimationFrame(this.loop);
     }
 
     particles: Particle[] = [];
