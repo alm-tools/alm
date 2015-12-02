@@ -71,7 +71,7 @@ export function debounce<T extends Function>(func: T, milliseconds: number, imme
     };
 };
 
-export function throttle<T extends Function>(func: T, milliseconds: number, options?: { leading?: boolean; trailing?: boolean }) {
+export function throttle<T extends Function>(func: T, milliseconds: number, options?: { leading?: boolean; trailing?: boolean }): T {
     var context, args, result;
     var timeout = null;
     var previous = 0;
@@ -101,7 +101,7 @@ export function throttle<T extends Function>(func: T, milliseconds: number, opti
             timeout = setTimeout(later, remaining);
         }
         return result;
-    };
+    } as any;
 };
 
 export function once<T extends Function>(func: T): T {

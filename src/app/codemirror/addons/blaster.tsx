@@ -10,6 +10,7 @@ import CodeMirror = require('codemirror');
 import ui = require('../../ui');
 import * as React from "react";
 import onresize = require('onresize');
+import * as utils from "../../../common/utils";
 type Editor = CodeMirror.EditorFromTextArea;
 
 interface Props {
@@ -137,12 +138,12 @@ export class Blaster extends ui.BaseComponent<Props, any>{
         this.ctx.fill();
     }
 
-    throttledShake = throttle((time) => {
+    throttledShake = utils.throttle((time) => {
         this.shakeTime = this.shakeTimeMax = time;
     }, 100);
 
     PARTICLE_NUM_RANGE = { min: 5, max: 10 };
-    throttledSpawnParticles = throttle((effect: Effect) => {
+    throttledSpawnParticles = utils.throttle((effect: Effect) => {
         let cm = this.props.cm;
         var cursorPos = cm.getDoc().getCursor();
 
@@ -155,7 +156,7 @@ export class Blaster extends ui.BaseComponent<Props, any>{
         var numParticles = random(this.PARTICLE_NUM_RANGE.min, this.PARTICLE_NUM_RANGE.max);
         let pos = cm.cursorCoords(cursorPos, 'page');
         for (var i = 0; i < numParticles; i++) {
-            this.particles.push(this.createParticle(pos.left + 10, pos.top - 20, color, effect));
+            this.particles.push(this.createParticle(pos.left, pos.top - 25, color, effect));
         }
     }, 100);
 
@@ -196,9 +197,14 @@ export class Blaster extends ui.BaseComponent<Props, any>{
         return p;
     }
 
-    handleChange = () => {
+    handleChange = (doc: any, change: CodeMirror.EditorChange) => {
         this.throttledShake(0.3);
-        this.throttledSpawnParticles(Effect.Delete);
+        if (change.text.join('')){
+            this.throttledSpawnParticles(Effect.Add);
+        }
+        else {
+            this.throttledSpawnParticles(Effect.Delete);
+        }
     };
 }
 
@@ -222,20 +228,6 @@ interface Particle {
 function random(min: number, max: number) {
     if (!max) { max = min; min = 0; }
     return min + ~~(Math.random() * (max - min + 1))
-}
-
-/** Throttles the callback */
-function throttle(callback, limit) {
-    var wait = false;
-    return function(...args) {
-        if (!wait) {
-            callback.apply(this, args);
-            wait = true;
-            setTimeout(function() {
-                wait = false;
-            }, limit);
-        }
-    }
 }
 
 /** Get the colors of the html node */
