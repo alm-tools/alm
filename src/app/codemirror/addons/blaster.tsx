@@ -143,7 +143,6 @@ export class Blaster extends ui.BaseComponent<Props, any>{
         var cursorPos = cm.getDoc().getCursor();
 
         // Get color from the node
-        let type = cm.getTokenAt(cursorPos); // TODO: use this to drive the color as its more reliable
         let posForNode = cm.cursorCoords(cursorPos, 'window');
         var node = document.elementFromPoint(posForNode.left - 5, posForNode.top + 5);
         let color = getRGBComponents(node);
