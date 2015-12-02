@@ -24,8 +24,8 @@ export class Blaster extends ui.BaseComponent<Props, any>{
         return <canvas style={style} ref="canvas" />
     }
 
-    componentWillReceiveProps(props: Props, oldProps: Props) {
-        if (!oldProps.cm && props.cm) {
+    componentWillReceiveProps(props: Props) {
+        if (!this.props.cm && props.cm) {
             props.cm.on('change', this.handleChange);
             this.initCanvas();
             this.loop();
