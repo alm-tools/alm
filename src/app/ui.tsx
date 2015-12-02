@@ -48,8 +48,12 @@ export class BaseComponent<Props, State> extends React.Component<Props, State>{
      * This gives a convinient point for this logic
      */
     unmount = () => {
+        let parentElement = this.getParentDomNode();
+        ReactDOM.unmountComponentAtNode(parentElement);
+    }
+    getParentDomNode = () => {
         let node = ReactDOM.findDOMNode(this);
-        ReactDOM.unmountComponentAtNode(node.parentElement);
+        return node.parentElement;
     }
 }
 

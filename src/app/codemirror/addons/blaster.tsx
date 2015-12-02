@@ -9,6 +9,7 @@ https://twitter.com/JoelBesada/status/670343885655293952
 import CodeMirror = require('codemirror');
 import ui = require('../../ui');
 import * as React from "react";
+import onresize = require('onresize');
 type Editor = CodeMirror.EditorFromTextArea;
 
 interface Props {
@@ -47,6 +48,14 @@ export class Blaster extends ui.BaseComponent<Props, any>{
         canvas.style.height = "100%";
         canvas.style.zIndex = '1';
         canvas.style.pointerEvents = 'none';
+
+        let measureCanvas = ()=>{
+            let parent = this.getParentDomNode();
+            this.canvas().width = parent.clientWidth
+            this.canvas().height = parent.clientHeight;
+        }
+        this.disposible.add(onresize.on(measureCanvas));
+        measureCanvas();
     }
 
     lastTime = 0;
@@ -56,10 +65,7 @@ export class Blaster extends ui.BaseComponent<Props, any>{
     loop = () => {
         if (this.isUnmounted) return;
 
-        this.canvas().width = this.canvas().clientWidth;
-        this.canvas().height = this.canvas().clientHeight;
-        this.ctx.clearRect(0, 0, this.canvas().clientHeight, this.canvas().clientWidth);
-
+        this.ctx.clearRect(0, 0, this.canvas().width, this.canvas().height);
         this.drawShake();
         this.drawParticles();
         requestAnimationFrame(this.loop);
