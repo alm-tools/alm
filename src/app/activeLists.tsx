@@ -17,7 +17,7 @@ let {DraggableCore} = ui;
 import {connect} from "react-redux";
 import {StoreState,expandErrors,collapseErrors} from "./state/state";
 import * as state from "./state/state";
-
+import * as gotoHistory from "./gotoHistory";
 
 let notificationKeyboardStyle = {
     border: '2px solid',
@@ -141,7 +141,7 @@ export class ActiveLists extends BaseComponent<Props, State>{
     }
 
     openErrorLocation = (error: CodeError) => {
-        commands.doOpenOrFocusFile.emit({ filePath: error.filePath, position: error.from });
+        gotoHistory.gotoError(error);
     }
 
     openFile = (filePath: string) => {

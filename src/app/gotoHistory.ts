@@ -32,22 +32,19 @@ state.subscribeSub(state => state.errorsByFilePath,(errorsByFilePath)=>{
     });
 })
 
-/** TODO: use this to keep the *lastPosition* in error list in sync */
-export function gotoError(error:CodeError){
-
+/**
+ * Use this to keep the *lastPosition* in error list in sync
+ * A bit fugly because there might be multiple errors in the same location but works good enough
+ */
+export function gotoError(error: CodeError){
+    commands.doOpenOrFocusFile.emit({filePath:error.filePath,position:error.from});
+    errorsInOpenFiles.lastIndex = indexOf(errorsInOpenFiles.members,(member)=>{
+        return member.filePath == error.filePath && member.line == error.from.line && member.col == error.from.ch;
+    });
 }
 
 /** This *must* always be set */
 var activeList: TabWithGotoPositions = errorsInOpenFiles;
-
-
-/** This function is dangerous in that it is possible to have multiple errors in the same line / col and that messes up the index :) */
-// function gotoLineInList(filePath: string, line: number, col: number, list: TabWithGotoPositions) {
-//     commands.doOpenOrFocusFile.emit({filePath,position:{line,ch:col}});
-//     list.lastIndex = indexOf(list.members,(member)=>{
-//         return member.filePath == filePath && member.line == line && member.col == col;
-//     });
-// }
 
 function gotoItemInActiveList(index: number){
     let member = activeList.members[index];
