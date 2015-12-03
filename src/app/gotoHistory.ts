@@ -10,7 +10,7 @@ interface GotoPosition {
     col: number;
 }
 interface TabWithGotoPositions {
-    lastPosition?: GotoPosition; // TODO: make this index based :( as that will work with items getting deleted
+    lastIndex?: number;
     members: GotoPosition[];
 }
 
@@ -40,14 +40,24 @@ export function gotoError(error:CodeError){
 /** This *must* always be set */
 var activeList: TabWithGotoPositions = errorsInOpenFiles;
 
-function gotoLine(filePath: string, line: number, col: number, list: TabWithGotoPositions) {
-    commands.doOpenOrFocusFile.emit({filePath,position:{line,ch:col}});
-    list.lastPosition = { filePath, line, col };
+
+/** This function is dangerous in that it is possible to have multiple errors in the same line / col and that messes up the index :) */
+// function gotoLineInList(filePath: string, line: number, col: number, list: TabWithGotoPositions) {
+//     commands.doOpenOrFocusFile.emit({filePath,position:{line,ch:col}});
+//     list.lastIndex = indexOf(list.members,(member)=>{
+//         return member.filePath == filePath && member.line == line && member.col == col;
+//     });
+// }
+
+function gotoItemInActiveList(index: number){
+    let member = activeList.members[index];
+    activeList.lastIndex = index;
+    commands.doOpenOrFocusFile.emit({filePath:member.filePath,position:{line:member.line,ch:member.col}});
 }
 
 /**
  * Uses `activeList` to go to the next error or loop back
- * Storing `lastPosition` with the list allows us to be lazy elsewhere and actively find the element here
+ * Storing `lastIndex` with the list allows us to be lazy elsewhere and actively find the element here
  */
 function findCurrentIndexInList(): number {
     // Early exit if no members
@@ -56,17 +66,14 @@ function findCurrentIndexInList(): number {
         return -1;
     }
     // If we don't have a lastPosition then first is the last position
-    if (!activeList.lastPosition)
+    if (!activeList.lastIndex || activeList.lastIndex == -1)
         return 0;
+    // If we have gone too far, then goto last
+    if (activeList.lastIndex >= activeList.members.length)
+        return activeList.members.length - 1;
 
-    var lastPosition = activeList.lastPosition;
-    var index = indexOf(activeList.members, (item) => item.filePath == lastPosition.filePath && item.line == lastPosition.line);
-
-    // if the item has since been removed go to 0
-    if (index == -1) {
-        return 0;
-    }
-    return index;
+    // Index is good. Return that :)
+    return activeList.lastIndex;
 }
 
 /** Uses `activeList` to go to the next position or loop back */
@@ -80,8 +87,7 @@ export function gotoNext() {
         nextIndex = 0;
     }
 
-    var next = activeList.members[nextIndex];
-    gotoLine(next.filePath, next.line, next.col, activeList);
+    gotoItemInActiveList(nextIndex);
 }
 
 /** Uses `activeList` to go to the previous position or loop back */
@@ -95,8 +101,7 @@ export function gotoPrevious() {
         previousIndex = activeList.members.length - 1;
     }
 
-    var previous = activeList.members[previousIndex];
-    gotoLine(previous.filePath, previous.line, previous.col, activeList);
+    gotoItemInActiveList(previousIndex);
 }
 
 
