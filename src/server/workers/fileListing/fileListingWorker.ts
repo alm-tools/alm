@@ -112,7 +112,8 @@ namespace Worker {
 
             // Only send if we don't know about this already (because of faster initial scan)
             if (!liveList[filePath]) {
-                liveList[filePath] = stat.isFile() ? types.FilePathType.File : types.FilePathType.Dir;
+                let type = stat && stat.isDirectory() ? types.FilePathType.Dir : types.FilePathType.File;
+                liveList[filePath] = type;
                 sendNewFileListThrottled();
             }
         }
