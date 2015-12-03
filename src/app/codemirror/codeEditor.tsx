@@ -311,3 +311,28 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 	}
 
 }
+
+// marker demo : https://codemirror.net/demo/marker.html
+`
+<style type="text/css">
+      .breakpoints {width: .8em;}
+      .breakpoint { color: #822; }
+      .CodeMirror {border: 1px solid #aaa;}
+    </style>
+`;
+`
+var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+  lineNumbers: true,
+  gutters: ["CodeMirror-linenumbers", "breakpoints"]
+});
+editor.on("gutterClick", function(cm, n) {
+  var info = cm.lineInfo(n);
+  cm.setGutterMarker(n, "breakpoints", info.gutterMarkers ? null : makeMarker());
+});
+function makeMarker() {
+  var marker = document.createElement("div");
+  marker.style.color = "#822";
+  marker.innerHTML = "●";
+  return marker;
+}
+`;
