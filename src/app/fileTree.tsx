@@ -142,6 +142,7 @@ export class FileTree extends BaseComponent<Props, State>{
                 let dirPortionsAfterRoot = utils.getDirectory(remainderAfterRoot).split('/');
                 let runningPortion = '';
                 let expanded: TruthTable = {};
+                expanded[root] = true;
                 for (let portion of dirPortionsAfterRoot) {
                     runningPortion = runningPortion+'/'+portion;
                     let fullPath = root + runningPortion;
