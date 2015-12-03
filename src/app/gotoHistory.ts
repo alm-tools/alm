@@ -1,6 +1,7 @@
 import * as ui from "./ui";
 import * as state from "./state/state";
 import * as commands from "./commands/commands";
+import * as utils from "../common/utils";
 
 /** Interfaces used by GotoHistory feature */
 interface GotoPosition {
@@ -9,18 +10,37 @@ interface GotoPosition {
     col: number;
 }
 interface TabWithGotoPositions {
-    lastPosition?: GotoPosition;
+    lastPosition?: GotoPosition; // TODO: make this index based :( as that will work with items getting deleted
     members: GotoPosition[];
 }
 
-export var errorsInOpenFiles: TabWithGotoPositions = { members: [] };
-export var buildOutput: TabWithGotoPositions = { members: [] };
-export var referencesOutput: TabWithGotoPositions = { members: [] };
+commands.gotoNext.on(() => {
+    gotoNext();
+});
+commands.gotoPrevious.on(() => {
+    gotoPrevious();
+});
+
+var errorsInOpenFiles: TabWithGotoPositions = { members: [] };
+var buildOutput: TabWithGotoPositions = { members: [] };
+var referencesOutput: TabWithGotoPositions = { members: [] };
+
+state.subscribeSub(state => state.errorsByFilePath,(errorsByFilePath)=>{
+    let errorsFlattened = utils.selectMany(Object.keys(errorsByFilePath).map(x=>errorsByFilePath[x]));
+    errorsInOpenFiles.members = errorsFlattened.map(x=>{
+        return {filePath:x.filePath,line: x.from.line, col: x.from.ch}
+    });
+})
+
+/** TODO: use this to keep the *lastPosition* in error list in sync */
+export function gotoError(error:CodeError){
+
+}
 
 /** This *must* always be set */
-export var activeList: TabWithGotoPositions = errorsInOpenFiles;
+var activeList: TabWithGotoPositions = errorsInOpenFiles;
 
-export function gotoLine(filePath: string, line: number, col: number, list: TabWithGotoPositions) {
+function gotoLine(filePath: string, line: number, col: number, list: TabWithGotoPositions) {
     commands.doOpenOrFocusFile.emit({filePath,position:{line,ch:col}});
     list.lastPosition = { filePath, line, col };
 }
@@ -64,6 +84,7 @@ export function gotoNext() {
     gotoLine(next.filePath, next.line, next.col, activeList);
 }
 
+/** Uses `activeList` to go to the previous position or loop back */
 export function gotoPrevious() {
     var currentIndex = findCurrentIndexInList();
     if (currentIndex == -1) return;

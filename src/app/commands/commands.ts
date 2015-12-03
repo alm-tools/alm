@@ -58,6 +58,18 @@ export var esc = new UICommand({
     context: CommandContext.Global,
 });
 
+export var gotoNext = new UICommand({
+    keyboardShortcut: 'f8', // atom
+    description: "Active List: Goto next position",
+    context: CommandContext.Global,
+});
+
+export var gotoPrevious = new UICommand({
+    keyboardShortcut: 'shift+f8', // atom
+    description: "Active List: Goto previous position",
+    context: CommandContext.Global,
+});
+
 /**
  * Tabs
  */
