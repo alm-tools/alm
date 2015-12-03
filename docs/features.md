@@ -1,6 +1,6 @@
 > Not all these features might be pushed to npm yet. Remember the planned release is 2017 :rose:
 
-**TIP** Keyboard shortcut `Ctrl|⌘` means `Ctrl` on windows and `⌘` on Mac.
+**TIP** Keyboard shortcut `Ctrl|⌘` means `Ctrl` on windows and `⌘` on Mac. We *never* use `Ctrl` on Mac. Its `Ctrl` on Win/Linux and `⌘` on Mac :rose:
 
 # Features
 
@@ -12,6 +12,7 @@
     * [Jumpy](#jumpy)
     * [Multi Monitor](#multi-monitor)
     * [Cursor History](#cursor-history)
+    * [Blaster](#blaster)
 * [TypeScript](#errors)
     * [Errors](#errors)
     * [Syntax Highlighting](#syntax-highlighting)
@@ -20,7 +21,6 @@
     * [Doctor](#doctor)
     * [Go to Definition](#goto-definition)
     * [Find References](#find-references)
-
 
 # Omni Search
 Single place for common search queries
@@ -65,6 +65,12 @@ Need to use more than one monitor? Just open a new browser window! As many as yo
 Your cursor history is preserved across all open files. `Ctrl|⌘ + U` and `Ctrl|⌘ + Shift + U`.
 
 ![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/cursorHistory.gif)
+
+# Blaster
+Because life is too short for code not to be fun. `Ctrl|⌘ + Shift + O` to toggle.
+
+![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/blaster.gif)
+
 
 # Errors
 
