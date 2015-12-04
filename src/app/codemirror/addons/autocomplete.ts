@@ -76,7 +76,7 @@ export function setupCodeMirror(cm: CodeMirror.EditorFromTextArea){
 
 /** Exists to allow us to pass throught the `original` information around */
 interface ExtendedCodeMirrorHint extends CodeMirror.Hint{
-    original: Types.Completion
+    original?: Types.Completion
 }
 
 export class AutoCompleter {
@@ -192,7 +192,7 @@ export class AutoCompleter {
                 };
 
                 // Add snippets
-                templates.getCompletions(editor, completionInfo.list, token.string);
+                completionInfo.list = completionInfo.list.concat(templates.getCompletions(editor, token.string));
 
                 setupCompletionDocs(completionInfo);
 

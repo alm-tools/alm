@@ -430,7 +430,8 @@ function uninstall(cm) {
     delete cm._templateState;
 }
 
-export function getCompletions(cm: CodeMirror.EditorFromTextArea, completions: CodeMirror.Hint[], text: string) {
+export function getCompletions(cm: CodeMirror.EditorFromTextArea, text: string) : CodeMirror.Hint[] {
+    let completions: CodeMirror.Hint[] = [];
     var mode = cm.getDoc().getMode().name;
     var list = templatesMap[mode];
     if (list) {
@@ -472,6 +473,7 @@ export function getCompletions(cm: CodeMirror.EditorFromTextArea, completions: C
             }
         }
     }
+    return completions;
 }
 
 export function addTemplates(templates: TemplatesForContext) {
