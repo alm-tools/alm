@@ -44,8 +44,8 @@ interface TemplatesForContext {
     templates: TemplateConfig[];
 }
 
-/** our global templates cache */
-let templatesMap = {};
+/** our global templates registry */
+let templatesMap:{[mode:string]:Template[]} = {};
 
 function startsWith(str: string, token: string) {
     return str.slice(0, token.length).toUpperCase() == token.toUpperCase();
@@ -442,11 +442,8 @@ export function getCompletions(cm: CodeMirror.EditorFromTextArea, text: string) 
                 if (template.description) {
                     label += '- ' + template.description;
                 }
-                var className = "CodeMirror-hint-template";
-                if (template.className)
-                    className = template.className;
                 var completion: CodeMirror.Hint = {
-                    "className": className,
+                    "className": "CodeMirror-hint-template",
                     "text": label,
                     "template": template
                 };
@@ -457,17 +454,6 @@ export function getCompletions(cm: CodeMirror.EditorFromTextArea, text: string) 
                 };
                 completion.info = function(completion) {
                     var content = completion.template.content();
-
-                    // BAS: disabled runmode as it will not work with our TypeScript mode anyways :)
-                    // if (CodeMirror.runMode) {
-                    //   var result = document.createElement('div');
-                    //   result.className = 'cm-s-default';
-                    //   if (cm.options && cm.options.theme)
-                    //     result.className = 'cm-s-' + cm.options.theme;
-                    //   CodeMirror.runMode(content, cm.getMode().name, result);
-                    //   return result;
-                    // }
-
                     return content;
                 };
                 completions.push(completion);
