@@ -16,13 +16,17 @@ interface Marker {
     variable: any; // huh?
     selectable: any; // huh?
 }
+type ParsedVariable = {
+    index: number;
+    token: string;
+}
 type ParsedToken = string | {
     /**
      * only one of these really. But its more hasel to split it into `|` descriminators
      */
-    line_selection?: boolean
-    cursor?: boolean
-    variable?: string
+    line_selection?: boolean;
+    cursor?: boolean;
+    variable?: ParsedVariable;
 }
 interface TemplateConfig {
     name: string;
@@ -127,7 +131,7 @@ class Template {
                 if (typeof token === 'string') {
                     content += token;
                 } else if (token.variable) {
-                    content += token.variable;
+                    content += token.variable.token;
                 } else {
                     // Ignore special tokens
                 }
@@ -137,7 +141,7 @@ class Template {
         return this._content;
     }
 
-    insert = function(cm: CodeMirror.Editor, data: Marker) {
+    insert = (cm: CodeMirror.Editor, data: Marker) => {
         let state = goIntoInsertMode(cm);
 
         var tokens = this.tokens();
@@ -145,11 +149,11 @@ class Template {
         var line = data.from.line;
         var col = data.from.ch;
         var markers: Marker[] = [];
-        var variables = [];
+        var variables: any = {};
         var cursor = null;
         for (var i = 0; i < tokens.length; i++) {
             var token = tokens[i];
-            if (typeof token == 'string') {
+            if (typeof token === 'string') {
                 content += token;
                 if (token == "\n") {
                     line++;
@@ -158,19 +162,19 @@ class Template {
                     col += token.length;
                 }
             } else if (token.variable) {
-                content += token.variable;
+                content += token.variable.token;
                 var from = Pos(line, col);
                 var to = Pos(line, col
-                    + token.variable.length);
-                var selectable = variables[token.variable] != false;
-                col += token.variable.length;
+                    + token.variable.token.length);
+                var selectable = variables[token.variable.token] != false;
+                col += token.variable.token.length;
                 markers.push({
                     from: from,
                     to: to,
-                    variable: token.variable,
+                    variable: token.variable.token,
                     selectable: selectable
                 });
-                variables[token.variable] = false;
+                variables[token.variable.token] = false;
             } else if (token.cursor) {
                 cursor = Pos(line, col);
             } else {
@@ -230,6 +234,7 @@ function parseTemplate(content: string): ParsedToken[] {
     var varParsing = false;
     var last = null;
     var token = '';
+    var lastVariableIndex = 0;
     for (var i = 0; i < content.length; i++) {
         var current = content.charAt(i);
         if (current == "\n") {
@@ -254,9 +259,25 @@ function parseTemplate(content: string): ParsedToken[] {
                             line_selection: true
                         });
                     } else {
-                        tokens.push({
-                            variable: token
-                        });
+                        let tokenSplit = token.split(':');
+                        if (tokenSplit.length > 1){
+                            let tokenIndex = parseInt(tokenSplit[0]);
+                            lastVariableIndex = Math.max(tokenIndex,lastVariableIndex);
+                            tokens.push({
+                                variable: {
+                                    index: tokenIndex,
+                                    token: tokenSplit[1]
+                                }
+                            });
+                        }
+                        else {
+                            tokens.push({
+                                variable: {
+                                    index: ++lastVariableIndex,
+                                    token: token
+                                }
+                            });
+                        }
                     }
                     token = '';
                 }
@@ -458,12 +479,25 @@ export function addTemplates(templates: TemplatesForContext) {
 }
 
 /** Based on https://github.com/angelozerr/CodeMirror-XQuery/blob/master/codemirror-javascript/addon/hint/javascript/javascript-templates.js#L1 */
-
-var templates = {
-    "name": "typescript", "context": "typescript", "templates": [
-        { "name": "for", "description": "iterate over array", "template": "for (var ${index} = 0; ${index} < ${array}.length; ${index}++) {\n\t${line_selection}${cursor}\n}" },
-        { "name": "for", "description": "iterate over array with temporary variable", "template": "for (var ${index} = 0; ${index} < ${array}.length; ${index}++) {\n\tvar ${array_element} = ${array}[${index}];\n\t${cursor}\n}" },
-        { "name": "forin", "description": "iterate using for .. in", "template": "for (var ${iterable_element} in ${iterable}) {\n\t${cursor}\n}" },
+var templates: TemplatesForContext = {
+    "name":
+    "typescript",
+    "context": "typescript", "templates": [
+        {
+            "name": "for",
+            "description": "iterate over array",
+            "template": "for (var ${2:index} = 0; ${index} < ${1:array}.length; ${index}++) {\n\t${line_selection}${cursor}\n}"
+        },
+        {
+            "name": "for",
+            "description": "iterate over array with temporary variable",
+            "template": "for (var ${index} = 0; ${index} < ${array}.length; ${index}++) {\n\tvar ${array_element} = ${array}[${index}];\n\t${cursor}\n}"
+        },
+        {
+            "name": "forin",
+            "description": "iterate using for .. in",
+            "template": "for (var ${iterable_element} in ${iterable}) {\n\t${cursor}\n}"
+        },
         { "name": "do", "description": "do while statement", "template": "do {\n\t${line_selection}${cursor}\n} while (${condition});" },
         { "name": "switch", "description": "switch case statement", "template": "switch (${key}) {\n\tcase ${value}:\n\t\t${cursor}\n\t\tbreak;\n\n\tdefault:\n\t\tbreak;\n}" },
         { "name": "if", "description": "if statement", "template": "if (${condition}) {\n\t${line_selection}${cursor}\n}" },
