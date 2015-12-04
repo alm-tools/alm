@@ -1,8 +1,3 @@
-// Type definitions for CodeMirror
-// Project: https://github.com/marijnh/CodeMirror
-// Definitions by: basarat <https://github.com/basarat>
-// Definitions: https://github.com/borisyankov/DefinitelyTyped
-
 declare module CodeMirror {
 
     /** Not doced but used in tern demo : http://codemirror.net/addon/tern/tern.js  */
@@ -32,5 +27,16 @@ declare module CodeMirror {
         filePath: string;
         /** The root doc is the doc we keep in memory and don't link to any CM instance */
         rootDoc: boolean;
+    }
+}
+
+/** Extensions by templates extension */
+declare module CodeMirror {
+    export var templatesHint: any;
+
+    interface Hint {
+        template?: any;
+        data?: Hint;
+        info?: Function;
     }
 }

@@ -123,6 +123,7 @@
         "./app/codemirror/addons/blaster.tsx",
         "./app/codemirror/addons/doctor.tsx",
         "./app/codemirror/addons/jumpy.tsx",
+        "./app/codemirror/addons/templates.tsx",
         "./app/codemirror/codeEditor.tsx",
         "./app/devtemplate.tsx",
         "./app/fileTree.tsx",

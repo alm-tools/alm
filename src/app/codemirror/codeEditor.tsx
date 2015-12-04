@@ -34,6 +34,8 @@ require('./addons/text-hover');
 require('./addons/text-hover.css');
 require('./addons/jumpy');
 import blaster = require('./addons/blaster');
+require('./addons/templates');
+require('./addons/templates.css');
 
 // Css overrides
 require('./override.css')
