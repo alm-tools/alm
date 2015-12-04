@@ -420,7 +420,7 @@ interface Marker {
 /** Based on https://github.com/angelozerr/CodeMirror-XQuery/blob/master/codemirror-javascript/addon/hint/javascript/javascript-templates.js#L1 */
 (function() {
     var templates = {
-        "name": "javascript", "context": "javascript", "templates": [
+        "name": "typescript", "context": "typescript", "templates": [
             { "name": "for", "description": "iterate over array", "template": "for (var ${index} = 0; ${index} < ${array}.length; ${index}++) {\n\t${line_selection}${cursor}\n}" },
             { "name": "for", "description": "iterate over array with temporary variable", "template": "for (var ${index} = 0; ${index} < ${array}.length; ${index}++) {\n\tvar ${array_element} = ${array}[${index}];\n\t${cursor}\n}" },
             { "name": "forin", "description": "iterate using for .. in", "template": "for (var ${iterable_element} in ${iterable}) {\n\t${cursor}\n}" },

@@ -134,7 +134,7 @@ export class AutoCompleter {
             CodeMirror.on(obj, "update", function() { remove(tooltip); });
             CodeMirror.on(obj, "select", function(cur: ExtendedCodeMirrorHint, node) {
               remove(tooltip);
-              var content = cur.original.comment;
+              var content = cur.original && cur.original.comment;
               if (content) {
                 tooltip = makeTooltip(node.parentNode.getBoundingClientRect().right + window.pageXOffset,
                                       node.getBoundingClientRect().top + window.pageYOffset, content);
@@ -189,6 +189,9 @@ export class AutoCompleter {
                     to,
                     list: res.completions.filter(x=>!x.snippet).map(completionToCodeMirrorHint)
                 };
+
+                // Add snippets
+                CodeMirror.templatesHint.getCompletions(editor,completionInfo.list,token.string);
 
                 setupCompletionDocs(completionInfo);
 
