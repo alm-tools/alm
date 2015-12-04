@@ -13,8 +13,10 @@ let Pos = CodeMirror.Pos;
 interface Marker {
     from: CodeMirror.Position;
     to: CodeMirror.Position
-    variable: any; // huh?
-    selectable: any; // huh?
+
+    /** only a single instance of the variable is selectable */
+    variable: string;
+    selectable: boolean;
 }
 type ParsedVariable = {
     index: number;
@@ -149,7 +151,10 @@ class Template {
         var line = data.from.line;
         var col = data.from.ch;
         var markers: Marker[] = [];
-        var variables: any = {};
+
+        /** only one instance of the variable is selectable */
+        var variableHasBeenAdded: any = {};
+
         var cursor = null;
         for (var i = 0; i < tokens.length; i++) {
             var token = tokens[i];
@@ -166,7 +171,7 @@ class Template {
                 var from = Pos(line, col);
                 var to = Pos(line, col
                     + token.variable.name.length);
-                var selectable = variables[token.variable.name] != false;
+                var selectable = !variableHasBeenAdded[token.variable.name];
                 col += token.variable.name.length;
                 markers.push({
                     from: from,
@@ -174,7 +179,7 @@ class Template {
                     variable: token.variable.name,
                     selectable: selectable
                 });
-                variables[token.variable.name] = false;
+                variableHasBeenAdded[token.variable.name] = true;
             } else if (token.cursor) {
                 cursor = Pos(line, col);
             } else {
