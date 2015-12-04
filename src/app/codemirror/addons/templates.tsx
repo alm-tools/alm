@@ -18,7 +18,7 @@ interface Marker {
 }
 type ParsedVariable = {
     index: number;
-    token: string;
+    name: string;
 }
 type ParsedToken = string | {
     /**
@@ -131,7 +131,7 @@ class Template {
                 if (typeof token === 'string') {
                     content += token;
                 } else if (token.variable) {
-                    content += token.variable.token;
+                    content += token.variable.name;
                 } else {
                     // Ignore special tokens
                 }
@@ -162,19 +162,19 @@ class Template {
                     col += token.length;
                 }
             } else if (token.variable) {
-                content += token.variable.token;
+                content += token.variable.name;
                 var from = Pos(line, col);
                 var to = Pos(line, col
-                    + token.variable.token.length);
-                var selectable = variables[token.variable.token] != false;
-                col += token.variable.token.length;
+                    + token.variable.name.length);
+                var selectable = variables[token.variable.name] != false;
+                col += token.variable.name.length;
                 markers.push({
                     from: from,
                     to: to,
-                    variable: token.variable.token,
+                    variable: token.variable.name,
                     selectable: selectable
                 });
-                variables[token.variable.token] = false;
+                variables[token.variable.name] = false;
             } else if (token.cursor) {
                 cursor = Pos(line, col);
             } else {
@@ -266,7 +266,7 @@ function parseTemplate(content: string): ParsedToken[] {
                             tokens.push({
                                 variable: {
                                     index: tokenIndex,
-                                    token: tokenSplit[1]
+                                    name: tokenSplit[1]
                                 }
                             });
                         }
@@ -274,7 +274,7 @@ function parseTemplate(content: string): ParsedToken[] {
                             tokens.push({
                                 variable: {
                                     index: ++lastVariableIndex,
-                                    token: token
+                                    name: token
                                 }
                             });
                         }
@@ -497,6 +497,11 @@ var templates: TemplatesForContext = {
             "name": "forin",
             "description": "iterate using for .. in",
             "template": "for (var ${iterable_element} in ${iterable}) {\n\t${cursor}\n}"
+        },
+        {
+            "name": "forof",
+            "description": "iterate using for .. of",
+            "template": "for (var ${2:iterable_element} of ${1:iterable}) {\n\t${cursor}\n}"
         },
         { "name": "do", "description": "do while statement", "template": "do {\n\t${line_selection}${cursor}\n} while (${condition});" },
         { "name": "switch", "description": "switch case statement", "template": "switch (${key}) {\n\tcase ${value}:\n\t\t${cursor}\n\t\tbreak;\n\n\tdefault:\n\t\tbreak;\n}" },
