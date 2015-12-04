@@ -36,6 +36,9 @@ declare module CodeMirror {
         template?: any;
         data?: Hint;
         info?: Function;
+
+        /** Used by autocomplete as well */
+        comment?: string;
     }
     interface TextMarkerOptions {
         _templateVar?: string;

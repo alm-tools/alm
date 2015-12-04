@@ -121,7 +121,8 @@ export class AutoCompleter {
             let result: ExtendedCodeMirrorHint = {
                 text: completion.name,
                 render: render,
-                original: completion
+                original: completion,
+                comment: completion.comment,
             }
             return result;
         }
@@ -135,7 +136,7 @@ export class AutoCompleter {
             CodeMirror.on(obj, "update", function() { remove(tooltip); });
             CodeMirror.on(obj, "select", function(cur: ExtendedCodeMirrorHint, node) {
               remove(tooltip);
-              var content = cur.original && cur.original.comment;
+              var content = cur.comment;
               if (content) {
                 tooltip = makeTooltip(node.parentNode.getBoundingClientRect().right + window.pageXOffset,
                                       node.getBoundingClientRect().top + window.pageYOffset, content);

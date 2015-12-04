@@ -450,6 +450,7 @@ export function getCompletions(cm: CodeMirror.EditorFromTextArea, text: string) 
                     "text": label,
                     "template": template
                 };
+                completion.comment = template.description;
                 completion.data = completion;
                 completion.hint = function(cm, data, completion) {
                     completion.template.insert(cm, data);
