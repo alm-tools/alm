@@ -32,11 +32,12 @@ declare module CodeMirror {
 
 /** Extensions by templates extension */
 declare module CodeMirror {
-    export var templatesHint: any;
-
     interface Hint {
         template?: any;
         data?: Hint;
         info?: Function;
+    }
+    interface TextMarkerOptions {
+        _templateVar: string;
     }
 }

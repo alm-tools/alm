@@ -9,6 +9,7 @@ import * as state from "../../state/state";
 import * as jumpy from "./jumpy";
 
 require('./autocomplete.css');
+import * as templates from "./templates";
 
 /** Enable showhint for this code mirror */
 export function setupOptions(cmOptions: any, filePath: string) {
@@ -191,7 +192,7 @@ export class AutoCompleter {
                 };
 
                 // Add snippets
-                CodeMirror.templatesHint.getCompletions(editor,completionInfo.list,token.string);
+                templates.getCompletions(editor, completionInfo.list, token.string);
 
                 setupCompletionDocs(completionInfo);
 
