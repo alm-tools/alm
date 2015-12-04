@@ -1,4 +1,3 @@
-#! /usr/bin/env node
 import express = require("express");
 import http = require('http');
 import cookieParser = require('cookie-parser');

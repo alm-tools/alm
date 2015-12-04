@@ -4,7 +4,7 @@
   "description": "The best TypeScript development environment",
   "main": "src/server.js",
   "bin": {
-    "tsb": "./src/server.js"
+    "tsb": "./bin/tsb"
   },
   "scripts": {
     "test": "echo \"No test specified yet\"",
