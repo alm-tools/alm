@@ -597,7 +597,7 @@ declare module CodeMirror {
 
         /** Returns a {from, to} object (both holding document positions), indicating the current position of the marked range,
         or undefined if the marker is no longer in the document. */
-        find(): CodeMirror.Position;
+        find(): { from: CodeMirror.Position; to: CodeMirror.Position };
 
         /**  Returns an object representing the options for the marker. If copyWidget is given true, it will clone the value of the replacedWith option, if any. */
         getOptions(copyWidget: boolean): CodeMirror.TextMarkerOptions;

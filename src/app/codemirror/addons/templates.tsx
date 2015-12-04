@@ -71,14 +71,21 @@ class TemplateState {
 
     /** only set after going into insert mode */
     cursor: CodeMirror.TextMarker;
+    updating: boolean;
 }
 
+function getState(cm: CodeMirror.Editor): TemplateState {
+    return ((cm as any)._templateState);
+}
+function setState(cm: CodeMirror.Editor, state:TemplateState) {
+    (cm as any)._templateState = state;
+}
 function goIntoInsertMode(cm: CodeMirror.Editor) {
-    if ((cm as any)._templateState) {
+    if (getState(cm)) {
         uninstall(cm);
     }
     var state = new TemplateState();
-    (cm as any)._templateState = state;
+    setState(cm, state);
     return state;
 }
 
@@ -151,12 +158,10 @@ class Template {
         var line = data.from.line;
         var col = data.from.ch;
         var markers: Marker[] = [];
-
-        /** only one instance of the variable is selectable */
-        var variableHasBeenAdded: any = {};
-
+        var variableHasBeenAdded: any = {}; // only one instance of the variable is selectable
         var cursor = null;
-        for (var i = 0; i < tokens.length; i++) {
+
+        for (let i = 0; i < tokens.length; i++) {
             var token = tokens[i];
             if (typeof token === 'string') {
                 content += token;
@@ -192,7 +197,7 @@ class Template {
         var startLine = from.line;
         cm.getDoc().replaceRange(content, from, to);
 
-        for (var i = 0; i < markers.length; i++) {
+        for (let i = 0; i < markers.length; i++) {
             var marker = markers[i], from = marker.from, to = marker.to;
             var markText = cm.getDoc().markText(from, to, {
                 className: "CodeMirror-templates-variable",
@@ -316,8 +321,8 @@ function parseTemplate(content: string): ParsedToken[] {
 }
 
 
-function getMarkerChanged(cm, textChanged) {
-    var markers = cm.findMarksAt(textChanged.from);
+function getMarkerChanged(cm: CodeMirror.Editor, textChanged: CodeMirror.EditorChange) {
+    var markers = cm.getDoc().findMarksAt(textChanged.from);
     if (markers) {
         for (var i = 0; i < markers.length; i++) {
             var marker = markers[i];
@@ -329,8 +334,8 @@ function getMarkerChanged(cm, textChanged) {
     return null;
 }
 
-function onChange(cm, textChanged) {
-    var state = cm._templateState;
+function onChange(cm: CodeMirror.Editor, textChanged: CodeMirror.EditorChange) {
+    var state = getState(cm);
     if (!textChanged.origin || !state || state.updating) {
         return;
     }
@@ -341,13 +346,13 @@ function onChange(cm, textChanged) {
             uninstall(cm);
         } else {
             var posChanged = markerChanged.find();
-            var newContent = cm.getRange(posChanged.from, posChanged.to);
+            var newContent = cm.getDoc().getRange(posChanged.from, posChanged.to);
             for (var i = 0; i < state.marked.length; i++) {
                 var marker = state.marked[i];
                 if (marker != markerChanged
                     && marker._templateVar == markerChanged._templateVar) {
                     var pos = marker.find();
-                    cm.replaceRange(newContent, pos.from, pos.to);
+                    cm.getDoc().replaceRange(newContent, pos.from, pos.to);
                 }
             }
         }

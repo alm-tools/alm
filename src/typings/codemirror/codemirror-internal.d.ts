@@ -38,6 +38,9 @@ declare module CodeMirror {
         info?: Function;
     }
     interface TextMarkerOptions {
-        _templateVar: string;
+        _templateVar?: string;
+    }
+    interface TextMarker {
+        _templateVar?: string;
     }
 }
