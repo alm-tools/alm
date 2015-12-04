@@ -431,36 +431,31 @@ function uninstall(cm) {
 }
 
 export function getCompletions(cm: CodeMirror.EditorFromTextArea, text: string) : CodeMirror.Hint[] {
-    let completions: CodeMirror.Hint[] = [];
     var mode = cm.getDoc().getMode().name;
-    var list = templatesMap[mode];
-    if (list) {
-        for (var i = 0; i < list.length; i++) {
-            var template = list[i];
-            if (startsWith(template.name, text)) {
-                var label = template.name;
-                if (template.description) {
-                    label += '- ' + template.description;
-                }
-                var completion: CodeMirror.Hint = {
-                    "className": "CodeMirror-hint-template",
-                    "text": label,
-                    "template": template
-                };
-                completion.comment = template.description;
-                completion.data = completion;
-                completion.hint = function(cm, data, completion) {
-                    completion.template.insert(cm, data);
-                };
-                completion.info = function(completion) {
-                    var content = completion.template.content();
-                    return content;
-                };
-                completions.push(completion);
+    var list = templatesMap[mode] || [];
+    return list
+        .filter(template=> startsWith(template.name, text))
+        .map(template => {
+            var label = template.name;
+            if (template.description) {
+                label += '- ' + template.description;
             }
-        }
-    }
-    return completions;
+            var completion: CodeMirror.Hint = {
+                "className": "CodeMirror-hint-template",
+                "text": label,
+                "template": template
+            };
+            completion.comment = template.description;
+            completion.data = completion;
+            completion.hint = function(cm, data, completion) {
+                completion.template.insert(cm, data);
+            };
+            completion.info = function(completion) {
+                var content = completion.template.content();
+                return content;
+            };
+            return completion;
+        });
 }
 
 export function addTemplates(templates: TemplatesForContext) {
