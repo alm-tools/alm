@@ -20,6 +20,14 @@ Fundamental differences:
 
 There are lots of [other reasons why you might use this project OR use the source code](https://github.com/basarat/tsb/blob/master/docs/contributing/why.md). Effectively this is `transpiler`, `editor`, `analyzer`, `DX workflow` rolled into one.
 
+## Requirements
+This is a forward looking project that plans to use the latest tech as it becomes available:
+
+* You need the latest version of NodeJS (at least v4).
+* You need Google Chrome.
+
+That is it!
+
 ## Usage
 
 > Till we consider it stable for release we are not pushing to NPM. So for now you need to get it using the [CONTRIBUTING guide](https://github.com/basarat/tsb/blob/master/docs/contributing/README.md).
