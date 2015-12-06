@@ -7,7 +7,7 @@ import * as ui from "../ui";
 import Modal = require('react-modal');
 import * as styles from "../styles/styles";
 import {debounce,createMap,rangeLimited,getFileName} from "../../common/utils";
-import {cast, server} from "../../socket/socketClient";
+import {cast, server, Types} from "../../socket/socketClient";
 import * as commands from "../commands/commands";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
 import {Icon} from "../icon";
@@ -221,11 +221,10 @@ class SearchState {
     /**
      * Various search lists
      */
-    modeDescriptions: SearchModeDescription[] = []; // set in ctor
-    filePaths: string [] = [];
-    filePathsCompleted: boolean = false;
+    filePaths: string [] = []; filePathsCompleted: boolean = false;
     availableProjects: ActiveProjectConfigDetails[] = [];
     commands = commands.commandRegistry;
+    symbols: Types.NavigateToItem[] = [];
 
     /** Modes can use this to store their results */
     filteredValues:any[] = [];
@@ -234,6 +233,7 @@ class SearchState {
      * Current mode
      */
     mode: SearchMode = SearchMode.File;
+    modeDescriptions: SearchModeDescription[] = []; // set in ctor
     modeMap: { [key: string]: SearchMode } = {}; // set in ctor
 
     /**
@@ -357,6 +357,24 @@ class SearchState {
             });
         }
 
+        if (this.mode == SearchMode.Symbol){
+            let filtered: Types.NavigateToItem[] = this.filteredValues;
+            renderedResults = this.createRenderedForList(filtered,(symbol)=>{
+                // Create rendered
+                let matched = renderMatchedSegments(symbol.name,this.parsedFilterValue);
+                return (
+                    <div>
+                        <div style={csx.horizontal}>
+                            <span>{matched}</span>
+                            <span style={csx.flex}></span>
+                            <span>{symbol.kind}</span>
+                        </div>
+                        <div>{symbol.fileName}:{symbol.position.line+1}</div>
+                    </div>
+                );
+            });
+        }
+
         if (this.mode == SearchMode.Unknown){
             let filtered: SearchModeDescription[] = this.filteredValues;
             renderedResults = this.createRenderedForList(filtered,(modeDescription)=>{
@@ -438,6 +456,15 @@ class SearchState {
             this.closeOmniSearch();
             return;
         }
+
+        if (this.mode == SearchMode.Symbol) {
+            let symbol: Types.NavigateToItem = this.filteredValues[index];
+            if (symbol) {
+                commands.doOpenOrFocusFile.emit({ filePath: symbol.filePath, position: symbol.position });
+            }
+            this.closeOmniSearch();
+            return;
+        }
     }
 
     /** Mode */
@@ -487,8 +514,51 @@ class SearchState {
                 : this.availableProjects;
         }
 
+        if (this.mode == SearchMode.Symbol) {
+            this.filteredValues = this.parsedFilterValue
+                ? getFilteredItems<Types.NavigateToItem>({ items: this.symbols, textify: (p) => p.name, filterValue: this.parsedFilterValue })
+                : this.symbols;
+            this.filteredValues = this.filteredValues.slice(0,this.maxShowCount);
+        }
+
         this.selectedIndex = 0;
         this.stateChanged.emit({});
+    }
+
+    /** Mode */
+    openOmniSearch = (mode: SearchMode) => {
+        let oldMode = this.mode;
+        let oldRawFilterValue = this.rawFilterValue;
+
+        this.mode = mode;
+        let description = this.modeDescriptions.filter(x=>x.mode == mode)[0];
+        this.rawFilterValue = description?description.shortcut+'>':'';
+
+        // If already shown would be nice to preserve current user input
+        // And if the new mode is different
+        // And if the new mode is not *search* search mode
+        if (this.isShown && oldMode !== this.mode && oldMode !== SearchMode.Unknown) {
+            this.rawFilterValue = this.rawFilterValue + oldRawFilterValue.trim().substr(2);
+        }
+
+
+        // If the new mode requires a search we do that here
+        if (oldMode !== this.mode){
+            if (this.mode == SearchMode.Symbol){
+                server.getNavigateToItems({}).then((res)=>{
+                    this.symbols = res.items;
+
+                    // Same stuff as below
+                    this.isShown = true;
+                    this.newValue(this.rawFilterValue);
+                    this.setParentUiRawFilterValue(this.rawFilterValue);
+                });
+            }
+        }
+
+        this.isShown = true;
+        this.newValue(this.rawFilterValue);
+        this.setParentUiRawFilterValue(this.rawFilterValue);
     }
 
     getSearchingName(): string {
@@ -530,36 +600,6 @@ class SearchState {
     decrementSelected = () => {
         this.selectedIndex = rangeLimited({ num: this.selectedIndex - 1, min: 0, max: this.filteredValues.length - 1, loopAround: true });
         this.stateChanged.emit({});
-    }
-
-    /** Mode */
-    openOmniSearch = (mode: SearchMode) => {
-        let oldMode = this.mode;
-        let oldRawFilterValue = this.rawFilterValue;
-
-        this.mode = mode;
-        let description = this.modeDescriptions.filter(x=>x.mode == mode)[0];
-        this.rawFilterValue = description?description.shortcut+'>':'';
-
-        // If already shown would be nice to preserve current user input
-        // And if the new mode is different
-        // And if the new mode is not *search* search mode
-        if (this.isShown && oldMode !== this.mode && oldMode !== SearchMode.Unknown) {
-            this.rawFilterValue = this.rawFilterValue + oldRawFilterValue.trim().substr(2);
-        }
-
-
-        // If the new mode requires a search we do that here
-        if (oldMode !== this.mode){
-            if (this.mode == SearchMode.Symbol){
-                // TODO: query for symbols
-                server.getNavigateToItems({})
-            }
-        }
-
-        this.isShown = true;
-        this.newValue(this.rawFilterValue);
-        this.setParentUiRawFilterValue(this.rawFilterValue);
     }
 
     closeOmniSearch = () => {
