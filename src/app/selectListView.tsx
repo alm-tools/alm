@@ -206,14 +206,22 @@ export class SelectListView extends BaseComponent<Props, State>{
  * Applies fuzzy filter to the text version of each item returning the matched items
  */
 export function getFilteredItems<T>(args: { items: T[], textify: (item: T) => string, filterValue: string }): T[] {
-    let textValues = args.items.map(args.textify);
 
-    let textValuesToItem = {} as any;
+    // Store the items for each text value
+    let textValueToItems:{[text:string]:T[]} = Object.create(null);
     args.items.forEach((item) => {
-        textValuesToItem[args.textify(item)] = item;
+        let text = args.textify(item);
+        if (!textValueToItems[text]) textValueToItems[text] = [];
+        textValueToItems[text].push(item);
     })
 
-    return fuzzyFilter(textValues, args.filterValue).map((textvalue) => textValuesToItem[textvalue]);
+    // Get the unique text values
+    let textValues = Object.keys(utils.createMap(args.items.map(args.textify)));
+
+    // filter them
+    let filteredTextValues = fuzzyFilter(textValues, args.filterValue);
+
+    return utils.selectMany(filteredTextValues.map((textvalue) => textValueToItems[textvalue]));
 }
 
 
