@@ -31,6 +31,7 @@ enum SearchMode {
     File,
     Command,
     Project,
+    Symbol,
 }
 
 let selectedStyle = {
@@ -86,6 +87,9 @@ export class OmniSearch extends BaseComponent<Props, State>{
         });
         commands.omniSelectProject.on(() => {
             this.searchState.openOmniSearch(SearchMode.Project);
+        });
+        commands.omniProjectSymbols.on(() => {
+            this.searchState.openOmniSearch(SearchMode.Symbol);
         });
     }
 
@@ -293,6 +297,12 @@ class SearchState {
                 description: 'Search for a TypeScript Project to work on',
                 shortcut: 'p',
                 searchingName: "Projects"
+            },
+            {
+                mode: SearchMode.Symbol,
+                description: 'Search for sYmbols in active project',
+                shortcut: 'y',
+                searchingName: "Symbols"
             }
         ];
 

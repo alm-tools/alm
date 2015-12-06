@@ -171,6 +171,11 @@ export var omniSelectProject = new UICommand({
     description: "Find and set active project",
     context: CommandContext.Global,
 });
+export var omniProjectSymbols = new UICommand({
+    keyboardShortcut: 'mod+shift+y', //
+    description: "Find symbols in active project",
+    context: CommandContext.Global,
+});
 
 /**
  * FAR find and replace
