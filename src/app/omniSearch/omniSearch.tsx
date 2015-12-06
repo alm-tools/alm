@@ -532,6 +532,7 @@ class SearchState {
         this.stateChanged.emit({});
     }
 
+    /** Mode */
     openOmniSearch = (mode: SearchMode) => {
         let oldMode = this.mode;
         let oldRawFilterValue = this.rawFilterValue;
@@ -545,6 +546,15 @@ class SearchState {
         // And if the new mode is not *search* search mode
         if (this.isShown && oldMode !== this.mode && oldMode !== SearchMode.Unknown) {
             this.rawFilterValue = this.rawFilterValue + oldRawFilterValue.trim().substr(2);
+        }
+
+
+        // If the new mode requires a search we do that here
+        if (oldMode !== this.mode){
+            if (this.mode == SearchMode.Symbol){
+                // TODO: query for symbols
+                server.getNavigateToItems({})
+            }
         }
 
         this.isShown = true;

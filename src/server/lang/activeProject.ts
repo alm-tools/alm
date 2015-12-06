@@ -315,6 +315,17 @@ export namespace GetProject {
         }
         return [];
     }
+
+    /**
+     * Get current if any
+     */
+    export function getCurrentIfAny(): project.Project {
+        if (!currentProject) {
+            console.error(types.errors.CALLED_WHEN_NO_ACTIVE_PROJECT_FOR_FILE_PATH, "Global active project");
+            throw new Error(types.errors.CALLED_WHEN_NO_ACTIVE_PROJECT_FOR_FILE_PATH);
+        }
+        return currentProject;
+    }
 }
 
 /** General purpose utility functions specific to this file */

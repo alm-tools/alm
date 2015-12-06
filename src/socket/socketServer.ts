@@ -110,6 +110,7 @@ namespace Server {
     export var getReferences : typeof contract.server.getReferences = projectService.getReferences;
     export var formatDocument : typeof contract.server.formatDocument = projectService.formatDocument;
     export var formatDocumentRange : typeof contract.server.formatDocumentRange = projectService.formatDocumentRange;
+    export var getNavigateToItems : typeof contract.server.getNavigateToItems = projectService.getNavigateToItems;
 }
 
 // Ensure that the namespace follows the contract
