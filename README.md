@@ -6,7 +6,7 @@
 
 [![Build Status](https://travis-ci.org/TypeScriptBuilder/tsb.svg?branch=master)](https://travis-ci.org/TypeScriptBuilder/tsb)
 
-> :warning: This project is not ready. Lookout for final release by about 2017 (patience and persistence), just making it public to be clear on *what I am working on*. :star: it to help it move along :rose:
+> ⚠️ This project is not ready. Lookout for final release by about 2017 (patience and persistence), just making it public to be clear on *what I am working on*. 🌟 it to help it move along 🌹
 
 **Why TypeScript?**
 

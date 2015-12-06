@@ -1,2 +1,8 @@
 #! /usr/bin/env node
-require('../src/server');
+console.log(`This project is not ready and the version on NPM is a placeholder.
+Please follow the contributing guide on github for actual code.
+
+    https://github.com/TypeScriptBuilder/tsb
+`);
+var open = require('open');
+open('https://github.com/TypeScriptBuilder/tsb/blob/master/docs/contributing/README.md');
