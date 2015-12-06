@@ -367,7 +367,7 @@ class SearchState {
                         <div style={csx.horizontal}>
                             <span>{matched}</span>
                             <span style={csx.flex}></span>
-                            <span>{symbol.kind}</span>
+                            <strong>{symbol.kind}</strong>
                         </div>
                         <div>{symbol.fileName}:{symbol.position.line+1}</div>
                     </div>
