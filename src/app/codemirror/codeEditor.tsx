@@ -59,6 +59,7 @@ import * as state from "../state/state";
 import { Provider } from 'react-redux';
 import * as utils from "../../common/utils";
 import * as cursorLocation from "../cursorHistory";
+import * as events from "../../common/events";
 
 interface Props extends React.Props<any> {
 	onFocusChange?: (focused: boolean) => any;
@@ -80,6 +81,17 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 	refs: {
 		[string: string]: any;
 		textarea: any;
+	}
+
+	/** Ready after the doc is loaded */
+	ready = false;
+	afterReadyQueue:{():void}[] = [];
+	/** If already ready it execs ... otherwise waits */
+	afterReady = (cb:()=>void) => {
+		if (this.ready) cb();
+		else {
+			this.afterReadyQueue.push(cb);
+		}
 	}
 
 	componentDidMount () {
@@ -169,6 +181,8 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 				doc.setCursor(from);
 				this.codeMirror.scrollIntoView(from);
             }
+
+			this.afterReadyQueue.forEach(cb=>cb());
         });
 	}
 
@@ -216,10 +230,10 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 	}
 
     gotoPosition = (position: EditorPosition) => {
-        if (this.codeMirror) {
+        this.afterReady(()=>{
 			this.codeMirror.getDoc().setCursor(position);
             this.codeMirror.focus();
-		}
+		});
     }
 
     private refresh = () => {

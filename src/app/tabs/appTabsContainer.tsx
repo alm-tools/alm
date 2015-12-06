@@ -128,9 +128,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
             if (e.position) {
                 this.afterComponentDidUpdate(() =>
-                    setTimeout( // I know right ...
-                        ()=>this.gotoPositionOnSelectedTab(e.position)
-                    ));
+                        {
+                            this.gotoPositionOnSelectedTab(e.position)
+                        }
+                    );
             }
             state.addTabAndSelect(codeTab);
         });
@@ -164,10 +165,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.afterComponentDidUpdate(this.sendTabInfoToServer);
             this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
             if (e.position) {
-                this.afterComponentDidUpdate(() =>
-                    setTimeout( // I know right ...
-                        ()=>this.gotoPositionOnSelectedTab(e.position)
-                    ));
+                this.afterComponentDidUpdate(() =>this.gotoPositionOnSelectedTab(e.position));
             }
             state.addTabAndSelect(codeTab);
         });
