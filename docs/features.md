@@ -21,6 +21,7 @@
     * [Doctor](#doctor)
     * [Go to Definition](#goto-definition)
     * [Find References](#find-references)
+    * [Active Lists](#active-list)
 
 # Omni Search
 Single place for common search queries
@@ -119,3 +120,9 @@ Easy as `Ctrl|⌘ + B`
 Easy as `Ctrl|⌘ + Shift + B`
 
 ![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/findReferences.gif)
+
+# Active List
+
+Going through your error list is a breeze with `F8` (goto next) and `Shift+F8` (goto previous).
+
+![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/activeList.gif)
