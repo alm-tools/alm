@@ -107,16 +107,16 @@ export class FindAndReplace extends BaseComponent<Props, State>{
                 <div style={[csx.horizontal,shownStyle]}>
                     <div style={[csx.flex, csx.vertical]}>
                         <div style={[csx.horizontal, csx.center, styles.padded1]}>
-                            <input tabIndex={1} ref="find" 
-                            	placeholder="Find" 
-                                style={[inputBlackStyle, inputCodeStyle, csx.flex]} 
-                                onKeyDown={this.findKeyDownHandler} 
+                            <input tabIndex={1} ref="find"
+                            	placeholder="Find"
+                                style={[inputBlackStyle, inputCodeStyle, csx.flex]}
+                                onKeyDown={this.findKeyDownHandler}
                                 onChange={this.findChanged} defaultValue={this.props.findQuery.query}/>
                         </div>
                         <div style={[csx.horizontal, csx.center, styles.padded1]}>
-                            <input tabIndex={2} ref="replace" 
-                            	placeholder="Replace" 
-                                style={[inputBlackStyle, inputCodeStyle, csx.flex]} 
+                            <input tabIndex={2} ref="replace"
+                            	placeholder="Replace"
+                                style={[inputBlackStyle, inputCodeStyle, csx.flex]}
                                 onKeyDown={this.replaceKeyDownHandler} />
                         </div>
                     </div>

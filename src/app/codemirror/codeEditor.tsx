@@ -183,6 +183,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
             }
 
 			this.afterReadyQueue.forEach(cb=>cb());
+			this.ready = true;
         });
 	}
 
