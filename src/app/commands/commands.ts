@@ -362,8 +362,14 @@ sublimeMap[`${mod}-Alt-O`] = additionalEditorCommands.toggleBlaster;
 // we have our own cursor history
 delete defaultMap[`${mod}-U`];
 delete defaultMap[`Shift-${mod}-U`];
-// Fallback to default `singleSelection` as sublime `singleSelectionTop` is bad
+// Fallback to default `singleSelection` as sublime `singleSelectionTop` is bad e.g. when we do inline rename
 delete sublimeMap['Esc'];
+// Cmd + U conflicted with our cursor history
+delete sublimeMap['Cmd-K Cmd-U'];
+delete sublimeMap['Cmd-K Cmd-L'];
+sublimeMap['Alt-='] = "upcaseAtCursor"; // Because alt+u didn't work on mac
+sublimeMap['Alt--'] = "downcaseAtCursor";
+
 // console.log(csx.extend(basicMap,defaultMap,sublimeMap)); // DEBUG
 
 /** Comamnds we don't support as an editor command */
