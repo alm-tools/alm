@@ -6,6 +6,10 @@
 
 * [Editor](#omni-search)
     * [Omni Search](#omni-search)
+        * [File Search](#file-search)
+        * [Command Search](#command-search)
+        * [Symbol Search](#symbol-search)
+        * [Project Search](#Project-search)
     * [Sublime Text Users](#sublime)
     * [Seamless external editing](#disk-watching)
     * [Editing First](#focus)
@@ -24,14 +28,27 @@
     * [Active Lists](#active-list)
 
 # Omni Search
-Single place for common search queries
+Single place for common search queries, supports various modes:
+
+## File Search
 
 ![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/omnisearch.gif)
+
+## Command Search
 
 Use the command search (`Ctrl|⌘ + Shift + P`) to see all the shortcuts at your disposal.
 
 ![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/commandSearch.gif)
 
+
+## Symbol Search
+The s**Y**mbol search mode (`Ctrl|⌘ + Shift + Y`) lets navigate your projects with meaning
+
+![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/symbolSearch.gif)
+
+## Project Search
+
+Search for and set the active TypeScript project (`tsconfig.json`) using project mode (`Alt + Shift + P`)
 
 # Sublime
 > Imitation is the sincerest form of flattery
@@ -71,7 +88,6 @@ Your cursor history is preserved across all open files. `Ctrl|⌘ + U` and `Ctrl
 Because life is too short for code not to be fun. `Ctrl|⌘ + Shift + O` to toggle.
 
 ![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/blaster.gif)
-
 
 # Errors
 
