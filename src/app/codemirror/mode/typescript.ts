@@ -64,7 +64,7 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: str
         case ClassificationType.parameterName:
             return 'def';
 		case ClassificationType.punctuation:
-            // Only for JSX. Otherwise these would be operator
+            // Only get punctuation for JSX. Otherwise these would be operator
             if (token.string == '>' || token.string == '<' || token.string == '/>'){
                 return 'tag.bracket'; // we need tag + bracket for CM's tag matching
             }
