@@ -548,6 +548,7 @@ class SearchState {
         }
 
         // If the new mode requires a search we do that here
+        // TODO: this does not work e.g. if user changes the mode on the fly :-/
         if (this.mode == SearchMode.Symbol){
             server.getNavigateToItems({}).then((res)=>{
                 this.symbols = res.items;
