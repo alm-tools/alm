@@ -7,6 +7,7 @@ import {createMap} from "../../../common/utils";
 import {server,cast,Types} from "../../../socket/socketClient";
 import * as state from "../../state/state";
 import * as jumpy from "./jumpy";
+import {kindToColor} from "../../ui";
 
 require('./autocomplete.css');
 import * as templates from "./templates";
@@ -207,52 +208,4 @@ export class AutoCompleter {
         }
     };
 
-}
-
-
-function kindToColor(kind:string, lighten = false){
-    let add = lighten?50:0;
-    let opacity = lighten?0.2:1;
-    let base = 'white';
-    switch(kind){
-        case ts.ScriptElementKind.keyword:
-            // redish
-            return `rgba(${0xf9 + add},${0x26 + add},${0x72 + add},${opacity})`;
-        case ts.ScriptElementKind.scriptElement:
-        case ts.ScriptElementKind.moduleElement:
-        case ts.ScriptElementKind.classElement:
-        case ts.ScriptElementKind.localClassElement:
-        case ts.ScriptElementKind.interfaceElement:
-        case ts.ScriptElementKind.typeElement:
-        case ts.ScriptElementKind.enumElement:
-        case ts.ScriptElementKind.alias:
-        case ts.ScriptElementKind.typeParameterElement:
-        case ts.ScriptElementKind.primitiveType:
-            // yelloish
-            // #e6db74
-            return `rgba(${0xe6 + add},${0xdb + add},${0x74 + add},${opacity})`;
-        case ts.ScriptElementKind.variableElement:
-        case ts.ScriptElementKind.localVariableElement:
-        case ts.ScriptElementKind.memberVariableElement:
-        case ts.ScriptElementKind.letElement:
-        case ts.ScriptElementKind.constElement:
-        case ts.ScriptElementKind.label:
-        case ts.ScriptElementKind.parameterElement:
-        case ts.ScriptElementKind.indexSignatureElement:
-            // blueish
-            // #66d9ef
-            return `rgba(${0x66 + add},${0xd9 + add},${0xef + add},${opacity})`;
-        case ts.ScriptElementKind.functionElement:
-        case ts.ScriptElementKind.localFunctionElement:
-        case ts.ScriptElementKind.memberFunctionElement:
-        case ts.ScriptElementKind.memberGetAccessorElement:
-        case ts.ScriptElementKind.memberSetAccessorElement:
-        case ts.ScriptElementKind.callSignatureElement:
-        case ts.ScriptElementKind.constructorImplementationElement:
-            // greenish
-            // #a6e22e
-            return `rgba(${0xa6 + add},${0xe2 + add},${0x2e + add},${opacity})`;
-        default:
-            return base;
-    }
 }

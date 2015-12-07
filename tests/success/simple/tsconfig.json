@@ -23,5 +23,8 @@
         "foo.ts",
         "bas.tsx"
     ],
-    "exclude": []
+    "exclude": [],
+    "atom": {
+        "rewriteTsconfig": true
+    }
 }

@@ -367,7 +367,7 @@ class SearchState {
                         <div style={csx.horizontal}>
                             <span>{matched}</span>
                             <span style={csx.flex}></span>
-                            <strong>{symbol.kind}</strong>
+                            <strong style={{color:ui.kindToColor(symbol.kind)} as any}>{symbol.kind}</strong>
                         </div>
                         <div>{symbol.fileName}:{symbol.position.line+1}</div>
                     </div>
@@ -541,24 +541,22 @@ class SearchState {
             this.rawFilterValue = this.rawFilterValue + oldRawFilterValue.trim().substr(2);
         }
 
-
-        // If the new mode requires a search we do that here
-        if (oldMode !== this.mode){
-            if (this.mode == SearchMode.Symbol){
-                server.getNavigateToItems({}).then((res)=>{
-                    this.symbols = res.items;
-
-                    // Same stuff as below
-                    this.isShown = true;
-                    this.newValue(this.rawFilterValue);
-                    this.setParentUiRawFilterValue(this.rawFilterValue);
-                });
-            }
+        let afterReady = () => {
+            this.isShown = true;
+            this.newValue(this.rawFilterValue);
+            this.setParentUiRawFilterValue(this.rawFilterValue);
         }
 
-        this.isShown = true;
-        this.newValue(this.rawFilterValue);
-        this.setParentUiRawFilterValue(this.rawFilterValue);
+        // If the new mode requires a search we do that here
+        if (this.mode == SearchMode.Symbol){
+            server.getNavigateToItems({}).then((res)=>{
+                this.symbols = res.items;
+                afterReady();
+            });
+        }
+        else {
+            afterReady();
+        }
     }
 
     getSearchingName(): string {
