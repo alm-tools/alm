@@ -21,6 +21,7 @@ export interface Props extends React.Props<any> {
     // from react-redux ... connected below
     filePaths?: types.FilePath[];
     filePathsCompleted?: boolean;
+    rootDir?: string;
 }
 
 interface TreeDirItem {
@@ -79,6 +80,7 @@ let treeItemSelectedStyle = {
     return {
         filePaths: state.filePaths,
         filePathsCompleted: state.filePathsCompleted,
+        rootDir: state.rootDir,
     };
 })
 @ui.Radium
@@ -436,7 +438,7 @@ export class FileTree extends BaseComponent<Props, State>{
         if (!filePaths.length) { // initial boot up
             return;
         }
-        let rootDirPath = utils.getDirectory(filePaths[0]);
+        let rootDirPath = props.rootDir;
         let rootDir: TreeDirItem = {
             name: utils.getFileName(rootDirPath),
             filePath: rootDirPath,

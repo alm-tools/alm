@@ -26,8 +26,8 @@ namespace Server {
 
     export var filePaths: typeof contract.server.filePaths = (data) => {
         return flm.initialIndexComplete
-            ? flm.filePathsCompleted.current().then(res=> ({ filePaths: res.filePaths, completed: true }))
-            : flm.filePathsPartial.current().then(res=> ({ filePaths: res.filePaths, completed: false }));
+            ? flm.filePathsCompleted.current().then(res=> ({ filePaths: res.filePaths, completed: true, rootDir: res.rootDir }))
+            : flm.filePathsPartial.current().then(res=> ({ filePaths: res.filePaths, completed: false, rootDir: res.rootDir }));
     }
 
     export var makeAbsolute: typeof contract.server.makeAbsolute = (data) => {

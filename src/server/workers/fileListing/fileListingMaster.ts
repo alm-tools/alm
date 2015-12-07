@@ -5,9 +5,9 @@ import {TypedEvent} from "../../../common/events";
 import * as workingDir from "../../disk/workingDir";
 import * as types from "../../../common/types";
 
-export var filePathsPartial = new TypedEvent<{ filePaths: types.FilePath[]; }>()
-export var filePathsCompleted = new TypedEvent<{ filePaths: types.FilePath[]; }>();
-export var fileChangedOnDisk = new TypedEvent<{filePath:string}>();
+export var filePathsPartial = new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string;}>()
+export var filePathsCompleted = new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string;}>();
+export var fileChangedOnDisk = new TypedEvent<{ filePath: string }>();
 export let initialIndexComplete = false;
 
 namespace Master {
@@ -20,11 +20,11 @@ namespace Master {
     export var fileListUpdated: typeof contract.master.fileListUpdated = (q) => {
         if (q.completed) {
             initialIndexComplete = true;
-            filePathsCompleted.emit({ filePaths: q.filePaths });
+            filePathsCompleted.emit({ filePaths: q.filePaths, rootDir: workingDir.getProjectRoot() });
         }
         else {
             initialIndexComplete = false;
-            filePathsPartial.emit({ filePaths: q.filePaths });
+            filePathsPartial.emit({ filePaths: q.filePaths, rootDir: workingDir.getProjectRoot() });
         }
         return Promise.resolve({});
     }

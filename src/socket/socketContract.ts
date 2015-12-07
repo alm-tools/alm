@@ -11,7 +11,7 @@ import * as types from "../common/types";
  */
 export var server = {
     echo: {} as QRServerFunction<{ text: string, num: number }, { text: string, num: number }, typeof client>,
-    filePaths: {} as QRFunction<{}, { filePaths: types.FilePath[], completed: boolean }>,
+    filePaths: {} as QRFunction<{}, { filePaths: types.FilePath[], rootDir: string, completed: boolean }>,
     makeAbsolute: {} as QRFunction<{ relativeFilePath: string }, { filePath: string }>,
 
     /**
@@ -62,8 +62,8 @@ export var cast = {
     hello: new TypedEvent<{ text: string }>(),
 
     /** If the file worker notices a change */
-    filePathsCompleted: new TypedEvent<{ filePaths: types.FilePath[] }>(),
-    filePathsPartial: new TypedEvent<{ filePaths: types.FilePath[] }>(),
+    filePathsCompleted: new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string; }>(),
+    filePathsPartial: new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string; }>(),
 
     /** If an open and already saved file changes on disk  */
     savedFileChangedOnDisk: new TypedEvent<{ filePath: string; contents: string }>(),

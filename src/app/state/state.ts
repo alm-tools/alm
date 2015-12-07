@@ -27,6 +27,7 @@ export interface StoreState {
 
     filePaths?: types.FilePath[];
     filePathsCompleted?: boolean;
+    rootDir?: string;
 
     /** Tabs are managed globally as its significat to other sections */
     tabs?: TabInstance[];
@@ -155,16 +156,18 @@ export let setSocketConnected = redux.add('setSocketConnected', (state, payload:
     };
 });
 
-export let setCompleteFilePaths = redux.add('setCompleteFilePaths', (state, filePaths: types.FilePath[]): StoreState => {
+export let setCompleteFilePaths = redux.add('setCompleteFilePaths', (state, config:{filePaths: types.FilePath[];rootDir:string}): StoreState => {
     return {
-        filePaths: filePaths,
+        filePaths: config.filePaths,
+        rootDir: config.rootDir,
         filePathsCompleted: true
     };
 });
 
-export let setPartialFilePaths = redux.add('setPartialFilePaths', (state, filePaths: types.FilePath[]): StoreState => {
+export let setPartialFilePaths = redux.add('setPartialFilePaths', (state, config:{filePaths: types.FilePath[];rootDir:string}): StoreState => {
     return {
-        filePaths: filePaths,
+        filePaths: config.filePaths,
+        rootDir: config.rootDir,
         filePathsCompleted: false
     };
 });
