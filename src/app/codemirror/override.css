@@ -35,3 +35,8 @@
 .cm-matchhighlight {
     text-decoration: underline;
 }
+
+/* tag matching is a bit too bold. Dull it down a bit */
+.CodeMirror-matchingtag {
+    background: rgba(0, 150, 150, .3);
+}
