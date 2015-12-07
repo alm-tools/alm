@@ -123,16 +123,32 @@ export class FindAndReplace extends BaseComponent<Props, State>{
                     <div style={[csx.centerCenter]}>
                         <div style={[csx.horizontal, csx.aroundJustified, styles.padded1]}>
                             <label style={[csx.horizontal,csx.center]}>
-                            	<ui.Toggle tabIndex={3} ref="regex" onChange={this.handleRegexChange}/>
-                                <span style={searchOptionsLabelStyle}>.*</span>
+                            	<ui.Toggle
+                                    tabIndex={3}
+                                    ref="regex"
+                                    onChange={this.handleRegexChange}/>
+                                <span style={searchOptionsLabelStyle}>
+                                    .*
+                                </span>
                             </label>
                             <label style={[csx.horizontal,csx.center]}>
-                            	<ui.Toggle tabIndex={4} ref="caseInsensitive" onChange={this.handleCaseSensitiveChange}/>
-                                <span style={searchOptionsLabelStyle}>Aa</span>
+                            	<ui.Toggle
+                                    tabIndex={4}
+                                    ref="caseInsensitive"
+                                    onChange={this.handleCaseSensitiveChange}/>
+                                <span style={searchOptionsLabelStyle}>
+                                    Aa
+                                </span>
                             </label>
                             <label style={[csx.horizontal,csx.center]}>
-                            	<ui.Toggle tabIndex={5} ref="fullWord" onKeyDown={this.fullWordKeyDownHandler} onChange={this.handleFullWordChange}/>
-                                <span style={searchOptionsLabelStyle}><Icon name="text-width"/></span>
+                            	<ui.Toggle
+                                    tabIndex={5}
+                                    ref="fullWord"
+                                    onKeyDown={this.fullWordKeyDownHandler}
+                                    onChange={this.handleFullWordChange}/>
+                                <span style={searchOptionsLabelStyle}>
+                                    <Icon name="text-width"/>
+                                </span>
                             </label>
                         </div>
                     </div>
