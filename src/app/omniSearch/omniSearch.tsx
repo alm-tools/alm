@@ -468,8 +468,9 @@ class SearchState {
     }
 
     /** Mode */
-    newValue(value:string){
+    newValue(value:string, wasShownBefore = true, modeChanged = false){
         this.rawFilterValue = value;
+        let oldMode = this.mode;
 
         // Parse the query to see what type it is
         this.parsedFilterValue = ''
@@ -490,43 +491,57 @@ class SearchState {
             this.parsedFilterValue = trimmed;
         }
 
+        modeChanged = modeChanged || this.mode !== oldMode;
+        let modeChangedOrJustOpened = modeChanged || !wasShownBefore;
 
-        if (this.mode == SearchMode.Unknown) {
-            this.filteredValues = this.parsedFilterValue
-                ? getFilteredItems<SearchModeDescription>({ items: this.modeDescriptions, textify: (c) => c.description, filterValue: this.parsedFilterValue })
-                : this.modeDescriptions;
-        }
+        let potentiallyRefreshModeData =  modeChangedOrJustOpened ?
+            this.refreshModeData() : Promise.resolve({});
 
-        if (this.mode == SearchMode.File) {
-            this.filteredValues = fuzzyFilter(this.filePaths, this.parsedFilterValue);
-            this.filteredValues = this.filteredValues.slice(0,this.maxShowCount);
-        }
+        potentiallyRefreshModeData.then(()=>{
+            if (this.mode == SearchMode.Unknown) {
+                this.filteredValues = this.parsedFilterValue
+                    ? getFilteredItems<SearchModeDescription>({ items: this.modeDescriptions, textify: (c) => c.description, filterValue: this.parsedFilterValue })
+                    : this.modeDescriptions;
+            }
 
-        if (this.mode == SearchMode.Command) {
-            this.filteredValues = this.parsedFilterValue
-                ? getFilteredItems<commands.UICommand>({ items: this.commands, textify: (c) => c.config.description, filterValue: this.parsedFilterValue })
-                : this.commands;
-        }
+            if (this.mode == SearchMode.File) {
+                this.filteredValues = fuzzyFilter(this.filePaths, this.parsedFilterValue);
+                this.filteredValues = this.filteredValues.slice(0,this.maxShowCount);
+            }
 
-        if (this.mode == SearchMode.Project) {
-            this.filteredValues = this.parsedFilterValue
-                ? getFilteredItems<ActiveProjectConfigDetails>({ items: this.availableProjects, textify: (p) => p.name, filterValue: this.parsedFilterValue })
-                : this.availableProjects;
-        }
+            if (this.mode == SearchMode.Command) {
+                this.filteredValues = this.parsedFilterValue
+                    ? getFilteredItems<commands.UICommand>({ items: this.commands, textify: (c) => c.config.description, filterValue: this.parsedFilterValue })
+                    : this.commands;
+            }
 
-        if (this.mode == SearchMode.Symbol) {
-            this.filteredValues = this.parsedFilterValue
-                ? getFilteredItems<Types.NavigateToItem>({ items: this.symbols, textify: (p) => p.name, filterValue: this.parsedFilterValue })
-                : this.symbols;
-            this.filteredValues = this.filteredValues.slice(0,this.maxShowCount);
-        }
+            if (this.mode == SearchMode.Project) {
+                this.filteredValues = this.parsedFilterValue
+                    ? getFilteredItems<ActiveProjectConfigDetails>({ items: this.availableProjects, textify: (p) => p.name, filterValue: this.parsedFilterValue })
+                    : this.availableProjects;
+            }
 
-        this.selectedIndex = 0;
-        this.stateChanged.emit({});
+            if (this.mode == SearchMode.Symbol) {
+                this.filteredValues = this.parsedFilterValue
+                    ? getFilteredItems<Types.NavigateToItem>({ items: this.symbols, textify: (p) => p.name, filterValue: this.parsedFilterValue })
+                    : this.symbols;
+                this.filteredValues = this.filteredValues.slice(0,this.maxShowCount);
+            }
+
+            this.selectedIndex = 0;
+
+            this.stateChanged.emit({});
+            if (modeChangedOrJustOpened){
+                this.setParentUiRawFilterValue(this.rawFilterValue);
+            }
+        });
     }
 
     /** Mode */
     openOmniSearch = (mode: SearchMode) => {
+        let wasAlreadyShown = this.isShown;
+        this.isShown = true;
+
         let oldMode = this.mode;
         let oldRawFilterValue = this.rawFilterValue;
 
@@ -537,27 +552,23 @@ class SearchState {
         // If already shown would be nice to preserve current user input
         // And if the new mode is different
         // And if the new mode is not *search* search mode
-        if (this.isShown && oldMode !== this.mode && oldMode !== SearchMode.Unknown) {
+        if (wasAlreadyShown && oldMode !== this.mode && oldMode !== SearchMode.Unknown) {
             this.rawFilterValue = this.rawFilterValue + oldRawFilterValue.trim().substr(2);
         }
 
-        let afterReady = () => {
-            this.isShown = true;
-            this.newValue(this.rawFilterValue);
-            this.setParentUiRawFilterValue(this.rawFilterValue);
-        }
+        this.newValue(this.rawFilterValue, wasAlreadyShown, oldMode !== this.mode);
+    }
 
+    /** Mode */
+    refreshModeData():Promise<any>{
         // If the new mode requires a search we do that here
-        // TODO: this does not work e.g. if user changes the mode on the fly :-/
         if (this.mode == SearchMode.Symbol){
-            server.getNavigateToItems({}).then((res)=>{
+            return server.getNavigateToItems({}).then((res)=>{
                 this.symbols = res.items;
-                afterReady();
             });
         }
-        else {
-            afterReady();
-        }
+
+        return Promise.resolve();
     }
 
     getSearchingName(): string {
