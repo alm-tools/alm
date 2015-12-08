@@ -80,6 +80,7 @@ export function start() {
         if (fs.existsSync(tsconfig)) {
             activeProjectConfigDetails = Utils.tsconfigToActiveProjectConfigDetails(tsconfig);
             activeProjectConfigDetailsUpdated.emit(activeProjectConfigDetails);
+            syncCore(activeProjectConfigDetails);
         }
     }
 
@@ -106,26 +107,32 @@ export function sync() {
         let activeProjectName = (activeProjectConfigDetails && activeProjectConfigDetails.name);
         // we are guaranteed as least one project config (which just might be the implicit one)
         let projectConfig = projectConfigs.filter(x=>x.name == activeProjectName)[0] || projectConfigs[0];
-
-        currentProject = null;
-        let configFileDetails = ConfigFile.getConfigFileFromDiskOrInMemory(projectConfig)
-        currentProject = ConfigFile.createProjectFromConfigFile(configFileDetails);
-        activeProjectFilePathsUpdated.emit({filePaths:currentProject.getProjectSourceFiles().map(x=> x.fileName)});
-
-        // If we made it up to here ... means the config file was good :)
-        if (!projectConfig.isImplicit) {
-            clearErrorsForFilePath(projectConfig.tsconfigFilePath);
-        }
-
-        // Set the active project (the project we get returned might not be the active project name)
-        // e.g. on initial load
-        if (activeProjectName !== projectConfig.name) {
-            activeProjectConfigDetails = projectConfig;
-            activeProjectConfigDetailsUpdated.emit(activeProjectConfigDetails);
-        }
-
-        refreshAllProjectDiagnostics();
+        syncCore(projectConfig);
     });
+}
+
+/** call this after we have some verified project config */
+function syncCore(projectConfig:ActiveProjectConfigDetails){
+    let activeProjectName = (activeProjectConfigDetails && activeProjectConfigDetails.name);
+    currentProject = null;
+
+    let configFileDetails = ConfigFile.getConfigFileFromDiskOrInMemory(projectConfig)
+    currentProject = ConfigFile.createProjectFromConfigFile(configFileDetails);
+    activeProjectFilePathsUpdated.emit({filePaths:currentProject.getProjectSourceFiles().map(x=> x.fileName)});
+
+    // If we made it up to here ... means the config file was good :)
+    if (!projectConfig.isImplicit) {
+        clearErrorsForFilePath(projectConfig.tsconfigFilePath);
+    }
+
+    // Set the active project (the project we get returned might not be the active project name)
+    // e.g. on initial load
+    if (activeProjectName !== projectConfig.name) {
+        activeProjectConfigDetails = projectConfig;
+        activeProjectConfigDetailsUpdated.emit(activeProjectConfigDetails);
+    }
+
+    refreshAllProjectDiagnostics();
 }
 
 /**
