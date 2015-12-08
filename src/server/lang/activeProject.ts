@@ -313,6 +313,7 @@ export namespace GetProject {
         if (currentProject) {
             return currentProject.getProjectSourceFiles().map(x=> x.fileName);
         }
+
         return [];
     }
 
