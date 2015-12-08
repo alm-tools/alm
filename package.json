@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "clipboard": "^1.4.2",
-    "codemirror": "^5.7.0",
+    "codemirror": "5.9.0",
     "css-loader": "^0.17.0",
     "csx": "1.1.0",
     "file-loader": "^0.8.4",
@@ -80,6 +80,6 @@
     "webpack-dev-server": "^1.10.1"
   },
   "engines":{
-    "node":">=4.0.0"  
+    "node":">=4.0.0"
   }
 }

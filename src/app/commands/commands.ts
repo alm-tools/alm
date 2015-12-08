@@ -1,6 +1,8 @@
-// for keyboard shortcuts watch out for:
-// https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts
-//
+/**
+ * Defines:
+ * commands / command registry / code editor commands
+ */
+
 // Keyboard shortcut origins:
 // c9: cloud9 IDE
 // ca: CodeAnywhere
@@ -365,11 +367,16 @@ delete defaultMap[`Shift-${mod}-U`];
 // Fallback to default `singleSelection` as sublime `singleSelectionTop` is bad e.g. when we do inline rename
 delete sublimeMap['Esc'];
 // Cmd + U conflicted with our cursor history
-delete sublimeMap['Cmd-K Cmd-U'];
-delete sublimeMap['Cmd-K Cmd-L'];
+delete sublimeMap[`${mod}-K ${mod}-U`];
+delete sublimeMap[`${mod}-K ${mod}-L`];
 sublimeMap['Alt-='] = "upcaseAtCursor"; // Because alt+u didn't work on mac
 sublimeMap['Alt--'] = "downcaseAtCursor";
-
+// Sublime map got a function. We don't want that function (our registry breaks)
+// https://github.com/codemirror/CodeMirror/pull/3689
+sublimeMap[`${mod}-/`] = "toggleCodeComment";
+CodeMirror.commands["toggleCodeComment"] = function(cm) {
+    cm.toggleComment({ indent: true });
+}
 // console.log(csx.extend(basicMap,defaultMap,sublimeMap)); // DEBUG
 
 /** Comamnds we don't support as an editor command */
