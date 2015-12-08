@@ -29,6 +29,7 @@ import * as workingDir from "../disk/workingDir";
 // And on clicking it open the file from disk
 let activeProjectConfigDetails: ActiveProjectConfigDetails = null;
 export let activeProjectConfigDetailsUpdated = new TypedEvent<ActiveProjectConfigDetails>();
+export let activeProjectFilePathsUpdated = new TypedEvent<{filePaths:string[]}>();
 
 /** The name used if we don't find a project */
 let implicitProjectName = "__auto__";
@@ -109,6 +110,7 @@ export function sync() {
         currentProject = null;
         let configFileDetails = ConfigFile.getConfigFileFromDiskOrInMemory(projectConfig)
         currentProject = ConfigFile.createProjectFromConfigFile(configFileDetails);
+        activeProjectFilePathsUpdated.emit({filePaths:currentProject.getProjectSourceFiles().map(x=> x.fileName)});
 
         // If we made it up to here ... means the config file was good :)
         if (!projectConfig.isImplicit) {
@@ -304,17 +306,6 @@ export namespace GetProject {
         }
 
         return proj;
-    }
-
-    /**
-     * All the filePaths in the current compilation context
-     */
-    export function allFilePaths(): string[] {
-        if (currentProject) {
-            return currentProject.getProjectSourceFiles().map(x=> x.fileName);
-        }
-
-        return [];
     }
 
     /**

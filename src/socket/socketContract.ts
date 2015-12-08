@@ -32,7 +32,7 @@ export var server = {
     isFilePathInActiveProject: {} as QRFunction<{ filePath: string }, { inActiveProject: boolean }>,
     setOpenUITabs: {} as QRFunction<{ openTabs: types.SessionTabInUI[] }, {}>,
     getOpenUITabs: {} as QRFunction<{}, { openTabs: types.SessionTabInUI[] }>,
-    getFilePathsInActiveProject: {} as QRFunction<{}, { filePaths: string[] }>,
+    activeProjectFilePaths: {} as QRFunction<{}, { filePaths: string[] }>,
 
     /**
      * Error stuff
@@ -81,6 +81,8 @@ export var cast = {
 
     /** Active project name updated */
     activeProjectConfigDetailsUpdated: new TypedEvent<ActiveProjectConfigDetails>(),
+
+    activeProjectFilePathsUpdated: new TypedEvent<{filePaths:string[]}>(),
 }
 
 

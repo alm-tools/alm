@@ -84,10 +84,8 @@ namespace Server {
     export var getOpenUITabs: typeof contract.server.getOpenUITabs = (data) => {
         return resolve(session.getOpenUITabs());
     };
-    export var getFilePathsInActiveProject: typeof contract.server.getFilePathsInActiveProject = (data) => {
-        return activeProject.activeProjectConfigDetailsUpdated
-            .current()
-            .then(() => ({ filePaths: activeProject.GetProject.allFilePaths() }));
+    export var activeProjectFilePaths: typeof contract.server.activeProjectFilePaths = (data) => {
+        return activeProject.activeProjectFilePathsUpdated.current();
     };
 
     /**
@@ -136,6 +134,7 @@ export function register(app: http.Server) {
     errorCache.errorsUpdated.pipe(cast.errorsUpdated);
     activeProject.availableProjects.pipe(cast.availableProjectsUpdated);
     activeProject.activeProjectConfigDetailsUpdated.pipe(cast.activeProjectConfigDetailsUpdated);
+    activeProject.activeProjectFilePathsUpdated.pipe(cast.activeProjectFilePathsUpdated);
 
     // For testing
     // setInterval(() => cast.hello.emit({ text: 'nice' }), 1000);

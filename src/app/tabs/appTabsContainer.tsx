@@ -231,20 +231,12 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.sendOrClearSearchOnCurrentComponent();
         }));
 
-        let loadActiveProjectFiles = ()=>{
-            server.getFilePathsInActiveProject({}).then(res=>{
-                state.setFilePathsInActiveProject(res.filePaths);
-            });
-        }
-        loadActiveProjectFiles();
-
         server.getActiveProjectConfigDetails({}).then(res=>{
             state.setActiveProject(res);
         });
 
         cast.activeProjectConfigDetailsUpdated.on(res => {
             state.setActiveProject(res);
-            loadActiveProjectFiles();
         });
 
         commands.openFileFromDisk.on(() => {
