@@ -62,8 +62,7 @@ export var cast = {
     hello: new TypedEvent<{ text: string }>(),
 
     /** If the file worker notices a change */
-    filePathsCompleted: new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string; }>(),
-    filePathsPartial: new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string; }>(),
+    filePathsUpdated: new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string; completed:boolean }>(),
 
     /** If an open and already saved file changes on disk  */
     savedFileChangedOnDisk: new TypedEvent<{ filePath: string; contents: string }>(),

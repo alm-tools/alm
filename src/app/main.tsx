@@ -64,15 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
         state.setSocketConnected(r.connected);
     });
     server.filePaths({}).then((res) => {
-        res.completed
-            ?state.setCompleteFilePaths({filePaths:res.filePaths,rootDir:res.rootDir})
-            :state.setPartialFilePaths({filePaths:res.filePaths,rootDir:res.rootDir});
+        state.setFilePaths({filePaths:res.filePaths,rootDir:res.rootDir, completed: res.completed});
     });
-    cast.filePathsCompleted.on((res) => {
-        state.setCompleteFilePaths({filePaths:res.filePaths,rootDir:res.rootDir});
-    });
-    cast.filePathsPartial.on((res) => {
-        state.setPartialFilePaths({filePaths:res.filePaths,rootDir:res.rootDir});
+    cast.filePathsUpdated.on((res) => {
+        state.setFilePaths({filePaths:res.filePaths,rootDir:res.rootDir, completed: res.completed});
     });
     commands.toggleDoctor.on(()=>{
         if (!state.inActiveProject(state.getSelectedFilePath())){

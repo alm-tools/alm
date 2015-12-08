@@ -5,10 +5,9 @@ import {TypedEvent} from "../../../common/events";
 import * as workingDir from "../../disk/workingDir";
 import * as types from "../../../common/types";
 
-export var filePathsPartial = new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string;}>()
-export var filePathsCompleted = new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string;}>();
+export var filePathsUpdated = new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string; completed: boolean;}>();
+export var filePathsCompleted = new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string; completed: boolean;}>();
 export var fileChangedOnDisk = new TypedEvent<{ filePath: string }>();
-export let initialIndexComplete = false;
 
 namespace Master {
     export var increment: typeof contract.master.increment = (q) => {
@@ -18,13 +17,9 @@ namespace Master {
     }
     /** warning, this function is named differently from the event filePathsUpdated for a reason */
     export var fileListUpdated: typeof contract.master.fileListUpdated = (q) => {
-        if (q.completed) {
-            initialIndexComplete = true;
-            filePathsCompleted.emit({ filePaths: q.filePaths, rootDir: workingDir.getProjectRoot() });
-        }
-        else {
-            initialIndexComplete = false;
-            filePathsPartial.emit({ filePaths: q.filePaths, rootDir: workingDir.getProjectRoot() });
+        filePathsUpdated.emit({ filePaths: q.filePaths, rootDir: workingDir.getProjectRoot(), completed:q.completed });
+        if (q.completed){
+            filePathsCompleted.emit({ filePaths: q.filePaths, rootDir: workingDir.getProjectRoot(), completed:q.completed });
         }
         return Promise.resolve({});
     }

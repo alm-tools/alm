@@ -25,9 +25,7 @@ namespace Server {
     }
 
     export var filePaths: typeof contract.server.filePaths = (data) => {
-        return flm.initialIndexComplete
-            ? flm.filePathsCompleted.current().then(res=> ({ filePaths: res.filePaths, completed: true, rootDir: res.rootDir }))
-            : flm.filePathsPartial.current().then(res=> ({ filePaths: res.filePaths, completed: false, rootDir: res.rootDir }));
+        return flm.filePathsUpdated.current().then(res=> ({ filePaths: res.filePaths, completed: res.completed, rootDir: res.rootDir }));
     }
 
     export var makeAbsolute: typeof contract.server.makeAbsolute = (data) => {
@@ -133,8 +131,7 @@ export function register(app: http.Server) {
     fmc.didEdit.pipe(cast.didEdit);
     fmc.didStatusChange.pipe(cast.didStatusChange);
 
-    flm.filePathsCompleted.pipe(cast.filePathsCompleted);
-    flm.filePathsPartial.pipe(cast.filePathsPartial);
+    flm.filePathsUpdated.pipe(cast.filePathsUpdated);
 
     errorCache.errorsUpdated.pipe(cast.errorsUpdated);
     activeProject.availableProjects.pipe(cast.availableProjectsUpdated);

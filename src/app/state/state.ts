@@ -156,19 +156,11 @@ export let setSocketConnected = redux.add('setSocketConnected', (state, payload:
     };
 });
 
-export let setCompleteFilePaths = redux.add('setCompleteFilePaths', (state, config:{filePaths: types.FilePath[];rootDir:string}): StoreState => {
+export let setFilePaths = redux.add('setFilePaths', (state, config:{filePaths: types.FilePath[];rootDir:string; completed:boolean}): StoreState => {
     return {
         filePaths: config.filePaths,
         rootDir: config.rootDir,
-        filePathsCompleted: true
-    };
-});
-
-export let setPartialFilePaths = redux.add('setPartialFilePaths', (state, config:{filePaths: types.FilePath[];rootDir:string}): StoreState => {
-    return {
-        filePaths: config.filePaths,
-        rootDir: config.rootDir,
-        filePathsCompleted: false
+        filePathsCompleted: config.completed
     };
 });
 
