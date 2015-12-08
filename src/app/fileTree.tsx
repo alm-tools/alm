@@ -365,6 +365,17 @@ export class FileTree extends BaseComponent<Props, State>{
             }
             return false;
         });
+
+        handlers.bind('enter', () => {
+            let {selectedFilePath, isDir} = goDownToSmallestSelection();
+            if (isDir) {
+                this.state.expansionState[selectedFilePath] = !this.state.expansionState[selectedFilePath];
+                this.setState({expansionState: this.state.expansionState});
+            } else {
+                commands.doOpenOrFocusFile.emit({ filePath: selectedFilePath });
+            }
+            return false;
+        });
     }
     refNames = {treeRootNode:'1'}
 
@@ -399,7 +410,7 @@ export class FileTree extends BaseComponent<Props, State>{
         let sub = expanded ? this.renderDirSub(item, depth) : [];
         let selectedStyle = this.state.selectedPaths[item.filePath] ? treeItemSelectedStyle : {};
         return (
-            [<div style={[treeItemStyle, selectedStyle]} key={item.filePath} ref={item.filePath} tabIndex={-1} onClick={(evt) => this.handleToggleDir(evt, item) }>
+            [<div style={[treeItemStyle, selectedStyle]} key={item.filePath} ref={item.filePath} tabIndex={-1} onClick={(evt) => this.handleToggleDir(evt,item) }>
                 {ui.indent(depth,2)} <Icon name={icon}/> {item.name}
             </div>].concat(sub)
         );
@@ -492,7 +503,7 @@ export class FileTree extends BaseComponent<Props, State>{
         this.setState({ treeRoot: rootDir, expansionState: this.state.expansionState });
     }
 
-    handleToggleDir = (evt:React.SyntheticEvent,item:TreeDirItem) => {
+    handleToggleDir = (evt:React.SyntheticEvent, item:TreeDirItem) => {
         evt.stopPropagation();
         let dirPath = item.filePath;
 
