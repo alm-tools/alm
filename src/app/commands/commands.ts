@@ -353,7 +353,7 @@ let sublimeMap = keyMap.sublime;
 
 /** Extensions : We just add to highest priority, here sublimeMap */
 // Additional key bindings for existing commands
-sublimeMap[`${mod}-Space`] = "autocomplete";
+sublimeMap[`Ctrl-Space`] = "autocomplete";
 // Our additionalEditorCommands
 sublimeMap[`F2`] = additionalEditorCommands.renameVariable;
 sublimeMap[`${mod}-B`] = additionalEditorCommands.gotoDefinition;

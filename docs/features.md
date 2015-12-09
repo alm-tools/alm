@@ -1,6 +1,6 @@
 > Not all these features might be pushed to npm yet. Remember the planned release is 2017 :rose:
 
-**TIP** Keyboard shortcut `Ctrl|⌘` means `Ctrl` on windows and `⌘` on Mac. We *never* use `Ctrl` on Mac. Its `Ctrl` on Win/Linux and `⌘` on Mac :rose:
+**TIP** Keyboard shortcut `Ctrl|⌘` means `Ctrl` on windows and `⌘` on Mac.
 
 # Features
 
