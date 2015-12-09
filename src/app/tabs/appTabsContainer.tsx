@@ -220,6 +220,13 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             }
         });
 
+        commands.replacePrevious.on((e)=>{
+            let component = this.getSelectedComponent();
+            if (component) {
+                component.replacePrevious(e.newText);
+            }
+        });
+
         commands.replaceAll.on((e)=>{
             let component = this.getSelectedComponent();
             if (component) {

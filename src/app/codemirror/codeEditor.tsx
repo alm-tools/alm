@@ -302,6 +302,10 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
         search.commands.replaceNext(this.codeMirror, newText);
     }
 
+	replacePrevious = (newText: string) => {
+		search.commands.replacePrevious(this.codeMirror, newText);
+	}
+
     replaceAll = (newText: string) => {
         search.commands.replaceAll(this.codeMirror, newText);
     }

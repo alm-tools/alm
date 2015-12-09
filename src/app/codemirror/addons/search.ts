@@ -18,6 +18,7 @@ export let commands = {
   findNext: (cm:CodeMirror.EditorFromTextArea, query: RegExp) => findNextIfNotAlreadyDoing(cm,query,false),
   findPrevious: (cm:CodeMirror.EditorFromTextArea, query: RegExp) => findNextIfNotAlreadyDoing(cm,query,true),
   replaceNext: (cm: CodeMirror.EditorFromTextArea, newText: string) => simpleReplace(cm, newText, false),
+  replacePrevious: (cm: CodeMirror.EditorFromTextArea, newText: string) => simpleReplacePrevious(cm, newText),
   replaceAll: (cm: CodeMirror.EditorFromTextArea, newText: string) => simpleReplace(cm, newText, true),
 }
 
@@ -57,6 +58,40 @@ function simpleReplace(codeMirror: CodeMirror.EditorFromTextArea, newText: strin
             cursor.replace(text.replace(/\$(\d)/g, function(_, i) { return match[i]; }));
         };
     }
+}
+
+/** Based on simpleReplace defined above, but using `previous` search + no support for all */
+function simpleReplacePrevious(codeMirror: CodeMirror.EditorFromTextArea, newText: string) {
+
+    /** These are the variables that I hand to introduce */
+    let cm: any = codeMirror;
+    let query = getSearchState(cm).query; // Note: this is different from what was there in that function (lastQuery)
+    let text = newText;
+
+    /**
+     * The following lines are based on the replace function
+    */
+
+    var cursor: CodeMirror.SearchCursor = getSearchCursor(cm, query, cm.getCursor("start"));
+
+    /** Next match */
+    var match;
+    if (!(match = cursor.findNext())) {
+        cursor = getSearchCursor(cm, query, CodeMirror.Pos(cm.firstLine(), 0));
+        if (!(match = cursor.findPrevious()))
+            return;
+    }
+    cm.setSelection(cursor.from(), cursor.to());
+    cm.scrollIntoView({ from: cursor.from(), to: cursor.to() });
+    doReplace();
+
+    // Take them to the previous match if any
+    findNext(cm, true);
+
+    /** straight out of search function. Just trimed out as we know our query is a regex already */
+    function doReplace() {
+        cursor.replace(text.replace(/\$(\d)/g, function(_, i) { return match[i]; }));
+    };
 }
 
 /** pulled from clearSearch below */

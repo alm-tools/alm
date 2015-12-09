@@ -90,6 +90,10 @@ export class Code extends ui.BaseComponent<Props, State> implements tab.Componen
         this.refs.editor.replaceNext(newText);
     }
 
+    replacePrevious = (newText: string) => {
+        this.refs.editor.replacePrevious(newText);
+    }
+
     replaceAll = (newText: string) => {
         this.refs.editor.replaceAll(newText);
     }

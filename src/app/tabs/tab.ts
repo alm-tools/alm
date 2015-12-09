@@ -32,6 +32,7 @@ export interface Component extends React.Component<any, any> {
     findNext(options: FindOptions);
     findPrevious(options: FindOptions);
     replaceNext(newText: string);
+    replacePrevious(newText: string);
     replaceAll(newText: string);
 }
 
