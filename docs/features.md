@@ -9,7 +9,7 @@
         * [File Search](#file-search)
         * [Command Search](#command-search)
         * [Symbol Search](#symbol-search)
-        * [Project Search](#Project-search)
+        * [Project Search](#project-search)
     * [Sublime Text Users](#sublime)
     * [Seamless external editing](#disk-watching)
     * [Editing First](#focus)
