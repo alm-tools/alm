@@ -205,13 +205,18 @@ export class FindAndReplace extends BaseComponent<Props, State>{
             return;
         }
 
+        // The cursor.replace function in code mirror focuses the editor *with a delay* :-/
+        let focusBackOnReplaceInput = () => setTimeout(()=>this.replaceInput().focus(),50);
+
         if (shift && enter) {
             commands.replacePrevious.emit({newText:this.replaceWith()});
+            focusBackOnReplaceInput();
             return;
         }
 
         if (enter) {
             commands.replaceNext.emit({newText:this.replaceWith()});
+            focusBackOnReplaceInput();
             return;
         }
     };
