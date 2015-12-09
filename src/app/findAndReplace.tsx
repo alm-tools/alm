@@ -155,10 +155,9 @@ export class FindAndReplace extends BaseComponent<Props, State>{
                 </div>
                 <div style={[tipMessageStyle,styles.padded1]}>
                     <span style={keyboardShortCutStyle}>Esc</span> to exit
-                    {' '}<span style={keyboardShortCutStyle}>Enter</span> to find next
-                    {' '}<span style={keyboardShortCutStyle}>Shift + Enter</span> to find previous
-                    {' '}<span style={keyboardShortCutStyle}>{commands.modName} + Enter</span> to replace
-                    {' '}<span style={keyboardShortCutStyle}>Shift + {commands.modName} + Enter</span> to replace all
+                    {' '}<span style={keyboardShortCutStyle}>Enter</span> to find/replace next
+                    {' '}<span style={keyboardShortCutStyle}>Shift + Enter</span> to find/replace previous
+                    {' '}<span style={keyboardShortCutStyle}>{commands.modName} + Enter</span> to replace all
                 </div>
             </div>
         );
@@ -166,7 +165,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
 
     /** Tab key is only called on key down :) */
     findKeyDownHandler = (e:React.SyntheticEvent) => {
-        let {tab,shift,enter} = ui.getKeyStates(e);
+        let {tab,shift,enter,mod} = ui.getKeyStates(e);
 
         if (shift && tab) {
             this.fullWordInput().focus();
@@ -174,11 +173,47 @@ export class FindAndReplace extends BaseComponent<Props, State>{
             return;
         }
 
-        this.handleSearchKeys(e);
+        if (!state.getState().findOptions.query){
+            return;
+        }
+
+        if (mod && enter) {
+            commands.replaceAll.emit({newText:this.replaceWith()});
+            return;
+        }
+
+        if (shift && enter) {
+            commands.findPrevious.emit({});
+            return;
+        }
+
+        if (enter) {
+            commands.findNext.emit({});
+            return;
+        }
     };
 
     replaceKeyDownHandler = (e:React.SyntheticEvent) => {
-        this.handleSearchKeys(e);
+        let {tab,shift,enter,mod} = ui.getKeyStates(e);
+
+        if (!state.getState().findOptions.query){
+            return;
+        }
+
+        if (mod && enter) {
+            commands.replaceAll.emit({newText:this.replaceWith()});
+            return;
+        }
+
+        if (shift && enter) {
+            commands.replacePrevious.emit({newText:this.replaceWith()});
+            return;
+        }
+
+        if (enter) {
+            commands.replaceNext.emit({newText:this.replaceWith()});
+            return;
+        }
     };
 
     fullWordKeyDownHandler = (e:React.SyntheticEvent) => {
@@ -192,31 +227,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
     };
 
     handleSearchKeys(e: React.SyntheticEvent) {
-        let {tab,shift,enter,mod} = ui.getKeyStates(e);
 
-        if (!state.getState().findOptions.query){
-            return;
-        }
-
-        if (mod && shift && enter) {
-            commands.replaceAll.emit({newText:this.replaceWith()});
-            return;
-        }
-
-        if (mod && enter) {
-            commands.replaceNext.emit({newText:this.replaceWith()});
-            return;
-        }
-
-        if (shift && enter) {
-            commands.findPrevious.emit({});
-            return;
-        }
-
-        if (enter) {
-            commands.findNext.emit({});
-            return;
-        }
     }
 
     findChanged = utils.debounce(() => {

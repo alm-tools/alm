@@ -198,6 +198,7 @@ export var findPrevious = new UICommand({
     context: CommandContext.Global,
 });
 export var replaceNext = new events.TypedEvent<{ newText: string }>();
+export var replacePrevious = new events.TypedEvent<{ newText: string }>();
 export var replaceAll = new events.TypedEvent<{ newText: string }>();
 
 /**
