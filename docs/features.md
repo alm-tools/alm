@@ -48,7 +48,9 @@ The s**Y**mbol search mode (`Ctrl|⌘ + Shift + Y`) lets navigate your projects 
 
 ## Project Search
 
-Search for and set the active TypeScript project (`tsconfig.json`) using project mode (`Alt + Shift + P`)
+Search for and set the **active** TypeScript project (`tsconfig.json`) using project search (`Alt + Shift + P`)
+
+![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/projectSearch.gif)
 
 # Sublime
 > Imitation is the sincerest form of flattery
