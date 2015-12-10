@@ -468,6 +468,7 @@ class SearchState {
     }
 
     /** Mode */
+    /** This is the heart of the processing .. ensuring state consistency */
     newValue(value:string, wasShownBefore = true, modeChanged = false){
         this.rawFilterValue = value;
         let oldMode = this.mode;
