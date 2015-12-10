@@ -89,7 +89,7 @@ export class SimpleRedux<State>{
 
     /**
      * Take every field of fields and put them override them in the complete object
-     * NOTE: this API is a bit reverse of extent because of the way generic constraints work in TypeScript
+     * NOTE: this API is a bit reverse of extend because of the way generic constraints work in TypeScript
      */
     updateFields = <T>(fields: T) => <U extends T>(complete: U): U => {
         let result = <U>{};
