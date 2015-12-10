@@ -16,6 +16,7 @@ import * as state from "../state/state";
 import * as types from "../../common/types";
 import * as CodeMirror from "codemirror";
 import {Robocop} from "../robocop";
+import * as utils from "../../common/utils";
 
 /** Stuff shared by the select list view */
 import {renderMatchedSegments, getFilteredItems} from ".././selectListView";
@@ -221,9 +222,14 @@ class SearchState {
     /**
      * Various search lists
      */
-    filePaths: string [] = []; filePathsCompleted: boolean = false;
+    /** filepath */
+    filePaths: string [] = [];
+    filePathsCompleted: boolean = false;
+    /** project */
     availableProjects: ActiveProjectConfigDetails[] = [];
+    /** commands */
     commands = commands.commandRegistry;
+    /** symols */
     symbols: Types.NavigateToItem[] = [];
 
     /** Modes can use this to store their results */
@@ -317,8 +323,9 @@ class SearchState {
             let fileList: string[] = this.filteredValues;
             renderedResults = this.createRenderedForList(fileList,(filePath)=>{
                 // Create rendered
-                let renderedPath = renderMatchedSegments(filePath,this.parsedFilterValue);
-                let renderedFileName = renderMatchedSegments(getFileName(filePath), this.parsedFilterValue);
+                let queryFilePath = utils.getFilePathLine(this.parsedFilterValue).filePath;
+                let renderedPath = renderMatchedSegments(filePath, queryFilePath);
+                let renderedFileName = renderMatchedSegments(getFileName(filePath), queryFilePath);
                 return (
                     <div>
                         <div>{renderedFileName}</div>
@@ -426,8 +433,9 @@ class SearchState {
 
         if (this.mode == SearchMode.File) {
             let filePath = this.filteredValues[index];
+            let {line} = utils.getFilePathLine(this.parsedFilterValue);
             if (filePath) {
-                commands.doOpenFile.emit({ filePath: filePath });
+                commands.doOpenFile.emit({ filePath: filePath, position: { line: line, ch: 0 } });
             }
             this.closeOmniSearch();
             return;
@@ -506,7 +514,8 @@ class SearchState {
             }
 
             if (this.mode == SearchMode.File) {
-                this.filteredValues = fuzzyFilter(this.filePaths, this.parsedFilterValue);
+                let {filePath} = utils.getFilePathLine(this.parsedFilterValue);
+                this.filteredValues = fuzzyFilter(this.filePaths, filePath);
                 this.filteredValues = this.filteredValues.slice(0,this.maxShowCount);
             }
 

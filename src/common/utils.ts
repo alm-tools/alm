@@ -140,6 +140,17 @@ export function getExt(filePath: string) {
     return parts[parts.length - 1].toLowerCase();
 }
 
+/**
+ * asdf/asdf:123 => asdf/asdf + 122
+ * Note: returned line is 0 based
+ */
+export function getFilePathLine(query: string) {
+    let [filePath,lineNum] = query.split(':');
+    let line = lineNum ? parseInt(lineNum) - 1 : 0;
+    line = line > 0 ? line : 0;
+    return { filePath, line };
+}
+
 /** `/asdf/bar/j.ts` => `j.ts` */
 export function getFileName(fullFilePath:string){
     let parts = fullFilePath.split('/');
