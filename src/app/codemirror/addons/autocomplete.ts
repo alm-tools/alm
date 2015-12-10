@@ -112,9 +112,9 @@ export class AutoCompleter {
             let [color, colorBackground] = [kindToColor(original.kind), kindToColor(original.kind, true)];
 
             elt.innerHTML = `
-                <strong class="hint left" style="color:${color};background:${colorBackground}">${original.kind}</strong>
-                <span class="hint main">${original.name}</span>
-                <span class="hint right">${original.display}</span>
+                <strong class="cm-hint left" style="color:${color};background:${colorBackground}">${original.kind}</strong>
+                <span class="cm-hint main">${original.name}</span>
+                <span class="cm-hint right">${original.display}</span>
             `.replace(/\s+/g,' ');
         }
 

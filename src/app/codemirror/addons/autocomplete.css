@@ -63,7 +63,7 @@ li.CodeMirror-hint-active {
  * Everything below is custom 🌹
  * custom classes in our hints
  */
-.hint.left {
+.cm-hint.left {
     color: #FF8888;
     background: rgba(255, 0, 0, 0.31);
 
@@ -77,20 +77,20 @@ li.CodeMirror-hint-active {
     padding-top: 2px;
     padding-bottom: 2px;
 }
-.CodeMirror-hint-active .hint.left {
+.CodeMirror-hint-active .cm-hint.left {
     color: white !important;
 }
 
-.hint.main {
+.cm-hint.main {
     display: table-cell;
 
     padding-right: 2px;
     padding-left: 2px;
 }
-.CodeMirror-hint-active .hint.main {
+.CodeMirror-hint-active .cm-hint.main {
 }
 
-.hint.right {
+.cm-hint.right {
     display: table-cell;
 
     padding-right: 2px;
@@ -104,7 +104,7 @@ li.CodeMirror-hint-active {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.CodeMirror-hint-active .hint.right {
+.CodeMirror-hint-active .cm-hint.right {
 }
 
 
