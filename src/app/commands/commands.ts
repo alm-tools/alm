@@ -33,6 +33,9 @@ interface UICommandConfig {
     // only valid for editor commands
     // we use this to trigger the command on the editor
     editorCommandName?: string;
+
+    /** allow the browser default to still happen */
+    allowDefault?: boolean;
 }
 
 /**
@@ -60,6 +63,9 @@ export var esc = new UICommand({
     context: CommandContext.Global,
 });
 
+/**
+ * Active list
+ */
 export var gotoNext = new UICommand({
     keyboardShortcut: 'f8', // atom
     description: "Active List: Goto next position",
@@ -240,6 +246,22 @@ export let nextCursorLocation = new UICommand({
 });
 
 /**
+ * Clipboard Ring
+ */
+export var copy = new UICommand({
+    keyboardShortcut: 'mod+c', // atom
+    description: "Copy",
+    context: CommandContext.Global,
+    allowDefault: true
+});
+export var cut = new UICommand({
+    keyboardShortcut: 'mod+x', // atom
+    description: "Cut",
+    context: CommandContext.Global,
+    allowDefault: true
+});
+
+/**
  * Tree view
  */
 export let treeViewToggle = new UICommand({
@@ -301,7 +323,7 @@ export function register() {
             && c.config.keyboardShortcut) {
             Mousetrap.bindGlobal(c.config.keyboardShortcut, function() {
                 c.emit({});
-                return false;
+                return !!c.config.allowDefault;
             });
         }
     });

@@ -35,6 +35,8 @@ import * as format_placeholder from "./format";
 var format = require("./format");
 import * as gotoHistory_placeholder from "./gotoHistory";
 var gotoHistory = require("./gotoHistory");
+import * as clipboardRing from "./clipboardRing";
+var _clipboardRing = clipboardRing;
 
 export interface State {
     isOmniSearchOpen?: boolean;

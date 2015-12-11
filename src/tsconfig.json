@@ -120,6 +120,7 @@
         "./webpack.config.ts",
         "./app/activeLists.tsx",
         "./app/clipboard.tsx",
+        "./app/clipboardRing.tsx",
         "./app/codemirror/addons/blaster.tsx",
         "./app/codemirror/addons/doctor.tsx",
         "./app/codemirror/addons/jumpy.tsx",
