@@ -14,7 +14,7 @@ import Modal = require('react-modal');
 require('./jumpy.css');
 
 let lowerCharacters = [];
-for (let i = 'a'.charCodeAt(0); i < 'z'.charCodeAt(0); i++) {
+for (let i = 'a'.charCodeAt(0); i <= 'z'.charCodeAt(0); i++) {
     lowerCharacters.push(String.fromCharCode(i));
 }
 let keys: string[] = []
