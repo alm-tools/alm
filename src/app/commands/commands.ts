@@ -260,6 +260,12 @@ export var cut = new UICommand({
     context: CommandContext.Global,
     allowDefault: true
 });
+export var pasteFromRing = new UICommand({
+    keyboardShortcut: 'mod+shift+v', // VS
+    description: "PasteFromRing",
+    context: CommandContext.Global,
+    allowDefault: false
+});
 
 /**
  * Tree view
