@@ -10,17 +10,38 @@ import * as uix from "./uix";
 
 let clipboardRing: string[] = [];
 let index = 0;
-export function addToClipboardRing(){
+export function addToClipboardRing(mode: 'cut' | 'copy') {
     let codeEditor = uix.API.getFocusedCodeEditorIfAny();
     if (codeEditor) {
-        let selected = codeEditor.codeMirror.getDoc().getSelection();
-        console.log(selected);
+        if (mode === 'copy') {
+            let selected = codeEditor.codeMirror.getDoc().getSelection();
+            addSelected(selected);
+        }
+        else if (mode === 'cut') {
+            let hasSelection = codeEditor.codeMirror.getDoc().somethingSelected();
+            if (hasSelection){
+                let selected = codeEditor.codeMirror.getDoc().getSelection();
+                addSelected(selected);
+            }
+            else {
+                // Cut in code mirror calls `cm.setSelections` in `prepareCopyCut`.
+                // We can use that get the line selection
+                codeEditor.lastSelection.once((res)=>{
+                    addSelected(res.text);
+                });
+            }
+        }
+    }
+
+    function addSelected(selected:string){
+        // TODO: 
         // clipboardRing.push(selected)
+        console.log(selected);
     }
 }
 
-export function pasteFromClipboardRing(){
-    if (!clipboardRing.length){
+export function pasteFromClipboardRing() {
+    if (!clipboardRing.length) {
         ui.notifyInfoQuickDisappear('Clipboard Ring Empty');
         return;
     }
@@ -29,10 +50,10 @@ export function pasteFromClipboardRing(){
     // update the index (and loop around)
 }
 
-commands.copy.on(()=>{
-    addToClipboardRing();
+commands.copy.on(() => {
+    addToClipboardRing('copy');
 });
 
-commands.cut.on(()=>{
-    addToClipboardRing();
+commands.cut.on(() => {
+    addToClipboardRing('cut');
 });

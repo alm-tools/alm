@@ -94,6 +94,9 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 		}
 	}
 
+	/** helps us in clipboard ring */
+	lastSelection = new events.TypedEvent<{text:string}>();
+
 	componentDidMount () {
 
         var options: CodeMirror.EditorConfiguration = {
@@ -169,6 +172,17 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
             this.codeMirror.on('cursorActivity', this.handleCursorActivity);
             this.disposible.add({ dispose: () => this.codeMirror.off('cursorActivity', this.handleCursorActivity) });
         }
+
+		// Cut in code mirror calls `cm.setSelections` in `prepareCopyCut`.
+        // We can use that get the line selection
+        let self = this;
+		let setSelections = (this.codeMirror as any).setSelections;
+        (this.codeMirror as any).setSelections = function(){
+			let res = setSelections.apply(this, arguments);
+			// console.log('232') // Debug : If some selection because slow debug that here.
+			self.lastSelection.emit({text:this.getSelection()});
+			return res;
+		}
 
 		// Load the document
         docCache.getLinkedDoc(this.props.filePath).then((doc)=>{
