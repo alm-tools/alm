@@ -48,9 +48,12 @@ export function pasteFromClipboardRing() {
     }
 
     let item = clipboardRing[index];
+    let doc = codeEditor.codeMirror.getDoc();
     if (hasSelection){
         console.log(item);
-        codeEditor.codeMirror.getDoc().replaceSelection(item);
+        let selection = doc.listSelections();
+        doc.replaceSelection(item);
+        // doc.setSelection(selection);
     }
     else {
         // TODO
