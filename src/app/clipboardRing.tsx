@@ -13,19 +13,17 @@ let maxItems = 10;
 let index = 0;
 export function addToClipboardRing(mode: 'cut' | 'copy') {
     let codeEditor = uix.API.getFocusedCodeEditorIfAny();
-    if (codeEditor) {
-        let hasSelection = codeEditor.codeMirror.getDoc().somethingSelected();
-        if (hasSelection){
-            let selected = codeEditor.codeMirror.getDoc().getSelection();
-            addSelected(selected);
-        }
-        else {
-            // Cut in code mirror calls `cm.setSelections` in `prepareCopyCut`.
-            // We can use that get the line selection
-            codeEditor.lastSelection.once((res)=>{
-                addSelected(res.text);
-            });
-        }
+    if (!codeEditor) return;
+    let hasSelection = codeEditor.codeMirror.getDoc().somethingSelected();
+
+    if (hasSelection){
+        let selected = codeEditor.codeMirror.getDoc().getSelection();
+        addSelected(selected);
+    }
+    else {
+        let ranges = copyableRanges(codeEditor.codeMirror);
+        let selected = ranges.text.join('\n');
+        addSelected(selected);
     }
 
     function addSelected(selected:string){
