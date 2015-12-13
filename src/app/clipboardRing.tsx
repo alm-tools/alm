@@ -9,6 +9,7 @@ import * as ui from "./ui";
 import * as uix from "./uix";
 
 let clipboardRing: string[] = [];
+let maxItems = 10;
 let index = 0;
 export function addToClipboardRing(mode: 'cut' | 'copy') {
     let codeEditor = uix.API.getFocusedCodeEditorIfAny();
@@ -34,9 +35,11 @@ export function addToClipboardRing(mode: 'cut' | 'copy') {
     }
 
     function addSelected(selected:string){
-        // TODO: 
-        // clipboardRing.push(selected)
-        console.log(selected);
+        clipboardRing.push(selected)
+        if (clipboardRing.length > maxItems){
+            clipboardRing.shift();
+        }
+        // console.log(selected);
     }
 }
 
