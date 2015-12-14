@@ -28,11 +28,17 @@ export function addToClipboardRing(mode: 'cut' | 'copy') {
 
     function addSelected(selected:string){
         index = 0; // Reset seek index
+
+        // Just prevents the item being added right next to each other
+        if (clipboardRing[1] === selected || clipboardRing[clipboardRing.length - 1] === selected){
+            return;
+        }
+
         clipboardRing.unshift(selected)
         if (clipboardRing.length > maxItems){
             clipboardRing.pop();
         }
-        console.log(clipboardRing,index);
+        // console.log(clipboardRing,index); // DEBUG
     }
 }
 
