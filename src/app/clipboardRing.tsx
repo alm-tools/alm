@@ -18,28 +18,33 @@ export function addToClipboardRing(mode: 'cut' | 'copy') {
 
     if (hasSelection){
         let selected = codeEditor.codeMirror.getDoc().getSelection();
+        index = 0; // Reset seek index
         addSelected(selected);
     }
     else {
         let ranges = copyableRanges(codeEditor.codeMirror);
         let selected = ranges.text.join('\n');
+        index = 0; // Reset seek index
         addSelected(selected);
     }
+}
 
-    function addSelected(selected:string){
-        index = 0; // Reset seek index
-
-        // Just prevents the item being added right next to each other
-        if (clipboardRing[1] === selected || clipboardRing[clipboardRing.length - 1] === selected){
-            return;
-        }
-
-        clipboardRing.unshift(selected)
-        if (clipboardRing.length > maxItems){
-            clipboardRing.pop();
-        }
-        // console.log(clipboardRing,index); // DEBUG
+function addSelected(selected:string){
+    // Just prevents the item being added right next to each other
+    let before = utils.rangeLimited({num: index-1, min: 0, max: clipboardRing.length -1,loopAround: true});
+    let after = utils.rangeLimited({num: index+1, min: 0, max: clipboardRing.length -1,loopAround: true});
+    if (clipboardRing[before] === selected
+    || clipboardRing[after] === selected
+    // Cause we will remove last if we get to max items, check second last too
+    || clipboardRing[maxItems-2] === selected){
+        return;
     }
+
+    clipboardRing.unshift(selected)
+    if (clipboardRing.length > maxItems){
+        clipboardRing.pop();
+    }
+    // console.log(clipboardRing,index); // DEBUG
 }
 
 export function pasteFromClipboardRing() {
