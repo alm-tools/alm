@@ -70,7 +70,10 @@ export function pasteFromClipboardRing() {
         let selection = doc.listSelections()[0];
         from = CodeMirror.cmpPos(selection.anchor, selection.head) >= 0 ? selection.head : selection.anchor;
 
-        // addSelected(doc.getSelection()); // Add current selection to the ring
+        let added = addSelected(doc.getSelection()); // Add current selection to the ring
+        if (added){
+            index++;
+        }
     }
     else {
         from = doc.getCursor();
