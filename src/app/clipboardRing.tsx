@@ -48,27 +48,30 @@ export function pasteFromClipboardRing() {
     }
 
     let item = clipboardRing[index];
+    let lines = item.split('\n');
+    let lastLineLength = lines[lines.length-1].length;
     let doc = codeEditor.codeMirror.getDoc();
+
+    /** Find the start */
+    let from: EditorPosition;
     if (hasSelection){
-        console.log(item);
-        let lines = item.split('\n');
-        let lastLineLength = lines[lines.length-1].length;
         let selection = doc.listSelections()[0];
-
-        let from = CodeMirror.cmpPos(selection.anchor, selection.head) >= 0 ? selection.head : selection.anchor;
-        let line = lines.length > 1 ? from.line + (lines.length - 1) : from.line;
-        let ch = lines.length > 1 ? lastLineLength : from.ch + item.length;
-
-        // replace seletion with a new one
-        // have the new item selected
-        // update the index (and loop around)
-        doc.replaceSelection(item);
-        doc.setSelection(from,{line,ch});
-        index = utils.rangeLimited({num:index + 1,min:0,max:clipboardRing.length-1,loopAround: true});
+        from = CodeMirror.cmpPos(selection.anchor, selection.head) >= 0 ? selection.head : selection.anchor;
     }
     else {
-        // TODO
+        from = doc.getCursor();
     }
+
+    // replace selection (if any) with a new one
+    // have the new item selected
+    let line = lines.length > 1 ? from.line + (lines.length - 1) : from.line;
+    let ch = lines.length > 1 ? lastLineLength : from.ch + item.length;
+    let to = {line,ch};
+    doc.replaceSelection(item);
+    doc.setSelection(from,to);
+
+    // update the index (and loop around)
+    index = utils.rangeLimited({num:index + 1,min:0,max:clipboardRing.length-1,loopAround: true});
 }
 
 commands.copy.on(() => {
