@@ -21,7 +21,7 @@
       "commit": "e95958ac847d9a343bdc8d7cbc796a5f6da29f71"
     },
     "react/react.d.ts": {
-      "commit": "e95958ac847d9a343bdc8d7cbc796a5f6da29f71"
+      "commit": "24e12a7af994afa2226af70fbfae0adc78736a9e"
     },
     "mousetrap/mousetrap.d.ts": {
       "commit": "af81415504b4edce8dac8446d96857f8018c6e9f"
@@ -70,6 +70,9 @@
     },
     "minimist/minimist.d.ts": {
       "commit": "35989a3ab4834b8e8b2b56788f1d4fc46a25dc8d"
+    },
+    "react/react-dom.d.ts": {
+      "commit": "24e12a7af994afa2226af70fbfae0adc78736a9e"
     }
   }
 }

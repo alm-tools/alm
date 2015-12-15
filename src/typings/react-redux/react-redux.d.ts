@@ -9,10 +9,10 @@
 declare module "react-redux" {
     import React = require('react');
 
-    export interface ProviderProps extends React.Props<any> {
+    export interface ProviderProps {
         store: any;
         /**
-         *   Unlike most React components, <Provider> accepts a function as a child with your root component 
+         *   Unlike most React components, <Provider> accepts a function as a child with your root component
          *   <Provider store={store}>
          *      {() => <MyRootComponent />}
          *   </Provider>

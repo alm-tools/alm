@@ -19,7 +19,7 @@ import * as docCache from "./codemirror/mode/docCache";
 import {CodeEditor} from "./codemirror/codeEditor";
 import {RefactoringsByFilePath, Refactoring} from "../common/types";
 
-export interface Props extends React.Props<any> {
+export interface Props {
     data: Types.GetReferencesResponse;
 }
 export interface State {

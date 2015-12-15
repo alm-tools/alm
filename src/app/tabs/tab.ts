@@ -7,7 +7,7 @@ export interface TabState {
 
 }
 
-export interface ComponentProps extends React.Props<any> {
+export interface ComponentProps {
     // what you get
     url: string;
 

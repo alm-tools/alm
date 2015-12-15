@@ -74,7 +74,6 @@ let fileLinkStyle = {
 }
 
 interface Props {
-    ref?: any,
     cm?: Editor,
     filePath?: string,
 

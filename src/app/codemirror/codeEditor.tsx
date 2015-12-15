@@ -61,7 +61,7 @@ import * as utils from "../../common/utils";
 import * as cursorLocation from "../cursorHistory";
 import * as events from "../../common/events";
 
-interface Props extends React.Props<any> {
+interface Props {
 	onFocusChange?: (focused: boolean) => any;
 	readOnly?: boolean | "nocursor";
 	preview?: ts.TextSpan;
@@ -324,7 +324,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 			<div className={className} style={csx.extend(csx.vertical,csx.flex,{position:'relative'})}>
 				{!this.props.readOnly && <doctor.Doctor cm={this.codeMirror} filePath={this.props.filePath}/>}
 				{!this.props.readOnly && <blaster.Blaster cm={this.codeMirror}/>}
-				<textarea ref="textarea" name={this.props.filePath} autoComplete={false} />
+				<textarea ref="textarea" name={this.props.filePath} autoComplete="false" />
 			</div>
 		);
 	}

@@ -27,7 +27,7 @@ import {Tips} from "./tips";
 import {Icon} from "../icon";
 import {cast} from "../../socket/socketClient";
 
-export interface Props extends React.Props<any> {
+export interface Props {
     // redux connected below
     tabs?: state.TabInstance[];
     selectedTabIndex?: number;

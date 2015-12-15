@@ -7,7 +7,7 @@ import * as utils from "../../common/utils";
 import * as styles from "../styles/styles";
 import * as commands from "../commands/commands";
 
-export interface Props extends React.Props<any> {
+export interface Props {
 
 }
 export interface State {

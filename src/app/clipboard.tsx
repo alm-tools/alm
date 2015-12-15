@@ -4,7 +4,7 @@ import csx = require('csx');
 import {BaseComponent} from "./ui";
 import * as ui from "./ui";
 
-export interface Props extends React.Props<any> {
+export interface Props {
     text: string;
 }
 export interface State {

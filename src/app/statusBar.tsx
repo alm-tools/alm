@@ -26,7 +26,7 @@ let notificationKeyboardStyle = {
     background: 'grey',
 }
 
-export interface Props extends React.Props<any> {
+export interface Props {
     // from react-redux ... connected below
     errorsExpanded?: boolean;
     activeProject?: ActiveProjectConfigDetails;

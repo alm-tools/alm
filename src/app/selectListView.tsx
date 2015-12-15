@@ -23,7 +23,7 @@ export var selectListView: SelectListView;
 
 type DataItem = any;
 
-export interface Props extends React.Props<any> {
+export interface Props {
 }
 export interface State {
     isOpen?: boolean;

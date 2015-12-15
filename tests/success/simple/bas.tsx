@@ -24,3 +24,5 @@ class Test {
         return 'asdf' + `${this.foo}`;
     }
 }
+
+

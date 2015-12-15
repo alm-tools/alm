@@ -12,7 +12,7 @@ import {connect} from "react-redux";
 import {Icon} from "./icon";
 
 
-export interface Props extends React.Props<any> {
+export interface Props {
     // connected using redux
     findQuery?: FindOptions;
 }

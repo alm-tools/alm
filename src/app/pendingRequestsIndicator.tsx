@@ -6,7 +6,7 @@ import {connect} from "react-redux";
 import * as ui from "./ui";
 import * as state from "./state/state";
 
-export interface Props extends React.Props<any> {
+export interface Props {
     pendingRequests?: string[];
 }
 export interface State {
