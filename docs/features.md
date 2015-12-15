@@ -16,6 +16,7 @@
     * [Jumpy](#jumpy)
     * [Multi Monitor](#multi-monitor)
     * [Cursor History](#cursor-history)
+    * [Clipboard Ring](#clipboard-ring)
     * [Blaster](#blaster)
 * [TypeScript](#errors)
     * [Errors](#errors)
@@ -85,6 +86,11 @@ Need to use more than one monitor? Just open a new browser window! As many as yo
 Your cursor history is preserved across all open files. `Ctrl|⌘ + U` and `Ctrl|⌘ + Shift + U`.
 
 ![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/cursorHistory.gif)
+
+# Clipboard Ring
+You can cycle paste through the stuff that you copied / cut from the IDE. `Shift + Ctrl|⌘ + V`. Don't lose your head due to a nasty cut/copy error.
+
+![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/clipboardRing.gif)
 
 # Blaster
 Because life is too short for code not to be fun. `Ctrl|⌘ + Shift + O` to toggle.
