@@ -320,6 +320,14 @@ export var openFileFromDisk = new UICommand({
 export var doOpenOrFocusTab = new events.TypedEvent<{ tabId: string, tabUrl: string, position: EditorPosition }>();
 
 /**
+ * Git commands
+ */
+ export var gitStatus = new UICommand({
+     description: 'Git Status',
+     context: CommandContext.Global,
+ });
+
+/**
  * Registration
  */
 export function register() {

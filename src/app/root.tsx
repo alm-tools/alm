@@ -26,17 +26,19 @@ import * as state from "./state/state";
 
 /** Force require  */
 import {RenameVariable} from "./renameVariable";
-var renameVariable = require("./renameVariable");
 import {GotoDefinition} from "./gotoDefinition";
-var gotoDefinition = require("./gotoDefinition");
 import {FindReferences} from "./findReferences";
-var findReferences = require("./findReferences");
 import * as format_placeholder from "./format";
-var format = require("./format");
 import * as gotoHistory_placeholder from "./gotoHistory";
-var gotoHistory = require("./gotoHistory");
 import * as clipboardRing from "./clipboardRing";
-var _clipboardRing = clipboardRing;
+import * as gitCommands from "./gitCommands";
+var ensureImport = RenameVariable
+    || GotoDefinition
+    || FindReferences
+    || format_placeholder
+    || gotoHistory_placeholder
+    || clipboardRing
+    || gitCommands;
 
 export interface State {
     isOmniSearchOpen?: boolean;
