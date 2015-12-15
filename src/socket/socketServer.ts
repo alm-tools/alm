@@ -7,6 +7,7 @@ import * as workingDir from "../server/disk/workingDir";
 import {FileModel} from "../server/disk/fileModel";
 import * as activeProject from "../server/lang/activeProject";
 import * as projectService from "../server/lang/projectService";
+import * as gitService from "../server/lang/gitService";
 import * as session from "../server/disk/session";
 let resolve = sls.resolve;
 
@@ -107,6 +108,11 @@ namespace Server {
     export var formatDocument : typeof contract.server.formatDocument = projectService.formatDocument;
     export var formatDocumentRange : typeof contract.server.formatDocumentRange = projectService.formatDocumentRange;
     export var getNavigateToItems : typeof contract.server.getNavigateToItems = projectService.getNavigateToItems;
+
+    /**
+     * Git service
+     */
+    export var gitStatus : typeof contract.server.gitStatus = gitService.gitStatus;
 }
 
 // Ensure that the namespace follows the contract

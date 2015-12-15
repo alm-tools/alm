@@ -6,16 +6,16 @@ import * as wd from "../disk/workingDir";
 
 /** Main utility function to execute a command */
 let gitCmd = (...args: string[]):Promise<string> => {
-    cp.exec(`git ${args.join(' ')}`, { cwd: wd.getProjectRoot() }, (err, stdout, stderr) => {
-                    console.log(stdout);
-                    if (stderr.toString().trim().length) {
-                        console.error(stderr);
-                    }
-                });
-
-    return Promise.resolve({});
+    return new Promise((resolve,reject)=>{
+        cp.exec(`git ${args.join(' ')}`, { cwd: wd.getProjectRoot() }, (err, stdout, stderr) => {
+            if (stderr.toString().trim().length) {
+                return resolve(stderr.toString());
+            }
+            return resolve(stdout);
+        });
+    });
 }
 
-export function getStatus(args:{}): Promise<string> {
-    return gitCmd('log');
+export function gitStatus(args:{}): Promise<string> {
+    return gitCmd('status');
 }

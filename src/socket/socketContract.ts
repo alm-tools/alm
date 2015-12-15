@@ -51,6 +51,11 @@ export var server = {
     formatDocument: {} as QRFunction<Types.FormatDocumentQuery, Types.FormatDocumentResponse>,
     formatDocumentRange: {} as QRFunction<Types.FormatDocumentRangeQuery, Types.FormatDocumentRangeResponse>,
     getNavigateToItems: {} as QRFunction<{},Types.GetNavigateToItemsResponse>,
+
+    /**
+     * Git service
+     */
+    gitStatus: {} as QRFunction<{},string>,
 }
 
 export var client = {
