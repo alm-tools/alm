@@ -113,6 +113,7 @@ namespace Server {
      * Git service
      */
     export var gitStatus : typeof contract.server.gitStatus = gitService.gitStatus;
+    export var gitReset : typeof contract.server.gitReset = gitService.gitReset;
 }
 
 // Ensure that the namespace follows the contract

@@ -19,3 +19,7 @@ let gitCmd = (...args: string[]):Promise<string> => {
 export function gitStatus(args:{}): Promise<string> {
     return gitCmd('status');
 }
+
+export function gitReset(args:{filePath:string}): Promise<string> {
+    return gitCmd('reset',args.filePath);
+}

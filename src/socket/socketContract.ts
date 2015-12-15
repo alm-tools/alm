@@ -56,6 +56,7 @@ export var server = {
      * Git service
      */
     gitStatus: {} as QRFunction<{},string>,
+    gitReset: {} as QRFunction<{filePath:string},string>,
 }
 
 export var client = {
