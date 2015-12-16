@@ -23,5 +23,5 @@ export function gitStatus(args:{}): Promise<string> {
 
 export function gitReset(args:{filePath:string}): Promise<string> {
     fmc.saveOpenFile(args.filePath);
-    return gitCmd('reset',args.filePath);
+    return gitCmd('checkout --',args.filePath);
 }
