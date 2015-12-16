@@ -188,6 +188,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 	}
 
 	componentWillUnmount () {
+		super.componentWillUnmount();
 		// todo: is there a lighter-weight way to remove the cm instance?
 		if (this.codeMirror) {
 			this.codeMirror.toTextArea();
@@ -197,7 +198,6 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 			 */
 			(this.codeMirror.getDoc() as any).cm = null;
 		}
-		this.disposible.dispose();
 	}
 
     getQuickInfo(pos:CodeMirror.Position): Promise<string | HTMLElement> {
@@ -226,7 +226,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 			this.codeMirror.focus();
 			this.handleCursorActivity();
             this.refresh();
-            setTimeout(this.refresh,500);
+            setTimeout(()=> !this.isUnmounted && this.refresh(),500);
 		}
 	}
 
