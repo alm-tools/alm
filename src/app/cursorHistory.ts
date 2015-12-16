@@ -48,6 +48,8 @@ export function next() {
  */
 export let addEntry = utils.debounce((editorPosition: EditorPosition) => {
     let selectedTab = state.getSelectedTab();
+
+    /** This can happen if we close the tabs too fast (because this function is debounced) */
     if (!selectedTab) {
         console.error('adding a cursor history should not have been called if there is no active tab');
         return;
@@ -56,8 +58,6 @@ export let addEntry = utils.debounce((editorPosition: EditorPosition) => {
         console.error('adding a cursor history should not have been called if active tab is not a filePath');
         return;
     }
-
-    // let currentEntryIsLast = (history.length - 1) == currentIndex;
 
     let potentialNewEntry: CursorHistoryEntry = {
         tabId: selectedTab.id,
