@@ -52,3 +52,8 @@ export function getOpenFiles(): FileModel[] {
 export function isFileOpen(filePath: string) {
     return !!getOpenFile(filePath);
 }
+
+export function saveOpenFile(filePath:string){
+    let file = getOpenFile(filePath);
+    file.save();
+}
