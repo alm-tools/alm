@@ -27,6 +27,8 @@
     * [Go to Definition](#goto-definition)
     * [Find References](#find-references)
     * [Active Lists](#active-list)
+* [Git](#git-reset-file)
+    * [Git Reset File](#git-reset-file)
 
 # Omni Search
 Single place for common search queries, supports various modes:
@@ -150,3 +152,9 @@ Easy as `Ctrl|⌘ + Shift + B`
 Going through your error list is a breeze with `F8` (goto next) and `Shift+F8` (goto previous).
 
 ![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/activeList.gif)
+
+# Git Reset File
+
+Quickly go back to the last Git commited version of the file using `Alt + Ctrl|⌘ + Z`. Of course you can undo this reset with `Ctrl|⌘ + Z`.
+
+![](https://raw.githubusercontent.com/TypeScriptBuilder/typescriptbuilder.github.io/master/screens/gitResetFile.gif)
