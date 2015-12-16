@@ -12,7 +12,7 @@ commands.gitStatus.on(()=>{
     server.gitStatus({}).then(res=>console.log(res));
 });
 
-CodeMirror.commands[commands.additionalEditorCommands.gitReset] = function(cm: CodeMirror.EditorFromTextArea) {
+CodeMirror.commands[commands.additionalEditorCommands.gitResetFile] = function(cm: CodeMirror.EditorFromTextArea) {
     if (!cm.filePath){
         ui.notifyWarningNormalDisappear('File does not have a valid file path');
         return;
