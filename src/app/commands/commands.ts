@@ -322,10 +322,10 @@ export var doOpenOrFocusTab = new events.TypedEvent<{ tabId: string, tabUrl: str
 /**
  * Git commands
  */
- export var gitStatus = new UICommand({
-     description: 'Git Status',
-     context: CommandContext.Global,
- });
+export var gitStatus = new UICommand({
+    description: 'Git Status',
+    context: CommandContext.Global,
+});
 
 /**
  * Registration
@@ -374,6 +374,7 @@ export let additionalEditorCommands = {
     jumpy: '',
     format: '',
     toggleBlaster: '',
+    gitReset: '',
 }
 utils.stringEnum(additionalEditorCommands);
 
@@ -397,6 +398,7 @@ sublimeMap[`Shift-Enter`] = additionalEditorCommands.jumpy;
 sublimeMap[`Shift-${mod}-B`] = additionalEditorCommands.findReferences;
 sublimeMap[`${mod}-Alt-L`] = additionalEditorCommands.format;
 sublimeMap[`${mod}-Alt-O`] = additionalEditorCommands.toggleBlaster;
+sublimeMap[`${mod}-Alt-Z`] = additionalEditorCommands.gitReset;
 
 // we have our own cursor history
 delete defaultMap[`${mod}-U`];
