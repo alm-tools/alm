@@ -51,6 +51,7 @@ export var server = {
     formatDocument: {} as QRFunction<Types.FormatDocumentQuery, Types.FormatDocumentResponse>,
     formatDocumentRange: {} as QRFunction<Types.FormatDocumentRangeQuery, Types.FormatDocumentRangeResponse>,
     getNavigateToItems: {} as QRFunction<{},Types.GetNavigateToItemsResponse>,
+    getDependencies: {} as QRFunction<{},Types.GetDependenciesResponse>,
 
     /**
      * Git service
@@ -231,4 +232,16 @@ export namespace Types {
     export interface GetNavigateToItemsResponse {
         items: NavigateToItem[];
     }
+
+    /**
+     * Dependency View
+     */
+    export interface FileDependency {
+        sourcePath: string;
+        targetPath: string;
+    }
+    export interface GetDependenciesResponse {
+        links: FileDependency[]
+    }
+
 }

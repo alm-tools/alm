@@ -290,3 +290,13 @@ export function getNavigateToItems(query: {}): Promise<Types.GetNavigateToItemsR
 
     return resolve({ items });
 }
+
+/**
+ * Dependency View
+ */
+import {getProgramDependencies} from "./modules/programDependencies";
+export function getDependencies(query: {}): Promise<Types.GetDependenciesResponse> {
+    let project = activeProject.GetProject.getCurrentIfAny();
+    var links = getProgramDependencies(project.configFile, project.languageService.getProgram());
+    return resolve({ links });
+}
