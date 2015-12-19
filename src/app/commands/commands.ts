@@ -320,6 +320,14 @@ export var openFileFromDisk = new UICommand({
 export var doOpenOrFocusTab = new events.TypedEvent<{ tabId: string, tabUrl: string, position: EditorPosition }>();
 
 /**
+ * Other tab types
+ */
+export var doOpenDependencyView = new UICommand({
+    description: 'Open dependency view',
+    context: CommandContext.Global,
+});
+
+/**
  * Git commands
  */
 export var gitStatus = new UICommand({

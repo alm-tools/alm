@@ -8,6 +8,7 @@ import * as React from "react";
 import * as tab from "./tab";
 // import {DashboardTab} from "./dashboardTab";
 import {Code} from "./codeTab";
+import {DependencyView} from "./devpendencyView";
 import * as commands from "../commands/commands";
 import * as utils from "../../common/utils";
 import csx = require('csx');
@@ -95,6 +96,18 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             if (e.position) {
                 this.afterComponentDidUpdate(() => this.gotoPositionOnSelectedTab(e.position));
             }
+            state.addTabAndSelect(codeTab);
+        });
+
+        commands.doOpenDependencyView.on((e) =>{
+            let codeTab: state.TabInstance = {
+                id: createId(),
+                url: `dependency://`, // TODO: provide a file path :-/ or send to server dies
+                saved: true
+            }
+
+            this.afterComponentDidUpdate(this.sendTabInfoToServer);
+            this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
             state.addTabAndSelect(codeTab);
         });
 
@@ -474,6 +487,16 @@ export function getFileName(filePath:string){
 }
 
 /** TODO: implement other protocol tabs */
-export function getComponentByUrl(url:string) {
-    return Code;
+export function getComponentByUrl(url: string): { new (props: any): tab.Component } {
+    let {protocol} = utils.getFilePathAndProtocolFromUrl(url);
+    if (protocol == 'file'){
+        return Code;
+    }
+    if (protocol == 'dependency') {
+        return DependencyView;
+    }
+
+    let error = 'Unknown protocol: ' + protocol;
+    ui.notifyWarningNormalDisappear(error);
+    throw new Error(error);
 }
