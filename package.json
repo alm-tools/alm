@@ -7,10 +7,11 @@
     "tsb": "./bin/tsb"
   },
   "scripts": {
-    "test": "echo \"No test specified yet\"",
+    "test": "echo \"Testing is just build at the moment, run from prepublish\"",
     "clean": "rm ./src/public/build/bundle.js",
     "prepublish": "bash ./scripts/prepublish.sh",
-    "resume": "bash ./scripts/resume.sh"
+    "resume": "bash ./scripts/resume.sh",
+    "tscw": "ntsc -p ./src -w"
   },
   "repository": {
     "type": "git",

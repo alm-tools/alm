@@ -107,6 +107,7 @@ namespace Server {
     export var formatDocument : typeof contract.server.formatDocument = projectService.formatDocument;
     export var formatDocumentRange : typeof contract.server.formatDocumentRange = projectService.formatDocumentRange;
     export var getNavigateToItems : typeof contract.server.getNavigateToItems = projectService.getNavigateToItems;
+    export var getDependencies : typeof contract.server.getDependencies = projectService.getDependencies;
 
     /**
      * Git service
