@@ -1348,7 +1348,7 @@ declare namespace __React {
         textAlignLast?: any;
 
         /**
-         * The text-decoration CSS property is used to set the text formatting to underline, overline, line-through or blink.
+         * The text-decoration CSS property is used to set the text formatting to underline, overline, line-through or blink. 
          * underline and overline decorations are positioned under the text, line-through over it.
          */
         textDecoration?: any;
