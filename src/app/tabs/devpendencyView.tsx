@@ -39,7 +39,8 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
 
     refs: {
         [string: string]: any;
-        root: HTMLDivElement;
+        graphRoot: HTMLDivElement;
+        controlRoot: HTMLDivElement;
     }
 
     filePath: string;
@@ -47,7 +48,8 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
         server.getDependencies({}).then((res) => {
             new RenderGraph({
                 dependencies: res.links,
-                mainContent:$(this.refs.root),
+                graphRoot:$(this.refs.graphRoot),
+                controlRoot:$(this.refs.controlRoot),
                 display:(node) => {
                 }
             });
@@ -62,9 +64,25 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
             <div
                 className="dependency-view"
                 style={csx.extend(csx.vertical,csx.flex)}>
-                <div ref="root" style={csx.extend(csx.vertical,csx.flex)}>
+                <div ref="graphRoot" style={csx.extend(csx.vertical,csx.flex)}>
                     {/* Graph goes here */}
                 </div>
+
+                <div ref="controlRoot" className="graph-controls">
+                    <div className="control-zoom">
+                        <a className="control-zoom-in" href="#" title="Zoom in" />
+                        <a className="control-zoom-out" href="#" title="Zoom out" />
+                    </div>
+                    <div className="filter-section">
+                        <label>Filter: (enter to commit)</label>
+                        <input id="filter" className="native-key-bindings" />
+                    </div>
+                    <div className="copy-message">
+                        <button className="btn btn-xs">Copy Messages</button>
+                    </div>
+                    <div className="general-messages" />
+               </div>
+
             </div>
         );
     }
@@ -122,32 +140,15 @@ var prefixes = {
 class RenderGraph{
     constructor(public config:{
         dependencies: FileDependency[],
-        mainContent: JQuery,
+        graphRoot: JQuery,
+        controlRoot: JQuery,
         display: (content: FileDependency) => any
     }){
-        var rootElement = config.mainContent[0];
-        var d3Root = d3.select(rootElement)
+        var d3Root = d3.select(config.graphRoot[0]);
 
-        // Setup zoom controls
-        rootElement.innerHTML = `
-        <div class="graph">
-            <div class="control-zoom">
-                <a class="control-zoom-in" href="#" title="Zoom in"></a>
-                <a class="control-zoom-out" href="#" title="Zoom out"></a>
-            </div>
-            <div class="filter-section">
-                <label>Filter: (enter to commit)</label>
-                <input id="filter" class="native-key-bindings"></input>
-            </div>
-            <div class='copy-message'>
-                <button class='btn btn-xs'>Copy Messages</button>
-            </div>
-            <div class="general-messages"></div>
-        </div>`;
-
-        var messagesElement = config.mainContent.find('.general-messages');
+        var messagesElement = config.controlRoot.find('.general-messages');
         messagesElement.text("No Issues Found!")
-        var filterElement = config.mainContent.find('#filter');
+        var filterElement = config.controlRoot.find('#filter');
         filterElement.keyup((event) => {
             if (event.keyCode !== 13) {
                 return;
@@ -171,7 +172,7 @@ class RenderGraph{
                 filteredText.classed('filtered-out', false);
             }
         });
-        let copyDisplay = config.mainContent.find('.copy-message>button');
+        let copyDisplay = config.controlRoot.find('.copy-message>button');
 
         // Compute the distinct nodes from the links.
         var d3NodeLookup: { [name: string]: D3LinkNode } = {};
@@ -241,8 +242,8 @@ class RenderGraph{
 
         var graphWidth, graphHeight;
         function resize() {
-            graphWidth = config.mainContent.width();
-            graphHeight = config.mainContent.height();
+            graphWidth = config.graphRoot.width();
+            graphHeight = config.graphRoot.height();
             graph.attr("width", graphWidth)
                 .attr("height", graphHeight);
             layout.size([graphWidth, graphHeight])
