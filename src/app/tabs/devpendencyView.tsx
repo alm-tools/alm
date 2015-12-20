@@ -10,6 +10,11 @@ import * as $ from "jquery";
 type FileDependency = Types.FileDependency;
 let EOL = '\n';
 
+/**
+ * The styles
+ */
+require('./dependencyView.less');
+
 import {CodeEditor} from "../codemirror/codeEditor";
 
 export interface Props extends tab.ComponentProps {
@@ -49,7 +54,7 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
 
     render() {
         return (
-            <div ref="root"/>
+            <div ref="root" className="dependency-view"/>
         );
     }
 
