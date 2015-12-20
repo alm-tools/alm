@@ -45,7 +45,7 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
     filePath: string;
     componentDidMount() {
         server.getDependencies({}).then((res) => {
-            renderGraph({
+            new RenderGraph({
                 dependencies: res.links,
                 mainContent:$(this.refs.root),
                 display:(node) => {
@@ -60,13 +60,18 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
     render() {
         return (
             <div
-                ref="root"
                 className="dependency-view"
-                style={csx.extend(csx.vertical,csx.flex)}
-            />
+                style={csx.extend(csx.vertical,csx.flex)}>
+                <div ref="root" style={csx.extend(csx.vertical,csx.flex)}>
+                    {/* Graph goes here */}
+                </div>
+            </div>
         );
     }
 
+    /**
+     * TAB implementation
+     */
     focus = () => {
     }
 
@@ -114,315 +119,318 @@ var prefixes = {
     circle: 'circle'
 }
 
+class RenderGraph{
+    constructor(public config:{
+        dependencies: FileDependency[],
+        mainContent: JQuery,
+        display: (content: FileDependency) => any
+    }){
+        var rootElement = config.mainContent[0];
+        var d3Root = d3.select(rootElement)
 
-function renderGraph(args:{
-    dependencies: FileDependency[],
-    mainContent: JQuery,
-    display: (content: FileDependency) => any
-}) {
+        // Setup zoom controls
+        rootElement.innerHTML = `
+        <div class="graph">
+            <div class="control-zoom">
+                <a class="control-zoom-in" href="#" title="Zoom in"></a>
+                <a class="control-zoom-out" href="#" title="Zoom out"></a>
+            </div>
+            <div class="filter-section">
+                <label>Filter: (enter to commit)</label>
+                <input id="filter" class="native-key-bindings"></input>
+            </div>
+            <div class='copy-message'>
+                <button class='btn btn-xs'>Copy Messages</button>
+            </div>
+            <div class="general-messages"></div>
+        </div>`;
 
-    var rootElement = args.mainContent[0];
-    var d3Root = d3.select(rootElement)
-
-    // Setup zoom controls
-    rootElement.innerHTML = `
-    <div class="graph">
-        <div class="control-zoom">
-            <a class="control-zoom-in" href="#" title="Zoom in"></a>
-            <a class="control-zoom-out" href="#" title="Zoom out"></a>
-        </div>
-        <div class="filter-section">
-            <label>Filter: (enter to commit)</label>
-            <input id="filter" class="native-key-bindings"></input>
-        </div>
-        <div class='copy-message'>
-            <button class='btn btn-xs'>Copy Messages</button>
-        </div>
-        <div class="general-messages"></div>
-    </div>`;
-
-    var messagesElement = args.mainContent.find('.general-messages');
-    messagesElement.text("No Issues Found!")
-    var filterElement = args.mainContent.find('#filter');
-    filterElement.keyup((event) => {
-        if (event.keyCode !== 13) {
-            return;
-        }
-        var val = filterElement.val().trim();
-        if (!val) {
-            nodes.classed('filtered-out', false);
-            links.classed('filtered-out', false);
-            text.classed('filtered-out', false);
-            return;
-        }
-        else {
-            nodes.classed('filtered-out', true);
-            links.classed('filtered-out', true);
-            text.classed('filtered-out', true);
-            let filteredNodes = graph.selectAll(`circle[data-name*="${htmlName({ name: val }) }"]`);
-            filteredNodes.classed('filtered-out', false);
-            var filteredLinks = graph.selectAll(`[data-source*="${htmlName({ name: val }) }"][data-target*="${htmlName({ name: val }) }"]`);
-            filteredLinks.classed('filtered-out', false);
-            let filteredText = graph.selectAll(`text[data-name*="${htmlName({ name: val }) }"]`);
-            filteredText.classed('filtered-out', false);
-        }
-    });
-    let copyDisplay = args.mainContent.find('.copy-message>button');
-
-    // Compute the distinct nodes from the links.
-    var d3NodeLookup: { [name: string]: D3LinkNode } = {};
-    var d3links: D3Link[] = args.dependencies.map(function(link) {
-        var source = d3NodeLookup[link.sourcePath] || (d3NodeLookup[link.sourcePath] = { name: link.sourcePath });
-        var target = d3NodeLookup[link.targetPath] || (d3NodeLookup[link.targetPath] = { name: link.targetPath });
-        return { source, target };
-    });
-
-    // Calculate all the good stuff
-    var d3Graph = new D3Graph(d3links);
-
-    // If any cycles found log them:
-    if (d3Graph.cycles().length) {
-        let cycles = d3Graph.cycles();
-        let message = '';
-        let textContent = '';
-        for (let cycle of cycles) {
-            message += '<h3>Cycle Found: </h3>';
-            message += cycle.join(' <br/> ') + '<br/>';
-            textContent += '---Cycle Found---' + EOL;
-            textContent += cycle.join(EOL) + EOL;
-        }
-        messagesElement.html(message);
-
-        copyDisplay.show().on('click', () => {
-            // TODO: copy to clipboard
-            // atom.clipboard.write(textContent);
-            // atom.notifications.addInfo('Copied!');
+        var messagesElement = config.mainContent.find('.general-messages');
+        messagesElement.text("No Issues Found!")
+        var filterElement = config.mainContent.find('#filter');
+        filterElement.keyup((event) => {
+            if (event.keyCode !== 13) {
+                return;
+            }
+            var val = filterElement.val().trim();
+            if (!val) {
+                nodes.classed('filtered-out', false);
+                links.classed('filtered-out', false);
+                text.classed('filtered-out', false);
+                return;
+            }
+            else {
+                nodes.classed('filtered-out', true);
+                links.classed('filtered-out', true);
+                text.classed('filtered-out', true);
+                let filteredNodes = graph.selectAll(`circle[data-name*="${htmlName({ name: val }) }"]`);
+                filteredNodes.classed('filtered-out', false);
+                var filteredLinks = graph.selectAll(`[data-source*="${htmlName({ name: val }) }"][data-target*="${htmlName({ name: val }) }"]`);
+                filteredLinks.classed('filtered-out', false);
+                let filteredText = graph.selectAll(`text[data-name*="${htmlName({ name: val }) }"]`);
+                filteredText.classed('filtered-out', false);
+            }
         });
-    } else {
-        copyDisplay.hide();
-        messagesElement.hide();
-    }
+        let copyDisplay = config.mainContent.find('.copy-message>button');
 
-    // setup weights based on degrees
-    Object.keys(d3NodeLookup).forEach(name=> {
-        var node = d3NodeLookup[name];
-        node.weight = d3Graph.avgDeg(node);
-    })
+        // Compute the distinct nodes from the links.
+        var d3NodeLookup: { [name: string]: D3LinkNode } = {};
+        var d3links: D3Link[] = config.dependencies.map(function(link) {
+            var source = d3NodeLookup[link.sourcePath] || (d3NodeLookup[link.sourcePath] = { name: link.sourcePath });
+            var target = d3NodeLookup[link.targetPath] || (d3NodeLookup[link.targetPath] = { name: link.targetPath });
+            return { source, target };
+        });
 
-    // Setup zoom
-    var zoom = d3.behavior.zoom();
-    zoom.scale(0.4);
-    zoom.on("zoom", onZoomChanged);
+        // Calculate all the good stuff
+        var d3Graph = new D3Graph(d3links);
 
-    var graph = d3Root.append("svg")
-        .style('flex', '1')
-        .call(zoom)
-        .append('svg:g');
-    var layout = d3.layout.force()
-        .nodes(d3.values(d3NodeLookup))
-        .links(d3links)
-        .gravity(.05)
-        .linkDistance(function(link: D3Link) { return (d3Graph.difference(link)) * 200; })
-        .charge(-900)
-        .on("tick", tick)
-        .start();
+        // If any cycles found log them:
+        if (d3Graph.cycles().length) {
+            let cycles = d3Graph.cycles();
+            let message = '';
+            let textContent = '';
+            for (let cycle of cycles) {
+                message += '<h3>Cycle Found: </h3>';
+                message += cycle.join(' <br/> ') + '<br/>';
+                textContent += '---Cycle Found---' + EOL;
+                textContent += cycle.join(EOL) + EOL;
+            }
+            messagesElement.html(message);
 
-    var drag = layout.drag()
-        .on("dragstart", dragstart);
+            copyDisplay.show().on('click', () => {
+                // TODO: copy to clipboard
+                // atom.clipboard.write(textContent);
+                // atom.notifications.addInfo('Copied!');
+            });
+        } else {
+            copyDisplay.hide();
+            messagesElement.hide();
+        }
 
-    /** resize initially and setup for resize */
-    resize();
-    d3.select(window).on("resize", resize);
-    centerGraph();
+        // setup weights based on degrees
+        Object.keys(d3NodeLookup).forEach(name=> {
+            var node = d3NodeLookup[name];
+            node.weight = d3Graph.avgDeg(node);
+        })
 
-    var graphWidth, graphHeight;
-    function resize() {
-        graphWidth = args.mainContent.width();
-        graphHeight = args.mainContent.height();
-        graph.attr("width", graphWidth)
-            .attr("height", graphHeight);
-        layout.size([graphWidth, graphHeight])
-            .resume();
-    }
+        // Setup zoom
+        var zoom = d3.behavior.zoom();
+        zoom.scale(0.4);
+        zoom.on("zoom", onZoomChanged);
 
-    function centerGraph() {
-        var centerTranslate:[number,number] = [
-            (graphWidth / 4),
-            (graphHeight / 4),
-        ];
-        zoom.translate(centerTranslate);
-        // Render transition
-        graph.transition()
-            .duration(500)
-            .attr("transform", "translate(" + zoom.translate() + ")" + " scale(" + zoom.scale() + ")");
-    }
+        var graph = d3Root.append("svg")
+            .style('flex', '1')
+            .call(zoom)
+            .append('svg:g');
+        var layout = d3.layout.force()
+            .nodes(d3.values(d3NodeLookup))
+            .links(d3links)
+            .gravity(.05)
+            .linkDistance(function(link: D3Link) { return (d3Graph.difference(link)) * 200; })
+            .charge(-900)
+            .on("tick", tick)
+            .start();
+
+        var drag = layout.drag()
+            .on("dragstart", dragstart);
+
+        /** resize initially and setup for resize */
+        resize();
+        d3.select(window).on("resize", resize);
+        centerGraph();
+
+        var graphWidth, graphHeight;
+        function resize() {
+            graphWidth = config.mainContent.width();
+            graphHeight = config.mainContent.height();
+            graph.attr("width", graphWidth)
+                .attr("height", graphHeight);
+            layout.size([graphWidth, graphHeight])
+                .resume();
+        }
+
+        function centerGraph() {
+            var centerTranslate:[number,number] = [
+                (graphWidth / 4),
+                (graphHeight / 4),
+            ];
+            zoom.translate(centerTranslate);
+            // Render transition
+            graph.transition()
+                .duration(500)
+                .attr("transform", "translate(" + zoom.translate() + ")" + " scale(" + zoom.scale() + ")");
+        }
 
 
-    function onZoomChanged() {
-        graph.attr("transform", "translate(" + (d3.event as any).translate + ")" + " scale(" + (d3.event as any).scale + ")");
-    }
+        function onZoomChanged() {
+            graph.attr("transform", "translate(" + (d3.event as any).translate + ")" + " scale(" + (d3.event as any).scale + ")");
+        }
 
 
-    // Per-type markers, as they don't inherit styles.
-    graph.append("defs").selectAll("marker")
-        .data(["regular"])
-        .enter().append("marker")
-        .attr("id", function(d) { return d; })
-        .attr("viewBox", "0 -5 10 10")
-        .attr("refX", 15)
-        .attr("refY", -1.5)
-        .attr("markerWidth", 6)
-        .attr("markerHeight", 6)
-        .attr("orient", "auto")
-        .append("path")
-        .attr("d", "M0,-5L10,0L0,5");
+        // Per-type markers, as they don't inherit styles.
+        graph.append("defs").selectAll("marker")
+            .data(["regular"])
+            .enter().append("marker")
+            .attr("id", function(d) { return d; })
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 15)
+            .attr("refY", -1.5)
+            .attr("markerWidth", 6)
+            .attr("markerHeight", 6)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M0,-5L10,0L0,5");
 
-    var links = graph.append("g").selectAll("path")
-        .data(layout.links())
-        .enter().append("path")
-        .attr("class", function(d: D3Link) { return "link"; })
-        .attr("data-target", function(o: D3Link) { return htmlName(o.target) })
-        .attr("data-source", function(o: D3Link) { return htmlName(o.source) })
-        .attr("marker-end", function(d: D3Link) { return "url(#regular)"; });
+        var links = graph.append("g").selectAll("path")
+            .data(layout.links())
+            .enter().append("path")
+            .attr("class", function(d: D3Link) { return "link"; })
+            .attr("data-target", function(o: D3Link) { return htmlName(o.target) })
+            .attr("data-source", function(o: D3Link) { return htmlName(o.source) })
+            .attr("marker-end", function(d: D3Link) { return "url(#regular)"; });
 
-    var nodes = graph.append("g").selectAll("circle")
-        .data(layout.nodes())
-        .enter().append("circle")
-        .attr("class", function(d: D3LinkNode) { return formatClassName(prefixes.circle, d) }) // Store class name for easier later lookup
-        .attr("data-name", function(o: D3LinkNode) { return htmlName(o) }) // Store for easier later lookup
-        .attr("r", function(d: D3LinkNode) { return Math.max(d.weight, 3); })
-        .classed("inonly", function(d: D3LinkNode) { return d3Graph.inOnly(d); })
-        .classed("outonly", function(d: D3LinkNode) { return d3Graph.outOnly(d); })
-        .classed("circular", function(d: D3LinkNode) { return d3Graph.isCircular(d); })
-        .call(drag)
-        .on("dblclick", dblclick) // Unstick
-        .on("mouseover", function(d: D3LinkNode) { onNodeMouseOver(d) })
-        .on("mouseout", function(d: D3LinkNode) { onNodeMouseOut(d) })
+        var nodes = graph.append("g").selectAll("circle")
+            .data(layout.nodes())
+            .enter().append("circle")
+            .attr("class", function(d: D3LinkNode) { return formatClassName(prefixes.circle, d) }) // Store class name for easier later lookup
+            .attr("data-name", function(o: D3LinkNode) { return htmlName(o) }) // Store for easier later lookup
+            .attr("r", function(d: D3LinkNode) { return Math.max(d.weight, 3); })
+            .classed("inonly", function(d: D3LinkNode) { return d3Graph.inOnly(d); })
+            .classed("outonly", function(d: D3LinkNode) { return d3Graph.outOnly(d); })
+            .classed("circular", function(d: D3LinkNode) { return d3Graph.isCircular(d); })
+            .call(drag)
+            .on("dblclick", dblclick) // Unstick
+            .on("mouseover", function(d: D3LinkNode) { onNodeMouseOver(d) })
+            .on("mouseout", function(d: D3LinkNode) { onNodeMouseOut(d) })
 
-    var text = graph.append("g").selectAll("text")
-        .data(layout.nodes())
-        .enter().append("text")
-        .attr("x", 8)
-        .attr("y", ".31em")
-        .attr("data-name", function(o: D3LinkNode) { return htmlName(o) })
-        .text(function(d: D3LinkNode) { return d.name; });
+        var text = graph.append("g").selectAll("text")
+            .data(layout.nodes())
+            .enter().append("text")
+            .attr("x", 8)
+            .attr("y", ".31em")
+            .attr("data-name", function(o: D3LinkNode) { return htmlName(o) })
+            .text(function(d: D3LinkNode) { return d.name; });
 
-    // Use elliptical arc path segments to doubly-encode directionality.
-    function tick() {
-        links.attr("d", linkArc);
-        nodes.attr("transform", transform);
-        text.attr("transform", transform);
-    }
+        // Use elliptical arc path segments to doubly-encode directionality.
+        function tick() {
+            links.attr("d", linkArc);
+            nodes.attr("transform", transform);
+            text.attr("transform", transform);
+        }
 
-    function transform(d: D3LinkNode) {
-        return "translate(" + d.x + "," + d.y + ")";
-    }
+        function transform(d: D3LinkNode) {
+            return "translate(" + d.x + "," + d.y + ")";
+        }
 
-    function onNodeMouseOver(d: D3LinkNode) {
+        function onNodeMouseOver(d: D3LinkNode) {
 
-        // Highlight circle
-        var elm = findElementByNode(prefixes.circle, d);
-        elm.classed("hovering", true);
+            // Highlight circle
+            var elm = findElementByNode(prefixes.circle, d);
+            elm.classed("hovering", true);
 
-        updateNodeTransparencies(d, true);
-    }
-    function onNodeMouseOut(d: D3LinkNode) {
-        // Highlight circle
-        var elm = findElementByNode(prefixes.circle, d);
-        elm.classed("hovering", false);
+            updateNodeTransparencies(d, true);
+        }
+        function onNodeMouseOut(d: D3LinkNode) {
+            // Highlight circle
+            var elm = findElementByNode(prefixes.circle, d);
+            elm.classed("hovering", false);
 
-        updateNodeTransparencies(d, false);
-    }
+            updateNodeTransparencies(d, false);
+        }
 
-    function findElementByNode(prefix, node) {
-        var selector = '.' + formatClassName(prefix, node);
-        return graph.select(selector);
-    }
+        function findElementByNode(prefix, node) {
+            var selector = '.' + formatClassName(prefix, node);
+            return graph.select(selector);
+        }
 
-    function updateNodeTransparencies(d: D3LinkNode, fade = true) {
+        function updateNodeTransparencies(d: D3LinkNode, fade = true) {
 
-        // clean
-        nodes.classed('not-hovering', false);
-        nodes.classed('dimmed', false);
+            // clean
+            nodes.classed('not-hovering', false);
+            nodes.classed('dimmed', false);
 
-        if (fade) {
-            nodes.each(function(o: D3LinkNode) {
-                if (!d3Graph.isConnected(d, o)) {
-                    this.classList.add('not-hovering');
-                    this.classList.add('dimmed');
+            if (fade) {
+                nodes.each(function(o: D3LinkNode) {
+                    if (!d3Graph.isConnected(d, o)) {
+                        this.classList.add('not-hovering');
+                        this.classList.add('dimmed');
+                    }
+                });
+            }
+
+            // Clean
+            graph.selectAll('path.link').attr('data-show', '')
+                .classed('outgoing', false)
+                .attr('marker-end', fade ? '' : 'url(#regular)')
+                .classed('incomming', false)
+                .classed('dimmed', fade);
+
+            links.each(function(o: D3Link) {
+                if (o.source.name === d.name) {
+                    this.classList.remove('dimmed');
+
+                    // Highlight target of the link
+                    var elmNodes = graph.selectAll('.' + formatClassName(prefixes.circle, o.target));
+                    elmNodes.attr('fill-opacity', 1);
+                    elmNodes.attr('stroke-opacity', 1);
+                    elmNodes.classed('dimmed', false);
+
+                    // Highlight arrows
+                    let outgoingLink = graph.selectAll('path.link[data-source="' + htmlName(o.source) + '"]');
+                    outgoingLink.attr('data-show', 'true');
+                    outgoingLink.attr('marker-end', 'url(#regular)');
+                    outgoingLink.classed('outgoing', true);
+
+                }
+                else if (o.target.name === d.name) {
+                    this.classList.remove('dimmed');
+
+                    // Highlight arrows
+                    let incommingLink = graph.selectAll('path.link[data-target="' + htmlName(o.target) + '"]');
+                    incommingLink.attr('data-show', 'true');
+                    incommingLink.attr('marker-end', 'url(#regular)');
+                    incommingLink.classed('incomming', true);
+
                 }
             });
+
+            text.classed("dimmed", function(o: D3LinkNode) {
+                if (!fade) return false;
+
+                if (d3Graph.isConnected(d, o)) return false;
+
+                return true;
+            });
+
         }
 
-        // Clean
-        graph.selectAll('path.link').attr('data-show', '')
-            .classed('outgoing', false)
-            .attr('marker-end', fade ? '' : 'url(#regular)')
-            .classed('incomming', false)
-            .classed('dimmed', fade);
+        // Helpers
+        function formatClassName(prefix, object: D3LinkNode) {
+            return prefix + '-' + htmlName(object);
+        }
+        function htmlName(object: D3LinkNode) {
+            return object.name.replace(/(\.|\/)/gi, '-');
+        }
 
-        links.each(function(o: D3Link) {
-            if (o.source.name === d.name) {
-                this.classList.remove('dimmed');
+        function dragstart(d) {
+            d.fixed = true; // http://bl.ocks.org/mbostock/3750558
+            (d3.event as any).sourceEvent.stopPropagation(); // http://bl.ocks.org/mbostock/6123708
+            d3.select(this).classed("fixed", true);
+        }
 
-                // Highlight target of the link
-                var elmNodes = graph.selectAll('.' + formatClassName(prefixes.circle, o.target));
-                elmNodes.attr('fill-opacity', 1);
-                elmNodes.attr('stroke-opacity', 1);
-                elmNodes.classed('dimmed', false);
-
-                // Highlight arrows
-                let outgoingLink = graph.selectAll('path.link[data-source="' + htmlName(o.source) + '"]');
-                outgoingLink.attr('data-show', 'true');
-                outgoingLink.attr('marker-end', 'url(#regular)');
-                outgoingLink.classed('outgoing', true);
-
-            }
-            else if (o.target.name === d.name) {
-                this.classList.remove('dimmed');
-
-                // Highlight arrows
-                let incommingLink = graph.selectAll('path.link[data-target="' + htmlName(o.target) + '"]');
-                incommingLink.attr('data-show', 'true');
-                incommingLink.attr('marker-end', 'url(#regular)');
-                incommingLink.classed('incomming', true);
-
-            }
-        });
-
-        text.classed("dimmed", function(o: D3LinkNode) {
-            if (!fade) return false;
-
-            if (d3Graph.isConnected(d, o)) return false;
-
-            return true;
-        });
-
-    }
-
-    // Helpers
-    function formatClassName(prefix, object: D3LinkNode) {
-        return prefix + '-' + htmlName(object);
-    }
-    function htmlName(object: D3LinkNode) {
-        return object.name.replace(/(\.|\/)/gi, '-');
-    }
-
-    function dragstart(d) {
-        d.fixed = true; // http://bl.ocks.org/mbostock/3750558
-        (d3.event as any).sourceEvent.stopPropagation(); // http://bl.ocks.org/mbostock/6123708
-        d3.select(this).classed("fixed", true);
-    }
-
-    function dblclick(d) {
-        d3.select(this).classed("fixed", d.fixed = false);
+        function dblclick(d) {
+            d3.select(this).classed("fixed", d.fixed = false);
+        }
     }
 }
 
 interface TargetBySourceName
 { [source: string]: D3LinkNode[] }
 
-/** Bit of a lie about degrees : 0 is changed to 1 intentionally */
+/**
+ * Degree : The number of connections
+ * Bit of a lie about degrees : 0 is changed to 1 intentionally
+ */
 class D3Graph {
     private inDegLookup = {};
     private outDegLookup = {};
