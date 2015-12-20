@@ -1,4 +1,5 @@
 import * as ui from "../ui";
+import * as csx from "csx";
 import * as React from "react";
 import * as tab from "./tab";
 import {server,cast} from "../../socket/socketClient";
@@ -44,7 +45,11 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
     filePath: string;
     componentDidMount() {
         server.getDependencies({}).then((res) => {
-            renderGraph(res.links, $(this.refs.root), (node) => {
+            renderGraph({
+                dependencies: res.links,
+                mainContent:$(this.refs.root),
+                display:(node) => {
+                }
             });
         });
     }
@@ -54,7 +59,11 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
 
     render() {
         return (
-            <div ref="root" className="dependency-view"/>
+            <div
+                ref="root"
+                className="dependency-view"
+                style={csx.extend(csx.vertical,csx.flex)}
+            />
         );
     }
 
@@ -106,31 +115,35 @@ var prefixes = {
 }
 
 
-function renderGraph(dependencies: FileDependency[], mainContent: JQuery, display: (content: FileDependency) => any) {
+function renderGraph(args:{
+    dependencies: FileDependency[],
+    mainContent: JQuery,
+    display: (content: FileDependency) => any
+}) {
 
-    var rootElement = mainContent[0];
+    var rootElement = args.mainContent[0];
     var d3Root = d3.select(rootElement)
 
     // Setup zoom controls
     rootElement.innerHTML = `
     <div class="graph">
-      <div class="control-zoom">
-          <a class="control-zoom-in" href="#" title="Zoom in"></a>
-          <a class="control-zoom-out" href="#" title="Zoom out"></a>
+        <div class="control-zoom">
+            <a class="control-zoom-in" href="#" title="Zoom in"></a>
+            <a class="control-zoom-out" href="#" title="Zoom out"></a>
         </div>
-    <div class="filter-section">
-        <label>Filter: (enter to commit)</label>
-        <input id="filter" class="native-key-bindings"></input>
-    </div>
-    <div class='copy-message'>
-        <button class='btn btn-xs'>Copy Messages</button>
-    </div>
-    <div class="general-messages"></div>
+        <div class="filter-section">
+            <label>Filter: (enter to commit)</label>
+            <input id="filter" class="native-key-bindings"></input>
+        </div>
+        <div class='copy-message'>
+            <button class='btn btn-xs'>Copy Messages</button>
+        </div>
+        <div class="general-messages"></div>
     </div>`;
 
-    var messagesElement = mainContent.find('.general-messages');
+    var messagesElement = args.mainContent.find('.general-messages');
     messagesElement.text("No Issues Found!")
-    var filterElement = mainContent.find('#filter');
+    var filterElement = args.mainContent.find('#filter');
     filterElement.keyup((event) => {
         if (event.keyCode !== 13) {
             return;
@@ -154,11 +167,11 @@ function renderGraph(dependencies: FileDependency[], mainContent: JQuery, displa
             filteredText.classed('filtered-out', false);
         }
     });
-    let copyDisplay = mainContent.find('.copy-message>button');
+    let copyDisplay = args.mainContent.find('.copy-message>button');
 
     // Compute the distinct nodes from the links.
     var d3NodeLookup: { [name: string]: D3LinkNode } = {};
-    var d3links: D3Link[] = dependencies.map(function(link) {
+    var d3links: D3Link[] = args.dependencies.map(function(link) {
         var source = d3NodeLookup[link.sourcePath] || (d3NodeLookup[link.sourcePath] = { name: link.sourcePath });
         var target = d3NodeLookup[link.targetPath] || (d3NodeLookup[link.targetPath] = { name: link.targetPath });
         return { source, target };
@@ -202,8 +215,7 @@ function renderGraph(dependencies: FileDependency[], mainContent: JQuery, displa
     zoom.on("zoom", onZoomChanged);
 
     var graph = d3Root.append("svg")
-        .attr('width', '100%')
-        .attr('height', '99%')
+        .style('flex', '1')
         .call(zoom)
         .append('svg:g');
     var layout = d3.layout.force()
@@ -225,8 +237,8 @@ function renderGraph(dependencies: FileDependency[], mainContent: JQuery, displa
 
     var graphWidth, graphHeight;
     function resize() {
-        graphWidth = mainContent.width();
-        graphHeight = mainContent.height();
+        graphWidth = args.mainContent.width();
+        graphHeight = args.mainContent.height();
         graph.attr("width", graphWidth)
             .attr("height", graphHeight);
         layout.size([graphWidth, graphHeight])
