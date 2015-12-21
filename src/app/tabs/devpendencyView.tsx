@@ -151,6 +151,11 @@ var prefixes = {
 }
 
 class RenderGraph{
+    graph: d3.Selection<any>;
+    links:d3.Selection<d3.layout.force.Link<d3.layout.force.Node>>;
+    nodes:d3.Selection<d3.layout.force.Node>;
+    text:d3.Selection<d3.layout.force.Node>;
+
     constructor(public config:{
         dependencies: FileDependency[],
         graphRoot: JQuery,
@@ -158,31 +163,15 @@ class RenderGraph{
         display: (content: FileDependency) => any
     }){
         var d3Root = d3.select(config.graphRoot[0]);
+        let self = this;
 
         var messagesElement = config.controlRoot.find('.general-messages');
         messagesElement.text("No Issues Found!")
         var filterElement = config.controlRoot.find('#filter');
-        filterElement.keyup(utils.debounce(() => {
-
-            var val = filterElement.val().trim();
-            if (!val) {
-                nodes.classed('filtered-out', false);
-                links.classed('filtered-out', false);
-                text.classed('filtered-out', false);
-                return;
-            }
-            else {
-                nodes.classed('filtered-out', true);
-                links.classed('filtered-out', true);
-                text.classed('filtered-out', true);
-                let filteredNodes = graph.selectAll(`circle[data-name*="${htmlName({ name: val }) }"]`);
-                filteredNodes.classed('filtered-out', false);
-                var filteredLinks = graph.selectAll(`[data-source*="${htmlName({ name: val }) }"][data-target*="${htmlName({ name: val }) }"]`);
-                filteredLinks.classed('filtered-out', false);
-                let filteredText = graph.selectAll(`text[data-name*="${htmlName({ name: val }) }"]`);
-                filteredText.classed('filtered-out', false);
-            }
-        },250));
+        filterElement.keyup(()=>{
+            let val = filterElement.val().trim();
+            this.applyFilter(val);
+        });
         let copyDisplay = config.controlRoot.find('.copy-message>button');
 
         // Compute the distinct nodes from the links.
@@ -230,7 +219,7 @@ class RenderGraph{
         zoom.scale(0.4);
         zoom.on("zoom", onZoomChanged);
 
-        var graph = d3Root.append("svg")
+        this.graph = d3Root.append("svg")
             .style('flex', '1')
             .call(zoom)
             .append('svg:g');
@@ -240,7 +229,7 @@ class RenderGraph{
             .gravity(.05)
             .linkDistance(function(link: D3Link) { return (d3Graph.difference(link)) * 200; })
             .charge(-900)
-            .on("tick", tick)
+            .on("tick", this.tick)
             .start();
 
         var drag = layout.drag()
@@ -255,7 +244,7 @@ class RenderGraph{
         function resize() {
             graphWidth = config.graphRoot.width();
             graphHeight = config.graphRoot.height();
-            graph.attr("width", graphWidth)
+            self.graph.attr("width", graphWidth)
                 .attr("height", graphHeight);
             layout.size([graphWidth, graphHeight])
                 .resume();
@@ -268,19 +257,19 @@ class RenderGraph{
             ];
             zoom.translate(centerTranslate);
             // Render transition
-            graph.transition()
+            self.graph.transition()
                 .duration(500)
                 .attr("transform", "translate(" + zoom.translate() + ")" + " scale(" + zoom.scale() + ")");
         }
 
 
         function onZoomChanged() {
-            graph.attr("transform", "translate(" + (d3.event as any).translate + ")" + " scale(" + (d3.event as any).scale + ")");
+            self.graph.attr("transform", "translate(" + (d3.event as any).translate + ")" + " scale(" + (d3.event as any).scale + ")");
         }
 
 
         // Per-type markers, as they don't inherit styles.
-        graph.append("defs").selectAll("marker")
+        self.graph.append("defs").selectAll("marker")
             .data(["regular"])
             .enter().append("marker")
             .attr("id", function(d) { return d; })
@@ -293,19 +282,19 @@ class RenderGraph{
             .append("path")
             .attr("d", "M0,-5L10,0L0,5");
 
-        var links = graph.append("g").selectAll("path")
+        this.links = self.graph.append("g").selectAll("path")
             .data(layout.links())
             .enter().append("path")
             .attr("class", function(d: D3Link) { return "link"; })
-            .attr("data-target", function(o: D3Link) { return htmlName(o.target) })
-            .attr("data-source", function(o: D3Link) { return htmlName(o.source) })
+            .attr("data-target", function(o: D3Link) { return self.htmlName(o.target) })
+            .attr("data-source", function(o: D3Link) { return self.htmlName(o.source) })
             .attr("marker-end", function(d: D3Link) { return "url(#regular)"; });
 
-        var nodes = graph.append("g").selectAll("circle")
+        this.nodes = self.graph.append("g").selectAll("circle")
             .data(layout.nodes())
             .enter().append("circle")
             .attr("class", function(d: D3LinkNode) { return formatClassName(prefixes.circle, d) }) // Store class name for easier later lookup
-            .attr("data-name", function(o: D3LinkNode) { return htmlName(o) }) // Store for easier later lookup
+            .attr("data-name", function(o: D3LinkNode) { return self.htmlName(o) }) // Store for easier later lookup
             .attr("r", function(d: D3LinkNode) { return Math.max(d.weight, 3); })
             .classed("inonly", function(d: D3LinkNode) { return d3Graph.inOnly(d); })
             .classed("outonly", function(d: D3LinkNode) { return d3Graph.outOnly(d); })
@@ -315,24 +304,14 @@ class RenderGraph{
             .on("mouseover", function(d: D3LinkNode) { onNodeMouseOver(d) })
             .on("mouseout", function(d: D3LinkNode) { onNodeMouseOut(d) })
 
-        var text = graph.append("g").selectAll("text")
+        this.text = self.graph.append("g").selectAll("text")
             .data(layout.nodes())
             .enter().append("text")
             .attr("x", 8)
             .attr("y", ".31em")
-            .attr("data-name", function(o: D3LinkNode) { return htmlName(o) })
+            .attr("data-name", function(o: D3LinkNode) { return self.htmlName(o) })
             .text(function(d: D3LinkNode) { return d.name; });
 
-        // Use elliptical arc path segments to doubly-encode directionality.
-        function tick() {
-            links.attr("d", linkArc);
-            nodes.attr("transform", transform);
-            text.attr("transform", transform);
-        }
-
-        function transform(d: D3LinkNode) {
-            return "translate(" + d.x + "," + d.y + ")";
-        }
 
         function onNodeMouseOver(d: D3LinkNode) {
 
@@ -350,19 +329,19 @@ class RenderGraph{
             updateNodeTransparencies(d, false);
         }
 
-        function findElementByNode(prefix, node) {
+        let findElementByNode = (prefix, node) => {
             var selector = '.' + formatClassName(prefix, node);
-            return graph.select(selector);
+            return self.graph.select(selector);
         }
 
         function updateNodeTransparencies(d: D3LinkNode, fade = true) {
 
             // clean
-            nodes.classed('not-hovering', false);
-            nodes.classed('dimmed', false);
+            this.nodes.classed('not-hovering', false);
+            this.nodes.classed('dimmed', false);
 
             if (fade) {
-                nodes.each(function(o: D3LinkNode) {
+                this.nodes.each(function(o: D3LinkNode) {
                     if (!d3Graph.isConnected(d, o)) {
                         this.classList.add('not-hovering');
                         this.classList.add('dimmed');
@@ -371,24 +350,24 @@ class RenderGraph{
             }
 
             // Clean
-            graph.selectAll('path.link').attr('data-show', '')
+            self.graph.selectAll('path.link').attr('data-show', '')
                 .classed('outgoing', false)
                 .attr('marker-end', fade ? '' : 'url(#regular)')
                 .classed('incomming', false)
                 .classed('dimmed', fade);
 
-            links.each(function(o: D3Link) {
+            this.links.each(function(o: D3Link) {
                 if (o.source.name === d.name) {
                     this.classList.remove('dimmed');
 
                     // Highlight target of the link
-                    var elmNodes = graph.selectAll('.' + formatClassName(prefixes.circle, o.target));
+                    var elmNodes = self.graph.selectAll('.' + formatClassName(prefixes.circle, o.target));
                     elmNodes.attr('fill-opacity', 1);
                     elmNodes.attr('stroke-opacity', 1);
                     elmNodes.classed('dimmed', false);
 
                     // Highlight arrows
-                    let outgoingLink = graph.selectAll('path.link[data-source="' + htmlName(o.source) + '"]');
+                    let outgoingLink = self.graph.selectAll('path.link[data-source="' + self.htmlName(o.source) + '"]');
                     outgoingLink.attr('data-show', 'true');
                     outgoingLink.attr('marker-end', 'url(#regular)');
                     outgoingLink.classed('outgoing', true);
@@ -398,7 +377,7 @@ class RenderGraph{
                     this.classList.remove('dimmed');
 
                     // Highlight arrows
-                    let incommingLink = graph.selectAll('path.link[data-target="' + htmlName(o.target) + '"]');
+                    let incommingLink = self.graph.selectAll('path.link[data-target="' + self.htmlName(o.target) + '"]');
                     incommingLink.attr('data-show', 'true');
                     incommingLink.attr('marker-end', 'url(#regular)');
                     incommingLink.classed('incomming', true);
@@ -406,7 +385,7 @@ class RenderGraph{
                 }
             });
 
-            text.classed("dimmed", function(o: D3LinkNode) {
+            this.text.classed("dimmed", function(o: D3LinkNode) {
                 if (!fade) return false;
 
                 if (d3Graph.isConnected(d, o)) return false;
@@ -418,10 +397,7 @@ class RenderGraph{
 
         // Helpers
         function formatClassName(prefix, object: D3LinkNode) {
-            return prefix + '-' + htmlName(object);
-        }
-        function htmlName(object: D3LinkNode) {
-            return object.name.replace(/(\.|\/)/gi, '-');
+            return prefix + '-' + self.htmlName(object);
         }
 
         function dragstart(d) {
@@ -433,6 +409,43 @@ class RenderGraph{
         function dblclick(d) {
             d3.select(this).classed("fixed", d.fixed = false);
         }
+    }
+
+    // Use elliptical arc path segments to doubly-encode directionality.
+    tick = () => {
+        function transform(d: D3LinkNode) {
+            return "translate(" + d.x + "," + d.y + ")";
+        }
+        this.links.attr("d", linkArc);
+        this.nodes.attr("transform", transform);
+        this.text.attr("transform", transform);
+    }
+
+    applyFilter = utils.debounce((val: string) => {
+        if (!val) {
+            this.nodes.classed('filtered-out', false);
+            this.links.classed('filtered-out', false);
+            this.text.classed('filtered-out', false);
+            return;
+        }
+        else {
+            this.nodes.classed('filtered-out', true);
+            this.links.classed('filtered-out', true);
+            this.text.classed('filtered-out', true);
+            let filteredNodes = this.graph.selectAll(`circle[data-name*="${this.htmlName({ name: val }) }"]`);
+            filteredNodes.classed('filtered-out', false);
+            var filteredLinks = this.graph.selectAll(`[data-source*="${this.htmlName({ name: val }) }"][data-target*="${this.htmlName({ name: val }) }"]`);
+            filteredLinks.classed('filtered-out', false);
+            let filteredText = this.graph.selectAll(`text[data-name*="${this.htmlName({ name: val }) }"]`);
+            filteredText.classed('filtered-out', false);
+        }
+    },250);
+
+    /**
+     * Helpers
+     */
+    private htmlName(object: D3LinkNode) {
+        return object.name.replace(/(\.|\/)/gi, '-');
     }
 }
 
