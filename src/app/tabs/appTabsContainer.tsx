@@ -6,6 +6,7 @@
 import * as ui from "../ui";
 import * as React from "react";
 import * as tab from "./tab";
+import * as tabRegistry from "./tabRegistry";
 // import {DashboardTab} from "./dashboardTab";
 import {Code} from "./codeTab";
 import {DependencyView} from "./devpendencyView";
@@ -345,7 +346,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             let isSelected = selectedIndex == i;
             let style = ( isSelected ? {} : { display: 'none' });
 
-            let Component = getComponentByUrl(t.url);
+            let Component = tabRegistry.getComponentByUrl(t.url);
 
             return <div className="app-tabs-container-component-div" key={t.id} style={[csx.flex,csx.flexRoot,style]}>
                 <Component ref={t.id} url={t.url} onSavedChanged={(saved)=>{this.onSavedChanged(saved,i)}}/>
@@ -484,19 +485,4 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 export function getFileName(filePath:string){
     let parts = filePath.split('/');
     return parts[parts.length - 1];
-}
-
-/** TODO: implement other protocol tabs */
-export function getComponentByUrl(url: string): { new (props: any): tab.Component } {
-    let {protocol} = utils.getFilePathAndProtocolFromUrl(url);
-    if (protocol == 'file'){
-        return Code;
-    }
-    if (protocol == 'dependency') {
-        return DependencyView;
-    }
-
-    let error = 'Unknown protocol: ' + protocol;
-    ui.notifyWarningNormalDisappear(error);
-    throw new Error(error);
 }

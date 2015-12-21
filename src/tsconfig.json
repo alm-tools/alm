@@ -152,6 +152,7 @@
         "./app/tabs/codeTab.tsx",
         "./app/tabs/dashboardTab.tsx",
         "./app/tabs/devpendencyView.tsx",
+        "./app/tabs/tabRegistry.tsx",
         "./app/tabs/tips.tsx",
         "./app/ui.tsx",
         "./app/uix.tsx"
