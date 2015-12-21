@@ -215,36 +215,32 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             let component = this.getSelectedComponent();
             if (component) {
                 let findOptions = state.getState().findOptions;
-                component.findNext(findOptions);
+                component.search.findNext(findOptions);
             }
         });
-
         commands.findPrevious.on(()=>{
             let component = this.getSelectedComponent();
             if (component) {
                 let findOptions = state.getState().findOptions;
-                component.findPrevious(findOptions);
+                component.search.findPrevious(findOptions);
             }
         });
-
         commands.replaceNext.on((e)=>{
             let component = this.getSelectedComponent();
             if (component) {
-                component.replaceNext(e.newText);
+                component.search.replaceNext(e.newText);
             }
         });
-
         commands.replacePrevious.on((e)=>{
             let component = this.getSelectedComponent();
             if (component) {
-                component.replacePrevious(e.newText);
+                component.search.replacePrevious(e.newText);
             }
         });
-
         commands.replaceAll.on((e)=>{
             let component = this.getSelectedComponent();
             if (component) {
-                component.replaceAll(e.newText);
+                component.search.replaceAll(e.newText);
             }
         });
 
@@ -397,10 +393,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
         let options = state.getState().findOptions;
         if (!options.isShown || !options.query) {
-            component.hideSearch()
+            component.search.hideSearch()
         }
         else {
-            component.search(options)
+            component.search.doSearch(options)
         }
     }
 

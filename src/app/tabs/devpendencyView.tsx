@@ -105,27 +105,29 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
     gotoPosition = (position: EditorPosition) => {
     }
 
-    search = (options: FindOptions) => {
-        this.graphRenderer && this.graphRenderer.applyFilter(options.query);
-    }
+    search = {
+        doSearch: (options: FindOptions) => {
+            this.graphRenderer && this.graphRenderer.applyFilter(options.query);
+        },
 
-    hideSearch = () => {
-        this.graphRenderer && this.graphRenderer.clearFilter();
-    }
+        hideSearch: () => {
+            this.graphRenderer && this.graphRenderer.clearFilter();
+        },
 
-    findNext = (options: FindOptions) => {
-    }
+        findNext: (options: FindOptions) => {
+        },
 
-    findPrevious = (options: FindOptions) => {
-    }
+        findPrevious: (options: FindOptions) => {
+        },
 
-    replaceNext = (newText: string) => {
-    }
+        replaceNext: (newText: string) => {
+        },
 
-    replacePrevious = (newText: string) => {
-    }
+        replacePrevious: (newText: string) => {
+        },
 
-    replaceAll = (newText: string) => {
+        replaceAll: (newText: string) => {
+        }
     }
 }
 

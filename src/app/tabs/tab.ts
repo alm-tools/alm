@@ -25,15 +25,17 @@ export interface Component extends React.Component<any, any> {
      * FAR : having these here means that *all tabs* get to participate in this
      * so they don't need custom *find* UI
      */
-    /** Called at the start of a new search or on focusing */
-    search(options: FindOptions);
-    /** Called to clear the search if the tab is in focus when that happens */
-    hideSearch();
-    findNext(options: FindOptions);
-    findPrevious(options: FindOptions);
-    replaceNext(newText: string);
-    replacePrevious(newText: string);
-    replaceAll(newText: string);
+    search: {
+        /** Called at the start of a new search or on focusing */
+        doSearch(options: FindOptions);
+        /** Called to clear the search if the tab is in focus when that happens */
+        hideSearch();
+        findNext(options: FindOptions);
+        findPrevious(options: FindOptions);
+        replaceNext(newText: string);
+        replacePrevious(newText: string);
+        replaceAll(newText: string);
+    };
 }
 
 
