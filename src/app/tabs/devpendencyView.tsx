@@ -28,6 +28,7 @@ export interface State {
  * - All server code must go through here
  * - All tab type stuff must go through here
  */
+@ui.Radium
 export class DependencyView extends ui.BaseComponent<Props, State> implements tab.Component {
 
     constructor(props: Props) {
@@ -63,24 +64,26 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
         return (
             <div
                 className="dependency-view"
-                style={csx.extend(csx.vertical,csx.flex)}>
+                style={csx.extend(csx.vertical,csx.flex, {position:'relative'})}>
                 <div ref="graphRoot" style={csx.extend(csx.vertical,csx.flex)}>
                     {/* Graph goes here */}
                 </div>
 
-                <div ref="controlRoot" className="graph-controls">
-                    <div className="control-zoom">
-                        <a className="control-zoom-in" href="#" title="Zoom in" />
-                        <a className="control-zoom-out" href="#" title="Zoom out" />
+                <div ref="controlRoot" className="graph-controls" style={[csx.newLayer,csx.horizontalReverse]}>
+                    <div style={[{width:'200px'},csx.vertical]}>
+                        <div className="control-zoom">
+                            <a className="control-zoom-in" href="#" title="Zoom in" />
+                            <a className="control-zoom-out" href="#" title="Zoom out" />
+                        </div>
+                        <div className="filter-section">
+                            <label>Filter: (enter to commit)</label>
+                            <input id="filter" className="native-key-bindings" />
+                        </div>
+                        <div className="copy-message">
+                            <button className="btn btn-xs">Copy Messages</button>
+                        </div>
+                        <div className="general-messages" />
                     </div>
-                    <div className="filter-section">
-                        <label>Filter: (enter to commit)</label>
-                        <input id="filter" className="native-key-bindings" />
-                    </div>
-                    <div className="copy-message">
-                        <button className="btn btn-xs">Copy Messages</button>
-                    </div>
-                    <div className="general-messages" />
                </div>
 
             </div>
