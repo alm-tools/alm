@@ -34,6 +34,7 @@ export interface State {
 @ui.Radium
 export class DependencyView extends ui.BaseComponent<Props, State> implements tab.Component {
 
+    private graphRenderer: GraphRenderer;
     constructor(props: Props) {
         super(props);
         this.filePath = utils.getFilePathFromUrl(props.url);
@@ -45,28 +46,22 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
         [string: string]: any;
         graphRoot: HTMLDivElement;
         controlRoot: HTMLDivElement;
-        filter: HTMLInputElement;
     }
 
     filePath: string;
     componentDidMount() {
         server.getDependencies({}).then((res) => {
-            new RenderGraph({
+            this.graphRenderer = new GraphRenderer({
                 dependencies: res.links,
                 graphRoot:$(this.refs.graphRoot),
                 controlRoot:$(this.refs.controlRoot),
                 display:(node) => {
                 }
             });
-            setTimeout(this.focusFilter,100);
         });
     }
     componentWillUnmount(){
         this.disposible.dispose();
-    }
-
-    focusFilter = () => {
-        this.refs.filter.focus();
     }
 
     render() {
@@ -83,11 +78,6 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
                         <div className="control-zoom">
                             <a className="control-zoom-in" href="#" title="Zoom in" />
                             <a className="control-zoom-out" href="#" title="Zoom out" />
-                        </div>
-                        <div style={[styles.padded1,csx.flexRoot]}>
-                            <input ref="filter" id="filter"
-                            style={[inputBlackStyle,csx.flex]}
-                            placeholder="Filter"/>
                         </div>
                         <div className="copy-message">
                             <button className="btn btn-xs">Copy Messages</button>
@@ -116,9 +106,11 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
     }
 
     search = (options: FindOptions) => {
+        this.graphRenderer && this.graphRenderer.applyFilter(options.query);
     }
 
     hideSearch = () => {
+        this.graphRenderer && this.graphRenderer.clearFilter();
     }
 
     findNext = (options: FindOptions) => {
@@ -150,7 +142,7 @@ var prefixes = {
     circle: 'circle'
 }
 
-class RenderGraph{
+class GraphRenderer {
     graph: d3.Selection<any>;
     links:d3.Selection<d3.layout.force.Link<d3.layout.force.Node>>;
     nodes:d3.Selection<d3.layout.force.Node>;
@@ -167,11 +159,6 @@ class RenderGraph{
 
         var messagesElement = config.controlRoot.find('.general-messages');
         messagesElement.text("No Issues Found!")
-        var filterElement = config.controlRoot.find('#filter');
-        filterElement.keyup(()=>{
-            let val = filterElement.val().trim();
-            this.applyFilter(val);
-        });
         let copyDisplay = config.controlRoot.find('.copy-message>button');
 
         // Compute the distinct nodes from the links.
@@ -423,9 +410,7 @@ class RenderGraph{
 
     applyFilter = utils.debounce((val: string) => {
         if (!val) {
-            this.nodes.classed('filtered-out', false);
-            this.links.classed('filtered-out', false);
-            this.text.classed('filtered-out', false);
+            this.clearFilter();
             return;
         }
         else {
@@ -440,6 +425,12 @@ class RenderGraph{
             filteredText.classed('filtered-out', false);
         }
     },250);
+
+    clearFilter = () => {
+        this.nodes.classed('filtered-out', false);
+        this.links.classed('filtered-out', false);
+        this.text.classed('filtered-out', false);
+    }
 
     /**
      * Helpers
