@@ -185,3 +185,18 @@ export let hiddenInput = {
     position: 'absolute',
     top: '0px'
 }
+
+export namespace Input {
+    export let inputBlackStyle = {
+        backgroundColor: '#333',
+        color: 'white',
+        outline: 'none',
+        padding: '2px',
+        border: '2px solid #3C3C3C',
+        transition: 'border .2s',
+        ':focus':{
+            border: '2px solid #0090E0',
+            boxShadow: '0px 0px 1px 1px #0090E0'
+        }
+    }
+}

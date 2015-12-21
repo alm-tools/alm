@@ -8,8 +8,11 @@ import * as utils from "../../common/utils";
 import * as d3 from "d3";
 import {Types} from "../../socket/socketContract";
 import * as $ from "jquery";
+import * as styles from "../styles/styles";
 type FileDependency = Types.FileDependency;
 let EOL = '\n';
+
+let {inputBlackStyle} = styles.Input;
 
 /**
  * The styles
@@ -42,6 +45,7 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
         [string: string]: any;
         graphRoot: HTMLDivElement;
         controlRoot: HTMLDivElement;
+        filter: HTMLInputElement;
     }
 
     filePath: string;
@@ -54,10 +58,15 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
                 display:(node) => {
                 }
             });
+            setTimeout(this.focusFilter,100);
         });
     }
     componentWillUnmount(){
         this.disposible.dispose();
+    }
+
+    focusFilter = () => {
+        this.refs.filter.focus();
     }
 
     render() {
@@ -75,9 +84,10 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
                             <a className="control-zoom-in" href="#" title="Zoom in" />
                             <a className="control-zoom-out" href="#" title="Zoom out" />
                         </div>
-                        <div className="filter-section">
-                            <label>Filter: (enter to commit)</label>
-                            <input id="filter" className="native-key-bindings" />
+                        <div style={[styles.padded1,csx.flexRoot]}>
+                            <input ref="filter" id="filter"
+                            style={[inputBlackStyle,csx.flex]}
+                            placeholder="Filter"/>
                         </div>
                         <div className="copy-message">
                             <button className="btn btn-xs">Copy Messages</button>
@@ -152,10 +162,8 @@ class RenderGraph{
         var messagesElement = config.controlRoot.find('.general-messages');
         messagesElement.text("No Issues Found!")
         var filterElement = config.controlRoot.find('#filter');
-        filterElement.keyup((event) => {
-            if (event.keyCode !== 13) {
-                return;
-            }
+        filterElement.keyup(utils.debounce(() => {
+
             var val = filterElement.val().trim();
             if (!val) {
                 nodes.classed('filtered-out', false);
@@ -174,7 +182,7 @@ class RenderGraph{
                 let filteredText = graph.selectAll(`text[data-name*="${htmlName({ name: val }) }"]`);
                 filteredText.classed('filtered-out', false);
             }
-        });
+        },250));
         let copyDisplay = config.controlRoot.find('.copy-message>button');
 
         // Compute the distinct nodes from the links.
