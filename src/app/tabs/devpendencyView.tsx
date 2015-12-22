@@ -26,6 +26,13 @@ export interface Props extends tab.ComponentProps {
 export interface State {
 }
 
+let controlRootStyle = {
+    pointerEvents:'none'
+}
+let controlItemStyle = {
+    pointerEvents:'auto'
+}
+
 /**
  * This is a thin wrapper around `CodeEditor` with the following key motivations
  * - All server code must go through here
@@ -73,16 +80,17 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
                     {/* Graph goes here */}
                 </div>
 
-                <div ref="controlRoot" className="graph-controls" style={[csx.newLayer,csx.horizontalReverse]}>
+                <div ref="controlRoot" className="graph-controls"
+                    style={[csx.newLayer,csx.horizontalReverse,controlRootStyle]}>
                     <div style={[{width:'200px'},csx.vertical]}>
-                        <div className="control-zoom">
+                        <div className="control-zoom" style={controlItemStyle}>
                             <a className="control-zoom-in" href="#" title="Zoom in" />
                             <a className="control-zoom-out" href="#" title="Zoom out" />
                         </div>
-                        <div className="copy-message">
+                        <div className="copy-message" style={controlItemStyle}>
                             <button className="btn btn-xs">Copy Messages</button>
                         </div>
-                        <div className="general-messages" />
+                        <div className="general-messages" style={controlItemStyle}/>
                     </div>
                </div>
 
