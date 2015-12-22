@@ -2,8 +2,8 @@
  * Its Types (e.g. enums) + constants :)
  */
 
-export const cacheDir = './.tsb';
-export const title = "TypeScript Builder";
+export const cacheDir = './.alm';
+export const title = "Application Lifecycle Management tools for TypeScript";
 
 export enum TriState {
     Unknown,

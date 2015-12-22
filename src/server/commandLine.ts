@@ -52,7 +52,7 @@ export let getOptions = utils.once((): CommandLineOptions => {
     if (argv._ && argv._.length) {
         options.filePaths = argv._.map(x=> workingDir.makeAbsoluteIfNeeded(x));
     }
-    // Common usage user does `tsb ./srcFolder`
+    // Common usage user does `alm ./srcFolder`
     // So if there was only one filePath detected and its a dir ... user probably meant `-d`
     if (options.filePaths.length == 1) {
         let filePath = workingDir.makeAbsoluteIfNeeded(options.filePaths[0]);

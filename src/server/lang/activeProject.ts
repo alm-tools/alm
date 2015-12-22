@@ -1,5 +1,5 @@
 /**
- * Tracks tsb.json and the active project within that
+ * Manages active project.
  * Also pushes errors out to clients + keeps the language service + fileModelCache in sync
  */
 

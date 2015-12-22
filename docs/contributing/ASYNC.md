@@ -25,4 +25,4 @@ Basically anything that is *async* in its contract can be used under the same pr
 
 ## Example
 
-Checkout the [`socket` folder](https://github.com/TypeScriptBuilder/tsb/tree/e34bbf9cb6227f3cd150737fef5a47f212e2ad7a/src/socket) which contains the socket contract + server + client :rose:
+Checkout the [`socket` folder](https://github.com/basarat/alm/tree/e34bbf9cb6227f3cd150737fef5a47f212e2ad7a/src/socket) which contains the socket contract + server + client :rose:

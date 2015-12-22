@@ -9,4 +9,4 @@ deploy:
   on:
     tags: true
     all_branches: true
-    repo: TypeScriptBuilder/tsb
+    repo: basarat/alm
