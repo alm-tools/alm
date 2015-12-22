@@ -334,11 +334,11 @@ class GraphRenderer {
         function updateNodeTransparencies(d: D3LinkNode, fade = true) {
 
             // clean
-            this.nodes.classed('not-hovering', false);
-            this.nodes.classed('dimmed', false);
+            self.nodes.classed('not-hovering', false);
+            self.nodes.classed('dimmed', false);
 
             if (fade) {
-                this.nodes.each(function(o: D3LinkNode) {
+                self.nodes.each(function(o: D3LinkNode) {
                     if (!d3Graph.isConnected(d, o)) {
                         this.classList.add('not-hovering');
                         this.classList.add('dimmed');
@@ -353,7 +353,7 @@ class GraphRenderer {
                 .classed('incomming', false)
                 .classed('dimmed', fade);
 
-            this.links.each(function(o: D3Link) {
+            self.links.each(function(o: D3Link) {
                 if (o.source.name === d.name) {
                     this.classList.remove('dimmed');
 
@@ -382,7 +382,7 @@ class GraphRenderer {
                 }
             });
 
-            this.text.classed("dimmed", function(o: D3LinkNode) {
+            self.text.classed("dimmed", function(o: D3LinkNode) {
                 if (!fade) return false;
 
                 if (d3Graph.isConnected(d, o)) return false;
