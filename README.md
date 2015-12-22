@@ -1,10 +1,10 @@
 # ALM tools for TypeScript
 
-[![Join the chat at https://gitter.im/basarat/alm](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/basarat/alm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/alm-tools/alm](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/alm-tools/alm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 > With a great language comes great development tools.
 
-[![Build Status](https://travis-ci.org/basarat/alm.svg?branch=master)](https://travis-ci.org/basarat/alm)
+[![Build Status](https://travis-ci.org/alm-tools/alm.svg?branch=master)](https://travis-ci.org/alm-tools/alm)
 
 > ⚠️ This project is not ready. Lookout for final release by about 2017 (patience and persistence), just making it public to be clear on *what I am working on*. 🌟 it to help it move along 🌹
 
@@ -13,9 +13,9 @@
 You can build *complete* applications with a single language > this means you can have dev tools (like this) that can understand *your entire project*.
 
 * This project is TypeScript first. We want to provide the **greatest** development and analysis experience for TypeScript. Every feature revolves around this goal, and we have features unique to TypeScript development.
-* [Super easy to setup](https://github.com/basarat/alm/tree/master#usage). Just `npm install` and open your browser.
+* [Super easy to setup](https://github.com/alm-tools/alm/tree/master#usage). Just `npm install` and open your browser.
 
-There are lots of [other reasons why you might use this project OR use the source code](https://github.com/basarat/alm/blob/master/docs/contributing/why.md). Effectively this is `transpiler`, `editor`, `analyzer`, `DX workflow` rolled into one.
+There are lots of [other reasons why you might use this project OR use the source code](https://github.com/alm-tools/alm/blob/master/docs/contributing/why.md). Effectively this is `transpiler`, `editor`, `analyzer`, `DX workflow` rolled into one.
 
 ## Requirements
 This is a forward looking project that plans to use the latest tech as it becomes available:
@@ -27,7 +27,7 @@ That is it!
 
 ## Usage
 
-> Till we consider it stable for release we are not pushing to NPM. So for now you need to get it using the [CONTRIBUTING guide](https://github.com/basarat/alm/blob/master/docs/contributing/README.md).
+> Till we consider it stable for release we are not pushing to NPM. So for now you need to get it using the [CONTRIBUTING guide](https://github.com/alm-tools/alm/blob/master/docs/contributing/README.md).
 
 Get it:
 ```

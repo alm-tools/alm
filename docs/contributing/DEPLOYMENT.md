@@ -2,7 +2,7 @@
 Once you are happy with the code:
 * Just run [`npm version`](https://docs.npmjs.com/cli/version) with major/minor/patch.
 * Push the outcome to github (`git push --follow-tags`). Travis will automatically deploy tagged commits to NPM!
-* Write release notes on Github https://github.com/basarat/alm/releases
+* Write release notes on Github https://github.com/alm-tools/alm/releases
 
 # Initial Travis Setup
 *Just for record on how this was setup*.

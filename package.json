@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/basarat/alm.git"
+    "url": "git+https://github.com/alm-tools/alm.git"
   },
   "keywords": [
     "javascript",
@@ -27,10 +27,10 @@
   "author": "basaratali@gmail.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/basarat/alm/issues"
+    "url": "https://github.com/alm-tools/alm/issues"
   },
   "preferGlobal": true,
-  "homepage": "https://github.com/basarat/alm#readme",
+  "homepage": "https://github.com/alm-tools/alm#readme",
   "dependencies": {
     "basarat-text-buffer": "^6.0.0",
     "chokidar": "^1.0.5",

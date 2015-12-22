@@ -1,6 +1,6 @@
 # Setup
 ```
-git clone https://github.com/basarat/alm.git
+git clone https://github.com/alm-tools/alm.git
 cd alm
 npm install
 npm link

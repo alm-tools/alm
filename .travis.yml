@@ -9,4 +9,4 @@ deploy:
   on:
     tags: true
     all_branches: true
-    repo: basarat/alm
+    repo: alm-tools/alm

@@ -152,7 +152,7 @@ export class StatusBar extends BaseComponent<Props, State>{
     }
 
     giveStar = () => {
-        window.open('https://github.com/basarat/alm')
+        window.open('https://github.com/alm-tools/alm')
     }
 
     giveRose = () => {
