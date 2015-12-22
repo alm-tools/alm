@@ -1,12 +1,12 @@
 # Setup
 ```
-git clone https://github.com/typescriptbuilder/tsb.git
-cd tsb
+git clone https://github.com/basarat/alm.git
+cd alm
 npm install
 npm link
 ```
 
-Now you can run `tsb`
+Now you can run `alm`
 
 We highly recommend you use [`nodemon`](https://github.com/remy/nodemon), just run it from the project root:
 
@@ -15,7 +15,9 @@ npm install nodemon -g
 nodemon
 ```
 
-If you edit any front-end ts file our Webpack setup (more on this later) will reload the front end only. Make a change to some backend file and the app restarts :rose:
+# Workflow
+
+Once you have `nodemon` running, if you edit any front-end ts file our Webpack setup (more on this later) will reload the front end only. Make a change to some backend file and the app restarts :rose:
 
 # After moving a new machine
 I quite often work on my personal laptop during my 1 hour one way commute and need to setup the machine quickly, so on the new machine:

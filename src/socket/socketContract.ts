@@ -83,7 +83,7 @@ export var cast = {
     /** Errors for a file path */
     errorsUpdated: new TypedEvent<ErrorsByFilePath>(),
 
-    /** Tsb updated */
+    /** Available projects updated */
     availableProjectsUpdated: new TypedEvent<ActiveProjectConfigDetails[]>(),
 
     /** Active project name updated */

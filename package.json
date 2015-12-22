@@ -1,10 +1,10 @@
 {
-  "name": "tsb",
-  "version": "1.2.0",
-  "description": "The best TypeScript development environment",
+  "name": "alm",
+  "version": "0.0.0",
+  "description": "Application Lifecycle Management tools for TypeScript",
   "main": "src/server.js",
   "bin": {
-    "tsb": "./bin/tsb"
+    "alm": "./bin/alm"
   },
   "scripts": {
     "test": "echo \"Testing is just build at the moment, run from prepublish\"",
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TypeScriptBuilder/tsb.git"
+    "url": "git+https://github.com/basarat/alm.git"
   },
   "keywords": [
     "javascript",
@@ -27,10 +27,10 @@
   "author": "basaratali@gmail.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/TypeScriptBuilder/tsb/issues"
+    "url": "https://github.com/basarat/alm/issues"
   },
   "preferGlobal": true,
-  "homepage": "https://github.com/TypeScriptBuilder/tsb#readme",
+  "homepage": "https://github.com/basarat/alm#readme",
   "dependencies": {
     "basarat-text-buffer": "^6.0.0",
     "chokidar": "^1.0.5",
