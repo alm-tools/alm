@@ -497,7 +497,7 @@ class D3Graph {
     /** how different are the two nodes in the link */
     public difference(link: D3Link) {
         // take file path into account:
-        return 5; // TODO: relative(link.source.name, link.target.name).split('/').length;
+        return utils.relative(link.source.name, link.target.name).split('/').length;
     }
     public inOnly(node: D3LinkNode) {
         return !this.outDegLookup[node.name] && this.inDegLookup[node.name];
