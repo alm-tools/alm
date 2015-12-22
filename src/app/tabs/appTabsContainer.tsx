@@ -103,7 +103,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         commands.doOpenDependencyView.on((e) =>{
             let codeTab: state.TabInstance = {
                 id: createId(),
-                url: `dependency://`, // TODO: provide a file path :-/ or send to server dies
+                url: `dependency://Dependency View`,
                 saved: true
             }
 

@@ -9,6 +9,7 @@ import * as d3 from "d3";
 import {Types} from "../../socket/socketContract";
 import * as $ from "jquery";
 import * as styles from "../styles/styles";
+import * as onresize from "onresize";
 type FileDependency = Types.FileDependency;
 let EOL = '\n';
 
@@ -65,10 +66,9 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
                 display:(node) => {
                 }
             });
+
+            this.disposible.add(onresize.on(this.graphRenderer.resize))
         });
-    }
-    componentWillUnmount(){
-        this.disposible.dispose();
     }
 
     render() {
@@ -158,6 +158,12 @@ class GraphRenderer {
     nodes:d3.Selection<d3.layout.force.Node>;
     text:d3.Selection<d3.layout.force.Node>;
 
+    zoom: d3.behavior.Zoom<{}>;
+    layout: d3.layout.Force<d3.layout.force.Link<d3.layout.force.Node>,d3.layout.force.Node>;
+
+    graphWidth = 0;
+    graphHeight = 0;
+
     constructor(public config:{
         dependencies: FileDependency[],
         graphRoot: JQuery,
@@ -212,15 +218,16 @@ class GraphRenderer {
         })
 
         // Setup zoom
-        var zoom = d3.behavior.zoom();
-        zoom.scale(0.4);
-        zoom.on("zoom", onZoomChanged);
+        this.zoom = d3.behavior.zoom();
+        this.zoom.scale(0.4);
+        this.zoom.on("zoom", onZoomChanged);
 
         this.graph = d3Root.append("svg")
             .style('flex', '1')
-            .call(zoom)
+            .call(this.zoom)
             .append('svg:g');
-        var layout = d3.layout.force()
+
+        this.layout = d3.layout.force()
             .nodes(d3.values(d3NodeLookup))
             .links(d3links)
             .gravity(.05)
@@ -229,36 +236,12 @@ class GraphRenderer {
             .on("tick", this.tick)
             .start();
 
-        var drag = layout.drag()
+        var drag = this.layout.drag()
             .on("dragstart", dragstart);
 
         /** resize initially and setup for resize */
-        resize();
-        d3.select(window).on("resize", resize);
-        centerGraph();
-
-        var graphWidth, graphHeight;
-        function resize() {
-            graphWidth = config.graphRoot.width();
-            graphHeight = config.graphRoot.height();
-            self.graph.attr("width", graphWidth)
-                .attr("height", graphHeight);
-            layout.size([graphWidth, graphHeight])
-                .resume();
-        }
-
-        function centerGraph() {
-            var centerTranslate:[number,number] = [
-                (graphWidth / 4),
-                (graphHeight / 4),
-            ];
-            zoom.translate(centerTranslate);
-            // Render transition
-            self.graph.transition()
-                .duration(500)
-                .attr("transform", "translate(" + zoom.translate() + ")" + " scale(" + zoom.scale() + ")");
-        }
-
+        this.resize();
+        this.centerGraph();
 
         function onZoomChanged() {
             self.graph.attr("transform", "translate(" + (d3.event as any).translate + ")" + " scale(" + (d3.event as any).scale + ")");
@@ -280,7 +263,7 @@ class GraphRenderer {
             .attr("d", "M0,-5L10,0L0,5");
 
         this.links = self.graph.append("g").selectAll("path")
-            .data(layout.links())
+            .data(this.layout.links())
             .enter().append("path")
             .attr("class", function(d: D3Link) { return "link"; })
             .attr("data-target", function(o: D3Link) { return self.htmlName(o.target) })
@@ -288,7 +271,7 @@ class GraphRenderer {
             .attr("marker-end", function(d: D3Link) { return "url(#regular)"; });
 
         this.nodes = self.graph.append("g").selectAll("circle")
-            .data(layout.nodes())
+            .data(this.layout.nodes())
             .enter().append("circle")
             .attr("class", function(d: D3LinkNode) { return formatClassName(prefixes.circle, d) }) // Store class name for easier later lookup
             .attr("data-name", function(o: D3LinkNode) { return self.htmlName(o) }) // Store for easier later lookup
@@ -302,7 +285,7 @@ class GraphRenderer {
             .on("mouseout", function(d: D3LinkNode) { onNodeMouseOut(d) })
 
         this.text = self.graph.append("g").selectAll("text")
-            .data(layout.nodes())
+            .data(this.layout.nodes())
             .enter().append("text")
             .attr("x", 8)
             .attr("y", ".31em")
@@ -440,6 +423,30 @@ class GraphRenderer {
         this.nodes.classed('filtered-out', false);
         this.links.classed('filtered-out', false);
         this.text.classed('filtered-out', false);
+    }
+
+    /**
+     * Layout
+     */
+    resize = () => {
+        this.graphWidth = this.config.graphRoot.width();
+        this.graphHeight = this.config.graphRoot.height();
+        this.graph.attr("width", this.graphWidth)
+            .attr("height", this.graphHeight);
+        this.layout.size([this.graphWidth, this.graphHeight])
+            .resume();
+    }
+
+    centerGraph = () => {
+        var centerTranslate:[number,number] = [
+            (this.graphWidth / 4),
+            (this.graphHeight / 4),
+        ];
+        this.zoom.translate(centerTranslate);
+        // Render transition
+        this.graph.transition()
+            .duration(500)
+            .attr("transform", "translate(" + this.zoom.translate() + ")" + " scale(" + this.zoom.scale() + ")");
     }
 
     /**
