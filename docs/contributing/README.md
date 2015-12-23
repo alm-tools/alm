@@ -17,7 +17,7 @@ nodemon
 
 # Workflow
 
-Once you have `nodemon` running, if you edit any front-end ts file our Webpack setup (more on this later) will reload the front end only. Make a change to some backend file and the app restarts :rose:
+Once you have `nodemon` running, if you edit any front-end ts file our Webpack setup will reload the front end only. Make a change to some backend file and the app restarts :rose:
 
 # After moving a new machine
 I quite often work on my personal laptop during my 1 hour one way commute and need to setup the machine quickly, so on the new machine:
