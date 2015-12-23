@@ -14,7 +14,7 @@ And also listed on the side
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/dependencyView/cycles.png)
 
 # Filter
-You can filter particular nodes by specifying their name
+You can filter particular nodes by specifying their name (`Ctrl|⌘ + F`).
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/dependencyView/filter.png)
 
