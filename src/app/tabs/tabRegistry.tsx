@@ -7,7 +7,7 @@ import * as ui from "../ui";
 
 /** Various tabs  */
 import {Code} from "./codeTab";
-import {DependencyView} from "./devpendencyView";
+import {DependencyView} from "./dependencyView";
 
 let protocolToTab = {
     'file': Code,
