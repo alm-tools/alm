@@ -129,6 +129,7 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
                         <div className="control-zoom" style={controlItemStyle}>
                             <a className="control-zoom-in" href="#" title="Zoom in" onClick={this.zoomIn}/>
                             <a className="control-zoom-out" href="#" title="Zoom out" onClick={this.zoomOut}/>
+                            <a className="control-fit" href="#" title="Fit" onClick={this.zoomFit}/>
                         </div>
                         {cyclesMessages}
                     </div>
@@ -149,6 +150,12 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
         if (!this.graphRenderer) return;
 
         this.graphRenderer.zoomOut();
+    }
+    zoomFit = (e:React.SyntheticEvent) => {
+        e.preventDefault();
+        if (!this.graphRenderer) return;
+
+        this.graphRenderer.zoomFit();
     }
 
     /**
@@ -480,6 +487,10 @@ class GraphRenderer {
     }
     zoomOut = () => {
         this.zoomCenter(-1);
+    }
+    zoomFit = () => {
+        this.zoom.scale(0.4);
+        this.centerGraph();
     }
 
     /** Modifed from http://bl.ocks.org/linssen/7352810 */
