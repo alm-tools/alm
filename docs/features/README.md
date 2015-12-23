@@ -18,7 +18,7 @@
     * [Cursor History](#cursor-history)
     * [Clipboard Ring](#clipboard-ring)
     * [Blaster](#blaster)
-* [TypeScript](#errors)
+* [TypeScript Editing](#errors)
     * [Errors](#errors)
     * [Syntax Highlighting](#syntax-highlighting)
     * [Rename Refactoring](#rename-refactoring)
@@ -27,8 +27,11 @@
     * [Go to Definition](#goto-definition)
     * [Find References](#find-references)
     * [Active Lists](#active-list)
+* [TypeScript Analysis](#dependency-view)
+    * [Dependency View](#dependency-view)
 * [Git](#git-reset-file)
     * [Git Reset File](#git-reset-file)
+
 
 # Omni Search
 Single place for common search queries, supports various modes:
@@ -152,6 +155,13 @@ Easy as `Ctrl|⌘ + Shift + B`
 Going through your error list is a breeze with `F8` (goto next) and `Shift+F8` (goto previous).
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/activeList.gif)
+
+# Dependency View
+
+Get a quick overview of the project structure by opening up the dependency view (use the command search). You can zoom, pan, drag points around and hover over nodes. ([more details](https://github.com/alm-tools/alm/blob/master/docs/features/dependencyView.md))
+
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/dependencyView.png)
+
 
 # Git Reset File
 
