@@ -246,9 +246,10 @@ class GraphRenderer {
         })
 
         // Setup zoom
-        this.zoom = d3.behavior.zoom();
-        this.zoom.scale(0.4);
-        this.zoom.on("zoom", onZoomChanged);
+        this.zoom = d3.behavior.zoom()
+            .scale(0.4)
+            .scaleExtent([.1,6])
+            .on("zoom", onZoomChanged);
 
         this.graph = d3Root.append("svg")
             .style('flex', '1')
@@ -474,33 +475,37 @@ class GraphRenderer {
         this.transitionScale();
     }
 
-    private zoomMutiplier = 1.2;
     zoomIn = () => {
-        let zoomIncrease = this.zoomMutiplier;
-        let oldZoom = this.zoom.scale();
-        let newZoom = this.zoom.scale() * this.zoomMutiplier;
-        this.zoom.scale(newZoom);
-
-        // // visible box center
-        // let [x,y] = [(this.zoom.translate()[0] + this.graphWidth / 4), (this.zoom.translate()[1] + this.graphHeight / 4)];
-        // var increaseInStageX = x * zoomIncrease - x;
-        // var increaseInStageY = y * zoomIncrease - y;
-        // this.zoom.translate([x + increaseInStageX, y + increaseInStageY]);
-
-        this.transitionScale();
+        this.zoomCenter(1);
     }
     zoomOut = () => {
-        let zoomDecrease = this.zoomMutiplier;
-        let oldZoom = this.zoom.scale();
-        let newZoom = this.zoom.scale() / this.zoomMutiplier;
-        this.zoom.scale(newZoom);
+        this.zoomCenter(-1);
+    }
 
-        // // visible box center
-        // let [x,y] = [(this.zoom.translate()[0] + this.graphWidth / 2), (this.zoom.translate()[1] + this.graphHeight / 2)];
-        // var decreaseInStageX = x - x / zoomDecrease;
-        // var decreaseInStageY = y - y / zoomDecrease;
-        // this.zoom.translate([x - decreaseInStageX, y - decreaseInStageY]);
+    /** Modifed from http://bl.ocks.org/linssen/7352810 */
+    private zoomCenter(direction: number) {
+        var factor = 0.3,
+            target_zoom = 1,
+            center = [this.graphWidth / 2, this.graphHeight / 2],
+            extent = this.zoom.scaleExtent(),
+            translate = this.zoom.translate(),
+            translate0 = [],
+            l = [],
+            view = { x: translate[0], y: translate[1], k: this.zoom.scale() };
 
+        target_zoom = this.zoom.scale() * (1 + factor * direction);
+
+        if (target_zoom < extent[0] || target_zoom > extent[1]) { return false; }
+
+        translate0 = [(center[0] - view.x) / view.k, (center[1] - view.y) / view.k];
+        view.k = target_zoom;
+        l = [translate0[0] * view.k + view.x, translate0[1] * view.k + view.y];
+
+        view.x += center[0] - l[0];
+        view.y += center[1] - l[1];
+
+        this.zoom.scale(view.k);
+        this.zoom.translate([view.x, view.y]);
         this.transitionScale();
     }
 
