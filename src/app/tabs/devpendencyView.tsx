@@ -127,8 +127,8 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
                     style={[csx.newLayer,csx.horizontalReverse,controlRootStyle]}>
                     <div style={[csx.vertical, controlRightStyle]}>
                         <div className="control-zoom" style={controlItemStyle}>
-                            <a className="control-zoom-in" href="#" title="Zoom in" />
-                            <a className="control-zoom-out" href="#" title="Zoom out" />
+                            <a className="control-zoom-in" href="#" title="Zoom in" onClick={this.zoomIn}/>
+                            <a className="control-zoom-out" href="#" title="Zoom out" onClick={this.zoomOut}/>
                         </div>
                         {cyclesMessages}
                     </div>
@@ -136,6 +136,19 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
 
             </div>
         );
+    }
+
+    zoomIn = (e:React.SyntheticEvent) => {
+        e.preventDefault();
+        if (!this.graphRenderer) return;
+
+        this.graphRenderer.zoomIn();
+    }
+    zoomOut = (e:React.SyntheticEvent) => {
+        e.preventDefault();
+        if (!this.graphRenderer) return;
+
+        this.graphRenderer.zoomOut();
     }
 
     /**
@@ -458,9 +471,37 @@ class GraphRenderer {
         ];
         this.zoom.translate(centerTranslate);
         // Render transition
-        this.graph.transition()
-            .duration(500)
-            .attr("transform", "translate(" + this.zoom.translate() + ")" + " scale(" + this.zoom.scale() + ")");
+        this.transitionScale();
+    }
+
+    private zoomMutiplier = 1.2;
+    zoomIn = () => {
+        let zoomIncrease = this.zoomMutiplier;
+        let oldZoom = this.zoom.scale();
+        let newZoom = this.zoom.scale() * this.zoomMutiplier;
+        this.zoom.scale(newZoom);
+
+        // // visible box center
+        // let [x,y] = [(this.zoom.translate()[0] + this.graphWidth / 4), (this.zoom.translate()[1] + this.graphHeight / 4)];
+        // var increaseInStageX = x * zoomIncrease - x;
+        // var increaseInStageY = y * zoomIncrease - y;
+        // this.zoom.translate([x + increaseInStageX, y + increaseInStageY]);
+
+        this.transitionScale();
+    }
+    zoomOut = () => {
+        let zoomDecrease = this.zoomMutiplier;
+        let oldZoom = this.zoom.scale();
+        let newZoom = this.zoom.scale() / this.zoomMutiplier;
+        this.zoom.scale(newZoom);
+
+        // // visible box center
+        // let [x,y] = [(this.zoom.translate()[0] + this.graphWidth / 2), (this.zoom.translate()[1] + this.graphHeight / 2)];
+        // var decreaseInStageX = x - x / zoomDecrease;
+        // var decreaseInStageY = y - y / zoomDecrease;
+        // this.zoom.translate([x - decreaseInStageX, y - decreaseInStageY]);
+
+        this.transitionScale();
     }
 
     /**
@@ -468,6 +509,12 @@ class GraphRenderer {
      */
     private htmlName(object: D3LinkNode) {
         return object.name.replace(/(\.|\/)/gi, '-');
+    }
+
+    private transitionScale(){
+        this.graph.transition()
+            .duration(500)
+            .attr("transform", "translate(" + this.zoom.translate() + ")" + " scale(" + this.zoom.scale() + ")");
     }
 }
 
