@@ -10,6 +10,8 @@ import {Types} from "../../socket/socketContract";
 import * as $ from "jquery";
 import * as styles from "../styles/styles";
 import * as onresize from "onresize";
+import {Clipboard} from "../clipboard";
+
 type FileDependency = Types.FileDependency;
 let EOL = '\n';
 
@@ -34,19 +36,22 @@ let controlRootStyle = {
 let controlRightStyle = {
     width:'200px',
     padding: '10px',
-    background: 'rgba(200,200,200,.15)',
 
     overflow: 'auto',
     wordBreak: 'break-all'
 }
 let controlItemStyle = {
     pointerEvents:'auto',
-    paddingBottom:'.4rem'
+
+    padding:'.4rem',
+    transition:'background .2s',
+    background: 'rgba(200,200,200,.05)',
+    ':hover':{
+        background: 'rgba(200,200,200,.25)',
+    }
 }
 let cycleHeadingStyle = {
     fontSize:'1.2rem',
-    paddingTop: '.2rem',
-    paddingBottom: '.2rem',
 }
 
 /**
@@ -98,16 +103,17 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
 
         let cyclesMessages = hasCycles
             ? this.state.cycles.map((cycle,i)=>{
+                let cycleText = cycle.join(' ⬅️ ');
                 return (
                     <div key={i} style={controlItemStyle}>
-                        <div style={cycleHeadingStyle}>Cycle Found</div>
+                        <div style={cycleHeadingStyle}> {i+1}) Cycle <Clipboard text={cycleText} /></div>
                         <div>
-                            {cycle.join(' ⬅️ ')}
+                            {cycleText}
                        </div>
                     </div>
                 );
             })
-            : <div style={controlItemStyle}>No cycles found. Good job 🌹</div>;
+            : <div key={-1} style={controlItemStyle}>No cycles found. Good job 🌹</div>;
 
         return (
             <div
