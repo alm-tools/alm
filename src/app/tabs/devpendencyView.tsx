@@ -102,7 +102,7 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
                     <div key={i} style={controlItemStyle}>
                         <div style={cycleHeadingStyle}>Cycle Found</div>
                         <div>
-                            {cycle.join(' ➡️ ')}
+                            {cycle.join(' ⬅️ ')}
                        </div>
                     </div>
                 );
