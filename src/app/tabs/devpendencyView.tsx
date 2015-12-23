@@ -25,13 +25,28 @@ import {CodeEditor} from "../codemirror/codeEditor";
 export interface Props extends tab.ComponentProps {
 }
 export interface State {
+    cycles:string[][];
 }
 
 let controlRootStyle = {
-    pointerEvents:'none'
+    pointerEvents:'none',
+}
+let controlRightStyle = {
+    width:'200px',
+    padding: '10px',
+    background: 'rgba(200,200,200,.15)',
+
+    overflow: 'auto',
+    wordBreak: 'break-all'
 }
 let controlItemStyle = {
-    pointerEvents:'auto'
+    pointerEvents:'auto',
+    paddingBottom:'.4rem'
+}
+let cycleHeadingStyle = {
+    fontSize:'1.2rem',
+    paddingTop: '.2rem',
+    paddingBottom: '.2rem',
 }
 
 /**
@@ -47,6 +62,7 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
         super(props);
         this.filePath = utils.getFilePathFromUrl(props.url);
         this.state = {
+            cycles:[]
         };
     }
 
@@ -59,6 +75,7 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
     filePath: string;
     componentDidMount() {
         server.getDependencies({}).then((res) => {
+            // Create the graph renderer
             this.graphRenderer = new GraphRenderer({
                 dependencies: res.links,
                 graphRoot:$(this.refs.graphRoot),
@@ -67,11 +84,31 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
                 }
             });
 
+            // get the cycles
+            let cycles = this.graphRenderer.d3Graph.cycles();
+            this.setState({cycles});
+
+            // setup listening to resize
             this.disposible.add(onresize.on(this.graphRenderer.resize))
         });
     }
 
     render() {
+        let hasCycles = !!this.state.cycles.length;
+
+        let cyclesMessages = hasCycles
+            ? this.state.cycles.map((cycle,i)=>{
+                return (
+                    <div key={i} style={controlItemStyle}>
+                        <div style={cycleHeadingStyle}>Cycle Found</div>
+                        <div>
+                            {cycle.join(' ➡️ ')}
+                       </div>
+                    </div>
+                );
+            })
+            : <div style={controlItemStyle}>No cycles found. Good job 🌹</div>;
+
         return (
             <div
                 className="dependency-view"
@@ -82,15 +119,12 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
 
                 <div ref="controlRoot" className="graph-controls"
                     style={[csx.newLayer,csx.horizontalReverse,controlRootStyle]}>
-                    <div style={[{width:'200px'},csx.vertical]}>
+                    <div style={[csx.vertical, controlRightStyle]}>
                         <div className="control-zoom" style={controlItemStyle}>
                             <a className="control-zoom-in" href="#" title="Zoom in" />
                             <a className="control-zoom-out" href="#" title="Zoom out" />
                         </div>
-                        <div className="copy-message" style={controlItemStyle}>
-                            <button className="btn btn-xs">Copy Messages</button>
-                        </div>
-                        <div className="general-messages" style={controlItemStyle}/>
+                        {cyclesMessages}
                     </div>
                </div>
 
@@ -164,6 +198,8 @@ class GraphRenderer {
     graphWidth = 0;
     graphHeight = 0;
 
+    d3Graph: D3Graph;
+
     constructor(public config:{
         dependencies: FileDependency[],
         graphRoot: JQuery,
@@ -172,10 +208,6 @@ class GraphRenderer {
     }){
         var d3Root = d3.select(config.graphRoot[0]);
         let self = this;
-
-        var messagesElement = config.controlRoot.find('.general-messages');
-        messagesElement.text("No Issues Found!")
-        let copyDisplay = config.controlRoot.find('.copy-message>button');
 
         // Compute the distinct nodes from the links.
         var d3NodeLookup: { [name: string]: D3LinkNode } = {};
@@ -186,35 +218,12 @@ class GraphRenderer {
         });
 
         // Calculate all the good stuff
-        var d3Graph = new D3Graph(d3links);
-
-        // If any cycles found log them:
-        if (d3Graph.cycles().length) {
-            let cycles = d3Graph.cycles();
-            let message = '';
-            let textContent = '';
-            for (let cycle of cycles) {
-                message += '<h3>Cycle Found: </h3>';
-                message += cycle.join(' <br/> ') + '<br/>';
-                textContent += '---Cycle Found---' + EOL;
-                textContent += cycle.join(EOL) + EOL;
-            }
-            messagesElement.html(message);
-
-            copyDisplay.show().on('click', () => {
-                // TODO: copy to clipboard
-                // atom.clipboard.write(textContent);
-                // atom.notifications.addInfo('Copied!');
-            });
-        } else {
-            copyDisplay.hide();
-            messagesElement.hide();
-        }
+        this.d3Graph = new D3Graph(d3links);
 
         // setup weights based on degrees
         Object.keys(d3NodeLookup).forEach(name=> {
             var node = d3NodeLookup[name];
-            node.weight = d3Graph.avgDeg(node);
+            node.weight = self.d3Graph.avgDeg(node);
         })
 
         // Setup zoom
@@ -231,7 +240,7 @@ class GraphRenderer {
             .nodes(d3.values(d3NodeLookup))
             .links(d3links)
             .gravity(.05)
-            .linkDistance(function(link: D3Link) { return (d3Graph.difference(link)) * 200; })
+            .linkDistance(function(link: D3Link) { return (self.d3Graph.difference(link)) * 200; })
             .charge(-900)
             .on("tick", this.tick)
             .start();
@@ -246,7 +255,6 @@ class GraphRenderer {
         function onZoomChanged() {
             self.graph.attr("transform", "translate(" + (d3.event as any).translate + ")" + " scale(" + (d3.event as any).scale + ")");
         }
-
 
         // Per-type markers, as they don't inherit styles.
         self.graph.append("defs").selectAll("marker")
@@ -276,9 +284,9 @@ class GraphRenderer {
             .attr("class", function(d: D3LinkNode) { return formatClassName(prefixes.circle, d) }) // Store class name for easier later lookup
             .attr("data-name", function(o: D3LinkNode) { return self.htmlName(o) }) // Store for easier later lookup
             .attr("r", function(d: D3LinkNode) { return Math.max(d.weight, 3); })
-            .classed("inonly", function(d: D3LinkNode) { return d3Graph.inOnly(d); })
-            .classed("outonly", function(d: D3LinkNode) { return d3Graph.outOnly(d); })
-            .classed("circular", function(d: D3LinkNode) { return d3Graph.isCircular(d); })
+            .classed("inonly", function(d: D3LinkNode) { return self.d3Graph.inOnly(d); })
+            .classed("outonly", function(d: D3LinkNode) { return self.d3Graph.outOnly(d); })
+            .classed("circular", function(d: D3LinkNode) { return self.d3Graph.isCircular(d); })
             .call(drag)
             .on("dblclick", dblclick) // Unstick
             .on("mouseover", function(d: D3LinkNode) { onNodeMouseOver(d) })
@@ -322,7 +330,7 @@ class GraphRenderer {
 
             if (fade) {
                 self.nodes.each(function(o: D3LinkNode) {
-                    if (!d3Graph.isConnected(d, o)) {
+                    if (!self.d3Graph.isConnected(d, o)) {
                         this.classList.add('not-hovering');
                         this.classList.add('dimmed');
                     }
@@ -368,7 +376,7 @@ class GraphRenderer {
             self.text.classed("dimmed", function(o: D3LinkNode) {
                 if (!fade) return false;
 
-                if (d3Graph.isConnected(d, o)) return false;
+                if (self.d3Graph.isConnected(d, o)) return false;
 
                 return true;
             });
@@ -461,6 +469,7 @@ interface TargetBySourceName
 { [source: string]: D3LinkNode[] }
 
 /**
+ * A class to do analysis on D3 links array
  * Degree : The number of connections
  * Bit of a lie about degrees : 0 is changed to 1 intentionally
  */

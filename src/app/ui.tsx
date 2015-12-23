@@ -123,10 +123,10 @@ export let {DraggableCore} = require('react-draggable');
 /**
  * General react utilities
  */
- /** Creates whitespace from a 0 based indent */
- export function indent(indent: number, tabSize = 4) {
-     return Array((indent * tabSize) + 1).join().split('').map(i => "\u00a0");
- }
+/** Creates whitespace from a 0 based indent */
+export function indent(indent: number, tabSize = 4) {
+    return Array((indent * tabSize) + 1).join().split('').map(i => "\u00a0");
+}
 
 /**
  * General utility for consistent coloring
