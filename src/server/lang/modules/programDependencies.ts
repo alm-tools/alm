@@ -18,6 +18,9 @@ export function getProgramDependencies(projectFile: TypeScriptConfigFileDetails,
             .map(fileReference => {
             var file = path.resolve(dir, fileReference + '.ts');
             if (!fs.existsSync(file)) {
+                file = path.resolve(dir, fileReference + '.tsx');
+            }
+            if (!fs.existsSync(file)) {
                 file = path.resolve(dir, fileReference + '.d.ts');
             }
             return file;
