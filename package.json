@@ -11,6 +11,7 @@
     "clean": "rm ./src/public/build/bundle.js",
     "prepublish": "bash ./scripts/prepublish.sh",
     "resume": "bash ./scripts/resume.sh",
+    "tsc": "ntsc -p ./src",
     "tscw": "ntsc -p ./src -w"
   },
   "repository": {
