@@ -6,21 +6,18 @@
 
 [![Build Status](https://travis-ci.org/alm-tools/alm.svg?branch=master)](https://travis-ci.org/alm-tools/alm)
 
-> ⚠️ This project is not ready. Lookout for final release by about 2017 (patience and persistence), just making it public to be clear on *what I am working on*. 🌟 it to help it move along 🌹
+> ⚠️ This project is not on NPM yet. Lookout for final release by about 2017. 🌟 it to help it move along 🌹
 
-**Why TypeScript?**
+## Why
 
-You can build *complete* applications with a single language > this means you can have dev tools (like this) that can understand *your entire project*.
-
-* This project is TypeScript first. We want to provide the **greatest** development and analysis experience for TypeScript. Every feature revolves around this goal, and we have features unique to TypeScript development.
 * [Super easy to setup](https://github.com/alm-tools/alm/tree/master#usage). Just `npm install` and open your browser.
 
-There are lots of [other reasons why you might use this project OR use the source code](https://github.com/alm-tools/alm/blob/master/docs/contributing/why.md). Effectively this is `transpiler`, `editor`, `analyzer`, `DX workflow` rolled into one.
+* There are lots of [other reasons why you might use this project OR use the source code](https://github.com/alm-tools/alm/blob/master/docs/contributing/why.md). Effectively this is `transpiler`, `editor`, `analyzer`, `DX workflow` rolled into one.
 
 ## Requirements
 This is a forward looking project that plans to use the latest tech as it becomes available:
 
-* You need the latest version of NodeJS (at least v4).
+* You need a recent version of NodeJS (V4 and above).
 * You need Google Chrome.
 
 That is it!
@@ -42,6 +39,10 @@ alm .
 Now open it in your favorite browser (pssst `chrome`) at the URL mentioned in your console. (**protip** use `alm -o`)
 
 ![main](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/main.png)
+
+## Features
+
+Checkout the [feature documentation](https://github.com/alm-tools/alm/tree/master/docs/features).
 
 ## Command Line
 All of these are **optional**:
