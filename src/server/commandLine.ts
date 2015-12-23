@@ -4,7 +4,8 @@ import * as utils from "../common/utils";
 import * as workingDir from "./disk/workingDir";
 import * as fsu from "./utils/fsu";
 
-let defaultPort = 4444;
+let defaultPort = process.env.PORT /* the port by Windows azure */
+    || 4444;
 
 var argv: {
     p?: number;
