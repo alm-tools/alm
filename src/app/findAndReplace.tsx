@@ -10,12 +10,14 @@ import * as state from "./state/state";
 import * as commands from "./commands/commands";
 import {connect} from "react-redux";
 import {Icon} from "./icon";
+import * as tabRegistry from "./tabs/tabRegistry";
 
 let {inputBlackStyle} = styles.Input;
 
 export interface Props {
     // connected using redux
     findQuery?: FindOptions;
+    selectedTabIndex?: number;
 }
 export interface State {
 }
@@ -51,7 +53,8 @@ let searchOptionsLabelStyle = {
 
 @connect((state: state.StoreState): Props => {
     return {
-        findQuery: state.findOptions
+        findQuery: state.findOptions,
+        selectedTabIndex: state.selectedTabIndex,
     };
 })
 @ui.Radium
@@ -61,7 +64,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         this.disposible.add(commands.findAndReplace.on(() => {
             state.setFindOptionsIsShown(true);
             this.findInput().select();
-            this.replaceInput().select();
+            this.replaceInput() && this.replaceInput().select();
             this.findInput().focus();
         }));
 
@@ -90,6 +93,27 @@ export class FindAndReplace extends BaseComponent<Props, State>{
 
     render() {
         let shownStyle = this.props.findQuery.isShown ? {} : { display: 'none' };
+
+        /** Detect advanced find needed or not */
+        let tab = state.getSelectedTab();
+        let protocol = tab && utils.getFilePathAndProtocolFromUrl(tab.url).protocol;
+        let advancedFind = protocol === 'file';
+
+        if (!advancedFind){
+            return (
+                <div style={[csx.horizontal,shownStyle]}>
+                    <div style={[csx.flex, csx.vertical]}>
+                        <div style={[csx.horizontal, csx.center, styles.padded1]}>
+                            <input tabIndex={1} ref="find"
+                            	placeholder="Find"
+                                style={[inputBlackStyle, inputCodeStyle, csx.flex]}
+                                onKeyDown={this.findKeyDownHandler}
+                                onChange={this.findChanged} defaultValue={this.props.findQuery.query}/>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
 
         return (
             <div style={[csx.vertical,shownStyle]}>
@@ -157,7 +181,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         let {tab,shift,enter,mod} = ui.getKeyStates(e);
 
         if (shift && tab) {
-            this.fullWordInput().focus();
+            this.fullWordInput() && this.fullWordInput().focus();
             e.preventDefault();
             return;
         }
