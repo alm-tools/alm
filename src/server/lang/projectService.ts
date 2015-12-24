@@ -300,3 +300,29 @@ export function getDependencies(query: {}): Promise<Types.GetDependenciesRespons
     var links = getProgramDependencies(project.configFile, project.languageService.getProgram());
     return resolve({ links });
 }
+
+/**
+ * AST View
+ */
+import {astToText, astToTextFull} from "./modules/astToText";
+function toAST(query:Types.GetASTQuery, type: "important"|"full"):Promise<Types.GetASTResponse>{
+    let project = getProject(query.filePath);
+    var service = project.languageService;
+
+    var files = service.getProgram().getSourceFiles().filter(x=> x.fileName == query.filePath);
+    if (!files.length) resolve({});
+
+    var sourceFile = files[0];
+
+    let root = type === "important"
+        ? astToText(sourceFile)
+        : astToTextFull(sourceFile);
+
+    return resolve({ root });
+}
+export function getAST(query: Types.GetASTQuery): Promise<Types.GetASTResponse> {
+    return toAST(query,"important");
+}
+export function getASTFull(query: Types.GetASTQuery): Promise<Types.GetASTResponse> {
+    return toAST(query,"full");
+}

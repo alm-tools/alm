@@ -52,6 +52,8 @@ export var server = {
     formatDocumentRange: {} as QRFunction<Types.FormatDocumentRangeQuery, Types.FormatDocumentRangeResponse>,
     getNavigateToItems: {} as QRFunction<{},Types.GetNavigateToItemsResponse>,
     getDependencies: {} as QRFunction<{},Types.GetDependenciesResponse>,
+    getAST: {} as QRFunction<Types.GetASTQuery,Types.GetASTResponse>,
+    getASTFull: {} as QRFunction<Types.GetASTQuery,Types.GetASTResponse>,
 
     /**
      * Git service
@@ -242,6 +244,35 @@ export namespace Types {
     }
     export interface GetDependenciesResponse {
         links: FileDependency[]
+    }
+
+    /**
+     * AST View
+     */
+     export interface GetASTQuery extends FilePathQuery { }
+     export interface GetASTResponse {
+         root?: NodeDisplay
+     }
+     export interface NodeDisplay {
+        kind: string;
+        children: NodeDisplay[];
+
+        pos: number;
+        end: number;
+
+        /** Represents how many parents it has */
+        depth: number;
+        /** If we had a flat structure this is where this item would belong */
+        nodeIndex: number;
+
+        /** Key Details I understand */
+        details?: any;
+
+        /**
+         * Best attempt serialization of original node
+         * We remove `parent`
+         */
+        rawJson: any;
     }
 
 }
