@@ -305,7 +305,7 @@ export function getDependencies(query: {}): Promise<Types.GetDependenciesRespons
  * AST View
  */
 import {astToText, astToTextFull} from "./modules/astToText";
-function toAST(query:Types.GetASTQuery, type: "important"|"full"):Promise<Types.GetASTResponse>{
+export function getAST(query: Types.GetASTQuery): Promise<Types.GetASTResponse> {
     let project = getProject(query.filePath);
     var service = project.languageService;
 
@@ -314,15 +314,9 @@ function toAST(query:Types.GetASTQuery, type: "important"|"full"):Promise<Types.
 
     var sourceFile = files[0];
 
-    let root = type === "important"
+    let root = query.mode === Types.ASTMode.visitor
         ? astToText(sourceFile)
         : astToTextFull(sourceFile);
 
     return resolve({ root });
-}
-export function getAST(query: Types.GetASTQuery): Promise<Types.GetASTResponse> {
-    return toAST(query,"important");
-}
-export function getASTFull(query: Types.GetASTQuery): Promise<Types.GetASTResponse> {
-    return toAST(query,"full");
 }

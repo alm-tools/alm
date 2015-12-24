@@ -109,7 +109,6 @@ namespace Server {
     export var getNavigateToItems : typeof contract.server.getNavigateToItems = projectService.getNavigateToItems;
     export var getDependencies : typeof contract.server.getDependencies = projectService.getDependencies;
     export var getAST : typeof contract.server.getAST = projectService.getAST;
-    export var getASTFull : typeof contract.server.getASTFull = projectService.getASTFull;
 
     /**
      * Git service

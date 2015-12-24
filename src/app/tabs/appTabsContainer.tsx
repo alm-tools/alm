@@ -18,6 +18,7 @@ import {createId} from "../../common/utils";
 import {tabHeaderContainer,tabHeader,tabHeaderActive,tabHeaderUnsaved} from "../styles/styles";
 
 import {server} from "../../socket/socketClient";
+import {Types} from "../../socket/socketContract";
 import {rangeLimited} from "../../common/utils";
 import {statusBar} from "../statusBar";
 
@@ -112,28 +113,41 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             state.addTabAndSelect(codeTab);
         });
 
-        commands.doOpenASTView.on((e) =>{
+        let getCurrentFilePathOrWarn = () => {
+            let tab = state.getSelectedTab();
+            if (!tab) {
+                ui.notifyWarningNormalDisappear('Need a valid file path for this action');
+                return;
+            }
+            let {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(tab.url);
+            if (protocol !== 'file'){
+                ui.notifyWarningNormalDisappear('Need a valid file path for this action');
+                return;
+            }
+            return filePath;
+        }
+
+        let openAst = (mode:Types.ASTMode)=>{
+            let filePath = getCurrentFilePathOrWarn();
+            if (!filePath) return;
+
             let codeTab: state.TabInstance = {
                 id: createId(),
-                url: `ast://AST View`, // TODO: get the active tab url url and use that
+                url: `${mode == Types.ASTMode.visitor ? 'ast' : 'astfull'}://${filePath}`,
                 saved: true
             }
 
             this.afterComponentDidUpdate(this.sendTabInfoToServer);
             this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
             state.addTabAndSelect(codeTab);
+        }
+
+        commands.doOpenASTView.on((e) =>{
+            openAst(Types.ASTMode.visitor);
         });
 
         commands.doOpenASTFullView.on((e) =>{
-            let codeTab: state.TabInstance = {
-                id: createId(),
-                url: `astfull://AST View`, // TODO: get the active tab url url and use that
-                saved: true
-            }
-
-            this.afterComponentDidUpdate(this.sendTabInfoToServer);
-            this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
-            state.addTabAndSelect(codeTab);
+            openAst(Types.ASTMode.children);
         });
 
         commands.doOpenOrFocusFile.on((e)=>{

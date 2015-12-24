@@ -53,7 +53,6 @@ export var server = {
     getNavigateToItems: {} as QRFunction<{},Types.GetNavigateToItemsResponse>,
     getDependencies: {} as QRFunction<{},Types.GetDependenciesResponse>,
     getAST: {} as QRFunction<Types.GetASTQuery,Types.GetASTResponse>,
-    getASTFull: {} as QRFunction<Types.GetASTQuery,Types.GetASTResponse>,
 
     /**
      * Git service
@@ -249,7 +248,15 @@ export namespace Types {
     /**
      * AST View
      */
-     export interface GetASTQuery extends FilePathQuery { }
+     export enum ASTMode {
+         /** ts.forEachChild() */
+         visitor,
+         /** node.getChildren() */
+         children,
+     }
+     export interface GetASTQuery extends FilePathQuery {
+         mode: ASTMode;
+     }
      export interface GetASTResponse {
          root?: NodeDisplay
      }
