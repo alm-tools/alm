@@ -335,7 +335,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         let selectedIndex = this.props.selectedTabIndex;
 
         let titles = this.props.tabs.map((t, i) =>{
-            let title = utils.getFileName(t.url);
+            let title = tabRegistry.getTabConfigByUrl(t.url).getTitle(t.url);
 
             var style = [tabHeader, i == selectedIndex ? tabHeaderActive : {}];
 

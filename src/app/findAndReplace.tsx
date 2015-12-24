@@ -96,8 +96,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
 
         /** Detect advanced find needed or not */
         let tab = state.getSelectedTab();
-        let protocol = tab && utils.getFilePathAndProtocolFromUrl(tab.url).protocol;
-        let advancedFind = protocol === 'file';
+        let advancedFind = tab && tabRegistry.getTabConfigByUrl(tab.url).advancedSearch;
 
         if (!advancedFind){
             return (
