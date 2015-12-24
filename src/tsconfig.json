@@ -150,6 +150,7 @@
         "./app/styles/styles.tsx",
         "./app/styles/theme.tsx",
         "./app/tabs/appTabsContainer.tsx",
+        "./app/tabs/astView.tsx",
         "./app/tabs/codeTab.tsx",
         "./app/tabs/dashboardTab.tsx",
         "./app/tabs/dependencyView.tsx",

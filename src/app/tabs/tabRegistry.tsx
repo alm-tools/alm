@@ -8,10 +8,13 @@ import * as ui from "../ui";
 /** Various tabs  */
 import {Code} from "./codeTab";
 import {DependencyView} from "./dependencyView";
+import {ASTView} from "./astView";
 
 let protocolToTab = {
     'file': Code,
     'dependency': DependencyView,
+    'ast': ASTView,
+    'astfull': ASTView,
 }
 
 

@@ -323,7 +323,15 @@ export var doOpenOrFocusTab = new events.TypedEvent<{ tabId: string, tabUrl: str
  * Other tab types
  */
 export var doOpenDependencyView = new UICommand({
-    description: 'Open dependency view',
+    description: 'Open Dependency View',
+    context: CommandContext.Global,
+});
+export var doOpenASTView = new UICommand({
+    description: 'Open AST View',
+    context: CommandContext.Global,
+});
+export var doOpenASTFullView = new UICommand({
+    description: 'Open AST-Full View',
     context: CommandContext.Global,
 });
 

@@ -112,6 +112,30 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             state.addTabAndSelect(codeTab);
         });
 
+        commands.doOpenASTView.on((e) =>{
+            let codeTab: state.TabInstance = {
+                id: createId(),
+                url: `ast://AST View`, // TODO: get the active tab url url and use that
+                saved: true
+            }
+
+            this.afterComponentDidUpdate(this.sendTabInfoToServer);
+            this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
+            state.addTabAndSelect(codeTab);
+        });
+
+        commands.doOpenASTFullView.on((e) =>{
+            let codeTab: state.TabInstance = {
+                id: createId(),
+                url: `astfull://AST View`, // TODO: get the active tab url url and use that
+                saved: true
+            }
+
+            this.afterComponentDidUpdate(this.sendTabInfoToServer);
+            this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
+            state.addTabAndSelect(codeTab);
+        });
+
         commands.doOpenOrFocusFile.on((e)=>{
             // if open and focused just goto pos
             // if open and not focused then focus and goto pos

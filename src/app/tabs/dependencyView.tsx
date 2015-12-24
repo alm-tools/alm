@@ -54,11 +54,6 @@ let cycleHeadingStyle = {
     fontSize:'1.2rem',
 }
 
-/**
- * This is a thin wrapper around `CodeEditor` with the following key motivations
- * - All server code must go through here
- * - All tab type stuff must go through here
- */
 @ui.Radium
 export class DependencyView extends ui.BaseComponent<Props, State> implements tab.Component {
 
