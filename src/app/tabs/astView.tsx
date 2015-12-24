@@ -20,7 +20,7 @@ let {inputBlackStyle} = styles.Input;
 /**
  * The styles
  */
-require('./dependencyView.less');
+require('./astView.less');
 
 import {CodeEditor} from "../codemirror/codeEditor";
 
@@ -34,9 +34,11 @@ export class ASTView extends ui.BaseComponent<Props, State> implements tab.Compo
 
     constructor(props: Props) {
         super(props);
-        this.filePath = utils.getFilePathFromUrl(props.url);
+        let {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(props.url);
+        this.mode = protocol === 'ast' ? Types.ASTMode.visitor : Types.ASTMode.children;
+        this.filePath = filePath;
+
         this.state = {
-            cycles:[]
         };
     }
 
@@ -47,7 +49,12 @@ export class ASTView extends ui.BaseComponent<Props, State> implements tab.Compo
     }
 
     filePath: string;
+    mode: Types.ASTMode;
     componentDidMount() {
+        server.getAST({mode:this.mode,filePath:this.filePath})
+            .then((res)=>{
+                
+            });
         // server.getAST();
         // server.getASTFull();
     }
@@ -55,8 +62,15 @@ export class ASTView extends ui.BaseComponent<Props, State> implements tab.Compo
     render() {
         return (
             <div
-                style={csx.extend(csx.vertical,csx.flex)}>
-                AST View comming soon
+                style={csx.extend(csx.horizontal,csx.flex)}>
+                <div style={csx.flex}>
+                    The ast tree view goes here
+                </div>
+                <div style={csx.flex}>
+                    <pre>
+                        The selected ast node details will go here
+                    </pre>
+                </div>
             </div>
         );
     }
