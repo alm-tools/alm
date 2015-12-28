@@ -21,7 +21,7 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: str
 		case ClassificationType.regularExpressionLiteral:
 			return 'string-2';
         case ClassificationType.operator:
-            return 'operator';
+            return 'keyword operator'; // The atom grammar does keyword+operator and I actually like that
         case ClassificationType.comment:
             return 'comment';
         case ClassificationType.className:
