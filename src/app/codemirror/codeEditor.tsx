@@ -201,7 +201,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 	}
 
     getQuickInfo(pos:CodeMirror.Position): Promise<string | HTMLElement> {
-        if (state.inActiveProject(this.props.filePath)) {
+        if (state.inActiveProjectFilePath(this.props.filePath)) {
             return server.quickInfo({ filePath: this.props.filePath, position: this.codeMirror.getDoc().indexFromPos(pos) }).then(resp=> {
                 if (!resp.valid) return;
 

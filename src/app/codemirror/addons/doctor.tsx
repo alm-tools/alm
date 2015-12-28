@@ -142,7 +142,7 @@ export class Doctor extends ui.BaseComponent<Props,State> {
     updateLazyInformation = utils.debounce(() => {
         if (this.isUnmounted) return;
         if (!this.props.showDoctor || !this.state.singleCursor) return;
-        if (!state.inActiveProject(this.props.filePath)) return;
+        if (!state.inActiveProjectFilePath(this.props.filePath)) return;
 
         let cm = this.props.cm;
         let doc = cm.getDoc();
@@ -157,7 +157,7 @@ export class Doctor extends ui.BaseComponent<Props,State> {
             return <div />;
         }
 
-        if (!state.inActiveProject(this.props.filePath)) {
+        if (!state.inActiveProjectFilePath(this.props.filePath)) {
             return <div/>;
         }
 

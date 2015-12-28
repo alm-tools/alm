@@ -32,7 +32,7 @@ export interface Props {
     errorsExpanded?: boolean;
     activeProject?: ActiveProjectConfigDetails;
     activeProjectFiles?: { [filePath: string]: boolean };
-    currentFilePath?: string;
+    selectedTabIndex?: number;
     errorsByFilePath?: ErrorsByFilePath;
     socketConnected?: boolean;
 }
@@ -54,7 +54,7 @@ let resizerStyle = {
         errorsExpanded: state.errorsExpanded,
         activeProject: state.activeProject,
         activeProjectFiles: state.activeProjectFilePathTruthTable,
-        currentFilePath: state.currentFilePath,
+        selectedTabIndex: state.selectedTabIndex,
         errorsByFilePath: state.errorsByFilePath,
         socketConnected: state.socketConnected
     };

@@ -13,7 +13,6 @@ export interface StoreState {
     activeProject?: ActiveProjectConfigDetails;
     errorsExpanded?: boolean;
     errorsByFilePath?: ErrorsByFilePath;
-    currentFilePath?: string;
     /** Is the current file in the activeProject */
     activeProjectFilePathTruthTable?: { [filePath: string]: boolean };
 
@@ -40,7 +39,6 @@ let initialStoreState: StoreState = {
     activeProject: null,
     errorsExpanded: false,
     errorsByFilePath: {},
-    currentFilePath: '',
     activeProjectFilePathTruthTable: {},
     pendingRequests: [],
     findOptions: {
@@ -70,19 +68,22 @@ export let setActiveProject = redux.add('setActiveProject', (state, payload: Act
     };
 });
 
-export let inActiveProject = (filePath:string) => !!getState().activeProjectFilePathTruthTable[filePath];
+export let inActiveProjectFilePath = (filePath:string) => !!getState().activeProjectFilePathTruthTable[filePath];
+export let inActiveProjectUrl = (url:string) => {
+    if (!url) return false;
+    let {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(url);
+    if (protocol == 'file'){
+        return inActiveProjectFilePath(filePath);
+    }
+    else {
+        return true;
+    }
+}
 
 export let setFilePathsInActiveProject = redux.add('setActiveProjectFiles', (state, payload: string[]): StoreState => {
     let truthTable = utils.createMap(payload);
     return {
         activeProjectFilePathTruthTable: truthTable
-    };
-});
-
-
-export let setCurrentFilePath = redux.add('setCurrentFilePath', (state, payload: string): StoreState => {
-    return {
-        currentFilePath: payload,
     };
 });
 

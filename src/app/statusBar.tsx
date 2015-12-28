@@ -31,9 +31,10 @@ export interface Props {
     errorsExpanded?: boolean;
     activeProject?: ActiveProjectConfigDetails;
     activeProjectFiles?: { [filePath: string]: boolean };
-    currentFilePath?: string;
     errorsByFilePath?: ErrorsByFilePath;
     socketConnected?: boolean;
+    tabs?: state.TabInstance[];
+    selectedTabIndex?: number;
 }
 export interface State {
 }
@@ -48,9 +49,10 @@ export var statusBar: StatusBar;
         errorsExpanded: state.errorsExpanded,
         activeProject: state.activeProject,
         activeProjectFiles: state.activeProjectFilePathTruthTable,
-        currentFilePath: state.currentFilePath,
         errorsByFilePath: state.errorsByFilePath,
-        socketConnected: state.socketConnected
+        socketConnected: state.socketConnected,
+        tabs: state.tabs,
+        selectedTabIndex: state.selectedTabIndex,
     };
 })
 export class StatusBar extends BaseComponent<Props, State>{
@@ -68,11 +70,14 @@ export class StatusBar extends BaseComponent<Props, State>{
 
         let errorCount = utils.selectMany(Object.keys(this.props.errorsByFilePath).map((k)=>this.props.errorsByFilePath[k])).length;
         let projectTipKeboard = ReactDOMServer.renderToString(<div style={notificationKeyboardStyle}>Alt+Shift+P</div>);
+        let tab = state.getSelectedTab();
+        let filePath = tab && utils.getFilePathFromUrl(tab.url);
+
         let inActiveProjectSection =
-            !this.props.currentFilePath
+            !tab
             ? ''
             : <span style={styles.statusBarSection}>
-                {state.inActiveProject(this.props.currentFilePath)
+                {state.inActiveProjectUrl(tab.url)
                     ?<span
                         className="hint--top hint--success"
                         style={csx.extend(styles.noSelect,styles.statusBarSuccess, styles.hand)}
@@ -101,14 +106,14 @@ export class StatusBar extends BaseComponent<Props, State>{
                         </span>
                         :''}
                     {inActiveProjectSection}
-                    {this.props.currentFilePath
+                    {filePath
                         ?<span
                             className="hint--top"
                             data-hint="Click to copy the file path to clipboard"
-                            data-clipboard-text={this.props.currentFilePath.replace(/\//g,commands.windows?'\\':'/')}
+                            data-clipboard-text={filePath.replace(/\//g,commands.windows?'\\':'/')}
                             onClick={()=>ui.notifyInfoQuickDisappear("File path copied to clipboard")}
                             style={csx.extend(styles.statusBarSection,styles.noSelect,styles.hand)}>
-                                {this.props.currentFilePath}
+                                {filePath}
                         </span>
                         :''}
 

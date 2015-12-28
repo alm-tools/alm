@@ -460,14 +460,6 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         if (component) {
             component.focus();
             this.sendOrClearSearchOnCurrentComponent();
-            let url = this.props.tabs[this.props.selectedTabIndex].url;
-            let filePath = utils.getFilePathFromUrl(url);
-            if (filePath){
-                state.setCurrentFilePath(filePath);
-            }
-        }
-        else {
-            state.setCurrentFilePath('');
         }
     }
 
@@ -478,11 +470,6 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     closeTab(index: number) {
-        // Clear the status bar if this was the current tab
-        if (index === this.props.selectedTabIndex){
-            state.setCurrentFilePath('');
-        }
-
         // If no tabs
         if (!this.props.tabs.length) {
             return;
