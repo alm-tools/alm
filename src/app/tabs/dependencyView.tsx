@@ -108,7 +108,7 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
                     </div>
                 );
             })
-            : <div key={-1} style={controlItemStyle}>No cycles found. Good job 🌹</div>;
+            : <div key={-1} style={controlItemStyle}>No cycles 🌹</div>;
 
         return (
             <div
