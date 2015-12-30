@@ -14,11 +14,11 @@ export function run<TClient, TCast>(config: {
         server: Server,
         cast: TCast,
     } {
-        
+
     let server = new Server(config.app, config.serverImplementation, (serverInstance: ServerInstance) => {
         return serverInstance.sendAllToSocket(config.clientContract);
     });
-    
+
     // Provide the server push messages
     let cast = server.setupAllCast(config.cast);
 
@@ -28,13 +28,13 @@ export function run<TClient, TCast>(config: {
 export class Server {
     io: SocketIO.Server;
     constructor(private app: http.Server, serverImplementation: any, clientCreator: (socket: ServerInstance) => any) {
-        this.io = socketIo(app);
+        this.io = socketIo(app,{transports:['polling']});
         this.io.on('connection', (socket) => {
             let serverInstance = new ServerInstance(socket, serverImplementation);
             serverInstance.client = clientCreator(serverInstance);
         });
     }
-    
+
     /**
      * Mutates the original in place plus returns the mutated version
      * Each member of `instance` must be a typed event
