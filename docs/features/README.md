@@ -29,6 +29,7 @@
     * [Active Lists](#active-list)
 * [TypeScript Analysis](#dependency-view)
     * [Dependency View](#dependency-view)
+    * [AST View](#ast-view)
 * [Git](#git-reset-file)
     * [Git Reset File](#git-reset-file)
 
@@ -162,6 +163,12 @@ Get a quick overview of the project structure by opening up the dependency view 
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/dependencyView.png)
 
+# AST View
+
+Command : `Ast View`. Useful when authoring new features.
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/ast.png)
+
+Also command : `TypeScript: Ast Full` that includes the `trivia` (punctuation, comments etc. received from `ts.Node.getChildren()`) as well.
 
 # Git Reset File
 
