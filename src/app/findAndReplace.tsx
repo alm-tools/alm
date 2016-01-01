@@ -31,17 +31,7 @@ let labelStyle = {
 let inputCodeStyle = {
     fontFamily: 'monospace',
 }
-let tipMessageStyle = {
-    color: 'grey',
-    lineHeight: '1.5rem'
-}
-var keyboardShortCutStyle = {
-    border: '2px solid',
-    borderRadius: '6px',
-    padding: '2px',
-    fontSize: '.7rem',
-    backgroundColor: 'black',
-}
+
 let searchOptionsLabelStyle = {
     color: 'grey',
     fontSize: '1.5rem',
@@ -165,11 +155,11 @@ export class FindAndReplace extends BaseComponent<Props, State>{
                         </div>
                     </div>
                 </div>
-                <div style={[tipMessageStyle,styles.padded1]}>
-                    <span style={keyboardShortCutStyle}>Esc</span> to exit
-                    {' '}<span style={keyboardShortCutStyle}>Enter</span> to find/replace next
-                    {' '}<span style={keyboardShortCutStyle}>Shift + Enter</span> to find/replace previous
-                    {' '}<span style={keyboardShortCutStyle}>{commands.modName} + Enter</span> to replace all
+                <div style={[styles.Tip.root]}>
+                    <span style={styles.Tip.keyboardShortCutStyle}>Esc</span> to exit
+                    {' '}<span style={styles.Tip.keyboardShortCutStyle}>Enter</span> to find/replace next
+                    {' '}<span style={styles.Tip.keyboardShortCutStyle}>Shift + Enter</span> to find/replace previous
+                    {' '}<span style={styles.Tip.keyboardShortCutStyle}>{commands.modName} + Enter</span> to replace all
                 </div>
             </div>
         );

@@ -200,3 +200,21 @@ export namespace Input {
         }
     }
 }
+
+/**
+ * Some views have tips at the bottom. This for that
+ */
+export namespace Tip {
+    export const root = csx.extend({
+        color: 'grey',
+        lineHeight: '1.5rem'
+    }, padded1);
+
+    export const keyboardShortCutStyle = {
+        border: '2px solid',
+        borderRadius: '6px',
+        padding: '2px',
+        fontSize: '.7rem',
+        backgroundColor: 'black',
+    }
+}

@@ -68,29 +68,17 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
 
     refs: {
         [string: string]: any;
+        root: HTMLDivElement;
         graphRoot: HTMLDivElement;
         controlRoot: HTMLDivElement;
     }
 
     filePath: string;
     componentDidMount() {
-        server.getDependencies({}).then((res) => {
-            // Create the graph renderer
-            this.graphRenderer = new GraphRenderer({
-                dependencies: res.links,
-                graphRoot:$(this.refs.graphRoot),
-                controlRoot:$(this.refs.controlRoot),
-                display:(node) => {
-                }
-            });
-
-            // get the cycles
-            let cycles = this.graphRenderer.d3Graph.cycles();
-            this.setState({cycles});
-
+        this.loadData().then(()=>{
             // setup listening to resize
             this.disposible.add(onresize.on(this.graphRenderer.resize))
-        });
+        })
     }
 
     render() {
@@ -112,8 +100,11 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
 
         return (
             <div
+                ref="root"
                 className="dependency-view"
-                style={csx.extend(csx.vertical,csx.flex, {position:'relative'})}>
+                style={csx.extend(csx.vertical,csx.flex, {position:'relative'})}
+                tabIndex={0}
+                onKeyPress={this.handleKey}>
                 <div ref="graphRoot" style={csx.extend(csx.vertical,csx.flex)}>
                     {/* Graph goes here */}
                 </div>
@@ -130,8 +121,36 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
                     </div>
                </div>
 
+               <div style={styles.Tip.root}>
+                    Tap <span style={styles.Tip.keyboardShortCutStyle}>R</span> to refresh
+               </div>
+
             </div>
         );
+    }
+
+    handleKey = (e:any)=>{
+        let unicode = e.charCode;
+        if (String.fromCharCode(unicode).toLowerCase() === "r"){
+            this.loadData();
+        }
+    }
+
+    loadData = () => {
+        this.refs.graphRoot.innerHTML = '';
+        return server.getDependencies({}).then((res) => {
+            // Create the graph renderer
+            this.graphRenderer = new GraphRenderer({
+                dependencies: res.links,
+                graphRoot:$(this.refs.graphRoot),
+                display:(node) => {
+                }
+            });
+
+            // get the cycles
+            let cycles = this.graphRenderer.d3Graph.cycles();
+            this.setState({cycles});
+        });
     }
 
     zoomIn = (e:React.SyntheticEvent) => {
@@ -157,6 +176,7 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
      * TAB implementation
      */
     focus = () => {
+        this.refs.root.focus();
     }
 
     save = () => {
@@ -224,7 +244,6 @@ class GraphRenderer {
     constructor(public config:{
         dependencies: FileDependency[],
         graphRoot: JQuery,
-        controlRoot: JQuery,
         display: (content: FileDependency) => any
     }){
         var d3Root = d3.select(config.graphRoot[0]);
