@@ -36,7 +36,7 @@ export class PendingRequestsIndicator extends BaseComponent<Props, State>{
             color: '#2776b7'
         };
         return (
-            <span style={style} onClick={()=>console.log(this.props.pendingRequests)}>
+            <span style={style} onClick={this.handleClick}>
                 <span style={pendingRequestCountStyle}>{pendingRequestsCount}</span>
                 <span className="loader">
                     <ul>
@@ -49,5 +49,9 @@ export class PendingRequestsIndicator extends BaseComponent<Props, State>{
                 </span>
             </span>
         );
+    }
+    handleClick = ()=>{
+        console.log(this.props.pendingRequests)
+        ui.notifyInfoNormalDisappear(`Pending Requests: ` + this.props.pendingRequests.join(' 🚴 '));
     }
 }
