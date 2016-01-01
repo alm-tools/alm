@@ -62,7 +62,6 @@ let treeListStyle = {
     color: '#eee',
     fontSize:'.8rem',
     padding:'5px',
-    overflow: 'auto'
 }
 
 let treeItemStyle = {
@@ -74,6 +73,13 @@ let treeItemStyle = {
 
 let treeItemSelectedStyle = {
     backgroundColor:'#444',
+}
+
+let currentSelectedItemCopyStyle = {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    cursor: 'pointer',
+    width: '100%'
 }
 
 @connect((state: StoreState): Props => {
@@ -391,10 +397,22 @@ export class FileTree extends BaseComponent<Props, State>{
 
                 <div style={[csx.flex, csx.vertical, treeListStyle]}>
                     {this.props.filePathsCompleted || <Robocop/>}
+                    <div style={[csx.flex,csx.scroll]}>
+                        {this.renderDir(this.state.treeRoot)}
+                    </div>
                     {
-                        // TODO: Copy single path selected
+                        singlePathSelected
+                        && <div
+                            className="hint--top"
+                            data-hint="Click to copy the file path to clipboard"
+                            data-clipboard-text={singlePathSelected}
+                            onClick={()=>ui.notifyInfoQuickDisappear("Path copied to clipboard")}>
+                            <div
+                                style={currentSelectedItemCopyStyle}>
+                                {singlePathSelected}
+                            </div>
+                        </div>
                     }
-                    {this.renderDir(this.state.treeRoot)}
                 </div>
 
                 <DraggableCore onDrag={this.handleDrag} onStop={this.handleStop}>
