@@ -5,14 +5,14 @@
 import * as fsu from "../utils/fsu";
 import * as utils from "../../common/utils";
 
-let projectRoot = process.cwd();
+let projectRoot = fsu.consistentPath(process.cwd());
 
 export function getProjectRoot() {
     return projectRoot;
 }
 
 export function setProjectRoot(rootDir: string) {
-    projectRoot = rootDir;
+    projectRoot = fsu.consistentPath(rootDir);
     process.chdir(projectRoot);
 }
 
