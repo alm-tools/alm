@@ -12,7 +12,8 @@
     "prepublish": "bash ./scripts/prepublish.sh",
     "resume": "bash ./scripts/resume.sh",
     "tsc": "ntsc -p ./src",
-    "tscw": "ntsc -p ./src -w"
+    "tscw": "ntsc -p ./src -w",
+    "latest": "npm install ntypescript@latest --save --save-exact && npm run tsc"
   },
   "repository": {
     "type": "git",
@@ -45,7 +46,7 @@
     "glob-expand": "^0.1.0",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
-    "ntypescript": "1.201512200603.1",
+    "ntypescript": "1.201601010604.1",
     "open": "0.0.5",
     "portfinder": "^0.4.0",
     "rimraf": "^2.4.2",
@@ -86,6 +87,6 @@
   },
   "engines": {
     "node": ">=4.0.0",
-    "npm" : ">=3.0.0"
+    "npm": ">=3.0.0"
   }
 }

@@ -60,14 +60,16 @@ More reading (You don't need to read these ... but if you are bored):
 * [Hot reloading docs](https://github.com/webpack/docs/wiki/hot-module-replacement-with-webpack)
 * [Some ideas borrowed from here](http://www.christianalfoni.com/articles/2015_04_19_The-ultimate-webpack-setup)
 
-# Conventions
-Please see [CONVENTIONS.md](./CONVENTIONS.md)
-
-
 # Server Folder Structure
 
 * `server/workers` we run various background workers. They are present here.
 * `server/lang` our main API stuff on top of the core TypeScript Language Service.
+
+# Updating TypeScript Version
+We use [NTypeScript](https://github.com/TypeStrong/ntypescript). NTypeScript keeps itself updated with Microsoft/Typescript every night. To update the version used by alm.tools simply run `npm run update`. This will install the latest version of NTypeScript and run a build to make sure everything still compiles.
+
+# Conventions
+Please see [CONVENTIONS.md](./CONVENTIONS.md)
 
 # Deployment
 Please see [DEPLOYMENT.md](./DEPLOYMENT.md)
