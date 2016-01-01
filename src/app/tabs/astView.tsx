@@ -45,6 +45,7 @@ export class ASTView extends ui.BaseComponent<Props, State> implements tab.Compo
 
     refs: {
         [string: string]: any;
+        root: HTMLDivElement;
         graphRoot: HTMLDivElement;
         controlRoot: HTMLDivElement;
     }
@@ -61,6 +62,7 @@ export class ASTView extends ui.BaseComponent<Props, State> implements tab.Compo
     render() {
         return (
             <div
+                ref="root" tabIndex={0}
                 style={csx.extend(csx.horizontal,csx.flex)}>
                 <div style={csx.flex}>
                     The ast tree view goes here
@@ -78,6 +80,7 @@ export class ASTView extends ui.BaseComponent<Props, State> implements tab.Compo
      * TAB implementation
      */
     focus = () => {
+        this.refs.root.focus();
     }
 
     save = () => {
