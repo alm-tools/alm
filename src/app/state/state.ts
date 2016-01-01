@@ -72,7 +72,7 @@ export let inActiveProjectFilePath = (filePath:string) => !!getState().activePro
 export let inActiveProjectUrl = (url:string) => {
     if (!url) return false;
     let {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(url);
-    if (protocol == 'file'){
+    if (protocol == 'file' || protocol == 'ast' || protocol == 'astfull') {
         return inActiveProjectFilePath(filePath);
     }
     else {

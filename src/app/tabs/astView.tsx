@@ -28,6 +28,8 @@ import {CodeEditor} from "../codemirror/codeEditor";
 export interface Props extends tab.ComponentProps {
 }
 export interface State {
+    selectedNode?: Types.NodeDisplay;
+    text?:string;
 }
 
 @ui.Radium
@@ -47,33 +49,59 @@ export class ASTView extends ui.BaseComponent<Props, State> implements tab.Compo
         [string: string]: any;
         root: HTMLDivElement;
         graphRoot: HTMLDivElement;
-        controlRoot: HTMLDivElement;
     }
 
     filePath: string;
     mode: Types.ASTMode;
     componentDidMount() {
+        server.openFile({filePath:this.filePath}).then(res=>{
+            this.setState({text: res.contents});
+        });
+
         server.getAST({mode:this.mode,filePath:this.filePath})
             .then((res)=>{
-                // TODO : render graph
+                renderTree({
+                    rootNode: res.root,
+                    _mainContent: $(this.refs.graphRoot),
+                    display: this.display
+                })
             });
+
     }
 
     render() {
+
+        let node = this.state.selectedNode;
+        var display = node
+        ? `
+${node.kind}
+-------------------- AST --------------------
+${node.rawJson}
+-------------------- TEXT -------------------
+${this.state.text.substring(node.pos, node.end)}
+                `.trim()
+                : "The selected AST node details will go here";
+
         return (
             <div
                 ref="root" tabIndex={0}
-                style={csx.extend(csx.horizontal,csx.flex)}>
-                <div style={csx.flex}>
-                    The ast tree view goes here
+                style={csx.extend(csx.horizontal,csx.flex,styles.noFocusOutline)}>
+                <div style={csx.extend(csx.flex,csx.scroll)} ref="graphRoot" className="ast-view">
+                    {
+                        // The ast tree view goes here
+                    }
                 </div>
-                <div style={csx.flex}>
-                    <pre>
-                        The selected ast node details will go here
+                <div style={csx.extend(csx.flex,csx.flexRoot,csx.scroll,styles.padded1,{background:'white'})}>
+                    <pre style={csx.extend(csx.flex,{margin:'0px'})}>
+                        {display}
                     </pre>
                 </div>
             </div>
         );
+    }
+
+    display = (node: Types.NodeDisplay)=>{
+        this.setState({selectedNode:node})
     }
 
     /**
@@ -118,11 +146,12 @@ export class ASTView extends ui.BaseComponent<Props, State> implements tab.Compo
     }
 }
 
-function renderTree(rootNode: NodeDisplay, _mainContent: JQuery, display: (content: NodeDisplay) => any) {
+function renderTree(config:{rootNode: NodeDisplay, _mainContent: JQuery, display: (content: NodeDisplay) => void}) {
     var root ={
-        dom: _mainContent[0],
-        jq: _mainContent
+        dom: config._mainContent[0],
+        jq: config._mainContent
     };
+    let rootNode = config.rootNode;
 
     var margin = { top: 30, right: 20, bottom: 30, left: 20 };
     var width = root.jq.width() - margin.left - margin.right;
@@ -251,7 +280,7 @@ function renderTree(rootNode: NodeDisplay, _mainContent: JQuery, display: (conte
 
     /** display details on click */
     function select(node: NodeDisplay) {
-        display(node);
+        config.display(node);
         selected = node;
         update();
     }

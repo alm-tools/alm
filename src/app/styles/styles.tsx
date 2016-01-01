@@ -218,3 +218,12 @@ export namespace Tip {
         backgroundColor: 'black',
     }
 }
+
+/**
+ * For when you don't want anything on focus
+ */
+export const noFocusOutline = {
+    ":focus":{
+        outline: 'none'
+    }
+}

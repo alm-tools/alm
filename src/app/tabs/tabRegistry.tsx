@@ -35,7 +35,7 @@ let tabs: {[protocol:string]:TabConfig} = {
         getTitle: (url)=> `AST ${utils.getFileName(url)}`,
         component: ASTView,
     },
-    astFull: {
+    astfull: {
         advancedSearch: false,
         getTitle: (url)=> `AST Full ${utils.getFileName(url)}`,
         component: ASTView,
