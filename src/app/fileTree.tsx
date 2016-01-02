@@ -14,7 +14,7 @@ import * as commands from "./commands/commands";
 let {DraggableCore} = ui;
 import {getDirectory,getFileName} from "../common/utils";
 import {Robocop} from "./robocop";
-import {dialog} from "./dialogs/dialog";
+import {inputDialog} from "./dialogs/inputDialog";
 import * as Mousetrap from "mousetrap";
 type TruthTable = utils.TruthTable;
 
@@ -198,6 +198,18 @@ export class FileTree extends BaseComponent<Props, State>{
             return {selectedFilePath,isDir:selectedFilePathDetails.isDir};
         }
 
+        /** Utility : gets you the last item selected if any, otherwise the root dir */
+        let getLastSelected = () => {
+            let selectedFilePaths = Object.keys(this.state.selectedPaths);
+            let last = selectedFilePaths[selectedFilePaths.length - 1];
+            if (!last) {
+                return { filePath: this.state.treeRoot.filePath, isDir: true };
+            }
+
+            let selectedFilePathDetails = this.state.selectedPaths[last];
+            return {filePath:last,isDir:selectedFilePathDetails.isDir};
+        }
+
         /** Utility : set an item as the only selected */
         let setAsOnlySelected = (filePath:string, isDir:boolean) => {
             let selectedPaths: SelectedPaths = {};
@@ -216,11 +228,14 @@ export class FileTree extends BaseComponent<Props, State>{
          * file action handlers
          */
         handlers.bind(commands.treeAddFile.config.keyboardShortcut,()=>{
-            dialog.open({
+            let lastSelected = getLastSelected();
+            let dirPath = lastSelected.isDir?lastSelected.filePath:utils.getDirectory(lastSelected.filePath);
+            inputDialog.open({
                 header: "Enter a file name",
                 onOk: (value:string) => {
                     console.log('Add:',value);
-                }
+                },
+                filterValue: dirPath + '/',
             });
             return false;
         });

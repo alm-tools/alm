@@ -16,7 +16,7 @@ import {debounce,createMap,rangeLimited,getFileName} from "../common/utils";
 import {OmniSearch} from "./omniSearch/omniSearch";
 import {FileTree} from "./fileTree";
 import {SelectListView} from "./selectListView";
-import {Dialog} from "./dialogs/dialog";
+import {InputDialog} from "./dialogs/inputDialog";
 
 import {StatusBar} from "./statusBar";
 import {ActiveLists} from "./activeLists";
@@ -74,7 +74,7 @@ export class Root extends ui.BaseComponent<{}, State>{
 
                 <SelectListView/>
 
-                <Dialog/>
+                <InputDialog/>
 
                 <div style={[csx.flex, csx.horizontal]}>
                     <FileTree/>

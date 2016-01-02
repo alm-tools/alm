@@ -16,7 +16,7 @@ import {match, filter as fuzzyFilter} from "fuzzaldrin";
 import * as utils from "../../common/utils";
 
 /** The singleton dialog instance */
-export var dialog: Dialog;
+export var inputDialog: InputDialog;
 
 type DataItem = any;
 
@@ -33,7 +33,7 @@ export interface Options {
 }
 
 @ui.Radium
-export class Dialog extends BaseComponent<Props, State>{
+export class InputDialog extends BaseComponent<Props, State>{
     private onOk: (value:string) => void = () => null;
 
     /**
@@ -58,7 +58,7 @@ export class Dialog extends BaseComponent<Props, State>{
 
     componentDidMount() {
         /** setup singleton */
-        dialog = this;
+        inputDialog = this;
 
         commands.esc.on(()=>{
             this.handleClose();
@@ -87,7 +87,6 @@ export class Dialog extends BaseComponent<Props, State>{
                         type="text"
                         ref="mainInput"
                         style={styles.modal.inputStyle}
-                        placeholder="Filter"
                         onChange={this.onChangeFilter}
                         onKeyDown={this.onChangeSelected}
                         />
