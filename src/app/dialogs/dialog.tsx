@@ -28,24 +28,42 @@ export interface State {
 }
 export interface Options {
     header: string;
+    onOk: (value:string) => void;
 }
 
 @ui.Radium
 export class Dialog extends BaseComponent<Props, State>{
+    private onOk: (value:string) => void = () => null;
+
+    /**
+     * The main public API from the component
+     */
     open(options: Options) {
         this.setState({
             isOpen: true,
             header: options.header
         });
+        this.onOk = options.onOk;
+
+        this.refs.mainInput.focus();
+        this.refs.mainInput.value = '';
     }
 
     refs: {
         [string: string]: any;
         mainInput: HTMLInputElement;
+        modal: any;
     }
 
     componentDidMount() {
+        /** setup singleton */
         dialog = this;
+
+        /** We want the modal to be auto fitting in height for this case */
+        /**
+         * TODO !!!
+         */
+        let modalContentDiv:HTMLDivElement = this.refs.modal.refs.content;
 
         commands.esc.on(()=>{
             this.handleClose();
@@ -54,6 +72,7 @@ export class Dialog extends BaseComponent<Props, State>{
 
     render() {
         return <Modal
+            ref="modal"
             isOpen={this.state.isOpen}
             onRequestClose={this.handleClose}>
             <div style={[csx.vertical, csx.flex]}>
@@ -67,6 +86,7 @@ export class Dialog extends BaseComponent<Props, State>{
                     <input
                         type="text"
                         ref="mainInput"
+                        style={styles.modal.inputStyle}
                         placeholder="Filter"
                         onChange={this.onChangeFilter}
                         onKeyDown={this.onChangeSelected}
@@ -87,7 +107,8 @@ export class Dialog extends BaseComponent<Props, State>{
     onChangeSelected = (e) => {
         if (e.key == 'Enter') {
             e.preventDefault();
-            // TODO:
+            this.onOk(this.refs.mainInput.value);
+            this.handleClose();
         }
     };
 }

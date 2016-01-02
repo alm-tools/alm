@@ -14,6 +14,7 @@ import * as commands from "./commands/commands";
 let {DraggableCore} = ui;
 import {getDirectory,getFileName} from "../common/utils";
 import {Robocop} from "./robocop";
+import {dialog} from "./dialogs/dialog";
 import * as Mousetrap from "mousetrap";
 type TruthTable = utils.TruthTable;
 
@@ -205,11 +206,22 @@ export class FileTree extends BaseComponent<Props, State>{
             this.ref(filePath).focus();
         }
 
-        // Setup all the tree specific command to be handled here
+        /**
+         * Used in handling keyboard for tree items
+         */
         let treeRoot = this.ref(this.refNames.treeRootNode);
         let handlers = new Mousetrap(treeRoot);
+
+        /**
+         * file action handlers
+         */
         handlers.bind(commands.treeAddFile.config.keyboardShortcut,()=>{
-            console.log('add File');
+            dialog.open({
+                header: "Enter a file name",
+                onOk: (value:string) => {
+                    console.log('Add:',value);
+                }
+            });
             return false;
         });
         handlers.bind(commands.treeDuplicateFile.config.keyboardShortcut,()=>{
@@ -222,6 +234,20 @@ export class FileTree extends BaseComponent<Props, State>{
         });
         handlers.bind([commands.treeDeleteFile.config.keyboardShortcut,"backspace"],()=>{
             console.log('delete File');
+            return false;
+        });
+
+        /**
+         * navigation handlers
+         */
+        handlers.bind('enter', () => {
+            let {selectedFilePath, isDir} = goDownToSmallestSelection();
+            if (isDir) {
+                this.state.expansionState[selectedFilePath] = !this.state.expansionState[selectedFilePath];
+                this.setState({expansionState: this.state.expansionState});
+            } else {
+                commands.doOpenOrFocusFile.emit({ filePath: selectedFilePath });
+            }
             return false;
         });
         handlers.bind('up',()=>{
@@ -368,17 +394,6 @@ export class FileTree extends BaseComponent<Props, State>{
                 this.state.expansionState[selectedFilePath] = true;
                 this.setState({ expansionState: this.state.expansionState });
                 return;
-            }
-            return false;
-        });
-
-        handlers.bind('enter', () => {
-            let {selectedFilePath, isDir} = goDownToSmallestSelection();
-            if (isDir) {
-                this.state.expansionState[selectedFilePath] = !this.state.expansionState[selectedFilePath];
-                this.setState({expansionState: this.state.expansionState});
-            } else {
-                commands.doOpenOrFocusFile.emit({ filePath: selectedFilePath });
             }
             return false;
         });
