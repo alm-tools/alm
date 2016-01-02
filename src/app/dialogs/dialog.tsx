@@ -29,6 +29,7 @@ export interface State {
 export interface Options {
     header: string;
     onOk: (value:string) => void;
+    filterValue?: string;
 }
 
 @ui.Radium
@@ -46,7 +47,7 @@ export class Dialog extends BaseComponent<Props, State>{
         this.onOk = options.onOk;
 
         this.refs.mainInput.focus();
-        this.refs.mainInput.value = '';
+        this.refs.mainInput.value = options.filterValue || '';
     }
 
     refs: {
@@ -59,12 +60,6 @@ export class Dialog extends BaseComponent<Props, State>{
         /** setup singleton */
         dialog = this;
 
-        /** We want the modal to be auto fitting in height for this case */
-        /**
-         * TODO !!!
-         */
-        let modalContentDiv:HTMLDivElement = this.refs.modal.refs.content;
-
         commands.esc.on(()=>{
             this.handleClose();
         });
@@ -74,7 +69,12 @@ export class Dialog extends BaseComponent<Props, State>{
         return <Modal
             ref="modal"
             isOpen={this.state.isOpen}
-            onRequestClose={this.handleClose}>
+            onRequestClose={this.handleClose}
+            /** We want the modal to be auto fitting in height for this case */
+            style={{
+                content:{bottom:'auto'}
+            }as any}
+            >
             <div style={[csx.vertical, csx.flex]}>
                 <div style={[csx.horizontal]}>
                     <h4>{this.state.header}</h4>
