@@ -132,6 +132,7 @@
         "./app/codemirror/addons/templates.tsx",
         "./app/codemirror/codeEditor.tsx",
         "./app/devtemplate.tsx",
+        "./app/dialogs/dialog.tsx",
         "./app/fileTree.tsx",
         "./app/findAndReplace.tsx",
         "./app/findReferences.tsx",

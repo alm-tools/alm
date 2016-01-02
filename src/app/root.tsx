@@ -16,7 +16,7 @@ import {debounce,createMap,rangeLimited,getFileName} from "../common/utils";
 import {OmniSearch} from "./omniSearch/omniSearch";
 import {FileTree} from "./fileTree";
 import {SelectListView} from "./selectListView";
-import slv = require("./selectListView");
+import {Dialog} from "./dialogs/dialog";
 
 import {StatusBar} from "./statusBar";
 import {ActiveLists} from "./activeLists";
@@ -57,7 +57,6 @@ export class Root extends ui.BaseComponent<{}, State>{
         [string: string]: any;
         leftNav: any;
         statusBar: StatusBar;
-        selectListView: SelectListView;
     }
 
     toggle = () => {
@@ -73,7 +72,9 @@ export class Root extends ui.BaseComponent<{}, State>{
 
                 <OmniSearch/>
 
-                <SelectListView ref="selectListView"/>
+                <SelectListView/>
+
+                <Dialog/>
 
                 <div style={[csx.flex, csx.horizontal]}>
                     <FileTree/>
