@@ -286,17 +286,17 @@ export let treeViewFocus = new UICommand({
     context: CommandContext.Global,
 });
 export let treeAddFile = new UICommand({
-    keyboardShortcut: 'mod+a',    // atom inspired but with 'mod'
+    keyboardShortcut: 'a',    // atom
     description: "Tree View: Add File",
     context: CommandContext.TreeView,
 });
 export let treeDuplicateFile = new UICommand({
-    keyboardShortcut: 'mod+d',    // atom inspired but with 'mod'
+    keyboardShortcut: 'd',    // atom
     description: "Tree View: Duplicate File|Folder",
     context: CommandContext.TreeView,
 });
 export let treeMoveFile = new UICommand({
-    keyboardShortcut: 'mod+m',    // atom inspired but with 'mod'
+    keyboardShortcut: 'm',    // atom
     description: "Tree View: Move File|Folder",
     context: CommandContext.TreeView,
 });

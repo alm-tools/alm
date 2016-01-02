@@ -118,6 +118,9 @@ export class FileTree extends BaseComponent<Props, State>{
     componentDidMount() {
 
         let handleFocusRequestBasic = ()=>{
+            if (!this.state.shown) {
+                this.setState({ shown: true });
+            }
             let selectedFilePaths = Object.keys(this.state.selectedPaths);
             let pathToFocus = selectedFilePaths.length > 0
                 ? selectedFilePaths[selectedFilePaths.length - 1]
@@ -234,6 +237,9 @@ export class FileTree extends BaseComponent<Props, State>{
                 header: "Enter a file name",
                 onOk: (value:string) => {
                     console.log('Add:',value);
+                },
+                onEsc: ()=>{
+                    setTimeout(handleFocusRequestBasic,150);
                 },
                 filterValue: dirPath + '/',
             });

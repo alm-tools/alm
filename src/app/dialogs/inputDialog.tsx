@@ -29,12 +29,14 @@ export interface State {
 export interface Options {
     header: string;
     onOk: (value:string) => void;
+    onEsc: ()=>void;
     filterValue?: string;
 }
 
 @ui.Radium
 export class InputDialog extends BaseComponent<Props, State>{
     private onOk: (value:string) => void = () => null;
+    private onEsc: () => void = () => null;
 
     /**
      * The main public API from the component
@@ -45,6 +47,7 @@ export class InputDialog extends BaseComponent<Props, State>{
             header: options.header
         });
         this.onOk = options.onOk;
+        this.onEsc = options.onEsc;
 
         this.refs.mainInput.focus();
         this.refs.mainInput.value = options.filterValue || '';
@@ -97,6 +100,7 @@ export class InputDialog extends BaseComponent<Props, State>{
 
     handleClose = () => {
         this.setState({isOpen:false});
+        this.onEsc();
     }
 
     onChangeFilter = debounce((e) => {
@@ -107,7 +111,7 @@ export class InputDialog extends BaseComponent<Props, State>{
         if (e.key == 'Enter') {
             e.preventDefault();
             this.onOk(this.refs.mainInput.value);
-            this.handleClose();
+            this.setState({isOpen:false});
         }
     };
 }
