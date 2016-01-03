@@ -59,13 +59,21 @@ namespace Server {
         let file = fmc.getOrCreateOpenFile(data.filePath, /*autoCreate*/ true);
         return resolve({ saved: file.saved() });
     }
-    export var addFile: typeof contract.server.addFile = (data)=>{
+    export var addFile: typeof contract.server.addFile = (data) => {
         let file = fmc.getOrCreateOpenFile(data.filePath, /*autoCreate*/ true);
         return resolve({ error: null });
     }
-    export var deleteFromDisk: typeof contract.server.deleteFromDisk = (data)=>{
+    export var deleteFromDisk: typeof contract.server.deleteFromDisk = (data) => {
         let file = fmc.deleteFromDisk(data);
         return resolve({ errors: [] });
+    }
+    export var duplicateFile: typeof contract.server.duplicateFile = (data) => {
+        let file = fmc.duplicateFile(data);
+        return resolve({ error: null });
+    }
+    export var duplicateDir: typeof contract.server.duplicateDir = (data) => {
+        let file = fmc.duplicateDir(data);
+        return resolve({ error: null });
     }
 
     /**

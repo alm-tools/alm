@@ -25,6 +25,8 @@ export var server = {
     /** File Tree */
     addFile: {} as QRFunction<{ filePath: string }, { error?: string }>,
     deleteFromDisk: {} as QRFunction<{ files: string[], dirs: string[] }, { errors?: { filePath: string, error: string }[] }>,
+    duplicateFile: {} as QRFunction<{ src: string, dest: string }, { error: string}>,
+    duplicateDir: {} as QRFunction<{ src: string, dest: string }, { error: string}>,
 
     /**
      * config stuff

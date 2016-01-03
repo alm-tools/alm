@@ -84,3 +84,12 @@ export function deleteFromDisk(data:{files: string[], dirs: string[]}) {
         fsu.deleteDir(dirPath);
     });
 }
+
+export function duplicateFile(data: { src: string, dest: string }) {
+    let contents = fsu.readFile(data.src);
+    fsu.writeFile(data.dest, contents);
+}
+
+export function duplicateDir(data:{ src: string, dest: string }) {
+    // TODO
+}

@@ -215,10 +215,13 @@ export class FileTree extends BaseComponent<Props, State>{
         }
 
         /** Utility : set an item as the only selected */
-        let setAsOnlySelected = (filePath:string, isDir:boolean) => {
+        let setAsOnlySelectedNoFocus = (filePath: string, isDir: boolean) => {
             let selectedPaths: SelectedPaths = {};
             selectedPaths[filePath] = {isDir};
             this.setState({selectedPaths});
+        }
+        let setAsOnlySelected = (filePath:string, isDir:boolean) => {
+            setAsOnlySelectedNoFocus(filePath,isDir);
             this.ref(filePath).focus();
         }
 
@@ -250,7 +253,42 @@ export class FileTree extends BaseComponent<Props, State>{
             return false;
         });
         handlers.bind(commands.treeDuplicateFile.config.keyboardShortcut,()=>{
-            console.log('duplicate File');
+            let selection = goDownToSmallestSelection();
+            if (!selection){
+                ui.notifyInfoNormalDisappear('Nothing selected');
+                return false;
+            }
+
+            let parentDir = utils.getDirectory(selection.selectedFilePath);
+            if (selection.isDir) {
+                inputDialog.open({
+                    header: "Enter a new directory name",
+                    onOk: (value: string) => {
+                        let filePath = value;
+                        // TODO
+                    },
+                    onEsc: () => {
+                        setTimeout(handleFocusRequestBasic, 150);
+                    },
+                    filterValue: parentDir + '/',
+                });
+            }
+            else {
+                inputDialog.open({
+                    header: "Enter a new file name",
+                    onOk: (value: string) => {
+                        let filePath = value;
+                        server.duplicateFile({src:selection.selectedFilePath,dest:filePath});
+                        commands.doOpenOrFocusFile.emit({filePath:filePath});
+                        setAsOnlySelectedNoFocus(filePath, false);
+                    },
+                    onEsc: () => {
+                        setTimeout(handleFocusRequestBasic, 150);
+                    },
+                    filterValue: parentDir + '/',
+                });
+            }
+
             return false;
         });
         handlers.bind(commands.treeMoveFile.config.keyboardShortcut,()=>{
