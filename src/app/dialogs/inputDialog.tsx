@@ -101,6 +101,7 @@ export class InputDialog extends BaseComponent<Props, State>{
     handleClose = () => {
         this.setState({isOpen:false});
         this.onEsc();
+        this.onEsc = () => null;
     }
 
     onChangeFilter = debounce((e) => {
