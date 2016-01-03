@@ -28,7 +28,10 @@ export function run<TClient, TCast>(config: {
 export class Server {
     io: SocketIO.Server;
     constructor(private app: http.Server, serverImplementation: any, clientCreator: (socket: ServerInstance) => any) {
-        this.io = socketIo(app,{transports:['polling']});
+        this.io = socketIo(app
+            // polling is more available on hosts (e.g. azure) but it causes more socket hangups in socketIO
+            /* ,{transports:['polling']} */
+        );
         this.io.on('connection', (socket) => {
             let serverInstance = new ServerInstance(socket, serverImplementation);
             serverInstance.client = clientCreator(serverInstance);
