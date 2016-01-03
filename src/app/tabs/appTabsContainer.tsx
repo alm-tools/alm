@@ -159,6 +159,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 if (e.position) {
                     this.gotoPositionOnSelectedTab(e.position)
                 }
+                else {
+                    this.getSelectedComponent().focus();
+                }
                 return;
             }
 
