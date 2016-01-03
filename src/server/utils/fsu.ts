@@ -20,7 +20,6 @@ export function resolve(...args: string[]) {
     return consistentPath(path.resolve(...args));
 }
 
-
 /**
  * Could be called ends with :)
  */
@@ -57,8 +56,15 @@ export function deleteFile(filePath:string) {
     fs.unlinkSync(filePath);
 }
 
-export function deleteDir(dirPath:string) {
-    rimraf.sync(dirPath,{glob: false});
+export function deleteDir(dirPath:string):Promise<{}> {
+    return new Promise(resolve => {
+        rimraf(dirPath,{glob: false,maxBusyTries: 10},(e)=>{
+            if (e) {
+                console.error('Failed to delete Dir: ', dirPath);
+            }
+            resolve({});
+        });
+    })
 }
 
 /** see if a file exists */

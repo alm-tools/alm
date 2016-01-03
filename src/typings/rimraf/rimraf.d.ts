@@ -6,7 +6,8 @@
 // Imported from: https://github.com/soywiz/typescript-node-definitions/rimraf.d.ts
 
 declare module "rimraf" {
-	function rimraf(path: string, callback: (error: Error) => void): void;
+	function rimraf(path: string, callback?: (error: Error) => void): void;
+	function rimraf(path: string, options?:any, callback?: (error: Error) => void): void;
 	module rimraf {
 		export function sync(path: string, options?: any): void;
 		export var EMFILE_MAX: number;
