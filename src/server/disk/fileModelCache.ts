@@ -72,5 +72,15 @@ export function deleteFromDisk(data:{files: string[], dirs: string[]}) {
             fsu.deleteFile(filePath);
         }
     });
-    // TODO: delete directories
+    data.dirs.forEach(dirPath => {
+        // delete any open files
+        let toClose = (filePath: string) => {
+            return filePath.startsWith(dirPath);
+        }
+        openFiles.filter(f => toClose(f.config.filePath)).forEach(f => f.delete());
+        openFiles = openFiles.filter(f => !toClose(f.config.filePath));
+
+        // delete the dir
+        fsu.deleteDir(dirPath);
+    });
 }

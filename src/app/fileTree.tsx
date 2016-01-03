@@ -233,17 +233,17 @@ export class FileTree extends BaseComponent<Props, State>{
          */
         handlers.bind(commands.treeAddFile.config.keyboardShortcut,()=>{
             let lastSelected = getLastSelected();
-            let dirPath = lastSelected.isDir?lastSelected.filePath:utils.getDirectory(lastSelected.filePath);
+            let dirPath = lastSelected.isDir ? lastSelected.filePath : utils.getDirectory(lastSelected.filePath);
             inputDialog.open({
                 header: "Enter a file name",
-                onOk: (value:string) => {
+                onOk: (value: string) => {
                     let filePath = value;
                     server.addFile({ filePath }).then(res => {
                         commands.doOpenOrFocusFile.emit({ filePath });
                     });
                 },
-                onEsc: ()=>{
-                    setTimeout(handleFocusRequestBasic,150);
+                onEsc: () => {
+                    setTimeout(handleFocusRequestBasic, 150);
                 },
                 filterValue: dirPath + '/',
             });

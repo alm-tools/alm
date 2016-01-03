@@ -8,7 +8,7 @@
 declare module "rimraf" {
 	function rimraf(path: string, callback: (error: Error) => void): void;
 	module rimraf {
-		export function sync(path: string): void;
+		export function sync(path: string, options?: any): void;
 		export var EMFILE_MAX: number;
 		export var BUSYTRIES_MAX: number;
 	}

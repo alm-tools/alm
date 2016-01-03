@@ -10,6 +10,7 @@ export function consistentPath(filePath: string): string {
 import * as path from "path";
 import * as fs from "fs";
 import mkdirp = require('mkdirp');
+import * as rimraf from "rimraf";
 
 /**
  * Resolves to to an absolute path.
@@ -54,6 +55,10 @@ export function writeFile(filePath: string, content: string) {
 
 export function deleteFile(filePath:string) {
     fs.unlinkSync(filePath);
+}
+
+export function deleteDir(dirPath:string) {
+    rimraf.sync(dirPath,{glob: false});
 }
 
 /** see if a file exists */
