@@ -258,7 +258,26 @@ export class FileTree extends BaseComponent<Props, State>{
             return false;
         });
         handlers.bind([commands.treeDeleteFile.config.keyboardShortcut,"backspace"],()=>{
-            console.log('delete File');
+            let selectedFilePaths = Object.keys(this.state.selectedPaths);
+            let selectedFilePathsDetails = selectedFilePaths.map(fp=>{
+                return {
+                    filePath: fp,
+                    isDir: this.state.selectedPaths[fp].isDir
+                };
+            });
+
+            if (selectedFilePaths.length == 0){
+                ui.notifyInfoNormalDisappear('Nothing selected');
+                return false;
+            }
+
+            let files = selectedFilePathsDetails.filter(x => !x.isDir).map(x => x.filePath);
+            let dirs = selectedFilePathsDetails.filter(x => x.isDir).map(x => x.filePath);
+            server.deleteFromDisk({ files, dirs }).then(res => {
+                commands.closeFilesDirs.emit({ files, dirs });
+                setAsOnlySelected(this.state.treeRoot.filePath, true);
+            });
+
             return false;
         });
 

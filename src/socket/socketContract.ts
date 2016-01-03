@@ -24,6 +24,7 @@ export var server = {
     getFileStatus: {} as QRFunction<{ filePath: string }, { saved: boolean }>,
     /** File Tree */
     addFile: {} as QRFunction<{ filePath: string }, { error?: string }>,
+    deleteFromDisk: {} as QRFunction<{ files: string[], dirs: string[] }, { errors?: { filePath: string, error: string }[] }>,
 
     /**
      * config stuff

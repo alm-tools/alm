@@ -75,6 +75,11 @@ export class FileModel {
         return { saved };
     }
 
+    delete() {
+        this.unwatchFile();
+        fsu.deleteFile(this.config.filePath);
+    }
+
     save() {
         let contents = this.text.join(this.newLine);
         fsu.writeFile(this.config.filePath, contents);

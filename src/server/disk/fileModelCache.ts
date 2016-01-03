@@ -1,3 +1,6 @@
+/**
+ * All our interaction with the file system generally goes through here
+ */
 import {FileModel} from "./fileModel";
 import {TypedEvent} from "../../common/events";
 import * as fsu from "../utils/fsu";
@@ -8,8 +11,8 @@ export var didStatusChange = new TypedEvent<{ filePath: string; saved: boolean }
 
 let openFiles: FileModel[] = [];
 export function getOpenFile(filePath: string) {
-    if (openFiles.some(f=> f.config.filePath == filePath)) {
-        return openFiles.filter(f=> f.config.filePath == filePath)[0];
+    if (openFiles.some(f => f.config.filePath == filePath)) {
+        return openFiles.filter(f => f.config.filePath == filePath)[0];
     }
 }
 export function getOrCreateOpenFile(filePath: string, autoCreate = false) {
@@ -53,7 +56,21 @@ export function isFileOpen(filePath: string) {
     return !!getOpenFile(filePath);
 }
 
-export function saveOpenFile(filePath:string){
+export function saveOpenFile(filePath: string) {
     let file = getOpenFile(filePath);
     file.save();
+}
+
+export function deleteFromDisk(data:{files: string[], dirs: string[]}) {
+    data.files.forEach(filePath => {
+        var file = getOpenFile(filePath);
+        if (file) {
+            file.delete();
+            openFiles = openFiles.filter(f=> f.config.filePath !== filePath);
+        }
+        else {
+            fsu.deleteFile(filePath);
+        }
+    });
+    // TODO: delete directories
 }

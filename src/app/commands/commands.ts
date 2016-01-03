@@ -308,6 +308,7 @@ export let treeDeleteFile = new UICommand({
 
 /**
  * General purpose file opening
+ * These are handled in appTabsContainer at the moment
  */
 export var doOpenFile = new events.TypedEvent<{ filePath: string, position?: EditorPosition }>();
 export var doOpenOrFocusFile = new events.TypedEvent<{ filePath: string, position?: EditorPosition }>();
@@ -318,6 +319,7 @@ export var openFileFromDisk = new UICommand({
 });
 /** needed by cursor history */
 export var doOpenOrFocusTab = new events.TypedEvent<{ tabId: string, tabUrl: string, position: EditorPosition }>();
+export var closeFilesDirs = new events.TypedEvent<{ files: string[], dirs: string[] }>();
 
 /**
  * Other tab types

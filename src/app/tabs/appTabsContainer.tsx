@@ -235,6 +235,28 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.selectTab(0);
         });
 
+        commands.closeFilesDirs.on((e)=>{
+            // To preserve the selected tab after closing
+            let currentTabId = state.getSelectedTab() && state.getSelectedTab().id;
+
+            let toClose = (filePath:string) => {
+                return e.files.indexOf(filePath) !== -1 || e.dirs.some(dirPath => filePath.startsWith(dirPath));
+            }
+            let tabs = this.props.tabs.filter((t,i)=> {
+                let {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(t.url);
+                return protocol !== 'file' || !toClose(filePath);
+            });
+
+            this.afterComponentDidUpdate(this.sendTabInfoToServer);
+            this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
+            state.setTabs(tabs);
+
+            // ensure a valid selected tab index
+            let tabStillOpen = this.props.tabs.map((t,i)=>({t,i})).find(ti=>ti.t.id == currentTabId);
+            let selectedTabIndex = tabStillOpen ? tabStillOpen.i : this.props.tabs.length - 1;
+            this.selectTab(selectedTabIndex);
+        });
+
         commands.saveTab.on((e) => {
             let component = this.getSelectedComponent();
             if (component) {

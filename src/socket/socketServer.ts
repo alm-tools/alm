@@ -63,6 +63,10 @@ namespace Server {
         let file = fmc.getOrCreateOpenFile(data.filePath, /*autoCreate*/ true);
         return resolve({ error: null });
     }
+    export var deleteFromDisk: typeof contract.server.deleteFromDisk = (data)=>{
+        let file = fmc.deleteFromDisk(data);
+        return resolve({ errors: [] });
+    }
 
     /**
      * Config stuff
