@@ -22,6 +22,8 @@ export var server = {
     editFile: {} as QRFunction<{ filePath: string, edit: CodeEdit }, { saved: boolean }>,
     saveFile: {} as QRFunction<{ filePath: string }, {}>,
     getFileStatus: {} as QRFunction<{ filePath: string }, { saved: boolean }>,
+    /** File Tree */
+    addFile: {} as QRFunction<{ filePath: string }, { error?: string }>,
 
     /**
      * config stuff

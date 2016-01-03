@@ -1,3 +1,4 @@
+import {server} from "../socket/socketClient";
 import * as types from "../common/types";
 import React = require("react");
 import Radium = require('radium');
@@ -236,7 +237,10 @@ export class FileTree extends BaseComponent<Props, State>{
             inputDialog.open({
                 header: "Enter a file name",
                 onOk: (value:string) => {
-                    console.log('Add:',value);
+                    let filePath = value;
+                    server.addFile({ filePath }).then(res => {
+                        commands.doOpenOrFocusFile.emit({ filePath });
+                    });
                 },
                 onEsc: ()=>{
                     setTimeout(handleFocusRequestBasic,150);
