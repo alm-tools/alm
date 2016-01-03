@@ -71,6 +71,11 @@ let treeItemStyle = {
     cursor:'pointer',
     padding: '3px',
     userSelect: 'none',
+    ':focus': {
+        outline: 'none',
+        border:`1px dashed ${styles.highlightColor}`,
+        padding: '2px'
+    }
 }
 
 let treeItemSelectedStyle = {

@@ -2,6 +2,7 @@ import csx = require('csx');
 
 export let errorColor = '#f92672';
 export let successColor = '#00c990';
+export let highlightColor = "#6edeef";
 
 export var tabHeaderContainer = {
     background: 'grey'
@@ -23,8 +24,8 @@ export var tabHeader = {
 };
 
 export var tabHeaderActive = {
-    color: "#6edeef",
-    borderLeft: '6px solid #6edeef',
+    color: highlightColor,
+    borderLeft: `6px solid ${highlightColor}`,
 };
 
 export var tabHeaderUnsaved = {
