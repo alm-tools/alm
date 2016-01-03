@@ -266,7 +266,7 @@ export class FileTree extends BaseComponent<Props, State>{
                     onOk: (value: string) => {
                         let filePath = value;
                         server.duplicateDir({src:selection.selectedFilePath,dest:filePath});
-                        setAsOnlySelectedNoFocus(filePath, false);
+                        setAsOnlySelectedNoFocus(filePath, true);
                         this.state.expansionState[filePath] = true;
                         this.setState({expansionState: this.state.expansionState});
                     },
@@ -316,7 +316,10 @@ export class FileTree extends BaseComponent<Props, State>{
             let dirs = selectedFilePathsDetails.filter(x => x.isDir).map(x => x.filePath);
             server.deleteFromDisk({ files, dirs }).then(res => {
                 commands.closeFilesDirs.emit({ files, dirs });
-                setAsOnlySelected(this.state.treeRoot.filePath, true);
+
+                // Leave selection in a useful state
+                let lastSelectedDetails = selectedFilePathsDetails[selectedFilePathsDetails.length - 1].filePath;
+                setAsOnlySelected(utils.getDirectory(lastSelectedDetails), true);
             });
 
             return false;
