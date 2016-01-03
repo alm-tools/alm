@@ -265,7 +265,10 @@ export class FileTree extends BaseComponent<Props, State>{
                     header: "Enter a new directory name",
                     onOk: (value: string) => {
                         let filePath = value;
-                        // TODO
+                        server.duplicateDir({src:selection.selectedFilePath,dest:filePath});
+                        setAsOnlySelectedNoFocus(filePath, false);
+                        this.state.expansionState[filePath] = true;
+                        this.setState({expansionState: this.state.expansionState});
                     },
                     onEsc: () => {
                         setTimeout(handleFocusRequestBasic, 150);

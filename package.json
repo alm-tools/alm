@@ -46,6 +46,7 @@
     "glob-expand": "^0.1.0",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
+    "ncp": "^2.0.0",
     "ntypescript": "1.201601010604.1",
     "open": "0.0.5",
     "portfinder": "^0.4.0",

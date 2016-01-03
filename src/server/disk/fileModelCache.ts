@@ -90,6 +90,8 @@ export function duplicateFile(data: { src: string, dest: string }) {
     fsu.writeFile(data.dest, contents);
 }
 
+import {ncp} from "ncp";
 export function duplicateDir(data:{ src: string, dest: string }) {
-    // TODO
+    ncp(data.src,data.dest,(err)=>{
+    });
 }
