@@ -63,7 +63,7 @@ let treeListStyle = {
     background: '#333',
     color: '#eee',
     fontSize:'.8rem',
-    padding:'5px',
+    padding:'3px',
 }
 
 let treeItemStyle = {
@@ -86,7 +86,8 @@ let currentSelectedItemCopyStyle = {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     cursor: 'pointer',
-    width: '100%'
+    width: '100%',
+    margin: '2px'
 }
 
 @connect((state: StoreState): Props => {
@@ -504,10 +505,10 @@ export class FileTree extends BaseComponent<Props, State>{
             <div ref={this.refNames.treeRootNode} style={[csx.flexRoot, csx.horizontal, { width: this.state.width }, hideStyle]}>
 
                 <div style={[csx.flex, csx.vertical, treeListStyle]}>
-                    {this.props.filePathsCompleted || <Robocop/>}
-                    <div style={[csx.flex,csx.scroll]}>
+                    <div style={[csx.flex,csx.scroll, {border:'1px solid grey'}]}>
                         {this.renderDir(this.state.treeRoot)}
                     </div>
+                    {this.props.filePathsCompleted || <Robocop/>}
                     {
                         singlePathSelected
                         && <div
