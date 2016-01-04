@@ -305,7 +305,7 @@ export class FileTree extends BaseComponent<Props, State>{
             return false;
         });
         handlers.bind(commands.treeMoveFile.config.keyboardShortcut,()=>{
-            console.log('move File');
+            console.log('move File'); // TODO
             return false;
         });
         handlers.bind([commands.treeDeleteFile.config.keyboardShortcut,"backspace"],()=>{
