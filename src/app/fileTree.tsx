@@ -62,7 +62,7 @@ let resizerStyle = {
 let treeListStyle = {
     background: '#333',
     color: '#eee',
-    fontSize:'.8rem',
+    fontSize:'.7rem',
     padding:'3px',
 }
 
@@ -73,8 +73,6 @@ let treeItemStyle = {
     userSelect: 'none',
     ':focus': {
         outline: 'none',
-        border:`1px dashed ${styles.highlightColor}`,
-        padding: '2px'
     }
 }
 
@@ -85,6 +83,7 @@ let treeItemSelectedStyle = {
 let currentSelectedItemCopyStyle = {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
+    height:'1rem',
     cursor: 'pointer',
     width: '100%',
     margin: '2px'
@@ -226,9 +225,14 @@ export class FileTree extends BaseComponent<Props, State>{
             selectedPaths[filePath] = {isDir};
             this.setState({selectedPaths});
         }
+        let focusFilePath = ((filePath:string)=>{
+            if (!this.ref(filePath)) return;
+            // leads to better scroll performance instead of `.focus`
+            this.ref(filePath).scrollIntoViewIfNeeded(false);
+        });
         let setAsOnlySelected = (filePath:string, isDir:boolean) => {
             setAsOnlySelectedNoFocus(filePath,isDir);
-            this.ref(filePath).focus();
+            focusFilePath(filePath);
         }
 
         /**
@@ -518,7 +522,7 @@ export class FileTree extends BaseComponent<Props, State>{
                             onClick={()=>ui.notifyInfoQuickDisappear("Path copied to clipboard")}>
                             <div
                                 style={currentSelectedItemCopyStyle}>
-                                {singlePathSelected}
+                                {utils.getFileName(singlePathSelected)}
                             </div>
                         </div>
                     }
