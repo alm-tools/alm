@@ -27,6 +27,7 @@ export var server = {
     deleteFromDisk: {} as QRFunction<{ files: string[], dirs: string[] }, { errors?: { filePath: string, error: string }[] }>,
     duplicateFile: {} as QRFunction<{ src: string, dest: string }, { error: string}>,
     duplicateDir: {} as QRFunction<{ src: string, dest: string }, { error: string}>,
+    movePath: {} as QRFunction<{ src: string, dest: string }, { error: string}>, // both files / folders
 
     /**
      * config stuff

@@ -61,6 +61,10 @@ export function saveOpenFile(filePath: string) {
     file.save();
 }
 
+/**
+ * File Tree managment functions
+ */
+
 export function deleteFromDisk(data:{files: string[], dirs: string[]}) {
     data.files.forEach(filePath => {
         var file = getOpenFile(filePath);
@@ -94,4 +98,10 @@ import {ncp} from "ncp";
 export function duplicateDir(data:{ src: string, dest: string }) {
     ncp(data.src,data.dest,(err)=>{
     });
+}
+
+export function movePath(data:{ src: string, dest: string }) {
+    // TODO
+    // mv(data.src, data.dest, { mkdirp: true }, (err) => {
+    // });
 }
