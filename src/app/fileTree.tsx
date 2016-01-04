@@ -528,7 +528,7 @@ export class FileTree extends BaseComponent<Props, State>{
                     }
                 </div>
 
-                <DraggableCore onDrag={this.handleDrag} onStop={this.handleStop}>
+                <DraggableCore onDrag={this.handleDrag} onStop={this.handleDragStop}>
                     <div style={[csx.flexRoot, csx.centerCenter, resizerStyle]}><Icon name="ellipsis-v"/></div>
                 </DraggableCore>
 
@@ -570,7 +570,7 @@ export class FileTree extends BaseComponent<Props, State>{
         this.setState({ width: ui.position.clientX + resizerWidth });
     };
 
-    handleStop = () => {
+    handleDragStop = () => {
         // TODO store as user setting
     }
 
