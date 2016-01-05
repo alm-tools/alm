@@ -36,8 +36,12 @@ namespace Worker {
         // Utility to send new file list
         var sendNewFileList = () => {
             let filePaths = Object.keys(liveList)
-                // Remove .git we have no use for that here
-                .filter(x=>!x.includes('/.git/'))
+                .filter(x=>
+                    // Remove .git we have no use for that here
+                    !x.includes('/.git/')
+                    // MAC
+                    && x !== '.DS_Store'
+                )
                 // sort
                 .sort((a, b) => {
                     // sub dir wins!
