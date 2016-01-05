@@ -100,8 +100,8 @@ export function duplicateDir(data:{ src: string, dest: string }) {
     });
 }
 
+import * as mv from "mv";
 export function movePath(data:{ src: string, dest: string }) {
-    // TODO
-    // mv(data.src, data.dest, { mkdirp: true }, (err) => {
-    // });
+    mv(data.src, data.dest, { mkdirp: true }, (err) => {
+    });
 }

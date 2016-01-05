@@ -128,7 +128,7 @@ export class FileTree extends BaseComponent<Props, State>{
                 this.setState({ shown: true });
             }
             let selectedFilePaths = Object.keys(this.state.selectedPaths);
-            let pathToFocus = selectedFilePaths.length > 0
+            let pathToFocus = selectedFilePaths.length > 0 && this.ref(selectedFilePaths[selectedFilePaths.length - 1])
                 ? selectedFilePaths[selectedFilePaths.length - 1]
                 : this.state.treeRoot.filePath;
 
@@ -305,7 +305,36 @@ export class FileTree extends BaseComponent<Props, State>{
             return false;
         });
         handlers.bind(commands.treeMoveFile.config.keyboardShortcut,()=>{
-            console.log('move File'); // TODO
+            let selection = goDownToSmallestSelection();
+            if (!selection){
+                ui.notifyInfoNormalDisappear('Nothing selected');
+                return false;
+            }
+
+            inputDialog.open({
+                header: "Enter a new path name",
+                onOk: (value: string) => {
+                    let filePath = value;
+                    server.movePath({src:selection.selectedFilePath,dest:filePath});
+
+                    if (selection.isDir){
+                        setAsOnlySelectedNoFocus(filePath, true);
+                        this.state.expansionState[filePath] = true;
+                        this.setState({expansionState: this.state.expansionState});
+                        commands.closeFilesDirs.emit({ files:[], dirs:[selection.selectedFilePath] });
+                    }
+                    else {
+                        commands.doOpenOrFocusFile.emit({filePath:filePath});
+                        setAsOnlySelectedNoFocus(filePath, false);
+                        commands.closeFilesDirs.emit({ files:[selection.selectedFilePath], dirs:[] });
+                    }
+                },
+                onEsc: () => {
+                    setTimeout(handleFocusRequestBasic, 150);
+                },
+                filterValue: selection.selectedFilePath,
+            });
+
             return false;
         });
         handlers.bind([commands.treeDeleteFile.config.keyboardShortcut,"backspace"],()=>{
@@ -632,6 +661,8 @@ export class FileTree extends BaseComponent<Props, State>{
         }
 
         this.setState({ treeRoot: rootDir, expansionState: this.state.expansionState });
+
+        // TODO: keep the selected file paths in sync with all the items that are available
     }
 
     handleToggleDir = (evt:React.SyntheticEvent, item:TreeDirItem) => {
