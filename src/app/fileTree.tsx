@@ -314,7 +314,7 @@ export class FileTree extends BaseComponent<Props, State>{
             }
 
             inputDialog.open({
-                header: "Enter a new path name",
+                header: "Enter a new location",
                 onOk: (value: string) => {
                     let filePath = value;
                     server.movePath({src:selection.selectedFilePath,dest:filePath});

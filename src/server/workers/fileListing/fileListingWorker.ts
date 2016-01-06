@@ -152,7 +152,6 @@ namespace Worker {
 
         function dirAdded(dirPath: string) {
             dirPath = fsu.consistentPath(dirPath);
-            let stat = fs.statSync(dirPath);
 
             /**
              * - glob the folder
