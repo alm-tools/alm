@@ -229,6 +229,8 @@ export class FileTree extends BaseComponent<Props, State>{
             if (!this.ref(filePath)) return;
             // leads to better scroll performance instead of `.focus`
             this.ref(filePath).scrollIntoViewIfNeeded(false);
+            // focus is still needed because dom re-rendering is losing focus
+            this.ref(filePath).focus();
         });
         let setAsOnlySelected = (filePath:string, isDir:boolean) => {
             setAsOnlySelectedNoFocus(filePath,isDir);
