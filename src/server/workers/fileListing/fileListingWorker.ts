@@ -11,6 +11,9 @@ import path = require('path');
 import {TypedEvent}  from "../../../common/events";
 import * as types from "../../../common/types";
 
+/** A Map for faster live calculations */
+type LiveList = { [filePath: string]: types.FilePathType };
+
 namespace Worker {
     export var echo: typeof contract.worker.echo = (q) => {
         return master.increment(q).then((res) => {
@@ -31,7 +34,7 @@ namespace Worker {
         directoryUnderWatch = q.directory;
 
         let completed = false;
-        let liveList: { [filePath: string]: types.FilePathType } = {};
+        let liveList: LiveList = {};
 
         // Utility to send new file list
         var sendNewFileList = () => {
@@ -76,9 +79,33 @@ namespace Worker {
         /**
          * Slower version for
          * - initial partial serach
-         * - later updates which might be complete directory of files removed
+         * - later updates which might be called a lot because of some directory of files removed
          */
          let sendNewFileListThrottled = throttle(sendNewFileList, 500);
+
+         /**
+          * Utility function to get the listing from a directory
+          */
+         const getListing = (dirPath: string): Promise<types.FilePath[]> => {
+             return new Promise((resolve)=>{
+                 let mg = new glob.Glob('**', { cwd: dirPath }, (e, globResult) => {
+                     if (e) {
+                         console.error('Globbing error:', e);
+                     }
+
+                     let list = globResult.map(nl=> {
+                         let p = path.resolve(q.directory,nl);
+                         let type = mg.cache[p] && mg.cache[p] == 'FILE' ? types.FilePathType.File : types.FilePathType.Dir;
+                         return {
+                             filePath: fsu.consistentPath(p),
+                             type,
+                         }
+                     });
+
+                     return list;
+                 });
+             });
+         }
 
         // create initial list using 10x faster glob.Glob!
         (function () {
@@ -101,6 +128,7 @@ namespace Worker {
                list.forEach(entry => liveList[entry.filePath] = entry.type);
                sendNewFileList();
            });
+           /** Still send the listing while globbing so user gets immediate feedback */
            mg.on('match',(match)=>{
                let p = path.resolve(q.directory,match);
                if (mg.cache[p]){
@@ -120,6 +148,25 @@ namespace Worker {
                 liveList[filePath] = type;
                 sendNewFileListThrottled();
             }
+        }
+
+        function dirAdded(dirPath: string) {
+            dirPath = fsu.consistentPath(dirPath);
+            let stat = fs.statSync(dirPath);
+
+            /**
+             * - glob the folder
+             * - send the folder throttled
+             */
+            getListing(dirPath).then(res=>{
+                res.forEach(fpDetails => {
+                    if (!liveList[fpDetails.filePath]) {
+                        let type = fpDetails.type
+                        liveList[fpDetails.filePath] = type;
+                    }
+                });
+                sendNewFileListThrottled();
+            });
         }
 
         function fileDeleted(filePath: string) {
@@ -144,7 +191,7 @@ namespace Worker {
         // Just the ones that impact file listing
         // https://github.com/paulmillr/chokidar#methods--events
         watcher.on('add', fileAdded);
-        // watcher.on('addDir', );
+        watcher.on('addDir', dirAdded);
         watcher.on('unlink', fileDeleted);
         watcher.on('unlinkDir', dirDeleted);
 
