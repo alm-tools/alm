@@ -128,6 +128,16 @@ namespace Worker {
             sendNewFileListThrottled();
         }
 
+        function dirDeleted(dirPath: string) {
+            dirPath = fsu.consistentPath(dirPath);
+            Object.keys(liveList).forEach(filePath => {
+                if (filePath.startsWith(dirPath)){
+                    delete liveList[filePath];
+                }
+            });
+            sendNewFileListThrottled();
+        }
+
         /** Create watcher */
         let watcher = chokidar.watch(directoryUnderWatch, { ignoreInitial: true });
 
@@ -136,7 +146,7 @@ namespace Worker {
         watcher.on('add', fileAdded);
         // watcher.on('addDir', );
         watcher.on('unlink', fileDeleted);
-        // watcher.on('unlinkDir', );
+        watcher.on('unlinkDir', dirDeleted);
 
         // Just for changes
         watcher.on('change', (filePath, stat: fs.Stats) => {
