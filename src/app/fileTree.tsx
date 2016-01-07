@@ -317,19 +317,25 @@ export class FileTree extends BaseComponent<Props, State>{
                 header: "Enter a new location",
                 onOk: (value: string) => {
                     let filePath = value;
-                    server.movePath({src:selection.selectedFilePath,dest:filePath});
+                    server.movePath({src:selection.selectedFilePath,dest:filePath}).then(res=>{
 
-                    if (selection.isDir){
-                        setAsOnlySelectedNoFocus(filePath, true);
-                        this.state.expansionState[filePath] = true;
-                        this.setState({expansionState: this.state.expansionState});
-                        commands.closeFilesDirs.emit({ files:[], dirs:[selection.selectedFilePath] });
-                    }
-                    else {
-                        commands.doOpenOrFocusFile.emit({filePath:filePath});
-                        setAsOnlySelectedNoFocus(filePath, false);
-                        commands.closeFilesDirs.emit({ files:[selection.selectedFilePath], dirs:[] });
-                    }
+                        if (res.error){
+                            ui.notifyWarningNormalDisappear("Failed to move: "+ res.error);
+                            return;
+                        }
+
+                        if (selection.isDir){
+                            setAsOnlySelectedNoFocus(filePath, true);
+                            this.state.expansionState[filePath] = true;
+                            this.setState({expansionState: this.state.expansionState});
+                            commands.closeFilesDirs.emit({ files:[], dirs:[selection.selectedFilePath] });
+                        }
+                        else {
+                            commands.doOpenOrFocusFile.emit({filePath:filePath});
+                            setAsOnlySelectedNoFocus(filePath, false);
+                            commands.closeFilesDirs.emit({ files:[selection.selectedFilePath], dirs:[] });
+                        }
+                    });
                 },
                 onEsc: () => {
                     setTimeout(handleFocusRequestBasic, 150);

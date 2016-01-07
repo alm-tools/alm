@@ -76,8 +76,9 @@ namespace Server {
         return resolve({ error: null });
     }
     export var movePath: typeof contract.server.movePath = (data) => {
-        let file = fmc.movePath(data);
-        return resolve({ error: null });
+        return fmc.movePath(data).then(error=>{
+            return {error};
+        });
     }
 
     /**
