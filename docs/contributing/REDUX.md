@@ -4,11 +4,11 @@ Redux is great for
 * debugging
 * keeping things consistent in the app
 
-However its not written to be easily used by TypeScript. So we have `simpleRedux.ts`. Usage should be fairly obvious and is documented below.
+However its not written to be easily used by TypeScript. So we have [`simpleRedux.ts`](https://github.com/alm-tools/alm/blob/master/src/app/state/simpleRedux.ts). Usage should be fairly obvious and is documented below.
 
 ## One time stuff
 
-(see `state.ts`):
+(see [`state.ts`](https://github.com/alm-tools/alm/blob/master/src/app/state/state.ts)):
 
 * define the store state interface
 * define initial state
