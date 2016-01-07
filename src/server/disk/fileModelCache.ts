@@ -96,7 +96,11 @@ export function duplicateFile(data: { src: string, dest: string }) {
 
 import {ncp} from "ncp";
 export function duplicateDir(data:{ src: string, dest: string }) {
-    ncp(data.src,data.dest,(err)=>{
+    return new Promise<string>((resolve) => {
+        ncp(data.src,data.dest,(err)=>{
+            if (err) console.log('Move failed', err);
+            resolve(JSON.stringify(err));
+        });
     });
 }
 

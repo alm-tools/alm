@@ -72,8 +72,9 @@ namespace Server {
         return resolve({ error: null });
     }
     export var duplicateDir: typeof contract.server.duplicateDir = (data) => {
-        let file = fmc.duplicateDir(data);
-        return resolve({ error: null });
+        return fmc.duplicateDir(data).then(error=>{
+            return {error};
+        });
     }
     export var movePath: typeof contract.server.movePath = (data) => {
         return fmc.movePath(data).then(error=>{
