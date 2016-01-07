@@ -66,6 +66,13 @@ let treeListStyle = {
     padding:'3px',
 }
 
+let treeScrollStyle = {
+    border: '1px solid grey',
+    ':focus': {
+        border: '1px solid ' + styles.highlightColor
+    }
+}
+
 let treeItemStyle = {
     whiteSpace: 'nowrap',
     cursor:'pointer',
@@ -546,7 +553,7 @@ export class FileTree extends BaseComponent<Props, State>{
             <div ref={this.refNames.treeRootNode} style={[csx.flexRoot, csx.horizontal, { width: this.state.width }, hideStyle]}>
 
                 <div style={[csx.flex, csx.vertical, treeListStyle]}>
-                    <div style={[csx.flex,csx.scroll, {border:'1px solid grey'}]}>
+                    <div style={[csx.flex,csx.scroll, treeScrollStyle]} tabIndex={0}>
                         {this.renderDir(this.state.treeRoot)}
                     </div>
                     {this.props.filePathsCompleted || <Robocop/>}
