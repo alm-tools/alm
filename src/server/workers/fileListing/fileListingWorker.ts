@@ -102,7 +102,7 @@ namespace Worker {
                          }
                      });
 
-                     return list;
+                     resolve(list);
                  });
              });
          }
@@ -165,6 +165,8 @@ namespace Worker {
                     }
                 });
                 sendNewFileListThrottled();
+            }).catch(res=>{
+                console.error('[FLW] DirPath listing failed:', dirPath, res);
             });
         }
 
