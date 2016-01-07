@@ -105,7 +105,7 @@ export function movePath(data:{ src: string, dest: string }): Promise<string> {
     return new Promise((resolve) => {
         mv(data.src, data.dest, { mkdirp: true, clobber: true }, (err) => {
             if (err) console.log('Move failed', err);
-            resolve(err);
+            resolve(JSON.stringify(err));
         });
     });
 }

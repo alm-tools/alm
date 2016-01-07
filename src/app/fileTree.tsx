@@ -320,7 +320,7 @@ export class FileTree extends BaseComponent<Props, State>{
                     server.movePath({src:selection.selectedFilePath,dest:filePath}).then(res=>{
 
                         if (res.error){
-                            ui.notifyWarningNormalDisappear("Failed to move: "+ res.error);
+                            ui.notifyWarningNormalDisappear("Failed to move: " + res.error);
                             return;
                         }
 
