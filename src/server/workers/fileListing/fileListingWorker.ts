@@ -94,7 +94,7 @@ namespace Worker {
                      }
 
                      let list = globResult.map(nl=> {
-                         let p = path.resolve(q.directory,nl);
+                         let p = path.resolve(dirPath,nl);
                          let type = mg.cache[p] && mg.cache[p] == 'FILE' ? types.FilePathType.File : types.FilePathType.Dir;
                          return {
                              filePath: fsu.consistentPath(p),
@@ -109,13 +109,14 @@ namespace Worker {
 
         // create initial list using 10x faster glob.Glob!
         (function () {
-           var mg = new glob.Glob('**', { cwd: q.directory }, (e, newList) => {
+           let cwd = q.directory;
+           var mg = new glob.Glob('**', { cwd }, (e, newList) => {
                if (e) {
                    console.error('Globbing error:', e);
                }
 
                let list = newList.map(nl=> {
-                   let p = path.resolve(q.directory,nl);
+                   let p = path.resolve(cwd,nl);
                    let type = mg.cache[p] && mg.cache[p] == 'FILE' ? types.FilePathType.File : types.FilePathType.Dir;
                    return {
                        filePath: fsu.consistentPath(p),
@@ -212,3 +213,7 @@ namespace Worker {
 var _checkTypes: typeof contract.worker = Worker;
 // run worker
 export var {master} = sw.runWorker(Worker, contract.master);
+
+function debug(...args){
+    console.error.apply(console,args);
+}
