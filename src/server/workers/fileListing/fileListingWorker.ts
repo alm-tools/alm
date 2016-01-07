@@ -139,12 +139,12 @@ namespace Worker {
        })();
 
 
-        function fileAdded(filePath: string, stat: fs.Stats) {
+        function fileAdded(filePath: string) {
             filePath = fsu.consistentPath(filePath);
 
             // Only send if we don't know about this already (because of faster initial scan)
             if (!liveList[filePath]) {
-                let type = stat && stat.isDirectory() ? types.FilePathType.Dir : types.FilePathType.File;
+                let type = types.FilePathType.File;
                 liveList[filePath] = type;
                 sendNewFileListThrottled();
             }
