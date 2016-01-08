@@ -33,7 +33,7 @@ enum SearchMode {
     Command,
     Project,
     Symbol,
-    ProjectSource,
+    SourceCode,
 }
 
 let selectedStyle = {
@@ -232,6 +232,8 @@ class SearchState {
     commands = commands.commandRegistry;
     /** symols */
     symbols: Types.NavigateToItem[] = [];
+    /** source code files */
+    sourceCodeFilePaths: string[] = [];
 
     /** Modes can use this to store their results */
     filteredValues:any[] = [];
@@ -312,7 +314,7 @@ class SearchState {
                 searchingName: "Symbols"
             },
             {
-                mode: SearchMode.ProjectSource,
+                mode: SearchMode.SourceCode,
                 description: 'Search for SourceFile in active project',
                 shortcut: 's',
                 searchingName: "SourceCode"
@@ -327,6 +329,22 @@ class SearchState {
     renderResults(): JSX.Element[] {
         let renderedResults: JSX.Element[] = [];
         if (this.mode == SearchMode.File){
+            let fileList: string[] = this.filteredValues;
+            renderedResults = this.createRenderedForList(fileList,(filePath)=>{
+                // Create rendered
+                let queryFilePath = utils.getFilePathLine(this.parsedFilterValue).filePath;
+                let renderedPath = renderMatchedSegments(filePath, queryFilePath);
+                let renderedFileName = renderMatchedSegments(getFileName(filePath), queryFilePath);
+                return (
+                    <div>
+                        <div>{renderedFileName}</div>
+                        {renderedPath}
+                    </div>
+                );
+            });
+        }
+
+        if (this.mode == SearchMode.SourceCode){
             let fileList: string[] = this.filteredValues;
             renderedResults = this.createRenderedForList(fileList,(filePath)=>{
                 // Create rendered
@@ -480,6 +498,16 @@ class SearchState {
             this.closeOmniSearch();
             return;
         }
+
+        if (this.mode == SearchMode.SourceCode) {
+            let filePath = this.filteredValues[index];
+            let {line} = utils.getFilePathLine(this.parsedFilterValue);
+            if (filePath) {
+                commands.doOpenFile.emit({ filePath: filePath, position: { line: line, ch: 0 } });
+            }
+            this.closeOmniSearch();
+            return;
+        }
     }
 
     /** Mode */
@@ -524,6 +552,11 @@ class SearchState {
                 let {filePath} = utils.getFilePathLine(this.parsedFilterValue);
                 this.filteredValues = fuzzyFilter(this.filePaths, filePath);
                 this.filteredValues = this.filteredValues.slice(0,this.maxShowCount);
+            }
+
+            if (this.mode == SearchMode.SourceCode) {
+                let {filePath} = utils.getFilePathLine(this.parsedFilterValue);
+                this.filteredValues = fuzzyFilter(this.sourceCodeFilePaths, filePath);
             }
 
             if (this.mode == SearchMode.Command) {
@@ -583,6 +616,10 @@ class SearchState {
             return server.getNavigateToItems({}).then((res)=>{
                 this.symbols = res.items;
             });
+        }
+
+        if (this.mode == SearchMode.SourceCode){
+            this.sourceCodeFilePaths = Object.keys(state.getState().activeProjectFilePathTruthTable);
         }
 
         return Promise.resolve();
