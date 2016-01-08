@@ -1,6 +1,12 @@
 /**
  * Manages active project.
  * Also pushes errors out to clients + keeps the language service + fileModelCache in sync
+ *
+ * When the app starts the active project is determined by `session.ts`
+ *
+ * If there is a tsconfig.json associated with the activeProject, we watch it.
+ * If it changes we reload all our information about the project.
+ * If it contains parse errors we send them through to all connected clients.
  */
 
 import utils = require("../../common/utils");

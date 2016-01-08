@@ -40,10 +40,21 @@ export function getDefaultOrNewSession(): types.SessionOnDisk {
      * - If there is an active project in the command line
      * - If there is an active project in the last session
      * - Common locations
-     * - An in-memory version
-     * TODO
      */
-
+    let commonTsconfigLocations = [
+        '.',
+        './src',
+        './ts',
+        './App-UI/src'
+    ].map(x=> x + '/tsconfig.json');
+    if (commandLine.getOptions().config) {
+        session.relativePathToTsconfig = workingDir.makeRelative(commandLine.getOptions().config);
+    } else if (!session.relativePathToTsconfig) {
+        let found = commonTsconfigLocations.find(cl=> fsu.existsSync(cl));
+        if (found) {
+            session.relativePathToTsconfig = found;
+        }
+    }
 
     /**
      * Update the session on disk for future calls to be stable
