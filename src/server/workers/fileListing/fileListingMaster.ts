@@ -23,10 +23,6 @@ namespace Master {
         }
         return Promise.resolve({});
     }
-    export var fileChanged: typeof contract.master.fileChanged = (q) => {
-        fileChangedOnDisk.emit({ filePath: q.filePath });
-        return Promise.resolve({});
-    }
 }
 
 // Ensure that the namespace follows the contract

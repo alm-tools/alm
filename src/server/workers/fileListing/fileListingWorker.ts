@@ -198,11 +198,8 @@ namespace Worker {
         watcher.on('unlinkDir', dirDeleted);
 
         // Just for changes
-        watcher.on('change', (filePath, stat: fs.Stats) => {
-            stat = stat || fs.statSync(filePath);
-            filePath = fsu.consistentPath(filePath);
-            let type = stat.isDirectory() ? types.FilePathType.Dir : types.FilePathType.File;
-            master.fileChanged({ filePath, type });
+        watcher.on('change', (filePath) => {
+            // We have no use for this right now
         });
 
         return Promise.resolve({});
