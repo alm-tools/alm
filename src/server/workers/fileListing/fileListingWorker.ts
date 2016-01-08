@@ -153,6 +153,7 @@ namespace Worker {
 
         function dirAdded(dirPath: string) {
             dirPath = fsu.consistentPath(dirPath);
+            liveList[dirPath] = types.FilePathType.Dir;
 
             /**
              * - glob the folder
