@@ -33,6 +33,7 @@ enum SearchMode {
     Command,
     Project,
     Symbol,
+    ProjectSource,
 }
 
 let selectedStyle = {
@@ -309,6 +310,12 @@ class SearchState {
                 description: 'Search for sYmbols in active project',
                 shortcut: 'y',
                 searchingName: "Symbols"
+            },
+            {
+                mode: SearchMode.ProjectSource,
+                description: 'Search for SourceFile in active project',
+                shortcut: 's',
+                searchingName: "SourceCode"
             }
         ];
 
