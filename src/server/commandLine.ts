@@ -11,15 +11,17 @@ var argv: {
     p?: number;
     d?: string;
     o?: boolean;
+    c?: string;
     safe?: boolean;
     _?: string[];
 } = minimist(process.argv.slice(2),{
-    string: ['dir'],
+    string: ['dir','config'],
     boolean: ['open','safe'],
     alias: {
         'p': 'port',
         'd': 'dir',
         'o': 'open',
+        'c': 'config',
     },
     default : {
         p: defaultPort,
@@ -31,6 +33,7 @@ var argv: {
 interface CommandLineOptions {
     port: number;
     dir: string;
+    config: string;
     open: boolean;
     safe: boolean;
     filePaths: string[];
@@ -41,6 +44,7 @@ export let getOptions = utils.once((): CommandLineOptions => {
         dir: argv.d,
         open: argv.o,
         safe: argv.safe,
+        config: argv.c,
         filePaths: [],
     }
     if (typeof options.port !== 'number') {
@@ -63,8 +67,16 @@ export let getOptions = utils.once((): CommandLineOptions => {
         }
     }
 
-    if (options.safe){
+    if (options.safe) {
         console.log("---SAFE MODE---")
+    }
+
+    if (options.config) {
+        options.config = workingDir.makeAbsoluteIfNeeded(argv.c);
+        if (!options.config.endsWith('.json')) {
+            options.config = options.config + '/' + 'tsconfig.json';
+        }
+        console.log("TSCONFIG: ", options.config);
     }
 
     return options;

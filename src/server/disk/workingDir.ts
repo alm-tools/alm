@@ -29,7 +29,7 @@ export function makeAbsoluteIfNeeded(filePathOrRelativeFilePath: string){
         return makeAbsolute(filePathOrRelativeFilePath);
     }
     else {
-        return filePathOrRelativeFilePath;
+        return fsu.consistentPath(filePathOrRelativeFilePath);
     }
 }
 

@@ -50,7 +50,14 @@ All of these are **optional**:
 * `-o`: Open the browser on the server
 * `-d <directory>` : Specify a working directory
 * `-p <port>`: Specify a custom port number
+* `-c <pathToTsconfig>`: Specify a path to the active project. [More](https://github.com/alm-tools/alm/tree/master#tsconfig)
 * `--safe`: To ignore any previous session data in `.alm` folder
+
+## TSConfig
+TypeScript projects are configured using `tsconfig.json`. If you don't provide one on the command line we will do the following in order:
+* See if the last session had one and use that
+* Check common locations (e.g. `.`, `./src`, `./ts` etc.)
+* Wait for you to specify one using project search command from the UI.
 
 ## License
 
