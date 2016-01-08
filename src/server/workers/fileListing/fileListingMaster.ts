@@ -7,7 +7,6 @@ import * as types from "../../../common/types";
 
 export var filePathsUpdated = new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string; completed: boolean;}>();
 export var filePathsCompleted = new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string; completed: boolean;}>();
-export var fileChangedOnDisk = new TypedEvent<{ filePath: string }>();
 
 namespace Master {
     export var increment: typeof contract.master.increment = (q) => {
