@@ -1,7 +1,5 @@
 # Active Project
-When the user launches `alm` in a folder, in decreasing priority:
-* we check for `tsconfig.json` files and select the one at the highest directory tree level possible. Its the activeProject (name: directoryname)
-* we create an in memory project. Its the activeProject (name: '__auto__')
+When the user launches `alm` in a folder the active project is activated by `session.ts` (called from `activeProject`).
 
 ## Watching
 ### Tsconfig.json

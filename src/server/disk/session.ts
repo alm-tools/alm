@@ -35,7 +35,19 @@ export function getDefaultOrNewSession(): types.SessionOnDisk {
         };
     }
 
-    // Update the session on disk for future calls to be stable
+    /**
+     * Active project setup logic. In decreasing order
+     * - If there is an active project in the command line
+     * - If there is an active project in the last session
+     * - Common locations
+     * - An in-memory version
+     * TODO
+     */
+
+
+    /**
+     * Update the session on disk for future calls to be stable
+     */
     if (commandLineTabs.length) {
         session.openTabs = session.openTabs.concat(commandLineTabs);
         writeDiskSession(session);

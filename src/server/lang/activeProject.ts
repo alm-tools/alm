@@ -74,7 +74,7 @@ export function start() {
     });
 
     // Resume session
-    let ses = session.getDefaultOrNewSession()
+    let ses = session.getDefaultOrNewSession();
     if (ses.relativePathToTsconfig) {
         let tsconfig = workingDir.makeAbsolute(ses.relativePathToTsconfig);
         if (fs.existsSync(tsconfig)) {
