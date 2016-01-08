@@ -92,7 +92,7 @@ export class FileModel {
     }
 
     fileListener = (eventName: string, path: string) => {
-        let contents = fsu.readFile(this.config.filePath);
+        let contents = fsu.existsSync(this.config.filePath) ? fsu.readFile(this.config.filePath) : '';
         let text = this.splitlines(contents);
 
         if (this.saved()) {
@@ -107,7 +107,7 @@ export class FileModel {
     private fsWatcher: fs.FSWatcher = null;
     watchFile() {
         this.fsWatcher = chokidar.watch(this.config.filePath,{ignoreInitial: true});
-        this.fsWatcher.on('all',this.fileListener);
+        this.fsWatcher.on('change',this.fileListener);
     }
     unwatchFile() {
         this.fsWatcher.close();
