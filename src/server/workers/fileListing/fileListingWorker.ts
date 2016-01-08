@@ -81,7 +81,7 @@ namespace Worker {
          * - initial partial serach
          * - later updates which might be called a lot because of some directory of files removed
          */
-         let sendNewFileListThrottled = throttle(sendNewFileList, 500);
+         let sendNewFileListThrottled = throttle(sendNewFileList, 1500);
 
          /**
           * Utility function to get the listing from a directory
@@ -131,7 +131,7 @@ namespace Worker {
            });
            /** Still send the listing while globbing so user gets immediate feedback */
            mg.on('match',(match)=>{
-               let p = path.resolve(q.directory,match);
+               let p = path.resolve(cwd,match);
                if (mg.cache[p]){
                   liveList[fsu.consistentPath(p)] = mg.cache[p] == 'FILE' ? types.FilePathType.File : types.FilePathType.Dir;
                   sendNewFileListThrottled();
