@@ -8,20 +8,20 @@ let defaultPort = process.env.PORT /* the port by Windows azure */
     || 4444;
 
 var argv: {
-    p?: number;
+    t?: number;
     d?: string;
     o?: boolean;
-    c?: string;
+    p?: string;
     safe?: boolean;
     _?: string[];
 } = minimist(process.argv.slice(2),{
     string: ['dir','config'],
     boolean: ['open','safe'],
     alias: {
-        'p': 'port',
+        't': 'port',
         'd': 'dir',
         'o': 'open',
-        'c': 'config',
+        'p': 'project',
     },
     default : {
         p: defaultPort,
@@ -33,18 +33,18 @@ var argv: {
 interface CommandLineOptions {
     port: number;
     dir: string;
-    config: string;
+    project: string;
     open: boolean;
     safe: boolean;
     filePaths: string[];
 }
 export let getOptions = utils.once((): CommandLineOptions => {
     let options: CommandLineOptions = {
-        port: argv.p,
+        port: argv.t,
         dir: argv.d,
         open: argv.o,
         safe: argv.safe,
-        config: argv.c,
+        project: argv.p,
         filePaths: [],
     }
     if (typeof options.port !== 'number') {
@@ -71,12 +71,12 @@ export let getOptions = utils.once((): CommandLineOptions => {
         console.log("---SAFE MODE---")
     }
 
-    if (options.config) {
-        options.config = workingDir.makeAbsoluteIfNeeded(argv.c);
-        if (!options.config.endsWith('.json')) {
-            options.config = options.config + '/' + 'tsconfig.json';
+    if (options.project) {
+        options.project = workingDir.makeAbsoluteIfNeeded(options.project);
+        if (!options.project.endsWith('.json')) {
+            options.project = options.project + '/' + 'tsconfig.json';
         }
-        console.log("TSCONFIG: ", options.config);
+        console.log("TSCONFIG: ", options.project);
     }
 
     return options;

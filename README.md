@@ -49,8 +49,8 @@ All of these are **optional**:
 
 * `-o`: Open the browser on the server
 * `-d <directory>` : Specify a working directory
-* `-p <port>`: Specify a custom port number
-* `-c <pathToTsconfig>`: Specify a path to the active project. [More](https://github.com/alm-tools/alm/tree/master#tsconfig)
+* `-p <pathToTsconfig>`: Specify a path to the active project. [More](https://github.com/alm-tools/alm/tree/master#tsconfig)
+* `-t <port>`: Specify a custom port number
 * `--safe`: To ignore any previous session data in `.alm` folder
 
 ## TSConfig
