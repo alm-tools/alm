@@ -192,7 +192,10 @@ export class FileTree extends BaseComponent<Props, State>{
             handleFocusRequestBasic();
         }));
 
-        /** Utility: takes you down two the last item selected */
+        /**
+         * Utility: takes the selected state to the last item selected
+         * If no item selected it selects the root
+         */
         let goDownToSmallestSelection = () => {
             let selectedFilePaths = Object.keys(this.state.selectedPaths);
             if (selectedFilePaths.length == 0){
@@ -214,7 +217,10 @@ export class FileTree extends BaseComponent<Props, State>{
             return {selectedFilePath,isDir:selectedFilePathDetails.isDir};
         }
 
-        /** Utility : gets you the last item selected if any, otherwise the root dir */
+        /**
+         * Utility : gets you the last item selected if any, otherwise the root dir
+         * Does not modify state
+         */
         let getLastSelected = () => {
             let selectedFilePaths = Object.keys(this.state.selectedPaths);
             let last = selectedFilePaths[selectedFilePaths.length - 1];
@@ -455,7 +461,6 @@ export class FileTree extends BaseComponent<Props, State>{
         });
         handlers.bind('down', () => {
             let {selectedFilePath, isDir} = goDownToSmallestSelection();
-
 
             /** Goes to next sibling on any (recursive) parent folder */
             let gotoNextSiblingHighUp = (treeItem: TreeDirItem) => {
