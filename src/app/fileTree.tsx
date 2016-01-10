@@ -621,9 +621,11 @@ export class FileTree extends BaseComponent<Props, State>{
     setupTree = (props:Props) => {
         let filePaths = props.filePaths.filter(fp=> fp.type == types.FilePathType.File).map(fp=> fp.filePath);
 
-        if (!filePaths.length) { // initial boot up
+        // initial boot up
+        if (!filePaths.length) {
             return;
         }
+
         let rootDirPath = props.rootDir;
         let rootDir: TreeDirItem = {
             name: utils.getFileName(rootDirPath),
@@ -677,7 +679,25 @@ export class FileTree extends BaseComponent<Props, State>{
 
         this.setState({ treeRoot: rootDir, expansionState: this.state.expansionState });
 
-        // TODO: keep the selected file paths in sync with all the items that are available
+        /**
+         * keep the selected file paths in sync with all the items that are available
+         */
+        // A map for easier lookup
+        let filePathMap = utils.createMap(filePaths);
+        let oldSelectedPaths = Object.keys(this.state.selectedPaths);
+        let newSelectedPaths: SelectedPaths = {};
+        oldSelectedPaths.forEach(path=> {
+            let isDir = this.state.selectedPaths[path].isDir;
+            if (!filePathMap[path]) {
+                return;
+            }
+            newSelectedPaths[path]= {isDir};
+        });
+        // If there is no selected path select the root
+        if (Object.keys(newSelectedPaths).length === 0){
+            newSelectedPaths[rootDirPath] = {isDir:true};
+        }
+        this.setState({ selectedPaths: newSelectedPaths });
     }
 
     handleToggleDir = (evt:React.SyntheticEvent, item:TreeDirItem) => {
