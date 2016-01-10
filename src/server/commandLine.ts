@@ -24,7 +24,7 @@ var argv: {
         'p': 'project',
     },
     default : {
-        p: defaultPort,
+        t: defaultPort,
         d: process.cwd(),
         o: true
     }
