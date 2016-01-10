@@ -47,8 +47,8 @@ export function getDefaultOrNewSession(): types.SessionOnDisk {
         './ts',
         './App-UI/src'
     ].map(x=> x + '/tsconfig.json');
-    if (commandLine.getOptions().config) {
-        session.relativePathToTsconfig = workingDir.makeRelative(commandLine.getOptions().config);
+    if (commandLine.getOptions().project) {
+        session.relativePathToTsconfig = workingDir.makeRelative(commandLine.getOptions().project);
     } else if (!session.relativePathToTsconfig) {
         let found = commonTsconfigLocations.find(cl=> fsu.existsSync(cl));
         if (found) {
