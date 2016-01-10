@@ -108,6 +108,7 @@ export class FileTree extends BaseComponent<Props, State>{
 
     /** makes it easier to lookup directories */
     dirLookup:{[dirPath:string]:TreeDirItem} = {};
+    loading: boolean = true; // guilty till proven innocent
 
     constructor(props: Props){
         super(props);
@@ -116,7 +117,7 @@ export class FileTree extends BaseComponent<Props, State>{
             shown: false,
             expansionState: {},
             selectedPaths: {},
-            treeRoot: { name: 'loading', filePath: 'loading', subDirs: [], files: [] }
+            treeRoot: { name: 'loading', filePath: 'loading', subDirs: [], files: [] },
         };
         this.setupTree(props);
 
@@ -260,6 +261,7 @@ export class FileTree extends BaseComponent<Props, State>{
          * file action handlers
          */
         handlers.bind(commands.treeAddFile.config.keyboardShortcut,()=>{
+            if (this.loading) return;
             let lastSelected = getLastSelected();
             let dirPath = lastSelected.isDir ? lastSelected.filePath : utils.getDirectory(lastSelected.filePath);
             inputDialog.open({
@@ -278,6 +280,7 @@ export class FileTree extends BaseComponent<Props, State>{
             return false;
         });
         handlers.bind(commands.treeDuplicateFile.config.keyboardShortcut,()=>{
+            if (this.loading) return;
             let selection = goDownToSmallestSelection();
             if (!selection){
                 ui.notifyInfoNormalDisappear('Nothing selected');
@@ -320,6 +323,7 @@ export class FileTree extends BaseComponent<Props, State>{
             return false;
         });
         handlers.bind(commands.treeMoveFile.config.keyboardShortcut,()=>{
+            if (this.loading) return;
             let selection = goDownToSmallestSelection();
             if (!selection){
                 ui.notifyInfoNormalDisappear('Nothing selected');
@@ -359,6 +363,7 @@ export class FileTree extends BaseComponent<Props, State>{
             return false;
         });
         handlers.bind([commands.treeDeleteFile.config.keyboardShortcut,"backspace"],()=>{
+            if (this.loading) return;
             let selectedFilePaths = Object.keys(this.state.selectedPaths);
             let selectedFilePathsDetails = selectedFilePaths.map(fp=>{
                 return {
@@ -389,6 +394,7 @@ export class FileTree extends BaseComponent<Props, State>{
          * navigation handlers
          */
         handlers.bind('enter', () => {
+            if (this.loading) return;
             let {selectedFilePath, isDir} = goDownToSmallestSelection();
             if (isDir) {
                 this.state.expansionState[selectedFilePath] = !this.state.expansionState[selectedFilePath];
@@ -399,6 +405,7 @@ export class FileTree extends BaseComponent<Props, State>{
             return false;
         });
         handlers.bind('up',()=>{
+            if (this.loading) return;
             let {selectedFilePath,isDir} = goDownToSmallestSelection();
 
             // if root do nothing
@@ -460,6 +467,7 @@ export class FileTree extends BaseComponent<Props, State>{
             return false;
         });
         handlers.bind('down', () => {
+            if (this.loading) return;
             let {selectedFilePath, isDir} = goDownToSmallestSelection();
 
             /** Goes to next sibling on any (recursive) parent folder */
@@ -516,6 +524,7 @@ export class FileTree extends BaseComponent<Props, State>{
             return false;
         });
         handlers.bind('left',()=>{
+            if (this.loading) return;
             let {selectedFilePath,isDir} = goDownToSmallestSelection();
             if (isDir){
                 // if expanded then collapse
@@ -535,6 +544,7 @@ export class FileTree extends BaseComponent<Props, State>{
             return false;
         });
         handlers.bind('right', () => {
+            if (this.loading) return;
             let {selectedFilePath, isDir} = goDownToSmallestSelection();
             if (isDir) {
                 // just expand
@@ -630,6 +640,7 @@ export class FileTree extends BaseComponent<Props, State>{
         if (!filePaths.length) {
             return;
         }
+        this.loading = false;
 
         let rootDirPath = props.rootDir;
         let rootDir: TreeDirItem = {
