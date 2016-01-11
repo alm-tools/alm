@@ -5,7 +5,9 @@ import {TypedEvent} from "../../../common/events";
 import * as workingDir from "../../disk/workingDir";
 import * as types from "../../../common/types";
 
+/** called whenever the list of files we know about is updated */
 export var filePathsUpdated = new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string; completed: boolean;}>();
+/** only called once for when the file paths are completed */
 export var filePathsCompleted = new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string; completed: boolean;}>();
 
 namespace Master {

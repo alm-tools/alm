@@ -144,7 +144,7 @@ function syncCore(projectConfig:ActiveProjectConfigDetails){
 /**
  * As soon as we get a new file listing refresh available projects
  */
-flm.filePathsCompleted.on(function(data) {
+flm.filePathsUpdated.on(function(data) {
     refreshAvailableProjects();
 });
 
