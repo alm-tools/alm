@@ -714,6 +714,18 @@ export class FileTree extends BaseComponent<Props, State>{
             newSelectedPaths[rootDirPath] = {isDir:true};
         }
         this.setState({ selectedPaths: newSelectedPaths });
+
+        /**
+         * Loading had focus. Transfer focus to root
+         */
+        if (document.activeElement === this.refs['loading']) {
+            setTimeout(() => {
+                this.state.selectedPaths = {};
+                this.state.selectedPaths[this.state.treeRoot.filePath] = dirSelected;
+                this.setState({ selectedPaths: this.state.selectedPaths });
+                this.ref(this.state.treeRoot.filePath).focus()
+            }, 500);
+        }
     }
 
     handleToggleDir = (evt:React.SyntheticEvent, item:TreeDirItem) => {
