@@ -15,22 +15,10 @@ export let errorsUpdated = new TypedEvent<ErrorsByFilePath>();
 let _errorsByFilePath: ErrorsByFilePath = {};
 
 /**
- * Sending massive error lists *constantly* can quickly degrade the web experience
- * So we:
- * - debounce it
- * - only send 50 errors per file or 200 errors total
- * - // TODO: still tell them all the counts
+ * debounced as constantly sending errors quickly degrades the web experience
  */
 let sendErrors = debounce(()=>{
-    let limitedCopy: ErrorsByFilePath = {};
-    let total = 0;
-    for (let filePath in _errorsByFilePath) {
-        let errors = _errorsByFilePath[filePath];
-        if (errors.length > 50) errors = errors.slice(0,50);
-        limitedCopy[filePath] = errors;
-        total += errors.length;
-        if (total > 200) break;
-    }
+    let limitedCopy = getErrorsLimited();
     errorsUpdated.emit(limitedCopy)
 },250);
 
@@ -60,8 +48,21 @@ export function setErrorsByFilePaths(filePaths: string[], errors: CodeError[]) {
     }
 }
 
-export function getErrors() {
-    return _errorsByFilePath;
+/**
+ * * Sending massive error lists *constantly* can quickly degrade the web experience
+ * - only send 50 errors per file or 200 errors total
+ */
+export function getErrorsLimited() {
+    let limitedCopy: ErrorsByFilePath = {};
+    let total = 0;
+    for (let filePath in _errorsByFilePath) {
+        let errors = _errorsByFilePath[filePath];
+        if (errors.length > 50) errors = errors.slice(0,50);
+        limitedCopy[filePath] = errors;
+        total += errors.length;
+        if (total > 200) break;
+    }
+    return limitedCopy;
 }
 
 export function clearErrors() {

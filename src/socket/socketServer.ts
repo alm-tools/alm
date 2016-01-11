@@ -114,7 +114,7 @@ namespace Server {
      * Error handling
      */
     export var getErrors: typeof contract.server.getErrors = (data) => {
-        return resolve(errorCache.getErrors());
+        return resolve(errorCache.getErrorsLimited());
     }
 
     /**
