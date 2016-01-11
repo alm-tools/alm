@@ -748,6 +748,6 @@ export class FileTree extends BaseComponent<Props, State>{
 
         this.setState({ selectedPaths:this.state.selectedPaths });
 
-        commands.doOpenOrFocusFile.emit({ filePath });
+        commands.doOpenOrActivateFileTab.emit({ filePath });
     }
 }

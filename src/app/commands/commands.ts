@@ -319,7 +319,10 @@ export var openFileFromDisk = new UICommand({
 });
 /** needed by cursor history */
 export var doOpenOrFocusTab = new events.TypedEvent<{ tabId: string, tabUrl: string, position: EditorPosition }>();
+/** needed by file tree */
 export var closeFilesDirs = new events.TypedEvent<{ files: string[], dirs: string[] }>();
+/** Needed by file tree, activates the tab but doesn't change focus away from tree view */
+export var doOpenOrActivateFileTab = new events.TypedEvent<{ filePath: string }>();
 
 /**
  * Other tab types

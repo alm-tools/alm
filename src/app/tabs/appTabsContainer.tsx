@@ -191,6 +191,31 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             state.addTabAndSelect(codeTab);
         });
 
+        commands.doOpenOrActivateFileTab.on((e)=>{
+            // if open and active nothing
+            // if open and not active then active
+            // if not open the file and focus and goto pos
+            if (this.props.tabs.length
+                && utils.getFilePathFromUrl(this.props.tabs[this.props.selectedTabIndex].url) == e.filePath){
+                return;
+            }
+
+            let openTabIndex = this.props.tabs.map(t=> utils.getFilePathFromUrl(t.url) == e.filePath).indexOf(true);
+            if (openTabIndex !== -1) {
+                this.selectTab(openTabIndex, false);
+                return;
+            }
+
+            let codeTab: state.TabInstance = {
+                id: createId(),
+                url: `file://${e.filePath}`,
+                saved: true
+            }
+            this.afterComponentDidUpdate(this.sendTabInfoToServer);
+            this.afterComponentDidUpdate(this.updateStuffWeKnowAboutCurrentTab);
+            state.addTabAndSelect(codeTab);
+        });
+
         commands.doOpenOrFocusTab.on(e=>{
             // if open and focused just goto pos
             // if open and not focused then focus and goto pos
@@ -308,7 +333,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         });
 
         this.disposible.add(state.subscribeSub(state=>state.findOptions,(findQuery)=>{
-            this.sendOrClearSearchOnCurrentComponent();
+            this.updateStuffWeKnowAboutCurrentTab();
         }));
 
         server.getActiveProjectConfigDetails({}).then(res=>{
@@ -450,7 +475,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     /** Called if the options change OR tab gets selected */
-    sendOrClearSearchOnCurrentComponent(){
+    updateStuffWeKnowAboutCurrentTab = () => {
         let component = this.getSelectedComponent();
         if (!component) return;
 
@@ -463,7 +488,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         }
     }
 
-    private selectTab(selected: number) {
+    private selectTab(selected: number, focus = true) {
         // cant select what aint there
         if (this.props.tabs.length == 0) {
             return;
@@ -471,7 +496,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
         if (this.props.selectedTabIndex == selected){
             let component = this.getSelectedComponent();
-            if (component){
+            if (component && focus){
                 component.focus();
             }
         }
@@ -484,7 +509,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         let component = this.getSelectedComponent();
         if (component) {
             component.focus();
-            this.sendOrClearSearchOnCurrentComponent();
+            this.updateStuffWeKnowAboutCurrentTab();
         }
     }
 
