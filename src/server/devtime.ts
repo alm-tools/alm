@@ -75,11 +75,11 @@ let bundleDevTimeProxy = utils.once(() => {
     var httpProxy = require('http-proxy');
     let proxyServer = httpProxy.createProxyServer();
     return function (req:express.Request,res:express.Response){
-        res.on('error',(err)=>{
-            console.log('[WDS] socket error')
-        });
         proxyServer.web(req, res, {
             target: `http://localhost:${webpackDevServerPort}`
+        });
+        proxyServer.on('error',(err)=>{
+            console.log('[WDS] proxy error',err);
         });
     }
 });
