@@ -1,6 +1,7 @@
 import {server} from "../socket/socketClient";
 import * as types from "../common/types";
 import React = require("react");
+import ReactDOM = require("react-dom");
 import Radium = require('radium');
 import csx = require('csx');
 import {BaseComponent} from "./ui";
@@ -570,7 +571,16 @@ export class FileTree extends BaseComponent<Props, State>{
         });
         handlers.bind('h',()=>{
             this.setState({showHelp:!this.state.showHelp});
-        })
+        });
+        handlers.bind('c', () => {
+            let copyButtonRef = this.ref('copypath');
+            if (!copyButtonRef) {
+                ui.notifyInfoNormalDisappear('Nothing selected');
+                return;
+            }
+            let copypathDom = ReactDOM.findDOMNode(copyButtonRef);
+            (copypathDom as any).click();
+        });
     }
     refNames = {treeRootNode:'1'}
 
@@ -601,7 +611,7 @@ export class FileTree extends BaseComponent<Props, State>{
                                 {singlePathSelected}
                             </div>
                             <div style={csx.center}>
-                                <clipboard.Clipboard text={singlePathSelected}/>{' '}
+                                <clipboard.Clipboard ref='copypath' text={singlePathSelected}/>{' '}
                                 <span>Tap <span style={styles.Tip.keyboardShortCutStyle}>H</span> to toggle tree view help</span>
                             </div>
                         </div>
@@ -615,6 +625,7 @@ export class FileTree extends BaseComponent<Props, State>{
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>A</span> to add a file</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>D</span> to duplicate file / folder</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>M</span> to move file / folder</div>
+                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>C</span> to copy path to clipboard</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>arrow keys</span> to browse</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>del or backspace</span> to delete</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>enter</span> to open file / expand dir</div>
