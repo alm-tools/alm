@@ -193,6 +193,11 @@ export var findAndReplace = new UICommand({
     description: "Show find and replace dialog",
     context: CommandContext.Global,
 });
+export var findAndReplaceMulti = new UICommand({
+    keyboardShortcut: 'mod+shift+f', // atom,sublime,c9
+    description: "Show find and replace in files",
+    context: CommandContext.Global,
+});
 export var findNext = new UICommand({
     keyboardShortcut: 'f3', // atom,sublime
     description: "Find the next search result",
