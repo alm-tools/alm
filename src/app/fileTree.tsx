@@ -17,6 +17,7 @@ import {getDirectory,getFileName} from "../common/utils";
 import {Robocop} from "./robocop";
 import {inputDialog} from "./dialogs/inputDialog";
 import * as Mousetrap from "mousetrap";
+import * as clipboard from "./clipboard";
 type TruthTable = utils.TruthTable;
 
 export interface Props {
@@ -46,6 +47,7 @@ export interface State {
     shown?: boolean;
     treeRoot?: TreeDirItem;
     expansionState?: { [filePath: string]: boolean };
+    showHelp?: boolean;
 
      // TODO: support multiple selections at some point, hence a dict
     selectedPaths?: SelectedPaths;
@@ -96,6 +98,11 @@ let currentSelectedItemCopyStyle = {
     margin: '2px'
 }
 
+let helpRowStyle = {
+    margin: '5px',
+    lineHeight: '18px'
+}
+
 @connect((state: StoreState): Props => {
     return {
         filePaths: state.filePaths,
@@ -143,6 +150,13 @@ export class FileTree extends BaseComponent<Props, State>{
             this.ref(pathToFocus).focus();
             return false;
         }
+
+        this.disposible.add(commands.esc.on(()=>{
+            if (this.state.showHelp){
+                this.setState({showHelp: false});
+                setTimeout(()=>this.ref(this.state.treeRoot.filePath).focus(),150);
+            }
+        }));
 
         this.disposible.add(commands.treeViewToggle.on(()=>{
             this.setState({ shown: !this.state.shown });
@@ -554,6 +568,9 @@ export class FileTree extends BaseComponent<Props, State>{
             }
             return false;
         });
+        handlers.bind('h',()=>{
+            this.setState({showHelp:!this.state.showHelp});
+        })
     }
     refNames = {treeRootNode:'1'}
 
@@ -567,7 +584,7 @@ export class FileTree extends BaseComponent<Props, State>{
         return (
             <div ref={this.refNames.treeRootNode} style={[csx.flexRoot, csx.horizontal, { width: this.state.width }, hideStyle]}>
 
-                <div style={[csx.flex, csx.vertical, treeListStyle]}>
+                <div style={[csx.flex, csx.vertical, treeListStyle, {position:'relative'}]}>
                     <div style={[csx.flex,csx.scroll, treeScrollStyle]} tabIndex={0}>
                         {this.renderDir(this.state.treeRoot)}
                     </div>
@@ -581,7 +598,29 @@ export class FileTree extends BaseComponent<Props, State>{
                             onClick={()=>ui.notifyInfoQuickDisappear("Path copied to clipboard")}>
                             <div
                                 style={currentSelectedItemCopyStyle}>
-                                {utils.getFileName(singlePathSelected)}
+                                {singlePathSelected}
+                            </div>
+                            <div style={csx.center}>
+                                <clipboard.Clipboard text={singlePathSelected}/>{' '}
+                                <span>Tap <span style={styles.Tip.keyboardShortCutStyle}>H</span> to toggle tree view help</span>
+                            </div>
+                        </div>
+                    }
+                    {
+                        this.state.showHelp
+                        && <div style={[csx.newLayer, csx.centerCenter, csx.flex, {background: 'rgba(0,0,0,.7)'}]}
+                            onClick={()=>this.setState({showHelp:false})}>
+                            <div style={[csx.flexRoot, csx.vertical]}>
+                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>ESC</span> to hide help</div>
+                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>A</span> to add a file</div>
+                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>D</span> to duplicate file / folder</div>
+                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>M</span> to move file / folder</div>
+                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>arrow keys</span> to browse</div>
+                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>del or backspace</span> to delete</div>
+                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>enter</span> to open file / expand dir</div>
+                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>{commands.modName} + \</span> to toggle tree view</div>
+                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>Shift + {commands.modName} + \</span> to locate open file in view</div>
+                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}> {commands.modName} + 0</span> to focus on tree view</div>
                             </div>
                         </div>
                     }

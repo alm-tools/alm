@@ -36,7 +36,7 @@ let clippy = {
 export class Clipboard extends BaseComponent<Props, State>{
     render(){
         return (
-            <button style={csx.extend(buttonStyle,csx.center)} data-clipboard-text={this.props.text} onClick={(event)=>event.stopPropagation()}>
+            <button style={csx.extend(buttonStyle,csx.center)} data-clipboard-text={this.props.text} onClick={(event)=>event.stopPropagation() || ui.notifyInfoQuickDisappear("Copied")}>
                 <img src="assets/clippy.svg" style={clippy}/>
             </button>
         );
