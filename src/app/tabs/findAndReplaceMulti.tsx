@@ -10,26 +10,21 @@ import * as $ from "jquery";
 import * as styles from "../styles/styles";
 import * as onresize from "onresize";
 import {Clipboard} from "../clipboard";
-
+import {CodeEditor} from "../codemirror/codeEditor";
 import {Types} from "../../socket/socketContract";
 
 type NodeDisplay = Types.NodeDisplay;
 let EOL = '\n';
 
-let {inputBlackStyle} = styles.Input;
-
 /**
  * The styles
  */
-require('./astView.less');
-
-import {CodeEditor} from "../codemirror/codeEditor";
+let {inputBlackStyle} = styles.Input;
 
 export interface Props extends tab.ComponentProps {
 }
 export interface State {
-    selectedNode?: Types.NodeDisplay;
-    text?:string;
+    searchResult?: Types.SearchResultsByFilePath
 }
 
 @ui.Radium
@@ -52,6 +47,10 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
     mode: Types.ASTMode;
     componentDidMount() {
         // TODO tell server about clearing the search
+
+        this.disposible.add(commands.esc.on(()=>{
+            /** TODO: esc stops the search? */
+        }));
     }
 
     render() {

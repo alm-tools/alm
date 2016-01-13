@@ -122,6 +122,16 @@ export namespace Types {
     }
 
     /**
+     * Find and Replace
+     */
+    export type SearchResultsByFilePath = {[filePath:string]: SearchResultDetails[]};
+    export interface SearchResultDetails {
+        filePath: string;
+        editorPosition: EditorPosition;
+        preview: string;
+    }
+
+    /**
      * Completions stuff
      */
     export interface GetCompletionsAtPositionQuery extends FilePathPositionQuery {
