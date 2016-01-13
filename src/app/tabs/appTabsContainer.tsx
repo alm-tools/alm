@@ -113,6 +113,32 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             state.addTabAndSelect(codeTab);
         });
 
+        commands.findAndReplaceMulti.on((e) =>{
+            // if open and active => focus
+            // if open and not active => active
+            // if not open and active
+            if (this.props.tabs.length
+                && utils.getFilePathAndProtocolFromUrl(this.props.tabs[this.props.selectedTabIndex].url).protocol == 'far'){
+                this.getSelectedComponent().focus();
+                return;
+            }
+
+            let openTabIndex = this.props.tabs.map(t=> utils.getFilePathAndProtocolFromUrl(t.url).protocol == 'far').indexOf(true);
+            if (openTabIndex !== -1) {
+                this.selectTab(openTabIndex);
+                return;
+            }
+
+            let farTab: state.TabInstance = {
+                id: createId(),
+                url: `far://Find And Replace`,
+                saved: true
+            }
+            this.afterComponentDidUpdate(this.sendTabInfoToServer);
+            this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
+            state.addTabAndSelect(farTab);
+        });
+
         let getCurrentFilePathOrWarn = () => {
             let tab = state.getSelectedTab();
             if (!tab) {

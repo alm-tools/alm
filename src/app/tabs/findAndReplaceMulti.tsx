@@ -33,7 +33,7 @@ export interface State {
 }
 
 @ui.Radium
-export class ASTView extends ui.BaseComponent<Props, State> implements tab.Component {
+export class FindAndReplaceView extends ui.BaseComponent<Props, State> implements tab.Component {
     constructor(props: Props) {
         super(props);
         let {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(props.url);
@@ -61,13 +61,15 @@ export class ASTView extends ui.BaseComponent<Props, State> implements tab.Compo
                 style={csx.extend(csx.vertical,csx.flex,styles.noFocusOutline)}>
                 <div style={csx.extend(csx.flex,csx.scroll)}>
                     {
-                        // The search results go here
+                        // TODO: The search results go here
                     }
+                    No Search
                 </div>
                 <div style={csx.extend(csx.flexRoot,styles.padded1,{background:'white'})}>
                     {
-                        // The search controls go here
+                        // TODO: The search controls go here
                     }
+                    Type to start a search
                 </div>
             </div>
         );

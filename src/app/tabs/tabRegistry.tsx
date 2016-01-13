@@ -10,6 +10,7 @@ import * as ui from "../ui";
 import {Code} from "./codeTab";
 import {DependencyView} from "./dependencyView";
 import {ASTView} from "./astView";
+import {FindAndReplaceView} from "./findAndReplaceMulti";
 
 type ComponentConstructor = { new (props: any): tab.Component };
 
@@ -40,6 +41,11 @@ let tabs: {[protocol:string]:TabConfig} = {
         getTitle: (url)=> `AST Full ${utils.getFileName(url)}`,
         component: ASTView,
     },
+    far: { // find and replace
+        advancedSearch: false,
+        getTitle: (url)=> `Find and Replace`,
+        component: FindAndReplaceView,
+    }
 }
 
 export function getComponentByUrl(url: string): ComponentConstructor {
