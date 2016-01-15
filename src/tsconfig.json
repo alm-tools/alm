@@ -63,6 +63,7 @@
         "./server/lang/gitService.ts",
         "./server/lang/modules/astToText.ts",
         "./server/lang/modules/astUtils.ts",
+        "./server/lang/modules/farmService.ts",
         "./server/lang/modules/formatting.ts",
         "./server/lang/modules/programDependencies.ts",
         "./server/lang/projectService.ts",
