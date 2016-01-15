@@ -52,6 +52,7 @@
     "open": "0.0.5",
     "portfinder": "^0.4.0",
     "rimraf": "^2.4.2",
+    "rx": "^4.0.7",
     "socket.io": "^1.3.6",
     "update-notifier": "^0.5.0"
   },

@@ -1,4 +1,5 @@
 /// <reference path="../../node_modules/ntypescript/bin/ntypescript.d.ts"/>
+/// <reference path="../../node_modules/rx/ts/rx.d.ts"/>
 
 interface EditorPosition {
     line: number;
@@ -10,7 +11,8 @@ interface CodeEdit {
     to: EditorPosition;
     newText: string;
     /**
-     * When we are editing stuff from the front end we want all code edits except ours (user typing code)
+     * When we are editing stuff from the front end we want all code edits except our own (user typing code)
+     * This helps us track that.
      */
     sourceId? : string;
 }

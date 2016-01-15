@@ -4,6 +4,7 @@
 
 import * as wd from "../../disk/workingDir";
 import * as cp from "child_process";
+import * as rx from "rx";
 
 interface FarmConfig {
     pattern: string;
