@@ -19,8 +19,11 @@ interface FarmConfig {
 let farmCommand = (cfg: FarmConfig): Promise<string> => {
     return new Promise((resolve, reject) => {
         /**
+         * https://git-scm.com/docs/git-grep
+         * 
          * n: line number
          * E: extended regexp
+         * w: Match the pattern only at word boundary (also takes into account new lines 💟)
          */
         cp.exec(`git grep -En -- ${cfg.globs.join(' ')}`, { cwd: wd.getProjectRoot() }, (err, stdout, stderr) => {
             if (stderr.toString().trim().length) {
