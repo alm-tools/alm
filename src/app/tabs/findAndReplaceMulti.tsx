@@ -12,6 +12,7 @@ import * as onresize from "onresize";
 import {Clipboard} from "../clipboard";
 import {CodeEditor} from "../codemirror/codeEditor";
 import {Types} from "../../socket/socketContract";
+import * as utils from "../../common/utils";
 
 type NodeDisplay = Types.NodeDisplay;
 let EOL = '\n';
@@ -92,7 +93,11 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
 
     search = {
         doSearch: (options: FindOptions) => {
-            // TODO
+            let pattern = utils.findOptionsToQueryRegex(options).toString();
+            server.startFarming({
+                pattern,
+                globs:[]
+            });
         },
 
         hideSearch: () => {

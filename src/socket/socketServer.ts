@@ -8,6 +8,7 @@ import {FileModel} from "../server/disk/fileModel";
 import * as activeProject from "../server/lang/activeProject";
 import * as projectService from "../server/lang/projectService";
 import * as gitService from "../server/lang/gitService";
+import * as findAndReplaceMultiService from "../server/lang/findAndReplaceMultiService";
 import * as session from "../server/disk/session";
 let resolve = sls.resolve;
 
@@ -137,6 +138,11 @@ namespace Server {
      */
     export var gitStatus : typeof contract.server.gitStatus = gitService.gitStatus;
     export var gitReset : typeof contract.server.gitReset = gitService.gitReset;
+
+    /**
+     * FARM
+     */
+    export var startFarming : typeof contract.server.startFarming = findAndReplaceMultiService.startFarming;
 }
 
 // Ensure that the namespace follows the contract

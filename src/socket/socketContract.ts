@@ -65,6 +65,11 @@ export var server = {
      */
     gitStatus: {} as QRFunction<{},string>,
     gitReset: {} as QRFunction<{filePath:string},string>,
+
+    /**
+     * FARM
+     */
+    startFarming: {} as QRFunction<Types.FarmConfig, {}>,
 }
 
 export var client = {

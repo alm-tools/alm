@@ -2,9 +2,9 @@
  * Find and replace multi. The single file version is client only.
  */
 
-import * as wd from "../../disk/workingDir";
+import * as wd from "../disk/workingDir";
 import * as cp from "child_process";
-import {Types} from "../../../socket/socketContract";
+import {Types} from "../../socket/socketContract";
 
 interface FarmingState {
     ignore: () => void;
