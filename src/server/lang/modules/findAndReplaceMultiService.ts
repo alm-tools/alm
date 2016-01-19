@@ -4,11 +4,7 @@
 
 import * as wd from "../../disk/workingDir";
 import * as cp from "child_process";
-
-interface FarmConfig {
-    pattern: string;
-    globs: string[];
-}
+import {Types} from "../../../socket/socketContract";
 
 interface FarmingState {
     ignore: () => void;
@@ -19,7 +15,7 @@ let farmState:FarmingState = null;
 /**
  * Only allows one active process of farming
  */
-let restartFarming = (cfg: FarmConfig) => {
+const restartFarming = (cfg: Types.FarmConfig) => {
     if (farmState){
         farmState.ignore();
         farmState = null;
@@ -59,4 +55,12 @@ let restartFarming = (cfg: FarmConfig) => {
     });
 
     farmState = {ignore};
+}
+
+/**
+ * The exposed service API
+ */
+export function startFarming(cfg:Types.FarmConfig):Promise<{}>{
+    restartFarming(cfg);
+    return Promise.resolve({});
 }

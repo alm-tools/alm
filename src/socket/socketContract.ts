@@ -122,7 +122,8 @@ export namespace Types {
     }
 
     /**
-     * Find and Replace
+     * FARM:
+     * Find and Replace Multiple
      */
     export type SearchResultsByFilePath = {[filePath:string]: SearchResultDetails[]};
     export interface SearchResultDetails {
@@ -130,6 +131,10 @@ export namespace Types {
         editorPosition: EditorPosition;
         preview: string;
     }
+    export interface FarmConfig {
+         pattern: string;
+         globs: string[];
+     }
 
     /**
      * Completions stuff
@@ -297,5 +302,4 @@ export namespace Types {
          */
         rawJson: any;
     }
-
 }
