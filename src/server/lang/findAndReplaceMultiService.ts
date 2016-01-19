@@ -37,7 +37,7 @@ const restartFarming = (cfg: Types.FarmConfig) => {
      * w: Match the pattern only at word boundary (also takes into account new lines 💟)
      * i: ignore case
      */
-    const grep = cp.spawn(`git grep -EIn -- ${cfg.globs.join(' ')}`);
+    const grep = cp.spawn(`git`,[`grep -EIn -- ${cfg.globs.join(' ')}`]);
 
     grep.stdout.on('data', (data) => {
         if (ignored) return;
