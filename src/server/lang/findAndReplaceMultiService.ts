@@ -30,6 +30,9 @@ const restartFarming = (cfg: Types.FarmConfig) => {
     /**
      * https://git-scm.com/docs/git-grep
      *
+     * We don't do `--full-name` as that is relative to `.git` parent.
+     * Without that it is relative to cwd which is better for us.
+     *
      * // General main ones
      * n: line number
      * E: extended regexp
@@ -39,7 +42,13 @@ const restartFarming = (cfg: Types.FarmConfig) => {
      * w: Match the pattern only at word boundary (also takes into account new lines 💟)
      * i: ignore case
      */
-    const grep = cp.spawn(`git`, [`--no-pager`, `grep`, `-EIn`, searchTerm, `--`, cfg.globs.join(' ')]);
+    const grep = cp.spawn(`git`, [
+        `--no-pager`,
+        `grep`,
+        `-EIn`,
+        searchTerm,
+        `--`,  // signals pathspec
+        cfg.globs.join(' ')]);
 
     grep.stdout.on('data', (data) => {
         if (ignored) return;
