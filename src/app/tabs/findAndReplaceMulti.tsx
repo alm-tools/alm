@@ -24,7 +24,7 @@ let {inputBlackStyle} = styles.Input;
 export interface Props extends tab.ComponentProps {
 }
 export interface State {
-    searchResult?: Types.SearchResultsByFilePath
+    farmResultByFilePath?: Types.FarmResultsByFilePath
 }
 
 @ui.Radium
