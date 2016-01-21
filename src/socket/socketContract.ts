@@ -130,10 +130,10 @@ export namespace Types {
      * FARM:
      * Find and Replace Multiple
      */
-    export type SearchResultsByFilePath = {[filePath:string]: SearchResultDetails[]};
-    export interface SearchResultDetails {
+    export type FarmResultsByFilePath = {[filePath:string]: FarmResultDetails[]};
+    export interface FarmResultDetails {
         filePath: string;
-        editorPosition: EditorPosition;
+        line: number;
         preview: string;
     }
     export interface FarmConfig {

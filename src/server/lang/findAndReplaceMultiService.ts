@@ -5,12 +5,28 @@
 import * as wd from "../disk/workingDir";
 import * as cp from "child_process";
 import {Types} from "../../socket/socketContract";
+import * as utils from "../../common/utils";
 
+/**
+ * Singleton current farm state
+ */
 interface FarmingState {
     ignore: () => void;
 }
-
 let farmState:FarmingState = null;
+
+/**
+ * The found results are collected here
+ */
+let results: Types.FarmResultDetails[] = [];
+const throttledSend = utils.throttle(() => {
+    // console.log(results);
+    // TODO: send
+}, 500);
+function addSearchResults(newResults:Types.FarmResultDetails[]){
+    results = results.concat(newResults);
+    throttledSend();
+}
 
 /**
  * Only allows one active process of farming
@@ -52,17 +68,71 @@ const restartFarming = (cfg: Types.FarmConfig) => {
 
     grep.stdout.on('data', (data) => {
         if (ignored) return;
-        console.log(`stdout: ${data}`);
+        // console.log(`Grep stdout: ${data}`);
+
+        // Sample :
+        // src/typings/express/express.d.ts:907:             *    app.enable('foo')
+        // src/typings/express/express.d.ts:908:             *    app.disabled('foo')
+
+        // String
+        data = data.toString();
+
+        // Split by \n and trim each to get lines
+        let lines: string[] = data.split('\n').map(x=> x.trim());
+
+        const newResults: Types.FarmResultDetails[] = lines.map(line=>{
+            let originalLine = line;
+
+            // Split line by `:\d:` to get relativeName as first
+            let relativeFilePath = line.split(/:\d+:/)[0];
+            line = line.substr(relativeFilePath.length);
+
+            // :123: * some preview
+            // =>
+            // 123: * some preview
+            line = line.substr(1);
+
+            // line number!
+            let lineNumber = line.split(':')[0];
+            line = line.substr(lineNumber.length);
+
+            // : *     some preview
+            // =>
+            // some preview
+            let preview =
+                line.split(':').slice(1).join(':')
+                    .split('*').slice(1).join('*')
+                    .trim();
+
+            let result:Types.FarmResultDetails = {
+                filePath: wd.makeAbsolute(relativeFilePath),
+                line: +lineNumber,
+                preview: preview
+            };
+
+            console.log(originalLine,result);
+
+            return result;
+        });
+
+        // Send them through
+        addSearchResults(newResults);
     });
 
     grep.stderr.on('data', (data) => {
         if (ignored) return;
-        console.log(`stderr: ${data}`);
+        console.log(`Grep stderr: ${data}`);
     });
 
     grep.on('close', (code) => {
         if (ignored) return;
-        console.log(`child process exited with code ${code}`);
+
+        if (!code) {
+            // TODO: Search complete!
+        }
+        if (code) {
+            console.error(`Grep process exited with code ${code}`);
+        }
     });
 
     farmState = {ignore};
