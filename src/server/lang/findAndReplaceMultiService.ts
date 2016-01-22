@@ -66,17 +66,22 @@ export function startFarming(cfg: Types.FarmConfig): Promise<{}> {
      *
      * // General main ones
      * n: line number
-     * E: extended regexp
      * I: don't match binary files
      *
      * // Useful toggles
      * w: Match the pattern only at word boundary (also takes into account new lines 💟)
      * i: ignore case
+     *
+     * E: extended regexp
+     * F: Don't interpret pattern as regexp
      */
     const grep = cp.spawn(`git`, [
         `--no-pager`,
         `grep`,
-        `-EIn`,
+        `-In`
+        + (cfg.isRegex ? 'E' : 'F')
+        + (cfg.isFullWord ? 'w' : '')
+        + (cfg.isCaseSensitive ? 'i' : ''),
         searchTerm,
         `--`  // signals pathspec
     ].concat(cfg.globs));
