@@ -9,30 +9,38 @@ import * as utils from "../../common/utils";
 import {TypedEvent} from "../../common/events";
 
 /**
- * Singleton current farm state
+ * Maintains current farm state
  */
-interface FarmingState {
-    ignore: () => void;
+class FarmState {
+    /**
+     * The found results are collected here
+     */
+    results: Types.FarmResultDetails[] = [];
+    addSearchResults(newResults: Types.FarmResultDetails[]) {
+        this.results = this.results.concat(newResults);
+        this.throttledSend();
+    }
+    throttledSend = utils.throttle(() => {
+        // console.log(results);
+        // TODO: send
+    }, 500);
+
+
+    /** Completion */
+    private completed = false;
+    complete = () => {
+        this.completed = true;
+    }
+
+    /** Allows us to dispose any running search */
+    disposed = false;
+    dispose = () => this.disposed = true;
 }
-let farmState: FarmingState = null;
 
 /**
- * Emitted on completed
+ * The current farm state
  */
-export const completed = new TypedEvent<{}>();
-
-/**
- * The found results are collected here
- */
-let results: Types.FarmResultDetails[] = [];
-const throttledSend = utils.throttle(() => {
-    // console.log(results);
-    // TODO: send
-}, 500);
-function addSearchResults(newResults: Types.FarmResultDetails[]) {
-    results = results.concat(newResults);
-    throttledSend();
-}
+let farmState: FarmState = null;
 
 
 /**
@@ -46,11 +54,7 @@ function addSearchResults(newResults: Types.FarmResultDetails[]) {
 /** Also safely stops any previous running farming */
 export function startFarming(cfg: Types.FarmConfig): Promise<{}> {
     stopFarmingIfRunning({});
-
-
-    /** Allows us to abort a search */
-    let ignored = false;
-    const ignore = () => ignored = true;
+    farmState = new FarmState();
 
     let searchTerm = cfg.query;
 
@@ -78,7 +82,7 @@ export function startFarming(cfg: Types.FarmConfig): Promise<{}> {
     ].concat(cfg.globs));
 
     grep.stdout.on('data', (data) => {
-        if (ignored) return;
+        if (farmState.disposed) return;
         // console.log(`Grep stdout: ${data}`);
 
         // Sample :
@@ -134,18 +138,19 @@ export function startFarming(cfg: Types.FarmConfig): Promise<{}> {
         });
 
         // Send them through
-        addSearchResults(newResults);
+        farmState.addSearchResults(newResults);
     });
 
     grep.stderr.on('data', (data) => {
-        if (ignored) return;
+        if (farmState.disposed) return;
+
         console.log(`Grep stderr: ${data}`);
     });
 
     grep.on('close', (code) => {
-        if (ignored) return;
+        if (farmState.disposed) return;
 
-        completed.emit({});
+        farmState.complete();
 
         if (!code) {
             // TODO: Search complete!
@@ -156,13 +161,13 @@ export function startFarming(cfg: Types.FarmConfig): Promise<{}> {
         }
     });
 
-    farmState = { ignore };
+
     return Promise.resolve({});
 }
 
 export function stopFarmingIfRunning(args: {}): Promise<{}> {
     if (farmState) {
-        farmState.ignore();
+        farmState.dispose();
         farmState = null;
     }
     return Promise.resolve({});
