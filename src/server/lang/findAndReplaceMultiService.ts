@@ -71,14 +71,17 @@ const restartFarming = (cfg: Types.FarmConfig) => {
         // console.log(`Grep stdout: ${data}`);
 
         // Sample :
-        // src/typings/express/express.d.ts:907:             *    app.enable('foo')
-        // src/typings/express/express.d.ts:908:             *    app.disabled('foo')
+        // src/typings/express/express.d.ts:907:                app.enable('foo')
+        // src/typings/express/express.d.ts:908:                app.disabled('foo')
 
         // String
         data = data.toString();
 
         // Split by \n and trim each to get lines
-        let lines: string[] = data.split('\n').map(x=> x.trim());
+        let lines: string[] =
+            data.split('\n')
+                .map(x => x.trim())
+                .filter(x => x);
 
         const newResults: Types.FarmResultDetails[] = lines.map(line=>{
             let originalLine = line;
@@ -87,21 +90,20 @@ const restartFarming = (cfg: Types.FarmConfig) => {
             let relativeFilePath = line.split(/:\d+:/)[0];
             line = line.substr(relativeFilePath.length);
 
-            // :123: * some preview
+            // :123:  some preview
             // =>
-            // 123: * some preview
+            // 123:  some preview
             line = line.substr(1);
 
             // line number!
             let lineNumber = line.split(':')[0];
             line = line.substr(lineNumber.length);
 
-            // : *     some preview
+            // :      some preview
             // =>
             // some preview
             let preview =
                 line.split(':').slice(1).join(':')
-                    .split('*').slice(1).join('*')
                     .trim();
 
             let result:Types.FarmResultDetails = {
@@ -110,7 +112,12 @@ const restartFarming = (cfg: Types.FarmConfig) => {
                 preview: preview
             };
 
-            console.log(originalLine,result);
+            /* Debug
+            console.log(originalLine);
+            console.log('\n')
+            console.log(result);
+            console.log('------------------------------------------\n')
+            /* */
 
             return result;
         });
