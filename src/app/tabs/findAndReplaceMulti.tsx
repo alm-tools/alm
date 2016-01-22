@@ -222,17 +222,8 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
          if (!this.state.findQuery) {
              return;
          }
-         if (mod && enter) {
-             commands.replaceAll.emit({newText:this.replaceWith()});
-             return;
-         }
-         if (shift && enter) {
-             commands.findPrevious.emit({});
-             return;
-         }
          if (enter) {
-             commands.findNext.emit({});
-             return;
+             this.startSearch();
          }
      };
      replaceKeyDownHandler = (e:React.SyntheticEvent) => {
@@ -274,6 +265,16 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
          this.setState({isFullWord:val});
      }
 
+     startSearch() {
+         server.startFarming({
+             query: this.state.findQuery,
+             isRegex: this.state.isRegex,
+             isFullWord: this.state.isFullWord,
+             isCaseSensitive: this.state.isCaseSensitive,
+             globs:[]
+         });
+     }
+
     /**
      * TAB implementation
      */
@@ -292,15 +293,11 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
 
     search = {
         doSearch: (options: FindOptions) => {
-            let pattern = utils.findOptionsToQueryRegex(options).toString();
-            server.startFarming({
-                pattern,
-                globs:[]
-            });
+            // not needed
         },
 
         hideSearch: () => {
-            // TODO
+            // not needed
         },
 
         findNext: (options: FindOptions) => {

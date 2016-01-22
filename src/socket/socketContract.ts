@@ -138,7 +138,10 @@ export namespace Types {
         preview: string;
     }
     export interface FarmConfig {
-         pattern: string;
+         query: string;
+         isRegex: boolean;
+         isFullWord: boolean;
+         isCaseSensitive: boolean;
          globs: string[];
      }
 

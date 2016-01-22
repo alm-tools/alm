@@ -315,7 +315,7 @@ export function isImage(url:string){
 /**
  * Great for find and replace
  */
-export function findOptionsToQueryRegex(options:FindOptions): RegExp{
+export function findOptionsToQueryRegex(options: { query: string, isRegex: boolean, isFullWord: boolean, isCaseSensitive: boolean }): RegExp {
     // Note that Code mirror only takes `query` string *tries* to detect case senstivity, regex on its own
     // So simpler if we just convert options into regex, and then code mirror will happy use the regex as is
     let str = options.query;

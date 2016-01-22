@@ -13,7 +13,7 @@ import * as utils from "../../common/utils";
 interface FarmingState {
     ignore: () => void;
 }
-let farmState:FarmingState = null;
+let farmState: FarmingState = null;
 
 /**
  * The found results are collected here
@@ -23,24 +23,33 @@ const throttledSend = utils.throttle(() => {
     // console.log(results);
     // TODO: send
 }, 500);
-function addSearchResults(newResults:Types.FarmResultDetails[]){
+function addSearchResults(newResults: Types.FarmResultDetails[]) {
     results = results.concat(newResults);
     throttledSend();
 }
 
 
-
 /**
- * Only allows one active process of farming
+ *
+ *
+ * The exposed service API
+ *
+ *
  */
-const restartFarming = (cfg: Types.FarmConfig) => {
+
+/** Also safely stops any previous running farming */
+export function startFarming(cfg: Types.FarmConfig): Promise<{}> {
+    stopFarmingIfRunning({});
+
 
     /** Allows us to abort a search */
     let ignored = false;
     const ignore = () => ignored = true;
 
 
-    let searchTerm = 'foo';
+    let searchTerm = cfg.query;
+    console.log(cfg.query);
+
     /**
      * https://git-scm.com/docs/git-grep
      *
@@ -61,8 +70,8 @@ const restartFarming = (cfg: Types.FarmConfig) => {
         `grep`,
         `-EIn`,
         searchTerm,
-        `--`,  // signals pathspec
-        cfg.globs.join(' ')]);
+        `--`  // signals pathspec
+    ].concat(cfg.globs));
 
     grep.stdout.on('data', (data) => {
         if (ignored) return;
@@ -81,7 +90,7 @@ const restartFarming = (cfg: Types.FarmConfig) => {
                 .map(x => x.trim())
                 .filter(x => x);
 
-        const newResults: Types.FarmResultDetails[] = lines.map(line=>{
+        const newResults: Types.FarmResultDetails[] = lines.map(line => {
             let originalLine = line;
 
             // Split line by `:\d:` to get relativeName as first
@@ -104,7 +113,7 @@ const restartFarming = (cfg: Types.FarmConfig) => {
                 line.split(':').slice(1).join(':')
                     .trim();
 
-            let result:Types.FarmResultDetails = {
+            let result: Types.FarmResultDetails = {
                 filePath: wd.makeAbsolute(relativeFilePath),
                 line: +lineNumber,
                 preview: preview
@@ -136,19 +145,14 @@ const restartFarming = (cfg: Types.FarmConfig) => {
             // TODO: Search complete!
         }
         if (code) {
+            // Also happens if search returned no results
             console.error(`Grep process exited with code ${code}`);
         }
     });
 
-    farmState = {ignore};
-}
+    farmState = { ignore };
 
-/**
- * The exposed service API
- */
-export function startFarming(cfg: Types.FarmConfig): Promise<{}> {
-    stopFarmingIfRunning({});
-    restartFarming(cfg);
+
     return Promise.resolve({});
 }
 
