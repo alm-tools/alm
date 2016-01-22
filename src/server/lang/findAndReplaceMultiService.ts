@@ -6,6 +6,7 @@ import * as wd from "../disk/workingDir";
 import * as cp from "child_process";
 import {Types} from "../../socket/socketContract";
 import * as utils from "../../common/utils";
+import {TypedEvent} from "../../common/events";
 
 /**
  * Singleton current farm state
@@ -14,6 +15,11 @@ interface FarmingState {
     ignore: () => void;
 }
 let farmState: FarmingState = null;
+
+/**
+ * Emitted on completed
+ */
+export const completed = new TypedEvent<{}>();
 
 /**
  * The found results are collected here
@@ -46,9 +52,7 @@ export function startFarming(cfg: Types.FarmConfig): Promise<{}> {
     let ignored = false;
     const ignore = () => ignored = true;
 
-
     let searchTerm = cfg.query;
-    console.log(cfg.query);
 
     /**
      * https://git-scm.com/docs/git-grep
@@ -141,18 +145,18 @@ export function startFarming(cfg: Types.FarmConfig): Promise<{}> {
     grep.on('close', (code) => {
         if (ignored) return;
 
+        completed.emit({});
+
         if (!code) {
             // TODO: Search complete!
         }
         if (code) {
             // Also happens if search returned no results
-            console.error(`Grep process exited with code ${code}`);
+            // console.error(`Grep process exited with code ${code}`);
         }
     });
 
     farmState = { ignore };
-
-
     return Promise.resolve({});
 }
 
