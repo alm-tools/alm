@@ -35,7 +35,7 @@ namespace ResultsStyles {
         {
             border: '1px solid grey',
             ':focus':{
-                border: '1px solid ' + styles.highlightColor
+                border: '1px solid ' + styles.highlightColor,
             }
         }
     );
