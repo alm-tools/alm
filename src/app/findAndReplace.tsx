@@ -88,6 +88,11 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         let tab = state.getSelectedTab();
         let advancedFind = tab && tabRegistry.getTabConfigByUrl(tab.url).advancedSearch;
 
+        /** For Find and Replace Multi ... completely bail out */
+        if (tab && tab.url.startsWith('farm')) {
+            return <noscript/>;
+        }
+
         if (!advancedFind){
             return (
                 <div style={[csx.horizontal,shownStyle]}>

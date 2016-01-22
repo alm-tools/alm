@@ -41,7 +41,7 @@ let tabs: {[protocol:string]:TabConfig} = {
         getTitle: (url)=> `AST Full ${utils.getFileName(url)}`,
         component: ASTView,
     },
-    far: { // find and replace
+    farm: { // find and replace
         advancedSearch: false,
         getTitle: (url)=> `Find and Replace`,
         component: FindAndReplaceView,
