@@ -70,6 +70,7 @@ export var server = {
      * FARM
      */
     startFarming: {} as QRFunction<Types.FarmConfig, {}>,
+    stopFarmingIfRunning: {} as QRFunction<{}, {}>,
 }
 
 export var client = {

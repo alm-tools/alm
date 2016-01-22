@@ -13,6 +13,22 @@ import {Icon} from "./icon";
 import * as tabRegistry from "./tabs/tabRegistry";
 
 let {inputBlackStyle} = styles.Input;
+export let inputCodeStyle = {
+    fontFamily: 'monospace',
+}
+export let searchOptionsLabelStyle = {
+    color: 'grey',
+    fontSize: '1.5rem',
+    fontWeight: 'bold',
+    cursor:'pointer',
+    paddingLeft: '5px',
+    paddingRight: '5px',
+}
+
+let labelStyle = {
+    color: 'grey',
+    padding: '4px'
+}
 
 export interface Props {
     // connected using redux
@@ -20,25 +36,6 @@ export interface Props {
     selectedTabIndex?: number;
 }
 export interface State {
-}
-
-
-let labelStyle = {
-    color: 'grey',
-    padding: '4px'
-}
-
-let inputCodeStyle = {
-    fontFamily: 'monospace',
-}
-
-let searchOptionsLabelStyle = {
-    color: 'grey',
-    fontSize: '1.5rem',
-    fontWeight: 'bold',
-    cursor:'pointer',
-    paddingLeft: '5px',
-    paddingRight: '5px',
 }
 
 @connect((state: state.StoreState): Props => {
@@ -53,6 +50,11 @@ export class FindAndReplace extends BaseComponent<Props, State>{
     componentDidMount() {
         this.disposible.add(commands.findAndReplace.on(() => {
             state.setFindOptionsIsShown(true);
+
+            /** Find input might not be there if current tab doesn't support search */
+            if (!this.findInput()){
+                return;
+            }
             this.findInput().select();
             this.replaceInput() && this.replaceInput().select();
             this.findInput().focus();
@@ -60,7 +62,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
 
         this.disposible.add(commands.esc.on(() => {
             state.setFindOptionsIsShown(false);
-            this.findInput().focus();
+            this.findInput() && this.findInput().focus();
         }));
     }
 

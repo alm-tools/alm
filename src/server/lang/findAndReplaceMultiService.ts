@@ -28,14 +28,12 @@ function addSearchResults(newResults:Types.FarmResultDetails[]){
     throttledSend();
 }
 
+
+
 /**
  * Only allows one active process of farming
  */
 const restartFarming = (cfg: Types.FarmConfig) => {
-    if (farmState){
-        farmState.ignore();
-        farmState = null;
-    }
 
     /** Allows us to abort a search */
     let ignored = false;
@@ -148,7 +146,16 @@ const restartFarming = (cfg: Types.FarmConfig) => {
 /**
  * The exposed service API
  */
-export function startFarming(cfg:Types.FarmConfig):Promise<{}>{
+export function startFarming(cfg: Types.FarmConfig): Promise<{}> {
+    stopFarmingIfRunning({});
     restartFarming(cfg);
+    return Promise.resolve({});
+}
+
+export function stopFarmingIfRunning(args: {}): Promise<{}> {
+    if (farmState) {
+        farmState.ignore();
+        farmState = null;
+    }
     return Promise.resolve({});
 }

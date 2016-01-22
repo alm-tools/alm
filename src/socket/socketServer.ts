@@ -143,6 +143,7 @@ namespace Server {
      * FARM
      */
     export var startFarming : typeof contract.server.startFarming = findAndReplaceMultiService.startFarming;
+    export var stopFarmingIfRunning : typeof contract.server.stopFarmingIfRunning = findAndReplaceMultiService.stopFarmingIfRunning;
 }
 
 // Ensure that the namespace follows the contract
