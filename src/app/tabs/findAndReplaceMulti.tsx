@@ -14,6 +14,7 @@ import {Clipboard} from "../clipboard";
 import {CodeEditor} from "../codemirror/codeEditor";
 import {Types} from "../../socket/socketContract";
 import {Icon} from "../icon";
+import * as Mousetrap from "mousetrap";
 
 type NodeDisplay = Types.NodeDisplay;
 let EOL = '\n';
@@ -130,6 +131,20 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
         this.disposible.add(cast.farmResultsUpdated.on(res=>{
             this.parseResults(res);
         }));
+
+        /**
+         * Handle the keyboard in the search results
+         */
+        let treeRoot = this.refs.results;
+        let handlers = new Mousetrap(treeRoot);
+        handlers.bind('up',()=>{
+            // TODO:
+            console.log('up');
+        });
+        handlers.bind('down',()=>{
+            // TODO:
+            console.log('down');
+        });
     }
 
     refs: {
@@ -267,6 +282,8 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
             return (
                 <div
                     key={i}
+                    ref={result.filePath + ':' + result.line}
+                    tabIndex={0}
                     style={csx.extend(styles.padded1, { cursor: 'pointer', whiteSpace: 'pre' }, selectedStyle) }
                     onClick={(e) => {e.stopPropagation(); this.openSearchResult(result.filePath, result.line)} }>
                     {utils.padLeft((result.line + 1).toString(),6)} : <span style={ResultsStyles.preview}>{result.preview}</span>
@@ -278,6 +295,14 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
     toggleFilePathExpansion(filePath: string) {
         this.state.collapsedState[filePath] = !this.state.collapsedState[filePath];
         this.setState({collapsedState: this.state.collapsedState});
+    }
+
+    /**
+     * Scrolling through results
+     */
+    resultRef(filePath: string, line: number) {
+        const ref = filePath + ':' + line;
+        return this.refs[ref] as HTMLDivElement;
     }
 
     /**
