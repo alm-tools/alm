@@ -53,7 +53,6 @@ namespace ResultsStyles {
     export let preview = {
         padding: '3px',
         background: 'black',
-        border: '2px solid #999',
         cursor: 'pointer',
         userSelect: 'text',
     }
