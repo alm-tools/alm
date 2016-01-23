@@ -3,7 +3,7 @@ import * as csx from "csx";
 import * as React from "react";
 var ReactDOM = require("react-dom");
 import * as tab from "./tab";
-import {server,cast} from "../../socket/socketClient";
+import {server, cast} from "../../socket/socketClient";
 import * as commands from "../commands/commands";
 import * as utils from "../../common/utils";
 import * as d3 from "d3";
@@ -22,8 +22,8 @@ let EOL = '\n';
  * The styles
  */
 let {inputBlackStyle} = styles.Input;
-import {inputCodeStyle,searchOptionsLabelStyle}
- from "../findAndReplace";
+import {inputCodeStyle, searchOptionsLabelStyle}
+from "../findAndReplace";
 
 namespace ResultsStyles {
     const textColor = '#DDD';
@@ -34,16 +34,16 @@ namespace ResultsStyles {
         styles.padded1,
         {
             border: '1px solid grey',
-            ':focus':{
+            ':focus': {
                 border: '1px solid ' + styles.highlightColor,
             }
         }
     );
 
     export const header = {
-        fontSize:'1.2em',
+        fontSize: '1.2em',
         fontWeight: 'bold',
-        color:textColor,
+        color: textColor,
     }
 }
 
@@ -53,6 +53,7 @@ namespace ResultsStyles {
 export interface Props extends tab.ComponentProps {
 }
 export interface State {
+    completed?:boolean;
     farmResultByFilePath?: Types.FarmResultsByFilePath;
 
     /**
@@ -69,7 +70,7 @@ export interface State {
 export class FindAndReplaceView extends ui.BaseComponent<Props, State> implements tab.Component {
     constructor(props: Props) {
         super(props);
-        let {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(props.url);
+        let {protocol, filePath} = utils.getFilePathAndProtocolFromUrl(props.url);
         this.filePath = filePath;
         this.state = {
         };
@@ -78,16 +79,31 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
     filePath: string;
     mode: Types.ASTMode;
     componentDidMount() {
-        this.disposible.add(commands.esc.on(()=>{
+        /**
+         * Keyboard: Focus
+         */
+        this.disposible.add(commands.findAndReplace.on(() => {
+            this.findInput().focus();
+        }));
+        this.disposible.add(commands.findAndReplaceMulti.on(() => {
+            this.findInput().focus();
+        }));
+
+        /**
+         * Keyboard: Stop
+         */
+        this.disposible.add(commands.esc.on(() => {
             server.stopFarmingIfRunning({});
         }));
 
-        this.disposible.add(commands.findAndReplace.on(()=>{
-            this.findInput().focus();
-        }));
-
-        this.disposible.add(commands.findAndReplaceMulti.on(()=>{
-            this.findInput().focus();
+        /**
+         * Initial load && keeping it updated
+         */
+        server.farmResults({}).then(res => {
+            this.parseResults(res);
+        });
+        this.disposible.add(cast.farmResultsUpdated.on(res=>{
+            this.parseResults(res);
         }));
     }
 
@@ -97,30 +113,29 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
 
         find: JSX.Element;
         replace: JSX.Element;
-        regex: {refs:{input: JSX.Element}};
-        caseInsensitive: {refs:{input: JSX.Element}};
-        fullWord: {refs:{input: JSX.Element}};
+        regex: { refs: { input: JSX.Element } };
+        caseInsensitive: { refs: { input: JSX.Element } };
+        fullWord: { refs: { input: JSX.Element } };
     }
-    findInput = (): HTMLInputElement=> ReactDOM.findDOMNode(this.refs.find);
-    replaceInput = (): HTMLInputElement=> ReactDOM.findDOMNode(this.refs.replace);
-    regexInput = (): HTMLInputElement=> ReactDOM.findDOMNode(this.refs.regex.refs.input);
-    caseInsensitiveInput = (): HTMLInputElement=> ReactDOM.findDOMNode(this.refs.caseInsensitive.refs.input);
-    fullWordInput = (): HTMLInputElement=> ReactDOM.findDOMNode(this.refs.fullWord.refs.input);
+    findInput = (): HTMLInputElement => ReactDOM.findDOMNode(this.refs.find);
+    replaceInput = (): HTMLInputElement => ReactDOM.findDOMNode(this.refs.replace);
+    regexInput = (): HTMLInputElement => ReactDOM.findDOMNode(this.refs.regex.refs.input);
+    caseInsensitiveInput = (): HTMLInputElement => ReactDOM.findDOMNode(this.refs.caseInsensitive.refs.input);
+    fullWordInput = (): HTMLInputElement => ReactDOM.findDOMNode(this.refs.fullWord.refs.input);
 
     replaceWith = () => this.replaceInput().value;
 
     render() {
-        let noSearch = true;
+        let noSearch = !!Object.keys(this.state.farmResultByFilePath).length;
+
         return (
             <div
                 style={csx.extend(csx.vertical, csx.flex, styles.noFocusOutline) }>
                 <div ref="results" tabIndex={0} style={ResultsStyles.root}>
                     {
                         noSearch
-                        ? <div style={ResultsStyles.header}>No Search</div>
-                        : <noscript/>
-
-                        // TODO: The search results go here
+                            ? <div style={ResultsStyles.header}>No Search</div>
+                            : this.renderSearchResults()
                     }
                 </div>
                 <div style={csx.extend(csx.flexRoot, styles.padded1) }>
@@ -153,7 +168,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
                     </div>
                     <div style={[csx.centerCenter]}>
                         <div style={[csx.horizontal, csx.aroundJustified, styles.padded1]}>
-                            <label style={[csx.horizontal,csx.center]}>
+                            <label style={[csx.horizontal, csx.center]}>
                                 <ui.Toggle
                                     tabIndex={3}
                                     ref="regex"
@@ -162,7 +177,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
                                     .*
                                 </span>
                             </label>
-                            <label style={[csx.horizontal,csx.center]}>
+                            <label style={[csx.horizontal, csx.center]}>
                                 <ui.Toggle
                                     tabIndex={4}
                                     ref="caseInsensitive"
@@ -171,7 +186,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
                                     Aa
                                 </span>
                             </label>
-                            <label style={[csx.horizontal,csx.center]}>
+                            <label style={[csx.horizontal, csx.center]}>
                                 <ui.Toggle
                                     tabIndex={5}
                                     ref="fullWord"
@@ -195,85 +210,104 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
         );
     }
 
+    renderSearchResults(){
+        return <noscript/>
+    }
+
     /**
      * Input Change handlers
      */
-     fullWordKeyDownHandler = (e:React.SyntheticEvent) => {
-         let {tab,shift,enter} = ui.getKeyStates(e);
+    fullWordKeyDownHandler = (e: React.SyntheticEvent) => {
+        let {tab, shift, enter} = ui.getKeyStates(e);
 
-         if (tab && !shift) {
-             this.findInput().focus();
-             e.preventDefault();
-             return;
-         }
-     };
-     findKeyDownHandler = (e:React.SyntheticEvent) => {
-         let {tab,shift,enter,mod} = ui.getKeyStates(e);
+        if (tab && !shift) {
+            this.findInput().focus();
+            e.preventDefault();
+            return;
+        }
+    };
+    findKeyDownHandler = (e: React.SyntheticEvent) => {
+        let {tab, shift, enter, mod} = ui.getKeyStates(e);
 
-         if (shift && tab) {
-             this.fullWordInput() && this.fullWordInput().focus();
-             e.preventDefault();
-             return;
-         }
+        if (shift && tab) {
+            this.fullWordInput() && this.fullWordInput().focus();
+            e.preventDefault();
+            return;
+        }
 
-         /**
-          * Handling commit
-          */
-         if (!this.state.findQuery) {
-             return;
-         }
-         if (enter) {
-             this.startSearch();
-         }
-     };
-     replaceKeyDownHandler = (e:React.SyntheticEvent) => {
-         let {tab,shift,enter,mod} = ui.getKeyStates(e);
+        /**
+         * Handling commit
+         */
+        if (!this.state.findQuery) {
+            return;
+        }
+        if (enter) {
+            this.startSearch();
+        }
+    };
+    replaceKeyDownHandler = (e: React.SyntheticEvent) => {
+        let {tab, shift, enter, mod} = ui.getKeyStates(e);
 
-         /**
-          * Handling commit
-          */
-         if (!this.state.findQuery) {
-             return;
-         }
-         if (mod && enter) {
-             commands.replaceAll.emit({newText:this.replaceWith()});
-             return;
-         }
-         if (shift && enter) {
-             commands.replacePrevious.emit({newText:this.replaceWith()});
-             return;
-         }
-         if (enter) {
-             commands.replaceNext.emit({newText:this.replaceWith()});
-             return;
-         }
-     };
-     findChanged = utils.debounce(() => {
-         let val = this.findInput().value.trim();
-         this.setState({findQuery:val});
-     },200);
-     handleRegexChange = (e) => {
-         let val: boolean = e.target.checked;
-         this.setState({isRegex:val});
-     }
-     handleCaseSensitiveChange = (e) => {
-         let val: boolean = e.target.checked;
-         this.setState({isCaseSensitive:val});
-     }
-     handleFullWordChange = (e) => {
-         let val: boolean = e.target.checked;
-         this.setState({isFullWord:val});
-     }
+        /**
+         * Handling commit
+         */
+        if (!this.state.findQuery) {
+            return;
+        }
+        if (mod && enter) {
+            commands.replaceAll.emit({ newText: this.replaceWith() });
+            return;
+        }
+        if (shift && enter) {
+            commands.replacePrevious.emit({ newText: this.replaceWith() });
+            return;
+        }
+        if (enter) {
+            commands.replaceNext.emit({ newText: this.replaceWith() });
+            return;
+        }
+    };
+    findChanged = utils.debounce(() => {
+        let val = this.findInput().value.trim();
+        this.setState({ findQuery: val });
+    }, 200);
+    handleRegexChange = (e) => {
+        let val: boolean = e.target.checked;
+        this.setState({ isRegex: val });
+    }
+    handleCaseSensitiveChange = (e) => {
+        let val: boolean = e.target.checked;
+        this.setState({ isCaseSensitive: val });
+    }
+    handleFullWordChange = (e) => {
+        let val: boolean = e.target.checked;
+        this.setState({ isFullWord: val });
+    }
 
-     startSearch() {
-         server.startFarming({
-             query: this.state.findQuery,
-             isRegex: this.state.isRegex,
-             isFullWord: this.state.isFullWord,
-             isCaseSensitive: this.state.isCaseSensitive,
-             globs:[]
-         });
-     }
+    /** Sends the search query */
+    startSearch() {
+        server.startFarming({
+            query: this.state.findQuery,
+            isRegex: this.state.isRegex,
+            isFullWord: this.state.isFullWord,
+            isCaseSensitive: this.state.isCaseSensitive,
+            globs: []
+        });
+    }
+
+    /** Parses results as they come and puts them into the state */
+    parseResults(response:Types.FarmNotification){
+        // Convert as needed
+        let results = response.results;
+        let loaded: Types.FarmResultsByFilePath
+            = utils.createMapByKey(results, result => result.filePath);
+
+        // Finally rerender
+        this.setState({
+            completed:response.completed,
+            farmResultByFilePath:loaded
+        });
+    }
 
     /**
      * TAB implementation
