@@ -71,6 +71,7 @@ export var server = {
      */
     startFarming: {} as QRFunction<Types.FarmConfig, {}>,
     stopFarmingIfRunning: {} as QRFunction<{}, {}>,
+    farmResults: {} as QRFunction<{},Types.FarmNotification>,
 }
 
 export var client = {
@@ -102,7 +103,11 @@ export var cast = {
     /** Active project name updated */
     activeProjectConfigDetailsUpdated: new TypedEvent<ActiveProjectConfigDetails>(),
 
+    /** Active project files` */
     activeProjectFilePathsUpdated: new TypedEvent<{filePaths:string[]}>(),
+
+    /** FARM */
+    farmResultsUpdated: new TypedEvent<Types.FarmNotification>(),
 }
 
 

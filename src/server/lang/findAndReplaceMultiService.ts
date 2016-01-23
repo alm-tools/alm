@@ -164,15 +164,17 @@ let farmState: FarmState = null;
 /**
  * Subscribe to this if you want notifications about any current farming
  */
-const resultsUpdated = new TypedEvent<Types.FarmNotification>();
+export const farmResultsUpdated = new TypedEvent<Types.FarmNotification>();
+// initiate as completed with no results
+farmResultsUpdated.emit({completed:true,results:[]});
 
 /** Also safely stops any previous running farming */
 export function startFarming(cfg: Types.FarmConfig): Promise<{}> {
     stopFarmingIfRunning({});
 
     farmState = new FarmState(cfg);
-    resultsUpdated.emit({ completed: false, results: [] });
-    farmState.resultsUpdated.pipe(resultsUpdated);
+    farmResultsUpdated.emit({ completed: false, results: [] });
+    farmState.resultsUpdated.pipe(farmResultsUpdated);
 
     return Promise.resolve({});
 }

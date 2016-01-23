@@ -144,6 +144,7 @@ namespace Server {
      */
     export var startFarming : typeof contract.server.startFarming = findAndReplaceMultiService.startFarming;
     export var stopFarmingIfRunning : typeof contract.server.stopFarmingIfRunning = findAndReplaceMultiService.stopFarmingIfRunning;
+    export var farmResults: typeof contract.server.farmResults = (query:{}) => findAndReplaceMultiService.farmResultsUpdated.current();
 }
 
 // Ensure that the namespace follows the contract
@@ -172,6 +173,9 @@ export function register(app: http.Server) {
     activeProject.availableProjects.pipe(cast.availableProjectsUpdated);
     activeProject.activeProjectConfigDetailsUpdated.pipe(cast.activeProjectConfigDetailsUpdated);
     activeProject.activeProjectFilePathsUpdated.pipe(cast.activeProjectFilePathsUpdated);
+
+    /** FARM */
+    findAndReplaceMultiService.farmResultsUpdated.pipe(cast.farmResultsUpdated);
 
     // For testing
     // setInterval(() => cast.hello.emit({ text: 'nice' }), 1000);
