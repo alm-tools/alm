@@ -56,6 +56,10 @@ namespace ResultsStyles {
         cursor: 'pointer',
         userSelect: 'text',
     }
+
+    export let selected = {
+        backgroundColor: styles.selectedBackgroundColor
+    };
 }
 
 /**
@@ -72,7 +76,7 @@ export interface State {
      * Results view state
      */
     collapsedState?: { [filePath: string]: boolean };
-    selectedIndex?: number;
+    selected?: { filePath?: string; line?: number };
 
     /**
      * Search state
@@ -93,7 +97,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
         this.state = {
             farmResultByFilePath: {},
             collapsedState: {},
-            selectedIndex: 0,
+            selected:{},
         };
     }
 
@@ -256,11 +260,15 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
 
     renderResultsForFilePath(results:Types.FarmResultDetails[]){
         return results.map((result,i)=>{
+            let selectedStyle = result.filePath === this.state.selected.filePath && result.line === this.state.selected.line
+                ? ResultsStyles.selected
+                : {};
+
             return (
                 <div
                     key={i}
-                    style={csx.extend(styles.padded1, { cursor: 'pointer', whiteSpace: 'pre' }) }
-                    onClick={(e) => {e.stopPropagation(); this.openSearchResult(result.filePath, result.line - 1)} }>
+                    style={csx.extend(styles.padded1, { cursor: 'pointer', whiteSpace: 'pre' }, selectedStyle) }
+                    onClick={(e) => {e.stopPropagation(); this.openSearchResult(result.filePath, result.line)} }>
                     {utils.padLeft((result.line + 1).toString(),6)} : <span style={ResultsStyles.preview}>{result.preview}</span>
                 </div>
             );
@@ -354,7 +362,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
 
         this.setState({
             collapsedState:{},
-            selectedIndex: -1,
+            selected:{},
         })
     }
 
@@ -374,7 +382,9 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
     }
 
     openSearchResult(filePath: string, line: number) {
-        commands.doOpenOrFocusFile.emit({ filePath, position: { line: line, ch: 0 } });
+        commands.doOpenOrFocusFile.emit({ filePath, position: { line: line - 1, ch: 0 } });
+
+        this.setState({ selected: { filePath, line } });
     }
 
     /**

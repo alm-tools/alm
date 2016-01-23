@@ -87,7 +87,7 @@ let treeItemStyle = {
 }
 
 let treeItemSelectedStyle = {
-    backgroundColor:'#444',
+    backgroundColor:styles.selectedBackgroundColor,
 }
 
 let currentSelectedItemCopyStyle = {

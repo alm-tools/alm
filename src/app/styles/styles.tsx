@@ -4,6 +4,7 @@ export const textColor = '#999';
 export let errorColor = '#f92672';
 export let successColor = '#00c990';
 export let highlightColor = "#6edeef";
+export let selectedBackgroundColor = '#444';
 
 export var tabHeaderContainer = {
     background: 'grey'
