@@ -41,6 +41,7 @@ namespace ResultsStyles {
     export const header = csx.extend(
         styles.padded1,
         {
+            cursor: 'default',
             fontSize: '1.5em',
             fontWeight: 'bold',
             color: styles.textColor,
@@ -242,7 +243,9 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
                             let results = this.state.farmResultByFilePath[filePath];
                             return (
                                 <div key={i} onClick={()=>this.toggleFilePathExpansion(filePath)}>
-                                    <div style={styles.errorsPanel.filePath}>{filePath} ({results.length})</div>
+                                    <div style={styles.errorsPanel.filePath}>
+                                        {this.state.collapsedState[filePath] ? "+" : "-" } {filePath} ({results.length})
+                                    </div>
                                     {this.state.collapsedState[filePath] ? <noscript/> : this.renderResultsForFilePath(results) }
                                 </div>
                             );
