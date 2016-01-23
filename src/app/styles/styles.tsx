@@ -1,5 +1,6 @@
 import csx = require('csx');
 
+export const textColor = '#999';
 export let errorColor = '#f92672';
 export let successColor = '#00c990';
 export let highlightColor = "#6edeef";
@@ -99,7 +100,7 @@ export namespace errorsPanel {
         color: successColor
     }
     export let main = {
-        color: '#999',
+        color: textColor,
         fontFamily: codeFont.fontFamily,
         padding: '6px',
         overflow: 'auto',

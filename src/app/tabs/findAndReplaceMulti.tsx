@@ -26,8 +26,6 @@ import {inputCodeStyle, searchOptionsLabelStyle}
 from "../findAndReplace";
 
 namespace ResultsStyles {
-    const textColor = '#DDD';
-
     export const root = csx.extend(
         csx.flex,
         csx.scroll,
@@ -40,10 +38,23 @@ namespace ResultsStyles {
         }
     );
 
-    export const header = {
-        fontSize: '1.2em',
-        fontWeight: 'bold',
-        color: textColor,
+    export const header = csx.extend(
+        styles.padded1,
+        {
+            fontSize: '1.5em',
+            fontWeight: 'bold',
+            color: styles.textColor,
+            background: 'black',
+            border:'2px solid grey',
+        }
+    );
+
+    export let preview = {
+        padding: '3px',
+        background: 'black',
+        border: '2px solid #999',
+        cursor: 'pointer',
+        userSelect: 'text',
     }
 }
 
@@ -54,7 +65,13 @@ export interface Props extends tab.ComponentProps {
 }
 export interface State {
     completed?:boolean;
+    results?: Types.FarmResultDetails[];
     farmResultByFilePath?: Types.FarmResultsByFilePath;
+
+    /**
+     * Results view state
+     */
+    collapsedState?: { [filePath: string]: boolean };
 
     /**
      * Search state
@@ -73,6 +90,8 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
         let {protocol, filePath} = utils.getFilePathAndProtocolFromUrl(props.url);
         this.filePath = filePath;
         this.state = {
+            farmResultByFilePath:{},
+            collapsedState:{},
         };
     }
 
@@ -126,16 +145,16 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
     replaceWith = () => this.replaceInput().value;
 
     render() {
-        let noSearch = !!Object.keys(this.state.farmResultByFilePath).length;
+        let hasResults = !!Object.keys(this.state.farmResultByFilePath).length;
 
         return (
             <div
                 style={csx.extend(csx.vertical, csx.flex, styles.noFocusOutline) }>
                 <div ref="results" tabIndex={0} style={ResultsStyles.root}>
                     {
-                        noSearch
-                            ? <div style={ResultsStyles.header}>No Search</div>
-                            : this.renderSearchResults()
+                        hasResults
+                            ? this.renderSearchResults()
+                            : <div style={ResultsStyles.header}>No Search</div>
                     }
                 </div>
                 <div style={csx.extend(csx.flexRoot, styles.padded1) }>
@@ -211,7 +230,41 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
     }
 
     renderSearchResults(){
-        return <noscript/>
+        let filePaths = Object.keys(this.state.farmResultByFilePath);
+
+        return (
+            <div style={csx.extend(csx.flex, styles.errorsPanel.main, {userSelect:'none'}) }>
+                <div style={ResultsStyles.header}>Total Results ({this.state.results.length})</div>
+                {
+                    filePaths.map((filePath,i)=>{
+                            let results = this.state.farmResultByFilePath[filePath];
+                            return (
+                                <div key={i} onClick={()=>this.toggleFilePathExpansion(filePath)}>
+                                    <div style={styles.errorsPanel.filePath}>{filePath} ({results.length})</div>
+                                    {this.state.collapsedState[filePath] ? <noscript/> : this.renderResultsForFilePath(results) }
+                                </div>
+                            );
+                        })
+                }
+            </div>
+        );
+    }
+
+    renderResultsForFilePath(results:Types.FarmResultDetails[]){
+        return results.map(result=>{
+            return (
+                <div
+                    style={csx.extend(styles.padded1, { cursor: 'pointer' }) }
+                    onClick={() => this.openSearchResult(result.filePath, result.line) }>
+                    {result.line + 1} : <span style={ResultsStyles.preview}>{result.preview}</span>
+                </div>
+            );
+        })
+    }
+
+    toggleFilePathExpansion(filePath: string) {
+        this.state.collapsedState[filePath] = !this.state.collapsedState[filePath];
+        this.setState({collapsedState: this.state.collapsedState});
     }
 
     /**
@@ -304,9 +357,14 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
 
         // Finally rerender
         this.setState({
+            results: results,
             completed:response.completed,
             farmResultByFilePath:loaded
         });
+    }
+
+    openSearchResult(filePath: string, line: number) {
+        commands.doOpenOrFocusFile.emit({ filePath, position: { line: line, ch: 0 } });
     }
 
     /**
