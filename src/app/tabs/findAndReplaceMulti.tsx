@@ -259,9 +259,13 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
                 {
                     filePaths.map((filePath,i)=>{
                             let results = this.state.farmResultByFilePath[filePath];
+                            let selectedStyle = filePath === this.state.selected.filePath && this.state.selected.line === -1
+                                ? ResultsStyles.selected
+                                : {};
+
                             return (
                                 <div key={i} onClick={()=>this.toggleFilePathExpansion(filePath)}>
-                                    <div style={styles.errorsPanel.filePath}>
+                                    <div style={csx.extend(styles.errorsPanel.filePath, {margin:'8px 0px', padding: '3px'} ,selectedStyle)}>
                                         {this.state.collapsedState[filePath] ? "+" : "-" } {filePath} ({results.length})
                                     </div>
                                     {this.state.collapsedState[filePath] ? <noscript/> : this.renderResultsForFilePath(results) }
@@ -294,7 +298,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
 
     toggleFilePathExpansion(filePath: string) {
         this.state.collapsedState[filePath] = !this.state.collapsedState[filePath];
-        this.setState({collapsedState: this.state.collapsedState});
+        this.setState({collapsedState: this.state.collapsedState, selected:{filePath,line:-1}});
     }
 
     /**
