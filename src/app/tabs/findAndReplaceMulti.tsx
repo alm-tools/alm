@@ -77,7 +77,7 @@ export interface State {
      * Results view state
      */
     collapsedState?: { [filePath: string]: boolean };
-    selected?: { filePath?: string; line?: number };
+    selected?: { filePath?: string; line?: number /* If we have a filePath selected (instead of a search result) we set this to -1*/ };
 
     /**
      * Search state
@@ -137,13 +137,51 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
          */
         let treeRoot = this.refs.results;
         let handlers = new Mousetrap(treeRoot);
+
+        let selectFirst = () => {
+            if (this.state.results && this.state.results.length) {
+                this.setSelected(this.state.results[0].filePath, -1);
+            }
+        }
         handlers.bind('up',()=>{
+            // initial state
+            if (!this.state.selected.filePath){
+                selectFirst();
+                return;
+            }
             // TODO:
             console.log('up');
         });
         handlers.bind('down',()=>{
+            // initial state
+            if (!this.state.selected.filePath){
+                selectFirst();
+                return;
+            }
             // TODO:
             console.log('down');
+        });
+        handlers.bind('left', () => {
+            /** Just select and collapse the folder irrespective of our current state */
+            if (!this.state.selected.filePath) return;
+            this.state.collapsedState[this.state.selected.filePath] = true;
+            this.setState({collapsedState: this.state.collapsedState});
+            this.setSelected(this.state.selected.filePath, -1);
+        });
+        handlers.bind('right', () => {
+            /** Expand only if a filePath root is currently selected  */
+            if (!this.state.selected.filePath || this.state.selected.line !== -1) return;
+            this.state.collapsedState[this.state.selected.filePath] = false;
+            this.setState({collapsedState: this.state.collapsedState});
+        });
+        handlers.bind('enter',()=>{
+            /** Enter always takes you into the filePath */
+            if (!this.state.selected.filePath){
+                selectFirst();
+            }
+            if (!this.state.selected.filePath) return;
+
+            this.openSearchResult(this.state.selected.filePath, this.state.selected.line);
         });
     }
 
@@ -412,8 +450,12 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
 
     openSearchResult(filePath: string, line: number) {
         commands.doOpenOrFocusFile.emit({ filePath, position: { line: line - 1, ch: 0 } });
+        this.setSelected(filePath,line);
+    }
 
+    setSelected = (filePath: string, line: number) => {
         this.setState({ selected: { filePath, line } });
+        // TODO: focus
     }
 
     /**
