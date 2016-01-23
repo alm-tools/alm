@@ -144,6 +144,10 @@ export namespace Types {
          isCaseSensitive: boolean;
          globs: string[];
      }
+    export interface FarmNotification {
+        completed: boolean;
+        results: Types.FarmResultDetails[];
+    }
 
     /**
      * Completions stuff
