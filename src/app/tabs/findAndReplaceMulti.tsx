@@ -72,6 +72,7 @@ export interface State {
      * Results view state
      */
     collapsedState?: { [filePath: string]: boolean };
+    selectedIndex?: number;
 
     /**
      * Search state
@@ -90,8 +91,9 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
         let {protocol, filePath} = utils.getFilePathAndProtocolFromUrl(props.url);
         this.filePath = filePath;
         this.state = {
-            farmResultByFilePath:{},
-            collapsedState:{},
+            farmResultByFilePath: {},
+            collapsedState: {},
+            selectedIndex: 0,
         };
     }
 
@@ -251,12 +253,13 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
     }
 
     renderResultsForFilePath(results:Types.FarmResultDetails[]){
-        return results.map(result=>{
+        return results.map((result,i)=>{
             return (
                 <div
-                    style={csx.extend(styles.padded1, { cursor: 'pointer' }) }
-                    onClick={() => this.openSearchResult(result.filePath, result.line) }>
-                    {result.line + 1} : <span style={ResultsStyles.preview}>{result.preview}</span>
+                    key={i}
+                    style={csx.extend(styles.padded1, { cursor: 'pointer', whiteSpace: 'pre' }) }
+                    onClick={(e) => {e.stopPropagation(); this.openSearchResult(result.filePath, result.line - 1)} }>
+                    {utils.padLeft((result.line + 1).toString(),6)} : <span style={ResultsStyles.preview}>{result.preview}</span>
                 </div>
             );
         })
@@ -346,6 +349,11 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
             isCaseSensitive: this.state.isCaseSensitive,
             globs: []
         });
+
+        this.setState({
+            collapsedState:{},
+            selectedIndex: -1,
+        })
     }
 
     /** Parses results as they come and puts them into the state */

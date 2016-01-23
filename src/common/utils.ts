@@ -342,3 +342,11 @@ export function findOptionsToQueryRegex(options: { query: string, isRegex: boole
     }
     return query;
 }
+
+/**
+ * Quick and dirty pad left
+ */
+export function padLeft(str: string, paddingValue: number) {
+    let pad = '                                       ';
+    return pad.substring(0, paddingValue - str.length) + str;
+}
