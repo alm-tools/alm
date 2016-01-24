@@ -123,7 +123,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
          */
         this.disposible.add(commands.esc.on(() => {
             // Disabled as esc is used to focus search results as well
-            // server.stopFarmingIfRunning({});
+            // this.cancelAnyRunningSearch();
         }));
 
         /**
@@ -281,12 +281,6 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
                 style={csx.extend(csx.vertical, csx.flex, styles.noFocusOutline) }>
                 <div ref="results" tabIndex={0} style={ResultsStyles.root}>
                     {
-                        !this.state.completed &&
-                        <div>
-                            <button>Cancel</button>
-                        </div>
-                    }
-                    {
                         hasResults
                             ? this.renderSearchResults()
                             : <div style={ResultsStyles.header}>No Search</div>
@@ -369,7 +363,19 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
 
         return (
             <div style={csx.extend(csx.flex, styles.errorsPanel.main, {userSelect:'none'}) }>
-                <div style={ResultsStyles.header}>Total Results ({this.state.results.length})</div>
+                <div style={[ResultsStyles.header, csx.horizontal]}>
+                    Total Results ({this.state.results.length})
+                    <span style={csx.flex}/>
+                    {
+                        !this.state.completed &&
+                            <button
+                                key="button"
+                                onClick={this.cancelAnyRunningSearch}
+                                style={styles.Button.buttonBlackStyle}>
+                                Cancel
+                            </button>
+                    }
+                </div>
                 {
                     filePaths.map((filePath,i)=>{
                             let results = this.state.farmResultByFilePath[filePath];
@@ -535,6 +541,10 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
             selected:{},
         });
     }
+
+    cancelAnyRunningSearch = () => {
+        server.stopFarmingIfRunning({});
+    };
 
     /** Parses results as they come and puts them into the state */
     parseResults(response:Types.FarmNotification){
