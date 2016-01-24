@@ -204,6 +204,16 @@ export namespace Input {
     }
 }
 
+export namespace Button {
+    export const buttonBlackStyle = csx.extend(
+        csx.flex,
+        csx.flexRoot,
+        {
+            border: '0px'
+        }
+    );
+}
+
 /**
  * Some views have tips at the bottom. This for that
  */

@@ -15,6 +15,7 @@ import {CodeEditor} from "../codemirror/codeEditor";
 import {Types} from "../../socket/socketContract";
 import {Icon} from "../icon";
 import * as Mousetrap from "mousetrap";
+import {Robocop} from "../robocop";
 
 type NodeDisplay = Types.NodeDisplay;
 let EOL = '\n';
@@ -96,7 +97,9 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
         let {protocol, filePath} = utils.getFilePathAndProtocolFromUrl(props.url);
         this.filePath = filePath;
         this.state = {
+            completed: true,
             farmResultByFilePath: {},
+
             collapsedState: {},
             selected:{},
         };
@@ -277,6 +280,12 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
             <div
                 style={csx.extend(csx.vertical, csx.flex, styles.noFocusOutline) }>
                 <div ref="results" tabIndex={0} style={ResultsStyles.root}>
+                    {
+                        !this.state.completed &&
+                        <div>
+                            <button>Cancel</button>
+                        </div>
+                    }
                     {
                         hasResults
                             ? this.renderSearchResults()
