@@ -134,10 +134,10 @@ class FarmState {
 
     /** Exposed event */
     resultsUpdated = new TypedEvent<Types.FarmNotification>();
-    private notifyUpdate() {
+    private notifyUpdate = utils.throttle(() => {
         let {results, completed} = this;
         this.resultsUpdated.emit({ results, completed });
-    }
+    }, 500);
 
     /** Allows us to dispose any running search */
     private disposed = false;
