@@ -164,25 +164,64 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
                     this.setSelected(this.state.selected.filePath, relevantResults[indexInResults - 1].line);
                 }
             }
-            /** Else go to the last of the previous filePath (if any) */
+            /** Else go to the previous filePath (if any)
+                (collapsed) the filePath
+                (expanded) last child
+             */
             else {
                 let filePaths = Object.keys(this.state.farmResultByFilePath);
                 let filePathIndex = filePaths.indexOf(this.state.selected.filePath);
                 if (filePathIndex === 0) return false;
                 let previousFilePath = filePaths[filePathIndex - 1];
-                let results = this.state.farmResultByFilePath[previousFilePath];
-                this.setSelected(previousFilePath, results[results.length - 1].line);
+                if (this.state.collapsedState[previousFilePath]){
+                    this.setSelected(previousFilePath, -1);
+                }
+                else {
+                    let results = this.state.farmResultByFilePath[previousFilePath];
+                    this.setSelected(previousFilePath, results[results.length - 1].line);
+                }
             }
             return false;
         });
         handlers.bind('down',()=>{
             if (!this.state.results || !this.state.results.length) return false;
-            if (!this.state.selected.filePath){
+            if (!this.state.selected.filePath) {
                 selectFirst();
                 return false;
             }
-            // TODO:
-            console.log('down');
+            /** If we are on a filePath
+                (collaped) go to next filePath if any
+                (expanded) go to first child */
+            if (this.state.selected.line === -1) {
+                if (this.state.collapsedState[this.state.selected.filePath]){
+                    let filePaths = Object.keys(this.state.farmResultByFilePath);
+                    let filePathIndex = filePaths.indexOf(this.state.selected.filePath);
+                    if (filePathIndex === filePaths.length - 1) return false;
+                    let nextFilePath = filePaths[filePathIndex + 1];
+                    this.setSelected(nextFilePath, -1);
+                }
+                else {
+                    let results = this.state.farmResultByFilePath[this.state.selected.filePath];
+                    this.setSelected(results[0].filePath, results[0].line);
+                }
+            }
+            /** Else if last in the group go to next filePath if any, otherwise goto next sibling */
+            else {
+                let results = this.state.farmResultByFilePath[this.state.selected.filePath];
+                let indexIntoResults = results.map(x => x.line).indexOf(this.state.selected.line);
+                if (indexIntoResults === results.length - 1) {
+                    // Goto next filePath if any
+                    let filePaths = Object.keys(this.state.farmResultByFilePath);
+                    let filePathIndex = filePaths.indexOf(this.state.selected.filePath);
+                    if (filePathIndex === filePaths.length - 1) return false;
+                    let nextFilePath = filePaths[filePathIndex + 1];
+                    this.setSelected(nextFilePath, -1);
+                }
+                else {
+                    let nextResult = results[indexIntoResults + 1];
+                    this.setSelected(nextResult.filePath, nextResult.line);
+                }
+            }
             return false;
         });
         handlers.bind('left', () => {
