@@ -145,43 +145,70 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
         }
         handlers.bind('up',()=>{
             // initial state
+            if (!this.state.results || !this.state.results.length) return false;
             if (!this.state.selected.filePath){
                 selectFirst();
-                return;
+                return false;
             }
-            // TODO:
-            console.log('up');
+            /** If we have an actual line go to previous or filePath */
+            if (this.state.selected.line !== -1){
+                const relevantResults = this.state.farmResultByFilePath[this.state.selected.filePath];
+                const indexInResults
+                    = relevantResults
+                        .map(x=>x.line)
+                        .indexOf(this.state.selected.line);
+                if (indexInResults === 0){
+                    this.setSelected(this.state.selected.filePath, -1)
+                }
+                else {
+                    this.setSelected(this.state.selected.filePath, relevantResults[indexInResults - 1].line);
+                }
+            }
+            /** Else go to the last of the previous filePath (if any) */
+            else {
+                let filePaths = Object.keys(this.state.farmResultByFilePath);
+                let filePathIndex = filePaths.indexOf(this.state.selected.filePath);
+                if (filePathIndex === 0) return false;
+                let previousFilePath = filePaths[filePathIndex - 1];
+                let results = this.state.farmResultByFilePath[previousFilePath];
+                this.setSelected(previousFilePath, results[results.length - 1].line);
+            }
+            return false;
         });
         handlers.bind('down',()=>{
-            // initial state
+            if (!this.state.results || !this.state.results.length) return false;
             if (!this.state.selected.filePath){
                 selectFirst();
-                return;
+                return false;
             }
             // TODO:
             console.log('down');
+            return false;
         });
         handlers.bind('left', () => {
             /** Just select and collapse the folder irrespective of our current state */
-            if (!this.state.selected.filePath) return;
+            if (!this.state.results || !this.state.results.length) return false;
+            if (!this.state.selected.filePath) return false;
             this.state.collapsedState[this.state.selected.filePath] = true;
             this.setState({collapsedState: this.state.collapsedState});
             this.setSelected(this.state.selected.filePath, -1);
+            return false;
         });
         handlers.bind('right', () => {
             /** Expand only if a filePath root is currently selected  */
-            if (!this.state.selected.filePath || this.state.selected.line !== -1) return;
+            if (!this.state.results || !this.state.results.length) return false;
             this.state.collapsedState[this.state.selected.filePath] = false;
             this.setState({collapsedState: this.state.collapsedState});
+            return false;
         });
         handlers.bind('enter',()=>{
             /** Enter always takes you into the filePath */
-            if (!this.state.selected.filePath){
+            if (!this.state.results || !this.state.results.length) return false;
+            if (!this.state.selected.filePath) {
                 selectFirst();
             }
-            if (!this.state.selected.filePath) return;
-
             this.openSearchResult(this.state.selected.filePath, this.state.selected.line);
+            return false;
         });
     }
 
