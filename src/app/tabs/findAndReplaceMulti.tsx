@@ -119,7 +119,8 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
          * Keyboard: Stop
          */
         this.disposible.add(commands.esc.on(() => {
-            server.stopFarmingIfRunning({});
+            // Disabled as esc is used to focus search results as well
+            // server.stopFarmingIfRunning({});
         }));
 
         /**
