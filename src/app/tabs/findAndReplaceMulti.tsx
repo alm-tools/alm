@@ -494,10 +494,10 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
             return;
         }
     };
-    findChanged = utils.debounce(() => {
+    findChanged = () => {
         let val = this.findInput().value.trim();
         this.setState({ findQuery: val });
-    }, 200);
+    };
     handleRegexChange = (e) => {
         let val: boolean = e.target.checked;
         this.setState({ isRegex: val });
@@ -524,7 +524,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
         this.setState({
             collapsedState:{},
             selected:{},
-        })
+        });
     }
 
     /** Parses results as they come and puts them into the state */
