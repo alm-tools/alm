@@ -97,6 +97,8 @@ class FarmState {
                 /* */
 
                 if (!result.preview) {
+                    // TODO: this is probably because the line boundries are wrong as data comes in.
+                    // We should store the line remainder and prepend to new data.
                     return null;
                 }
 
