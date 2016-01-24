@@ -369,7 +369,22 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
 
                             return (
                                 <div key={i} onClick={()=>this.toggleFilePathExpansion(filePath)}>
-                                    <div style={csx.extend(styles.errorsPanel.filePath, {margin:'8px 0px', padding: '3px'} ,selectedStyle)}>
+                                    <div
+                                        ref={filePath + ':' + -1}
+                                        tabIndex={0}
+                                        style={
+                                            csx.extend(
+                                                selectedStyle,
+                                                styles.errorsPanel.filePath,
+                                                {
+                                                    margin:'8px 0px',
+                                                    padding: '3px' ,
+                                                    ':focus': {
+                                                        outline: 'none',
+                                                    }
+                                                }
+                                            )
+                                        }>
                                         {this.state.collapsedState[filePath] ? "+" : "-" } {filePath} ({results.length})
                                     </div>
                                     {this.state.collapsedState[filePath] ? <noscript/> : this.renderResultsForFilePath(results) }
@@ -392,7 +407,19 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
                     key={i}
                     ref={result.filePath + ':' + result.line}
                     tabIndex={0}
-                    style={csx.extend(styles.padded1, { cursor: 'pointer', whiteSpace: 'pre' }, selectedStyle) }
+                    style={
+                        csx.extend(
+                            styles.padded1,
+                            {
+                                cursor: 'pointer',
+                                whiteSpace: 'pre',
+                                ':focus': {
+                                    outline: 'none',
+                                }
+                            },
+                            selectedStyle
+                        )
+                    }
                     onClick={(e) => {e.stopPropagation(); this.openSearchResult(result.filePath, result.line)} }>
                     {utils.padLeft((result.line + 1).toString(),6)} : <span style={ResultsStyles.preview}>{result.preview}</span>
                 </div>
@@ -521,8 +548,12 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
 
     setSelected = (filePath: string, line: number) => {
         this.setState({ selected: { filePath, line } });
-        // TODO: focus
+        this.focusFilePath(filePath, line);
     }
+
+    focusFilePath = (filePath: string, line: number) => {
+        this.resultRef(filePath, line).scrollIntoViewIfNeeded(false);
+    };
 
     /**
      * TAB implementation
