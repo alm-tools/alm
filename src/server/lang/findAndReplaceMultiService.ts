@@ -96,8 +96,12 @@ class FarmState {
                 console.log('------------------------------------------\n')
                 /* */
 
+                if (!result.preview) {
+                    return null;
+                }
+
                 return result;
-            });
+            }).filter(x=>!!x);
 
             // Add to results
             this.results = this.results.concat(newResults);

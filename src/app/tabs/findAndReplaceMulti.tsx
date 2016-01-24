@@ -549,6 +549,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
     /** Parses results as they come and puts them into the state */
     parseResults(response:Types.FarmNotification){
         // Convert as needed
+        // console.log(response.results);
         let results = response.results;
         let loaded: Types.FarmResultsByFilePath
             = utils.createMapByKey(results, result => result.filePath);
