@@ -383,8 +383,9 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
                 {
                     filePaths.map((filePath, i) => {
                             let results = this.state.farmResultByFilePath[filePath];
-                            let selected = filePath === this.state.selected.filePath && this.state.selected.line == -1
-                            let subResultSelected = filePath === this.state.selected.filePath;
+                            let selectedRoot = filePath === this.state.selected.filePath && this.state.selected.line == -1
+                            let selectedResultLine =
+                                filePath === this.state.selected.filePath ? this.state.selected.line : -2 /* -2 means not selected */;
 
                             return (
                                 <FileResults.FileResults
@@ -393,46 +394,15 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
                                     results={results}
                                     expanded={!this.state.collapsedState[filePath]}
                                     onClickFilePath={this.toggleFilePathExpansion}
-                                    renderResultsForFilePath={this.renderResultsForFilePath}
-                                    selected={selected}
-                                    subResultSelected={subResultSelected}
+                                    openSearchResult={this.openSearchResult}
+                                    selectedRoot={selectedRoot}
+                                    selectedResultLine={selectedResultLine}
                                 />
                             );
                         })
                 }
             </div>
         );
-    }
-
-    renderResultsForFilePath = (results:Types.FarmResultDetails[]) => {
-        return results.map((result,i)=>{
-            let selectedStyle = result.filePath === this.state.selected.filePath && result.line === this.state.selected.line
-                ? ResultsStyles.selected
-                : {};
-
-            return (
-                <div
-                    key={i}
-                    ref={result.filePath + ':' + result.line}
-                    tabIndex={0}
-                    style={
-                        csx.extend(
-                            styles.padded1,
-                            {
-                                cursor: 'pointer',
-                                whiteSpace: 'pre',
-                                ':focus': {
-                                    outline: 'none',
-                                }
-                            },
-                            selectedStyle
-                        )
-                    }
-                    onClick={(e) => {e.stopPropagation(); this.openSearchResult(result.filePath, result.line)} }>
-                    {utils.padLeft((result.line + 1).toString(),6)} : <span style={ResultsStyles.preview}>{result.preview}</span>
-                </div>
-            );
-        })
     }
 
     toggleFilePathExpansion = (filePath: string) => {
@@ -554,7 +524,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
         });
     }
 
-    openSearchResult(filePath: string, line: number) {
+    openSearchResult = (filePath: string, line: number) => {
         commands.doOpenOrFocusFile.emit({ filePath, position: { line: line - 1, ch: 0 } });
         this.setSelected(filePath,line);
     }
@@ -618,10 +588,10 @@ namespace FileResults {
 
         expanded: boolean;
         onClickFilePath: (filePath:string) => any;
+        openSearchResult: (filePath:string, line: number) => any;
 
-        selected: boolean;
-        subResultSelected: boolean; // TODO: this is only to use the pure render for now
-        renderResultsForFilePath: (results:Types.FarmResultDetails[]) => any;
+        selectedRoot: boolean;
+        selectedResultLine: number;
     }
     export interface State {
     }
@@ -631,7 +601,7 @@ namespace FileResults {
 
         render(){
 
-            let selectedStyle = this.props.selected
+            let selectedStyle = this.props.selectedRoot
                 ? ResultsStyles.selected
                 : {};
 
@@ -654,9 +624,40 @@ namespace FileResults {
                         }>
                         {!this.props.expanded ? "+" : "-" } {this.props.filePath} ({this.props.results.length})
                     </div>
-                    {!this.props.expanded ? <noscript/> : this.props.renderResultsForFilePath(this.props.results) }
+                    {!this.props.expanded ? <noscript/> : this.renderResultsForFilePath(this.props.results) }
                 </div>
             );
+        }
+
+        renderResultsForFilePath = (results:Types.FarmResultDetails[]) => {
+            return results.map((result,i)=>{
+                let selectedStyle = this.props.selectedResultLine === result.line
+                    ? ResultsStyles.selected
+                    : {};
+
+                return (
+                    <div
+                        key={i}
+                        ref={result.filePath + ':' + result.line}
+                        tabIndex={0}
+                        style={
+                            csx.extend(
+                                styles.padded1,
+                                {
+                                    cursor: 'pointer',
+                                    whiteSpace: 'pre',
+                                    ':focus': {
+                                        outline: 'none',
+                                    }
+                                },
+                                selectedStyle
+                            )
+                        }
+                        onClick={(e) => {e.stopPropagation(); this.props.openSearchResult(result.filePath, result.line)} }>
+                        {utils.padLeft((result.line + 1).toString(),6)} : <span style={ResultsStyles.preview}>{result.preview}</span>
+                    </div>
+                );
+            })
         }
     }
 }
