@@ -16,6 +16,7 @@ import {Types} from "../../socket/socketContract";
 import {Icon} from "../icon";
 import * as Mousetrap from "mousetrap";
 import {Robocop} from "../robocop";
+import * as pure from "../../common/pure";
 
 type NodeDisplay = Types.NodeDisplay;
 let EOL = '\n';
@@ -276,7 +277,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
     render() {
         let hasResults = !!Object.keys(this.state.farmResultByFilePath).length;
 
-        return (
+        let rendered = (
             <div
                 style={csx.extend(csx.vertical, csx.flex, styles.noFocusOutline) }>
                 <div ref="results" tabIndex={0} style={ResultsStyles.root}>
@@ -293,6 +294,9 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
                 </div>
             </div>
         );
+
+        console.timeEnd('foo');
+        return rendered;
     }
 
     renderSearchControls() {
@@ -377,34 +381,22 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
                     }
                 </div>
                 {
-                    filePaths.map((filePath,i)=>{
+                    filePaths.map((filePath, i) => {
                             let results = this.state.farmResultByFilePath[filePath];
-                            let selectedStyle = filePath === this.state.selected.filePath && this.state.selected.line === -1
-                                ? ResultsStyles.selected
-                                : {};
+                            let selected = filePath === this.state.selected.filePath && this.state.selected.line == -1
+                            let subResultSelected = filePath === this.state.selected.filePath;
 
                             return (
-                                <div key={i} onClick={()=>this.toggleFilePathExpansion(filePath)}>
-                                    <div
-                                        ref={filePath + ':' + -1}
-                                        tabIndex={0}
-                                        style={
-                                            csx.extend(
-                                                selectedStyle,
-                                                styles.errorsPanel.filePath,
-                                                {
-                                                    margin:'8px 0px',
-                                                    padding: '3px' ,
-                                                    ':focus': {
-                                                        outline: 'none',
-                                                    }
-                                                }
-                                            )
-                                        }>
-                                        {this.state.collapsedState[filePath] ? "+" : "-" } {filePath} ({results.length})
-                                    </div>
-                                    {this.state.collapsedState[filePath] ? <noscript/> : this.renderResultsForFilePath(results) }
-                                </div>
+                                <FileResults.FileResults
+                                    key={i}
+                                    filePath={filePath}
+                                    results={results}
+                                    expanded={!this.state.collapsedState[filePath]}
+                                    onClickFilePath={this.toggleFilePathExpansion}
+                                    renderResultsForFilePath={this.renderResultsForFilePath}
+                                    selected={selected}
+                                    subResultSelected={subResultSelected}
+                                />
                             );
                         })
                 }
@@ -412,7 +404,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
         );
     }
 
-    renderResultsForFilePath(results:Types.FarmResultDetails[]){
+    renderResultsForFilePath = (results:Types.FarmResultDetails[]) => {
         return results.map((result,i)=>{
             let selectedStyle = result.filePath === this.state.selected.filePath && result.line === this.state.selected.line
                 ? ResultsStyles.selected
@@ -443,7 +435,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
         })
     }
 
-    toggleFilePathExpansion(filePath: string) {
+    toggleFilePathExpansion = (filePath: string) => {
         this.state.collapsedState[filePath] = !this.state.collapsedState[filePath];
         this.setState({collapsedState: this.state.collapsedState, selected:{filePath,line:-1}});
     }
@@ -573,7 +565,8 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
     }
 
     focusFilePath = (filePath: string, line: number) => {
-        this.resultRef(filePath, line).scrollIntoViewIfNeeded(false);
+        // TODO: restore after the performance impact changes
+        // this.resultRef(filePath, line).scrollIntoViewIfNeeded(false);
     };
 
     /**
@@ -614,6 +607,56 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
         },
 
         replaceAll: (newText: string) => {
+        }
+    }
+}
+
+namespace FileResults {
+    export interface Props {
+        filePath:string;
+        results:Types.FarmResultDetails[];
+
+        expanded: boolean;
+        onClickFilePath: (filePath:string) => any;
+
+        selected: boolean;
+        subResultSelected: boolean; // TODO: this is only to use the pure render for now
+        renderResultsForFilePath: (results:Types.FarmResultDetails[]) => any;
+    }
+    export interface State {
+    }
+    @ui.Radium
+    export class FileResults extends React.Component<Props,State>{
+        shouldComponentUpdate = pure.shouldComponentUpdate;
+
+        render(){
+
+            let selectedStyle = this.props.selected
+                ? ResultsStyles.selected
+                : {};
+
+            return (
+                <div onClick={()=>this.props.onClickFilePath(this.props.filePath)}>
+                    <div
+                        tabIndex={0}
+                        style={
+                            csx.extend(
+                                selectedStyle,
+                                styles.errorsPanel.filePath,
+                                {
+                                    margin:'8px 0px',
+                                    padding: '3px' ,
+                                    ':focus': {
+                                        outline: 'none',
+                                    }
+                                }
+                            )
+                        }>
+                        {!this.props.expanded ? "+" : "-" } {this.props.filePath} ({this.props.results.length})
+                    </div>
+                    {!this.props.expanded ? <noscript/> : this.props.renderResultsForFilePath(this.props.results) }
+                </div>
+            );
         }
     }
 }

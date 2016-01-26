@@ -40,6 +40,7 @@
         "./app/utils/preventBackspaceNav.ts",
         "./common/events.ts",
         "./common/json.ts",
+        "./common/pure.ts",
         "./common/types.ts",
         "./common/utils.ts",
         "./server.ts",
