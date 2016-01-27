@@ -152,6 +152,8 @@ export namespace Types {
     export interface FarmNotification {
         completed: boolean;
         results: Types.FarmResultDetails[];
+        /** Might be null if no query */
+        config: Types.FarmConfig;
     }
 
     /**

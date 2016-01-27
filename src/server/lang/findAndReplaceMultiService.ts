@@ -12,8 +12,8 @@ import {TypedEvent} from "../../common/events";
  * Maintains current farm state
  */
 class FarmState {
-    constructor(cfg: Types.FarmConfig) {
-        let searchTerm = cfg.query;
+    constructor(public config: Types.FarmConfig) {
+        let searchTerm = config.query;
 
         /**
          * https://git-scm.com/docs/git-grep
@@ -36,12 +36,12 @@ class FarmState {
             `--no-pager`,
             `grep`,
             `-In`
-            + (cfg.isRegex ? 'E' : 'F')
-            + (cfg.isFullWord ? 'w' : '')
-            + (cfg.isCaseSensitive ? 'i' : ''),
+            + (config.isRegex ? 'E' : 'F')
+            + (config.isFullWord ? 'w' : '')
+            + (config.isCaseSensitive ? 'i' : ''),
             searchTerm,
             `--`  // signals pathspec
-        ].concat(cfg.globs));
+        ].concat(config.globs));
 
         grep.stdout.on('data', (data) => {
             if (farmState.disposed) return;
@@ -141,8 +141,8 @@ class FarmState {
     /** Exposed event */
     resultsUpdated = new TypedEvent<Types.FarmNotification>();
     private notifyUpdate = utils.throttle(() => {
-        let {results, completed} = this;
-        this.resultsUpdated.emit({ results, completed });
+        let {results, completed, config} = this;
+        this.resultsUpdated.emit({ results, completed, config });
     }, 500);
 
     /** Allows us to dispose any running search */
@@ -172,14 +172,14 @@ let farmState: FarmState = null;
  */
 export const farmResultsUpdated = new TypedEvent<Types.FarmNotification>();
 // initiate as completed with no results
-farmResultsUpdated.emit({completed:true,results:[]});
+farmResultsUpdated.emit({ completed: true, results: [], config: null });
 
 /** Also safely stops any previous running farming */
 export function startFarming(cfg: Types.FarmConfig): Promise<{}> {
     stopFarmingIfRunning({});
 
     farmState = new FarmState(cfg);
-    farmResultsUpdated.emit({ completed: false, results: [] });
+    farmResultsUpdated.emit({ completed: false, results: [], config:cfg });
     farmState.resultsUpdated.pipe(farmResultsUpdated);
 
     return Promise.resolve({});

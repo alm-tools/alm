@@ -74,6 +74,7 @@ export interface Props extends tab.ComponentProps {
 export interface State {
     completed?:boolean;
     results?: Types.FarmResultDetails[];
+    config?: Types.FarmConfig;
     farmResultByFilePath?: Types.FarmResultsByFilePath;
 
     /**
@@ -370,11 +371,13 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
 
     renderSearchResults(){
         let filePaths = Object.keys(this.state.farmResultByFilePath);
+        let queryRegex = this.state.queryRegex;
+        console.log(queryRegex);
 
         return (
             <div style={csx.extend(csx.flex, styles.errorsPanel.main, {userSelect:'none'}) }>
                 <div style={[ResultsStyles.header, csx.horizontal]}>
-                    Total Results ({this.state.results.length})
+                    Total Results ({this.state.results.length}) ({queryRegex.toString()})
                     <span style={csx.flex}/>
                     {
                         !this.state.completed &&
@@ -506,15 +509,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
             globs: []
         });
 
-        let queryRegex = utils.findOptionsToQueryRegex({
-            query: this.state.findQuery,
-            isRegex: this.state.isRegex,
-            isFullWord: this.state.isFullWord,
-            isCaseSensitive: this.state.isCaseSensitive,
-        });
-
         this.setState({
-            queryRegex: queryRegex,
             collapsedState:{},
             selected:{},
         });
@@ -532,11 +527,22 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
         let loaded: Types.FarmResultsByFilePath
             = utils.createMapByKey(results, result => result.filePath);
 
+        let queryRegex = response.results.length
+        ? utils.findOptionsToQueryRegex({
+            query: response.config.query,
+            isRegex: response.config.isRegex,
+            isFullWord: response.config.isFullWord,
+            isCaseSensitive: response.config.isCaseSensitive,
+        })
+        : null; // If there are no results the regex doesn't matter anyway
+
         // Finally rerender
         this.setState({
             results: results,
-            completed:response.completed,
-            farmResultByFilePath:loaded
+            config: response.config,
+            queryRegex,
+            completed: response.completed,
+            farmResultByFilePath: loaded
         });
     }
 
