@@ -372,13 +372,15 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
     renderSearchResults(){
         let filePaths = Object.keys(this.state.farmResultByFilePath);
         let queryRegex = this.state.queryRegex;
-        console.log(queryRegex);
+        let queryRegexStr = (this.state.queryRegex && this.state.queryRegex.toString()) || '';
+        queryRegexStr = queryRegexStr && ` (Query : ${queryRegexStr}) `
 
         return (
             <div style={csx.extend(csx.flex, styles.errorsPanel.main, {userSelect:'none'}) }>
                 <div style={[ResultsStyles.header, csx.horizontal]}>
-                    Total Results ({this.state.results.length}) ({queryRegex.toString()})
+                    Total Results ({this.state.results.length})
                     <span style={csx.flex}/>
+                    {queryRegexStr}
                     {
                         !this.state.completed &&
                             <button
