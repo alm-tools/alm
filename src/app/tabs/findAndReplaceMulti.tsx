@@ -690,5 +690,43 @@ namespace FileResults {
             let dom = this.refs[this.props.filePath+':'+line] as HTMLDivElement;
             dom.scrollIntoViewIfNeeded(false);
         }
+
+        renderMatch(preview: string, queryRegex: RegExp) {
+            // A data structure which is efficient to render
+            type MatchedSegments = { str: string, matched: boolean }[];
+            let result: MatchedSegments = [];
+
+            var match;
+            let previewCollectedIndex = 0;
+            let collectUnmatched = (matchStart:number, matchLength: number) => {
+                if (previewCollectedIndex < matchStart) {
+                    result.push({
+                        str:preview.substring(previewCollectedIndex,matchStart),
+                        matched: false
+                    });
+                    previewCollectedIndex = (matchStart + matchLength);
+                }
+            };
+
+            while (match = queryRegex.exec(preview)) {
+                let matchStart = match.index;
+                let matchLength = match[0].length;
+                // let nextMatchStart = queryRegex.lastIndex; // Since we don't need it
+
+                // If we have an unmatched string portion that is still not collected
+                // Collect it :)
+                collectUnmatched(matchStart,matchLength);
+
+                result.push({
+                    str: preview.substr(matchStart,matchLength),
+                    matched: true
+                });
+            }
+
+            // If we still have some string portion uncollected, collect it
+            if (previewCollectedIndex !== preview.length){
+                collectUnmatched(preview.length - 1,0);
+            }
+        }
     }
 }
