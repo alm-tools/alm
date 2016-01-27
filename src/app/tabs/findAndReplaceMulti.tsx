@@ -80,7 +80,12 @@ export interface State {
      * Results view state
      */
     collapsedState?: { [filePath: string]: boolean };
-    selected?: { filePath?: string; line?: number /* If we have a filePath selected (instead of a search result) we set this to -1*/ };
+    selected?: {
+        filePath?: string;
+        /* If we have a filePath selected (instead of a search result) we set this to -1*/
+        line?: number;
+    };
+    queryRegex?: RegExp;
 
     /**
      * Search state
@@ -394,6 +399,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
                                     ref={filePath}
                                     filePath={filePath}
                                     results={results}
+                                    queryRegex={this.state.queryRegex}
                                     expanded={!this.state.collapsedState[filePath]}
                                     onClickFilePath={this.toggleFilePathExpansion}
                                     openSearchResult={this.openSearchResult}
@@ -500,7 +506,15 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
             globs: []
         });
 
+        let queryRegex = utils.findOptionsToQueryRegex({
+            query: this.state.findQuery,
+            isRegex: this.state.isRegex,
+            isFullWord: this.state.isFullWord,
+            isCaseSensitive: this.state.isCaseSensitive,
+        });
+
         this.setState({
+            queryRegex: queryRegex,
             collapsedState:{},
             selected:{},
         });
@@ -593,6 +607,8 @@ namespace FileResults {
 
         selectedRoot: boolean;
         selectedResultLine: number;
+
+        queryRegex: RegExp;
     }
     export interface State {
     }
