@@ -680,7 +680,7 @@ namespace FileResults {
                             )
                         }
                         onClick={(e) => {e.stopPropagation(); this.props.openSearchResult(result.filePath, result.line)} }>
-                        {utils.padLeft((result.line + 1).toString(),6)} : <span style={ResultsStyles.preview}>{result.preview}</span>
+                        {utils.padLeft((result.line + 1).toString(),6)} : <span style={ResultsStyles.preview}>{this.renderMatched(result.preview,this.props.queryRegex)}</span>
                     </div>
                 );
             })
@@ -691,7 +691,15 @@ namespace FileResults {
             dom.scrollIntoViewIfNeeded(false);
         }
 
-        renderMatch(preview: string, queryRegex: RegExp) {
+        renderMatched(preview: string, queryRegex: RegExp){
+            let matched = this.getMatchedSegments(preview, queryRegex);
+            let matchedStyle = {fontWeight:'bold', color:'#66d9ef'};
+            return matched.map((item, i) => {
+                return <span key={i} style={item.matched?matchedStyle:{}}>{item.str}</span>;
+            });
+        }
+
+        getMatchedSegments(preview: string, queryRegex: RegExp) {
             // A data structure which is efficient to render
             type MatchedSegments = { str: string, matched: boolean }[];
             let result: MatchedSegments = [];
@@ -715,18 +723,20 @@ namespace FileResults {
 
                 // If we have an unmatched string portion that is still not collected
                 // Collect it :)
-                collectUnmatched(matchStart,matchLength);
+                collectUnmatched(matchStart, matchLength);
 
                 result.push({
-                    str: preview.substr(matchStart,matchLength),
+                    str: preview.substr(matchStart, matchLength),
                     matched: true
                 });
             }
 
             // If we still have some string portion uncollected, collect it
-            if (previewCollectedIndex !== preview.length){
-                collectUnmatched(preview.length - 1,0);
+            if (previewCollectedIndex !== preview.length) {
+                collectUnmatched(preview.length, 0);
             }
+
+            return result;
         }
     }
 }
