@@ -390,6 +390,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
                             return (
                                 <FileResults.FileResults
                                     key={i}
+                                    ref={filePath}
                                     filePath={filePath}
                                     results={results}
                                     expanded={!this.state.collapsedState[filePath]}
@@ -413,9 +414,9 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
     /**
      * Scrolling through results
      */
-    resultRef(filePath: string, line: number) {
-        const ref = filePath + ':' + line;
-        return this.refs[ref] as HTMLDivElement;
+    resultRef(filePath: string) {
+        const ref = filePath;
+        return this.refs[ref] as FileResults.FileResults;
     }
 
     /**
@@ -535,8 +536,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
     }
 
     focusFilePath = (filePath: string, line: number) => {
-        // TODO: restore after the performance impact changes
-        // this.resultRef(filePath, line).scrollIntoViewIfNeeded(false);
+        this.resultRef(filePath).focus(filePath,line);
     };
 
     /**
@@ -608,6 +608,7 @@ namespace FileResults {
             return (
                 <div onClick={()=>this.props.onClickFilePath(this.props.filePath)}>
                     <div
+                        ref={this.props.filePath + ':' + -1}
                         tabIndex={0}
                         style={
                             csx.extend(
@@ -658,6 +659,11 @@ namespace FileResults {
                     </div>
                 );
             })
+        }
+
+        focus(filePath:string, line:number){
+            let dom = this.refs[this.props.filePath+':'+line] as HTMLDivElement;
+            dom.scrollIntoViewIfNeeded(false);
         }
     }
 }
