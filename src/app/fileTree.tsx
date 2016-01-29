@@ -52,7 +52,7 @@ export interface State {
     showHelp?: boolean;
 
      // TODO: support multiple selections at some point, hence a dict
-    selectedPaths?: SelectedPaths;
+    readonly selectedPaths?: SelectedPaths;
 }
 
 let resizerWidth = 5;
@@ -771,9 +771,9 @@ export class FileTree extends BaseComponent<Props, State>{
          */
         if (document.activeElement === this.refs['loading']) {
             setTimeout(() => {
-                this.state.selectedPaths = {};
-                this.state.selectedPaths[this.state.treeRoot.filePath] = dirSelected;
-                this.setState({ selectedPaths: this.state.selectedPaths });
+                let selectedPaths:SelectedPaths = {};
+                selectedPaths[this.state.treeRoot.filePath] = dirSelected;
+                this.setState({ selectedPaths: selectedPaths });
                 this.focusOnPath(this.state.treeRoot.filePath);
             }, 500);
         }
@@ -783,19 +783,19 @@ export class FileTree extends BaseComponent<Props, State>{
         evt.stopPropagation();
         let dirPath = item.filePath;
 
-        this.state.selectedPaths = {};
-        this.state.selectedPaths[dirPath] = dirSelected;
+        let selectedPaths: SelectedPaths = {};
+        selectedPaths[dirPath] = dirSelected;
         this.state.expansionState[dirPath] = !this.state.expansionState[dirPath];
 
-        this.setState({expansionState: this.state.expansionState, selectedPaths:this.state.selectedPaths });
+        this.setState({expansionState: this.state.expansionState, selectedPaths: selectedPaths });
     }
 
     handleSelectFile = (evt:React.SyntheticEvent,item:TreeFileItem) => {
         evt.stopPropagation();
         let filePath = item.filePath;
 
-        this.state.selectedPaths = {};
-        this.state.selectedPaths[filePath] = fileSelected;
+        let selectedPaths:SelectedPaths = {};
+        selectedPaths[filePath] = fileSelected;
 
         this.setState({ selectedPaths:this.state.selectedPaths });
 
