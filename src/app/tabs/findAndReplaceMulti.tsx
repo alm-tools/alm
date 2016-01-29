@@ -302,7 +302,6 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
             </div>
         );
 
-        console.timeEnd('foo');
         return rendered;
     }
 
