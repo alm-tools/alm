@@ -38,7 +38,7 @@ class FarmState {
             `-In`
             + (config.isRegex ? 'E' : 'F')
             + (config.isFullWord ? 'w' : '')
-            + (config.isCaseSensitive ? 'i' : ''),
+            + (config.isCaseSensitive ? '' : 'i'),
             searchTerm,
             `--`  // signals pathspec
         ].concat(config.globs));
