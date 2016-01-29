@@ -231,7 +231,8 @@ export namespace Button {
 export namespace Tip {
     export const root = csx.extend({
         color: 'grey',
-        lineHeight: '1.5rem'
+        lineHeight: '1.5rem',
+        fontSize: '.8rem',
     }, padded1);
 
     export const keyboardShortCutStyle = {

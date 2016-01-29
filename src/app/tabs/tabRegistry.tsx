@@ -43,7 +43,7 @@ let tabs: {[protocol:string]:TabConfig} = {
     },
     farm: { // find and replace
         advancedSearch: false,
-        getTitle: (url)=> `Find and Replace`,
+        getTitle: (url)=> `Find In Project`,
         component: FindAndReplaceView,
     }
 }

@@ -317,12 +317,17 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
                                 onKeyDown={this.findKeyDownHandler}
                                 onChange={this.findChanged} defaultValue={''}/>
                         </div>
-                        <div style={[csx.horizontal, csx.center, styles.padded1]}>
-                            <input tabIndex={2} ref="replace"
-                                placeholder="Replace"
-                                style={[inputBlackStyle, inputCodeStyle, csx.flex]}
-                                onKeyDown={this.replaceKeyDownHandler} />
-                        </div>
+                        {
+                            /* I have disabled replaced as this is not the core focus of this application
+                            <div style={[csx.horizontal, csx.center, styles.padded1]}>
+                                <input tabIndex={2} ref="replace"
+                                    placeholder="Replace"
+                                    style={[inputBlackStyle, inputCodeStyle, csx.flex]}
+                                    onKeyDown={this.replaceKeyDownHandler} />
+                            </div>
+                            */
+                        }
+
                     </div>
                     <div style={[csx.centerCenter]}>
                         <div style={[csx.horizontal, csx.aroundJustified, styles.padded1]}>
@@ -358,11 +363,24 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
                     </div>
                 </div>
                 <div style={[styles.Tip.root]}>
-                    <span style={styles.Tip.keyboardShortCutStyle}>Esc</span> to focus on results
+                    <div>
+                    Controls:
+                    {' '}<span style={styles.Tip.keyboardShortCutStyle}>Esc</span> to focus on results
+                    {' '}<span style={styles.Tip.keyboardShortCutStyle}>Enter</span> to start/restart search
+                    {' '}<span style={styles.Tip.keyboardShortCutStyle}>Toggle 🔘 switches</span> start/restart search
+                    </div>
+                    <div>
+                    Results:
                     {' '}<span style={styles.Tip.keyboardShortCutStyle}>Up/Down</span> to go through results
                     {' '}<span style={styles.Tip.keyboardShortCutStyle}>Enter</span> to open a search result
-                    {' '}<span style={styles.Tip.keyboardShortCutStyle}>{commands.modName} + Enter</span> to replace
-                    {' '}<span style={styles.Tip.keyboardShortCutStyle}>{commands.modName} + Shift + Enter</span> to replace all
+                    </div>
+
+                    {
+                        /* Disabled Replace as that is not the core focus of my work at the moment
+                        {' '}<span style={styles.Tip.keyboardShortCutStyle}>{commands.modName} + Enter</span> to replace
+                        {' '}<span style={styles.Tip.keyboardShortCutStyle}>{commands.modName} + Shift + Enter</span> to replace all
+                        */
+                    }
                 </div>
             </div>
         );
