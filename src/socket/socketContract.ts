@@ -139,6 +139,7 @@ export namespace Types {
     export type FarmResultsByFilePath = {[filePath:string]: FarmResultDetails[]};
     export interface FarmResultDetails {
         filePath: string;
+        /** 1 based at the moment ... todo Change it to 0 based */
         line: number;
         preview: string;
     }

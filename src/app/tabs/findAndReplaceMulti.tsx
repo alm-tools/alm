@@ -703,7 +703,7 @@ namespace FileResults {
                             )
                         }
                         onClick={(e) => {e.stopPropagation(); this.props.openSearchResult(result.filePath, result.line)} }>
-                        {utils.padLeft((result.line + 1).toString(),6)} : <span style={ResultsStyles.preview}>{this.renderMatched(result.preview,this.props.queryRegex)}</span>
+                        {utils.padLeft((result.line).toString(),6)} : <span style={ResultsStyles.preview}>{this.renderMatched(result.preview,this.props.queryRegex)}</span>
                     </div>
                 );
             })
