@@ -490,14 +490,17 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
     handleRegexChange = (e) => {
         let val: boolean = e.target.checked;
         this.setState({ isRegex: val });
+        this.startSearch();
     }
     handleCaseSensitiveChange = (e) => {
         let val: boolean = e.target.checked;
         this.setState({ isCaseSensitive: val });
+        this.startSearch();
     }
     handleFullWordChange = (e) => {
         let val: boolean = e.target.checked;
         this.setState({ isFullWord: val });
+        this.startSearch();
     }
 
     /** Sends the search query */
