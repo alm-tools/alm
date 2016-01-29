@@ -40,6 +40,7 @@ interface TreeFileItem {
     filePath: string;
 }
 type SelectedPaths = { [filePath: string]: {isDir:boolean} };
+type SelectedPathsReadonly = { readonly [filePath: string]: {isDir:boolean} };
 let dirSelected = { isDir: true };
 let fileSelected = { isDir: false };
 
@@ -52,7 +53,7 @@ export interface State {
     showHelp?: boolean;
 
      // TODO: support multiple selections at some point, hence a dict
-    readonly selectedPaths?: SelectedPaths;
+    readonly selectedPaths?: SelectedPathsReadonly;
 }
 
 let resizerWidth = 5;
