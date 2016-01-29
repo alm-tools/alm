@@ -19,6 +19,7 @@ import {Robocop} from "./robocop";
 import {inputDialog} from "./dialogs/inputDialog";
 import * as Mousetrap from "mousetrap";
 import * as clipboard from "./clipboard";
+import * as pure from "../common/pure";
 type TruthTable = utils.TruthTable;
 
 export interface Props {
@@ -653,11 +654,13 @@ export class FileTree extends BaseComponent<Props, State>{
             .concat(item.files.map(file => this.renderFile(file,depth+1)));
     }
     renderFile(item:TreeFileItem,depth:number){
-        let selectedStyle = this.state.selectedPaths[item.filePath] ? treeItemSelectedStyle : {};
+        let selected = !!this.state.selectedPaths[item.filePath];
         return (
-            <div style={[treeItemStyle, selectedStyle]} key={item.filePath} ref={item.filePath} tabIndex={-1} onClick={(evt) => this.handleSelectFile(evt, item) }>
-                {ui.indent(depth,2)} <Icon name="file-text-o"/> {item.name}
-            </div>
+            <TreeNode.File ref={item.filePath} key={item.filePath}
+            item={item}
+            depth={depth}
+            selected={selected}
+            handleSelectFile={this.handleSelectFile}/>
         );
     }
 
@@ -794,11 +797,43 @@ export class FileTree extends BaseComponent<Props, State>{
         commands.doOpenOrActivateFileTab.emit({ filePath });
     }
 
-    focusOnPath(filePath:string){
+    focusOnPath(filePath: string) {
         // TODO: will actually trickle down recursively to call focus on the right dom node
 
         if (!this.ref(filePath)) return;
-        this.ref(filePath).scrollIntoViewIfNeeded(false);
+        // this.ref(filePath).scrollIntoViewIfNeeded(false); // TODO: the component should do it
         this.ref(filePath).focus();
+    }
+}
+
+export namespace TreeNode {
+    export class Dir extends React.Component<{ item: TreeDirItem, depth: number }, {}>{
+        shouldComponentUpdate = pure.shouldComponentUpdate;
+        focus(filePath: string) {
+            // TODO: either self or some child dir or filePath
+        }
+    }
+
+    @ui.Radium
+    export class File extends React.Component<{
+        item: TreeFileItem;
+        depth: number;
+        selected: boolean;
+        handleSelectFile: (event: React.SyntheticEvent, item: TreeFileItem) => any;
+    }, {}>{
+        shouldComponentUpdate = pure.shouldComponentUpdate;
+        focus() {
+            (this.refs['root'] as any).scrollIntoViewIfNeeded(false);
+            (this.refs['root'] as any).focus();
+        }
+        render() {
+            let selectedStyle = this.props.selected ? treeItemSelectedStyle : {};
+
+            return (
+                <div style={[treeItemStyle, selectedStyle]} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleSelectFile(evt, this.props.item) }>
+                    {ui.indent(this.props.depth,2)} <Icon name="file-text-o"/> {this.props.item.name}
+                </div>
+            );
+        }
     }
 }
