@@ -148,14 +148,14 @@ export class FileTree extends BaseComponent<Props, State>{
                 ? selectedFilePaths[selectedFilePaths.length - 1]
                 : this.state.treeRoot.filePath;
 
-            this.ref(pathToFocus).focus();
+            this.focusOnPath(pathToFocus);
             return false;
         }
 
         this.disposible.add(commands.esc.on(()=>{
             if (this.state.showHelp){
                 this.setState({showHelp: false});
-                setTimeout(()=>this.ref(this.state.treeRoot.filePath).focus(),150);
+                setTimeout(()=>this.focusOnPath(this.state.treeRoot.filePath),150);
             }
         }));
 
@@ -196,7 +196,7 @@ export class FileTree extends BaseComponent<Props, State>{
                 selectedPaths[filePath] = fileSelected;
 
                 this.setState({expansionState,selectedPaths});
-                this.ref(filePath).focus();
+                this.focusOnPath(filePath);
             }
             else {
                 handleFocusRequestBasic();
@@ -254,22 +254,15 @@ export class FileTree extends BaseComponent<Props, State>{
             selectedPaths[filePath] = {isDir};
             this.setState({selectedPaths});
         }
-        let focusFilePath = ((filePath:string)=>{
-            if (!this.ref(filePath)) return;
-            // leads to better scroll performance instead of `.focus`
-            this.ref(filePath).scrollIntoViewIfNeeded(false);
-            // focus is still needed because dom re-rendering is losing focus
-            this.ref(filePath).focus();
-        });
         let setAsOnlySelected = (filePath:string, isDir:boolean) => {
             setAsOnlySelectedNoFocus(filePath,isDir);
-            focusFilePath(filePath);
+            this.focusOnPath(filePath);
         }
 
         /**
          * Used in handling keyboard for tree items
          */
-        let treeRoot = this.ref(this.refNames.treeRootNode);
+        let treeRoot = this.ref('__treeroot');
         let handlers = new Mousetrap(treeRoot);
 
         /**
@@ -592,7 +585,7 @@ export class FileTree extends BaseComponent<Props, State>{
 
         let hideStyle = !this.state.shown && { display: 'none' };
         return (
-            <div ref={this.refNames.treeRootNode} style={[csx.flexRoot, csx.horizontal, { width: this.state.width }, hideStyle]}>
+            <div ref={'__treeroot'} style={[csx.flexRoot, csx.horizontal, { width: this.state.width }, hideStyle]}>
 
                 <div style={[csx.flex, csx.vertical, treeListStyle, {position:'relative'}]}>
                     <div style={[csx.flex,csx.scroll, treeScrollStyle]} tabIndex={0}>
@@ -773,7 +766,7 @@ export class FileTree extends BaseComponent<Props, State>{
                 this.state.selectedPaths = {};
                 this.state.selectedPaths[this.state.treeRoot.filePath] = dirSelected;
                 this.setState({ selectedPaths: this.state.selectedPaths });
-                this.ref(this.state.treeRoot.filePath).focus()
+                this.focusOnPath(this.state.treeRoot.filePath);
             }, 500);
         }
     }
@@ -799,5 +792,13 @@ export class FileTree extends BaseComponent<Props, State>{
         this.setState({ selectedPaths:this.state.selectedPaths });
 
         commands.doOpenOrActivateFileTab.emit({ filePath });
+    }
+
+    focusOnPath(filePath:string){
+        // TODO: will actually trickle down recursively to call focus on the right dom node
+
+        if (!this.ref(filePath)) return;
+        this.ref(filePath).scrollIntoViewIfNeeded(false);
+        this.ref(filePath).focus();
     }
 }
