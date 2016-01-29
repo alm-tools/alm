@@ -590,7 +590,7 @@ export class FileTree extends BaseComponent<Props, State>{
             <div ref={'__treeroot'} style={[csx.flexRoot, csx.horizontal, { width: this.state.width }, hideStyle]}>
 
                 <div style={[csx.flex, csx.vertical, treeListStyle, {position:'relative'}]}>
-                    <div style={[csx.flex,csx.scroll, treeScrollStyle]} tabIndex={0}>
+                    <div ref={'__treeViewScroll'} style={[csx.flex,csx.scroll, treeScrollStyle]} tabIndex={0}>
                         {this.renderDir(this.state.treeRoot)}
                     </div>
                     {this.props.filePathsCompleted || <Robocop/>}
@@ -805,6 +805,7 @@ export class FileTree extends BaseComponent<Props, State>{
 
     focusOnPath(filePath: string) {
         if (!this.ref(filePath)) return;
+        (this.refs['__treeViewScroll'] as any).focus();
         this.ref(filePath).focus();
     }
 }
@@ -822,7 +823,6 @@ export namespace TreeNode {
         shouldComponentUpdate = pure.shouldComponentUpdate;
         focus(filePath: string) {
             (this.refs['root'] as any).scrollIntoViewIfNeeded(false);
-            (this.refs['root'] as any).focus();
         }
 
         render(){
@@ -848,7 +848,6 @@ export namespace TreeNode {
         shouldComponentUpdate = pure.shouldComponentUpdate;
         focus() {
             (this.refs['root'] as any).scrollIntoViewIfNeeded(false);
-            (this.refs['root'] as any).focus();
         }
         render() {
             let selectedStyle = this.props.selected ? treeItemSelectedStyle : {};
