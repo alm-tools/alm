@@ -640,13 +640,18 @@ export class FileTree extends BaseComponent<Props, State>{
     }
     renderDir(item:TreeDirItem,depth = 0) {
         let expanded = this.state.expansionState[item.filePath];
-        let icon = expanded ? 'folder-open' : 'folder';
         let sub = expanded ? this.renderDirSub(item, depth) : [];
-        let selectedStyle = this.state.selectedPaths[item.filePath] ? treeItemSelectedStyle : {};
+        let selected = !!this.state.selectedPaths[item.filePath];
         return (
-            [<div style={[treeItemStyle, selectedStyle]} key={item.filePath} ref={item.filePath} tabIndex={-1} onClick={(evt) => this.handleToggleDir(evt,item) }>
-                {ui.indent(depth,2)} <Icon name={icon}/> {item.name}
-            </div>].concat(sub)
+            [<TreeNode.Dir
+                key={item.filePath}
+                ref={item.filePath}
+                item={item}
+                depth={depth}
+                selected={selected}
+                expanded={expanded}
+                handleToggleDir={this.handleToggleDir}
+                />].concat(sub)
         );
     }
     renderDirSub(item:TreeDirItem, depth: number){
@@ -798,19 +803,37 @@ export class FileTree extends BaseComponent<Props, State>{
     }
 
     focusOnPath(filePath: string) {
-        // TODO: will actually trickle down recursively to call focus on the right dom node
-
         if (!this.ref(filePath)) return;
-        // this.ref(filePath).scrollIntoViewIfNeeded(false); // TODO: the component should do it
         this.ref(filePath).focus();
     }
 }
 
 export namespace TreeNode {
-    export class Dir extends React.Component<{ item: TreeDirItem, depth: number }, {}>{
+    @ui.Radium
+    export class Dir extends React.Component<
+        {
+            item: TreeDirItem,
+            depth: number,
+            selected: boolean,
+            expanded: boolean,
+            handleToggleDir: (event: React.SyntheticEvent, item: TreeDirItem) => any;
+        }, {}>{
         shouldComponentUpdate = pure.shouldComponentUpdate;
         focus(filePath: string) {
-            // TODO: either self or some child dir or filePath
+            (this.refs['root'] as any).scrollIntoViewIfNeeded(false);
+            (this.refs['root'] as any).focus();
+        }
+
+        render(){
+            let {item,depth,expanded} = this.props;
+            let icon = expanded ? 'folder-open' : 'folder';
+            let selectedStyle = this.props.selected ? treeItemSelectedStyle : {};
+
+            return (
+                <div style={[treeItemStyle, selectedStyle]} key={item.filePath} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleToggleDir(evt,item) }>
+                    {ui.indent(depth,2)} <Icon name={icon}/> {item.name}
+                </div>
+            );
         }
     }
 

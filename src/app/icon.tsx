@@ -3,6 +3,7 @@ import Radium = require('radium');
 import csx = require('csx');
 import {BaseComponent} from "./ui";
 import * as ui from "./ui";
+import * as pure from "../common/pure";
 
 export interface Props extends React.HTMLAttributes {
     name: string;
@@ -24,6 +25,7 @@ export interface State {
 
 @ui.Radium
 export class Icon extends BaseComponent<Props, State>{
+    shouldComponentUpdate = pure.shouldComponentUpdate;
     render() {
         let {
             name, size, rotate, flip, spin, fixedWidth, stack, inverse,
