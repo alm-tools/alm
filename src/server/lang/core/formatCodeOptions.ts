@@ -1,3 +1,11 @@
+/**
+ * Maintainance:
+ * When a new option is added add it to:
+ * - the FormatCodeOptions interface
+ * - the defaultFormatCodeOptions function
+ * - the makeFormatCodeOptions function
+ */
+
 import os = require('os');
 
 /// The following two interfaces come from typescript.d.ts but camelCased for JSON parsing
@@ -14,6 +22,8 @@ export interface FormatCodeOptions extends EditorOptions {
     insertSpaceAfterKeywordsInControlFlowStatements: boolean;
     insertSpaceAfterFunctionKeywordForAnonymousFunctions: boolean;
     insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: boolean;
+    insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets: boolean;
+    insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces: boolean;
     placeOpenBraceOnNewLineForFunctions: boolean;
     placeOpenBraceOnNewLineForControlBlocks: boolean;
 }
@@ -30,13 +40,13 @@ export function defaultFormatCodeOptions(): ts.FormatCodeOptions {
         InsertSpaceBeforeAndAfterBinaryOperators: true,
         InsertSpaceAfterKeywordsInControlFlowStatements: true,
         InsertSpaceAfterFunctionKeywordForAnonymousFunctions: false,
-        InsertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets: false,
         InsertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis: false,
+        InsertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets: false,
+        InsertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces: false,
         PlaceOpenBraceOnNewLineForFunctions: false,
         PlaceOpenBraceOnNewLineForControlBlocks: false,
     };
 }
-
 
 export function makeFormatCodeOptions(config: FormatCodeOptions): ts.FormatCodeOptions {
     var options = defaultFormatCodeOptions();
@@ -60,6 +70,12 @@ export function makeFormatCodeOptions(config: FormatCodeOptions): ts.FormatCodeO
     }
     if (typeof config.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis === "boolean") {
         options.InsertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis = config.insertSpaceAfterOpeningAndBeforeClosingNonemptyParenthesis;
+    }
+    if (typeof config.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets === "boolean") {
+        options.InsertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets = config.insertSpaceAfterOpeningAndBeforeClosingNonemptyBrackets;
+    }
+    if (typeof config.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces === "boolean") {
+        options.InsertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces = config.insertSpaceAfterOpeningAndBeforeClosingTemplateStringBraces;
     }
     if (typeof config.placeOpenBraceOnNewLineForFunctions === "boolean") {
         options.PlaceOpenBraceOnNewLineForFunctions = config.placeOpenBraceOnNewLineForFunctions;
