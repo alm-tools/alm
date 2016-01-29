@@ -503,8 +503,11 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
         this.startSearch();
     }
 
-    /** Sends the search query */
-    startSearch() {
+    /**
+     * Sends the search query
+     * debounced as state needs to be set before this execs
+     */
+    startSearch = utils.debounce(() => {
         server.startFarming({
             query: this.state.findQuery,
             isRegex: this.state.isRegex,
@@ -517,7 +520,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
             collapsedState:{},
             selected:{},
         });
-    }
+    },100);
 
     cancelAnyRunningSearch = () => {
         server.stopFarmingIfRunning({});
