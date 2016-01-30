@@ -53,7 +53,7 @@ export interface State {
     showHelp?: boolean;
 
      // TODO: support multiple selections at some point, hence a dict
-    readonly selectedPaths?: SelectedPathsReadonly;
+    readonly selectedPaths?: SelectedPaths;
 }
 
 let resizerWidth = 5;
@@ -194,9 +194,9 @@ export class FileTree extends BaseComponent<Props, State>{
                 let expansionState = csx.extend(this.state.expansionState,expanded) as TruthTable;
 
                 // also only select this node
-                let selectedPaths: SelectedPaths = {};
-                selectedPaths[filePath] = fileSelected;
-
+                let selectedPaths: SelectedPaths = {
+                    [filePath]: fileSelected
+                };
                 this.setState({expansionState,selectedPaths});
                 this.focusOnPath(filePath);
             }
@@ -217,14 +217,16 @@ export class FileTree extends BaseComponent<Props, State>{
         let goDownToSmallestSelection = () => {
             let selectedFilePaths = Object.keys(this.state.selectedPaths);
             if (selectedFilePaths.length == 0){
-                let selectedPaths: SelectedPaths = {};
-                selectedPaths[this.state.treeRoot.filePath] = dirSelected;
+                let selectedPaths: SelectedPaths = {
+                    [this.state.treeRoot.filePath]: fileSelected
+                };
                 this.setState({selectedPaths});
             }
             else if (selectedFilePaths.length > 1) {
-                let selectedPaths: SelectedPaths = {};
                 let path = selectedFilePaths[selectedFilePaths.length - 1];
-                selectedPaths[path] = this.state.selectedPaths[path];
+                let selectedPaths: SelectedPaths = {
+                    [path] : this.state.selectedPaths[path]
+                };
                 this.setState({selectedPaths});
             }
             else {
@@ -252,8 +254,9 @@ export class FileTree extends BaseComponent<Props, State>{
 
         /** Utility : set an item as the only selected */
         let setAsOnlySelectedNoFocus = (filePath: string, isDir: boolean) => {
-            let selectedPaths: SelectedPaths = {};
-            selectedPaths[filePath] = {isDir};
+            let selectedPaths: SelectedPaths = {
+                [filePath] : {isDir}
+            };
             this.setState({selectedPaths});
         }
         let setAsOnlySelected = (filePath:string, isDir:boolean) => {
@@ -772,8 +775,9 @@ export class FileTree extends BaseComponent<Props, State>{
          */
         if (document.activeElement === this.refs['loading']) {
             setTimeout(() => {
-                let selectedPaths:SelectedPaths = {};
-                selectedPaths[this.state.treeRoot.filePath] = dirSelected;
+                let selectedPaths: SelectedPaths = {
+                    [this.state.treeRoot.filePath]: dirSelected
+                };
                 this.setState({ selectedPaths: selectedPaths });
                 this.focusOnPath(this.state.treeRoot.filePath);
             }, 500);
@@ -784,8 +788,9 @@ export class FileTree extends BaseComponent<Props, State>{
         evt.stopPropagation();
         let dirPath = item.filePath;
 
-        let selectedPaths: SelectedPaths = {};
-        selectedPaths[dirPath] = dirSelected;
+        let selectedPaths: SelectedPaths = {
+            [dirPath]: dirSelected
+        }
         this.state.expansionState[dirPath] = !this.state.expansionState[dirPath];
 
         this.setState({expansionState: this.state.expansionState, selectedPaths: selectedPaths });
@@ -795,8 +800,9 @@ export class FileTree extends BaseComponent<Props, State>{
         evt.stopPropagation();
         let filePath = item.filePath;
 
-        let selectedPaths:SelectedPaths = {};
-        selectedPaths[filePath] = fileSelected;
+        let selectedPaths: SelectedPaths = {
+            [filePath]: fileSelected
+        };
 
         this.setState({ selectedPaths:this.state.selectedPaths });
 
