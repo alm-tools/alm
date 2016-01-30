@@ -599,21 +599,21 @@ export class FileTree extends BaseComponent<Props, State>{
                     {this.props.filePathsCompleted || <Robocop/>}
                     {
                         singlePathSelected
-                        && <div
-                            className="hint--top"
-                            data-hint="Click to copy the file path to clipboard"
-                            data-clipboard-text={singlePathSelected}
-                            onClick={()=>ui.notifyInfoQuickDisappear("Path copied to clipboard")}>
-                            <div
-                                style={currentSelectedItemCopyStyle}>
-                                {singlePathSelected}
-                            </div>
-                            <div style={csx.center}>
-                                <clipboard.Clipboard ref='copypath' text={singlePathSelected}/>{' '}
-                                <span>Tap <span style={styles.Tip.keyboardShortCutStyle}>H</span> to toggle tree view help</span>
-                            </div>
+                        && <div style={[csx.horizontal, { paddingTop: '5px', paddingBottom: '5px', width: this.state.width - 15+'px'}]}>
+                            <clipboard.Clipboard ref='copypath' text={singlePathSelected}/>
+                            <span
+                                className="hint--top"
+                                data-hint="Click to copy the file path to clipboard"
+                                data-clipboard-text={singlePathSelected}
+                                style={currentSelectedItemCopyStyle}
+                                onClick={()=>ui.notifyInfoQuickDisappear("Path copied to clipboard")}>
+                                    {singlePathSelected}
+                            </span>
                         </div>
                     }
+                    <div style={csx.center}>
+                        <span>Tap <span style={styles.Tip.keyboardShortCutStyle}>H</span> to toggle tree view help</span>
+                    </div>
                     {
                         this.state.showHelp
                         && <div style={[csx.newLayer, csx.centerCenter, csx.flex, {background: 'rgba(0,0,0,.7)'}]}
