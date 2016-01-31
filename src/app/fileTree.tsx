@@ -81,6 +81,7 @@ let treeListStyle = {
 let treeScrollStyle = {
     border: '1px solid grey',
     ':focus': {
+        outline: 'none',
         border: '1px solid ' + styles.highlightColor
     }
 }
