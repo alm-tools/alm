@@ -64,13 +64,6 @@ let resizerStyle = {
     color: '#666',
 }
 
-/**
- * If you expect a child to scroll you need to tell it that I will not give you a scroll bar
- */
-export var someChildWillScroll = {
-    overflow: 'hidden'
-}
-
 let treeListStyle = {
     background: '#333',
     color: '#eee',
@@ -600,7 +593,7 @@ export class FileTree extends BaseComponent<Props, State>{
         return (
             <div ref={'__treeroot'} style={[csx.flexRoot, csx.horizontal, { width: this.state.width }, hideStyle]}>
 
-                <div style={[csx.flex, csx.vertical, treeListStyle, someChildWillScroll, csx.newLayerParent]}>
+                <div style={[csx.flex, csx.vertical, treeListStyle, styles.someChildWillScroll, csx.newLayerParent]}>
                     <div ref={'__treeViewScroll'} style={[csx.flex,csx.scroll, treeScrollStyle]} tabIndex={0}>
                         {this.renderDir(this.state.treeRoot)}
                     </div>

@@ -85,7 +85,7 @@ ${this.state.text.substring(node.pos, node.end)}
         return (
             <div
                 ref="root" tabIndex={0}
-                style={csx.extend(csx.horizontal,csx.flex,styles.noFocusOutline)}>
+                style={csx.extend(csx.horizontal,csx.flex,styles.noFocusOutline, styles.someChildWillScroll)}>
                 <div style={csx.extend(csx.flex,csx.scroll)} ref="graphRoot" className="ast-view">
                     {
                         // The ast tree view goes here

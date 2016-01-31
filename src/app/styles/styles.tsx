@@ -6,6 +6,13 @@ export let successColor = '#00c990';
 export let highlightColor = "#6edeef";
 export let selectedBackgroundColor = '#444';
 
+/**
+ * If you expect a child to scroll you need to tell it that I will not give you a scroll bar
+ */
+export var someChildWillScroll = {
+    overflow: 'hidden'
+}
+
 export var tabHeaderContainer = {
     background: 'grey'
 }
