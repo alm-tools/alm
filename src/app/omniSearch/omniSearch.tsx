@@ -132,14 +132,14 @@ export class OmniSearch extends BaseComponent<Props, State>{
               isOpen={this.searchState.isShown}
               onRequestClose={this.searchState.closeOmniSearch}>
                 <div style={[csx.vertical, csx.flex]}>
-                    <div style={[csx.horizontal,csx.center]}>
+                    <div style={[csx.content, csx.horizontal,csx.center]}>
                         <h4 style={{marginTop:'1rem', marginBottom: '1rem'} as any}>Omni Search <Icon name="search"/></h4>
                         {searchingName ? <h5  style={searchingNameStyle}>{searchingName}</h5> : ''}
                         <div style={[csx.flex]}></div>
                         <div style={{fontSize:'0.9rem', color:'grey'} as any}><code style={styles.modal.keyStrokeStyle}>Esc</code> to exit <code style={styles.modal.keyStrokeStyle}>Enter</code> to select</div>
                     </div>
 
-                    <div style={[styles.padded1TopBottom,csx.vertical]}>
+                    <div style={[csx.content, styles.padded1TopBottom,csx.vertical]}>
                         <input
                             defaultValue={this.searchState.rawFilterValue}
                             style={styles.modal.inputStyle}
@@ -436,7 +436,7 @@ class SearchState {
                 boxShadow: 'inset 0 0 6px black',
             };
             return (
-                <div>
+                <div style={csx.content}>
                     <div style={messageStyle}>Indexing ({this.filePaths.length})</div>
                     <Robocop/>
                 </div>
