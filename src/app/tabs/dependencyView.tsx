@@ -102,7 +102,7 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
             <div
                 ref="root" tabIndex={0}
                 className="dependency-view"
-                style={csx.extend(csx.vertical,csx.flex, csx.newLayerParent)}
+                style={csx.extend(csx.vertical,csx.flex, csx.newLayerParent, styles.someChildWillScroll)}
                 onKeyPress={this.handleKey}>
                 <div ref="graphRoot" style={csx.extend(csx.vertical,csx.flex)}>
                     {/* Graph goes here */}
@@ -141,6 +141,7 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
             // Create the graph renderer
             this.graphRenderer = new GraphRenderer({
                 dependencies: res.links,
+                measureSizeRoot: $(this.refs.root),
                 graphRoot:$(this.refs.graphRoot),
                 display:(node) => {
                 }
@@ -176,6 +177,7 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
      */
     focus = () => {
         this.refs.root.focus();
+        this.graphRenderer.resize();
     }
 
     save = () => {
@@ -239,9 +241,11 @@ class GraphRenderer {
     graphHeight = 0;
 
     d3Graph: D3Graph;
+    svgRoot: d3.Selection<any>;
 
     constructor(public config:{
         dependencies: FileDependency[],
+        measureSizeRoot: JQuery,
         graphRoot: JQuery,
         display: (content: FileDependency) => any
     }){
@@ -271,9 +275,10 @@ class GraphRenderer {
             .scaleExtent([.1,6])
             .on("zoom", onZoomChanged);
 
-        this.graph = d3Root.append("svg")
-            .style('flex', '1')
-            .call(this.zoom)
+        this.svgRoot = d3Root.append("svg")
+            .call(this.zoom);
+
+        this.graph = this.svgRoot
             .append('svg:g');
 
         this.layout = d3.layout.force()
@@ -477,9 +482,9 @@ class GraphRenderer {
      * Layout
      */
     resize = () => {
-        this.graphWidth = this.config.graphRoot.width();
-        this.graphHeight = this.config.graphRoot.height();
-        this.graph.attr("width", this.graphWidth)
+        this.graphWidth = this.config.measureSizeRoot.width();
+        this.graphHeight = this.config.measureSizeRoot.height();
+        this.svgRoot.attr("width", this.graphWidth)
             .attr("height", this.graphHeight);
         this.layout.size([this.graphWidth, this.graphHeight])
             .resume();
