@@ -599,7 +599,7 @@ export class FileTree extends BaseComponent<Props, State>{
                     {this.props.filePathsCompleted || <Robocop/>}
                     {
                         singlePathSelected
-                        && <div style={[csx.horizontal, { paddingTop: '5px', paddingBottom: '5px', width: this.state.width - 15+'px'}]}>
+                        && <div style={[csx.content, csx.horizontal, { paddingTop: '5px', paddingBottom: '5px', width: this.state.width - 15+'px'}]}>
                             <clipboard.Clipboard ref='copypath' text={singlePathSelected}/>
                             <span
                                 className="hint--top"
@@ -611,7 +611,7 @@ export class FileTree extends BaseComponent<Props, State>{
                             </span>
                         </div>
                     }
-                    <div style={csx.center}>
+                    <div style={[csx.content,csx.center]}>
                         <span>Tap <span style={styles.Tip.keyboardShortCutStyle}>H</span> to toggle tree view help</span>
                     </div>
                     {
