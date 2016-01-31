@@ -102,7 +102,7 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
             <div
                 ref="root" tabIndex={0}
                 className="dependency-view"
-                style={csx.extend(csx.vertical,csx.flex, {position:'relative'})}
+                style={csx.extend(csx.vertical,csx.flex, csx.newLayerParent)}
                 onKeyPress={this.handleKey}>
                 <div ref="graphRoot" style={csx.extend(csx.vertical,csx.flex)}>
                     {/* Graph goes here */}
