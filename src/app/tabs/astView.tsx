@@ -53,6 +53,7 @@ export class ASTView extends ui.BaseComponent<Props, State> implements tab.Compo
 
     filePath: string;
     mode: Types.ASTMode;
+    astViewRenderer : ASTViewRenderer;
     componentDidMount() {
         server.openFile({filePath:this.filePath}).then(res=>{
             this.setState({text: res.contents});
@@ -60,13 +61,12 @@ export class ASTView extends ui.BaseComponent<Props, State> implements tab.Compo
 
         server.getAST({mode:this.mode,filePath:this.filePath})
             .then((res)=>{
-                renderTree({
+                this.astViewRenderer = new ASTViewRenderer({
                     rootNode: res.root,
                     _mainContent: $(this.refs.graphRoot),
                     display: this.display
                 })
             });
-
     }
 
     render() {
@@ -146,149 +146,151 @@ ${this.state.text.substring(node.pos, node.end)}
     }
 }
 
-function renderTree(config:{rootNode: NodeDisplay, _mainContent: JQuery, display: (content: NodeDisplay) => void}) {
-    var root ={
-        dom: config._mainContent[0],
-        jq: config._mainContent
-    };
-    let rootNode = config.rootNode;
+class ASTViewRenderer {
+    constructor(public config:{rootNode: NodeDisplay, _mainContent: JQuery, display: (content: NodeDisplay) => void}) {
+        var root ={
+            dom: config._mainContent[0],
+            jq: config._mainContent
+        };
+        let rootNode = config.rootNode;
 
-    var margin = { top: 30, right: 20, bottom: 30, left: 20 };
-    var width = root.jq.width() - margin.left - margin.right;
-    var barHeight = 30;
-    var barWidth = width * .8;
+        var margin = { top: 30, right: 20, bottom: 30, left: 20 };
+        var width = root.jq.width() - margin.left - margin.right;
+        var barHeight = 30;
+        var barWidth = width * .8;
 
-    var i = 0,
-        duration = 400;
+        var i = 0,
+            duration = 400;
 
-    var tree = d3.layout.tree()
-        .nodeSize([0, 20]);
+        var tree = d3.layout.tree()
+            .nodeSize([0, 20]);
 
-    var diagonal = d3.svg.diagonal()
-        .projection(function(d) { return [d.y, d.x]; });
+        var diagonal = d3.svg.diagonal()
+            .projection(function(d) { return [d.y, d.x]; });
 
-    var graphRoot = d3.select(root.dom).append("svg")
-        .attr("width", width + margin.left + margin.right);
-    var graph = graphRoot.append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        var graphRoot = d3.select(root.dom).append("svg")
+            .attr("width", width + margin.left + margin.right);
+        var graph = graphRoot.append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    var selected: NodeDisplay;
-    select(rootNode);
+        var selected: NodeDisplay;
+        select(rootNode);
 
-    function update() {
+        function update() {
 
-        // Compute the flattened node list. TODO use d3.layout.hierarchy.
-        var nodes:d3.layout.tree.Node[] = tree.nodes(rootNode);
+            // Compute the flattened node list. TODO use d3.layout.hierarchy.
+            var nodes:d3.layout.tree.Node[] = tree.nodes(rootNode);
 
-        var height = Math.max(500, nodes.length * barHeight + margin.top + margin.bottom);
+            var height = Math.max(500, nodes.length * barHeight + margin.top + margin.bottom);
 
-        d3.select("svg").transition()
-            .duration(duration)
-            .attr("height", height);
+            d3.select("svg").transition()
+                .duration(duration)
+                .attr("height", height);
 
-        d3.select(self.frameElement).transition()
-            .duration(duration)
-            .style("height", height + "px");
+            d3.select(self.frameElement).transition()
+                .duration(duration)
+                .style("height", height + "px");
 
-        // Compute the "layout".
-        nodes.forEach(function(n, i) {
-            n.x = i * barHeight;
-        });
+            // Compute the "layout".
+            nodes.forEach(function(n, i) {
+                n.x = i * barHeight;
+            });
 
-        // Update the nodes…
-        var node = graph.selectAll("g.node")
-            .data(nodes, function(d) { return (d as any).id || ((d as any).id = ++i); });
+            // Update the nodes…
+            var node = graph.selectAll("g.node")
+                .data(nodes, function(d) { return (d as any).id || ((d as any).id = ++i); });
 
-        var nodeEnter = node.enter().append("g")
-            .attr("class", "node")
-            .attr("transform", function(d) { return "translate(" + rootNode.depth + "," + rootNode.nodeIndex + ")"; })
-            .style("opacity", 1e-6);
+            var nodeEnter = node.enter().append("g")
+                .attr("class", "node")
+                .attr("transform", function(d) { return "translate(" + rootNode.depth + "," + rootNode.nodeIndex + ")"; })
+                .style("opacity", 1e-6);
 
-        // Enter any new nodes at the parent's previous position.
-        nodeEnter.append("rect")
-            .attr("y", -barHeight / 2)
-            .attr("height", barHeight)
-            .attr("width", barWidth)
-            .style("fill", color)
-            .on("click", select);
+            // Enter any new nodes at the parent's previous position.
+            nodeEnter.append("rect")
+                .attr("y", -barHeight / 2)
+                .attr("height", barHeight)
+                .attr("width", barWidth)
+                .style("fill", color)
+                .on("click", select);
 
-        nodeEnter.append("text")
-            .attr("dy", 3.5)
-            .attr("dx", 5.5)
-            .text(function(d: NodeDisplay) {
-            return d.kind;
-        });
+            nodeEnter.append("text")
+                .attr("dy", 3.5)
+                .attr("dx", 5.5)
+                .text(function(d: NodeDisplay) {
+                return d.kind;
+            });
 
-        // Transition nodes to their new position.
-        nodeEnter.transition()
-            .duration(duration)
-            .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
-            .style("opacity", 1);
+            // Transition nodes to their new position.
+            nodeEnter.transition()
+                .duration(duration)
+                .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+                .style("opacity", 1);
 
-        node.transition()
-            .duration(duration)
-            .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
-            .style("opacity", 1)
-            .select("rect")
-            .style("fill", color);
+            node.transition()
+                .duration(duration)
+                .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+                .style("opacity", 1)
+                .select("rect")
+                .style("fill", color);
 
-        // Transition exiting nodes to the parent's new position.
-        node.exit().transition()
-            .duration(duration)
-            .attr("transform", function(d) { return "translate(" + rootNode.nodeIndex + "," + rootNode.depth + ")"; })
-            .style("opacity", 1e-6)
-            .remove();
+            // Transition exiting nodes to the parent's new position.
+            node.exit().transition()
+                .duration(duration)
+                .attr("transform", function(d) { return "translate(" + rootNode.nodeIndex + "," + rootNode.depth + ")"; })
+                .style("opacity", 1e-6)
+                .remove();
 
-        // Update the links…
-        var link = graph.selectAll("path.link")
-            .data(tree.links(nodes), function(d) { return (d.target as any).id; });
+            // Update the links…
+            var link = graph.selectAll("path.link")
+                .data(tree.links(nodes), function(d) { return (d.target as any).id; });
 
-        // Enter any new links at the parent's previous position.
-        link.enter().insert("path", "g")
-            .attr("class", "link")
-            .attr("d", function(d) {
+            // Enter any new links at the parent's previous position.
+            link.enter().insert("path", "g")
+                .attr("class", "link")
+                .attr("d", function(d) {
+                    var o = { x: rootNode.depth, y: rootNode.nodeIndex };
+                    return (diagonal as any)({ source: o, target: o });
+                })
+                .transition()
+                .duration(duration)
+                .attr("d", diagonal);
+
+            // Transition links to their new position.
+            link.transition()
+                .duration(duration)
+                .attr("d", diagonal);
+
+            // Transition exiting nodes to the parent's new position.
+            link.exit().transition()
+                .duration(duration)
+                .attr("d", function(d) {
                 var o = { x: rootNode.depth, y: rootNode.nodeIndex };
                 return (diagonal as any)({ source: o, target: o });
             })
-            .transition()
-            .duration(duration)
-            .attr("d", diagonal);
-
-        // Transition links to their new position.
-        link.transition()
-            .duration(duration)
-            .attr("d", diagonal);
-
-        // Transition exiting nodes to the parent's new position.
-        link.exit().transition()
-            .duration(duration)
-            .attr("d", function(d) {
-            var o = { x: rootNode.depth, y: rootNode.nodeIndex };
-            return (diagonal as any)({ source: o, target: o });
-        })
-            .remove();
-    }
-
-    function resize() {
-        width = root.jq.width() - margin.left - margin.right;
-        d3.select("svg").attr("width", width);
-        update();
-    }
-
-    d3.select(root.dom).on("resize", resize);
-    resize();
-
-    /** display details on click */
-    function select(node: NodeDisplay) {
-        config.display(node);
-        selected = node;
-        update();
-    }
-
-    function color(d: NodeDisplay) {
-        if (selected == d) {
-            return "rgb(140, 0, 0)";
+                .remove();
         }
-        return d.children ? "#000000" : "rgb(29, 166, 0)";
+
+        function resize() {
+            width = root.jq.width() - margin.left - margin.right;
+            d3.select("svg").attr("width", width);
+            update();
+        }
+
+        d3.select(root.dom).on("resize", resize);
+        resize();
+
+        /** display details on click */
+        function select(node: NodeDisplay) {
+            config.display(node);
+            selected = node;
+            update();
+        }
+
+        function color(d: NodeDisplay) {
+            if (selected == d) {
+                return "rgb(140, 0, 0)";
+            }
+            return d.children ? "#000000" : "rgb(29, 166, 0)";
+        }
     }
 }
