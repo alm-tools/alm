@@ -141,13 +141,14 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
         let getCurrentFilePathOrWarn = () => {
             let tab = state.getSelectedTab();
+            let notify = () => ui.notifyWarningNormalDisappear('Need a valid file path for this action. Make sure you have a *file* tab as active');
             if (!tab) {
-                ui.notifyWarningNormalDisappear('Need a valid file path for this action');
+                notify();
                 return;
             }
             let {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(tab.url);
             if (protocol !== 'file'){
-                ui.notifyWarningNormalDisappear('Need a valid file path for this action');
+                notify();
                 return;
             }
             return filePath;
