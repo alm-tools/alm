@@ -201,9 +201,15 @@ class ASTViewRenderer {
     getWidth = () => this.root.jq.width() - this.margin.left - this.margin.right;
 
     update = () => {
-        this.svgRoot.attr("width", this.getWidth());
+        const width = this.getWidth();
+        // If width is less than 0 means its insignificant to render anyways.
+        // Just return and way for update to be called again when it is significant
+        if (width < 0) {
+            return;
+        }
 
-        var width = this.getWidth();
+        this.svgRoot.attr("width", width);
+
         const barWidth = width * .8;
 
         // Compute the flattened node list. TODO use d3.layout.hierarchy.
