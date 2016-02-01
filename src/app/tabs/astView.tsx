@@ -160,7 +160,7 @@ class ASTViewRenderer {
 
     // setup in Ctor
     rootNode: Types.NodeDisplay;
-    graphRoot: d3.Selection<any>;
+    svgRoot: d3.Selection<any>;
     graph: d3.Selection<any>;
 
     // vodoo
@@ -179,8 +179,8 @@ class ASTViewRenderer {
 
         this.rootNode = config.rootNode;
 
-        this.graphRoot = d3.select(this.root.dom).append("svg")
-        this.graph = this.graphRoot.append("g")
+        this.svgRoot = d3.select(this.root.dom).append("svg")
+        this.graph = this.svgRoot.append("g")
             .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
         // Kick off by selecting the root node
@@ -201,7 +201,7 @@ class ASTViewRenderer {
     getWidth = () => this.root.jq.width() - this.margin.left - this.margin.right;
 
     update = () => {
-        this.graphRoot.attr("width", this.getWidth());
+        this.svgRoot.attr("width", this.getWidth());
 
         var width = this.getWidth();
         const barWidth = width * .8;
@@ -211,7 +211,7 @@ class ASTViewRenderer {
 
         var height = Math.max(500, nodes.length * this.barHeight + this.margin.top + this.margin.bottom);
 
-        d3.select("svg").transition()
+        this.svgRoot.transition()
             .duration(this.duration)
             .attr("height", height);
 
