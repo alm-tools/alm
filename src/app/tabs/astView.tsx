@@ -109,6 +109,7 @@ ${this.state.text.substring(node.pos, node.end)}
      */
     focus = () => {
         this.refs.root.focus();
+        this.astViewRenderer && this.astViewRenderer.update();
     }
 
     save = () => {
@@ -159,6 +160,7 @@ class ASTViewRenderer {
 
     // setup in Ctor
     rootNode: Types.NodeDisplay;
+    graphRoot: d3.Selection<any>;
     graph: d3.Selection<any>;
 
     // vodoo
@@ -177,22 +179,15 @@ class ASTViewRenderer {
 
         this.rootNode = config.rootNode;
 
-        var graphRoot = d3.select(this.root.dom).append("svg")
-            .attr("width", this.root.jq.width() + this.margin.left + this.margin.right);
-        this.graph = graphRoot.append("g")
+        this.graphRoot = d3.select(this.root.dom).append("svg")
+        this.graph = this.graphRoot.append("g")
             .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
         // Kick off by selecting the root node
         this.select(this.rootNode);
 
-        const resize = () => {
-            const width = this.getWidth();
-            d3.select("svg").attr("width", width);
-            this.update();
-        }
-
-        d3.select(this.root.dom).on("resize", resize);
-        resize();
+        d3.select(this.root.dom).on("resize", this.update);
+        this.update();
     }
 
     selected: NodeDisplay;
@@ -206,6 +201,8 @@ class ASTViewRenderer {
     getWidth = () => this.root.jq.width() - this.margin.left - this.margin.right;
 
     update = () => {
+        this.graphRoot.attr("width", this.getWidth());
+
         var width = this.getWidth();
         const barWidth = width * .8;
 
