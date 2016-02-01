@@ -147,150 +147,163 @@ ${this.state.text.substring(node.pos, node.end)}
 }
 
 class ASTViewRenderer {
+    root: {
+        dom: HTMLElement;
+        jq: JQuery;
+    };
+
+    // General D3 utlis
+    tree = d3.layout.tree().nodeSize([0, 20]);
+    diagonal = d3.svg.diagonal()
+        .projection(function(d) { return [d.y, d.x]; });
+
+    // setup in Ctor
+    rootNode: Types.NodeDisplay;
+    graph: d3.Selection<any>;
+
+    // vodoo
+    i: number = 0;
+
+    // layout constants
+    margin = { top: 30, right: 20, bottom: 30, left: 20 };
+    barHeight = 30;
+    duration = 400;
+
     constructor(public config:{rootNode: NodeDisplay, _mainContent: JQuery, display: (content: NodeDisplay) => void}) {
-        var root ={
+        this.root ={
             dom: config._mainContent[0],
             jq: config._mainContent
         };
-        let rootNode = config.rootNode;
 
-        var margin = { top: 30, right: 20, bottom: 30, left: 20 };
-        var width = root.jq.width() - margin.left - margin.right;
-        var barHeight = 30;
-        var barWidth = width * .8;
+        this.rootNode = config.rootNode;
 
-        var i = 0,
-            duration = 400;
+        var graphRoot = d3.select(this.root.dom).append("svg")
+            .attr("width", this.root.jq.width() + this.margin.left + this.margin.right);
+        this.graph = graphRoot.append("g")
+            .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
-        var tree = d3.layout.tree()
-            .nodeSize([0, 20]);
+        // Kick off by selecting the root node
+        this.select(this.rootNode);
 
-        var diagonal = d3.svg.diagonal()
-            .projection(function(d) { return [d.y, d.x]; });
-
-        var graphRoot = d3.select(root.dom).append("svg")
-            .attr("width", width + margin.left + margin.right);
-        var graph = graphRoot.append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-        var selected: NodeDisplay;
-        select(rootNode);
-
-        function update() {
-
-            // Compute the flattened node list. TODO use d3.layout.hierarchy.
-            var nodes:d3.layout.tree.Node[] = tree.nodes(rootNode);
-
-            var height = Math.max(500, nodes.length * barHeight + margin.top + margin.bottom);
-
-            d3.select("svg").transition()
-                .duration(duration)
-                .attr("height", height);
-
-            d3.select(self.frameElement).transition()
-                .duration(duration)
-                .style("height", height + "px");
-
-            // Compute the "layout".
-            nodes.forEach(function(n, i) {
-                n.x = i * barHeight;
-            });
-
-            // Update the nodes…
-            var node = graph.selectAll("g.node")
-                .data(nodes, function(d) { return (d as any).id || ((d as any).id = ++i); });
-
-            var nodeEnter = node.enter().append("g")
-                .attr("class", "node")
-                .attr("transform", function(d) { return "translate(" + rootNode.depth + "," + rootNode.nodeIndex + ")"; })
-                .style("opacity", 1e-6);
-
-            // Enter any new nodes at the parent's previous position.
-            nodeEnter.append("rect")
-                .attr("y", -barHeight / 2)
-                .attr("height", barHeight)
-                .attr("width", barWidth)
-                .style("fill", color)
-                .on("click", select);
-
-            nodeEnter.append("text")
-                .attr("dy", 3.5)
-                .attr("dx", 5.5)
-                .text(function(d: NodeDisplay) {
-                return d.kind;
-            });
-
-            // Transition nodes to their new position.
-            nodeEnter.transition()
-                .duration(duration)
-                .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
-                .style("opacity", 1);
-
-            node.transition()
-                .duration(duration)
-                .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
-                .style("opacity", 1)
-                .select("rect")
-                .style("fill", color);
-
-            // Transition exiting nodes to the parent's new position.
-            node.exit().transition()
-                .duration(duration)
-                .attr("transform", function(d) { return "translate(" + rootNode.nodeIndex + "," + rootNode.depth + ")"; })
-                .style("opacity", 1e-6)
-                .remove();
-
-            // Update the links…
-            var link = graph.selectAll("path.link")
-                .data(tree.links(nodes), function(d) { return (d.target as any).id; });
-
-            // Enter any new links at the parent's previous position.
-            link.enter().insert("path", "g")
-                .attr("class", "link")
-                .attr("d", function(d) {
-                    var o = { x: rootNode.depth, y: rootNode.nodeIndex };
-                    return (diagonal as any)({ source: o, target: o });
-                })
-                .transition()
-                .duration(duration)
-                .attr("d", diagonal);
-
-            // Transition links to their new position.
-            link.transition()
-                .duration(duration)
-                .attr("d", diagonal);
-
-            // Transition exiting nodes to the parent's new position.
-            link.exit().transition()
-                .duration(duration)
-                .attr("d", function(d) {
-                var o = { x: rootNode.depth, y: rootNode.nodeIndex };
-                return (diagonal as any)({ source: o, target: o });
-            })
-                .remove();
-        }
-
-        function resize() {
-            width = root.jq.width() - margin.left - margin.right;
+        const resize = () => {
+            const width = this.getWidth();
             d3.select("svg").attr("width", width);
-            update();
+            this.update();
         }
 
-        d3.select(root.dom).on("resize", resize);
+        d3.select(this.root.dom).on("resize", resize);
         resize();
+    }
 
-        /** display details on click */
-        function select(node: NodeDisplay) {
-            config.display(node);
-            selected = node;
-            update();
-        }
+    selected: NodeDisplay;
+    /** display details on click */
+    select = (node: NodeDisplay) => {
+        this.config.display(node);
+        this.selected = node;
+        this.update();
+    }
 
-        function color(d: NodeDisplay) {
-            if (selected == d) {
-                return "rgb(140, 0, 0)";
-            }
-            return d.children ? "#000000" : "rgb(29, 166, 0)";
+    getWidth = () => this.root.jq.width() - this.margin.left - this.margin.right;
+
+    update = () => {
+        var width = this.getWidth();
+        const barWidth = width * .8;
+
+        // Compute the flattened node list. TODO use d3.layout.hierarchy.
+        var nodes:d3.layout.tree.Node[] = this.tree.nodes(this.rootNode);
+
+        var height = Math.max(500, nodes.length * this.barHeight + this.margin.top + this.margin.bottom);
+
+        d3.select("svg").transition()
+            .duration(this.duration)
+            .attr("height", height);
+
+        d3.select(self.frameElement).transition()
+            .duration(this.duration)
+            .style("height", height + "px");
+
+        // Compute the "layout".
+        nodes.forEach((n, i) => {
+            n.x = i * this.barHeight;
+        });
+
+        // Update the nodes…
+        var node = this.graph.selectAll("g.node")
+            .data(nodes, (d) => { return (d as any).id || ((d as any).id = ++this.i); });
+
+        var nodeEnter = node.enter().append("g")
+            .attr("class", "node")
+            .attr("transform", (d) => { return "translate(" + this.rootNode.depth + "," + this.rootNode.nodeIndex + ")"; })
+            .style("opacity", 1e-6);
+
+        // Enter any new nodes at the parent's previous position.
+        nodeEnter.append("rect")
+            .attr("y", -this.barHeight / 2)
+            .attr("height", this.barHeight)
+            .attr("width", barWidth)
+            .style("fill", this.color)
+            .on("click", this.select);
+
+        nodeEnter.append("text")
+            .attr("dy", 3.5)
+            .attr("dx", 5.5)
+            .text(function(d: NodeDisplay) {
+            return d.kind;
+        });
+
+        // Transition nodes to their new position.
+        nodeEnter.transition()
+            .duration(this.duration)
+            .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+            .style("opacity", 1);
+
+        node.transition()
+            .duration(this.duration)
+            .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+            .style("opacity", 1)
+            .select("rect")
+            .style("fill", this.color);
+
+        // Transition exiting nodes to the parent's new position.
+        node.exit().transition()
+            .duration(this.duration)
+            .attr("transform", function(d) { return "translate(" + this.rootNode.nodeIndex + "," + this.rootNode.depth + ")"; })
+            .style("opacity", 1e-6)
+            .remove();
+
+        // Update the links…
+        var link = this.graph.selectAll("path.link")
+            .data(this.tree.links(nodes), function(d) { return (d.target as any).id; });
+
+        // Enter any new links at the parent's previous position.
+        link.enter().insert("path", "g")
+            .attr("class", "link")
+            .attr("d", (d) => {
+                var o = { x: this.rootNode.depth, y: this.rootNode.nodeIndex };
+                return (this.diagonal as any)({ source: o, target: o });
+            })
+            .transition()
+            .duration(this.duration)
+            .attr("d", this.diagonal);
+
+        // Transition links to their new position.
+        link.transition()
+            .duration(this.duration)
+            .attr("d", this.diagonal);
+
+        // Transition exiting nodes to the parent's new position.
+        link.exit().transition()
+            .duration(this.duration)
+            .attr("d", (d) => {
+            var o = { x: this.rootNode.depth, y: this.rootNode.nodeIndex };
+            return (this.diagonal as any)({ source: o, target: o });
+        }).remove();
+    }
+
+    color = (d: NodeDisplay) => {
+        if (this.selected == d) {
+            return "rgb(140, 0, 0)";
         }
+        return d.children ? "#000000" : "rgb(29, 166, 0)";
     }
 }
