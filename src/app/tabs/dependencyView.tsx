@@ -78,7 +78,12 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
         this.loadData().then(()=>{
             // setup listening to resize
             this.disposible.add(onresize.on(this.graphRenderer.resize))
-        })
+        });
+        this.disposible.add(
+            cast.activeProjectConfigDetailsUpdated.on(()=>{
+                this.loadData();
+            })
+        );
     }
 
     render() {
@@ -177,7 +182,7 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
      */
     focus = () => {
         this.refs.root.focus();
-        // if its not there its because an XHR is lagging and it will show up when that xhr completes anyways 
+        // if its not there its because an XHR is lagging and it will show up when that xhr completes anyways
         this.graphRenderer && this.graphRenderer.resize();
     }
 
