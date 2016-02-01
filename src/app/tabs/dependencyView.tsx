@@ -177,7 +177,8 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
      */
     focus = () => {
         this.refs.root.focus();
-        this.graphRenderer.resize();
+        // if its not there its because an XHR is lagging and it will show up when that xhr completes anyways 
+        this.graphRenderer && this.graphRenderer.resize();
     }
 
     save = () => {

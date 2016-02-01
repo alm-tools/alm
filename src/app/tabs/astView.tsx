@@ -109,6 +109,7 @@ ${this.state.text.substring(node.pos, node.end)}
      */
     focus = () => {
         this.refs.root.focus();
+        // if its not there its because an XHR is lagging and it will show up when that xhr completes anyways
         this.astViewRenderer && this.astViewRenderer.update();
     }
 
