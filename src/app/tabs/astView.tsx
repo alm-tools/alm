@@ -197,6 +197,7 @@ class ASTViewRenderer {
     duration = 400;
 
     constructor(public config:{rootNode: NodeDisplay, _mainContent: JQuery, display: (content: NodeDisplay) => void}) {
+        config._mainContent.html('');
         this.root ={
             dom: config._mainContent[0],
             jq: config._mainContent
