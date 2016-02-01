@@ -159,6 +159,7 @@
         "./app/tabs/codeTab.tsx",
         "./app/tabs/dashboardTab.tsx",
         "./app/tabs/dependencyView.tsx",
+        "./app/tabs/errorMessage.tsx",
         "./app/tabs/findAndReplaceMulti.tsx",
         "./app/tabs/tabRegistry.tsx",
         "./app/tabs/tips.tsx",

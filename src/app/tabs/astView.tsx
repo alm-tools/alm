@@ -9,6 +9,7 @@ import * as d3 from "d3";
 import * as $ from "jquery";
 import * as styles from "../styles/styles";
 import * as onresize from "onresize";
+import {ErrorMessage} from "./errorMessage";
 import {Clipboard} from "../clipboard";
 
 import {Types} from "../../socket/socketContract";
@@ -30,6 +31,8 @@ export interface Props extends tab.ComponentProps {
 export interface State {
     selectedNode?: Types.NodeDisplay;
     text?:string;
+
+    error?: string;
 }
 
 @ui.Radium
@@ -66,6 +69,11 @@ export class ASTView extends ui.BaseComponent<Props, State> implements tab.Compo
                     _mainContent: $(this.refs.graphRoot),
                     display: this.display
                 })
+            })
+            .catch((err)=>{
+                this.setState({
+                    error: `Failed to get the AST details for the file ${this.filePath}. Make sure it is in the active project. Change project using Alt+Shift+P.`
+                });
             });
     }
 
@@ -82,10 +90,9 @@ ${this.state.text.substring(node.pos, node.end)}
                 `.trim()
                 : "The selected AST node details will go here";
 
-        return (
-            <div
-                ref="root" tabIndex={0}
-                style={csx.extend(csx.horizontal,csx.flex,styles.noFocusOutline, styles.someChildWillScroll)}>
+        const content = this.state.error
+            ? <ErrorMessage text={this.state.error}/>
+            : <div style={csx.extend(csx.flex,csx.horizontal)}>
                 <div style={csx.extend(csx.flex,csx.scroll)} ref="graphRoot" className="ast-view">
                     {
                         // The ast tree view goes here
@@ -96,6 +103,13 @@ ${this.state.text.substring(node.pos, node.end)}
                         {display}
                     </pre>
                 </div>
+            </div>
+
+        return (
+            <div
+                ref="root" tabIndex={0}
+                style={csx.extend(csx.horizontal,csx.flex,styles.noFocusOutline, styles.someChildWillScroll)}>
+                {content}
             </div>
         );
     }
