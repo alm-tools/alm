@@ -125,7 +125,7 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
                     </div>
                </div>
 
-               <div style={styles.Tip.root}>
+               <div data-comment="Tip" style={csx.extend(styles.Tip.root,csx.content)}>
                     Tap <span style={styles.Tip.keyboardShortCutStyle}>R</span> to refresh
                </div>
 
