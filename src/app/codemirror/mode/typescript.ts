@@ -50,6 +50,8 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: str
 				case 'let':
 				case 'const':
 					return 'def';
+                case 'this':
+                    return 'number'; // Atom does this `constant`
 				default:
 					return 'keyword';
 			}
