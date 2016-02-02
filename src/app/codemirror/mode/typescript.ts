@@ -49,7 +49,7 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: str
 				case 'var':
 				case 'let':
 				case 'const':
-					return 'def';
+					return 'qualifier';
                 case 'this':
                     return 'number'; // Atom does this `constant`
 				default:
@@ -57,10 +57,18 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: str
 			}
 
 		case ClassificationType.identifier:
+            let lastToken = textBefore.trim();
 			// Show types (indentifiers in PascalCase) as variable-2, other types (camelCase) as variable
 			if (token.string.charAt(0).toLowerCase() !== token.string.charAt(0)) {
 				return 'variable-2';
-			} else {
+			}
+            else if (lastToken.endsWith('let') || lastToken.endsWith('const') || lastToken.endsWith('var')){
+                return 'def';
+            }
+            else if (lastToken.endsWith('.')){ // the CM js mode does this
+                return 'property';
+            }
+            else {
 				return 'variable';
 			}
         case ClassificationType.parameterName:
