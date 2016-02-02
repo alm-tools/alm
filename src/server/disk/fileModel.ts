@@ -117,17 +117,15 @@ export class FileModel {
     /** splitLinesAuto from codemirror */
     private splitlines(string: string) { return string.split(/\r\n?|\n/); };
 
-    /** Couldn't find one online. Hopefully this is good enough */
+    /** https://github.com/sindresorhus/detect-newline/blob/master/index.js */
     private getExpectedNewline(str: string) {
-        let CR = str.match(/\r/g);
-        let CRCount = CR ? CR.length : 0;
-        let CRLF = str.match(/\r\n/g);
-        let CRLFCount = CRLF ? CRLF.length : 0;
+        var newlines = (str.match(/(?:\r?\n)/g) || []);
+        var crlf = newlines.filter(function (el) { return el === '\r\n'; }).length;
+        var lf = newlines.length - crlf;
 
-        return CRCount == 0
-            ? os.EOL
-            : CRCount > 1.5 * CRLFCount
-                ? '\r'
-                : '\r\n';
+        // My addition
+        if (lf == 0 && crlf == 0) return os.EOL;
+
+        return crlf > lf ? '\r\n' : '\n';
     }
 }
