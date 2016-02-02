@@ -93,6 +93,9 @@ export class OmniSearch extends BaseComponent<Props, State>{
         commands.omniProjectSymbols.on(() => {
             this.searchState.openOmniSearch(SearchMode.Symbol);
         });
+        commands.omniProjectSourcefile.on(() => {
+            this.searchState.openOmniSearch(SearchMode.SourceCode);
+        });
     }
 
     wasShown = false;
