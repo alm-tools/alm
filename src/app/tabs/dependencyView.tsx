@@ -114,7 +114,7 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
                 </div>
 
                 <div ref="controlRoot" className="graph-controls"
-                    style={[csx.newLayer,csx.horizontalReverse,controlRootStyle]}>
+                    style={[csx.newLayer, csx.horizontal, csx.endJustified, controlRootStyle]}>
                     <div style={[csx.vertical, controlRightStyle]}>
                         <div className="control-zoom" style={controlItemStyle}>
                             <a className="control-zoom-in" href="#" title="Zoom in" onClick={this.zoomIn}/>
