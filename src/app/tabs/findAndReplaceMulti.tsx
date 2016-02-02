@@ -119,12 +119,9 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
         /**
          * Keyboard: Focus
          */
-        this.disposible.add(commands.findAndReplace.on(() => {
-            this.findInput().focus();
-        }));
-        this.disposible.add(commands.findAndReplaceMulti.on(() => {
-            this.findInput().focus();
-        }));
+        this.focusOnInput(); // On initial mount as well :)
+        this.disposible.add(commands.findAndReplace.on(this.focusOnInput));
+        this.disposible.add(commands.findAndReplaceMulti.on(this.focusOnInput));
 
         /**
          * Keyboard: Stop
@@ -588,6 +585,8 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
     /**
      * TAB implementation
      */
+    /** Allows us to focus on input on certain keystrokes instead of search results */
+    focusOnInput = () => setTimeout(()=>this.findInput().focus(),500);
     focus = () => {
         this.refs.results.focus();
     }
