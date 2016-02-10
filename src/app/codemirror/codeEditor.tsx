@@ -36,7 +36,7 @@ require('./addons/jumpy');
 import blaster = require('./addons/blaster');
 
 // Css overrides
-require('./override.css')
+require('./codeEditor.css')
 
 import autocomplete = require('./addons/autocomplete');
 import linter = require('./addons/linter');
