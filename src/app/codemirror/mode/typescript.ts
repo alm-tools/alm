@@ -65,9 +65,9 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: str
             else if (lastToken.endsWith('let') || lastToken.endsWith('const') || lastToken.endsWith('var')){
                 return 'def';
             }
-            else if (lastToken.endsWith('.')){ // the CM js mode does this
-                return 'property';
-            }
+            // else if (lastToken.endsWith('.')){ // the CM js mode does this
+            //     return 'property';
+            // }
             else {
 				return 'variable';
 			}
