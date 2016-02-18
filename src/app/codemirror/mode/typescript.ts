@@ -59,7 +59,8 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: str
 		case ClassificationType.identifier:
             let lastToken = textBefore.trim();
 			// Show types (indentifiers in PascalCase) as variable-2, other types (camelCase) as variable
-			if (token.string.charAt(0).toLowerCase() !== token.string.charAt(0)) {
+			if (token.string.charAt(0).toLowerCase() !== token.string.charAt(0)
+                && (lastToken.endsWith(':') || lastToken.endsWith('.')) /* :foo.Bar or :Foo */) {
 				return 'variable-2';
 			}
             else if (lastToken.endsWith('let') || lastToken.endsWith('const') || lastToken.endsWith('var')){
