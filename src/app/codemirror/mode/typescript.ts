@@ -59,25 +59,28 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: str
 		case ClassificationType.identifier:
             let lastToken = textBefore.trim();
             let nextStr: string; // setup only if needed
-			// Show types (indentifiers in PascalCase) as variable-2, other types (camelCase) as variable
-			if (token.string.charAt(0).toLowerCase() !== token.string.charAt(0)
-                && (lastToken.endsWith(':') || lastToken.endsWith('.')) /* :foo.Bar or :Foo */) {
-				return 'variable-2';
-			}
-            else if (lastToken.endsWith('let') || lastToken.endsWith('const') || lastToken.endsWith('var')){
+
+            if (lastToken.endsWith('let') || lastToken.endsWith('const') || lastToken.endsWith('var')) {
                 return 'def';
             }
-            else if ((nextStr = nextTenChars.replace(/\s+/g,'')).startsWith('(') || nextStr.startsWith('=(') || nextStr.startsWith('=function')){
+            else if ((nextStr = nextTenChars.replace(/\s+/g, '')).startsWith('(')
+                || nextStr.startsWith('=(')
+                || nextStr.startsWith('=function')) {
                 return 'property'; // Atom does this called "method"/"function". I'm just lazy
             }
+            // Show types (indentifiers in PascalCase) as variable-2, other types (camelCase) as variable
+            else if (token.string.charAt(0).toLowerCase() !== token.string.charAt(0)
+                && (lastToken.endsWith(':') || lastToken.endsWith('.')) /* :foo.Bar or :Foo */) {
+                return 'variable-2';
+            }
             else {
-				return 'variable';
-			}
+                return 'variable';
+            }
         case ClassificationType.parameterName:
             return 'def';
-		case ClassificationType.punctuation:
+        case ClassificationType.punctuation:
             // Only get punctuation for JSX. Otherwise these would be operator
-            if (token.string == '>' || token.string == '<' || token.string == '/>'){
+            if (token.string == '>' || token.string == '<' || token.string == '/>') {
                 return 'tag.bracket'; // we need tag + bracket for CM's tag matching
             }
 			return 'bracket';
