@@ -804,9 +804,7 @@ export class FileTree extends BaseComponent<Props, State>{
         let selectedPaths: SelectedPaths = {
             [filePath]: fileSelected
         };
-
-        this.setState({ selectedPaths:this.state.selectedPaths });
-
+        this.setState({ selectedPaths });
         commands.doOpenOrActivateFileTab.emit({ filePath });
     }
 
