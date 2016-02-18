@@ -200,7 +200,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 		}
 	}
 
-    getQuickInfo(pos:CodeMirror.Position): Promise<string | HTMLElement> {
+    getQuickInfo = utils.throttle((pos:CodeMirror.Position): Promise<string | HTMLElement> => {
         if (state.inActiveProjectFilePath(this.props.filePath)) {
             return server.quickInfo({ filePath: this.props.filePath, position: this.codeMirror.getDoc().indexFromPos(pos) }).then(resp=> {
                 if (!resp.valid) return;
@@ -215,7 +215,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
                 return div;
             });
         }
-    }
+    },100);
 
 	getCodeMirror () {
 		return this.codeMirror;
