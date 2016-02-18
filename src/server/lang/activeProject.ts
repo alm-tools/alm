@@ -124,7 +124,7 @@ function syncCore(projectConfig:ActiveProjectConfigDetails){
 
     let configFileDetails = ConfigFile.getConfigFileFromDiskOrInMemory(projectConfig)
     currentProject = ConfigFile.createProjectFromConfigFile(configFileDetails);
-    activeProjectFilePathsUpdated.emit({filePaths:currentProject.getProjectSourceFiles().map(x=> x.fileName)});
+    activeProjectFilePathsUpdated.emit({filePaths:currentProject.getFilePaths()});
 
     // If we made it up to here ... means the config file was good :)
     if (!projectConfig.isImplicit) {
@@ -195,7 +195,7 @@ var refreshAllProjectDiagnostics = utils.debounce(() => {
         // Send all the errors from the project files:
         let diagnostics = currentProject.getDiagnostics();
         let errors = diagnostics.map(diagnosticToCodeError);
-        let filePaths = currentProject.getProjectSourceFiles().map(x=> x.fileName);
+        let filePaths = currentProject.getFilePaths();
         setErrorsByFilePaths(filePaths, errors);
     }
 }, 3000);

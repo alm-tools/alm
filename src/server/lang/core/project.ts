@@ -24,7 +24,10 @@ export class Project {
         this.languageService = ts.createLanguageService(this.languageServiceHost, ts.createDocumentRegistry());
     }
 
-    /** all files except lib.d.ts  */
+    /**
+     * all files except lib.d.ts
+     * Note: this function is exceedingly slow on cold boot (13s on vscode codebase) as it calls getProgram.getSourceFiles
+     */
     public getProjectSourceFiles(): ts.SourceFile[] {
         var libFile = languageServiceHost.getDefaultLibFilePath(this.configFile.project.compilerOptions);
         var files
@@ -34,6 +37,10 @@ export class Project {
 
     public includesSourceFile(filePath: string) {
         return (this.configFile.project.files.filter((f) => f === filePath).length === 1);
+    }
+
+    public getFilePaths(): string[]{
+        return (this.configFile.project.files);
     }
 
     public getDiagnosticsForFile(filePath: string) {
