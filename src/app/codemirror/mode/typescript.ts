@@ -11,7 +11,7 @@ interface LineDescriptor {
 	lineStartIndex: number;
 }
 
-function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: string): string {
+function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: string, nextTenChars: string): string {
 	var ClassificationType = ts.ClassificationType;
 	switch (token.classificationType) {
 		case ClassificationType.numericLiteral:
@@ -58,6 +58,7 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: str
 
 		case ClassificationType.identifier:
             let lastToken = textBefore.trim();
+            let nextStr: string; // setup only if needed
 			// Show types (indentifiers in PascalCase) as variable-2, other types (camelCase) as variable
 			if (token.string.charAt(0).toLowerCase() !== token.string.charAt(0)
                 && (lastToken.endsWith(':') || lastToken.endsWith('.')) /* :foo.Bar or :Foo */) {
@@ -66,9 +67,9 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: str
             else if (lastToken.endsWith('let') || lastToken.endsWith('const') || lastToken.endsWith('var')){
                 return 'def';
             }
-            // else if (lastToken.endsWith('.')){ // the CM js mode does this
-            //     return 'property';
-            // }
+            else if ((nextStr = nextTenChars.replace(/\s+/g,'')).startsWith('(') || nextStr.startsWith('=(') || nextStr.startsWith('=function')){
+                return 'property'; // Atom does this called "method"/"function". I'm just lazy
+            }
             else {
 				return 'variable';
 			}
@@ -155,7 +156,8 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
                 for (var i = 0; i < classifiedSpan.string.length; i++) {
                     stream.next();
                 }
-                return getStyleForToken(classifiedSpan, textBefore);
+                var nextTenChars: string  = stream.string.substr(stream.pos, 10);
+                return getStyleForToken(classifiedSpan, textBefore, nextTenChars);
             } else {
                 stream.skipToEnd();
             }
