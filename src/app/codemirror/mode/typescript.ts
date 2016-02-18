@@ -84,6 +84,10 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: str
 		case ClassificationType.jsxCloseTagName:
 		case ClassificationType.jsxSelfClosingTagName:
 			return 'tag';
+        case ClassificationType.jsxAttribute:
+            return 'property';
+        case ClassificationType.jsxAttributeStringLiteralValue:
+            return 'string';
 		case ClassificationType.whiteSpace:
 		default:
 			return null;
