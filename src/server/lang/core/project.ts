@@ -33,7 +33,7 @@ export class Project {
     }
 
     public includesSourceFile(filePath: string) {
-        return (this.getProjectSourceFiles().filter((f) => f.fileName === filePath).length === 1);
+        return (this.configFile.project.files.filter((f) => f === filePath).length === 1);
     }
 
     public getDiagnosticsForFile(filePath: string) {
