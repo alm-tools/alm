@@ -27,6 +27,9 @@ var types = simpleValidator.types;
  */
 interface CompilerOptions {
     allowNonTsExtensions?: boolean;
+    allowSyntheticDefaultImports?: boolean;
+    allowUnreachableCode?: boolean;
+    allowUnusedLabels?: boolean;
     charset?: string;
     codepage?: number;
     declaration?: boolean;
@@ -41,6 +44,7 @@ interface CompilerOptions {
     inlineSources?: boolean;
     jsx?: string;
     locale?: string;
+    listFiles?: boolean;
     mapRoot?: string;                                 // Optionally Specifies the location where debugger should locate map files after deployment
     module?: string;
     moduleResolution?: string;
@@ -49,17 +53,21 @@ interface CompilerOptions {
     noEmitHelpers?: boolean;
     noEmitOnError?: boolean;
     noErrorTruncation?: boolean;
+    noFallthroughCasesInSwitch?: boolean;
     noImplicitAny?: boolean;                          // Error on inferred `any` type
+    noImplicitReturns?: boolean;
     noLib?: boolean;
     noLibCheck?: boolean;
     noResolve?: boolean;
     out?: string;
+    outFile?: string;                                 // new name for out
     outDir?: string;                                  // Redirect output structure to this directory
     preserveConstEnums?: boolean;
     removeComments?: boolean;                         // Do not emit comments in output
     rootDir?: string;
     sourceMap?: boolean;                              // Generates SourceMaps (.map files)
     sourceRoot?: string;                              // Optionally specifies the location where debugger should locate TypeScript source files after deployment
+    stripInternal?: boolean;
     suppressExcessPropertyErrors?: boolean;           // Optionally disable strict object literal assignment checking
     suppressImplicitAnyIndexErrors?: boolean;
     target?: string;                                  // 'es3'|'es5' (default)|'es6'
@@ -68,8 +76,11 @@ interface CompilerOptions {
 }
 
 var compilerOptionsValidation: simpleValidator.ValidationInfo = {
-    allowNonTsExtensions: { type: simpleValidator.types.boolean },
-    charset: { type: simpleValidator.types.string },
+    allowNonTsExtensions: { type: types.boolean },
+    allowSyntheticDefaultImports: { type: types.boolean },
+    allowUnreachableCode: { type: types.boolean },
+    allowUnusedLabels: { type: types.boolean },
+    charset: { type: types.string },
     codepage: { type: types.number },
     declaration: { type: types.boolean },
     diagnostics: { type: types.boolean },
@@ -83,25 +94,30 @@ var compilerOptionsValidation: simpleValidator.ValidationInfo = {
     isolatedModules: { type: types.boolean },
     jsx: { type: types.string, validValues: ['preserve', 'react'] },
     locals: { type: types.string },
+    listFiles: { type: types.boolean },
     mapRoot: { type: types.string },
-    module: { type: types.string, validValues: ['commonjs', 'amd', 'system', 'umd'] },
+    module: { type: types.string, validValues: ['commonjs', 'amd', 'system', 'umd', 'es6', 'es2015'] },
     moduleResolution: { type: types.string, validValues: ['classic', 'node'] },
     newLine: { type: types.string },
     noEmit: { type: types.boolean },
     noEmitHelpers: { type: types.boolean },
     noEmitOnError: { type: types.boolean },
     noErrorTruncation: { type: types.boolean },
+    noFallthroughCasesInSwitch: { type: types.boolean },
     noImplicitAny: { type: types.boolean },
+    noImplicitReturns: { type: types.boolean },
     noLib: { type: types.boolean },
     noLibCheck: { type: types.boolean },
     noResolve: { type: types.boolean },
     out: { type: types.string },
+    outFile: { type: types.string },
     outDir: { type: types.string },
     preserveConstEnums: { type: types.boolean },
     removeComments: { type: types.boolean },
     rootDir: { type: types.string },
     sourceMap: { type: types.boolean },
     sourceRoot: { type: types.string },
+    stripInternal: { type: types.boolean },
     suppressExcessPropertyErrors: { type: types.boolean },
     suppressImplicitAnyIndexErrors: { type: types.boolean },
     target: { type: types.string, validValues: ['es3', 'es5', 'es6'] },
@@ -124,8 +140,8 @@ interface UsefulFromPackageJson {
  * This is the JSON.parse result of a tsconfig.json
  */
 interface TypeScriptProjectRawSpecification {
-    version?: string;
     compilerOptions?: CompilerOptions;
+    exclude?: string[];                                 // optional: An array of 'glob / minimatch / RegExp' patterns to specify directories / files to exclude
     files?: string[];                                   // optional: paths to files
     filesGlob?: string[];                               // optional: An array of 'glob / minimatch / RegExp' patterns to specify source files
     formatCodeOptions?: formatting.FormatCodeOptions;   // optional: formatting options
@@ -133,6 +149,7 @@ interface TypeScriptProjectRawSpecification {
     buildOnSave?: boolean;
     externalTranspiler?: string | { name: string; options?: any };
     scripts?: { postbuild?: string };
+    atom?: { rewriteTsconfig?: boolean, formatOnSave?: boolean };
 }
 
 /**
@@ -150,6 +167,7 @@ export interface TypeScriptProjectSpecification {
     package?: UsefulFromPackageJson;
     externalTranspiler?: string | { name: string; options?: any };
     scripts: { postbuild?: string };
+    atom: { rewriteTsconfig: boolean, formatOnSave: boolean };
 }
 
 ///////// FOR USE WITH THE API /////////////
@@ -199,13 +217,12 @@ var projectFileName = 'tsconfig.json';
 var defaultFilesGlob = [
     "./**/*.ts",
     "./**/*.tsx",
-    "!./node_modules/**/*",
+    "!./node_modules/**",
 ];
 /**
  * This is what we use when the user doens't specify a files / filesGlob
  */
 var invisibleFilesGlob = ["./**/*.ts", "./**/*.tsx"];
-var typeScriptVersion = '1.5.0-beta';
 
 export var defaults: ts.CompilerOptions = {
     target: ts.ScriptTarget.ES5,
@@ -234,8 +251,10 @@ var typescriptEnumMap = {
         'none': ts.ModuleKind.None,
         'commonjs': ts.ModuleKind.CommonJS,
         'amd': ts.ModuleKind.AMD,
-        'system': ts.ModuleKind.System,
         'umd': ts.ModuleKind.UMD,
+        'system': ts.ModuleKind.System,
+        'es6': ts.ModuleKind.ES6,
+        'es2015': ts.ModuleKind.ES2015,
     },
     moduleResolution: {
         'node': ts.ModuleResolutionKind.NodeJs,
@@ -265,7 +284,7 @@ function mixin(target: any, source: any): any {
 
 function rawToTsCompilerOptions(jsonOptions: CompilerOptions, projectDir: string): ts.CompilerOptions {
     // Cannot use Object.create because the compiler checks hasOwnProperty
-    var compilerOptions = <ts.CompilerOptions> mixin({}, defaults);
+    var compilerOptions = <ts.CompilerOptions>mixin({}, defaults);
     for (var key in jsonOptions) {
         if (typescriptEnumMap[key]) {
             compilerOptions[key] = typescriptEnumMap[key][jsonOptions[key].toLowerCase()];
@@ -287,12 +306,17 @@ function rawToTsCompilerOptions(jsonOptions: CompilerOptions, projectDir: string
         compilerOptions.out = path.resolve(projectDir, compilerOptions.out);
     }
 
+    if (compilerOptions.outFile !== undefined) {
+        // Till out is removed. Support outFile by just copying it to `out`
+        compilerOptions.out = path.resolve(projectDir, compilerOptions.outFile);
+    }
+
     return compilerOptions;
 }
 
 function tsToRawCompilerOptions(compilerOptions: ts.CompilerOptions): CompilerOptions {
     // Cannot use Object.create because JSON.stringify will only serialize own properties
-    var jsonOptions = <CompilerOptions> mixin({}, compilerOptions);
+    var jsonOptions = <CompilerOptions>mixin({}, compilerOptions);
 
     Object.keys(compilerOptions).forEach((key) => {
         if (jsonEnumMap[key] && compilerOptions[key]) {
@@ -319,7 +343,8 @@ export function getDefaultInMemoryProject(srcFile: string): TypeScriptConfigFile
         formatCodeOptions: formatting.defaultFormatCodeOptions(),
         compileOnSave: true,
         buildOnSave: false,
-        scripts: {}
+        scripts: {},
+        atom: { rewriteTsconfig: true, formatOnSave: false },
     };
 
     return {
@@ -376,7 +401,6 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
             new Error(errors.GET_PROJECT_JSON_PARSE_FAILED), { projectFilePath, error: json.parseErrorToCodeError(projectFilePath,res.error)});
     }
 
-
     // Setup default project options
     if (!projectSpec.compilerOptions) projectSpec.compilerOptions = {};
 
@@ -387,7 +411,10 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
         var toExpand = invisibleFilesGlob;
     }
     if (projectSpec.filesGlob) { // If there is a files glob we will use that
-        var toExpand = projectSpec.filesGlob
+        var toExpand = projectSpec.filesGlob;
+    }
+    if (projectSpec.exclude) { // If there is an exclude we will use that
+        toExpand = toExpand.slice().concat(projectSpec.exclude.map(x=>`!${x}/**`))
     }
     if (toExpand) { // Expand whatever needs expanding
         try {
@@ -397,12 +424,6 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
             throw errorWithDetails(
                 new Error(errors.GET_PROJECT_GLOB_EXPAND_FAILED),
                 { projectFilePath , error: makeBlandError(projectFilePath,ex.message)});
-        }
-    }
-    if (projectSpec.filesGlob) { // for filesGlob we keep the files in sync
-        var prettyJSONProjectSpec = prettyJSON(projectSpec);
-        if (prettyJSONProjectSpec !== projectFileTextContent) {
-            // fs.writeFileSync(projectFile, prettyJSON(projectSpec));
         }
     }
 
@@ -429,7 +450,7 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
 
     var project: TypeScriptProjectSpecification = {
         compilerOptions: {},
-        files: projectSpec.files,
+        files: projectSpec.files.map(x => path.resolve(projectFileDirectory, x)),
         filesGlob: projectSpec.filesGlob,
         formatCodeOptions: formatting.makeFormatCodeOptions(projectSpec.formatCodeOptions),
         compileOnSave: projectSpec.compileOnSave == undefined ? true : projectSpec.compileOnSave,
@@ -437,7 +458,8 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
         typings: [],
         externalTranspiler: projectSpec.externalTranspiler == undefined ? undefined : projectSpec.externalTranspiler,
         scripts: projectSpec.scripts || {},
-        buildOnSave: !!projectSpec.buildOnSave
+        buildOnSave: !!projectSpec.buildOnSave,
+        atom: { rewriteTsconfig: true, formatOnSave: !!projectSpec.atom.formatOnSave }
     };
 
     // Validate the raw compiler options before converting them to TS compiler options
@@ -490,7 +512,6 @@ export function createProjectRootSync(srcFile: string, defaultOptions?: ts.Compi
 
     // We need to write the raw spec
     var projectSpec: TypeScriptProjectRawSpecification = {};
-    projectSpec.version = typeScriptVersion;
     projectSpec.compilerOptions = tsToRawCompilerOptions(defaultOptions || defaults);
     projectSpec.filesGlob = defaultFilesGlob;
 
