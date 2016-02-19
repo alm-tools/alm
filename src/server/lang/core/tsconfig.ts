@@ -309,6 +309,11 @@ function rawToTsCompilerOptions(jsonOptions: CompilerOptions, projectDir: string
         compilerOptions.out = path.resolve(projectDir, compilerOptions.outFile);
     }
 
+    // The default for moduleResolution as implemented by the compiler
+    if (!jsonOptions.moduleResolution && compilerOptions.module !== ts.ModuleKind.CommonJS) {
+        compilerOptions.moduleResolution = ts.ModuleResolutionKind.Classic;
+    }
+
     return compilerOptions;
 }
 
