@@ -25,7 +25,7 @@ var errorsInOpenFiles: TabWithGotoPositions = { members: [] };
 var buildOutput: TabWithGotoPositions = { members: [] };
 var referencesOutput: TabWithGotoPositions = { members: [] };
 
-state.subscribeSub(state => state.errorsByFilePath,(errorsByFilePath)=>{
+state.subscribeSub(state => state.errorsUpdate.errorsByFilePath,(errorsByFilePath)=>{
     let errorsFlattened = utils.selectMany(Object.keys(errorsByFilePath).map(x=>errorsByFilePath[x]));
     errorsInOpenFiles.members = errorsFlattened.map(x=>{
         return {filePath:x.filePath,line: x.from.line, col: x.from.ch}

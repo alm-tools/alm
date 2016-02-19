@@ -4,10 +4,10 @@
  */
 
 import {TypedEvent} from "../../common/events";
-import {createMapByKey,debounce} from "../../common/utils";
+import {createMapByKey,debounce,selectMany} from "../../common/utils";
 import equal = require('deep-equal');
 
-export let errorsUpdated = new TypedEvent<ErrorsByFilePath>();
+export let errorsUpdated = new TypedEvent<ErrorsUpdate>();
 
 /**
  * current errors
@@ -18,8 +18,7 @@ let _errorsByFilePath: ErrorsByFilePath = {};
  * debounced as constantly sending errors quickly degrades the web experience
  */
 let sendErrors = debounce(()=>{
-    let limitedCopy = getErrorsLimited();
-    errorsUpdated.emit(limitedCopy)
+    errorsUpdated.emit(getErrorsLimited());
 },250);
 
 /** The pased errors are considered *the only current* errors for the filePath */
@@ -50,9 +49,9 @@ export function setErrorsByFilePaths(filePaths: string[], errors: CodeError[]) {
 
 /**
  * * Sending massive error lists *constantly* can quickly degrade the web experience
- * - only send 50 errors per file or 200 errors total
+ * - only send 50 errors per file or 200+ errors total
  */
-export function getErrorsLimited() {
+export function getErrorsLimited():ErrorsUpdate {
     let limitedCopy: ErrorsByFilePath = {};
     let total = 0;
     for (let filePath in _errorsByFilePath) {
@@ -62,7 +61,10 @@ export function getErrorsLimited() {
         total += errors.length;
         if (total > 200) break;
     }
-    return limitedCopy;
+    const totalCount = Object.keys(_errorsByFilePath)
+        .map(x => _errorsByFilePath[x].length)
+        .reduce((acc, i) => acc + i, 0);
+    return {errorsByFilePath: limitedCopy, totalCount, syncCount: total, tooMany: total !== totalCount};
 }
 
 export function clearErrors() {

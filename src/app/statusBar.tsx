@@ -31,7 +31,7 @@ export interface Props {
     errorsExpanded?: boolean;
     activeProject?: ActiveProjectConfigDetails;
     activeProjectFiles?: { [filePath: string]: boolean };
-    errorsByFilePath?: ErrorsByFilePath;
+    errorsUpdate?: ErrorsUpdate;
     socketConnected?: boolean;
     tabs?: state.TabInstance[];
     selectedTabIndex?: number;
@@ -49,7 +49,7 @@ export var statusBar: StatusBar;
         errorsExpanded: state.errorsExpanded,
         activeProject: state.activeProject,
         activeProjectFiles: state.activeProjectFilePathTruthTable,
-        errorsByFilePath: state.errorsByFilePath,
+        errorsUpdate: state.errorsUpdate,
         socketConnected: state.socketConnected,
         tabs: state.tabs,
         selectedTabIndex: state.selectedTabIndex,
@@ -68,7 +68,6 @@ export class StatusBar extends BaseComponent<Props, State>{
 
     render(){
 
-        let errorCount = utils.selectMany(Object.keys(this.props.errorsByFilePath).map((k)=>this.props.errorsByFilePath[k])).length;
         let projectTipKeboard = ReactDOMServer.renderToString(<div style={notificationKeyboardStyle}>Alt+Shift+P</div>);
         let tab = state.getSelectedTab();
         let filePath = tab && utils.getFilePathFromUrl(tab.url);
@@ -97,8 +96,13 @@ export class StatusBar extends BaseComponent<Props, State>{
             <div>
                 <div style={csx.extend(styles.statusBar,csx.horizontal,csx.center)}>
                     {/* Left sections */}
-                    <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)} onClick={this.toggleErrors} className="hint--top" data-hint={`${errorCount} errors. Click to toggle message panel.`}>
-                        <span style={csx.extend(errorCount?styles.statusBarError:styles.statusBarSuccess,{transition: 'color .4s'})}>{errorCount} <Icon name="times-circle"/></span>
+                    <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)}
+                        onClick={this.toggleErrors}
+                        className="hint--top"
+                        data-hint={`${this.props.errorsUpdate.totalCount} errors. Click to toggle message panel.`}>
+                        <span style={csx.extend(this.props.errorsUpdate.totalCount?styles.statusBarError:styles.statusBarSuccess,{transition: 'color .4s'})}>
+                            {this.props.errorsUpdate.totalCount} <Icon name="times-circle"/>
+                        </span>
                     </span>
                     {this.props.activeProject
                         ?<span style={csx.extend(styles.statusBarSection,styles.hand)} onClick={()=>this.openFile(this.props.activeProject.tsconfigFilePath)}>

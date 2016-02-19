@@ -93,7 +93,7 @@ interface State {
 @connect((state: state.StoreState): Props => {
     return {
         showDoctor: state.showDoctor,
-        errorsByFilePath: state.errorsByFilePath,
+        errorsByFilePath: state.errorsUpdate.errorsByFilePath,
     };
 })
 @ui.Radium

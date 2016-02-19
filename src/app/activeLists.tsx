@@ -33,7 +33,7 @@ export interface Props {
     activeProject?: ActiveProjectConfigDetails;
     activeProjectFiles?: { [filePath: string]: boolean };
     selectedTabIndex?: number;
-    errorsByFilePath?: ErrorsByFilePath;
+    errorsUpdate?: ErrorsUpdate;
     socketConnected?: boolean;
 }
 export interface State {
@@ -55,7 +55,7 @@ let resizerStyle = {
         activeProject: state.activeProject,
         activeProjectFiles: state.activeProjectFilePathTruthTable,
         selectedTabIndex: state.selectedTabIndex,
-        errorsByFilePath: state.errorsByFilePath,
+        errorsUpdate: state.errorsUpdate,
         socketConnected: state.socketConnected
     };
 })
@@ -74,9 +74,6 @@ export class ActiveLists extends BaseComponent<Props, State>{
     }
 
     render(){
-
-        let errorCount = utils.selectMany(Object.keys(this.props.errorsByFilePath).map((k)=>this.props.errorsByFilePath[k])).length;
-
         let errorPanel = undefined;
         if (this.props.errorsExpanded){
             errorPanel = <div>
@@ -86,13 +83,18 @@ export class ActiveLists extends BaseComponent<Props, State>{
             </DraggableCore>
 
             <div style={csx.extend(styles.errorsPanel.main,{height: this.state.height})}>
-                {errorCount?
-                    Object.keys(this.props.errorsByFilePath)
-                    .filter(filePath=>!!this.props.errorsByFilePath[filePath].length)
+                {
+                    this.props.errorsUpdate.tooMany
+                    && <div style={styles.errorsPanel.tooMany}>{this.props.errorsUpdate.totalCount} are too many. So only showing/syncing the top {this.props.errorsUpdate.syncCount}.</div>
+                }
+
+                {this.props.errorsUpdate.totalCount?
+                    Object.keys(this.props.errorsUpdate.errorsByFilePath)
+                    .filter(filePath=>!!this.props.errorsUpdate.errorsByFilePath[filePath].length)
                     .map((filePath,i)=>{
 
                         let errors =
-                            this.props.errorsByFilePath[filePath]
+                            this.props.errorsUpdate.errorsByFilePath[filePath]
                                 .map((e, j) => (
                                     <div key={`${i}:${j}`} style={csx.extend(styles.hand, styles.errorsPanel.errorDetailsContainer)} onClick={()=>this.openErrorLocation(e)}>
                                         <div style={styles.errorsPanel.errorDetailsContent}>
@@ -106,7 +108,7 @@ export class ActiveLists extends BaseComponent<Props, State>{
                                 ));
 
                         return <div key={i}>
-                            <div style={styles.errorsPanel.filePath} onClick={()=>this.openErrorLocation(this.props.errorsByFilePath[filePath][0])}>
+                            <div style={styles.errorsPanel.filePath} onClick={()=>this.openErrorLocation(this.props.errorsUpdate.errorsByFilePath[filePath][0])}>
                                 <Icon name="file-code-o" style={{fontSize: '.8rem'} as any}/> {filePath}
                             </div>
 

@@ -51,11 +51,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // server.echo({text:"123",num:345}).then((res)=>console.log(res));
 
     // Anything that should mutate the state
-    server.getErrors({}).then((errorsByFilePath)=>{
-        state.setErrorsByFilePath(errorsByFilePath);
+    server.getErrors({}).then((errorsUpdate)=>{
+        state.setErrorsUpdate(errorsUpdate);
     });
     cast.errorsUpdated.on((errorsByFilePath)=>{
-        state.setErrorsByFilePath(errorsByFilePath);
+        state.setErrorsUpdate(errorsByFilePath);
     });
     pendingRequestsChanged.on((r)=>{
         state.setPendingRequests(r.pending);

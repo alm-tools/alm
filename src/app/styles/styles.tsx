@@ -114,6 +114,14 @@ export namespace errorsPanel {
         overflow: 'auto',
     }
 
+    export const tooMany = {
+        fontSize: '1.2rem',
+        fontWeight: 'bolder',
+        borderBottom: `7px solid #444`,
+        padding: '9px',
+        textAlign: 'center'
+    }
+
     export let filePath = {
         fontSize: '1rem',
         fontWeight: 'bold',

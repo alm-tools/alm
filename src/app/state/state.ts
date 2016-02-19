@@ -12,7 +12,7 @@ export interface TabInstance {
 export interface StoreState {
     activeProject?: ActiveProjectConfigDetails;
     errorsExpanded?: boolean;
-    errorsByFilePath?: ErrorsByFilePath;
+    errorsUpdate?: ErrorsUpdate;
     /** Is the current file in the activeProject */
     activeProjectFilePathTruthTable?: { [filePath: string]: boolean };
 
@@ -38,7 +38,12 @@ export interface StoreState {
 let initialStoreState: StoreState = {
     activeProject: null,
     errorsExpanded: false,
-    errorsByFilePath: {},
+    errorsUpdate: {
+        errorsByFilePath: {},
+        totalCount: 0,
+        syncCount: 0,
+        tooMany: false,
+    },
     activeProjectFilePathTruthTable: {},
     pendingRequests: [],
     findOptions: {
@@ -99,9 +104,9 @@ export let collapseErrors = redux.add('collapseErrors', (state, payload: {}): St
     };
 });
 
-export let setErrorsByFilePath = redux.add('setErrorsByFilePath', (state, payload: ErrorsByFilePath): StoreState => {
+export let setErrorsUpdate = redux.add('setErrorsUpdate', (state, payload: ErrorsUpdate): StoreState => {
     return {
-        errorsByFilePath: payload
+        errorsUpdate: payload
     };
 });
 

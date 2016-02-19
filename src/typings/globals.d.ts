@@ -32,7 +32,18 @@ interface CodeError {
 }
 
 interface ErrorsByFilePath {
-    [filePath: string]: CodeError[]
+    [filePath: string]: CodeError[];
+}
+
+/**
+ * We don't send all the errors to front end continuously.
+ * But we do still tell the total count.
+ */
+interface ErrorsUpdate {
+    errorsByFilePath: ErrorsByFilePath;
+    totalCount: number;
+    syncCount: number;
+    tooMany: boolean;
 }
 
 /**

@@ -37,7 +37,7 @@ class Linter {
     }
 
     lint = (doc: string, options: any, cm: CodeMirror.EditorFromTextArea) => {
-        let rawErrors = state.getState().errorsByFilePath[this.filePath] || [];
+        let rawErrors = state.getState().errorsUpdate.errorsByFilePath[this.filePath] || [];
         let errors: LintError[] = rawErrors.map(codeErrorToLintError);
         // this.updateInlineWidgets(cm, rawErrors);
         return errors;
