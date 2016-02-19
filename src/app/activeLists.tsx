@@ -63,7 +63,7 @@ export class ActiveLists extends BaseComponent<Props, State>{
     constructor(props:Props){
         super(props);
         this.state = {
-            height: 150,
+            height: 250,
         }
     }
 
@@ -85,7 +85,7 @@ export class ActiveLists extends BaseComponent<Props, State>{
             <div style={csx.extend(styles.errorsPanel.main,{height: this.state.height})}>
                 {
                     this.props.errorsUpdate.tooMany
-                    && <div style={styles.errorsPanel.tooMany}>{this.props.errorsUpdate.totalCount} are too many. So only showing/syncing the top {this.props.errorsUpdate.syncCount}.</div>
+                    && <div style={styles.errorsPanel.tooMany}>{this.props.errorsUpdate.totalCount} are too many. So only syncing the top {this.props.errorsUpdate.syncCount} (max 50 per file with a total limit of 200+).</div>
                 }
 
                 {this.props.errorsUpdate.totalCount?
@@ -109,7 +109,7 @@ export class ActiveLists extends BaseComponent<Props, State>{
 
                         return <div key={i}>
                             <div style={styles.errorsPanel.filePath} onClick={()=>this.openErrorLocation(this.props.errorsUpdate.errorsByFilePath[filePath][0])}>
-                                <Icon name="file-code-o" style={{fontSize: '.8rem'} as any}/> {filePath}
+                                <Icon name="file-code-o" style={{fontSize: '.8rem'}}/> {filePath} ({errors.length})
                             </div>
 
                             <div style={styles.errorsPanel.perFileList}>
