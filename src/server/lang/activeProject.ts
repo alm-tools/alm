@@ -119,6 +119,7 @@ export function sync() {
 
 /** call this after we have some verified project config */
 function syncCore(projectConfig:ActiveProjectConfigDetails){
+    initialSync = true;
     let activeProjectName = (activeProjectConfigDetails && activeProjectConfigDetails.name);
     currentProject = null;
 
@@ -190,13 +191,24 @@ fmc.didEdit.on((evt) => {
  * If there hasn't been a request for a while then we refresh
  * As its a bit slow to get *all* the errors
  */
+let initialSync = false;
 var refreshAllProjectDiagnostics = utils.debounce(() => {
     if (currentProject) {
-        // Send all the errors from the project files:
+        if (initialSync) {
+            console.log('[TSC] Started Error Analysis');
+            console.time('[TSC] Initial Error Analysis');
+        }
+
+        // Get all the errors from the project files:
         let diagnostics = currentProject.getDiagnostics();
         let errors = diagnostics.map(diagnosticToCodeError);
         let filePaths = currentProject.getFilePaths();
         setErrorsByFilePaths(filePaths, errors);
+
+        if (initialSync) {
+            console.timeEnd('[TSC] Initial Error Analysis');
+        }
+        initialSync = false;
     }
 }, 3000);
 

@@ -40,10 +40,10 @@ let bundleDevTimeProxy = utils.once(() => {
      */
     let compiler = Webpack(devConfig);
     compiler.plugin('compile', function() {
-        console.log(`${notification} bundling ..... `)
+        console.log(`${notification} Bundling ..... `)
     });
     compiler.plugin('done', function(result) {
-        console.log(`${notification} bundled in ${(result.endTime - result.startTime)} ms!`);
+        console.log(`${notification} Bundled in ${(result.endTime - result.startTime)} ms!`);
     });
 
     /**
@@ -66,7 +66,7 @@ let bundleDevTimeProxy = utils.once(() => {
         }
     });
     bundler.listen(webpackDevServerPort, 'localhost', function() {
-        console.log(`${notification} server listening on port: ${webpackDevServerPort}`);
+        console.log(`${notification} Server listening on port: ${webpackDevServerPort}`);
     });
 
     /**
@@ -79,7 +79,7 @@ let bundleDevTimeProxy = utils.once(() => {
             target: `http://localhost:${webpackDevServerPort}`
         });
         proxyServer.on('error',(err)=>{
-            console.log('[WDS] proxy error',err);
+            console.log('[WDS] Proxy ERROR',err);
         });
     }
 });
