@@ -283,7 +283,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
 
         let rendered = (
             <div
-                style={csx.extend(csx.vertical, csx.flex, styles.noFocusOutline) }>
+                style={csx.extend(csx.vertical, csx.flex, styles.noFocusOutline, styles.someChildWillScroll) }>
                 <div ref="results" tabIndex={0} style={ResultsStyles.root}>
                     {
                         hasResults
@@ -291,7 +291,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
                             : <div style={ResultsStyles.header}>No Search</div>
                     }
                 </div>
-                <div style={csx.extend(csx.flexRoot, styles.padded1) }>
+                <div style={csx.extend(csx.content, styles.padded1) }>
                     {
                         this.renderSearchControls()
                     }
@@ -304,8 +304,8 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
 
     renderSearchControls() {
         return (
-            <div style={csx.flex}>
-                <div style={[csx.horizontal]}>
+            <div style={csx.vertical}>
+                <div style={[csx.horizontal, csx.center]}>
                     <div style={[csx.flex, csx.vertical]}>
                         <div style={[csx.horizontal, csx.center, styles.padded1]}>
                             <input tabIndex={1} ref="find"
@@ -324,9 +324,8 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
                             </div>
                             */
                         }
-
                     </div>
-                    <div style={[csx.centerCenter]}>
+                    <div style={[csx.content]}>
                         <div style={[csx.horizontal, csx.aroundJustified, styles.padded1]}>
                             <label style={[csx.horizontal, csx.center]}>
                                 <ui.Toggle
@@ -693,6 +692,8 @@ namespace FileResults {
                                 styles.padded1,
                                 {
                                     cursor: 'pointer',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
                                     whiteSpace: 'pre',
                                     ':focus': {
                                         outline: 'none',
