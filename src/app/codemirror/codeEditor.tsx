@@ -68,12 +68,13 @@ interface Props {
 	filePath: string;
 }
 
-export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
+export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, loading?: boolean}>{
 	constructor(props){
 		super(props);
 
 		this.state = {
-			isFocused: false
+			isFocused: false,
+			loading: true,
 		};
 	}
 
@@ -187,6 +188,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 
 			this.afterReadyQueue.forEach(cb=>cb());
 			this.ready = true;
+			this.setState({loading:false});
         });
 	}
 
@@ -301,11 +303,22 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 		var className = 'ReactCodeMirror';
 		if (this.state.isFocused) {
 			className += ' ReactCodeMirror--focused';
-		}
+        }
+        const loadingStyle = {
+            position: 'absolute', top: '45%', left: '45%', zIndex: 1,
+			color: '#999',
+			border: '5px solid #999',
+			borderRadius: '5px',
+			fontSize:'2rem',
+			padding: '5px',
+			transition: '.2s opacity',
+			opacity: this.state.loading ? 1: 0
+        };
 		return (
 			<div className={className} style={csx.extend(csx.vertical,csx.flex,{position:'relative'})}>
 				{!this.props.readOnly && <doctor.Doctor cm={this.codeMirror} filePath={this.props.filePath}/>}
 				{!this.props.readOnly && <blaster.Blaster cm={this.codeMirror}/>}
+				<div style={loadingStyle}>LOADING</div>
 				<textarea ref="textarea" name={this.props.filePath} autoComplete="false" />
 			</div>
 		);
