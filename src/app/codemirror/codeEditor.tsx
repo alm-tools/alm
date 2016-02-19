@@ -126,11 +126,14 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
             matchTags: {bothTags: true},
 
             // Text hover
-            textHover: (cm, data, e: MouseEvent) => {
-                if (data && data.pos) {
-                    return this.getQuickInfo(data.pos);
-                }
-            },
+            textHover: {
+				delay: 100,
+				getTextHover: (cm, data, e: MouseEvent) => {
+	                if (data && data.pos) {
+	                    return this.getQuickInfo(data.pos);
+	                }
+	            },
+			},
 
 			// Blaster
 			// blastCode: { effect: 2 }, // `effect` can be 1 or 2
@@ -200,7 +203,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 		}
 	}
 
-    getQuickInfo = utils.throttle((pos:CodeMirror.Position): Promise<string | HTMLElement> => {
+    getQuickInfo = (pos:CodeMirror.Position): Promise<string | HTMLElement> => {
         if (state.inActiveProjectFilePath(this.props.filePath)) {
             return server.quickInfo({ filePath: this.props.filePath, position: this.codeMirror.getDoc().indexFromPos(pos) }).then(resp=> {
                 if (!resp.valid) return;
@@ -215,7 +218,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
                 return div;
             });
         }
-    },100);
+    };
 
 	getCodeMirror () {
 		return this.codeMirror;

@@ -1,6 +1,7 @@
 // src : https://github.com/angelozerr/CodeMirror-XQuery/blob/master/codemirror-extension/addon/hover/text-hover.js
 // Changes prefixed with `BAS`
 
+// BAS
 /** We have single promise queue shared among *all code mirror instances* for all the queries sent */
 let PromiseQueue = [];
 let hidePreviousToolTip = null;
@@ -125,16 +126,16 @@ export var CodeMirror = require('codemirror');
     if (node) {
       var state = cm.state.textHover, data = getTokenAndPosAt(cm, e);
       var result = Promise.resolve(state.options.getTextHover(cm, data, e));
-      
+
       // Add to queue
       PromiseQueue.push(result);
-      
+
       // BAS hide any previous
       if (hidePreviousToolTip) {
           hidePreviousToolTip();
           hidePreviousToolTip = null;
       }
-      
+
       result.then((content) => {
           // If not the last in the queue ... the results don't matter
           if (PromiseQueue[PromiseQueue.length - 1] !== result){
@@ -142,7 +143,7 @@ export var CodeMirror = require('codemirror');
               return;
           }
           PromiseQueue = PromiseQueue.filter(p => p != result);
-          
+
           if (content) {
               node.className += HOVER_CLASS;
               if (typeof content == 'function') {
