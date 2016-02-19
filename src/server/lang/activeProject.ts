@@ -79,6 +79,9 @@ export function start() {
         }
     });
 
+    // Helps us sync only once in the beginning
+    let synced = false;
+
     // Resume session
     let ses = session.getDefaultOrNewSession();
     if (ses.relativePathToTsconfig) {
@@ -87,11 +90,12 @@ export function start() {
             activeProjectConfigDetails = Utils.tsconfigToActiveProjectConfigDetails(tsconfig);
             activeProjectConfigDetailsUpdated.emit(activeProjectConfigDetails);
             syncCore(activeProjectConfigDetails);
+            synced = true;
         }
     }
 
     refreshAvailableProjects()
-        .then(() => sync());
+        .then(() => !synced && sync());
 }
 
 
