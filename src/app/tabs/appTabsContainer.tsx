@@ -459,13 +459,13 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
             let Component = tabRegistry.getComponentByUrl(t.url);
 
-            return <div className="app-tabs-container-component-div" key={t.id} style={[csx.flex,csx.flexRoot,style]}>
+            return <div className="app-tabs-container-component-div" key={t.id} style={[csx.flex,csx.flexRoot,style, {maxWidth:'100%'}]}>
                 <Component ref={t.id} url={t.url} onSavedChanged={(saved)=>{this.onSavedChanged(saved,i)}}/>
             </div>
         });
 
         return (
-            <div style={[csx.vertical,csx.flex]} className="app-tabs">
+            <div style={[csx.vertical,csx.flex,{maxWidth:'100%'}]} className="app-tabs">
                 <div style={[csx.content,csx.horizontal, tabHeaderContainer]} className="app-tabs-header">
                     {titles}
                 </div>
