@@ -416,7 +416,8 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
         var toExpand = projectSpec.filesGlob;
     }
     if (projectSpec.exclude) { // If there is an exclude we will use that
-        toExpand = toExpand.slice().concat(projectSpec.exclude.map(x=>`!${x}/**`))
+        toExpand = toExpand.concat(projectSpec.exclude.map(x=>`!./${x}`)) // as it is (for files)
+        toExpand = toExpand.concat(projectSpec.exclude.map(x=>`!./${x}/**`)) // any sub directories (for dirs)
     }
     if (toExpand) { // Expand whatever needs expanding
         try {
