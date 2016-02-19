@@ -13,6 +13,7 @@ import * as utils from "../../common/utils";
 let {resolve} = utils;
 import * as fsu from "../utils/fsu";
 import fuzzaldrin = require('fuzzaldrin');
+import * as errorsCache from "./errorsCache";
 
 export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQuery): Promise<Types.GetCompletionsAtPositionResponse> {
     let {filePath, position, prefix} = query;
@@ -110,15 +111,38 @@ export function quickInfo(query: Types.QuickInfoQuery): Promise<Types.QuickInfoR
         return Promise.resolve({ valid: false });
     }
     var info = project.languageService.getQuickInfoAtPosition(query.filePath, query.position);
-    if (!info) {
+    var errors = positionErrors(query);
+    if (!info && !errors.length) {
         return Promise.resolve({ valid: false });
     } else {
         return resolve({
             valid: true,
-            name: ts.displayPartsToString(info.displayParts || []),
-            comment: ts.displayPartsToString(info.documentation || [])
+            info: info && {
+                name: ts.displayPartsToString(info.displayParts || []),
+                comment: ts.displayPartsToString(info.documentation || [])
+            },
+            errors: errors
         });
     }
+}
+
+/** Utility */
+function positionErrors(query: Types.FilePathPositionQuery): CodeError[] {
+    let project = getProject(query.filePath);
+    if (!project.includesSourceFile(query.filePath)) {
+        return [];
+    }
+
+    let editorPos = project.languageServiceHost.getPositionFromIndex(query.filePath, query.position);
+    let errors = errorsCache.getErrorsForFilePath(query.filePath);
+    errors = errors.filter(e =>
+        // completely contained in the multiline
+        (e.from.line < editorPos.line && e.to.line > editorPos.line)
+        // error is single line and on the same line and characters match
+        || (e.from.line == e.to.line && e.from.line == editorPos.line && e.from.ch <= editorPos.ch && e.to.ch >= editorPos.ch)
+    );
+
+    return errors;
 }
 
 export function getRenameInfo(query: Types.GetRenameInfoQuery): Promise<Types.GetRenameInfoResponse> {
@@ -187,9 +211,9 @@ export function getDoctorInfo(query: Types.GetDoctorInfoQuery): Promise<Types.Ge
                 return {
                     valid: !!defRes.definitions.length || infoRes.valid || !!refRes.references.length,
                     definitions: defRes.definitions,
-                    quickInfo: infoRes.valid ? {
-                        name: infoRes.name,
-                        comment: infoRes.comment
+                    quickInfo: infoRes.valid && infoRes.info.name ? {
+                        name: infoRes.info.name,
+                        comment: infoRes.info.name
                     } : null,
                     references: refRes.references
                 }

@@ -208,10 +208,17 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
             return server.quickInfo({ filePath: this.props.filePath, position: this.codeMirror.getDoc().indexFromPos(pos) }).then(resp=> {
                 if (!resp.valid) return;
 
-                var message = `<b>${escape(resp.name)}</b>`;
-                if (resp.comment) {
-                    message = message + `<br/><i>${escape(resp.comment).replace(/(?:\r\n|\r|\n)/g, '<br />')}</i>`;
-                }
+				var message = '';
+				if (resp.errors.length){
+					message = message + `🐛 <i>${resp.errors.map(e=>escape(e.message)).join('<br/>')}</i><br/>`
+				}
+
+				if (resp.info){
+					message = message + `<b>${escape(resp.info.name)}</b>`;
+					if (resp.info.comment) {
+						message = message + `<br/><i>${escape(resp.info.comment).replace(/(?:\r\n|\r|\n)/g, '<br />')}</i>`;
+					}
+				}
 
                 let div = document.createElement('div');
                 div.innerHTML = message;

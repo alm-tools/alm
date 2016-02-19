@@ -76,3 +76,7 @@ export function clearErrorsForFilePath(filePath: string) {
     _errorsByFilePath[filePath] = [];
     sendErrors();
 }
+
+export function getErrorsForFilePath(filePath:string){
+    return _errorsByFilePath[filePath] || [];
+}

@@ -184,8 +184,11 @@ export namespace Types {
     export interface QuickInfoQuery extends FilePathPositionQuery { }
     export interface QuickInfoResponse {
         valid: boolean; // Do we have a valid response for this query
-        name?: string;
-        comment?: string;
+        info?: {
+            name?: string;
+            comment?: string;
+        }
+        errors?: CodeError[];
     }
 
     /**
