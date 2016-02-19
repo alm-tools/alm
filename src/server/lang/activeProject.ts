@@ -195,7 +195,7 @@ let initialSync = false;
 var refreshAllProjectDiagnostics = utils.debounce(() => {
     if (currentProject) {
         if (initialSync) {
-            console.log('[TSC] Started Error Analysis');
+            console.log(`[TSC] Started Error Analysis: ${currentProject.configFile.projectFilePath}`);
             console.time('[TSC] Initial Error Analysis');
         }
 
@@ -207,6 +207,7 @@ var refreshAllProjectDiagnostics = utils.debounce(() => {
 
         if (initialSync) {
             console.timeEnd('[TSC] Initial Error Analysis');
+            console.log(`[TSC] FileCount: ${filePaths.length}, ErrorCount: ${errors.length}`)
         }
         initialSync = false;
     }
