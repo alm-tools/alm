@@ -127,7 +127,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused:boolean}>{
 
             // Text hover
             textHover: {
-				delay: 100,
+				delay: 50,
 				getTextHover: (cm, data, e: MouseEvent) => {
 	                if (data && data.pos) {
 	                    return this.getQuickInfo(data.pos);
