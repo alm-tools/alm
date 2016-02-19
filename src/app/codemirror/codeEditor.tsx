@@ -315,7 +315,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 			opacity: this.state.loading ? 1: 0
         };
 		return (
-			<div className={className} style={csx.extend(csx.vertical,csx.flex,{position:'relative'})}>
+			<div className={className} style={csx.extend(csx.vertical,csx.flex,{position:'relative', maxWidth:'100%'})}>
 				{!this.props.readOnly && <doctor.Doctor cm={this.codeMirror} filePath={this.props.filePath}/>}
 				{!this.props.readOnly && <blaster.Blaster cm={this.codeMirror}/>}
 				<div style={loadingStyle}>LOADING</div>
