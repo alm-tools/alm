@@ -119,7 +119,6 @@ export function sync() {
 
 /** call this after we have some verified project config */
 function syncCore(projectConfig:ActiveProjectConfigDetails){
-    initialSync = true;
     let activeProjectName = (activeProjectConfigDetails && activeProjectConfigDetails.name);
     currentProject = null;
 
@@ -139,6 +138,7 @@ function syncCore(projectConfig:ActiveProjectConfigDetails){
         activeProjectConfigDetailsUpdated.emit(activeProjectConfigDetails);
     }
 
+    initialSync = true;
     refreshAllProjectDiagnostics();
 }
 
@@ -157,7 +157,7 @@ fmc.savedFileChangedOnDisk.on((evt) => {
     let proj = GetProject.ifCurrent(evt.filePath)
     if (proj) {
         proj.languageServiceHost.updateScript(evt.filePath, evt.contents);
-        refreshAllProjectDiagnostics();
+        refreshAllProjectDiagnosticsDebounced();
     }
 });
 /**
@@ -177,7 +177,7 @@ fmc.didEdit.on((evt) => {
         }
 
         // After a while update all project diagnostics as well
-        refreshAllProjectDiagnostics();
+        refreshAllProjectDiagnosticsDebounced();
     }
 
     // Also watch edits to the current config file
@@ -192,7 +192,7 @@ fmc.didEdit.on((evt) => {
  * As its a bit slow to get *all* the errors
  */
 let initialSync = false;
-var refreshAllProjectDiagnostics = utils.debounce(() => {
+const refreshAllProjectDiagnostics = () => {
     if (currentProject) {
         if (initialSync) {
             console.log(`[TSC] Started Error Analysis: ${currentProject.configFile.projectFilePath}`);
@@ -211,12 +211,13 @@ var refreshAllProjectDiagnostics = utils.debounce(() => {
         }
         initialSync = false;
     }
-}, 3000);
+};
+const refreshAllProjectDiagnosticsDebounced = utils.debounce(refreshAllProjectDiagnostics, 3000);
 
 /**
  * Constantly streaming this is slow for large files so this is debounced as well
  */
-var refreshFileDiagnostics = utils.debounce((filePath:string) => {
+const refreshFileDiagnostics = utils.debounce((filePath:string) => {
     let proj = GetProject.ifCurrent(filePath)
     if (proj) {
         let diagnostics = proj.getDiagnosticsForFile(filePath);
