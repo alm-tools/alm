@@ -6,20 +6,20 @@ import * as classifierCache from "./classifierCache";
 interface LineDescriptor {
     classificationMap: { [position: number]: classifierCache.ClassifiedSpan };
 
-	/** Things that would help us know where we are in the file */
-	lineNumber: number;
-	lineStartIndex: number;
+    /** Things that would help us know where we are in the file */
+    lineNumber: number;
+    lineStartIndex: number;
 }
 
 function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: string, nextTenChars: string): string {
-	var ClassificationType = ts.ClassificationType;
-	switch (token.classificationType) {
-		case ClassificationType.numericLiteral:
-			return 'number';
-		case ClassificationType.stringLiteral:
-			return 'string';
-		case ClassificationType.regularExpressionLiteral:
-			return 'string-2';
+    var ClassificationType = ts.ClassificationType;
+    switch (token.classificationType) {
+        case ClassificationType.numericLiteral:
+            return 'number';
+        case ClassificationType.stringLiteral:
+            return 'string';
+        case ClassificationType.regularExpressionLiteral:
+            return 'string-2';
         case ClassificationType.operator:
             return 'keyword operator'; // The atom grammar does keyword+operator and I actually like that
         case ClassificationType.comment:
@@ -31,32 +31,32 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: str
         case ClassificationType.typeParameterName:
         case ClassificationType.typeAliasName:
             return 'variable-2';
-		case ClassificationType.keyword:
-			switch (token.string) {
-				case 'string':
-				case 'number':
-				case 'void':
-				case 'bool':
-				case 'boolean':
-					return 'variable-2';
-				case 'static':
-				case 'public':
-				case 'private':
-				case 'get':
-				case 'set':
-					return 'qualifier';
-				case 'function':
-				case 'var':
-				case 'let':
-				case 'const':
-					return 'qualifier';
+        case ClassificationType.keyword:
+            switch (token.string) {
+                case 'string':
+                case 'number':
+                case 'void':
+                case 'bool':
+                case 'boolean':
+                    return 'variable-2';
+                case 'static':
+                case 'public':
+                case 'private':
+                case 'get':
+                case 'set':
+                    return 'qualifier';
+                case 'function':
+                case 'var':
+                case 'let':
+                case 'const':
+                    return 'qualifier';
                 case 'this':
                     return 'number'; // Atom does this `constant`
-				default:
-					return 'keyword';
-			}
+                default:
+                    return 'keyword';
+            }
 
-		case ClassificationType.identifier:
+        case ClassificationType.identifier:
             let lastToken = textBefore.trim();
             let nextStr: string; // setup only if needed
 
@@ -83,19 +83,19 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: str
             if (token.string == '>' || token.string == '<' || token.string == '/>') {
                 return 'tag.bracket'; // we need tag + bracket for CM's tag matching
             }
-			return 'bracket';
-		case ClassificationType.jsxOpenTagName:
-		case ClassificationType.jsxCloseTagName:
-		case ClassificationType.jsxSelfClosingTagName:
-			return 'tag';
+            return 'bracket';
+        case ClassificationType.jsxOpenTagName:
+        case ClassificationType.jsxCloseTagName:
+        case ClassificationType.jsxSelfClosingTagName:
+            return 'tag';
         case ClassificationType.jsxAttribute:
             return 'property';
         case ClassificationType.jsxAttributeStringLiteralValue:
             return 'string';
-		case ClassificationType.whiteSpace:
-		default:
-			return null;
-	}
+        case ClassificationType.whiteSpace:
+        default:
+            return null;
+    }
 }
 
 function getClassificationMap(classifications: classifierCache.ClassifiedSpan[]) {
@@ -119,47 +119,47 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
         startState(): LineDescriptor {
             return {
                 classificationMap: {},
-				lineNumber: 0,
-				lineStartIndex: 0,
+                lineNumber: 0,
+                lineStartIndex: 0,
             };
         },
 
         copyState(lineDescriptor: LineDescriptor): LineDescriptor {
             return {
                 classificationMap: lineDescriptor.classificationMap,
-				lineNumber: lineDescriptor.lineNumber,
-				lineStartIndex: lineDescriptor.lineStartIndex,
+                lineNumber: lineDescriptor.lineNumber,
+                lineStartIndex: lineDescriptor.lineStartIndex,
             }
         },
 
-		blankLine(lineDescriptor: LineDescriptor){
-			lineDescriptor.lineNumber++;
-			lineDescriptor.lineStartIndex++;
-		},
+        blankLine(lineDescriptor: LineDescriptor) {
+            lineDescriptor.lineNumber++;
+            lineDescriptor.lineStartIndex++;
+        },
 
         token(stream: CodeMirror.StringStream, lineDescriptor: LineDescriptor): string {
             if (stream.sol()) {
 
-				let classifications = classifierCache.getClassificationsForLine(options.filePath, lineDescriptor.lineStartIndex, stream.string);
+                let classifications = classifierCache.getClassificationsForLine(options.filePath, lineDescriptor.lineStartIndex, stream.string);
                 let classificationMap = getClassificationMap(classifications);
 
                 // console.log('%c'+stream.string,"font-size: 20px");
                 // console.table(classifications.map(c=> ({ str: c.string, cls: c.classificationTypeName,startInLine:c.startInLine })));
 
-				// Update info for next call
+                // Update info for next call
                 lineDescriptor.classificationMap = classificationMap;
-				lineDescriptor.lineNumber++;
-				lineDescriptor.lineStartIndex = lineDescriptor.lineStartIndex + stream.string.length + 1;
+                lineDescriptor.lineNumber++;
+                lineDescriptor.lineStartIndex = lineDescriptor.lineStartIndex + stream.string.length + 1;
             }
 
             var classifiedSpan = lineDescriptor.classificationMap[stream.pos];
-			// console.log(lineDescriptor.lineNumber, stream.pos,lineDescriptor.classificationMap);
+            // console.log(lineDescriptor.lineNumber, stream.pos,lineDescriptor.classificationMap);
             if (classifiedSpan) {
-                var textBefore: string  = stream.string.substr(0, stream.pos);
+                var textBefore: string = stream.string.substr(0, stream.pos);
                 for (var i = 0; i < classifiedSpan.string.length; i++) {
                     stream.next();
                 }
-                var nextTenChars: string  = stream.string.substr(stream.pos, 10);
+                var nextTenChars: string = stream.string.substr(stream.pos, 10);
                 return getStyleForToken(classifiedSpan, textBefore, nextTenChars);
             } else {
                 stream.skipToEnd();
@@ -168,18 +168,18 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
             return null;
         },
 
-        indent(lineDescriptor: LineDescriptor , textAfter: string): number {
+        indent(lineDescriptor: LineDescriptor, textAfter: string): number {
             let indentOptions: ts.EditorOptions = {
                 IndentSize: options.indentUnit,
                 TabSize: options.tabSize,
                 NewLineCharacter: '\n',
-                IndentStyle : ts.IndentStyle.Smart,
+                IndentStyle: ts.IndentStyle.Smart,
                 ConvertTabsToSpaces: !options.indentWithTabs
             }
             let indent = classifierCache.getIndentationAtPosition(options.filePath, lineDescriptor.lineStartIndex, indentOptions);
 
             // if called for a } decrease the indent
-            if (textAfter.trim() == '}'){
+            if (textAfter.trim() == '}') {
                 indent -= options.indentUnit;
             }
 
@@ -189,6 +189,6 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
 }
 
 import CodeMirror = require('codemirror');
-export function register(){
+export function register() {
     CodeMirror.defineMode('typescript', typeScriptModeFactory);
 }
