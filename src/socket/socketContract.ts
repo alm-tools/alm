@@ -92,7 +92,7 @@ export var cast = {
     didEdit: new TypedEvent<{ filePath: string, edit: CodeEdit }>(),
 
     /** If any of the file status changes */
-    didStatusChange: new TypedEvent<{ filePath: string, saved: boolean }>(),
+    didStatusChange: new TypedEvent<{ filePath: string, saved: boolean, eol: string}>(),
 
     /** Errors for a file path */
     errorsUpdated: new TypedEvent<ErrorsUpdate>(),

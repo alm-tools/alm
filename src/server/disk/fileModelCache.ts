@@ -4,10 +4,11 @@
 import {FileModel} from "./fileModel";
 import {TypedEvent} from "../../common/events";
 import * as fsu from "../utils/fsu";
+import * as types from "../../common/types";
 
 export var savedFileChangedOnDisk = new TypedEvent<{ filePath: string; contents: string }>();
 export var didEdit = new TypedEvent<{ filePath: string; edit: CodeEdit }>();
-export var didStatusChange = new TypedEvent<{ filePath: string; saved: boolean }>();
+export var didStatusChange = new TypedEvent<types.FileStatus>();
 
 let openFiles: FileModel[] = [];
 export function getOpenFile(filePath: string) {
@@ -33,7 +34,7 @@ export function getOrCreateOpenFile(filePath: string, autoCreate = false) {
             didEdit.emit({ filePath, edit: evt.codeEdit });
         });
         file.didStatusChange.on((evt) => {
-            didStatusChange.emit({ filePath, saved: evt.saved });
+            didStatusChange.emit({ filePath, saved: evt.saved, eol: evt.eol });
         });
         openFiles.push(file);
     }

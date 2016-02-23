@@ -88,3 +88,13 @@ export interface FilePath {
     filePath: string;
     type: FilePathType
 }
+
+
+/**
+ * File model stuff
+ */
+export interface FileStatus {
+    filePath: string;
+    saved: boolean;
+    eol: string;
+}
