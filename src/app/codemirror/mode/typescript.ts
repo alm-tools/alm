@@ -9,6 +9,9 @@ interface LineDescriptor {
     /** Things that would help us know where we are in the file */
     lineNumber: number;
     lineStartIndex: number;
+
+    /** Helps us track how many times `startState` has been called */
+    version: number;
 }
 
 function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: string, nextTenChars: string): string {
@@ -109,7 +112,16 @@ function getClassificationMap(classifications: classifierCache.ClassifiedSpan[])
     return classificationMap
 }
 
+/**
+ * Codemirror does a optimized tokenization if one jumps to some line in the editor
+ * It still runs the proper (precise) version slowly so it does eventually kick in
+ * This is just to help us know about the version numbers. Not really used yet.
+ */
+const lastVersionForFilePath:{[filePath:string]:number} = {};
+
 function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: any): CodeMirror.Mode<any> {
+    lastVersionForFilePath[options.filePath] = 0;
+
     return {
         lineComment: '//',
         blockCommentStart: '/*',
@@ -117,10 +129,12 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
         electricChars: ':{}[]()',
 
         startState(): LineDescriptor {
+            lastVersionForFilePath[options.filePath]++;
             return {
                 classificationMap: {},
                 lineNumber: 0,
                 lineStartIndex: 0,
+                version: lastVersionForFilePath[options.filePath]
             };
         },
 
@@ -129,6 +143,7 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
                 classificationMap: lineDescriptor.classificationMap,
                 lineNumber: lineDescriptor.lineNumber,
                 lineStartIndex: lineDescriptor.lineStartIndex,
+                version: lineDescriptor.version
             }
         },
 
