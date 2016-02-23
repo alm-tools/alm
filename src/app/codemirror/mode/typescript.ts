@@ -12,9 +12,14 @@ interface LineDescriptor {
 
     /** Helps us track how many times `startState` has been called */
     version: number;
+
+    /** Helps us with tag matching. We don't want to confuse `<TypeParameter>` with a JSX tag  */
+    lineHasJSX: boolean;
 }
 
-function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: string, nextTenChars: string): string {
+interface ClassificationMap{ [position: number]: classifierCache.ClassifiedSpan }
+
+function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: string, nextTenChars: string, lineHasJSX:boolean): string {
     var ClassificationType = ts.ClassificationType;
     switch (token.classificationType) {
         case ClassificationType.numericLiteral:
@@ -83,7 +88,7 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: str
             return 'def';
         case ClassificationType.punctuation:
             // Only get punctuation for JSX. Otherwise these would be operator
-            if (token.string == '>' || token.string == '<' || token.string == '/>') {
+            if (lineHasJSX && (token.string == '>' || token.string == '<' || token.string == '/>')) {
                 return 'tag.bracket'; // we need tag + bracket for CM's tag matching
             }
             return 'bracket';
@@ -101,15 +106,21 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan, textBefore: str
     }
 }
 
-function getClassificationMap(classifications: classifierCache.ClassifiedSpan[]) {
-    var classificationMap: { [position: number]: classifierCache.ClassifiedSpan } = {};
-
+function getClassificationInformationForLine(classifications: classifierCache.ClassifiedSpan[]) : {classificationMap:ClassificationMap, lineHasJSX: boolean} {
+    var classificationMap: ClassificationMap = {};
+    let lineHasJSX = false;
     for (var i = 0, l = classifications.length; i < l; i++) {
         var classification = classifications[i];
         classificationMap[classification.startInLine] = classification;
+        lineHasJSX = lineHasJSX
+        || classification.classificationType === ts.ClassificationType.jsxOpenTagName
+        || classification.classificationType === ts.ClassificationType.jsxCloseTagName
+        || classification.classificationType === ts.ClassificationType.jsxSelfClosingTagName
+        || classification.classificationType === ts.ClassificationType.jsxText
+        || classification.classificationType === ts.ClassificationType.jsxAttribute
     }
 
-    return classificationMap
+    return {classificationMap,lineHasJSX}
 }
 
 /**
@@ -134,7 +145,8 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
                 classificationMap: {},
                 lineNumber: 0,
                 lineStartIndex: 0,
-                version: lastVersionForFilePath[options.filePath]
+                lineHasJSX: false,
+                version: lastVersionForFilePath[options.filePath],
             };
         },
 
@@ -143,6 +155,7 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
                 classificationMap: lineDescriptor.classificationMap,
                 lineNumber: lineDescriptor.lineNumber,
                 lineStartIndex: lineDescriptor.lineStartIndex,
+                lineHasJSX: lineDescriptor.lineHasJSX,
                 version: lineDescriptor.version
             }
         },
@@ -156,13 +169,16 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
             if (stream.sol()) {
 
                 let classifications = classifierCache.getClassificationsForLine(options.filePath, lineDescriptor.lineStartIndex, stream.string);
-                let classificationMap = getClassificationMap(classifications);
+                let classificationInformation = getClassificationInformationForLine(classifications);
 
                 // console.log('%c'+stream.string,"font-size: 20px");
                 // console.table(classifications.map(c=> ({ str: c.string, cls: c.classificationTypeName,startInLine:c.startInLine })));
 
+                // For faster tokenization done below
+                lineDescriptor.classificationMap = classificationInformation.classificationMap;
+                lineDescriptor.lineHasJSX = classificationInformation.lineHasJSX;
+
                 // Update info for next call
-                lineDescriptor.classificationMap = classificationMap;
                 lineDescriptor.lineNumber++;
                 lineDescriptor.lineStartIndex = lineDescriptor.lineStartIndex + stream.string.length + 1;
             }
@@ -171,11 +187,9 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
             // console.log(lineDescriptor.lineNumber, stream.pos,lineDescriptor.classificationMap);
             if (classifiedSpan) {
                 var textBefore: string = stream.string.substr(0, stream.pos);
-                for (var i = 0; i < classifiedSpan.string.length; i++) {
-                    stream.next();
-                }
+                stream.pos += classifiedSpan.string.length;
                 var nextTenChars: string = stream.string.substr(stream.pos, 10);
-                return getStyleForToken(classifiedSpan, textBefore, nextTenChars);
+                return getStyleForToken(classifiedSpan, textBefore, nextTenChars,lineDescriptor.lineHasJSX);
             } else {
                 stream.skipToEnd();
             }
