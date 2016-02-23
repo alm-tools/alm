@@ -35,6 +35,21 @@ export function getLineAndCharacterOfPosition(filePath: string, pos: number): Ed
     return languageServiceHost.getLineAndCharacterOfPosition(filePath, pos);
 }
 export function getClassificationsForLine(filePath: string, lineStart: number, string: string): ClassifiedSpan[] {
+    /**
+     * Protect against code mirror optimized rendering.
+     * If string does not match expected line contents tokenize as whitespace till the precise call is made.
+     */
+    if (!languageService.getSourceFile(filePath).text.substr(lineStart).startsWith(string)){
+        return [{
+            textSpan:{
+                start:0,
+                length: string.length
+            },
+            classificationType: ts.ClassificationType.whiteSpace,
+            classificationTypeName: ClassificationTypeNames.whiteSpace,
+        }];
+    }
+
     let lineLength = string.length;
     let encodedClassifications = languageService.getEncodedSyntacticClassifications(filePath, { start: lineStart, length: lineLength });
     let classifications: ClassifiedSpan[] = unencodeClassifications(encodedClassifications);
