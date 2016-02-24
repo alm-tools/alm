@@ -38,5 +38,5 @@
 
 /* tag matching is a bit too bold. Dull it down a bit */
 .CodeMirror-matchingtag {
-    background: rgba(0, 150, 150, .3);
+    background: rgba(150, 118, 0, 0.2);
 }
