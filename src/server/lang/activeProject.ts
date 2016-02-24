@@ -199,9 +199,14 @@ let initialSync = false;
 const refreshAllProjectDiagnostics = () => {
     if (currentProject) {
         if (initialSync) {
-            console.log(`[TSC] Started Error Analysis: ${currentProject.configFile.projectFilePath}`);
+            console.log(`[TSC] Started Initial Error Analysis: ${currentProject.configFile.projectFilePath}`);
             console.time('[TSC] Initial Error Analysis');
         }
+        else {
+            console.log(`[TSC] Incremental Error Analysis ${currentProject.configFile.projectFilePath}`);
+            console.time('[TSC] Incremental Error Analysis');
+        }
+
 
         // Get all the errors from the project files:
         let diagnostics = currentProject.getDiagnostics();
@@ -211,8 +216,11 @@ const refreshAllProjectDiagnostics = () => {
 
         if (initialSync) {
             console.timeEnd('[TSC] Initial Error Analysis');
-            console.log(`[TSC] FileCount: ${filePaths.length}, ErrorCount: ${errors.length}`)
         }
+        else {
+            console.timeEnd('[TSC] Incremental Error Analysis');
+        }
+        console.log(`[TSC] FileCount: ${filePaths.length}, ErrorCount: ${errors.length}`)
         initialSync = false;
     }
 };
