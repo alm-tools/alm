@@ -64,7 +64,7 @@ let doctorRow = csx.extend({
     paddingTop: '3px',
     paddingBottom: '3px',
     whiteSpace: 'pre'
-}, csx.flexRoot, csx.center)
+}, csx.flexRoot, csx.center, csx.wrap)
 
 let fileLinkStyle = {
     textDecoration: 'underline',
