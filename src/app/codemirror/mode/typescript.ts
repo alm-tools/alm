@@ -138,7 +138,7 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
         blockCommentStart: '/*',
         blockCommentEnd: '*/',
         electricChars: ':{}[]()',
-        fold: "brace",
+        fold: ["brace","xml"],
 
         startState(): LineDescriptor {
             lastVersionForFilePath[options.filePath]++;
