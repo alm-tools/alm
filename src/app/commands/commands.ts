@@ -111,6 +111,11 @@ export var closeOtherTabs = new UICommand({
     context: CommandContext.Global,
 });
 
+export var duplicateWindow = new UICommand({
+    description: "Window: Duplicate in a new browser window",
+    context: CommandContext.Global,
+});
+
 /**
  * Tab indexing
  * // c9, chrome, atom

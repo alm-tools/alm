@@ -81,7 +81,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         /**
          * Setup preventing the user to exit if there is an open tab
          */
-        alertOnLeave.addCheck(() => this.props.tabs.length && `You have ${this.props.tabs.length} tabs open`);
+        alertOnLeave.addCheck(() => this.props.tabs.length && `You have ${this.props.tabs.length} tabs open (you can close them using ${commands.modName}+W)`);
 
         commands.nextTab.on(() => {
             let selected = rangeLimited({ min: 0, max: this.props.tabs.length - 1, num: this.props.selectedTabIndex + 1, loopAround: true });

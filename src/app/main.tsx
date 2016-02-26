@@ -82,4 +82,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         state.toggleDoctor({});
     });
+
+    commands.duplicateWindow.on(()=>{
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        window.open(window.location.href, '',`innerWidth=${width}, innerHeight=${height}`);
+    });
 });
