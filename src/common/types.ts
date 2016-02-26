@@ -21,15 +21,21 @@ export const errors = {
 /**
  * Session related types
  */
-export interface SessionTabOnDisk {
-    relativeUrl: string;
+export interface SessionsFileContents {
+    sessions: SessionOnDisk[];
 }
 export interface SessionOnDisk {
+    /** unique to each session */
+    id: string;
+    /** the tabs the user has open */
     openTabs: SessionTabOnDisk[];
     /** Relative path to tsconfig.json including file name */
     relativePathToTsconfig?: string;
     /** Duration since epoch */
     lastUsed: number;
+}
+export interface SessionTabOnDisk {
+    relativeUrl: string;
 }
 /**
  * The UI version of session. Basically its all absolute paths and tab urls
