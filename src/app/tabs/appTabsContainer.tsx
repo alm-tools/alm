@@ -29,6 +29,7 @@ import * as styles from "../styles/styles";
 import {Tips} from "./tips";
 import {Icon} from "../icon";
 import {cast} from "../../socket/socketClient";
+import * as alertOnLeave from "../utils/alertOnLeave";
 
 export interface Props {
     // redux connected below
@@ -76,6 +77,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
     componentDidMount() {
         appTabsContainer = this;
+
+        /**
+         * Setup preventing the user to exit if there is an open tab
+         */
+        alertOnLeave.addCheck(() => this.props.tabs.length && `You have ${this.props.tabs.length} tabs open`);
 
         commands.nextTab.on(() => {
             let selected = rangeLimited({ min: 0, max: this.props.tabs.length - 1, num: this.props.selectedTabIndex + 1, loopAround: true });

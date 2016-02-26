@@ -37,6 +37,7 @@
         "./app/state/simpleRedux.ts",
         "./app/state/state.ts",
         "./app/tabs/tab.ts",
+        "./app/utils/alertOnLeave.ts",
         "./app/utils/preventBackspaceNav.ts",
         "./common/events.ts",
         "./common/json.ts",
