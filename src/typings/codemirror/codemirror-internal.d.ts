@@ -8,6 +8,11 @@ declare module CodeMirror {
 
     interface SearchCursor {
     }
+
+    interface Mode<T> {
+        // by fold
+        fold?: any;
+    }
 }
 
 /** Our extension to code mirror*/

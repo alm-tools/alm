@@ -102,12 +102,13 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             filePath: this.props.filePath,
             readOnly: this.props.readOnly,
 
-            lineNumbers: true,
             keyMap: 'sublime',
             theme: 'monokai',
             indentUnit: 4,
 
-            gutters: ["CodeMirror-linenumbers"],
+			lineNumbers: true,
+			foldGutter: true,
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 
             // Active line addon
             styleActiveLine: true,
