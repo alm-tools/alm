@@ -14,6 +14,7 @@ import * as commands from "../commands/commands";
 import * as utils from "../../common/utils";
 import csx = require('csx');
 import {createId} from "../../common/utils";
+import * as constants from "../constants";
 
 import {tabHeaderContainer,tabHeader,tabHeaderActive,tabHeaderUnsaved} from "../styles/styles";
 
@@ -403,7 +404,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
         /** Restore any open tabs from last session */
         console.log(window.location.hash);
-        server.getOpenUITabs({newSession: window.location.hash === "#new-session"}).then((res) => {
+        server.getOpenUITabs({newSession: window.location.hash === "#"+constants.urlHashNewSession}).then((res) => {
             if (!res.openTabs.length) return;
 
             let openTabs = res.openTabs;

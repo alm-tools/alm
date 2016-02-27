@@ -9,6 +9,7 @@ import { Provider } from 'react-redux';
 import * as state from "./state/state";
 import {store} from "./state/state";
 import * as ui from "./ui";
+import * as constants from "./constants";
 
 import {server, cast, pendingRequestsChanged, connectionStatusChanged} from "../socket/socketClient";
 var Modal = require('react-modal');
@@ -82,10 +83,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         state.toggleDoctor({});
     });
-
     commands.duplicateWindow.on(()=>{
         const width = window.innerWidth;
         const height = window.innerHeight;
-        window.open(`${window.location.href.replace(location.href,'')}#new-session`, '',`innerWidth=${width}, innerHeight=${height}`);
+        window.open(`${window.location.href.replace(location.href,'')}#${constants.urlHashNewSession}`, '',`innerWidth=${width}, innerHeight=${height}`);
     });
+
+    // http://stackoverflow.com/questions/12381563/how-to-stop-browser-back-button-using-javascript
+    const ____hash = window.location.hash || constants.urlHashNormal;
+    window.location.hash = ____hash;
+    window.location.hash = "Again-No-back-button"; // again because google chrome don't insert first hash into history
+    window.location.hash = ____hash; // again so that if there was a hash it can be used for routing
+    window.onhashchange = function() { window.location.hash = ____hash; }
 });
