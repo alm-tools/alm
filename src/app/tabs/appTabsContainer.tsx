@@ -402,7 +402,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         commands.gotoTab9.on(() => gotoIndex(8));
 
         /** Restore any open tabs from last session */
-        server.getOpenUITabs({}).then((res) => {
+        console.log(window.location.hash);
+        server.getOpenUITabs({newSession: window.location.hash === "#new-session"}).then((res) => {
             if (!res.openTabs.length) return;
 
             let openTabs = res.openTabs;

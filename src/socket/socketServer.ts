@@ -105,7 +105,7 @@ namespace Server {
         return resolve({});
     };
     export var getOpenUITabs: typeof contract.server.getOpenUITabs = (data) => {
-        return resolve(session.getOpenUITabs());
+        return resolve(session.getOpenUITabs(data.newSession));
     };
     export var activeProjectFilePaths: typeof contract.server.activeProjectFilePaths = (data) => {
         return activeProject.activeProjectFilePathsUpdated.current();

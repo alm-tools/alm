@@ -17,9 +17,11 @@
         http://stackoverflow.com/questions/12381563/how-to-stop-browser-back-button-using-javascript
     -->
     <script>
-        window.location.hash="root";
-        window.location.hash="Again-No-back-button";//again because google chrome don't insert first hash into history
-        window.onhashchange=function(){window.location.hash="root";}
+        var ____hash = window.location.hash || "root";
+        window.location.hash=____hash;
+        window.location.hash="Again-No-back-button"; // again because google chrome don't insert first hash into history
+        window.location.hash=____hash; // again so that if there was a hash it can be used for routing
+        window.onhashchange=function(){window.location.hash=____hash;}
     </script>
 
     <style>

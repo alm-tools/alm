@@ -37,7 +37,7 @@ export var server = {
     setActiveProjectConfigDetails: {} as QRFunction<ActiveProjectConfigDetails, {}>,
     isFilePathInActiveProject: {} as QRFunction<{ filePath: string }, { inActiveProject: boolean }>,
     setOpenUITabs: {} as QRFunction<{ openTabs: types.SessionTabInUI[] }, {}>,
-    getOpenUITabs: {} as QRFunction<{}, { openTabs: types.SessionTabInUI[] }>,
+    getOpenUITabs: {} as QRFunction<{ newSession: boolean }, { id: string; openTabs: types.SessionTabInUI[] }>,
     activeProjectFilePaths: {} as QRFunction<{}, { filePaths: string[] }>,
 
     /**

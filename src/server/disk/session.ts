@@ -17,8 +17,18 @@ const sessionFile = types.cacheDir + '/sessionsV1.json'
 /**
  * If there is no session then a default one will be created for you and sent over
  */
-export function getDefaultOrNewSession(): types.SessionOnDisk {
+export function getDefaultOrNewSession(duplicate = false): types.SessionOnDisk {
     let sessions: types.SessionOnDisk[] = readDiskSessions();
+    if (sessions.length && duplicate) {
+        const session: types.SessionOnDisk = {
+            id: utils.createId(),
+            openTabs: sessions[0].openTabs,
+            relativePathToTsconfig: sessions[0].relativePathToTsconfig,
+            lastUsed: new Date().getTime(),
+        };
+        writeDiskSession(session);
+        sessions.unshift(session);
+    }
     if (!sessions.length) { // Create a new one
         sessions = [
             {
@@ -130,7 +140,7 @@ export function setOpenUITabs(tabs: types.SessionTabInUI[]) {
     writeDiskSession(session);
 }
 
-export function getOpenUITabs() {
-    let session = getDefaultOrNewSession();
+export function getOpenUITabs(duplicate?: boolean) {
+    let session = getDefaultOrNewSession(duplicate);
     return { openTabs: session.openTabs.map(diskTabToUITab) }
 }

@@ -86,6 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
     commands.duplicateWindow.on(()=>{
         const width = window.innerWidth;
         const height = window.innerHeight;
-        window.open(window.location.href, '',`innerWidth=${width}, innerHeight=${height}`);
+        window.open(`${window.location.href.replace(location.href,'')}#new-session`, '',`innerWidth=${width}, innerHeight=${height}`);
     });
 });
