@@ -14,7 +14,7 @@ import * as commands from "../commands/commands";
 import * as utils from "../../common/utils";
 import csx = require('csx');
 import {createId} from "../../common/utils";
-import * as constants from "../constants";
+import * as constants from "../../common/constants";
 
 import {tabHeaderContainer,tabHeader,tabHeaderActive,tabHeaderUnsaved} from "../styles/styles";
 

@@ -9,7 +9,7 @@ import { Provider } from 'react-redux';
 import * as state from "./state/state";
 import {store} from "./state/state";
 import * as ui from "./ui";
-import * as constants from "./constants";
+import * as constants from "../common/constants";
 
 import {server, cast, pendingRequestsChanged, connectionStatusChanged} from "../socket/socketClient";
 var Modal = require('react-modal');
