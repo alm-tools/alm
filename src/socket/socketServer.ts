@@ -101,11 +101,11 @@ namespace Server {
         return resolve({inActiveProject});
     };
     export var setOpenUITabs: typeof contract.server.setOpenUITabs = (data) => {
-        session.setOpenUITabs(data.openTabs);
+        session.setOpenUITabs(data.sessionId, data.openTabs);
         return resolve({});
     };
     export var getOpenUITabs: typeof contract.server.getOpenUITabs = (data) => {
-        return resolve(session.getOpenUITabs(data.newSession));
+        return resolve(session.getOpenUITabs(data.sessionId));
     };
     export var activeProjectFilePaths: typeof contract.server.activeProjectFilePaths = (data) => {
         return activeProject.activeProjectFilePathsUpdated.current();

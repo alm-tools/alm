@@ -23,14 +23,14 @@ export const errors = {
  */
 export interface SessionsFileContents {
     sessions: SessionOnDisk[];
+    /** Relative path to tsconfig.json including file name */
+    relativePathToTsconfig?: string;
 }
 export interface SessionOnDisk {
     /** unique to each session */
     id: string;
     /** the tabs the user has open */
     openTabs: SessionTabOnDisk[];
-    /** Relative path to tsconfig.json including file name */
-    relativePathToTsconfig?: string;
     /** Duration since epoch */
     lastUsed: number;
 }

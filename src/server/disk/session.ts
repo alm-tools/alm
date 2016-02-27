@@ -11,19 +11,26 @@ import * as fsu from "../utils/fsu";
 import * as utils from "../../common/utils";
 import * as workingDir from "./workingDir";
 import * as commandLine from "../commandLine";
+import * as constants from "../../common/constants";
 
 const sessionFile = types.cacheDir + '/sessionsV1.json'
 
 /**
+ * Only If there is a session file :)
+ */
+export function getRelativePathToTsconfig(): string {
+    return
+}
+
+/**
  * If there is no session then a default one will be created for you and sent over
  */
-export function getDefaultOrNewSession(duplicate = false): types.SessionOnDisk {
-    let sessions: types.SessionOnDisk[] = readDiskSessions();
-    if (sessions.length && duplicate) {
+export function getDefaultOrNewSession(sessionId: string): types.SessionOnDisk {
+    let sessions: types.SessionOnDisk[] = readDiskSessionsFile().sessions;
+    if (sessions.length && sessionId === constants.urlHashNewSession) {
         const session: types.SessionOnDisk = {
             id: utils.createId(),
             openTabs: sessions[0].openTabs,
-            relativePathToTsconfig: sessions[0].relativePathToTsconfig,
             lastUsed: new Date().getTime(),
         };
         writeDiskSession(session);
@@ -40,27 +47,6 @@ export function getDefaultOrNewSession(duplicate = false): types.SessionOnDisk {
     }
 
     const session = sessions[0];
-
-    /**
-     * Active project setup logic. In decreasing order
-     * - If there is an active project in the command line
-     * - If there is an active project in the last session
-     * - Common locations
-     */
-    let commonTsconfigLocations = [
-        '.',
-        './src',
-        './ts',
-        './App-UI/src'
-    ].map(x => x + '/tsconfig.json');
-    if (commandLine.getOptions().project) {
-        session.relativePathToTsconfig = workingDir.makeRelative(commandLine.getOptions().project);
-    } else if (!session.relativePathToTsconfig) {
-        let found = commonTsconfigLocations.find(cl => fsu.existsSync(cl));
-        if (found) {
-            session.relativePathToTsconfig = found;
-        }
-    }
 
     /**
      * Update the session on disk for future calls to be stable
@@ -106,41 +92,73 @@ function diskTabToUITab(diskTab: types.SessionTabOnDisk): types.SessionTabInUI {
     };
 }
 
-function readDiskSessions() {
-    let sessions: types.SessionOnDisk[] = [];
+export function readDiskSessionsFile() {
+    let sessionFileContents: types.SessionsFileContents = {
+        sessions: []
+    };
     if (fsu.existsSync(sessionFile) && !commandLine.getOptions().safe) {
         let contents = json.parse<types.SessionsFileContents>(fsu.readFile(sessionFile));
-        if (contents.data && contents.data.sessions && contents.data.sessions.length) {
-            sessions = contents.data.sessions;
+        if (contents.data) {
+            sessionFileContents = contents.data;
         }
     }
-    return sessions;
+
+    /**
+     * Active project setup logic. In decreasing order
+     * - If there is an active project in the command line
+     * - If there is an active project in the last session
+     * - Common locations
+     */
+    let commonTsconfigLocations = [
+        '.',
+        './src',
+        './ts',
+        './App-UI/src'
+    ].map(x => x + '/tsconfig.json');
+    if (commandLine.getOptions().project) {
+        sessionFileContents.relativePathToTsconfig = workingDir.makeRelative(commandLine.getOptions().project);
+        writeDiskSessionFile(sessionFileContents);
+    } else if (!sessionFileContents.relativePathToTsconfig) {
+        let found = commonTsconfigLocations.find(cl => fsu.existsSync(cl));
+        if (found) {
+            sessionFileContents.relativePathToTsconfig = found;
+            writeDiskSessionFile(sessionFileContents);
+        }
+    }
+
+    return sessionFileContents;
 }
 
 function writeDiskSession(session: types.SessionOnDisk) {
     // Update last used time
     session.lastUsed = new Date().getTime();
 
+    const sessionFileContents = readDiskSessionsFile();
+
     // Merge with what is on disk by id
-    const sessions = readDiskSessions()
+    const sessions = sessionFileContents.sessions
         .filter(sesh => sesh.id !== session.id);
     sessions.unshift(session);
 
-    fsu.writeFile(sessionFile, json.stringify({ sessions: sessions }));
+    writeDiskSessionFile(sessionFileContents);
+}
+
+function writeDiskSessionFile(sessionFileContents: types.SessionsFileContents){
+    fsu.writeFile(sessionFile, json.stringify(sessionFileContents));
 }
 
 export function setTsconfigPath(tsconfigFilePath: string) {
-    let session = getDefaultOrNewSession();
-    session.relativePathToTsconfig = workingDir.makeRelative(tsconfigFilePath);
-    writeDiskSession(session);
+    let sessionFileContents = readDiskSessionsFile();
+    sessionFileContents.relativePathToTsconfig = workingDir.makeRelative(tsconfigFilePath);
+    writeDiskSessionFile(sessionFileContents);
 }
-export function setOpenUITabs(tabs: types.SessionTabInUI[]) {
-    let session = getDefaultOrNewSession();
+export function setOpenUITabs(sessionId: string, tabs: types.SessionTabInUI[]) {
+    let session = getDefaultOrNewSession(sessionId);
     session.openTabs = tabs.map(uiToDiskTab);
     writeDiskSession(session);
 }
 
-export function getOpenUITabs(duplicate?: boolean) {
-    let session = getDefaultOrNewSession(duplicate);
+export function getOpenUITabs(sessionId: string) {
+    let session = getDefaultOrNewSession(sessionId);
     return { openTabs: session.openTabs.map(diskTabToUITab) }
 }

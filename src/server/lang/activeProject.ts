@@ -83,7 +83,7 @@ export function start() {
     let synced = false;
 
     // Resume session
-    let ses = session.getDefaultOrNewSession();
+    let ses = session.readDiskSessionsFile();
     if (ses.relativePathToTsconfig) {
         let tsconfig = workingDir.makeAbsolute(ses.relativePathToTsconfig);
         if (fs.existsSync(tsconfig)) {

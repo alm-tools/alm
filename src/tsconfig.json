@@ -40,7 +40,6 @@
         "./app/utils/alertOnLeave.ts",
         "./app/utils/preventBackspaceNav.ts",
         "./common/constants.ts",
-        "./common/consts.ts",
         "./common/events.ts",
         "./common/json.ts",
         "./common/pure.ts",

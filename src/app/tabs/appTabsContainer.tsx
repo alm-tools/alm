@@ -32,6 +32,8 @@ import {Icon} from "../icon";
 import {cast} from "../../socket/socketClient";
 import * as alertOnLeave from "../utils/alertOnLeave";
 
+const getSessionId = () => window.location.hash.replace('#', '');
+
 export interface Props {
     // redux connected below
     tabs?: state.TabInstance[];
@@ -403,8 +405,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         commands.gotoTab9.on(() => gotoIndex(8));
 
         /** Restore any open tabs from last session */
-        console.log(window.location.hash);
-        server.getOpenUITabs({newSession: window.location.hash === "#"+constants.urlHashNewSession}).then((res) => {
+        server.getOpenUITabs({ sessionId: getSessionId() }).then((res) => {
+            window.location.hash = res.sessionId;
+
             if (!res.openTabs.length) return;
 
             let openTabs = res.openTabs;
@@ -424,6 +427,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
     private sendTabInfoToServer = () => {
         server.setOpenUITabs({
+            sessionId: getSessionId(),
             openTabs: this.props.tabs.map(t=>({
                 url: t.url
             }))
