@@ -27,26 +27,47 @@ export function getRelativePathToTsconfig(): string {
  */
 export function getDefaultOrNewSession(sessionId: string): types.SessionOnDisk {
     let sessions: types.SessionOnDisk[] = readDiskSessionsFile().sessions;
-    if (sessions.length && sessionId === constants.urlHashNewSession) {
-        const session: types.SessionOnDisk = {
-            id: utils.createId(),
-            openTabs: sessions[0].openTabs,
-            lastUsed: new Date().getTime(),
-        };
-        writeDiskSession(session);
-        sessions.unshift(session);
-    }
-    if (!sessions.length) { // Create a new one
-        sessions = [
-            {
+    /**
+     * Cases to handle
+     * if default select first (but if none create)
+     * if duplicate then duplicate (but if none create and use that one)
+     * if session id then search (but if none create)
+     */
+    // if none create
+    const ifNoneCreate = (session: types.SessionOnDisk) => {
+        if (!session){
+            session = {
                 id: utils.createId(),
                 openTabs: [],
                 lastUsed: new Date().getTime(),
             }
-        ]
+            writeDiskSession(session);
+            return session;
+        } else {
+            return session;
+        }
     }
-
-    const session = sessions[0];
+    let session: types.SessionOnDisk;
+    if (sessionId === constants.urlHashNormal) {
+        session = ifNoneCreate(sessions[0]);
+    }
+    else if (sessionId === constants.urlHashNewSession) {
+        session = sessions[0]; // last used is always on top
+        if (session) {
+            session = {
+                id: utils.createId(),
+                openTabs: session.openTabs,
+                lastUsed: new Date().getTime()
+            }
+            writeDiskSession(session);
+        }
+        else {
+            session = ifNoneCreate(session);
+        }
+    }
+    else {
+        session = ifNoneCreate(sessions.find(session=>session.id === sessionId));
+    }
 
     /**
      * Update the session on disk for future calls to be stable
@@ -138,7 +159,8 @@ function writeDiskSession(session: types.SessionOnDisk) {
     // Merge with what is on disk by id
     const sessions = sessionFileContents.sessions
         .filter(sesh => sesh.id !== session.id);
-    sessions.unshift(session);
+    sessions.unshift(session); // last used is always on top
+    sessionFileContents.sessions = sessions;
 
     writeDiskSessionFile(sessionFileContents);
 }
@@ -160,5 +182,5 @@ export function setOpenUITabs(sessionId: string, tabs: types.SessionTabInUI[]) {
 
 export function getOpenUITabs(sessionId: string) {
     let session = getDefaultOrNewSession(sessionId);
-    return { openTabs: session.openTabs.map(diskTabToUITab) }
+    return { openTabs: session.openTabs.map(diskTabToUITab), sessionId: session.id }
 }
