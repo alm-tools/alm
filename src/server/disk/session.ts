@@ -48,7 +48,7 @@ export function getDefaultOrNewSession(sessionId: string): types.SessionOnDisk {
         }
     }
     let session: types.SessionOnDisk;
-    if (sessionId === constants.urlHashNormal) {
+    if (!sessionId || sessionId === constants.urlHashNormal) {
         session = ifNoneCreate(sessions[0]);
     }
     else if (sessionId === constants.urlHashNewSession) {
