@@ -5,10 +5,7 @@
  * - If the active project changes we need to update *all* the statuses
  * - whenever the output status *changes* we need to send it to the client.
  */
-
-import * as types from "../../common/types";
-
 let outputStatus: { [index: string]: types.TSOuputStatus } = {};
 
-
+import * as types from "../../common/types";
 import * as fileModelCache from "../disk/fileModelCache";
