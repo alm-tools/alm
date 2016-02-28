@@ -5,7 +5,30 @@
  * - If the active project changes we need to update *all* the statuses
  * - whenever the output status *changes* we need to send it to the client.
  */
-let outputStatus: { [index: string]: types.TSOuputStatus } = {};
+let outputStatus: types.TSOuputStatusCache = {};
 
 import * as types from "../../common/types";
 import * as fileModelCache from "../disk/fileModelCache";
+import * as activeProject from "./activeProject";
+import * as events from "../../common/events";
+
+/**
+ * Subscribe to external changes
+ */
+fileModelCache.didEdit.on(()=>{
+    // TODO:
+    // Check if in active project
+    // Clear whats there for the file
+    // Query the active project for new output. Diff and write it out
+});
+activeProject.activeProjectConfigDetailsUpdated.on(()=>{
+    // TODO:
+    // clear whats there
+    // Query the active project for new output. Diff and write it out
+});
+
+/**
+ * Expose changes to the outside world
+ */
+export const fileOuputStatusUpdated = new events.TypedEvent<types.TSOuputStatus>();
+export const completeCacheUpdated = new events.TypedEvent<types.TSOuputStatusCache>();

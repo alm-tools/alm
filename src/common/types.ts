@@ -110,6 +110,8 @@ export interface FileStatus {
  * Project JS File status stuff
  */
 export interface TSOuputStatus {
+    /** Its convinient to have it hare */
+    inputFilePath: string;
     /** If there is supposed to be some ouput what is its status */
     upToDate: boolean;
     /**
@@ -117,5 +119,6 @@ export interface TSOuputStatus {
      * - is a .d.ts file
      * - emit is set to false
      */
-    filePath?: string;
+    outputFilePath?: string;
 }
+export type TSOuputStatusCache = { [inputFilePath: string]: TSOuputStatus }
