@@ -33,6 +33,11 @@ import {cast} from "../../socket/socketClient";
 import * as alertOnLeave from "../utils/alertOnLeave";
 
 const getSessionId = () => window.location.hash.substr(1);
+const setSessionId = (sessionId: string) => {
+    const hash = '#' + sessionId;
+    window.location.hash = hash;
+    window.onhashchange = function() { window.location.hash = hash }
+}
 
 export interface Props {
     // redux connected below
@@ -406,9 +411,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
         /** Restore any open tabs from last session */
         server.getOpenUITabs({ sessionId: getSessionId() }).then((res) => {
-            const hash = '#' + res.sessionId;
-            window.location.hash = hash;
-            window.onhashchange = function() { window.location.hash = hash }
+            setSessionId(res.sessionId);
 
             if (!res.openTabs.length) return;
 
