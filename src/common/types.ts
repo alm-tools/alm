@@ -104,3 +104,18 @@ export interface FileStatus {
     saved: boolean;
     eol: string;
 }
+
+
+/**
+ * Project JS File status stuff
+ */
+export interface TSOuputStatus {
+    /** If there is supposed to be some ouput what is its status */
+    upToDate: boolean;
+    /**
+     * Reasons for not having an output:
+     * - is a .d.ts file
+     * - emit is set to false
+     */
+    filePath?: string;
+}

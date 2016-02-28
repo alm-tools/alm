@@ -69,6 +69,7 @@
         "./server/lang/modules/astUtils.ts",
         "./server/lang/modules/formatting.ts",
         "./server/lang/modules/programDependencies.ts",
+        "./server/lang/outputStatusCache.ts",
         "./server/lang/projectService.ts",
         "./server/serverStarted.ts",
         "./server/utils/fsu.ts",
