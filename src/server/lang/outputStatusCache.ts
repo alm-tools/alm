@@ -5,12 +5,13 @@
  * - If the active project changes we need to update *all* the statuses
  * - whenever the output status *changes* we need to send it to the client.
  */
-let outputStatus: types.TSOuputStatusCache = {};
+let outputStatus: types.JSOuputStatusCache = {};
 
 import * as types from "../../common/types";
 import * as fileModelCache from "../disk/fileModelCache";
 import * as activeProject from "./activeProject";
 import * as events from "../../common/events";
+import * as projectService from "./projectService";
 
 /**
  * Subscribe to external changes
@@ -30,5 +31,5 @@ activeProject.activeProjectConfigDetailsUpdated.on(()=>{
 /**
  * Expose changes to the outside world
  */
-export const fileOuputStatusUpdated = new events.TypedEvent<types.TSOuputStatus>();
-export const completeCacheUpdated = new events.TypedEvent<types.TSOuputStatusCache>();
+export const fileOuputStatusUpdated = new events.TypedEvent<types.JSOutputStatus>();
+export const completeCacheUpdated = new events.TypedEvent<types.JSOuputStatusCache>();

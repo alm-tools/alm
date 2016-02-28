@@ -7,7 +7,10 @@
 import * as activeProject from "./activeProject";
 let getProject = activeProject.GetProject.ifCurrentOrErrorOut;
 
+import * as fileModelCache from "../disk/fileModelCache";
+
 import {Types} from "../../socket/socketContract";
+import * as types from "../../common/types";
 
 import * as utils from "../../common/utils";
 let {resolve} = utils;
@@ -343,4 +346,26 @@ export function getAST(query: Types.GetASTQuery): Promise<Types.GetASTResponse> 
         : astToTextFull(sourceFile);
 
     return resolve({ root });
+}
+
+
+/**
+ * JS Ouput
+ */
+import {getRawOutput} from "./building";
+export function getJSOutputStatus(query: Types.FilePathQuery): Promise<types.JSOutputStatus> {
+    let project = activeProject.GetProject.getCurrentIfAny();
+    const output: ts.EmitOutput = getRawOutput(project, query.filePath);
+    const jsFile = output.outputFiles.filter(x => x.name.endsWith(".js"))[0];
+
+    let result: types.JSOutputStatus = {
+        inputFilePath: query.filePath,
+        emitSkipped: output.emitSkipped,
+        upToDate: !output.emitSkipped
+            && jsFile
+            && fileModelCache.getOrCreateOpenFile(jsFile.name).getContents() === jsFile.text,
+        outputFilePath: jsFile && jsFile.name
+    }
+
+    return resolve(result);
 }

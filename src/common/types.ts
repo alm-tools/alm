@@ -105,20 +105,23 @@ export interface FileStatus {
     eol: string;
 }
 
-
 /**
  * Project JS File status stuff
  */
-export interface TSOuputStatus {
+export interface JSOutputStatus {
     /** Its convinient to have it hare */
     inputFilePath: string;
-    /** If there is supposed to be some ouput what is its status */
+    /** As it is from the TypeScript language service. Either emit is blocked or compiler options are noEmit */
+    emitSkipped: boolean;
+
+    /** If emit not skipped what is the js file status */
     upToDate: boolean;
     /**
      * Reasons for not having an output:
      * - is a .d.ts file
      * - emit is set to false
+     * - emit skipped
      */
     outputFilePath?: string;
 }
-export type TSOuputStatusCache = { [inputFilePath: string]: TSOuputStatus }
+export type JSOuputStatusCache = { [inputFilePath: string]: JSOutputStatus }
