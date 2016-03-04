@@ -39,7 +39,7 @@ fileModelCache.didEdit.on(utils.triggeredDebounce({
     mustcall: (n, o) => {
         return o && o.filePath !== n.filePath;
     },
-    milliseconds: 500
+    milliseconds: 2000
 }));
 
 activeProject.activeProjectConfigDetailsUpdated.on(() => {
