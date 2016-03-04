@@ -111,17 +111,21 @@ export interface FileStatus {
 export interface JSOutputStatus {
     /** Its convinient to have it hare */
     inputFilePath: string;
-    /** As it is from the TypeScript language service. Either emit is blocked or compiler options are noEmit */
-    emitSkipped: boolean;
 
-    /** If emit not skipped what is the js file status */
-    upToDate: boolean;
-    /**
-     * Reasons for not having an output:
-     * - is a .d.ts file
-     * - emit is set to false
-     * - emit skipped
-     */
+    /** One of the various states */
+    state: JSOutputState;
+
+    /** Only if the state is for some JS file */
     outputFilePath?: string;
 }
-export type JSOuputStatusCache = { [inputFilePath: string]: JSOutputStatus }
+/** The JS file can only be in one of these states */
+export enum JSOutputState {
+    /** As it is from the TypeScript language service. Either emit is blocked or compiler options are noEmit */
+    EmitSkipped,
+    /** If emit not skipped perhaps there isn't a JS file emit for this (e.g .d.ts files) */
+    NoJSFile,
+    /** If JS file then its one of these */
+    JSUpToDate,
+    JSOutOfDate,
+}
+export type JSOutputStatusCache = { [inputFilePath: string]: JSOutputStatus }

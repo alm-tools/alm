@@ -76,6 +76,12 @@ document.addEventListener('DOMContentLoaded', () => {
     cast.filePathsUpdated.on((res) => {
         state.setFilePaths({filePaths:res.filePaths,rootDir:res.rootDir, completed: res.completed});
     });
+    cast.fileOuputStatusUpdated.on((res) => {
+        state.fileOuputStatusUpdated(res);
+    });
+    cast.completeOutputStatusCacheUpdated.on((res) => {
+        state.completeOuputStatusCacheUpdated(res);
+    });
     commands.toggleDoctor.on(()=>{
         if (!state.inActiveProjectFilePath(state.getSelectedFilePath())){
             ui.notifyWarningNormalDisappear('Doctor is only available for files in active project');

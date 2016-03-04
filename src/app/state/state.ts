@@ -16,6 +16,9 @@ export interface StoreState {
     /** Is the current file in the activeProject */
     activeProjectFilePathTruthTable?: { [filePath: string]: boolean };
 
+    /** JS Ouput status */
+    outputStatusCache?: types.JSOutputStatusCache
+
     pendingRequests?: string[];
 
     /** Find and replace */
@@ -45,6 +48,7 @@ let initialStoreState: StoreState = {
         tooMany: false,
     },
     activeProjectFilePathTruthTable: {},
+    outputStatusCache: {},
     pendingRequests: [],
     findOptions: {
         isShown: false,
@@ -242,5 +246,19 @@ export function getSelectedTab(){
 export let toggleDoctor = redux.add('toggleDoctor', (state: StoreState, payload: {}): StoreState => {
     return {
         showDoctor: !state.showDoctor
+    };
+});
+
+export const fileOuputStatusUpdated = redux.add('fileOuputStatusUpdated', (state: StoreState, payload: types.JSOutputStatus): StoreState => {
+    const outputStatusCache = redux.updateFields({ [payload.inputFilePath]: payload })(state.outputStatusCache);
+    return {
+        outputStatusCache
+    };
+});
+
+export const completeOuputStatusCacheUpdated = redux.add('completeOuputStatusCacheUpdated', (state: StoreState, payload: types.JSOutputStatusCache): StoreState => {
+    const outputStatusCache = payload;
+    return {
+        outputStatusCache
     };
 });

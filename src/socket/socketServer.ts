@@ -9,6 +9,7 @@ import * as activeProject from "../server/lang/activeProject";
 import * as projectService from "../server/lang/projectService";
 import * as gitService from "../server/lang/gitService";
 import * as findAndReplaceMultiService from "../server/lang/findAndReplaceMultiService";
+import * as outputStatusCache from "../server/lang/outputStatusCache";
 import * as session from "../server/disk/session";
 let resolve = sls.resolve;
 
@@ -176,6 +177,10 @@ export function register(app: http.Server) {
 
     /** FARM */
     findAndReplaceMultiService.farmResultsUpdated.pipe(cast.farmResultsUpdated);
+
+    /** JS Output Status */
+    outputStatusCache.fileOuputStatusUpdated.pipe(cast.fileOuputStatusUpdated);
+    outputStatusCache.completeOutputStatusCacheUpdated.pipe(cast.completeOutputStatusCacheUpdated);
 
     // For testing
     // setInterval(() => cast.hello.emit({ text: 'nice' }), 1000);

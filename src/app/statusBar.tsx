@@ -35,6 +35,7 @@ export interface Props {
     socketConnected?: boolean;
     tabs?: state.TabInstance[];
     selectedTabIndex?: number;
+    outputStatusCache?: types.JSOutputStatusCache
 }
 export interface State {
 }
@@ -53,6 +54,7 @@ export var statusBar: StatusBar;
         socketConnected: state.socketConnected,
         tabs: state.tabs,
         selectedTabIndex: state.selectedTabIndex,
+        outputStatusCache: state.outputStatusCache
     };
 })
 export class StatusBar extends BaseComponent<Props, State>{
@@ -71,6 +73,7 @@ export class StatusBar extends BaseComponent<Props, State>{
         let projectTipKeboard = ReactDOMServer.renderToString(<div style={notificationKeyboardStyle}>Alt+Shift+P</div>);
         let tab = state.getSelectedTab();
         let filePath = tab && utils.getFilePathFromUrl(tab.url);
+        let protocol = tab && utils.getFilePathAndProtocolFromUrl(tab.url).protocol;
 
         let inActiveProjectSection =
             !tab
@@ -91,7 +94,18 @@ export class StatusBar extends BaseComponent<Props, State>{
                         data-hint="File is not a part of the currently active project. Robots deactivated.">
                             <Icon name="eye-slash"/>
                      </span>}
-            </span>
+            </span>;
+
+        const fileOutputState = protocol !== 'file' ? null
+            : !this.props.outputStatusCache[filePath] ? null
+            : this.props.outputStatusCache[filePath].state;
+
+        const fileOutputStateRendered =
+            fileOutputState
+            && <span style={styles.statusBarSection}>
+                {types.JSOutputState[fileOutputState]}
+            </span>;
+
         return (
             <div>
                 <div style={csx.extend(styles.statusBar,csx.horizontal,csx.center)}>
@@ -120,7 +134,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                                 {filePath}
                         </span>
                         :''}
-
+                    {fileOutputStateRendered}
 
                     {/* seperator */}
                     <span style={csx.flex}></span>

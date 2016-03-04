@@ -353,19 +353,38 @@ export function getAST(query: Types.GetASTQuery): Promise<Types.GetASTResponse> 
  * JS Ouput
  */
 import {getRawOutput} from "./building";
-export function getJSOutputStatus(query: Types.FilePathQuery): Promise<types.JSOutputStatus> {
-    let project = activeProject.GetProject.getCurrentIfAny();
+export type GetJSOutputStatusResponse = {inActiveProject:boolean, outputStatus?: types.JSOutputStatus};
+export function getJSOutputStatus(query: Types.FilePathQuery): GetJSOutputStatusResponse {
+    const project = activeProject.GetProject.getCurrentIfAny();
+    if (!project) {
+        return {
+            inActiveProject: false
+        }
+    }
     const output: ts.EmitOutput = getRawOutput(project, query.filePath);
     const jsFile = output.outputFiles.filter(x => x.name.endsWith(".js"))[0];
 
-    let result: types.JSOutputStatus = {
-        inputFilePath: query.filePath,
-        emitSkipped: output.emitSkipped,
-        upToDate: !output.emitSkipped
-            && jsFile
-            && fileModelCache.getOrCreateOpenFile(jsFile.name).getContents() === jsFile.text,
-        outputFilePath: jsFile && jsFile.name
+    let state = output.emitSkipped ? types.JSOutputState.EmitSkipped
+        : !jsFile ? types.JSOutputState.NoJSFile
+        : fileModelCache.getOrCreateOpenFile(jsFile.name).getContents() === jsFile.text ? types.JSOutputState.JSUpToDate
+        : types.JSOutputState.JSOutOfDate;
+
+    /**
+     * If the state is JSOutOfDate we can easily fix that to bring it up to date for `compileOnSave`
+     */
+    if (project.configFile.project.compileOnSave !== false) {
+        fileModelCache.getOrCreateOpenFile(jsFile.name).setContents(jsFile.text);        
+        state = types.JSOutputState.JSUpToDate;
     }
 
-    return resolve(result);
+    const outputStatus: types.JSOutputStatus = {
+        inputFilePath: query.filePath,
+        state,
+        outputFilePath: jsFile && jsFile.name
+    };
+
+    return {
+        inActiveProject: true,
+        outputStatus
+    };
 }

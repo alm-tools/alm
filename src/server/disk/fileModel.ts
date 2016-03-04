@@ -114,6 +114,12 @@ export class FileModel {
         this.fsWatcher = null;
     }
 
+    /** Just updates `text` saves */
+    setContents(contents: string) {
+        this.text = this.splitlines(contents);
+        this.save();
+    }
+
     /** splitLinesAuto from codemirror */
     private splitlines(string: string) { return string.split(/\r\n?|\n/); };
 

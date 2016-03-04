@@ -71,6 +71,36 @@ export function debounce<T extends Function>(func: T, milliseconds: number, imme
     };
 };
 
+/**
+ * Like debounce but will also call if a state change is significant enough to not ignore silently
+ */
+export function triggeredDebounce<Arg>(config:{
+    func: (arg:Arg)=>void,
+    mustcall: (newArg:Arg,oldArg:Arg)=>boolean,
+    milliseconds: number}): (arg:Arg) => void {
+    let lastArg, lastCallTimeStamp;
+
+    const later = function() {
+        const timeSinceLast = now() - lastCallTimeStamp;
+
+        if (timeSinceLast < config.milliseconds) {
+            const timeout = setTimeout(later, config.milliseconds - timeSinceLast);
+        } else {
+            config.func(lastArg);
+        }
+    };
+
+    return function(arg:Arg) {
+        const stateChangeSignificant = config.mustcall(arg,lastArg);
+        if (stateChangeSignificant) {
+            config.func(lastArg);
+        }
+        lastArg = arg;
+        lastCallTimeStamp = now();
+        later();
+    };
+};
+
 export function throttle<T extends Function>(func: T, milliseconds: number, options?: { leading?: boolean; trailing?: boolean }): T {
     var context, args, result;
     var timeout = null;
