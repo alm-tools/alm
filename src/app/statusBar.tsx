@@ -104,12 +104,14 @@ export class StatusBar extends BaseComponent<Props, State>{
         const fileOutputStateRendered =
             fileOutputState
             && <span style={styles.statusBarSection}>
+                <span style={csx.extend(ouputStatusSizeStyle)}>
                 {
-                    fileOutputState === types.JSOutputState.EmitSkipped ? 'No Emitted JavaScript'
-                    : fileOutputState === types.JSOutputState.NoJSFile ? 'No Ouput JS File'
-                    : fileOutputState === types.JSOutputState.JSOutOfDate ? <span style={csx.extend(ouputStatusSizeStyle,styles.statusBarError)}>❌ JS Outdated</span>
-                    : <span style={csx.extend(ouputStatusSizeStyle,styles.statusBarSuccess)}>✔️ JS Current</span>
+                    fileOutputState === types.JSOutputState.EmitSkipped ? null
+                    : fileOutputState === types.JSOutputState.NoJSFile ? null
+                    : fileOutputState === types.JSOutputState.JSOutOfDate ? <span style={styles.statusBarError}>❌ JS Outdated</span>
+                    : <span style={styles.statusBarSuccess}>✔️ JS Current</span>
                 }
+                </span>
             </span>;
 
         return (
