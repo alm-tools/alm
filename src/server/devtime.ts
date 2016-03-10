@@ -12,15 +12,15 @@ import {cookies} from "./cookies";
 const webpackDevServerPort = 8888;
 export const devtimeDetectionFile = __dirname + '/devtime.txt';
 
-let bundleDevTimeProxy = utils.once(() => {
-    var Webpack = require('webpack');
-    var WebpackDevServer = require('webpack-dev-server');
-    let notification = '[WDS]'; // Webpack dev server
+const bundleDevTimeProxy = utils.once(() => {
+    const Webpack = require('webpack');
+    const WebpackDevServer = require('webpack-dev-server');
+    const notification = '[WDS]'; // Webpack dev server
 
     /**
      * Update the prod config for dev time ease
      */
-    var devConfig = Object.create(config);
+    const devConfig = Object.create(config);
     // Makes sure errors in console map to the correct file and line number
     devConfig.devtool = 'eval';
     // Add aditional entry points
@@ -38,7 +38,7 @@ let bundleDevTimeProxy = utils.once(() => {
     /**
      * Standard webpack bundler stuff
      */
-    let compiler = Webpack(devConfig);
+    const compiler = Webpack(devConfig);
     compiler.plugin('compile', function() {
         console.log(`${notification} Bundling ..... `)
     });
@@ -49,7 +49,7 @@ let bundleDevTimeProxy = utils.once(() => {
     /**
      * Wrap up the bundler in a dev server
      */
-    var bundler = new WebpackDevServer(compiler, {
+    const bundler = new WebpackDevServer(compiler, {
 
         // We need to tell Webpack to serve our bundled application
         // from the build path. When proxying
@@ -72,8 +72,8 @@ let bundleDevTimeProxy = utils.once(() => {
     /**
      * Provide a proxy server that will pass your requests to the dev server
      */
-    var httpProxy = require('http-proxy');
-    let proxyServer = httpProxy.createProxyServer();
+    const httpProxy = require('http-proxy');
+    const proxyServer = httpProxy.createProxyServer();
     return function (req:express.Request,res:express.Response){
         proxyServer.web(req, res, {
             target: `http://localhost:${webpackDevServerPort}`
@@ -86,8 +86,8 @@ let bundleDevTimeProxy = utils.once(() => {
 
 function bundleDeploy() {
     // build
-    var Webpack = require('webpack');
-    let compiler = Webpack(config);
+    const Webpack = require('webpack');
+    const compiler = Webpack(config);
     compiler.run((err, stats) => {
         if (err) {
             console.error('Failed to refresh bundle', err);
@@ -110,7 +110,7 @@ export function setup(app: express.Express) {
      * We always refresh the build bundle if it isn't there.
      * This is to help *new repo clones* . NPM installs get this file by default.
      */
-    var outFile = path.join(config.output.path, config.output.filename);
+    const outFile = path.join(config.output.path, config.output.filename);
     if (!fs.existsSync(outFile)) {
         bundleDeploy();
     }
@@ -118,7 +118,7 @@ export function setup(app: express.Express) {
     /**
      * Check for devtime
      */
-    var devTime = fs.existsSync(devtimeDetectionFile);
+    let devTime = fs.existsSync(devtimeDetectionFile);
     if (devTime){
         // if started with dev mode start the bundling process immediately
         bundleDevTimeProxy();
