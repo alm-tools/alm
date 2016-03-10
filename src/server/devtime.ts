@@ -10,7 +10,7 @@ import * as utils from "../common/utils";
 import {cookies} from "./cookies";
 
 const webpackDevServerPort = 8888;
-export const devtimeDetectionFile = __dirname + '/devtime.txt';
+const devtimeDetectionFile = __dirname + '/devtime.txt';
 
 const bundleDevTimeProxy = utils.once(() => {
     const Webpack = require('webpack');
