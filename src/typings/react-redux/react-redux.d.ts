@@ -3,9 +3,6 @@
 // Definitions by: Basarat <https://github.com/basarat/>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
 
-
-/// <reference path="../react/react.d.ts"/>
-
 declare module "react-redux" {
     import React = require('react');
 

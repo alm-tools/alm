@@ -13,6 +13,7 @@
 /// <reference path="browser\ambient\mkdirp\mkdirp.d.ts" />
 /// <reference path="browser\ambient\mousetrap\mousetrap.d.ts" />
 /// <reference path="browser\ambient\node\node.d.ts" />
+/// <reference path="browser\ambient\ora\ora.d.ts" />
 /// <reference path="browser\ambient\react-addons\react-addons.d.ts" />
 /// <reference path="browser\ambient\react-dom\react-dom.d.ts" />
 /// <reference path="browser\ambient\react\react.d.ts" />

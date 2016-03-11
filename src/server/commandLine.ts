@@ -19,11 +19,11 @@ var argv: {
     string: ['dir', 'config'],
     boolean: ['open', 'safe', 'init'],
     alias: {
-        't': 'port',
-        'd': 'dir',
-        'o': 'open',
-        'p': 'project',
-        'i': 'init'
+        't': ['port'],
+        'd': ['dir'],
+        'o': ['open'],
+        'p': ['project'],
+        'i': ['init']
     },
     default: {
         t: defaultPort,

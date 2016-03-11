@@ -3,7 +3,6 @@
 // Definitions by: Basarat <https://github.com/basarat/>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
 
-/// <reference path="../react/react.d.ts"/>
 declare module 'radium' {
     import React = require('react');
     interface ReactComponent<P, S> {
@@ -14,5 +13,3 @@ declare module 'radium' {
     };
     export = Radium;
 }
-
-
