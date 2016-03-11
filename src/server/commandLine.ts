@@ -13,17 +13,19 @@ var argv: {
     o?: boolean;
     p?: string;
     safe?: boolean;
+    i?: boolean;
     _?: string[];
-} = minimist(process.argv.slice(2),{
-    string: ['dir','config'],
-    boolean: ['open','safe'],
+} = minimist(process.argv.slice(2), {
+    string: ['dir', 'config'],
+    boolean: ['open', 'safe', 'init'],
     alias: {
         't': 'port',
         'd': 'dir',
         'o': 'open',
         'p': 'project',
+        'i': 'init'
     },
-    default : {
+    default: {
         t: defaultPort,
         d: process.cwd(),
         o: true
@@ -36,6 +38,7 @@ interface CommandLineOptions {
     project: string;
     open: boolean;
     safe: boolean;
+    init: boolean;
     filePaths: string[];
 }
 export let getOptions = utils.once((): CommandLineOptions => {
@@ -45,6 +48,7 @@ export let getOptions = utils.once((): CommandLineOptions => {
         open: argv.o,
         safe: argv.safe,
         project: argv.p,
+        init: argv.i,
         filePaths: [],
     }
     if (typeof options.port !== 'number') {
@@ -55,7 +59,7 @@ export let getOptions = utils.once((): CommandLineOptions => {
         workingDir.setProjectRoot(options.dir);
     }
     if (argv._ && argv._.length) {
-        options.filePaths = argv._.map(x=> workingDir.makeAbsoluteIfNeeded(x));
+        options.filePaths = argv._.map(x => workingDir.makeAbsoluteIfNeeded(x));
     }
     // Common usage user does `alm ./srcFolder`
     // So if there was only one filePath detected and its a dir ... user probably meant `-d`
@@ -68,7 +72,11 @@ export let getOptions = utils.once((): CommandLineOptions => {
     }
 
     if (options.safe) {
-        console.log("---SAFE MODE---")
+        console.log('---SAFE MODE---');
+    }
+
+    if (options.init && options.project) {
+        console.log('The project option is ignored if you specific init. The initialized file *is* the project.');
     }
 
     if (options.project) {
@@ -76,7 +84,7 @@ export let getOptions = utils.once((): CommandLineOptions => {
         if (!options.project.endsWith('.json')) {
             options.project = options.project + '/' + 'tsconfig.json';
         }
-        console.log("TSCONFIG: ", options.project);
+        console.log('TSCONFIG: ', options.project);
     }
 
     return options;

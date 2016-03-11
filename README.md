@@ -52,6 +52,7 @@ All of these are **optional**:
 * `-d <directory>` : Specify a working directory
 * `-p <pathToTsconfig>`: Specify a path to the active project. [More](https://github.com/alm-tools/alm/tree/master#tsconfig)
 * `-t <port>`: Specify a custom port number
+* `-i`: Creates a new project file and sets that as the project. Decrease the barrier to entry so you can just give it a quick go on an existing code base.
 * `--safe`: To ignore any previous session data in `.alm` folder
 
 ## TSConfig

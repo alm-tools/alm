@@ -12,15 +12,9 @@ import * as utils from "../../common/utils";
 import * as workingDir from "./workingDir";
 import * as commandLine from "../commandLine";
 import * as constants from "../../common/constants";
+import * as tsconfig from "../lang/core/tsconfig";
 
 const sessionFile = types.cacheDir + '/sessionsV1.json'
-
-/**
- * Only If there is a session file :)
- */
-export function getRelativePathToTsconfig(): string {
-    return
-}
 
 /**
  * If there is no session then a default one will be created for you and sent over
@@ -136,7 +130,13 @@ export function readDiskSessionsFile() {
         './ts',
         './App-UI/src'
     ].map(x => x + '/tsconfig.json');
-    if (commandLine.getOptions().project) {
+    if (commandLine.getOptions().init) {
+        sessionFileContents.relativePathToTsconfig = './';
+        // Write the tsconfig.json file:
+        tsconfig.createProjectRootSync(workingDir.getProjectRoot());
+        writeDiskSessionFile(sessionFileContents);
+    }
+    else if (commandLine.getOptions().project) {
         sessionFileContents.relativePathToTsconfig = workingDir.makeRelative(commandLine.getOptions().project);
         writeDiskSessionFile(sessionFileContents);
     } else if (!sessionFileContents.relativePathToTsconfig) {

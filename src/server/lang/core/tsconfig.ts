@@ -210,14 +210,6 @@ import formatting = require('./formatCodeOptions');
 
 var projectFileName = 'tsconfig.json';
 /**
- * This is what we write to new files
- */
-var defaultFilesGlob = [
-    "./**/*.ts",
-    "./**/*.tsx",
-    "!./node_modules/**",
-];
-/**
  * This is what we use when the user doens't specify a files / filesGlob
  */
 var invisibleFilesGlob = ["./**/*.ts", "./**/*.tsx"];
@@ -499,7 +491,7 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
 
 }
 
-/** Creates a project by  source file location. Defaults are assumed unless overriden by the optional spec. */
+/** Creates a project by source file location. Defaults are assumed unless overriden by the optional spec. */
 export function createProjectRootSync(srcFile: string, defaultOptions?: ts.CompilerOptions) {
     if (!fs.existsSync(srcFile)) {
         throw new Error(errors.CREATE_FILE_MUST_EXIST);
@@ -515,7 +507,8 @@ export function createProjectRootSync(srcFile: string, defaultOptions?: ts.Compi
     // We need to write the raw spec
     var projectSpec: TypeScriptProjectRawSpecification = {};
     projectSpec.compilerOptions = tsToRawCompilerOptions(defaultOptions || defaults);
-    projectSpec.filesGlob = defaultFilesGlob;
+    projectSpec.compileOnSave = true;
+    projectSpec.exclude = ["node_modules", "typings/browser", "typings/browser.d.ts"];
 
     fs.writeFileSync(projectFilePath, prettyJSON(projectSpec));
     return getProjectSync(srcFile);
