@@ -1,0 +1,27 @@
+{
+  "ambientDependencies": {
+    "mime": "github:DefinitelyTyped/DefinitelyTyped/mime/mime.d.ts#e95958ac847d9a343bdc8d7cbc796a5f6da29f71",
+    "serve-static": "github:DefinitelyTyped/DefinitelyTyped/serve-static/serve-static.d.ts#e95958ac847d9a343bdc8d7cbc796a5f6da29f71",
+    "express": "github:DefinitelyTyped/DefinitelyTyped/express/express.d.ts#e95958ac847d9a343bdc8d7cbc796a5f6da29f71",
+    "node": "github:DefinitelyTyped/DefinitelyTyped/node/node.d.ts#e95958ac847d9a343bdc8d7cbc796a5f6da29f71",
+    "cookie-parser": "github:DefinitelyTyped/DefinitelyTyped/cookie-parser/cookie-parser.d.ts#e95958ac847d9a343bdc8d7cbc796a5f6da29f71",
+    "react": "github:DefinitelyTyped/DefinitelyTyped/react/react.d.ts#bdaf2f0eb19edee26248c80bab4947e9b70e4217",
+    "mousetrap": "github:DefinitelyTyped/DefinitelyTyped/mousetrap/mousetrap.d.ts#af81415504b4edce8dac8446d96857f8018c6e9f",
+    "colors": "github:DefinitelyTyped/DefinitelyTyped/colors/colors.d.ts#a1226afe5c4ab96610e088d970eb4f8537b1d116",
+    "mkdirp": "github:DefinitelyTyped/DefinitelyTyped/mkdirp/mkdirp.d.ts#a1226afe5c4ab96610e088d970eb4f8537b1d116",
+    "chokidar": "github:DefinitelyTyped/DefinitelyTyped/chokidar/chokidar.d.ts#a1226afe5c4ab96610e088d970eb4f8537b1d116",
+    "glob": "github:DefinitelyTyped/DefinitelyTyped/glob/glob.d.ts#eb835aa72f45eee4246b1de8beeffe2010c689e6",
+    "minimatch": "github:DefinitelyTyped/DefinitelyTyped/minimatch/minimatch.d.ts#eb835aa72f45eee4246b1de8beeffe2010c689e6",
+    "socket.io": "github:DefinitelyTyped/DefinitelyTyped/socket.io/socket.io.d.ts#eb835aa72f45eee4246b1de8beeffe2010c689e6",
+    "socket.io-client": "github:DefinitelyTyped/DefinitelyTyped/socket.io-client/socket.io-client.d.ts#eb835aa72f45eee4246b1de8beeffe2010c689e6",
+    "react-addons": "github:DefinitelyTyped/DefinitelyTyped/react/react-addons.d.ts#af76bf46025371c760d8fe8c03cf874428da6124",
+    "codemirror": "github:DefinitelyTyped/DefinitelyTyped/codemirror/codemirror.d.ts#d9fea91e842c2cf5bd0f7d861ac378e571d2ad7c",
+    "codemirror-showhint": "github:DefinitelyTyped/DefinitelyTyped/codemirror/codemirror-showhint.d.ts#a1a2d0dd679fcc4b9d3f95bd05cf5a26ea8151a0",
+    "redux": "github:DefinitelyTyped/DefinitelyTyped/redux/redux.d.ts#273a567b0a0bcc34cbf2a2470b2febc95796b644",
+    "react-dom": "github:DefinitelyTyped/DefinitelyTyped/react/react-dom.d.ts#bdaf2f0eb19edee26248c80bab4947e9b70e4217",
+    "jquery": "github:DefinitelyTyped/DefinitelyTyped/jquery/jquery.d.ts#62eedc3121a5e28c50473d2e4a9cefbcb9c3957f",
+    "toastr": "github:DefinitelyTyped/DefinitelyTyped/toastr/toastr.d.ts#62eedc3121a5e28c50473d2e4a9cefbcb9c3957f",
+    "minimist": "github:DefinitelyTyped/DefinitelyTyped/minimist/minimist.d.ts#35989a3ab4834b8e8b2b56788f1d4fc46a25dc8d",
+    "d3": "github:DefinitelyTyped/DefinitelyTyped/d3/d3.d.ts#40c60850ad6c8175a62d5ab48c4e016ea5b3dffe"
+  }
+}
