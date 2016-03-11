@@ -721,8 +721,8 @@ export function prettyJSON(object: any): string {
             }
             return value;
         },
-    // indent 4 spaces
-        4);
+    // indent 2 spaces
+        2);
     value = value.split('\n').join(os.EOL) + os.EOL;
     cache = null;
     return value;

@@ -132,9 +132,11 @@ export function readDiskSessionsFile() {
     ].map(x => x + '/tsconfig.json');
     if (commandLine.getOptions().init) {
         sessionFileContents.relativePathToTsconfig = './';
-        // Write the tsconfig.json file:
+        // Write the tsconfig.json file
         tsconfig.createProjectRootSync(workingDir.getProjectRoot());
         writeDiskSessionFile(sessionFileContents);
+        // Clear so we don't keep creating
+        commandLine.getOptions().init = false;
     }
     else if (commandLine.getOptions().project) {
         sessionFileContents.relativePathToTsconfig = workingDir.makeRelative(commandLine.getOptions().project);
