@@ -68,6 +68,10 @@ More reading (You don't need to read these ... but if you are bored):
 # Updating TypeScript Version
 We use [NTypeScript](https://github.com/TypeStrong/ntypescript). NTypeScript keeps itself updated with Microsoft/Typescript every night. To update the version used by alm.tools simply run `npm run update`. This will install the latest version of NTypeScript and run a build to make sure everything still compiles.
 
+# How does the frontend talk to the backend
+* Using the principles of [ASYNC](./ASYNC.md) programming (please read that).
+* Communication is done using socket.io. Checkout the [`socket` folder](https://github.com/alm-tools/alm/tree/e34bbf9cb6227f3cd150737fef5a47f212e2ad7a/src/socket) which contains the socket contract + server + client :rose:
+
 # Conventions
 Please see [CONVENTIONS.md](./CONVENTIONS.md)
 
