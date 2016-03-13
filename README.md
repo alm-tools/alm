@@ -61,6 +61,9 @@ TypeScript projects are configured using `tsconfig.json`. If you don't provide o
 * Check common locations (e.g. `.`, `./src`, `./ts` etc.)
 * Wait for you to specify one using project search command from the UI.
 
+## Contributing
+A key motivation for this project is to educate the community of about creating great TypeScript tools. So we would love to help you understand how the project works. [Checkout the developer / contributor docs](./docs/contributing/README.md).
+
 ## License
 
 MIT
