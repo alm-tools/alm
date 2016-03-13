@@ -57,8 +57,7 @@ More reading (You don't need to read these ... but if you are bored):
 * `server/lang` our main API stuff on top of the core TypeScript Language Service.
 
 # How does the frontend talk to the backend
-* Using the principles of [ASYNC](./ASYNC.md) programming (please read that).
-* Communication is done using socket.io. Checkout the [`socket` folder](https://github.com/alm-tools/alm/tree/e34bbf9cb6227f3cd150737fef5a47f212e2ad7a/src/socket) which contains the socket contract + server + client :rose:
+Documented in the [principles of ASYNC](./ASYNC.md).
 
 # Conventions
 Please see [CONVENTIONS.md](./CONVENTIONS.md)
