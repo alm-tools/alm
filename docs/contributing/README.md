@@ -19,15 +19,6 @@ nodemon
 
 Once you have `nodemon` running, if you edit any front-end ts file our Webpack setup will reload the front end only. Make a change to some backend file and the app restarts :rose:
 
-# After moving a new machine
-I quite often work on my personal laptop during my 1 hour one way commute and need to setup the machine quickly, so on the new machine:
-
-```
-npm run resume
-```
-
-This will just run the right things again (pull + install + initial compile).
-
 # IDE
 We presently use [`atom-typescript`](https://atom.io/packages/atom-typescript). Eventually this project should be self hosting.
 
@@ -65,9 +56,6 @@ More reading (You don't need to read these ... but if you are bored):
 * `server/workers` we run various background workers. They are present here.
 * `server/lang` our main API stuff on top of the core TypeScript Language Service.
 
-# Updating TypeScript Version
-We use [NTypeScript](https://github.com/TypeStrong/ntypescript). NTypeScript keeps itself updated with Microsoft/Typescript every night. To update the version used by alm.tools simply run `npm run update`. This will install the latest version of NTypeScript and run a build to make sure everything still compiles.
-
 # How does the frontend talk to the backend
 * Using the principles of [ASYNC](./ASYNC.md) programming (please read that).
 * Communication is done using socket.io. Checkout the [`socket` folder](https://github.com/alm-tools/alm/tree/e34bbf9cb6227f3cd150737fef5a47f212e2ad7a/src/socket) which contains the socket contract + server + client :rose:
@@ -77,3 +65,28 @@ Please see [CONVENTIONS.md](./CONVENTIONS.md)
 
 # Deployment
 Please see [DEPLOYMENT.md](./DEPLOYMENT.md)
+
+# Various NPM commands
+
+### After moving a new machine
+I quite often work on my personal laptop during my 1 hour one way commute and need to setup the machine quickly, so on the new machine:
+
+```
+npm run resume
+```
+
+This will just run the right things again (pull + install + initial compile).
+
+### Updating TypeScript Version
+We use [NTypeScript](https://github.com/TypeStrong/ntypescript). NTypeScript keeps itself updated with Microsoft/Typescript every night. To update the version used by alm.tools simply run
+```
+npm run update
+```
+This will install the latest version of NTypeScript and run a build to make sure everything still compiles.
+
+### Running tsc in watch mode
+If you did something which resulted in a lot of errors you can run tsc in watch mode in a new window:
+
+```
+npm run tscw
+```
