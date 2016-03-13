@@ -59,6 +59,9 @@ More reading (You don't need to read these ... but if you are bored):
 # How does the frontend talk to the backend
 Documented in the [principles of ASYNC](./ASYNC.md).
 
+# How is global state managed
+State for visual components in mostly managed by redux which we have made type-safe. [Checkout the docs](./REDUX.md).
+
 # Conventions
 Please see [CONVENTIONS.md](./CONVENTIONS.md)
 
