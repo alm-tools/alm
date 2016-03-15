@@ -264,4 +264,10 @@ let enabled = false;
 import * as commands from "../../commands/commands";
 CodeMirror.commands[commands.additionalEditorCommands.toggleBlaster] = (editor: CodeMirror.EditorFromTextArea) => {
     enabled = !enabled;
+    if (enabled) {
+        ui.notifySuccessNormalDisappear('Have fun 🌹!');
+    }
+    else {
+        ui.notifyInfoQuickDisappear('Hope you had fun!');
+    }
 }
