@@ -40,3 +40,22 @@
 .CodeMirror-matchingtag {
     background: rgba(150, 118, 0, 0.2);
 }
+
+/* Code folding style from graphiql */
+.CodeMirror-foldmarker {
+  border-radius: 4px;
+  background: #08f;
+  background: -webkit-linear-gradient(#43A8FF, #0F83E8);
+  background:         linear-gradient(#43A8FF, #0F83E8);
+
+  color: white;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+     -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  font-family: arial;
+  line-height: 0;
+  padding: 0px 4px 1px;
+  font-size: 12px;
+  margin: 0 3px;
+  text-shadow: 0 -1px rgba(0, 0, 0, 0.1);
+}
