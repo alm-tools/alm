@@ -109,7 +109,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                     fileOutputState === types.JSOutputState.EmitSkipped ? null
                     : fileOutputState === types.JSOutputState.NoJSFile ? null
                     : fileOutputState === types.JSOutputState.JSOutOfDate ? <span style={styles.statusBarError}>❌ JS Outdated</span>
-                    : <span style={styles.statusBarSuccess}>✔️ JS Current</span>
+                    : <span style={styles.statusBarSuccess}>✓ JS Current</span>
                 }
                 </span>
             </span>;
