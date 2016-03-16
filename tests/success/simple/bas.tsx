@@ -24,3 +24,8 @@ class Test {
         return 'asdf' + `${this.foo}`;
     }
 }
+
+const Comp = (props:{text:string}) => { 
+    return <div>{props.text}</div> 
+}
+const comp = <Comp text="hello world"/>
