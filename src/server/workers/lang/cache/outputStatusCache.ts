@@ -5,12 +5,12 @@
  * - If the active project changes we need to update *all* the statuses
  * - whenever the output status *changes* we need to send it to the client.
  */
-import * as types from "../../../common/types";
-import * as fileModelCache from "../../disk/fileModelCache";
-import * as activeProject from "./activeProject";
-import * as events from "../../../common/events";
-import * as projectService from "./projectService";
-import * as utils from "../../../common/utils";
+import * as types from "../../../../common/types";
+import * as fileModelCache from "../../../disk/fileModelCache";
+import * as activeProject from "../activeProject";
+import * as events from "../../../../common/events";
+import * as projectService from "../projectService";
+import * as utils from "../../../../common/utils";
 
 /**
  * Expose changes to the outside world

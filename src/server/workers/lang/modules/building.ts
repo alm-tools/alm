@@ -1,10 +1,10 @@
-import project = require('./core/project');
+import project = require('../core/project');
 import mkdirp = require('mkdirp');
 import path = require('path');
 import fs = require('fs');
-import {makeAbsoluteIfNeeded} from "../../disk/workingDir";
-import {consistentPath} from "../../utils/fsu";
-import {createMap} from "../../../common/utils";
+import {makeAbsoluteIfNeeded} from "../../../disk/workingDir";
+import {consistentPath} from "../../../utils/fsu";
+import {createMap} from "../../../../common/utils";
 
 export function diagnosticToCodeError(diagnostic: ts.Diagnostic): CodeError {
     var filePath = diagnostic.file.fileName;

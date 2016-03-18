@@ -16,7 +16,7 @@ import * as utils from "../../../common/utils";
 let {resolve} = utils;
 import * as fsu from "../../utils/fsu";
 import fuzzaldrin = require('fuzzaldrin');
-import * as errorsCache from "./errorsCache";
+import * as errorsCache from "./cache/errorsCache";
 
 export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQuery): Promise<Types.GetCompletionsAtPositionResponse> {
     let {filePath, position, prefix} = query;
@@ -352,7 +352,7 @@ export function getAST(query: Types.GetASTQuery): Promise<Types.GetASTResponse> 
 /**
  * JS Ouput
  */
-import {getRawOutput} from "./building";
+import {getRawOutput} from "./modules/building";
 export type GetJSOutputStatusResponse = {inActiveProject:boolean, outputStatus?: types.JSOutputStatus};
 export function getJSOutputStatus(query: Types.FilePathQuery): GetJSOutputStatusResponse {
     const project = activeProject.GetProject.ifCurrent(query.filePath);

@@ -3,8 +3,8 @@
  * and notifies anyone who is concerned of updated values
  */
 
-import {TypedEvent} from "../../../common/events";
-import {createMapByKey,debounce,selectMany} from "../../../common/utils";
+import {TypedEvent} from "../../../../common/events";
+import {createMapByKey,debounce,selectMany} from "../../../../common/utils";
 import equal = require('deep-equal');
 
 export let errorsUpdated = new TypedEvent<ErrorsUpdate>();
