@@ -379,7 +379,7 @@ export class LanguageServiceHost extends LSHost {
     /**
      * Basically having setContents ensure long term stability even if stuff does get out of sync due to errors in above implementation
      */
-    setContents(filename: string, contents: string){
+    setContents(filename: string, contents: string) {
         const script = this.getScriptInfo(filename);
         if (script) {
             script.svc.reload(contents);
@@ -387,13 +387,23 @@ export class LanguageServiceHost extends LSHost {
         }
         throw new Error("No script with name '" + filename + "'");
     }
+    /**
+     * Note : This can be slow
+     */
+    getContents(filename: string) {
+        const script = this.getScriptInfo(filename);
+        if (script) {
+            return script.getText();
+        }
+        throw new Error("No script with name '" + filename + "'");
+    }
     /** 0 based */
-    getPositionOfLineAndCharacter(filePath: string, line: number, ch: number){
+    getPositionOfLineAndCharacter(filePath: string, line: number, ch: number) {
         return this.lineOffsetToPosition(filePath, line + 1, ch + 1);
     }
     /** 0 based */
-    getLineAndCharacterOfPosition(filePath: string, pos: number): EditorPosition{
-        let res = this.positionToLineOffset(filePath,pos);
-        return {line: res.line - 1, ch: res.offset - 1};
+    getLineAndCharacterOfPosition(filePath: string, pos: number): EditorPosition {
+        let res = this.positionToLineOffset(filePath, pos);
+        return { line: res.line - 1, ch: res.offset - 1 };
     }
 }
