@@ -12,9 +12,9 @@ export var getDefaultLibFilePath = (options: ts.CompilerOptions) => {
 export var typescriptDirectory = path.dirname(require.resolve('ntypescript')).split('\\').join('/');
 
 
-// NOTES:
-// * fileName is * always * the absolute path to the file
-// * content is *always* the string content of the file
+/**
+ * Extension: Just adds stuff that uses `fmc` or uses `require.resolve` to load lib.d.ts
+ */
 export class LanguageServiceHost extends lsh.LanguageServiceHost {
     constructor(compilerOptions: ts.CompilerOptions) {
         super(compilerOptions);
