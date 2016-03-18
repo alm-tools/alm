@@ -64,9 +64,10 @@ export class TypedEvent<T> {
             return Promise.resolve(this._last);
         }
         else {
-            let p = Promise.defer();
-            this._currentQueue.push(p);
-            return p.promise;
+            const promise = new Promise((resolve,reject)=>{
+                this._currentQueue.push({ promise, resolve, reject });
+            })
+            return promise;
         }
     }
 }

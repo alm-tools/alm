@@ -148,14 +148,15 @@ export class RequesterResponder {
 
         // Create an id unique to this call and store the defered against it
         var id = createId();
-        var defer = Promise.defer<any>();
-        this.currentListeners[message][id] = defer;
+        const promise = new Promise((resolve,reject)=>{
+            this.currentListeners[message][id] = { resolve, reject, promise };
+        });
 
         // Send data to worker
         this.pendingRequests.push(message);
         this.pendingRequestsChanged(this.pendingRequests);
         this.getSocket().emit('message', { message: message, id: id, data: data, isRequest: true });
-        return defer.promise;
+        return promise;
     }
 
     /**
@@ -210,12 +211,14 @@ export class RequesterResponder {
                 }
 
                 // this needs to be the new last
-                var defer = Promise.defer<Response>();
-                this.currentLastOfType[message] = {
-                    data: data,
-                    defer: defer
-                }
-                return defer.promise;
+                const promise = new Promise<Response>((resolve,reject)=>{
+                    this.currentLastOfType[message] = {
+                        data: data,
+                        defer: {promise,resolve,reject}
+                    }
+                });
+
+                return promise;
             }
         };
     }

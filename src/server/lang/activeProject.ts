@@ -290,9 +290,8 @@ namespace ConfigFile {
             // we need one thats designed to work from *all source files*.
             return tsconfig.getDefaultInMemoryProject(process.cwd());
         }
-        else {
-            var filePath = config.tsconfigFilePath;
-        }
+
+        const filePath = config.tsconfigFilePath;        
 
         try {
             // If we are asked to look at stuff in lib.d.ts create its own project
@@ -300,7 +299,7 @@ namespace ConfigFile {
                 return tsconfig.getDefaultInMemoryProject(filePath);
             }
 
-            var projectFile = tsconfig.getProjectSync(filePath);
+            const projectFile = tsconfig.getProjectSync(filePath);
             clearErrorsForFilePath(projectFile.projectFilePath);
             return projectFile;
         } catch (ex) {

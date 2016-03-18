@@ -85,10 +85,7 @@ interface PromiseConstructor {
      * Creates a new resolved promise .
      * @returns A resolved promise.
      */
-    resolve(): Promise<void>;
-
-    /// BAS ADDITIONS AFTER INSPECTION INTO ATOM
-    defer<T>(): PromiseDeferred<T>;
+    resolve(): Promise<void>;    
 }
 
 interface PromiseDeferred<T> {
