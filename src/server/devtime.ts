@@ -7,7 +7,6 @@ import path = require('path');
 import fs = require('fs');
 import express = require('express');
 import * as utils from "../common/utils";
-import {cookies} from "./cookies";
 
 const webpackDevServerPort = 8888;
 const devtimeDetectionFile = __dirname + '/devtime.txt';
