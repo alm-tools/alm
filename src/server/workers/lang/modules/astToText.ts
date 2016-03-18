@@ -7,7 +7,7 @@
 // https://github.com/Microsoft/TypeScript/blob/65cbd91667acf890f21a3527b3647c7bc994ca32/src/compiler/parser.ts#L43-L320
 
 import {syntaxKindToString} from "./astUtils";
-import {Types} from "../../../socket/socketContract";
+import {Types} from "../../../../socket/socketContract";
 type NodeDisplay = Types.NodeDisplay;
 
 export function astToText(srcFile: ts.Node) {

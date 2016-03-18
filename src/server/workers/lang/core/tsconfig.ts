@@ -2,13 +2,13 @@
  * BIG CHANGES
  * - this uses fmc (allows us to read file in memory that user might be editing)
  */
-import * as fmc from "../../disk/fileModelCache";
+import * as fmc from "../../../disk/fileModelCache";
 
-import * as fsu from "../../utils/fsu";
+import * as fsu from "../../../utils/fsu";
 import fs = require('fs');
 import ts = require('ntypescript');
-import * as json from "../../../common/json";
-import {makeBlandError} from "../../../common/utils";
+import * as json from "../../../../common/json";
+import {makeBlandError} from "../../../../common/utils";
 
 import simpleValidator = require('./simpleValidator');
 var types = simpleValidator.types;

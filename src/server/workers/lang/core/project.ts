@@ -4,7 +4,7 @@ import os = require('os');
 
 export import languageServiceHost = require('./languageServiceHost');
 import tsconfig = require('./tsconfig');
-import {selectMany}  from "../../../common/utils";
+import {selectMany}  from "../../../../common/utils";
 
 /**
  * Wraps up `langaugeService` `languageServiceHost` and `projectFile` in a single package

@@ -1,6 +1,6 @@
 import path = require('path');
 import fs = require('fs');
-import fmc = require('../../disk/fileModelCache');
+import fmc = require('../../../disk/fileModelCache');
 var textBuffer = require('basarat-text-buffer');
 
 import tsconfig = require('./tsconfig');

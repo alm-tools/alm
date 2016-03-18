@@ -7,14 +7,14 @@
 import * as activeProject from "./activeProject";
 let getProject = activeProject.GetProject.ifCurrentOrErrorOut;
 
-import * as fileModelCache from "../disk/fileModelCache";
+import * as fileModelCache from "../../disk/fileModelCache";
 
-import {Types} from "../../socket/socketContract";
-import * as types from "../../common/types";
+import {Types} from "../../../socket/socketContract";
+import * as types from "../../../common/types";
 
-import * as utils from "../../common/utils";
+import * as utils from "../../../common/utils";
 let {resolve} = utils;
-import * as fsu from "../utils/fsu";
+import * as fsu from "../../utils/fsu";
 import fuzzaldrin = require('fuzzaldrin');
 import * as errorsCache from "./errorsCache";
 
@@ -355,7 +355,7 @@ export function getAST(query: Types.GetASTQuery): Promise<Types.GetASTResponse> 
 import {getRawOutput} from "./building";
 export type GetJSOutputStatusResponse = {inActiveProject:boolean, outputStatus?: types.JSOutputStatus};
 export function getJSOutputStatus(query: Types.FilePathQuery): GetJSOutputStatusResponse {
-    const project = activeProject.GetProject.getCurrentIfAny();
+    const project = activeProject.GetProject.ifCurrent(query.filePath);
     if (!project) {
         return {
             inActiveProject: false
@@ -373,7 +373,7 @@ export function getJSOutputStatus(query: Types.FilePathQuery): GetJSOutputStatus
      * If the state is JSOutOfDate we can easily fix that to bring it up to date for `compileOnSave`
      */
     if (project.configFile.project.compileOnSave !== false) {
-        fileModelCache.getOrCreateOpenFile(jsFile.name).setContents(jsFile.text);        
+        fileModelCache.getOrCreateOpenFile(jsFile.name).setContents(jsFile.text);
         state = types.JSOutputState.JSUpToDate;
     }
 

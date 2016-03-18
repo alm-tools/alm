@@ -1,5 +1,5 @@
 import project = require('../core/project');
-import * as types from "../../../common/types";
+import * as types from "../../../../common/types";
 
 export function formatDocument(proj: project.Project, filePath: string): types.RefactoringsByFilePath {
     var textChanges = proj.languageService.getFormattingEditsForDocument(filePath, proj.configFile.project.formatCodeOptions);

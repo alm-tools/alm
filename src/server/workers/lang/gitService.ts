@@ -2,8 +2,8 @@
  * The stuff that interacts with system git
  */
 import * as cp from "child_process";
-import * as wd from "../disk/workingDir";
-import * as fmc from "../disk/fileModelCache";
+import * as wd from "../../disk/workingDir";
+import * as fmc from "../../disk/fileModelCache";
 
 /** Main utility function to execute a command */
 let gitCmd = (...args: string[]):Promise<string> => {

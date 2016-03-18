@@ -2,11 +2,11 @@
  * Find and replace multi. The single file version is client only.
  */
 
-import * as wd from "../disk/workingDir";
+import * as wd from "../../disk/workingDir";
 import * as cp from "child_process";
-import {Types} from "../../socket/socketContract";
-import * as utils from "../../common/utils";
-import {TypedEvent} from "../../common/events";
+import {Types} from "../../../socket/socketContract";
+import * as utils from "../../../common/utils";
+import {TypedEvent} from "../../../common/events";
 
 /**
  * Maintains current farm state

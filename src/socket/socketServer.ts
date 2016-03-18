@@ -5,16 +5,16 @@ import * as fsu from "../server/utils/fsu";
 import * as flm from "../server/workers/fileListing/fileListingMaster";
 import * as workingDir from "../server/disk/workingDir";
 import {FileModel} from "../server/disk/fileModel";
-import * as activeProject from "../server/lang/activeProject";
-import * as projectService from "../server/lang/projectService";
-import * as gitService from "../server/lang/gitService";
-import * as findAndReplaceMultiService from "../server/lang/findAndReplaceMultiService";
-import * as outputStatusCache from "../server/lang/outputStatusCache";
+import * as activeProject from "../server/workers/lang/activeProject";
+import * as projectService from "../server/workers/lang/projectService";
+import * as gitService from "../server/workers/lang/gitService";
+import * as findAndReplaceMultiService from "../server/workers/lang/findAndReplaceMultiService";
+import * as outputStatusCache from "../server/workers/lang/outputStatusCache";
 import * as session from "../server/disk/session";
 let resolve = sls.resolve;
 
 import * as fmc from "../server/disk/fileModelCache";
-import * as errorCache from "../server/lang/errorsCache";
+import * as errorCache from "../server/workers/lang/errorsCache";
 
 namespace Server {
     export var echo: typeof contract.server.echo = (data, client) => {

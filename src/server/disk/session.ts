@@ -12,7 +12,7 @@ import * as utils from "../../common/utils";
 import * as workingDir from "./workingDir";
 import * as commandLine from "../commandLine";
 import * as constants from "../../common/constants";
-import * as tsconfig from "../lang/core/tsconfig";
+import * as tsconfig from "../workers/lang/core/tsconfig";
 
 const sessionFile = types.cacheDir + '/sessionsV1.json'
 

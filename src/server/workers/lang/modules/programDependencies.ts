@@ -1,10 +1,10 @@
 import {TypeScriptConfigFileDetails, pathIsRelative} from "../core/tsconfig";
-import {consistentPath} from "../../utils/fsu";
+import {consistentPath} from "../../../utils/fsu";
 import tsconfig = require("../core/tsconfig");
 import * as path from "path";
 import * as fs from "fs";
 import {getSourceFileImports} from "./astUtils";
-import {Types} from "../../../socket/socketContract";
+import {Types} from "../../../../socket/socketContract";
 
 export function getProgramDependencies(projectFile: TypeScriptConfigFileDetails, program: ts.Program): Types.FileDependency[] {
     var links: Types.FileDependency[] = [];

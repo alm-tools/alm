@@ -9,22 +9,22 @@
  * If it contains parse errors we send them through to all connected clients.
  */
 
-import utils = require("../../common/utils");
-import * as json from "../../common/json";
-import * as fsu from "../utils/fsu";
-import * as flm from "../workers/fileListing/fileListingMaster";
-import * as wd from "../disk/workingDir";
-import * as fmc from "../disk/fileModelCache";
+import utils = require("../../../common/utils");
+import * as json from "../../../common/json";
+import * as fsu from "../../utils/fsu";
+import * as flm from "../fileListing/fileListingMaster";
+import * as wd from "../../disk/workingDir";
+import * as fmc from "../../disk/fileModelCache";
 import * as tsconfig from "./core/tsconfig";
 import * as project from "./core/project";
-import * as types from "../../common/types";
+import * as types from "../../../common/types";
 import {setErrorsByFilePaths, clearErrors, clearErrorsForFilePath} from "./errorsCache";
 import {diagnosticToCodeError} from "./building";
-import {makeBlandError} from "../../common/utils";
-import {TypedEvent} from "../../common/events";
+import {makeBlandError} from "../../../common/utils";
+import {TypedEvent} from "../../../common/events";
 import equal = require('deep-equal');
-import * as session from "../disk/session";
-import * as workingDir from "../disk/workingDir";
+import * as session from "../../disk/session";
+import * as workingDir from "../../disk/workingDir";
 import ora = require("ora");
 
 
@@ -245,7 +245,7 @@ const refreshFileDiagnostics = utils.debounce((filePath:string) => {
 import fs = require("fs");
 import path = require("path");
 import {Project, languageServiceHost} from "./core/project";
-import {getOpenFiles} from "../disk/fileModelCache";
+import {getOpenFiles} from "../../disk/fileModelCache";
 namespace ConfigFile {
 
     /** Create a project from a project file */
@@ -291,7 +291,7 @@ namespace ConfigFile {
             return tsconfig.getDefaultInMemoryProject(process.cwd());
         }
 
-        const filePath = config.tsconfigFilePath;        
+        const filePath = config.tsconfigFilePath;
 
         try {
             // If we are asked to look at stuff in lib.d.ts create its own project
@@ -332,6 +332,7 @@ export namespace GetProject {
             return currentProject;
         }
     }
+
     /**
      * Sometimes (e.g in the projectService) you want to error out
      * because these functions should not be called if there is no active project
