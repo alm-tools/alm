@@ -39,10 +39,6 @@ export class LanguageServiceHost extends lsh.LanguageServiceHost {
         super.addScript(fileName, content);
     }
 
-    getScriptContent = (fileName: string): string => {
-        return super.getContents(fileName);
-    }
-
     /** Great for error messages etc */
     getPositionFromTextSpanWithLinePreview = (fileName: string, textSpan: ts.TextSpan): { position: EditorPosition, preview: string } => {
         var position = this.getLineAndCharacterOfPosition(fileName, textSpan.start);
