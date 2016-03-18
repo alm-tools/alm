@@ -29,11 +29,6 @@ import ora = require("ora");
 
 
 /** The active project name */
-// TODO:
-// replace this with ActiveProjectConfigDetails
-// Wire it up all the way to sending it to the client
-// Then in the client show the longer name (node_modules if present)
-// And on clicking it open the file from disk
 let activeProjectConfigDetails: ActiveProjectConfigDetails = null;
 export let activeProjectConfigDetailsUpdated = new TypedEvent<ActiveProjectConfigDetails>();
 export let activeProjectFilePathsUpdated = new TypedEvent<{filePaths:string[]}>();
