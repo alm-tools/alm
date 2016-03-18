@@ -120,6 +120,11 @@ export class FileModel {
         this.save();
     }
 
+    /** Great for error messages etc. Ofcourse `0` based */
+    getLinePreview(line: number) {
+        return this.text[line];
+    }
+
     /** splitLinesAuto from codemirror */
     private splitlines(string: string) { return string.split(/\r\n?|\n/); };
 
