@@ -16,8 +16,8 @@ export function formatDocument(proj: project.Project, filePath: string): types.R
     return types.getRefactoringsByFilePath(refactorings);
 }
 export function formatDocumentRange(proj: project.Project, filePath: string, start: EditorPosition, end: EditorPosition): types.RefactoringsByFilePath {
-    var st = proj.languageServiceHost.getIndexFromPosition(filePath, start);
-    var ed = proj.languageServiceHost.getIndexFromPosition(filePath, end);
+    var st = proj.languageServiceHost.getPositionOfLineAndCharacter(filePath, start.line, start.ch);
+    var ed = proj.languageServiceHost.getPositionOfLineAndCharacter(filePath, end.line, end.ch);
     var textChanges = proj.languageService.getFormattingEditsForRange(filePath, st, ed, proj.configFile.project.formatCodeOptions);
 
     let refactorings:types.Refactoring[] = textChanges.map(x=>{

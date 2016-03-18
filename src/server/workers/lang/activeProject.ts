@@ -156,7 +156,7 @@ fmc.savedFileChangedOnDisk.on((evt) => {
     // Check if its a part of the current project .... if not ignore :)
     let proj = GetProject.ifCurrent(evt.filePath)
     if (proj) {
-        proj.languageServiceHost.updateScript(evt.filePath, evt.contents);
+        proj.languageServiceHost.setContents(evt.filePath, evt.contents);
         refreshAllProjectDiagnosticsDebounced();
     }
 });
@@ -166,7 +166,7 @@ fmc.savedFileChangedOnDisk.on((evt) => {
 fmc.didEdit.on((evt) => {
     let proj = GetProject.ifCurrent(evt.filePath)
     if (proj) {
-        proj.languageServiceHost.editScript(evt.filePath, evt.edit.from, evt.edit.to, evt.edit.newText);
+        proj.languageServiceHost.applyCodeEdit(evt.filePath, evt.edit.from, evt.edit.to, evt.edit.newText);
         // For debugging
         // console.log(proj.languageService.getSourceFile(evt.filePath).text);
 
@@ -250,7 +250,7 @@ namespace ConfigFile {
         // Update the language service host for any unsaved changes
         getOpenFiles().forEach(fileModel=> {
             if (project.includesSourceFile(fileModel.config.filePath)) {
-                project.languageServiceHost.updateScript(fileModel.config.filePath, fileModel.getContents());
+                project.languageServiceHost.setContents(fileModel.config.filePath, fileModel.getContents());
             }
         });
 

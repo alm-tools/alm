@@ -136,7 +136,7 @@ function positionErrors(query: Types.FilePathPositionQuery): CodeError[] {
         return [];
     }
 
-    let editorPos = project.languageServiceHost.getPositionFromIndex(query.filePath, query.position);
+    let editorPos = project.languageServiceHost.getLineAndCharacterOfPosition(query.filePath, query.position);
     let errors = errorsCache.getErrorsForFilePath(query.filePath);
     errors = errors.filter(e =>
         // completely contained in the multiline
@@ -189,7 +189,7 @@ export function getDefinitionsAtPosition(query: Types.GetDefinitionsAtPositionQu
         projectFileDirectory: projectFileDirectory,
         definitions: definitions.map(d=> {
             // If we can get the filename *we are in the same program :P*
-            var pos = project.languageServiceHost.getPositionFromIndex(d.fileName, d.textSpan.start);
+            var pos = project.languageServiceHost.getLineAndCharacterOfPosition(d.fileName, d.textSpan.start);
             return {
                 filePath: d.fileName,
                 position: pos,
@@ -202,7 +202,7 @@ export function getDefinitionsAtPosition(query: Types.GetDefinitionsAtPositionQu
 export function getDoctorInfo(query: Types.GetDoctorInfoQuery): Promise<Types.GetDoctorInfoResponse> {
     let project = getProject(query.filePath);
     let filePath = query.filePath;
-    let position = project.languageServiceHost.getIndexFromPosition(query.filePath, query.editorPosition);
+    let position = project.languageServiceHost.getPositionOfLineAndCharacter(query.filePath, query.editorPosition.line, query.editorPosition.ch);
 
     // Just collect other responses
     let defPromised = getDefinitionsAtPosition({ filePath, position });
@@ -308,7 +308,7 @@ export function getNavigateToItems(query: {}): Promise<Types.GetNavigateToItemsR
                     kind: getNodeKind(declaration),
                     filePath: file.fileName,
                     fileName: utils.getFileName(file.fileName),
-                    position: project.languageServiceHost.getPositionFromIndex(file.fileName, declaration.getStart())
+                    position: project.languageServiceHost.getLineAndCharacterOfPosition(file.fileName, declaration.getStart())
                 }
                 items.push(item);
             }

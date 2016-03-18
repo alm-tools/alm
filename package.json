@@ -34,7 +34,6 @@
   "preferGlobal": true,
   "homepage": "https://github.com/alm-tools/alm#readme",
   "dependencies": {
-    "basarat-text-buffer": "^6.0.0",
     "chokidar": "^1.0.5",
     "colors": "^1.1.2",
     "cookie-parser": "^1.3.5",

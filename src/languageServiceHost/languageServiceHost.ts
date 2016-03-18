@@ -10,7 +10,7 @@ let createFileMap = ts.createFileMap;
 /** BAS : a function I added, useful as we are working without true fs host */
 const toSimplePath = (fileName:string):Path => toPath(fileName, '', (x) => x);
 /** our compiler settings for simple tokenization */
-const defaultCompilationSettings: ts.CompilerOptions = {
+const defaultCompilerOptions: ts.CompilerOptions = {
     jsx: ts.JsxEmit.React,
     module: ts.ModuleKind.CommonJS,
     target: ts.ScriptTarget.Latest,
@@ -239,7 +239,7 @@ export class LSHost implements ts.LanguageServiceHost {
     roots: ScriptInfo[] = [];
 
     /** BAS: added compilation settings as an option */
-    constructor(public compilationSettings = defaultCompilationSettings) {
+    constructor(public compilerOptions = defaultCompilerOptions) {
         this.filenameToScript = createFileMap<ScriptInfo>();
     }
 
@@ -263,7 +263,7 @@ export class LSHost implements ts.LanguageServiceHost {
 
     // BAS change this to return active project settings for file
     getCompilationSettings() {
-        return this.compilationSettings;
+        return this.compilerOptions;
     }
 
     getScriptFileNames() {
@@ -397,7 +397,7 @@ export class LanguageServiceHost extends LSHost {
         }
         throw new Error("No script with name '" + filename + "'");
     }
-    
+
     /** 0 based */
     getPositionOfLineAndCharacter(filePath: string, line: number, ch: number) {
         return this.lineOffsetToPosition(filePath, line + 1, ch + 1);
