@@ -14,7 +14,7 @@ export class Project {
     public languageService: ts.LanguageService;
 
     constructor(public configFile: tsconfig.TypeScriptConfigFileDetails) {
-        this.languageServiceHost = new languageServiceHost.LanguageServiceHost(configFile);
+        this.languageServiceHost = new languageServiceHost.LanguageServiceHost(configFile.project.compilerOptions);
 
         // Add all the files
         configFile.project.files.forEach((file) => {

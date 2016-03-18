@@ -274,6 +274,7 @@ export class LSHost implements ts.LanguageServiceHost {
         return this.getScriptInfo(filename).svc.latestVersion().toString();
     }
 
+    // BAS We work with full paths
     getCurrentDirectory(): string {
         return "";
     }

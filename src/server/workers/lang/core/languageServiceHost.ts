@@ -3,8 +3,6 @@ import fs = require('fs');
 import fmc = require('../../../disk/fileModelCache');
 var textBuffer = require('basarat-text-buffer');
 
-import tsconfig = require('./tsconfig');
-
 interface ScriptInfo {
     getFileName(): string;
     getContent(): string;
@@ -220,10 +218,10 @@ export class LanguageServiceHost implements ts.LanguageServiceHost {
      */
     fileNameToScript: { [fileName: string]: ScriptInfo } = Object.create(null);
 
-    constructor(private config: tsconfig.TypeScriptConfigFileDetails) {
+    constructor(public compilerOptions: ts.CompilerOptions) {
         // Add the `lib.d.ts`
-        if (!config.project.compilerOptions.noLib) {
-          this.addScript(getDefaultLibFilePath(config.project.compilerOptions));
+        if (!compilerOptions.noLib) {
+          this.addScript(getDefaultLibFilePath(compilerOptions));
         }
     }
 
@@ -325,7 +323,7 @@ export class LanguageServiceHost implements ts.LanguageServiceHost {
     // ts.LanguageServiceHost implementation
     ////////////////////////////////////////
 
-    getCompilationSettings = () => this.config.project.compilerOptions;
+    getCompilationSettings = () => this.compilerOptions;
     getScriptFileNames = (): string[]=> Object.keys(this.fileNameToScript);
     getScriptVersion = (fileName: string): string => {
         var script = this.fileNameToScript[fileName];
@@ -348,14 +346,13 @@ export class LanguageServiceHost implements ts.LanguageServiceHost {
         }
         // This script should be a part of the project if it exists
         else if (fs.existsSync(fileName)){
-            this.config.project.files.push(fileName);
             this.addScript(fileName);
             return this.getScriptSnapshot(fileName);
         }
         return null;
     }
     getCurrentDirectory = (): string  => {
-        return this.config.projectFileDirectory;
+        return "";
     }
     getDefaultLibFileName = ts.getDefaultLibFileName;
 }
