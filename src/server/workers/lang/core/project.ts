@@ -1,25 +1,41 @@
 import path = require('path');
-import fs = require('fs');
-import os = require('os');
-
-export import languageServiceHost = require('./languageServiceHost');
 import tsconfig = require('./tsconfig');
 import {selectMany}  from "../../../../common/utils";
+
+import * as fmc from "../../../disk/fileModelCache";
+import * as lsh from "../../../../languageServiceHost/languageServiceHost";
 
 /**
  * Wraps up `langaugeService` `languageServiceHost` and `projectFile` in a single package
  */
 export class Project {
-    public languageServiceHost: languageServiceHost.LanguageServiceHost;
+    public languageServiceHost: LanguageServiceHost;
     public languageService: ts.LanguageService;
 
     constructor(public configFile: tsconfig.TypeScriptConfigFileDetails) {
-        this.languageServiceHost = new languageServiceHost.LanguageServiceHost(configFile.project.compilerOptions);
+        this.languageServiceHost = new LanguageServiceHost(configFile.project.compilerOptions);
+
+        const addFile = (filePath:string) => {
+            var content = '';
+            try {
+                if (!content) {
+                    var content = fmc.getOrCreateOpenFile(filePath).getContents();
+                }
+            }
+            catch (ex) { // if we cannot read the file for whatever reason
+                // TODO: in next version of TypeScript langauge service we would add it with "undefined"
+                // For now its just an empty string
+            }
+            this.languageServiceHost.addScript(filePath, content);
+        }
+
+        // Add the `lib.d.ts`
+        if (!configFile.project.compilerOptions.noLib) {
+            addFile(getDefaultLibFilePath(configFile.project.compilerOptions));
+        }
 
         // Add all the files
-        configFile.project.files.forEach((file) => {
-            this.languageServiceHost.addScript(file);
-        });
+        configFile.project.files.forEach(addFile);
 
         this.languageService = ts.createLanguageService(this.languageServiceHost, ts.createDocumentRegistry());
     }
@@ -29,7 +45,7 @@ export class Project {
      * Note: this function is exceedingly slow on cold boot (13s on vscode codebase) as it calls getProgram.getSourceFiles
      */
     public getProjectSourceFiles(): ts.SourceFile[] {
-        var libFile = languageServiceHost.getDefaultLibFilePath(this.configFile.project.compilerOptions);
+        var libFile = getDefaultLibFilePath(this.configFile.project.compilerOptions);
         var files
             = this.languageService.getProgram().getSourceFiles().filter(x=> x.fileName !== libFile);
         return files;
@@ -58,4 +74,27 @@ export class Project {
             .concat(program.getSemanticDiagnostics())
             .concat(program.getSyntacticDiagnostics());
     }
+
+    /** Great for error messages etc */
+    getPositionFromTextSpanWithLinePreview = (fileName: string, textSpan: ts.TextSpan): { position: EditorPosition, preview: string } => {
+        var position = this.languageServiceHost.getLineAndCharacterOfPosition(fileName, textSpan.start);
+        var preview = fmc.getOrCreateOpenFile(fileName).getLinePreview(position.line);
+        return { preview, position };
+    }
+}
+
+/**
+ * Lib file handling
+ */
+export var getDefaultLibFilePath = (options: ts.CompilerOptions) => {
+    var filename = ts.getDefaultLibFileName(options);
+    return (path.join(path.dirname(require.resolve('ntypescript')), filename)).split('\\').join('/');
+}
+export var typescriptDirectory = path.dirname(require.resolve('ntypescript')).split('\\').join('/');
+
+/**
+ * Similar to the base, just adds stuff that uses `require.resolve` to load lib.d.ts
+ */
+export class LanguageServiceHost extends lsh.LanguageServiceHost {
+    getDefaultLibFileName = ()=>getDefaultLibFilePath(this.compilerOptions);
 }

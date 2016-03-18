@@ -233,7 +233,7 @@ export function getReferences(query: Types.GetReferencesQuery): Promise<Types.Ge
     var refs = languageService.getReferencesAtPosition(query.filePath, query.position) || [];
 
     references = refs.map(r=> {
-        var res = project.languageServiceHost.getPositionFromTextSpanWithLinePreview(r.fileName, r.textSpan);
+        var res = project.getPositionFromTextSpanWithLinePreview(r.fileName, r.textSpan);
         return { filePath: r.fileName, position: res.position, span: r.textSpan, preview: res.preview }
     });
 

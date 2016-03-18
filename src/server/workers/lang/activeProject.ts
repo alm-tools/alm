@@ -239,7 +239,7 @@ const refreshFileDiagnostics = utils.debounce((filePath:string) => {
  */
 import fs = require("fs");
 import path = require("path");
-import {Project, languageServiceHost} from "./core/project";
+import {Project} from "./core/project";
 import {getOpenFiles} from "../../disk/fileModelCache";
 namespace ConfigFile {
 
@@ -290,7 +290,7 @@ namespace ConfigFile {
 
         try {
             // If we are asked to look at stuff in lib.d.ts create its own project
-            if (path.dirname(filePath) == languageServiceHost.typescriptDirectory) {
+            if (path.dirname(filePath) == project.typescriptDirectory) {
                 return tsconfig.getDefaultInMemoryProject(filePath);
             }
 
