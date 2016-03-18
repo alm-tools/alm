@@ -397,6 +397,7 @@ export class LanguageServiceHost extends LSHost {
         }
         throw new Error("No script with name '" + filename + "'");
     }
+    
     /** 0 based */
     getPositionOfLineAndCharacter(filePath: string, line: number, ch: number) {
         return this.lineOffsetToPosition(filePath, line + 1, ch + 1);
@@ -405,5 +406,12 @@ export class LanguageServiceHost extends LSHost {
     getLineAndCharacterOfPosition(filePath: string, pos: number): EditorPosition {
         let res = this.positionToLineOffset(filePath, pos);
         return { line: res.line - 1, ch: res.offset - 1 };
+    }
+
+    /** Like parent EditScript but works on EditorPosition */
+    applyCodeEdit(fileName: string, start: EditorPosition, end: EditorPosition, newText: string) {
+        var minChar = this.getPositionOfLineAndCharacter(fileName, start.line, start.ch);
+        var limChar = this.getPositionOfLineAndCharacter(fileName, end.line, end.ch);
+        super.editScript(fileName, minChar, limChar, newText);
     }
 }
