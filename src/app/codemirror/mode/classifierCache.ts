@@ -24,9 +24,7 @@ export function addFile(filePath: string, contents: string) {
     languageServiceHost.addScript(filePath, contents);
 }
 export function editFile(filePath: string, codeEdit: CodeEdit) {
-    let from = languageServiceHost.getPositionOfLineAndCharacter(filePath, codeEdit.from.line, codeEdit.from.ch);
-    let to = languageServiceHost.getPositionOfLineAndCharacter(filePath, codeEdit.to.line, codeEdit.to.ch);
-    languageServiceHost.editScript(filePath, from, to, codeEdit.newText);
+    languageServiceHost.applyCodeEdit(filePath, codeEdit.from, codeEdit.to, codeEdit.newText);
 }
 export function setContents(filePath:string, contents:string){
     languageServiceHost.setContents(filePath,contents);
