@@ -10,13 +10,14 @@ let createFileMap = ts.createFileMap;
 /** BAS : a function I added, useful as we are working without true fs host */
 const toSimplePath = (fileName:string):Path => toPath(fileName, '', (x) => x);
 /** our compiler settings for simple tokenization */
-const compilationSettings: ts.CompilerOptions = {
+const defaultCompilationSettings: ts.CompilerOptions = {
     jsx: ts.JsxEmit.React,
     module: ts.ModuleKind.CommonJS,
     target: ts.ScriptTarget.Latest,
     experimentalDecorators: true,
     noLib: true,
 }
+
 
 /**
  * These classes are modified version of session.ts
@@ -236,9 +237,9 @@ export class LSHost implements ts.LanguageServiceHost {
     ls: ts.LanguageService;
     filenameToScript: ts.FileMap<ScriptInfo>;
     roots: ScriptInfo[] = [];
-    public compilationSettings: ts.CompilerOptions = compilationSettings;
 
-    constructor() {
+    /** BAS: added compilation settings as an option */
+    constructor(public compilationSettings = defaultCompilationSettings) {
         this.filenameToScript = createFileMap<ScriptInfo>();
     }
 
@@ -260,8 +261,8 @@ export class LSHost implements ts.LanguageServiceHost {
         }
     }
 
+    // BAS change this to return active project settings for file
     getCompilationSettings() {
-        // change this to return active project settings for file
         return this.compilationSettings;
     }
 
@@ -308,16 +309,6 @@ export class LSHost implements ts.LanguageServiceHost {
             return;
         }
 
-        throw new Error("No script with name '" + filename + "'");
-    }
-
-    /** bas */
-    setContents(filename: string, contents: string){
-        const script = this.getScriptInfo(filename);
-        if (script) {
-            script.svc.reload(contents);
-            return;
-        }
         throw new Error("No script with name '" + filename + "'");
     }
 
@@ -377,10 +368,29 @@ export class LSHost implements ts.LanguageServiceHost {
         const lineOffset = index.charOffsetToLineNumberAndPos(position);
         return { line: lineOffset.line, offset: lineOffset.offset + 1 };
     }
+}
 
+/**
+ * BAS:
+ * This class is my own creation.
+ */
+export class LanguageServiceHost extends LSHost {
+    /**
+     * Basically having setContents ensure long term stability even if stuff does get out of sync due to errors in above implementation
+     */
+    setContents(filename: string, contents: string){
+        const script = this.getScriptInfo(filename);
+        if (script) {
+            script.svc.reload(contents);
+            return;
+        }
+        throw new Error("No script with name '" + filename + "'");
+    }
+    /** 0 based */
     getPositionOfLineAndCharacter(filePath: string, line: number, ch: number){
         return this.lineOffsetToPosition(filePath, line + 1, ch + 1);
     }
+    /** 0 based */
     getLineAndCharacterOfPosition(filePath: string, pos: number): EditorPosition{
         let res = this.positionToLineOffset(filePath,pos);
         return {line: res.line - 1, ch: res.offset - 1};

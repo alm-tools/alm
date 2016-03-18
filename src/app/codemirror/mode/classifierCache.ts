@@ -15,9 +15,9 @@
  */
 import {TypedEvent} from "../../../common/events";
 import ts = require('ntypescript');
-import * as lsh from "../server/languageServiceHost";
+import * as lsh from "../../../languageServiceHost/languageServiceHost";
 
-const languageServiceHost = new lsh.LSHost();
+const languageServiceHost = new lsh.LanguageServiceHost();
 const languageService = ts.createLanguageService(languageServiceHost);
 
 export function addFile(filePath: string, contents: string) {
