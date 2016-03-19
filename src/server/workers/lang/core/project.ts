@@ -2,7 +2,7 @@ import path = require('path');
 import tsconfig = require('./tsconfig');
 import {selectMany}  from "../../../../common/utils";
 
-import * as fmc from "../../../disk/fileModelCache";
+import {master} from "../projectServiceContract";
 import * as lsh from "../../../../languageServiceHost/languageServiceHost";
 
 /**
@@ -19,7 +19,7 @@ export class Project {
             var content = '';
             try {
                 if (!content) {
-                    var content = fmc.getOrCreateOpenFile(filePath).getContents();
+                    var content = master.getOrCreateOpenFile(filePath).getContents();
                 }
             }
             catch (ex) { // if we cannot read the file for whatever reason
@@ -78,7 +78,7 @@ export class Project {
     /** Great for error messages etc */
     getPositionFromTextSpanWithLinePreview = (fileName: string, textSpan: ts.TextSpan): { position: EditorPosition, preview: string } => {
         var position = this.languageServiceHost.getLineAndCharacterOfPosition(fileName, textSpan.start);
-        var preview = fmc.getOrCreateOpenFile(fileName).getLinePreview(position.line);
+        var preview = master.getOrCreateOpenFile(fileName).getLinePreview(position.line);
         return { preview, position };
     }
 }

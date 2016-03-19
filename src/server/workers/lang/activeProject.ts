@@ -25,7 +25,6 @@ import {TypedEvent} from "../../../common/events";
 import equal = require('deep-equal');
 import * as session from "../../disk/session";
 import * as workingDir from "../../disk/workingDir";
-import ora = require("ora");
 
 
 /** The active project name */

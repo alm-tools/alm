@@ -2,9 +2,9 @@ import * as sw from "../../utils/simpleWorker";
 import * as types from "../../../common/types";
 
 /**
- * A worker consists of two contracts
- * a contract on how the master --calls--> worker
- * a contract on how the worker --calls--> master
+ * There are two contracts
+ * A contract on how the master --calls--> worker
+ * A contract on how the worker --calls--> master
  */
 export var worker = {
     echo: {} as sw.QRFunction<{ text: string, num: number }, { text: string, num: number }>,

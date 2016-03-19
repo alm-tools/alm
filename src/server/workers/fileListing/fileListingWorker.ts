@@ -13,6 +13,8 @@ import * as types from "../../../common/types";
 
 /** A Map for faster live calculations */
 type LiveList = { [filePath: string]: types.FilePathType };
+/** The directory to watch */
+let directoryUnderWatch: string;
 
 namespace Worker {
     export var echo: typeof contract.worker.echo = (q) => {
@@ -23,12 +25,6 @@ namespace Worker {
             };
         });
     }
-
-    // export var fileList: typeof contract.worker.fileList = (q) => {
-    //     return listing.current();
-    // }
-
-    var directoryUnderWatch: string;
 
     export var setupWatch: typeof contract.worker.setupWatch = (q) => {
         directoryUnderWatch = q.directory;
