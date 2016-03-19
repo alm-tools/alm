@@ -41,7 +41,7 @@ require('./codeEditor.css')
 import autocomplete = require('./addons/autocomplete');
 import linter = require('./addons/linter');
 import search = require("./addons/search");
-import typescriptMode = require("./mode/typescript");
+import typescriptMode = require("./mode/typescriptMode");
 typescriptMode.register();
 import * as docCache from "./mode/docCache";
 
