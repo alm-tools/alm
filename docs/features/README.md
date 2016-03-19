@@ -118,7 +118,9 @@ Not just another text mate based grammar which [despite a lot of love](https://g
 ### Us
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/grammarGood.png)
 
-This is because *we use the exact same code that TypeScript uses to carry out its blazing fast compile*.
+This is because *we use the exact same code that TypeScript uses to carry out its blazing fast compile*. Also we give all the more love that we can.
+
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/grammarLove.png)
 
 # Rename Refactoring
 Start a rename refactoring and we show you an easy to view list of things that will change.

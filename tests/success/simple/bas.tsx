@@ -25,7 +25,7 @@ class Test {
     }
 }
 
-const Comp = (props:{text:string}) => { 
-    return <div>{props.text}</div> 
+const Comp = (props: { text: string }) => {
+    return <div>{props.text}</div>
 }
 const comp = <Comp text="hello world"/>
