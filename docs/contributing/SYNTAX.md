@@ -13,7 +13,7 @@ The TypeScript language service has a few functions for syntax highlighting. Her
 **`getSyntacticClassifications` is the function that provides a nice middle ground**. So now we need to figure out a way to have a language service in the UI thread that provides efficient real-time editing of files and then query this language service from CodeMirror ([the editor we use][codemirror]).
 
 ## Classifier Cache
-The file [`classifierCache.ts`][classifierCache.ts] in our codebase provides a hot language service that is maintained and kept up to sync by [`docCache.ts`][docCache.ts] (DocCache loads the files from the server, converts them to CodeMirror *documents* and passes them to the CodeMirror Editor instances). This classifierCache (with its language service) can then be queried for tokens from the language mode.
+The file [`classifierCache.ts`][classifierCache.ts] in our codebase provides a hot language service that is maintained and kept up to sync by [`docCache`][docCache]. This classifierCache (with its language service) can then be queried for tokens from the language mode.
 
 ## Language Mode
 This is a CodeMirror concept. CodeMirror editors work on a *mode*, [check the docs](http://codemirror.net/doc/manual.html#modeapi). We have a [`typescriptMode.ts`][typescriptMode.ts] that just follows the CodeMirror mode API. This maintains its knowledge about the *position* and the *filePath* that is being rendered by  CodeMirror and just queries the tokens for this line from the `classifierCache`. Additionally based on the contents of the line being tokenized it provides  high level *semantic* classifications using heuristics (e.g. if a variable is after `:` and `CamelCased` its probably a type).
@@ -26,6 +26,6 @@ You don't need to read any of this. But I wanted to reference it here for record
 * https://github.com/Microsoft/TypeScript/issues/5545
 
 [classifierCache.ts]:https://github.com/alm-tools/alm/blob/master/src/app/codemirror/mode/classifierCache.ts
-[docCache.ts]:https://github.com/alm-tools/alm/blob/master/src/app/codemirror/mode/docCache.ts
+[docCache]:[./DOCUMENT.md]
 [typescriptMode.ts]:https://github.com/alm-tools/alm/blob/master/src/app/codemirror/mode/typescriptMode.ts
 [codemirror]:[./CODEMIRROR.md]
