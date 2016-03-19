@@ -3,7 +3,7 @@ The TypeScript language service has a few functions for syntax highlighting. Her
 
 * `getLexicalClassifications`: Uses a trimmed down version of the always correct TypeScript scanner. Trim in the sense that it goes line by line, and for each line it returns a state, from this state the next line can be classified. However the state value is just a pure enum, (not a stack) so it cannot be 100% reliable. E.g. https://github.com/Microsoft/TypeScript/issues/5545
 * `getSyntacticClassifications`: Uses the full TypeScript scanner. However in order to use the full scanner you need to give it a file path + file contents. Also these file contents need to be kept up to date. This can be done using a `LanguageServiceHost` that supports `ScriptInfo` (a class that provides super fast change tracking + versioning).
-* `getSemanticClassifications`: Use the full TypeScript *program*. This provides *semantic* meanings to stuff e.g. is this variable actually a `class` as well. Doing semantic classifications is a slow process as cannot be done efficiently without degrading user interaction. So this is done in the background. Only IDE is know that does it is the full Visual Studio.
+* `getSemanticClassifications`: Use the full TypeScript *program*. This provides *semantic* meanings to stuff e.g. is this variable actually a `class` as well. This requires *whole program analysis*. Doing semantic classifications is a slow process (100ms) and cannot be done efficiently without degrading user interaction. So this is done in the background. Only IDE is know that does it is the full Visual Studio.
 
 ## Which one to use
 `getLexicalClassifications` is insufficient for *accurate* colorization for stuff like *ES6 template strings* or *JSX/TSX*.
@@ -17,3 +17,10 @@ The file `classifierCache.ts` in our codebase provides a hot language service th
 
 ## Language Mode
 This is a CodeMirror concept. CodeMirror editors work on a *mode*, [check the docs](http://codemirror.net/doc/manual.html#modeapi). We have a `typescriptMode.ts` that just follows the CodeMirror mode API. This maintains its knowledge about the *position* and the *filePath* that is being rendered by  CodeMirror and just queries the tokens for this line from the `classifierCache`. Additionally based on the contents of the line being tokenized it provides  high level *semantic* classifications using heuristics (e.g. if a variable is after `:` and `CamelCased` its probably a type).
+
+## More
+You don't need to read any of this. But I wanted to reference it here for record:
+
+* https://github.com/codemirror/CodeMirror/issues/3839
+* https://github.com/Microsoft/TypeScript/issues/5582
+* https://github.com/Microsoft/TypeScript/issues/5545
