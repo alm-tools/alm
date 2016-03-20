@@ -27,9 +27,13 @@ namespace Master {
 }
 
 // Ensure that the namespace follows the contract
-var _checkTypes: typeof contract.master = Master;
+const _checkTypes: typeof contract.master = Master;
 // launch worker
-export var {worker} = sw.startWorker(__dirname + '/fileListingWorker', contract.worker, Master);
+export const {worker} = sw.startWorker({
+    workerPath: __dirname + '/fileListingWorker',
+    workerContract: contract.worker,
+    masterImplementation: Master
+});
 
 export function start() {
     worker.setupWatch({ directory: workingDir.getProjectRoot() });

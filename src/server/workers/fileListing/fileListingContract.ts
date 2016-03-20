@@ -6,12 +6,12 @@ import * as types from "../../../common/types";
  * A contract on how the master --calls--> worker
  * A contract on how the worker --calls--> master
  */
-export var worker = {
+export const worker = {
     echo: {} as sw.QRFunction<{ text: string, num: number }, { text: string, num: number }>,
     setupWatch: {} as sw.QRFunction<{ directory: string }, {}>
 }
 
-export var master = {
+export const master = {
     increment: {} as sw.QRFunction<{ num: number }, { num: number }>,
     fileListUpdated: {} as sw.QRFunction<({ filePaths: types.FilePath[], completed: boolean }), any>,
 }

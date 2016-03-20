@@ -9,9 +9,13 @@ export var resolve: typeof Promise.resolve = Promise.resolve.bind(Promise);
 /**
  * The main function you should call from master
  */
-export function startWorker<TWorker>(workerPath: string, workerContract: TWorker, masterImplementation: any): { parent: Parent; worker: TWorker } {
+export function startWorker<TWorker>(config:{
+    workerPath: string,
+    workerContract: TWorker,
+    masterImplementation: any
+}): { parent: Parent; worker: TWorker } {
     var parent = new Parent();
-    parent.startWorker(workerPath, showError, []);
+    parent.startWorker(config.workerPath, showError, []);
 
     function showError(error: Error) {
         if (error) {
@@ -19,8 +23,8 @@ export function startWorker<TWorker>(workerPath: string, workerContract: TWorker
         }
     }
 
-    var worker = parent.sendAllToIpc(workerContract);
-    parent.registerAllFunctionsExportedFromAsResponders(masterImplementation);
+    var worker = parent.sendAllToIpc(config.workerContract);
+    parent.registerAllFunctionsExportedFromAsResponders(config.masterImplementation);
     return { parent, worker };
 }
 
@@ -28,10 +32,10 @@ export function startWorker<TWorker>(workerPath: string, workerContract: TWorker
 /**
  * The main function you should call from worker
  */
-export function runWorker<TMaster>(workerImplementation: any, masterContract: TMaster): { child: Child; master: TMaster } {
+export function runWorker<TMaster>(config:{workerImplementation: any, masterContract: TMaster}): { child: Child; master: TMaster } {
     var child = new Child();
-    child.registerAllFunctionsExportedFromAsResponders(workerImplementation);
-    let master = child.sendAllToIpc(masterContract);
+    child.registerAllFunctionsExportedFromAsResponders(config.workerImplementation);
+    let master = child.sendAllToIpc(config.masterContract);
     return { child, master };
 }
 

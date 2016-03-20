@@ -204,9 +204,12 @@ namespace Worker {
 }
 
 // Ensure that the namespace follows the contract
-var _checkTypes: typeof contract.worker = Worker;
+const _checkTypes: typeof contract.worker = Worker;
 // run worker
-export var {master} = sw.runWorker(Worker, contract.master);
+export const {master} = sw.runWorker({
+    workerImplementation: Worker,
+    masterContract: contract.master
+});
 
 function debug(...args){
     console.error.apply(console,args);
