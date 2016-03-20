@@ -199,10 +199,17 @@ export function getDefinitionsAtPosition(query: Types.GetDefinitionsAtPositionQu
     });
 }
 
+import {getLangHelp} from "./modules/langHelp";
 export function getDoctorInfo(query: Types.GetDoctorInfoQuery): Promise<Types.GetDoctorInfoResponse> {
     let project = getProject(query.filePath);
     let filePath = query.filePath;
     let position = project.languageServiceHost.getPositionOfLineAndCharacter(query.filePath, query.editorPosition.line, query.editorPosition.ch);
+
+    // Get langHelp
+    const program = project.languageService.getProgram();
+    const sourceFile = program.getSourceFile(query.filePath);
+    const positionNode = ts.getTokenAtPosition(sourceFile, position);
+    const langHelp = getLangHelp(positionNode)
 
     // Just collect other responses
     let defPromised = getDefinitionsAtPosition({ filePath, position });
@@ -211,13 +218,15 @@ export function getDoctorInfo(query: Types.GetDoctorInfoQuery): Promise<Types.Ge
     return defPromised.then((defRes) => {
         return quickInfoPromised.then((infoRes) => {
             return getReferences({filePath,position}).then(refRes=>{
+                const valid = !!defRes.definitions.length || infoRes.valid || !!refRes.references.length || !!langHelp;
                 return {
-                    valid: !!defRes.definitions.length || infoRes.valid || !!refRes.references.length,
+                    valid,
                     definitions: defRes.definitions,
                     quickInfo: infoRes.valid && infoRes.info.name ? {
                         name: infoRes.info.name,
                         comment: infoRes.info.name
                     } : null,
+                    langHelp,
                     references: refRes.references
                 }
             });

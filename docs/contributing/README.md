@@ -88,6 +88,8 @@ npm run update
 ```
 This will install the latest version of NTypeScript and run a build to make sure everything still compiles.
 
+> Note: NTypeScript makes the `ts` variable available globally in our backend / frontend  code bases. So you don't need to do any explicit `import * as ts` in new files.
+
 ### Running tsc in watch mode
 If you did something which resulted in a lot of errors you can run tsc in watch mode in a new window:
 

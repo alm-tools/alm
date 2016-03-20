@@ -206,6 +206,16 @@ export class Doctor extends ui.BaseComponent<Props,State> {
                 })}
             </div>
         }
+        if (doctorInfo && doctorInfo.langHelp){
+            definitions = <div style={doctorRow}>
+                <strong>{doctorInfo.langHelp.displayName}</strong>{' '}
+                <span
+                    style={fileLinkStyle}
+                    onClick={()=>window.open(doctorInfo.langHelp.help,'_blank')}>
+                    More
+                </span>
+            </div>
+        }
 
         return <div style={csx.extend(csx.newLayer,docuStyle,positionStyle,csx.vertical)}>
             <div style={csx.vertical}>

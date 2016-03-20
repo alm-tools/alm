@@ -229,6 +229,10 @@ export namespace Types {
     /**
      * Doctor
      */
+    export interface LangHelp {
+        displayName: string;
+        help: string;
+    }
     export interface GetDoctorInfoQuery extends FilePathEditorPositionQuery { }
     export interface GetDoctorInfoResponse {
         valid: boolean;
@@ -241,6 +245,7 @@ export namespace Types {
             name: string;
             comment: string;
         };
+        langHelp?: LangHelp;
         references: ReferenceDetails[];
     }
 
