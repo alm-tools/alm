@@ -25,4 +25,69 @@ Basically anything that is *async* in its contract can be used under the same pr
 
 ## Example FrontEnd
 
-We use socketio in the frontend. Checkout the [`socket` folder](https://github.com/alm-tools/alm/tree/e34bbf9cb6227f3cd150737fef5a47f212e2ad7a/src/socket) which contains the socket contract + server + client :rose:
+We use socketio in the frontend. Checkout the [`socket` folder][socket] which contains the socket contract + server + client :rose:
+
+# `simpleWorker`
+Checkout the example [fileListing worker][fileListing]. Here is are the snippets you need to create a new worker:
+
+## Contract
+```ts
+import * as sw from "../../utils/simpleWorker";
+
+/**
+ * There are two contracts
+ * A contract on how the master --calls--> worker
+ * A contract on how the worker --calls--> master
+ */
+export var worker = {
+    // TODO: Put your own
+    echo: {} as sw.QRFunction<{ text: string, num: number }, { text: string, num: number }>,
+}
+
+export var master = {
+    // TODO: Put your own
+    increment: {} as sw.QRFunction<{ num: number }, { num: number }>,
+}
+```
+## Worker
+```ts
+import * as sw from "../../utils/simpleWorker";
+import * as contract from "./fileListingContract";
+namespace Worker {
+    export var echo: typeof contract.worker.echo = (q) => {
+        return master.increment(q).then((res) => {
+            return {
+                text: q.text,
+                num: res.num
+            };
+        });
+    }
+}
+
+// Ensure that the namespace follows the contract
+var _checkTypes: typeof contract.worker = Worker;
+// run worker
+export var {master} = sw.runWorker(Worker, contract.master);
+```
+
+## Master
+```ts
+import * as sw from "../../utils/simpleWorker";
+import * as contract from "./fileListingContract";
+
+namespace Master {
+    export var increment: typeof contract.master.increment = (q) => {
+        return Promise.resolve({
+            num: ++q.num
+        });
+    }
+}
+
+// Ensure that the namespace follows the contract
+var _checkTypes: typeof contract.master = Master;
+// launch worker
+export var {worker} = sw.startWorker(__dirname + '/fileListingWorker', contract.worker, Master);
+```
+
+[socket]: https://github.com/alm-tools/alm/tree/e34bbf9cb6227f3cd150737fef5a47f212e2ad7a/src/socket
+[fileListing]: https://github.com/alm-tools/alm/tree/master/src/server/workers/fileListing
