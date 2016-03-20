@@ -49,29 +49,6 @@ export const master = {
     increment: {} as sw.QRFunction<{ num: number }, { num: number }>,
 }
 ```
-## Worker
-```ts
-import * as sw from "../../utils/simpleWorker";
-import * as contract from "./fileListingContract";
-namespace Worker {
-    export const echo: typeof contract.worker.echo = (q) => {
-        return master.increment(q).then((res) => {
-            return {
-                text: q.text,
-                num: res.num
-            };
-        });
-    }
-}
-
-// Ensure that the namespace follows the contract
-const _checkTypes: typeof contract.worker = Worker;
-// run worker
-export const {master} = sw.runWorker({
-    workerImplementation: Worker,
-    masterContract: contract.master
-});
-```
 
 ## Master
 ```ts
@@ -93,6 +70,31 @@ export const {worker} = sw.startWorker({
     workerPath: __dirname + '/fileListingWorker',
     workerContract: contract.worker,
     masterImplementation: Master
+});
+```
+
+## Worker
+```ts
+import * as sw from "../../utils/simpleWorker";
+import * as contract from "./fileListingContract";
+
+namespace Worker {
+    export const echo: typeof contract.worker.echo = (q) => {
+        return master.increment(q).then((res) => {
+            return {
+                text: q.text,
+                num: res.num
+            };
+        });
+    }
+}
+
+// Ensure that the namespace follows the contract
+const _checkTypes: typeof contract.worker = Worker;
+// run worker
+export const {master} = sw.runWorker({
+    workerImplementation: Worker,
+    masterContract: contract.master
 });
 ```
 
