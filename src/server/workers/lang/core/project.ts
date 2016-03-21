@@ -74,13 +74,6 @@ export class Project {
             .concat(program.getSemanticDiagnostics())
             .concat(program.getSyntacticDiagnostics());
     }
-
-    /** Great for error messages etc */
-    getPositionFromTextSpanWithLinePreview = (fileName: string, textSpan: ts.TextSpan): { position: EditorPosition, preview: string } => {
-        var position = this.languageServiceHost.getLineAndCharacterOfPosition(fileName, textSpan.start);
-        var preview = master.getOrCreateOpenFile(fileName).getLinePreview(position.line);
-        return { preview, position };
-    }
 }
 
 /**

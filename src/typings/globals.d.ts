@@ -72,5 +72,4 @@ interface ReferenceDetails {
     filePath: string;
     position: EditorPosition;
     span: ts.TextSpan;
-    preview: string;
 }
