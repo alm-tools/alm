@@ -17,3 +17,6 @@ export const {master} = sw.runWorker({
 // Keep the master in sync with some important stuff
 import {errorsUpdated} from "./cache/errorsCache";
 errorsUpdated.on((errorsUpdate) => master.receiveErrorsUpdate(errorsUpdate));
+import {fileOuputStatusUpdated,completeOutputStatusCacheUpdated} from "./cache/outputStatusCache";
+fileOuputStatusUpdated.on((fileOuputStatusUpdate) => master.receiveFileOuputStatusUpdate(fileOuputStatusUpdate));
+completeOutputStatusCacheUpdated.on((completeOutputStatusCacheUpdate) => master.receiveCompleteOutputStatusCacheUpdate(completeOutputStatusCacheUpdate));

@@ -8,6 +8,7 @@ import * as sw from "../../utils/simpleWorker";
 // Just for types
 import * as fmc from "../../disk/fileModelCache";
 import * as flm from "../fileListing/fileListingMaster";
+import * as types from "../../../common/types";
 
 // API provided by the worker (language tools)
 export var worker = {
@@ -23,7 +24,11 @@ export var worker = {
 // API provided by master (web server)
 export var master = {
     getFileContents: {} as sw.QRFunction<{filePath:string},{contents:string}>,
+
+    // Sinks for important events
     receiveErrorsUpdate: {} as sw.QRFunction<ErrorsUpdate, {}>,
+    receiveFileOuputStatusUpdate: {} as sw.QRFunction<types.JSOutputStatus, {}>,
+    receiveCompleteOutputStatusCacheUpdate: {} as sw.QRFunction<types.JSOutputStatusCache, {}>,
 
     // TODO:
     // endpoint to tell about file output statuses
