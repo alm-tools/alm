@@ -52,9 +52,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // server.echo({text:"123",num:345}).then((res)=>console.log(res));
 
     // Anything that should mutate the state
-    server.getErrors({}).then((errorsUpdate)=>{
-        state.setErrorsUpdate(errorsUpdate);
-    });
+    // ASYNC
+    // server.getErrors({}).then((errorsUpdate)=>{
+    //     state.setErrorsUpdate(errorsUpdate);
+    // });
     cast.errorsUpdated.on((errorsByFilePath)=>{
         state.setErrorsUpdate(errorsByFilePath);
     });
@@ -64,9 +65,10 @@ document.addEventListener('DOMContentLoaded', () => {
     connectionStatusChanged.on(r=> {
         state.setSocketConnected(r.connected);
     });
-    server.activeProjectFilePaths({}).then(res=>{
-        state.setFilePathsInActiveProject(res.filePaths);
-    });
+    // ASYNC
+    // server.activeProjectFilePaths({}).then(res=>{
+    //     state.setFilePathsInActiveProject(res.filePaths);
+    // });
     cast.activeProjectFilePathsUpdated.on(res=>{
         state.setFilePathsInActiveProject(res.filePaths);
     });

@@ -75,10 +75,11 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
 
     filePath: string;
     componentDidMount() {
-        this.loadData().then(()=>{
-            // setup listening to resize
-            this.disposible.add(onresize.on(this.graphRenderer.resize))
-        });
+        // ASYNC
+        // this.loadData().then(()=>{
+        //     // setup listening to resize
+        //     this.disposible.add(onresize.on(this.graphRenderer.resize))
+        // });
         this.disposible.add(
             cast.activeProjectConfigDetailsUpdated.on(()=>{
                 this.loadData();
@@ -142,20 +143,21 @@ export class DependencyView extends ui.BaseComponent<Props, State> implements ta
 
     loadData = () => {
         this.refs.graphRoot.innerHTML = '';
-        return server.getDependencies({}).then((res) => {
-            // Create the graph renderer
-            this.graphRenderer = new GraphRenderer({
-                dependencies: res.links,
-                measureSizeRoot: $(this.refs.root),
-                graphRoot:$(this.refs.graphRoot),
-                display:(node) => {
-                }
-            });
-
-            // get the cycles
-            let cycles = this.graphRenderer.d3Graph.cycles();
-            this.setState({cycles});
-        });
+        // ASYNC
+        // return server.getDependencies({}).then((res) => {
+        //     // Create the graph renderer
+        //     this.graphRenderer = new GraphRenderer({
+        //         dependencies: res.links,
+        //         measureSizeRoot: $(this.refs.root),
+        //         graphRoot:$(this.refs.graphRoot),
+        //         display:(node) => {
+        //         }
+        //     });
+        //
+        //     // get the cycles
+        //     let cycles = this.graphRenderer.d3Graph.cycles();
+        //     this.setState({cycles});
+        // });
     }
 
     zoomIn = (e:React.SyntheticEvent) => {

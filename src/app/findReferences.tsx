@@ -167,21 +167,22 @@ CodeMirror.commands[commands.additionalEditorCommands.findReferences] = (editor:
     let cursor = editor.getDoc().getCursor();
     let filePath = editor.filePath;
     let position = editor.getDoc().indexFromPos(cursor);
-    server.getReferences({filePath,position}).then((res)=>{
-        if (res.references.length == 0){
-            ui.notifyInfoNormalDisappear('No references for item at cursor location');
-        }
-        else if (res.references.length == 1) {
-            // Go directly 🌹
-            let def = res.references[0];
-            commands.doOpenOrFocusFile.emit({
-                filePath: def.filePath,
-                position: def.position
-            });
-        }
-        else {
-            let node = document.createElement('div');
-            ReactDOM.render(<FindReferences data={res}/>, node);
-        }
-    });
+    // ASYNC
+    // server.getReferences({filePath,position}).then((res)=>{
+    //     if (res.references.length == 0){
+    //         ui.notifyInfoNormalDisappear('No references for item at cursor location');
+    //     }
+    //     else if (res.references.length == 1) {
+    //         // Go directly 🌹
+    //         let def = res.references[0];
+    //         commands.doOpenOrFocusFile.emit({
+    //             filePath: def.filePath,
+    //             position: def.position
+    //         });
+    //     }
+    //     else {
+    //         let node = document.createElement('div');
+    //         ReactDOM.render(<FindReferences data={res}/>, node);
+    //     }
+    // });
 }

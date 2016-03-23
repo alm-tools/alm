@@ -172,35 +172,36 @@ export class AutoCompleter {
 
         // if in active project
         if (state.inActiveProjectFilePath(editor.filePath)) {
-            server.getCompletionsAtPosition({ filePath: this.filePath, position, prefix }).then(res=> {
-                if (this.lastRequest !== position){
-                    cb(null);
-                    return;
-                }
-
-                let from = { line: cur.line, ch: token.start };
-                let to = { line: cur.line, ch: token.start + prefix.length };
-
-                // Don't eat the dot!
-                // (our projectService completions come back without the dot)
-                if (token.string == '.'){
-                    from = to;
-                }
-
-                let completionInfo = {
-                    from,
-                    to,
-                    list: res.completions.filter(x=>!x.snippet).map(completionToCodeMirrorHint)
-                };
-
-                // Add snippets
-                completionInfo.list = completionInfo.list.concat(templates.getCompletions(editor, token.string));
-
-                setupCompletionDocs(completionInfo);
-
-                cb(completionInfo);
-            });
-            return;
+            // ASYNC
+            // server.getCompletionsAtPosition({ filePath: this.filePath, position, prefix }).then(res=> {
+            //     if (this.lastRequest !== position){
+            //         cb(null);
+            //         return;
+            //     }
+            //
+            //     let from = { line: cur.line, ch: token.start };
+            //     let to = { line: cur.line, ch: token.start + prefix.length };
+            //
+            //     // Don't eat the dot!
+            //     // (our projectService completions come back without the dot)
+            //     if (token.string == '.'){
+            //         from = to;
+            //     }
+            //
+            //     let completionInfo = {
+            //         from,
+            //         to,
+            //         list: res.completions.filter(x=>!x.snippet).map(completionToCodeMirrorHint)
+            //     };
+            //
+            //     // Add snippets
+            //     completionInfo.list = completionInfo.list.concat(templates.getCompletions(editor, token.string));
+            //
+            //     setupCompletionDocs(completionInfo);
+            //
+            //     cb(completionInfo);
+            // });
+            // return;
         }
         else {
             cb(noCompletions);

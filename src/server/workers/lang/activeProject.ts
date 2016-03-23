@@ -26,6 +26,34 @@ import equal = require('deep-equal');
 import * as session from "../../disk/session";
 import * as workingDir from "../../disk/workingDir";
 
+/** on server start */
+export function start() {
+
+    // Keep session on disk in sync
+    activeProjectConfigDetailsUpdated.on((ap)=>{
+        if (ap.tsconfigFilePath) {
+            session.setTsconfigPath(ap.tsconfigFilePath);
+        }
+    });
+
+    // Helps us sync only once in the beginning
+    let synced = false;
+
+    // Resume session
+    let ses = session.readDiskSessionsFile();
+    if (ses.relativePathToTsconfig) {
+        let tsconfig = workingDir.makeAbsolute(ses.relativePathToTsconfig);
+        if (fs.existsSync(tsconfig)) {
+            activeProjectConfigDetails = Utils.tsconfigToActiveProjectConfigDetails(tsconfig);
+            activeProjectConfigDetailsUpdated.emit(activeProjectConfigDetails);
+            syncCore(activeProjectConfigDetails);
+            synced = true;
+        }
+    }
+
+    refreshAvailableProjects()
+        .then(() => !synced && sync());
+}
 
 /** The active project name */
 let activeProjectConfigDetails: ActiveProjectConfigDetails = null;
@@ -63,36 +91,6 @@ function refreshAvailableProjects() {
         availableProjects.emit(projectConfigs);
     });
 }
-
-/** on server start */
-export function start() {
-
-    // Keep session on disk in sync
-    activeProjectConfigDetailsUpdated.on((ap)=>{
-        if (ap.tsconfigFilePath) {
-            session.setTsconfigPath(ap.tsconfigFilePath);
-        }
-    });
-
-    // Helps us sync only once in the beginning
-    let synced = false;
-
-    // Resume session
-    let ses = session.readDiskSessionsFile();
-    if (ses.relativePathToTsconfig) {
-        let tsconfig = workingDir.makeAbsolute(ses.relativePathToTsconfig);
-        if (fs.existsSync(tsconfig)) {
-            activeProjectConfigDetails = Utils.tsconfigToActiveProjectConfigDetails(tsconfig);
-            activeProjectConfigDetailsUpdated.emit(activeProjectConfigDetails);
-            syncCore(activeProjectConfigDetails);
-            synced = true;
-        }
-    }
-
-    refreshAvailableProjects()
-        .then(() => !synced && sync());
-}
-
 
 /**
   * Changes the active project.

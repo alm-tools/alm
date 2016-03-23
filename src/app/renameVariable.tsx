@@ -232,28 +232,29 @@ CodeMirror.commands[commands.additionalEditorCommands.renameVariable] = (editor:
     let cursor = editor.getDoc().getCursor();
     let filePath = editor.filePath;
     let position = editor.getDoc().indexFromPos(cursor);
-    server.getRenameInfo({filePath,position}).then((res)=>{
-        if (!res.canRename){
-            ui.notifyInfoNormalDisappear("Rename not available at cursor location");
-        }
-        else {
-            let filePaths = Object.keys(res.locations);
-
-            // if there is only a single file path and that is the current and there aren't that many usages
-            // we do the rename inline
-            if (filePaths.length == 1
-                && filePaths[0] == filePath
-                && res.locations[filePath].length < 5) {
-                selectName(editor, res.locations[filePath]);
-            }
-
-            else {
-                let {alreadyOpenFilePaths, currentlyClosedFilePaths} = uix.API.getClosedVsOpenFilePaths(filePaths);
-                let node = document.createElement('div');
-                ReactDOM.render(<RenameVariable info={res} alreadyOpenFilePaths={alreadyOpenFilePaths} currentlyClosedFilePaths={currentlyClosedFilePaths} />, node);
-            }
-        }
-    });
+    // ASYNC
+    // server.getRenameInfo({filePath,position}).then((res)=>{
+    //     if (!res.canRename){
+    //         ui.notifyInfoNormalDisappear("Rename not available at cursor location");
+    //     }
+    //     else {
+    //         let filePaths = Object.keys(res.locations);
+    //
+    //         // if there is only a single file path and that is the current and there aren't that many usages
+    //         // we do the rename inline
+    //         if (filePaths.length == 1
+    //             && filePaths[0] == filePath
+    //             && res.locations[filePath].length < 5) {
+    //             selectName(editor, res.locations[filePath]);
+    //         }
+    //
+    //         else {
+    //             let {alreadyOpenFilePaths, currentlyClosedFilePaths} = uix.API.getClosedVsOpenFilePaths(filePaths);
+    //             let node = document.createElement('div');
+    //             ReactDOM.render(<RenameVariable info={res} alreadyOpenFilePaths={alreadyOpenFilePaths} currentlyClosedFilePaths={currentlyClosedFilePaths} />, node);
+    //         }
+    //     }
+    // });
 }
 
 /** Based out of tern http://codemirror.net/addon/tern/tern.js selectName */

@@ -1,7 +1,7 @@
 import * as flm from "./workers/fileListing/fileListingMaster";
-import * as ap from "./workers/lang/activeProject";
+import * as psm from "./workers/lang/projectServiceMaster";
 
 export function started() {
     flm.start();
-    ap.start();
+    psm.start();
 }

@@ -2,7 +2,7 @@ import path = require('path');
 import tsconfig = require('./tsconfig');
 import {selectMany}  from "../../../../common/utils";
 
-import {master} from "../projectServiceContract";
+import {master} from "../projectServiceWorker";
 import * as lsh from "../../../../languageServiceHost/languageServiceHost";
 
 /**
@@ -16,17 +16,7 @@ export class Project {
         this.languageServiceHost = new LanguageServiceHost(configFile.project.compilerOptions);
 
         const addFile = (filePath:string) => {
-            var content = '';
-            try {
-                if (!content) {
-                    var content = master.getOrCreateOpenFile(filePath).getContents();
-                }
-            }
-            catch (ex) { // if we cannot read the file for whatever reason
-                // TODO: in next version of TypeScript langauge service we would add it with "undefined"
-                // For now its just an empty string
-            }
-            this.languageServiceHost.addScript(filePath, content);
+            master.getFileContents({filePath}).then((res)=>{this.languageServiceHost.addScript(filePath, res.contents);});
         }
 
         // Add the `lib.d.ts`

@@ -1,0 +1,31 @@
+import * as sw from "../../utils/simpleWorker";
+import * as contract from "./projectServiceContract";
+
+import * as fmc from "../../disk/fileModelCache";
+import {resolve} from "../../../common/utils";
+import {TypedEvent} from "../../../common/events";
+
+// *sinks* for important caches
+export let errorsUpdated = new TypedEvent<ErrorsUpdate>();
+
+namespace Master {
+    export const getFileContents: typeof contract.master.getFileContents
+        = (data) =>
+            resolve({contents:fmc.getOrCreateOpenFile(data.filePath).getContents()});
+
+    export const receiveErrorsUpdate: typeof contract.master.receiveErrorsUpdate
+        = (data) => {errorsUpdated.emit(data); return resolve({});}
+}
+
+// Ensure that the namespace follows the contract
+const _checkTypes: typeof contract.master = Master;
+// launch worker
+export const {worker} = sw.startWorker({
+    workerPath: __dirname + '/projectServiceWorker',
+    workerContract: contract.worker,
+    masterImplementation: Master
+});
+
+export function start() {
+
+}

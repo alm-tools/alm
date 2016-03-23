@@ -377,9 +377,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.updateStuffWeKnowAboutCurrentTab();
         }));
 
-        server.getActiveProjectConfigDetails({}).then(res=>{
-            state.setActiveProject(res);
-        });
+        // ASYNC
+        // server.getActiveProjectConfigDetails({}).then(res=>{
+        //     state.setActiveProject(res);
+        // });
 
         cast.activeProjectConfigDetailsUpdated.on(res => {
             state.setActiveProject(res);

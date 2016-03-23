@@ -27,17 +27,19 @@ CodeMirror.commands[commands.additionalEditorCommands.format] = (editor: CodeMir
         var selection = doc.listSelections()[0]; // only the first is formatted at the moment
         let from = selection.anchor;
         let to = selection.head;
-        server.formatDocumentRange({
-            from,to,filePath
-        }).then(res=> {
-            uix.API.applyRefactorings(res.refactorings);
-        });
+        // ASYNC
+        // server.formatDocumentRange({
+        //     from,to,filePath
+        // }).then(res=> {
+        //     uix.API.applyRefactorings(res.refactorings);
+        // });
     }
     else {
-        server.formatDocument({
-            filePath
-        }).then(res=> {
-            uix.API.applyRefactorings(res.refactorings);
-        });
+        // ASYNC
+        // server.formatDocument({
+        //     filePath
+        // }).then(res=> {
+        //     uix.API.applyRefactorings(res.refactorings);
+        // });
     }
 }
