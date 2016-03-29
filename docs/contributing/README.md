@@ -1,5 +1,11 @@
 Our goal with this project is to have a super simple + low barrier to entry for development. All you should need is nodejs + git. There should be be no complexity in the development setup or workflow.
 
+# Requirements
+You need:
+
+* git (If you are windows please install the version of git that has git bash and run `npm install` from that). 
+* node v4+ (I use node v5 personally)
+
 # Setup
 ```
 git clone https://github.com/alm-tools/alm.git
