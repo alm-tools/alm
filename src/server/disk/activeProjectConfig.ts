@@ -21,16 +21,25 @@ import * as fsu from "../utils/fsu";
 /** The active project name */
 let activeProjectConfigDetails: ActiveProjectConfigDetails = null;
 export let activeProjectConfigDetailsUpdated = new TypedEvent<ActiveProjectConfigDetails>();
-export let activeProjectFilePathsUpdated = new TypedEvent<{ filePaths: string[] }>();
-export let configFile: tsconfig.TypeScriptConfigFileDetails = null;
 
-/** The name used if we don't find a project */
-const implicitProjectName = "__auto__";
+/** Only if the file is valid will we end up here */
+let configFile: tsconfig.TypeScriptConfigFileDetails = null;
+export let configFileUpdated = new TypedEvent<tsconfig.TypeScriptConfigFileDetails>();
+export let projectFilePathsUpdated = new TypedEvent<{ filePaths: string[] }>();
 
 /**
  * Errors in tsconfig.json
  */
 export const errorsInTsconfig = new TypedEvent<ErrorsByFilePath>();
+function setErrorsInTsconfig(filePath:string, errors:CodeError[]){
+    errorsInTsconfig.emit({[filePath]:errors});
+}
+function clearErrorsInTsconfig(filePath:string){
+    errorsInTsconfig.emit({[filePath]:[]});
+}
+
+/** The name used if we don't find a project */
+const implicitProjectName = "__auto__";
 
 /**
  * on server start
@@ -115,12 +124,13 @@ export function sync() {
 function syncCore(projectConfig:ActiveProjectConfigDetails){
     let activeProjectName = (activeProjectConfigDetails && activeProjectConfigDetails.name);
 
-    // configFile = ConfigFile.getConfigFileFromDiskOrInMemory(projectConfig)
-    activeProjectFilePathsUpdated.emit({ filePaths: configFile.project.files });
+    configFile = ConfigFile.getConfigFileFromDiskOrInMemory(projectConfig);
+    configFileUpdated.emit(configFile);
+    projectFilePathsUpdated.emit({ filePaths: configFile.project.files });
 
     // If we made it up to here ... means the config file was good :)
     if (!projectConfig.isImplicit) {
-        errorsInTsconfig.emit({});
+        clearErrorsInTsconfig(projectConfig.tsconfigFilePath);
     }
 
     // Set the active project (the project we get returned might not be the active project name)
@@ -134,66 +144,68 @@ function syncCore(projectConfig:ActiveProjectConfigDetails){
 
 
 /**
- * Utility functions to convert a `configFile` to a `ActiveProjectConfigDetails`
+ * Utility functions to convert a configFilePath into `configFile`
  */
-// import fs = require("fs");
-// import path = require("path");
-// namespace ConfigFile {
-//     /**
-//      * Project file error reporting
-//      */
-//     function reportProjectFileErrors(ex: Error, filePath: string) {
-//         var err: Error = ex;
-//         if (ex.message === tsconfig.errors.GET_PROJECT_JSON_PARSE_FAILED
-//             || ex.message === tsconfig.errors.GET_PROJECT_PROJECT_FILE_INVALID_OPTIONS
-//             || ex.message === tsconfig.errors.GET_PROJECT_GLOB_EXPAND_FAILED) {
-//             let details: tsconfig.ProjectFileErrorDetails = ex.details;
-//             setErrorsByFilePaths([filePath], [details.error]);
-//         }
-//         else {
-//             setErrorsByFilePaths([filePath], [makeBlandError(filePath, `${ex.message}`)]);
-//         }
-//     }
-//
-//
-//     /**
-//      * This explicilty loads the project from the filesystem
-//      * For (lib.d.ts) and other (.d.ts files where project is not found) creation is done in memory
-//      */
-//     export function getConfigFileFromDiskOrInMemory(config: ActiveProjectConfigDetails): tsconfig.TypeScriptConfigFileDetails {
-//         if (!config.tsconfigFilePath) {
-//             // TODO: THIS isn't RIGHT ...
-//             // as this function is designed to work *from a single source file*.
-//             // we need one thats designed to work from *all source files*.
-//             return tsconfig.getDefaultInMemoryProject(process.cwd());
-//         }
-//
-//         const filePath = config.tsconfigFilePath;
-//
-//         try {
-//             // If we are asked to look at stuff in lib.d.ts create its own project
-//             if (path.dirname(filePath) == project.typescriptDirectory) {
-//                 return tsconfig.getDefaultInMemoryProject(filePath);
-//             }
-//
-//             const projectFile = tsconfig.getProjectSync(filePath);
-//             clearErrorsForFilePath(projectFile.projectFilePath);
-//             return projectFile;
-//         } catch (ex) {
-//             if (ex.message === tsconfig.errors.GET_PROJECT_NO_PROJECT_FOUND) {
-//                 // If we have a .d.ts file then it is its own project and return
-//                 if (tsconfig.endsWith(filePath.toLowerCase(), '.d.ts')) {
-//                     return tsconfig.getDefaultInMemoryProject(filePath);
-//                 }
-//                 else {
-//                     setErrorsByFilePaths([filePath], [makeBlandError(filePath, 'No project file found')]);
-//                     throw ex;
-//                 }
-//             }
-//             else {
-//                 reportProjectFileErrors(ex, filePath);
-//                 throw ex;
-//             }
-//         }
-//     }
-// }
+import fs = require("fs");
+import path = require("path");
+namespace ConfigFile {
+    const typescriptDirectory = path.dirname(require.resolve('ntypescript')).split('\\').join('/');
+
+    /**
+     * Project file error reporting
+     */
+    function reportProjectFileErrors(ex: Error, filePath: string) {
+        var err: Error = ex;
+        if (ex.message === tsconfig.errors.GET_PROJECT_JSON_PARSE_FAILED
+            || ex.message === tsconfig.errors.GET_PROJECT_PROJECT_FILE_INVALID_OPTIONS
+            || ex.message === tsconfig.errors.GET_PROJECT_GLOB_EXPAND_FAILED) {
+            let details: tsconfig.ProjectFileErrorDetails = ex.details;
+            setErrorsInTsconfig(filePath,[details.error]);
+        }
+        else {
+            setErrorsInTsconfig(filePath, [utils.makeBlandError(filePath, `${ex.message}`)]);
+        }
+    }
+
+
+    /**
+     * This explicilty loads the project from the filesystem
+     * For (lib.d.ts) and other (.d.ts files where project is not found) creation is done in memory
+     */
+    export function getConfigFileFromDiskOrInMemory(config: ActiveProjectConfigDetails): tsconfig.TypeScriptConfigFileDetails {
+        if (!config.tsconfigFilePath) {
+            // TODO: THIS isn't RIGHT ...
+            // as this function is designed to work *from a single source file*.
+            // we need one thats designed to work from *all source files*.
+            return tsconfig.getDefaultInMemoryProject(process.cwd());
+        }
+
+        const filePath = config.tsconfigFilePath;
+
+        try {
+            // If we are asked to look at stuff in lib.d.ts create its own project
+            if (path.dirname(filePath) == typescriptDirectory) {
+                return tsconfig.getDefaultInMemoryProject(filePath);
+            }
+
+            const projectFile = tsconfig.getProjectSync(filePath);
+            clearErrorsInTsconfig(projectFile.projectFilePath);
+            return projectFile;
+        } catch (ex) {
+            if (ex.message === tsconfig.errors.GET_PROJECT_NO_PROJECT_FOUND) {
+                // If we have a .d.ts file then it is its own project and return
+                if (tsconfig.endsWith(filePath.toLowerCase(), '.d.ts')) {
+                    return tsconfig.getDefaultInMemoryProject(filePath);
+                }
+                else {
+                    setErrorsInTsconfig(filePath, [utils.makeBlandError(filePath, 'No project file found')]);
+                    throw ex;
+                }
+            }
+            else {
+                reportProjectFileErrors(ex, filePath);
+                throw ex;
+            }
+        }
+    }
+}
