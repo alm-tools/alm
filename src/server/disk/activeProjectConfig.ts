@@ -1,6 +1,7 @@
 /**
  * This module is responsible for reading (with error reporting) the tsconfig.json
- * It will passing the relevant information (configFile) down to the project service if all good
+ * - It will emit the relevant information (configFile) for use by the project service if all good
+ * - It will emit the errors in the configFile or ask to clear them if needed
  */
 
 import {TypedEvent} from "../../common/events";
