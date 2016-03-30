@@ -373,8 +373,11 @@ export function getJSOutputStatus(query: Types.FilePathQuery): GetJSOutputStatus
     const output: ts.EmitOutput = getRawOutput(project, query.filePath);
     const jsFile = output.outputFiles.filter(x => x.name.endsWith(".js"))[0];
 
+    /**
+     * If we have compileOnSave as false then the output status isn't relevant
+     */
     let state = output.emitSkipped ? types.JSOutputState.EmitSkipped
-        : !jsFile ? types.JSOutputState.NoJSFile
+        : (project.configFile.project.compileOnSave === false) || !jsFile ? types.JSOutputState.NoJSFile
         : fileModelCache.getOrCreateOpenFile(jsFile.name).getContents() === jsFile.text ? types.JSOutputState.JSUpToDate
         : types.JSOutputState.JSOutOfDate;
 
