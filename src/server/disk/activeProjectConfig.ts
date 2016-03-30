@@ -2,6 +2,7 @@
  * This module is responsible for reading (with error reporting) the tsconfig.json
  * - It will emit the relevant information (configFile) for use by the project service if all good
  * - It will emit the errors in the configFile or ask to clear them if needed
+ * - It will emit the available projects
  */
 
 import {TypedEvent} from "../../common/events";
@@ -73,7 +74,7 @@ export function start() {
 }
 
 /** All the available projects */
-export let availableProjects = new TypedEvent<ActiveProjectConfigDetails[]>();
+export const availableProjects = new TypedEvent<ActiveProjectConfigDetails[]>();
 function refreshAvailableProjects() {
     return flm.filePathsCompleted.current().then((list) => {
         // Detect some tsconfig.json
@@ -125,20 +126,25 @@ export function sync() {
 function syncCore(projectConfig:ActiveProjectConfigDetails){
     let activeProjectName = (activeProjectConfigDetails && activeProjectConfigDetails.name);
 
-    configFile = ConfigFile.getConfigFileFromDiskOrInMemory(projectConfig);
-    configFileUpdated.emit(configFile);
-    projectFilePathsUpdated.emit({ filePaths: configFile.project.files });
+    try {
+        configFile = ConfigFile.getConfigFileFromDiskOrInMemory(projectConfig);
+        configFileUpdated.emit(configFile);
+        projectFilePathsUpdated.emit({ filePaths: configFile.project.files });
 
-    // If we made it up to here ... means the config file was good :)
-    if (!projectConfig.isImplicit) {
-        clearErrorsInTsconfig(projectConfig.tsconfigFilePath);
+        // If we made it up to here ... means the config file was good :)
+        if (!projectConfig.isImplicit) {
+            clearErrorsInTsconfig(projectConfig.tsconfigFilePath);
+        }
+
+        // Set the active project (the project we get returned might not be the active project name)
+        // e.g. on initial load
+        if (activeProjectName !== projectConfig.name) {
+            activeProjectConfigDetails = projectConfig;
+            activeProjectConfigDetailsUpdated.emit(activeProjectConfigDetails);
+        }
     }
-
-    // Set the active project (the project we get returned might not be the active project name)
-    // e.g. on initial load
-    if (activeProjectName !== projectConfig.name) {
-        activeProjectConfigDetails = projectConfig;
-        activeProjectConfigDetailsUpdated.emit(activeProjectConfigDetails);
+    catch (ex) {
+        // Ignore for now as `ConfigFile.getConfigFileFromDiskOrInMemory` already does the error reporting
     }
 }
 
@@ -210,3 +216,20 @@ namespace ConfigFile {
         }
     }
 }
+
+/**
+ * As soon as we get a new file listing refresh available projects
+ */
+flm.filePathsUpdated.on(function(data) {
+    refreshAvailableProjects();
+});
+
+/**
+ * As soon as edit happens on the project file do a sync
+ */
+fmc.didEdit.on((evt) => {
+    let currentConfigFilePath = activeProjectConfigDetails && activeProjectConfigDetails.tsconfigFilePath;
+    if (evt.filePath == currentConfigFilePath){
+        sync();
+    }
+});
