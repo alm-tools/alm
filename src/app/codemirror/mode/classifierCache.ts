@@ -37,7 +37,7 @@ export function getClassificationsForLine(filePath: string, lineStart: number, s
      * Protect against code mirror optimized rendering.
      * If string does not match expected line contents tokenize as whitespace till the precise call is made.
      */
-    if (!languageService.getSourceFile(filePath).text.substr(lineStart).startsWith(string)){
+    if (!languageService.getNonBoundSourceFile(filePath).text.substr(lineStart).startsWith(string)){
         return [{
             textSpan:{
                 start:0,
