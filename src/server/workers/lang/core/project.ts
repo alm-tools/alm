@@ -16,23 +16,34 @@ import * as lsh from "../../../../languageServiceHost/languageServiceHost";
 export class Project {
     public languageServiceHost: LanguageServiceHost;
     public languageService: ts.LanguageService;
+    public configFile: tsconfig.TypeScriptConfigFileDetails;
 
-    constructor(public configFile: tsconfig.TypeScriptConfigFileDetails) {
-        this.languageServiceHost = new LanguageServiceHost(configFile.project.compilerOptions);
+    init(_configFile: tsconfig.TypeScriptConfigFileDetails) {
+        this.configFile = _configFile;
+        let initialized = Promise.resolve();
 
+        this.languageServiceHost = new LanguageServiceHost(_configFile.project.compilerOptions);
         const addFile = (filePath:string) => {
-            master.getFileContents({filePath}).then((res)=>{this.languageServiceHost.addScript(filePath, res.contents);});
+            return master
+                .getFileContents({filePath})
+                .then((res)=>{
+                    this.languageServiceHost.addScript(filePath, res.contents);
+                });
         }
 
         // Add the `lib.d.ts`
-        if (!configFile.project.compilerOptions.noLib) {
-            addFile(getDefaultLibFilePath(configFile.project.compilerOptions));
+        if (!_configFile.project.compilerOptions.noLib) {
+            initialized = addFile(getDefaultLibFilePath(_configFile.project.compilerOptions));
         }
 
         // Add all the files
-        configFile.project.files.forEach(addFile);
-
-        this.languageService = ts.createLanguageService(this.languageServiceHost, ts.createDocumentRegistry());
+        //
+        // chained as parent asks us to create a project
+        //  ->  and then we start asking parent for files.
+        //  Something aweful happens if all this is tailing off the "create project" request from the parent
+        _configFile.project.files.forEach((filePath) => initialized = initialized.then(() => addFile(filePath)));
+        initialized.then(()=>this.languageService = ts.createLanguageService(this.languageServiceHost, ts.createDocumentRegistry()));
+        return initialized;
     }
 
     /**

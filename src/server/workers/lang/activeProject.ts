@@ -38,11 +38,14 @@ let currentProject: project.Project = null;
   * This is what the user should call if they want to manually sync as well
   */
 export function setActiveProjectConfigDetails(_activeProjectConfigDetails: ActiveProjectConfigDetails) {
+    initialSync = true;
     activeProjectConfigDetails = _activeProjectConfigDetails;
     const configFileDetails = ConfigFile.getConfigFileFromDiskOrInMemory(activeProjectConfigDetails)
-    currentProject = ConfigFile.createProjectFromConfigFile(configFileDetails);
-    clearErrors();
-    refreshAllProjectDiagnostics();
+    ConfigFile.createProjectFromConfigFile(configFileDetails).then((project)=>{
+        currentProject = project;
+        clearErrors();
+        refreshAllProjectDiagnostics();
+    });
 }
 
 /**
@@ -91,28 +94,24 @@ export function setActiveProjectConfigDetails(_activeProjectConfigDetails: Activ
 let initialSync = false;
 const refreshAllProjectDiagnostics = () => {
     if (currentProject) {
+        const timeStart = new Date().getTime();
         if (initialSync) {
-            console.log(`[TSC] Started Initial Error Analysis: ${currentProject.configFile.projectFilePath}`);
-            console.time('[TSC] Initial Error Analysis');
+            console.error(`[TSC] Started Initial Error Analysis: ${currentProject.configFile.projectFilePath}`);
         }
         else {
             console.log(`[TSC] Incremental Error Analysis ${currentProject.configFile.projectFilePath}`);
             console.time('[TSC] Incremental Error Analysis');
         }
 
-
         // Get all the errors from the project files:
         let diagnostics = currentProject.getDiagnostics();
         let errors = diagnostics.map(diagnosticToCodeError);
         let filePaths = currentProject.getFilePaths();
+
         setErrorsByFilePaths(filePaths, errors);
 
-        if (initialSync) {
-            console.timeEnd('[TSC] Initial Error Analysis');
-        }
-        else {
-            console.timeEnd('[TSC] Incremental Error Analysis');
-        }
+
+        console.error('[TSC] Error Analysis Duration:', (new Date().getTime() - timeStart)/1000);
         console.log(`[TSC] FileCount: ${filePaths.length}, ErrorCount: ${errors.length}`)
         initialSync = false;
     }
@@ -140,18 +139,20 @@ namespace ConfigFile {
 
     /** Create a project from a project file */
     export function createProjectFromConfigFile(configFile: tsconfig.TypeScriptConfigFileDetails) {
-        var project = new Project(configFile);
+        var project = new Project();
 
-        // Update the language service host for any unsaved changes
-        master.getOpenFilePaths({}).then((filePaths) => filePaths.forEach(filePath => {
-            if (project.includesSourceFile(filePath)) {
-                master.getFileContents({filePath}).then(res=>{
-                    project.languageServiceHost.setContents(filePath, res.contents);
-                });
-            }
-        }));
+        return project.init(configFile).then(()=>{
+            // Update the language service host for any unsaved changes
+            master.getOpenFilePaths({}).then((filePaths) => filePaths.forEach(filePath => {
+                if (project.includesSourceFile(filePath)) {
+                    master.getFileContents({filePath}).then(res=>{
+                        project.languageServiceHost.setContents(filePath, res.contents);
+                    });
+                }
+            }));
 
-        return project;
+            return project;
+        });
     }
 
     /**

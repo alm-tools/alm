@@ -13,9 +13,10 @@ export const completeOutputStatusCacheUpdated = new TypedEvent<types.JSOutputSta
 
 namespace Master {
     export const getFileContents: typeof contract.master.getFileContents
-        = (data) =>
-            resolve({contents:fmc.getOrCreateOpenFile(data.filePath).getContents()});
-
+        = (data) =>{
+            const contents = fmc.getOrCreateOpenFile(data.filePath).getContents();
+            return resolve({contents});
+        }
     export const getOpenFilePaths: typeof contract.master.getOpenFilePaths
         = (data) =>
             resolve(fmc.getOpenFiles().map(f=>f.config.filePath));
