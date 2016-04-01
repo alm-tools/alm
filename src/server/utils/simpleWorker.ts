@@ -1,7 +1,5 @@
 // This code is designed to be used by both the parent and the child
-import childprocess = require('child_process');
-var exec = childprocess.exec;
-var spawn = childprocess.spawn;
+import cp = require('child_process');
 import path = require('path');
 
 export var resolve: typeof Promise.resolve = Promise.resolve.bind(Promise);
@@ -19,7 +17,7 @@ export function startWorker<TWorker>(config:{
 
     function showError(error: Error) {
         if (error) {
-            console.error('Failed to start a file listing worker:', error);
+            console.error('Failed to start a worker:', error);
         }
     }
 
@@ -74,7 +72,7 @@ var orphanExitCode = 100;
 class RequesterResponder {
 
     /** Must be implemented in children */
-    protected getProcess: {
+    protected sendTarget: {
         (): { send?: <T>(message: Message<T>) => any }
     };
 
@@ -124,10 +122,13 @@ class RequesterResponder {
         }
     }
 
+    /**
+     * This is used by both the request and the reponse
+     */
     private sendToIpcHeart = (data, message) => {
 
         // If we don't have a child exit
-        if (!this.getProcess()) {
+        if (!this.sendTarget()) {
             console.log('PARENT ERR: no child when you tried to send :', message);
             return <any>Promise.reject(new Error("No worker active to recieve message: " + message));
         }
@@ -145,7 +146,7 @@ class RequesterResponder {
         // Send data to worker
         this.pendingRequests.push(message);
         this.pendingRequestsChanged(this.pendingRequests);
-        this.getProcess().send({ message: message, id: id, data: data, request: true });
+        this.sendTarget().send({ message: message, id: id, data: data, request: true });
         return promise;
     }
 
@@ -183,7 +184,7 @@ class RequesterResponder {
             var message = func.name;
 
             // If we don't have a child exit
-            if (!this.getProcess()) {
+            if (!this.sendTarget()) {
                 console.log('PARENT ERR: no child when you tried to send :', message);
                 return <any>Promise.reject(new Error("No worker active to recieve message: " + message));
             }
@@ -236,7 +237,8 @@ class RequesterResponder {
 
         responsePromise
             .then((response) => {
-                this.getProcess().send({
+                // console.log('I have the response for:',parsed.message)
+                this.sendTarget().send({
                     message: message,
                     /** Note: to process a request we just pass the id as we recieve it */
                     id: parsed.id,
@@ -244,9 +246,10 @@ class RequesterResponder {
                     error: null,
                     request: false
                 });
+                // console.log('I sent the response', parsed.message);
             })
             .catch((error) => {
-                this.getProcess().send({
+                this.sendTarget().send({
                     message: message,
                     /** Note: to process a request we just pass the id as we recieve it */
                     id: parsed.id,
@@ -276,21 +279,22 @@ class RequesterResponder {
 /** The parent */
 export class Parent extends RequesterResponder {
 
-    private child: childprocess.ChildProcess;
+    private child: cp.ChildProcess;
     private node = process.execPath;
 
     /** If we get this error then the situation if fairly hopeless */
     private gotENOENTonSpawnNode = false;
-    protected getProcess = () => this.child;
+    protected sendTarget = () => this.child;
     private stopped = false;
 
     /** start worker */
     startWorker(childJsPath: string, terminalError: (e: Error) => any, customArguments: string[] = []) {
         try {
-            this.child = spawn(this.node, [
-            // '--debug', // Uncomment if you want to debug the child process
-                childJsPath
-            ].concat(customArguments), { cwd: path.dirname(childJsPath), env: {}, stdio: ['ipc'] });
+            this.child = cp.fork(
+                childJsPath,
+                customArguments,
+                { cwd: path.dirname(childJsPath), env: {} }
+            );
 
             this.child.on('error', (err) => {
                 if (err.code === "ENOENT" && err.path === this.node) {
@@ -301,6 +305,7 @@ export class Parent extends RequesterResponder {
             });
 
             this.child.on('message', (message: Message<any>) => {
+                // console.log('PARENT: A child asked me', message.message)
                 if (message.request) {
                     this.processRequest(message);
                 }
@@ -309,9 +314,6 @@ export class Parent extends RequesterResponder {
                 }
             });
 
-            this.child.stderr.on('data', (err) => {
-                console.log("CHILD ERR STDERR:", err.toString());
-            });
             this.child.on('close', (code) => {
                 if (this.stopped) {
                     return;
@@ -354,7 +356,7 @@ export class Parent extends RequesterResponder {
 
 export class Child extends RequesterResponder {
 
-    protected getProcess = () => process;
+    protected sendTarget = () => process;
     private connected = true;
 
     constructor() {
@@ -366,6 +368,7 @@ export class Child extends RequesterResponder {
 
         // Start listening
         process.on('message', (message: Message<any>) => {
+            // console.error('--------CHILD: parent told me :-/', message.message)
             if (message.request) {
                 this.processRequest(message);
             }
