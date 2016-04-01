@@ -34,9 +34,11 @@ export let projectFilePathsUpdated = new TypedEvent<{ filePaths: string[] }>();
  */
 export const errorsInTsconfig = new TypedEvent<ErrorsByFilePath>();
 function setErrorsInTsconfig(filePath:string, errors:CodeError[]){
+    console.log('TSCONFIG: Error', errors[0].message);
     errorsInTsconfig.emit({[filePath]:errors});
 }
 function clearErrorsInTsconfig(filePath:string){
+    console.log('TSCONFIG: All Good!');
     errorsInTsconfig.emit({[filePath]:[]});
 }
 
@@ -131,11 +133,6 @@ function syncCore(projectConfig:ActiveProjectConfigDetails){
         configFileUpdated.emit(configFile);
         projectFilePathsUpdated.emit({ filePaths: configFile.project.files });
 
-        // If we made it up to here ... means the config file was good :)
-        if (!projectConfig.isImplicit) {
-            clearErrorsInTsconfig(projectConfig.tsconfigFilePath);
-        }
-
         // Set the active project (the project we get returned might not be the active project name)
         // e.g. on initial load
         if (activeProjectName !== projectConfig.name) {
@@ -227,9 +224,11 @@ flm.filePathsUpdated.on(function(data) {
 /**
  * As soon as edit happens on the project file do a sync
  */
-fmc.didEdit.on((evt) => {
+function checkProjectFileChanges(evt: { filePath: string }) {
     let currentConfigFilePath = activeProjectConfigDetails && activeProjectConfigDetails.tsconfigFilePath;
-    if (evt.filePath == currentConfigFilePath){
+    if (evt.filePath == currentConfigFilePath) {
         sync();
     }
-});
+}
+fmc.didEdit.on(checkProjectFileChanges);
+fmc.savedFileChangedOnDisk.on(checkProjectFileChanges);
