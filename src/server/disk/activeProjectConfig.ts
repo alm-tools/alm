@@ -1,8 +1,11 @@
 /**
  * This module is responsible for reading (with error reporting) the tsconfig.json
+ *
  * - It will emit the relevant information (configFile) for use by the project service if all good
  * - It will emit the errors in the configFile or ask to clear them if needed
  * - It will emit the available projects
+ *
+ * Note: When the app starts the active project is determined by `session.ts`
  */
 
 import {TypedEvent} from "../../common/events";
