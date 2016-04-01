@@ -16,6 +16,10 @@ namespace Master {
         = (data) =>
             resolve({contents:fmc.getOrCreateOpenFile(data.filePath).getContents()});
 
+    export const getOpenFilePaths: typeof contract.master.getOpenFilePaths
+        = (data) =>
+            resolve(fmc.getOpenFiles().map(f=>f.config.filePath));
+
     // sinks for important caches
     export const receiveErrorsUpdate: typeof contract.master.receiveErrorsUpdate
         = (data) => {errorsUpdated.emit(data); return resolve({});}
@@ -34,6 +38,10 @@ export const {worker} = sw.startWorker({
     masterImplementation: Master
 });
 
+// Subscribe and send down the stuff we need to send to the worker based on our state
+import * as activeProjectConfig  from "../../disk/activeProjectConfig";
 export function start() {
-
+    activeProjectConfig.activeProjectConfigDetailsUpdated.on((activeProjectConfigDetails)=>{
+        worker.setActiveProjectConfigDetails({activeProjectConfigDetails});
+    });
 }

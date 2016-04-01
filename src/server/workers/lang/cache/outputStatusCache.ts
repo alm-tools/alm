@@ -6,7 +6,6 @@
  * - whenever the output status *changes* we need to send it to the client.
  */
 import * as types from "../../../../common/types";
-import * as fileModelCache from "../../../disk/fileModelCache";
 import * as activeProject from "../activeProject";
 import * as events from "../../../../common/events";
 import * as projectService from "../projectService";
@@ -26,24 +25,24 @@ let outputStatusCache: types.JSOutputStatusCache = {};
 /**
  * Subscribe to external changes
  */
-fileModelCache.didEdit.on(utils.triggeredDebounce({
-    func: (e: { filePath: string, edit: CodeEdit }) => {
-        const res = projectService.getJSOutputStatus(e);
-        if (!res.inActiveProject) return;
-
-        const currentStatus = outputStatusCache[e.filePath];
-        const newStatus = res.outputStatus;
-        outputStatusCache[e.filePath] = newStatus;
-        fileOuputStatusUpdated.emit(newStatus);
-    },
-    mustcall: (n, o) => {
-        return o && o.filePath !== n.filePath;
-    },
-    milliseconds: 2000
-}));
-
-activeProject.activeProjectConfigDetailsUpdated.on(() => {
-    // TODO:
-    // clear whats there
-    // Query the active project for new output. Diff and write it out
-});
+// fileModelCache.didEdit.on(utils.triggeredDebounce({
+//     func: (e: { filePath: string, edit: CodeEdit }) => {
+//         const res = projectService.getJSOutputStatus(e);
+//         if (!res.inActiveProject) return;
+//
+//         const currentStatus = outputStatusCache[e.filePath];
+//         const newStatus = res.outputStatus;
+//         outputStatusCache[e.filePath] = newStatus;
+//         fileOuputStatusUpdated.emit(newStatus);
+//     },
+//     mustcall: (n, o) => {
+//         return o && o.filePath !== n.filePath;
+//     },
+//     milliseconds: 2000
+// }));
+//
+// activeProject.activeProjectConfigDetailsUpdated.on(() => {
+//     // TODO:
+//     // clear whats there
+//     // Query the active project for new output. Diff and write it out
+// });

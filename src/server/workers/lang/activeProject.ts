@@ -1,12 +1,6 @@
 /**
  * Manages active project.
- * Also pushes errors out to clients + keeps the language service + fileModelCache in sync
- *
- * When the app starts the active project is determined by `session.ts`
- *
- * If there is a tsconfig.json associated with the activeProject, we watch it.
- * If it changes we reload all our information about the project.
- * If it contains parse errors we send them through to all connected clients.
+ * Also pushes errors out to clients + keeps the language service in sync
  */
 
 import utils = require("../../../common/utils");
@@ -20,6 +14,12 @@ import {makeBlandError} from "../../../common/utils";
 import {TypedEvent} from "../../../common/events";
 import equal = require('deep-equal');
 
+import {master as masterType} from "./projectServiceContract";
+let master: typeof masterType;
+export function setMaster(m: typeof masterType) {
+    master = m;
+}
+
 // ASYNC
 // import * as wd from "../../disk/workingDir";
 // import * as fmc from "../../disk/fileModelCache";
@@ -27,75 +27,10 @@ import equal = require('deep-equal');
 // import * as flm from "../fileListing/fileListingMaster";
 // import * as workingDir from "../../disk/workingDir";
 
-/** on server start */
-export function start() {
-
-    // ASYNC
-    // Keep session on disk in sync
-    // activeProjectConfigDetailsUpdated.on((ap)=>{
-    //     if (ap.tsconfigFilePath) {
-    //         session.setTsconfigPath(ap.tsconfigFilePath);
-    //     }
-    // });
-
-    // Helps us sync only once in the beginning
-    let synced = false;
-
-    // Resume session
-    // ASYNC
-    // let ses = session.readDiskSessionsFile();
-    // if (ses.relativePathToTsconfig) {
-    //     let tsconfig = workingDir.makeAbsolute(ses.relativePathToTsconfig);
-    //     if (fs.existsSync(tsconfig)) {
-    //         activeProjectConfigDetails = Utils.tsconfigToActiveProjectConfigDetails(tsconfig);
-    //         activeProjectConfigDetailsUpdated.emit(activeProjectConfigDetails);
-    //         syncCore(activeProjectConfigDetails);
-    //         synced = true;
-    //     }
-    // }
-
-    // ASYNC
-    // refreshAvailableProjects()
-    //     .then(() => !synced && sync());
-}
-
 /** The active project name */
 let activeProjectConfigDetails: ActiveProjectConfigDetails = null;
-export let activeProjectConfigDetailsUpdated = new TypedEvent<ActiveProjectConfigDetails>();
-export let activeProjectFilePathsUpdated = new TypedEvent<{filePaths:string[]}>();
-
-/** The name used if we don't find a project */
-let implicitProjectName = "__auto__";
-
 /** The currently active project */
 let currentProject: project.Project = null;
-
-/** All the available projects */
-export let availableProjects = new TypedEvent<ActiveProjectConfigDetails[]>();
-function refreshAvailableProjects() {
-    // ASYNC
-    // return flm.filePathsCompleted.current().then((list) => {
-    //     // Detect some tsconfig.json
-    //     let tsconfigs = list.filePaths.map(t=> t.filePath).filter(t=> t.endsWith('tsconfig.json'));
-    //     // sort by shortest length first (with extra big weight for node_modules):
-    //     let weightConfig = (config: string) => config.includes('node_modules') ? config.length + 100 : config.length;
-    //     tsconfigs = tsconfigs.sort(function(a, b) {
-    //         return weightConfig(a) - weightConfig(b);
-    //     });
-    //
-    //     let projectConfigs: ActiveProjectConfigDetails[] = tsconfigs.map(Utils.tsconfigToActiveProjectConfigDetails);
-    //
-    //     // If no tsconfigs add an implicit one!
-    //     if (projectConfigs.length == 0) {
-    //         projectConfigs.push({
-    //             name: implicitProjectName,
-    //             isImplicit: true,
-    //         });
-    //     };
-    //
-    //     availableProjects.emit(projectConfigs);
-    // });
-}
 
 /**
   * Changes the active project.
@@ -104,53 +39,11 @@ function refreshAvailableProjects() {
   */
 export function setActiveProjectConfigDetails(_activeProjectConfigDetails: ActiveProjectConfigDetails) {
     activeProjectConfigDetails = _activeProjectConfigDetails;
-    activeProjectConfigDetailsUpdated.emit(activeProjectConfigDetails);
-    clearErrors();
-    sync();
-}
-
-/** convert project name to current project */
-export function sync() {
-    availableProjects.current().then((projectConfigs) => {
-        let activeProjectName = (activeProjectConfigDetails && activeProjectConfigDetails.name);
-        // we are guaranteed as least one project config (which just might be the implicit one)
-        let projectConfig = projectConfigs.filter(x=>x.name == activeProjectName)[0] || projectConfigs[0];
-        syncCore(projectConfig);
-    });
-}
-
-/** call this after we have some verified project config */
-function syncCore(projectConfig:ActiveProjectConfigDetails){
-    let activeProjectName = (activeProjectConfigDetails && activeProjectConfigDetails.name);
-    currentProject = null;
-
-    let configFileDetails = ConfigFile.getConfigFileFromDiskOrInMemory(projectConfig)
+    const configFileDetails = ConfigFile.getConfigFileFromDiskOrInMemory(activeProjectConfigDetails)
     currentProject = ConfigFile.createProjectFromConfigFile(configFileDetails);
-    activeProjectFilePathsUpdated.emit({filePaths:currentProject.getFilePaths()});
-
-    // If we made it up to here ... means the config file was good :)
-    if (!projectConfig.isImplicit) {
-        clearErrorsForFilePath(projectConfig.tsconfigFilePath);
-    }
-
-    // Set the active project (the project we get returned might not be the active project name)
-    // e.g. on initial load
-    if (activeProjectName !== projectConfig.name) {
-        activeProjectConfigDetails = projectConfig;
-        activeProjectConfigDetailsUpdated.emit(activeProjectConfigDetails);
-    }
-
-    initialSync = true;
+    clearErrors();
     refreshAllProjectDiagnostics();
 }
-
-/**
- * As soon as we get a new file listing refresh available projects
- */
-// ASYNC
-// flm.filePathsUpdated.on(function(data) {
-//     refreshAvailableProjects();
-// });
 
 /**
  * As soon as file changes on disk do a full reconcile ....
@@ -241,10 +134,8 @@ const refreshFileDiagnostics = utils.debounce((filePath:string) => {
 /**
  * Utility functions to convert a `configFile` to a `project`
  */
-import fs = require("fs");
 import path = require("path");
 import {Project} from "./core/project";
-import {getOpenFiles} from "../../disk/fileModelCache";
 namespace ConfigFile {
 
     /** Create a project from a project file */
@@ -252,11 +143,13 @@ namespace ConfigFile {
         var project = new Project(configFile);
 
         // Update the language service host for any unsaved changes
-        getOpenFiles().forEach(fileModel=> {
-            if (project.includesSourceFile(fileModel.config.filePath)) {
-                project.languageServiceHost.setContents(fileModel.config.filePath, fileModel.getContents());
+        master.getOpenFilePaths({}).then((filePaths) => filePaths.forEach(filePath => {
+            if (project.includesSourceFile(filePath)) {
+                master.getFileContents({filePath}).then(res=>{
+                    project.languageServiceHost.setContents(filePath, res.contents);
+                });
             }
-        });
+        }));
 
         return project;
     }
@@ -357,18 +250,4 @@ export namespace GetProject {
         }
         return currentProject;
     }
-}
-
-/** General purpose utility functions specific to this file */
-namespace Utils {
-    // ASYNC
-    // export function tsconfigToActiveProjectConfigDetails(tsconfig: string): ActiveProjectConfigDetails {
-    //     let relative = workingDir.makeRelative(tsconfig);
-    //     let isNodeModule = relative.includes('node_modules');
-    //     return {
-    //         name: isNodeModule ? relative : utils.getDirectoryAndFileName(tsconfig),
-    //         isImplicit: false,
-    //         tsconfigFilePath: tsconfig
-    //     };
-    // }
 }

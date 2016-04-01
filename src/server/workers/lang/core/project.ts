@@ -2,7 +2,12 @@ import path = require('path');
 import tsconfig = require('./tsconfig');
 import {selectMany}  from "../../../../common/utils";
 
-import {master} from "../projectServiceWorker";
+import {master as masterType} from "../projectServiceContract";
+let master: typeof masterType;
+export function setMaster(m: typeof masterType) {
+    master = m;
+}
+
 import * as lsh from "../../../../languageServiceHost/languageServiceHost";
 
 /**
