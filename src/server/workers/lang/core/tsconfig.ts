@@ -531,7 +531,7 @@ function increaseProjectForReferenceAndImports(files: string[]): string[] {
         }
     }
 
-    var getReferencedOrImportedFiles = (files: string[]): string[]=> {
+    var getReferencedOrImportedFiles = (files: string[]): string[] => {
         var referenced: string[][] = [];
 
         files.forEach(file => {
@@ -545,32 +545,36 @@ function increaseProjectForReferenceAndImports(files: string[]): string[] {
             var preProcessedFileInfo = ts.preProcessFile(content, true),
                 dir = path.dirname(file);
 
+            let extensions = ['.ts', '.d.ts', '.tsx'];
+            function getIfExists(filePathNoExt: string) {
+                for (let ext of extensions) {
+                    if (fs.existsSync(filePathNoExt + ext)) {
+                        return filePathNoExt + ext;
+                    }
+                }
+            }
+
             referenced.push(
                 preProcessedFileInfo.referencedFiles.map(fileReference => {
                     // We assume reference paths are always relative
                     var file = path.resolve(dir, fsu.consistentPath(fileReference.fileName));
-                    // Try all three, by itself, .ts, .d.ts
+                    // Try by itself then with extensions
                     if (fs.existsSync(file)) {
                         return file;
                     }
-                    if (fs.existsSync(file + '.ts')) {
-                        return file + '.ts';
-                    }
-                    if (fs.existsSync(file + '.d.ts')) {
-                        return file + '.d.ts';
-                    }
-                    return null;
-                }).filter(file=> !!file)
+                    return getIfExists(file);
+                }).filter(file => !!file)
                     .concat(
                     preProcessedFileInfo.importedFiles
                         .filter((fileReference) => pathIsRelative(fileReference.fileName))
                         .map(fileReference => {
-                            var file = path.resolve(dir, fileReference.fileName + '.ts');
-                            if (!fs.existsSync(file)) {
-                                file = path.resolve(dir, fileReference.fileName + '.d.ts');
+                            let fileNoExt = path.resolve(dir, fileReference.fileName);
+                            let file = getIfExists(fileNoExt);
+                            if (!file) {
+                                file = getIfExists(`${file}/index`);
                             }
                             return file;
-                        })
+                        }).filter(file => !!file)
                     )
             );
         });
