@@ -111,7 +111,7 @@ const refreshAllProjectDiagnostics = () => {
         setErrorsByFilePaths(filePaths, errors);
 
 
-        console.error('[TSC] Error Analysis Duration:', (new Date().getTime() - timeStart)/1000);
+        console.error('[TSC] Error Analysis Duration:', Math.ceil((new Date().getTime() - timeStart)/1000) + 's');
         console.log(`[TSC] FileCount: ${filePaths.length}, ErrorCount: ${errors.length}`)
         initialSync = false;
     }
