@@ -41,7 +41,7 @@ function setErrorsInTsconfig(filePath:string, errors:CodeError[]){
     errorsInTsconfig.emit({[filePath]:errors});
 }
 function clearErrorsInTsconfig(filePath:string){
-    console.log('TSCONFIG: All Good!');
+    console.log('TSCONFIG: All Good!', filePath);
     errorsInTsconfig.emit({[filePath]:[]});
 }
 
