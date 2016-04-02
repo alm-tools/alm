@@ -414,4 +414,23 @@ export class LanguageServiceHost extends LSHost {
         var limChar = this.getPositionOfLineAndCharacter(fileName, end.line, end.ch);
         super.editScript(fileName, minChar, limChar, newText);
     }
+
+    /**
+     * We allow incremental loading of resources.
+     * Needed for node_modules and for stuff like `user types a require statement`
+     */
+    getScriptSnapshot(fileName: string): ts.IScriptSnapshot {
+        let snap = super.getScriptSnapshot(fileName);
+        if (!snap) {
+            // This script should be a part of the project if it exists
+            // But we only do this in the server
+            if (typeof process !== "undefined" && typeof require !== "undefined"){
+                if (require('fs').existsSync(fileName)){
+                    this.addScript(fileName, require('fs').readFileSync(fileName,'utf8'));
+                    snap = super.getScriptSnapshot(fileName);
+                }
+            }
+        }
+        return snap;
+    }
 }

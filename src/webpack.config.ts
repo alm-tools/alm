@@ -30,6 +30,9 @@ var config = {
                 loader: 'url?limit=100000'
             },
         ]
+    },
+    node: {
+      fs: "empty"
     }
 };
 
