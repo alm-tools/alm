@@ -32,9 +32,9 @@ export var server = {
     /**
      * config stuff
      */
-    // availableProjects: {} as QRFunction<{}, ActiveProjectConfigDetails[]>,
-    // getActiveProjectConfigDetails: {} as QRFunction<{}, ActiveProjectConfigDetails>,
-    // setActiveProjectConfigDetails: {} as QRFunction<ActiveProjectConfigDetails, {}>,
+    availableProjects: {} as QRFunction<{}, ActiveProjectConfigDetails[]>,
+    getActiveProjectConfigDetails: {} as QRFunction<{}, ActiveProjectConfigDetails>,
+    setActiveProjectConfigDetails: {} as QRFunction<ActiveProjectConfigDetails, {}>,
     // isFilePathInActiveProject: {} as QRFunction<{ filePath: string }, { inActiveProject: boolean }>,
     setOpenUITabs: {} as QRFunction<{ sessionId: string, openTabs: types.SessionTabInUI[] }, {}>,
     getOpenUITabs: {} as QRFunction<{ sessionId: id }, { sessionId: string; openTabs: types.SessionTabInUI[] }>,

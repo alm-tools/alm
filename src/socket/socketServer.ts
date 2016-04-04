@@ -11,10 +11,10 @@ import * as session from "../server/disk/session";
 let resolve = sls.resolve;
 
 import * as fmc from "../server/disk/fileModelCache";
+import * as activeProjectConfig from "../server/disk/activeProjectConfig";
 
 // ASYNC
 // TODO: Stuff that needs to move into the worker
-// import * as activeProject from "../server/workers/lang/activeProject";
 // import * as projectService from "../server/workers/lang/projectService";
 // import * as outputStatusCache from "../server/workers/lang/cache/outputStatusCache";
 // import * as errorCache from "../server/workers/lang/cache/errorsCache";
@@ -90,17 +90,17 @@ namespace Server {
     /**
      * Config stuff
      */
+    export var availableProjects: typeof contract.server.availableProjects = (data) => {
+        return activeProjectConfig.availableProjects.current();
+    };
+    export var getActiveProjectConfigDetails: typeof contract.server.getActiveProjectConfigDetails = (data) => {
+        return activeProjectConfig.activeProjectConfigDetailsUpdated.current();
+    };
+    export var setActiveProjectConfigDetails: typeof contract.server.setActiveProjectConfigDetails = (data) => {
+        activeProjectConfig.syncCore(data);
+        return resolve({});
+    };
     // ASYNC
-    // export var availableProjects: typeof contract.server.availableProjects = (data) => {
-    //     return activeProject.availableProjects.current();
-    // };
-    // export var getActiveProjectConfigDetails: typeof contract.server.getActiveProjectConfigDetails = (data) => {
-    //     return activeProject.activeProjectConfigDetailsUpdated.current();
-    // };
-    // export var setActiveProjectConfigDetails: typeof contract.server.setActiveProjectConfigDetails = (data) => {
-    //     activeProject.setActiveProjectConfigDetails(data);
-    //     return resolve({});
-    // };
     // export var isFilePathInActiveProject: typeof contract.server.isFilePathInActiveProject = (data) => {
     //     let inActiveProject = !!activeProject.GetProject.ifCurrent(data.filePath);
     //     return resolve({inActiveProject});

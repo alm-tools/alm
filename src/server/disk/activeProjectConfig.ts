@@ -128,7 +128,7 @@ export function sync() {
 }
 
 /** call this after we have some verified project config */
-function syncCore(projectConfig:ActiveProjectConfigDetails){
+export function syncCore(projectConfig:ActiveProjectConfigDetails){
     let activeProjectName = (activeProjectConfigDetails && activeProjectConfigDetails.name);
 
     try {

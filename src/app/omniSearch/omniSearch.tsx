@@ -284,10 +284,9 @@ class SearchState {
             this.updateIfUserIsSearching(SearchMode.File);
         });
 
-        // ASYNC
-        // server.availableProjects({}).then(res => {
-        //     this.availableProjects = res;
-        // });
+        server.availableProjects({}).then(res => {
+            this.availableProjects = res;
+        });
         cast.availableProjectsUpdated.on(res => {
             this.availableProjects = res;
         });
@@ -486,8 +485,7 @@ class SearchState {
         if (this.mode == SearchMode.Project) {
             let activeProject: ActiveProjectConfigDetails = this.filteredValues[index];
             if (activeProject) {
-                // ASYNC
-                // server.setActiveProjectConfigDetails(activeProject);
+                server.setActiveProjectConfigDetails(activeProject);
                 state.setActiveProject(activeProject);
                 state.setFilePathsInActiveProject([]);
             }
