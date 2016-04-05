@@ -35,7 +35,7 @@ export const {master} = sw.runWorker({
  * Keep the master in sync with some important stuff
  */
 import * as tsErrorsCache from "./cache/tsErrorsCache";
-tsErrorsCache.errorsCache.errorsUpdated.on((errorsUpdate) => master.receiveErrorsUpdate(errorsUpdate));
+tsErrorsCache.errorsCache.errorsDelta.on((delta) => master.receiveErrorCacheDelta(delta));
 import {fileOuputStatusUpdated} from "./cache/outputStatusCache";
 fileOuputStatusUpdated.on((fileOuputStatusUpdate) => master.receiveFileOuputStatusUpdate(fileOuputStatusUpdate));
 import {completeOutputStatusCacheUpdated} from "./cache/outputStatusCache";

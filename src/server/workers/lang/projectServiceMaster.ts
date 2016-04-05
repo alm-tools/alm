@@ -22,12 +22,9 @@ namespace Master {
             resolve(fmc.getOpenFiles().map(f=>f.config.filePath));
 
     // sinks for important caches
-    export const receiveErrorsUpdate: typeof contract.master.receiveErrorsUpdate
+    export const receiveErrorCacheDelta: typeof contract.master.receiveErrorCacheDelta
         = (data) => {
-            // TODO: this code loses the *true counts* of the errors :-/
-            const filePaths = Object.keys(data.errorsByFilePath);
-            const errors = selectMany(filePaths.map(fp => data.errorsByFilePath[fp]));
-            errorsCache.setErrorsByFilePaths(filePaths, errors);
+            errorsCache.applyDelta(data);
             return resolve({});
         };
     export const receiveFileOuputStatusUpdate: typeof contract.master.receiveFileOuputStatusUpdate

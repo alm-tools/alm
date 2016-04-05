@@ -2,12 +2,6 @@ import {TypedEvent} from "../../common/events";
 import {createMapByKey, debounce, selectMany} from "../../common/utils";
 import equal = require('deep-equal');
 
-type ErrorCacheDelta = {
-    added: ErrorsByFilePath;
-    removed: ErrorsByFilePath;
-}
-
-
 // What we use to identify a unique error
 const errorKey = (error:CodeError)=>`${error.from.line}:${error.from.ch}:${error.message}`;
 
@@ -41,7 +35,7 @@ export class ErrorsCache {
             const removedErrorsMap = createMapByKey(delta.removed[fp], errorKey);
             this._errorsByFilePath[fp] = this._errorsByFilePath[fp].filter(e => !removedErrorsMap[errorKey(e)]);
         });
-        this.errorsDelta.emit(delta);
+        this.sendErrors();
     }
 
 

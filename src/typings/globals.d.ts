@@ -47,6 +47,14 @@ interface LimitedErrorsUpdate {
 }
 
 /**
+ * Allows true syncing of one cache with another
+ */
+type ErrorCacheDelta = {
+    added: ErrorsByFilePath;
+    removed: ErrorsByFilePath;
+}
+
+/**
  * I know config *details* is a horrible name. But it signifies the fact that the *Config* isn't located here
  * It is details about the *Config* files
  */
