@@ -33,7 +33,7 @@ export class ErrorsCache {
         // Removed:
         Object.keys(delta.removed).forEach(fp => {
             const removedErrorsMap = createMapByKey(delta.removed[fp], errorKey);
-            this._errorsByFilePath[fp] = this._errorsByFilePath[fp].filter(e => !removedErrorsMap[errorKey(e)]);
+            this._errorsByFilePath[fp] = (this._errorsByFilePath[fp] || []).filter(e => !removedErrorsMap[errorKey(e)]);
         });
         this.sendErrors();
     }
