@@ -2,14 +2,9 @@ import {TypedEvent} from "../../common/events";
 import {createMapByKey, debounce, selectMany} from "../../common/utils";
 import equal = require('deep-equal');
 
-type FilePathErrorsUpdate = {
-    filePath: string;
-    errors: CodeError[];
-}
-
 type ErrorCacheDelta = {
-    added: FilePathErrorsUpdate[];
-    removed: FilePathErrorsUpdate[];
+    added: ErrorsByFilePath;
+    removed: ErrorsByFilePath;
 }
 
 /**
@@ -24,7 +19,7 @@ export class ErrorsCache {
     public errorsUpdated = new TypedEvent<LimitedErrorsUpdate>();
 
     /**
-     * Events that can be wired up to sync one error cache with another
+     * Event that can be wired up to sync one error cache with another
      */
     public errorsDelta = new TypedEvent<ErrorCacheDelta>();
 
@@ -36,6 +31,13 @@ export class ErrorsCache {
         this.errorsDelta.emit(delta);
     }
 
+
+    /**
+     *  DELTA MAINTAINANCE
+     */
+    private lastErrorsByFilePath: ErrorsByFilePath = {};
+
+
     /**
      * current errors
      */
@@ -46,6 +48,67 @@ export class ErrorsCache {
      */
     private sendErrors = debounce(() => {
         this.errorsUpdated.emit(this.getErrorsLimited());
+
+        // Create a delta
+        const oldErrorsByFilePath = this.lastErrorsByFilePath;
+        const newErrorsByFilePath = this._errorsByFilePath;
+        const delta: ErrorCacheDelta = {
+            added:{},
+            removed:{}
+        };
+        // What we use to identify a unique error
+        const errorKey = (error:CodeError)=>`${error.from.line}:${error.from.ch}:${error.message}`;
+
+        // Added:
+        Object.keys(newErrorsByFilePath).forEach((filePath)=>{
+            const newErrors = newErrorsByFilePath[filePath]
+            // All new
+            if (!oldErrorsByFilePath[filePath]) {
+                delta.added[filePath] = newErrors;
+            }
+            // Else diff
+            else {
+                const oldErrors = oldErrorsByFilePath[filePath];
+                const oldErrorMap = createMapByKey(oldErrors,errorKey);
+
+                newErrors.forEach(ne=>{
+                    const newErrorKey = errorKey(ne);
+                    if (!oldErrorMap[newErrorKey]) {
+                        if (!delta.added[filePath]) delta.added[filePath] = [];
+                        delta.added[filePath].push(ne);
+                    }
+                });
+            }
+        });
+
+        // Removed:
+        Object.keys(oldErrorsByFilePath).forEach((filePath)=>{
+            const oldErrors = oldErrorsByFilePath[filePath]
+            // All gone
+            if (!newErrorsByFilePath[filePath]) {
+                delta.removed[filePath] = oldErrors;
+            }
+            // Else diff
+            else {
+                const newErrors = newErrorsByFilePath[filePath];
+                const newErrorMap = createMapByKey(newErrors,errorKey);
+
+                oldErrors.forEach(oe=>{
+                    const oldErrorKey = errorKey(oe);
+                    if (!newErrorMap[oldErrorKey]) {
+                        if (!delta.removed[filePath]) delta.removed[filePath] = [];
+                        delta.removed[filePath].push(oe);
+                    }
+                });
+            }
+        });
+
+        // Send out the delta
+        this.errorsDelta.emit(delta);
+
+        // Preserve for future delta
+        this.lastErrorsByFilePath = {};
+        Object.keys(this._errorsByFilePath).map(fp => this.lastErrorsByFilePath[fp] = this._errorsByFilePath[fp]);
     }, 250);
 
     /** The pased errors are considered *the only current* errors for the filePath */
