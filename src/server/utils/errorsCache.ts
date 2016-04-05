@@ -2,6 +2,15 @@ import {TypedEvent} from "../../common/events";
 import {createMapByKey, debounce, selectMany} from "../../common/utils";
 import equal = require('deep-equal');
 
+type FilePathErrorsUpdate = {
+    filePath: string;
+    errors: CodeError[];
+}
+
+type ErrorCacheDelta = {
+    added: FilePathErrorsUpdate[];
+    removed: FilePathErrorsUpdate[];
+}
 
 /**
  * Maintains the list of errors that have been encountered,
@@ -13,6 +22,19 @@ export class ErrorsCache {
      * For a lazy view of the current state. Note: this is throttled + limited for performance
      */
     public errorsUpdated = new TypedEvent<LimitedErrorsUpdate>();
+
+    /**
+     * Events that can be wired up to sync one error cache with another
+     */
+    public errorsDelta = new TypedEvent<ErrorCacheDelta>();
+
+    /**
+     * You can wire up an errors Delta from one cache to this one.
+     */
+    public applyDelta = (delta:ErrorCacheDelta) => {
+        // TODO:
+        this.errorsDelta.emit(delta);
+    }
 
     /**
      * current errors
