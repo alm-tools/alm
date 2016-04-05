@@ -85,7 +85,7 @@ export class ActiveLists extends BaseComponent<Props, State>{
             <div style={csx.extend(styles.errorsPanel.main,{height: this.state.height})}>
                 {
                     this.props.errorsUpdate.tooMany
-                    && <div style={styles.errorsPanel.tooMany}>{this.props.errorsUpdate.totalCount} are too many. So only syncing the top {this.props.errorsUpdate.syncCount} (max 50 per file with a total limit of 200+).</div>
+                    && <div style={styles.errorsPanel.tooMany}>{this.props.errorsUpdate.totalCount} total. Showing top {this.props.errorsUpdate.syncCount}.</div>
                 }
 
                 {this.props.errorsUpdate.totalCount?
