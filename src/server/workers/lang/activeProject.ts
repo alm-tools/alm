@@ -49,44 +49,47 @@ export function setActiveProjectConfigDetails(_activeProjectConfigDetails: Activ
     });
 }
 
+function sync(){
+    setActiveProjectConfigDetails(activeProjectConfigDetails);
+}
+
 /**
- * As soon as file changes on disk do a full reconcile ....
+ * File changing on disk
  */
-// ASYNC
-// fmc.savedFileChangedOnDisk.on((evt) => {
-//     // Check if its a part of the current project .... if not ignore :)
-//     let proj = GetProject.ifCurrent(evt.filePath)
-//     if (proj) {
-//         proj.languageServiceHost.setContents(evt.filePath, evt.contents);
-//         refreshAllProjectDiagnosticsDebounced();
-//     }
-// });
-/**
- * As soon as edit happens apply to current project
- */
-// fmc.didEdit.on((evt) => {
-//     let proj = GetProject.ifCurrent(evt.filePath)
-//     if (proj) {
-//         proj.languageServiceHost.applyCodeEdit(evt.filePath, evt.edit.from, evt.edit.to, evt.edit.newText);
-//         // For debugging
-//         // console.log(proj.languageService.getSourceFile(evt.filePath).text);
-//
-//         // update errors for this file if its *heuristically* small
-//         if (evt.edit.from.line < 1000)
-//         {
-//             refreshFileDiagnostics(evt.filePath);
-//         }
-//
-//         // After a while update all project diagnostics as well
-//         refreshAllProjectDiagnosticsDebounced();
-//     }
-//
-//     // Also watch edits to the current config file
-//     let currentConfigFilePath = activeProjectConfigDetails && activeProjectConfigDetails.tsconfigFilePath;
-//     if (evt.filePath == currentConfigFilePath){
-//         sync();
-//     }
-// });
+export function filePathsUpdated() {
+    // We should do a full sync. As the file paths from `tsconfig` might have changed
+    // But lets hold off on that idea as it might be slow
+}
+export function fileEdited(evt: { filePath: string, edit: CodeEdit }) {
+    let proj = GetProject.ifCurrent(evt.filePath)
+    if (proj) {
+        proj.languageServiceHost.applyCodeEdit(evt.filePath, evt.edit.from, evt.edit.to, evt.edit.newText);
+        // For debugging
+        // console.log(proj.languageService.getSourceFile(evt.filePath).text);
+
+        // update errors for this file if its *heuristically* small
+        if (evt.edit.from.line < 1000) {
+            refreshFileDiagnostics(evt.filePath);
+        }
+
+        // After a while update all project diagnostics as well
+        refreshAllProjectDiagnosticsDebounced();
+    }
+
+    // Also watch edits to the current config file
+    let currentConfigFilePath = activeProjectConfigDetails && activeProjectConfigDetails.tsconfigFilePath;
+    if (evt.filePath == currentConfigFilePath) {
+        sync();
+    }
+}
+export function fileChangedOnDisk(evt: { filePath: string; contents: string }) {
+    // Check if its a part of the current project .... if not ignore :)
+    let proj = GetProject.ifCurrent(evt.filePath)
+    if (proj) {
+        proj.languageServiceHost.setContents(evt.filePath, evt.contents);
+        refreshAllProjectDiagnosticsDebounced();
+    }
+}
 
 /**
  * If there hasn't been a request for a while then we refresh

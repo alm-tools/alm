@@ -47,8 +47,12 @@ export const {worker} = sw.startWorker({
 
 // Subscribe and send down the stuff we need to send to the worker based on our state
 import * as activeProjectConfig  from "../../disk/activeProjectConfig";
+import * as fileListingMaster from "../fileListing/fileListingMaster";
 export function start() {
     activeProjectConfig.activeProjectConfigDetailsUpdated.on((activeProjectConfigDetails)=>{
         worker.setActiveProjectConfigDetails({activeProjectConfigDetails});
     });
+    fileListingMaster.filePathsUpdated.on(()=>worker.filePathsUpdated({}));
+    fmc.didEdit.on((edit)=>worker.fileEdited(edit));
+    fmc.savedFileChangedOnDisk.on((update)=>worker.fileChangedOnDisk(update));
 }

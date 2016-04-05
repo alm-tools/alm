@@ -7,6 +7,10 @@ type ErrorCacheDelta = {
     removed: ErrorsByFilePath;
 }
 
+
+// What we use to identify a unique error
+const errorKey = (error:CodeError)=>`${error.from.line}:${error.from.ch}:${error.message}`;
+
 /**
  * Maintains the list of errors that have been encountered,
  * and notifies anyone who is concerned of updated values
@@ -27,7 +31,16 @@ export class ErrorsCache {
      * You can wire up an errors Delta from one cache to this one.
      */
     public applyDelta = (delta:ErrorCacheDelta) => {
-        // TODO:
+        // Added:
+        Object.keys(delta.added).forEach(fp=>{
+            if (!this._errorsByFilePath[fp]) this._errorsByFilePath[fp] = delta.added[fp];
+            else this._errorsByFilePath[fp] = this._errorsByFilePath[fp].concat(delta.added[fp]);
+        });
+        // Removed:
+        Object.keys(delta.removed).forEach(fp => {
+            const removedErrorsMap = createMapByKey(delta.removed[fp], errorKey);
+            this._errorsByFilePath[fp] = this._errorsByFilePath[fp].filter(e => !removedErrorsMap[errorKey(e)]);
+        });
         this.errorsDelta.emit(delta);
     }
 
@@ -56,8 +69,6 @@ export class ErrorsCache {
             added:{},
             removed:{}
         };
-        // What we use to identify a unique error
-        const errorKey = (error:CodeError)=>`${error.from.line}:${error.from.ch}:${error.message}`;
 
         // Added:
         Object.keys(newErrorsByFilePath).forEach((filePath)=>{

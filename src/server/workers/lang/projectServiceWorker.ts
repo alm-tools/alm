@@ -8,6 +8,18 @@ namespace Worker {
         activeProject.setActiveProjectConfigDetails(details.activeProjectConfigDetails);
         return Promise.resolve({});
     }
+    export const filePathsUpdated: typeof contract.worker.filePathsUpdated = (details) => {
+        activeProject.filePathsUpdated();
+        return Promise.resolve({});
+    }
+    export const fileEdited: typeof contract.worker.fileEdited = (details) => {
+        activeProject.fileEdited(details);
+        return Promise.resolve({});
+    }
+    export const fileChangedOnDisk: typeof contract.worker.fileChangedOnDisk = (details) => {
+        activeProject.fileChangedOnDisk(details);
+        return Promise.resolve({});
+    }
 }
 
 // Ensure that the namespace follows the contract

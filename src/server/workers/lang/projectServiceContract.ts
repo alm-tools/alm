@@ -13,11 +13,12 @@ import * as types from "../../../common/types";
 // API provided by the worker (language tools)
 export var worker = {
     echo: {} as sw.QRFunction<{ data: string }, { data: string }>,
-    // TODO:
-    // endpoint to tell file paths updated
-    // endpoint to tell about file edited
-    // endpoint to tell about file saved
-    //
+
+    filePathsUpdated: {} as sw.QRFunction<{}, {}>,
+    fileEdited: {} as sw.QRFunction<{ filePath: string; edit: CodeEdit }, {}>,
+    fileChangedOnDisk : {} as sw.QRFunction<{ filePath: string; contents: string }, {}>,
+
+    // TODO ASYNC:
     // Project Service stuff
 
     // Used to tell the worker about what project it should work on
