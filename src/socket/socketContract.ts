@@ -43,7 +43,7 @@ export var server = {
     /**
      * Error stuff
      */
-    // getErrors: {} as QRFunction<{}, ErrorsUpdate>,
+    getErrors: {} as QRFunction<{}, ErrorsUpdate>,
 
     /**
      * Project Service

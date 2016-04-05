@@ -13,11 +13,12 @@ let resolve = sls.resolve;
 import * as fmc from "../server/disk/fileModelCache";
 import * as activeProjectConfig from "../server/disk/activeProjectConfig";
 
+import * as globalErrorCache from "../server/globalErrorCache";
+
 // ASYNC
 // TODO: Stuff that needs to move into the worker
 // import * as projectService from "../server/workers/lang/projectService";
 // import * as outputStatusCache from "../server/workers/lang/cache/outputStatusCache";
-// import * as errorCache from "../server/workers/lang/cache/errorsCache";
 
 namespace Server {
     export var echo: typeof contract.server.echo = (data, client) => {
@@ -120,10 +121,9 @@ namespace Server {
     /**
      * Error handling
      */
-    // ASYNC
-    // export var getErrors: typeof contract.server.getErrors = (data) => {
-    //     return resolve(errorCache.getErrorsLimited());
-    // }
+    export var getErrors: typeof contract.server.getErrors = (data) => {
+        return resolve(globalErrorCache.errorsCache.getErrorsLimited());
+    }
 
     /**
      * Project service
@@ -177,8 +177,8 @@ export function register(app: http.Server) {
 
     flm.filePathsUpdated.pipe(cast.filePathsUpdated);
 
+    globalErrorCache.errorsCache.errorsUpdated.pipe(cast.errorsUpdated);
     // ASYNC
-    // errorCache.errorsUpdated.pipe(cast.errorsUpdated);
     // activeProject.availableProjects.pipe(cast.availableProjectsUpdated);
     // activeProject.activeProjectConfigDetailsUpdated.pipe(cast.activeProjectConfigDetailsUpdated);
     // activeProject.activeProjectFilePathsUpdated.pipe(cast.activeProjectFilePathsUpdated);

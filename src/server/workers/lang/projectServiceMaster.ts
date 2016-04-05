@@ -2,12 +2,12 @@ import * as sw from "../../utils/simpleWorker";
 import * as contract from "./projectServiceContract";
 
 import * as fmc from "../../disk/fileModelCache";
-import {resolve} from "../../../common/utils";
+import {resolve,selectMany} from "../../../common/utils";
 import {TypedEvent} from "../../../common/events";
 import * as types from "../../../common/types";
 
 // *sinks* for important caches
-export let errorsUpdated = new TypedEvent<ErrorsUpdate>();
+import {errorsCache} from "../../globalErrorCache";
 export const fileOuputStatusUpdated = new TypedEvent<types.JSOutputStatus>();
 export const completeOutputStatusCacheUpdated = new TypedEvent<types.JSOutputStatusCache>();
 
@@ -23,7 +23,13 @@ namespace Master {
 
     // sinks for important caches
     export const receiveErrorsUpdate: typeof contract.master.receiveErrorsUpdate
-        = (data) => {errorsUpdated.emit(data); return resolve({});}
+        = (data) => {
+            // TODO: this code loses the *true counts* of the errors :-/
+            const filePaths = Object.keys(data.errorsByFilePath);
+            const errors = selectMany(filePaths.map(fp => data.errorsByFilePath[fp]));
+            errorsCache.setErrorsByFilePaths(filePaths, errors);
+            return resolve({});
+        };
     export const receiveFileOuputStatusUpdate: typeof contract.master.receiveFileOuputStatusUpdate
         = (data) => {fileOuputStatusUpdated.emit(data); return resolve({});}
     export const receiveCompleteOutputStatusCacheUpdate: typeof contract.master.receiveCompleteOutputStatusCacheUpdate
