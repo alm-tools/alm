@@ -52,10 +52,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // server.echo({text:"123",num:345}).then((res)=>console.log(res));
 
     // Anything that should mutate the state
-    // ASYNC
-    // server.getErrors({}).then((errorsUpdate)=>{
-    //     state.setErrorsUpdate(errorsUpdate);
-    // });
+    server.getErrors({}).then((errorsUpdate)=>{
+        state.setErrorsUpdate(errorsUpdate);
+    });
     cast.errorsUpdated.on((errorsByFilePath)=>{
         state.setErrorsUpdate(errorsByFilePath);
     });
