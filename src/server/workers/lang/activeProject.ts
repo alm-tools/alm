@@ -40,7 +40,7 @@ let currentProject: project.Project = null;
 export function setActiveProjectConfigDetails(_activeProjectConfigDetails: ActiveProjectConfigDetails) {
     initialSync = true;
     activeProjectConfigDetails = _activeProjectConfigDetails;
-    const configFileDetails = ConfigFile.getConfigFileFromDiskOrInMemory(activeProjectConfigDetails)
+    const configFileDetails = ConfigFile.getConfigFileFromDiskOrInMemory(activeProjectConfigDetails);
     ConfigFile.createProjectFromConfigFile(configFileDetails).then((project)=>{
         currentProject = project;
         clearErrors();
@@ -140,19 +140,7 @@ namespace ConfigFile {
     /** Create a project from a project file */
     export function createProjectFromConfigFile(configFile: tsconfig.TypeScriptConfigFileDetails) {
         var project = new Project();
-
-        return project.init(configFile).then(()=>{
-            // Update the language service host for any unsaved changes
-            master.getOpenFilePaths({}).then((filePaths) => filePaths.forEach(filePath => {
-                if (project.includesSourceFile(filePath)) {
-                    master.getFileContents({filePath}).then(res=>{
-                        project.languageServiceHost.setContents(filePath, res.contents);
-                    });
-                }
-            }));
-
-            return project;
-        });
+        return project.init(configFile).then(()=>project);
     }
 
     /**
