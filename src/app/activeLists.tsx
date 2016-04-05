@@ -33,7 +33,7 @@ export interface Props {
     activeProject?: ActiveProjectConfigDetails;
     activeProjectFiles?: { [filePath: string]: boolean };
     selectedTabIndex?: number;
-    errorsUpdate?: ErrorsUpdate;
+    errorsUpdate?: LimitedErrorsUpdate;
     socketConnected?: boolean;
 }
 export interface State {

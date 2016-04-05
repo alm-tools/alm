@@ -43,7 +43,7 @@ export var server = {
     /**
      * Error stuff
      */
-    getErrors: {} as QRFunction<{}, ErrorsUpdate>,
+    getErrors: {} as QRFunction<{}, LimitedErrorsUpdate>,
 
     /**
      * Project Service
@@ -95,7 +95,7 @@ export var cast = {
     didStatusChange: new TypedEvent<{ filePath: string, saved: boolean, eol: string}>(),
 
     /** Errors for a file path */
-    errorsUpdated: new TypedEvent<ErrorsUpdate>(),
+    errorsUpdated: new TypedEvent<LimitedErrorsUpdate>(),
 
     /** Available projects updated */
     availableProjectsUpdated: new TypedEvent<ActiveProjectConfigDetails[]>(),

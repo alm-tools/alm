@@ -32,7 +32,7 @@ export var master = {
     getOpenFilePaths: {} as sw.QRFunction<{},string[]>,
 
     // Sinks for important events
-    receiveErrorsUpdate: {} as sw.QRFunction<ErrorsUpdate, {}>,
+    receiveErrorsUpdate: {} as sw.QRFunction<LimitedErrorsUpdate, {}>,
     receiveFileOuputStatusUpdate: {} as sw.QRFunction<types.JSOutputStatus, {}>,
     receiveCompleteOutputStatusCacheUpdate: {} as sw.QRFunction<types.JSOutputStatusCache, {}>,
 
