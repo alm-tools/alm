@@ -9,6 +9,10 @@ namespace Worker {
         activeProject.setActiveProjectConfigDetails(details.activeProjectConfigDetails);
         return Promise.resolve({});
     }
+
+    /**
+     * File information updates sent by the master. We tell the modules that care.
+     */
     export const filePathsUpdated: typeof contract.worker.filePathsUpdated = (details) => {
         activeProject.filePathsUpdated();
         return Promise.resolve({});
@@ -66,9 +70,3 @@ completeOutputStatusCacheUpdated.on((completeOutputStatusCacheUpdate) => master.
 activeProject.setMaster(master);
 import * as project from "./core/project";
 project.setMaster(master);
-
-/**
- * If files get edited on the master tell the modules that care
- */
-// TODO: ASYNC
-// ASYNC :-/
