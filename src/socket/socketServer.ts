@@ -14,10 +14,10 @@ import * as fmc from "../server/disk/fileModelCache";
 import * as activeProjectConfig from "../server/disk/activeProjectConfig";
 
 import * as globalErrorCache from "../server/globalErrorCache";
+import * as projectServiceMaster from "../server/workers/lang/projectServiceMaster";
 
 // ASYNC
 // TODO: Stuff that needs to move into the worker
-// import * as projectService from "../server/workers/lang/projectService";
 // import * as outputStatusCache from "../server/workers/lang/cache/outputStatusCache";
 
 namespace Server {
@@ -135,8 +135,8 @@ namespace Server {
     // export var getDefinitionsAtPosition : typeof contract.server.getDefinitionsAtPosition = projectService.getDefinitionsAtPosition;
     // export var getDoctorInfo : typeof contract.server.getDoctorInfo = projectService.getDoctorInfo;
     // export var getReferences : typeof contract.server.getReferences = projectService.getReferences;
-    // export var formatDocument : typeof contract.server.formatDocument = projectService.formatDocument;
-    // export var formatDocumentRange : typeof contract.server.formatDocumentRange = projectService.formatDocumentRange;
+    export var formatDocument : typeof contract.server.formatDocument = projectServiceMaster.worker.formatDocument;
+    export var formatDocumentRange : typeof contract.server.formatDocumentRange = projectServiceMaster.worker.formatDocumentRange;
     // export var getNavigateToItems : typeof contract.server.getNavigateToItems = projectService.getNavigateToItems;
     // export var getDependencies : typeof contract.server.getDependencies = projectService.getDependencies;
     // export var getAST : typeof contract.server.getAST = projectService.getAST;

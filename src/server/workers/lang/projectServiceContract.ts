@@ -9,6 +9,7 @@ import * as sw from "../../utils/simpleWorker";
 import * as fmc from "../../disk/fileModelCache";
 import * as flm from "../fileListing/fileListingMaster";
 import * as types from "../../../common/types";
+import * as socketContract from "../../../socket/socketContract";
 
 // API provided by the worker (language tools)
 export var worker = {
@@ -18,8 +19,10 @@ export var worker = {
     fileEdited: {} as sw.QRFunction<{ filePath: string; edit: CodeEdit }, {}>,
     fileChangedOnDisk : {} as sw.QRFunction<{ filePath: string; contents: string }, {}>,
 
-    // TODO ASYNC:
+    // ASYNC:
     // Project Service stuff
+    formatDocument: {} as sw.QRFunction<socketContract.Types.FormatDocumentQuery, socketContract.Types.FormatDocumentResponse>,
+    formatDocumentRange: {} as sw.QRFunction<socketContract.Types.FormatDocumentRangeQuery, socketContract.Types.FormatDocumentRangeResponse>,
 
     // Used to tell the worker about what project it should work on
     // Note: The project validation / expansion happens locally. Only the hard stuff of *analysis* is done by the worker

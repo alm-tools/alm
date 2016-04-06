@@ -1,6 +1,7 @@
 import * as sw from "../../utils/simpleWorker";
 import * as contract from "./projectServiceContract";
 import * as activeProject from "./activeProject"
+import * as projectService from "./projectService";
 
 namespace Worker {
     export const echo: typeof contract.worker.echo = (data) => Promise.resolve(data);
@@ -20,6 +21,12 @@ namespace Worker {
         activeProject.fileChangedOnDisk(details);
         return Promise.resolve({});
     }
+
+    /**
+     * Project Service
+     */
+    export var formatDocument : typeof contract.worker.formatDocument = projectService.formatDocument;
+    export var formatDocumentRange : typeof contract.worker.formatDocumentRange = projectService.formatDocumentRange;
 }
 
 // Ensure that the namespace follows the contract
