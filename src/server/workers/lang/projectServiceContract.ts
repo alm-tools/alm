@@ -19,10 +19,18 @@ export var worker = {
     fileEdited: {} as sw.QRFunction<{ filePath: string; edit: CodeEdit }, {}>,
     fileChangedOnDisk : {} as sw.QRFunction<{ filePath: string; contents: string }, {}>,
 
-    // ASYNC:
     // Project Service stuff
-    formatDocument: {} as sw.QRFunction<socketContract.Types.FormatDocumentQuery, socketContract.Types.FormatDocumentResponse>,
-    formatDocumentRange: {} as sw.QRFunction<socketContract.Types.FormatDocumentRangeQuery, socketContract.Types.FormatDocumentRangeResponse>,
+    getCompletionsAtPosition : {} as typeof socketContract.server.getCompletionsAtPosition,
+    quickInfo : {} as typeof socketContract.server.quickInfo,
+    getRenameInfo : {} as typeof socketContract.server.getRenameInfo,
+    getDefinitionsAtPosition : {} as typeof socketContract.server.getDefinitionsAtPosition,
+    getDoctorInfo : {} as typeof socketContract.server.getDoctorInfo,
+    getReferences : {} as typeof socketContract.server.getReferences,
+    formatDocument: {} as typeof socketContract.server.formatDocument,
+    formatDocumentRange: {} as typeof socketContract.server.formatDocumentRange,
+    getNavigateToItems : {} as typeof socketContract.server.getNavigateToItems,
+    getDependencies : {} as typeof socketContract.server.getDependencies,
+    getAST : {} as typeof socketContract.server.getAST,
 
     // Used to tell the worker about what project it should work on
     // Note: The project validation / expansion happens locally. Only the hard stuff of *analysis* is done by the worker

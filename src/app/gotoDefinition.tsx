@@ -167,22 +167,21 @@ CodeMirror.commands[commands.additionalEditorCommands.gotoDefinition] = (editor:
     let cursor = editor.getDoc().getCursor();
     let filePath = editor.filePath;
     let position = editor.getDoc().indexFromPos(cursor);
-    // ASYNC
-    // server.getDefinitionsAtPosition({filePath,position}).then((res)=>{
-    //     if (res.definitions.length == 0){
-    //         ui.notifyInfoNormalDisappear('No TypeScript definition at cursor location');
-    //     }
-    //     else if (res.definitions.length == 1) {
-    //         // Go directly 🌹
-    //         let def = res.definitions[0];
-    //         commands.doOpenOrFocusFile.emit({
-    //             filePath: def.filePath,
-    //             position: def.position
-    //         });
-    //     }
-    //     else {
-    //         let node = document.createElement('div');
-    //         ReactDOM.render(<GotoDefinition data={res}/>, node);
-    //     }
-    // });
+    server.getDefinitionsAtPosition({filePath,position}).then((res)=>{
+        if (res.definitions.length == 0){
+            ui.notifyInfoNormalDisappear('No TypeScript definition at cursor location');
+        }
+        else if (res.definitions.length == 1) {
+            // Go directly 🌹
+            let def = res.definitions[0];
+            commands.doOpenOrFocusFile.emit({
+                filePath: def.filePath,
+                position: def.position
+            });
+        }
+        else {
+            let node = document.createElement('div');
+            ReactDOM.render(<GotoDefinition data={res}/>, node);
+        }
+    });
 }

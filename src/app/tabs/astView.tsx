@@ -64,20 +64,19 @@ export class ASTView extends ui.BaseComponent<Props, State> implements tab.Compo
                 this.setState({text: res.contents});
             });
 
-            // ASYNC
-            // server.getAST({mode:this.mode,filePath:this.filePath})
-            //     .then((res)=>{
-            //         this.astViewRenderer = new ASTViewRenderer({
-            //             rootNode: res.root,
-            //             _mainContent: $(this.refs.graphRoot),
-            //             display: this.display
-            //         })
-            //     })
-            //     .catch((err)=>{
-            //         this.setState({
-            //             error: `Failed to get the AST details for the file ${this.filePath}. Make sure it is in the active project. Change project using Alt+Shift+P.`
-            //         });
-            //     });
+            server.getAST({mode:this.mode,filePath:this.filePath})
+                .then((res)=>{
+                    this.astViewRenderer = new ASTViewRenderer({
+                        rootNode: res.root,
+                        _mainContent: $(this.refs.graphRoot),
+                        display: this.display
+                    })
+                })
+                .catch((err)=>{
+                    this.setState({
+                        error: `Failed to get the AST details for the file ${this.filePath}. Make sure it is in the active project. Change project using Alt+Shift+P.`
+                    });
+                });
         }
 
         reloadData();

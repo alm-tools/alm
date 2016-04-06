@@ -616,10 +616,9 @@ class SearchState {
     refreshModeData():Promise<any>{
         // If the new mode requires a search we do that here
         if (this.mode == SearchMode.Symbol){
-            // ASYNC
-            // return server.getNavigateToItems({}).then((res)=>{
-            //     this.symbols = res.items;
-            // });
+            return server.getNavigateToItems({}).then((res)=>{
+                this.symbols = res.items;
+            });
         }
 
         if (this.mode == SearchMode.SourceCode){

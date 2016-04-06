@@ -146,10 +146,9 @@ export class Doctor extends ui.BaseComponent<Props,State> {
 
         let cm = this.props.cm;
         let doc = cm.getDoc();
-        // ASYNC:
-        // server.getDoctorInfo({ filePath: this.props.filePath, editorPosition: this.state.cursor }).then(res=>{
-        //     this.setState({ doctorInfo: res, searching: false });
-        // });
+        server.getDoctorInfo({ filePath: this.props.filePath, editorPosition: this.state.cursor }).then(res=>{
+            this.setState({ doctorInfo: res, searching: false });
+        });
 
     }, 1000);
 

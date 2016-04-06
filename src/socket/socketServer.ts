@@ -101,11 +101,12 @@ namespace Server {
         activeProjectConfig.syncCore(data);
         return resolve({});
     };
-    // ASYNC
-    // export var isFilePathInActiveProject: typeof contract.server.isFilePathInActiveProject = (data) => {
-    //     let inActiveProject = !!activeProject.GetProject.ifCurrent(data.filePath);
-    //     return resolve({inActiveProject});
-    // };
+    export var isFilePathInActiveProject: typeof contract.server.isFilePathInActiveProject = (data) => {
+        return activeProjectConfig.projectFilePathsUpdated.current().then(res => {
+            const inActiveProject = res.filePaths.some(fp => fp === data.filePath);
+            return { inActiveProject };
+        });
+    };
     export var setOpenUITabs: typeof contract.server.setOpenUITabs = (data) => {
         session.setOpenUITabs(data.sessionId, data.openTabs);
         return resolve({});
@@ -113,10 +114,9 @@ namespace Server {
     export var getOpenUITabs: typeof contract.server.getOpenUITabs = (data) => {
         return resolve(session.getOpenUITabs(data.sessionId));
     };
-    // ASYNC
-    // export var activeProjectFilePaths: typeof contract.server.activeProjectFilePaths = (data) => {
-    //     return activeProject.activeProjectFilePathsUpdated.current();
-    // };
+    export var activeProjectFilePaths: typeof contract.server.activeProjectFilePaths = (data) => {
+        return activeProjectConfig.projectFilePathsUpdated.current();
+    };
 
     /**
      * Error handling
@@ -128,18 +128,17 @@ namespace Server {
     /**
      * Project service
      */
-    // ASYNC
-    // export var getCompletionsAtPosition : typeof contract.server.getCompletionsAtPosition = projectService.getCompletionsAtPosition;
-    // export var quickInfo : typeof contract.server.quickInfo = projectService.quickInfo;
-    // export var getRenameInfo : typeof contract.server.getRenameInfo = projectService.getRenameInfo;
-    // export var getDefinitionsAtPosition : typeof contract.server.getDefinitionsAtPosition = projectService.getDefinitionsAtPosition;
-    // export var getDoctorInfo : typeof contract.server.getDoctorInfo = projectService.getDoctorInfo;
-    // export var getReferences : typeof contract.server.getReferences = projectService.getReferences;
+    export var getCompletionsAtPosition : typeof contract.server.getCompletionsAtPosition = projectServiceMaster.worker.getCompletionsAtPosition;
+    export var quickInfo : typeof contract.server.quickInfo = projectServiceMaster.worker.quickInfo;
+    export var getRenameInfo : typeof contract.server.getRenameInfo = projectServiceMaster.worker.getRenameInfo;
+    export var getDefinitionsAtPosition : typeof contract.server.getDefinitionsAtPosition = projectServiceMaster.worker.getDefinitionsAtPosition;
+    export var getDoctorInfo : typeof contract.server.getDoctorInfo = projectServiceMaster.worker.getDoctorInfo;
+    export var getReferences : typeof contract.server.getReferences = projectServiceMaster.worker.getReferences;
     export var formatDocument : typeof contract.server.formatDocument = projectServiceMaster.worker.formatDocument;
     export var formatDocumentRange : typeof contract.server.formatDocumentRange = projectServiceMaster.worker.formatDocumentRange;
-    // export var getNavigateToItems : typeof contract.server.getNavigateToItems = projectService.getNavigateToItems;
-    // export var getDependencies : typeof contract.server.getDependencies = projectService.getDependencies;
-    // export var getAST : typeof contract.server.getAST = projectService.getAST;
+    export var getNavigateToItems : typeof contract.server.getNavigateToItems = projectServiceMaster.worker.getNavigateToItems;
+    export var getDependencies : typeof contract.server.getDependencies = projectServiceMaster.worker.getDependencies;
+    export var getAST : typeof contract.server.getAST = projectServiceMaster.worker.getAST;
 
     /**
      * Git service

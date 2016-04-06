@@ -25,8 +25,17 @@ namespace Worker {
     /**
      * Project Service
      */
+    export var getCompletionsAtPosition : typeof contract.worker.getCompletionsAtPosition = projectService.getCompletionsAtPosition;
+    export var quickInfo : typeof contract.worker.quickInfo = projectService.quickInfo;
+    export var getRenameInfo : typeof contract.worker.getRenameInfo = projectService.getRenameInfo;
+    export var getDefinitionsAtPosition : typeof contract.worker.getDefinitionsAtPosition = projectService.getDefinitionsAtPosition;
+    export var getDoctorInfo : typeof contract.worker.getDoctorInfo = projectService.getDoctorInfo;
+    export var getReferences : typeof contract.worker.getReferences = projectService.getReferences;
     export var formatDocument : typeof contract.worker.formatDocument = projectService.formatDocument;
     export var formatDocumentRange : typeof contract.worker.formatDocumentRange = projectService.formatDocumentRange;
+    export var getNavigateToItems : typeof contract.worker.getNavigateToItems = projectService.getNavigateToItems;
+    export var getDependencies : typeof contract.worker.getDependencies = projectService.getDependencies;
+    export var getAST : typeof contract.worker.getAST = projectService.getAST;
 }
 
 // Ensure that the namespace follows the contract

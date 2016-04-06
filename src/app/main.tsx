@@ -64,10 +64,9 @@ document.addEventListener('DOMContentLoaded', () => {
     connectionStatusChanged.on(r=> {
         state.setSocketConnected(r.connected);
     });
-    // ASYNC
-    // server.activeProjectFilePaths({}).then(res=>{
-    //     state.setFilePathsInActiveProject(res.filePaths);
-    // });
+    server.activeProjectFilePaths({}).then(res=>{
+        state.setFilePathsInActiveProject(res.filePaths);
+    });
     cast.activeProjectFilePathsUpdated.on(res=>{
         state.setFilePathsInActiveProject(res.filePaths);
     });

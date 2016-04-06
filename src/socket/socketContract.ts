@@ -35,10 +35,10 @@ export var server = {
     availableProjects: {} as QRFunction<{}, ActiveProjectConfigDetails[]>,
     getActiveProjectConfigDetails: {} as QRFunction<{}, ActiveProjectConfigDetails>,
     setActiveProjectConfigDetails: {} as QRFunction<ActiveProjectConfigDetails, {}>,
-    // isFilePathInActiveProject: {} as QRFunction<{ filePath: string }, { inActiveProject: boolean }>,
+    isFilePathInActiveProject: {} as QRFunction<{ filePath: string }, { inActiveProject: boolean }>,
     setOpenUITabs: {} as QRFunction<{ sessionId: string, openTabs: types.SessionTabInUI[] }, {}>,
     getOpenUITabs: {} as QRFunction<{ sessionId: id }, { sessionId: string; openTabs: types.SessionTabInUI[] }>,
-    // activeProjectFilePaths: {} as QRFunction<{}, { filePaths: string[] }>,
+    activeProjectFilePaths: {} as QRFunction<{}, { filePaths: string[] }>,
 
     /**
      * Error stuff
@@ -48,17 +48,17 @@ export var server = {
     /**
      * Project Service
      */
-    // getCompletionsAtPosition: {} as QRFunction<Types.GetCompletionsAtPositionQuery, Types.GetCompletionsAtPositionResponse>,
-    // quickInfo: {} as QRFunction<Types.QuickInfoQuery, Types.QuickInfoResponse>,
-    // getRenameInfo: {} as QRFunction<Types.GetRenameInfoQuery, Types.GetRenameInfoResponse>,
-    // getDefinitionsAtPosition: {} as QRFunction<Types.GetDefinitionsAtPositionQuery, Types.GetDefinitionsAtPositionResponse>,
-    // getReferences: {} as QRFunction<Types.GetReferencesQuery, Types.GetReferencesResponse>,
-    // getDoctorInfo: {} as QRFunction<Types.GetDoctorInfoQuery, Types.GetDoctorInfoResponse>,
+    getCompletionsAtPosition: {} as QRFunction<Types.GetCompletionsAtPositionQuery, Types.GetCompletionsAtPositionResponse>,
+    quickInfo: {} as QRFunction<Types.QuickInfoQuery, Types.QuickInfoResponse>,
+    getRenameInfo: {} as QRFunction<Types.GetRenameInfoQuery, Types.GetRenameInfoResponse>,
+    getDefinitionsAtPosition: {} as QRFunction<Types.GetDefinitionsAtPositionQuery, Types.GetDefinitionsAtPositionResponse>,
+    getReferences: {} as QRFunction<Types.GetReferencesQuery, Types.GetReferencesResponse>,
+    getDoctorInfo: {} as QRFunction<Types.GetDoctorInfoQuery, Types.GetDoctorInfoResponse>,
     formatDocument: {} as QRFunction<Types.FormatDocumentQuery, Types.FormatDocumentResponse>,
     formatDocumentRange: {} as QRFunction<Types.FormatDocumentRangeQuery, Types.FormatDocumentRangeResponse>,
-    // getNavigateToItems: {} as QRFunction<{},Types.GetNavigateToItemsResponse>,
-    // getDependencies: {} as QRFunction<{},Types.GetDependenciesResponse>,
-    // getAST: {} as QRFunction<Types.GetASTQuery,Types.GetASTResponse>,
+    getNavigateToItems: {} as QRFunction<{},Types.GetNavigateToItemsResponse>,
+    getDependencies: {} as QRFunction<{},Types.GetDependenciesResponse>,
+    getAST: {} as QRFunction<Types.GetASTQuery,Types.GetASTResponse>,
 
     /**
      * Git service
