@@ -25,7 +25,7 @@ let notificationKeyboardStyle = {
     padding: '5px',
     background: 'grey',
 }
-const ouputStatusSizeStyle = csx.extend(styles.noSelect,{fontSize:'.6rem'});
+const ouputStatusStyle = csx.extend(styles.noSelect,{fontSize:'.6rem'});
 
 export interface Props {
     // from react-redux ... connected below
@@ -104,12 +104,12 @@ export class StatusBar extends BaseComponent<Props, State>{
         const fileOutputStateRendered =
             fileOutputState
             && <span style={styles.statusBarSection}>
-                <span style={csx.extend(ouputStatusSizeStyle)}>
+                <span style={csx.extend(ouputStatusStyle)}>
                 {
                     fileOutputState === types.JSOutputState.EmitSkipped ? null
                     : fileOutputState === types.JSOutputState.NoJSFile ? null
-                    : fileOutputState === types.JSOutputState.JSOutOfDate ? <span style={styles.statusBarError}>❌ JS Outdated</span>
-                    : <span style={styles.statusBarSuccess}>✓ JS Current</span>
+                    : fileOutputState === types.JSOutputState.JSOutOfDate ? <span style={csx.extend(styles.statusBarError,{transition: 'color .5s'})}>❌ JS Outdated</span>
+                    : <span style={csx.extend(styles.statusBarSuccess,{transition: 'color .5s'})}>✓ JS Current</span>
                 }
                 </span>
             </span>;
