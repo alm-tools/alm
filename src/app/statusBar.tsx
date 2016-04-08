@@ -122,7 +122,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                         onClick={this.toggleErrors}
                         className="hint--top"
                         data-hint={`${this.props.errorsUpdate.totalCount} errors. Click to toggle message panel.`}>
-                        <span style={csx.extend(this.props.errorsUpdate.totalCount?styles.statusBarError:styles.statusBarSuccess,{transition: 'color .4s'})}>
+                        <span style={csx.extend(this.props.errorsUpdate.totalCount?styles.statusBarError:styles.statusBarSuccess,{transition: 'color .4s'}, styles.noWrap)}>
                             {this.props.errorsUpdate.totalCount} <Icon name="times-circle"/>
                         </span>
                     </span>

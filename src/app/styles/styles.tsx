@@ -99,6 +99,10 @@ export let hand = {
     cursor: 'pointer',
 }
 
+export let noWrap = {
+    whiteSpace: 'nowrap',
+}
+
 export let codeFont = {
     fontFamily: 'monospace'
 }
