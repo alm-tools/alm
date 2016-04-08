@@ -16,10 +16,6 @@ import * as activeProjectConfig from "../server/disk/activeProjectConfig";
 import * as globalErrorCache from "../server/globalErrorCache";
 import * as projectServiceMaster from "../server/workers/lang/projectServiceMaster";
 
-// ASYNC
-// TODO: Stuff that needs to move into the worker
-// import * as outputStatusCache from "../server/workers/lang/cache/outputStatusCache";
-
 namespace Server {
     export var echo: typeof contract.server.echo = (data, client) => {
         console.log('Echo request received:', data);
@@ -185,9 +181,8 @@ export function register(app: http.Server) {
     findAndReplaceMultiService.farmResultsUpdated.pipe(cast.farmResultsUpdated);
 
     /** JS Output Status */
-    // ASYNC
-    // outputStatusCache.fileOuputStatusUpdated.pipe(cast.fileOuputStatusUpdated);
-    // outputStatusCache.completeOutputStatusCacheUpdated.pipe(cast.completeOutputStatusCacheUpdated);
+    projectServiceMaster.fileOuputStatusUpdated.pipe(cast.fileOuputStatusUpdated);
+    projectServiceMaster.completeOutputStatusCacheUpdated.pipe(cast.completeOutputStatusCacheUpdated);
 
     // For testing
     // setInterval(() => cast.hello.emit({ text: 'nice' }), 1000);

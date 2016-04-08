@@ -21,13 +21,6 @@ export function setMaster(m: typeof masterType) {
     master = m;
 }
 
-// ASYNC
-// import * as wd from "../../disk/workingDir";
-// import * as fmc from "../../disk/fileModelCache";
-// import * as session from "../../disk/session";
-// import * as flm from "../fileListing/fileListingMaster";
-// import * as workingDir from "../../disk/workingDir";
-
 /** The active project name */
 let activeProjectConfigDetails: ActiveProjectConfigDetails = null;
 /** The currently active project */

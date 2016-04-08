@@ -28,9 +28,15 @@ namespace Master {
             return resolve({});
         };
     export const receiveFileOuputStatusUpdate: typeof contract.master.receiveFileOuputStatusUpdate
-        = (data) => {fileOuputStatusUpdated.emit(data); return resolve({});}
+        = (data) => {
+            fileOuputStatusUpdated.emit(data);
+            return resolve({});
+        }
     export const receiveCompleteOutputStatusCacheUpdate: typeof contract.master.receiveCompleteOutputStatusCacheUpdate
-        = (data) => {completeOutputStatusCacheUpdated.emit(data); return resolve({});}
+        = (data) => {
+            completeOutputStatusCacheUpdated.emit(data);
+            return resolve({});
+        }
 }
 
 // Ensure that the namespace follows the contract

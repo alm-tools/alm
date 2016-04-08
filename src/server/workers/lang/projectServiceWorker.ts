@@ -1,6 +1,7 @@
 import * as sw from "../../utils/simpleWorker";
 import * as contract from "./projectServiceContract";
 import * as activeProject from "./activeProject"
+import * as outputStatusCache from "./cache/outputStatusCache"
 import * as projectService from "./projectService";
 
 namespace Worker {
@@ -19,10 +20,12 @@ namespace Worker {
     }
     export const fileEdited: typeof contract.worker.fileEdited = (details) => {
         activeProject.fileEdited(details);
+        outputStatusCache.fileEdited(details);
         return Promise.resolve({});
     }
     export const fileChangedOnDisk: typeof contract.worker.fileChangedOnDisk = (details) => {
         activeProject.fileChangedOnDisk(details);
+        outputStatusCache.fileChangedOnDisk(details);
         return Promise.resolve({});
     }
 
@@ -56,10 +59,10 @@ export const {master} = sw.runWorker({
  */
 import * as tsErrorsCache from "./cache/tsErrorsCache";
 tsErrorsCache.errorsCache.errorsDelta.on((delta) => master.receiveErrorCacheDelta(delta));
-import {fileOuputStatusUpdated} from "./cache/outputStatusCache";
-fileOuputStatusUpdated.on((fileOuputStatusUpdate) => master.receiveFileOuputStatusUpdate(fileOuputStatusUpdate));
-import {completeOutputStatusCacheUpdated} from "./cache/outputStatusCache";
-completeOutputStatusCacheUpdated.on((completeOutputStatusCacheUpdate) => master.receiveCompleteOutputStatusCacheUpdate(completeOutputStatusCacheUpdate));
+outputStatusCache.fileOuputStatusUpdated.on((fileOuputStatusUpdate) => {
+    return master.receiveFileOuputStatusUpdate(fileOuputStatusUpdate);
+});
+outputStatusCache.completeOutputStatusCacheUpdated.on((completeOutputStatusCacheUpdate) => master.receiveCompleteOutputStatusCacheUpdate(completeOutputStatusCacheUpdate));
 
 /**
  * We send down the master to `activeProject` otherwise we get in a cyclic reference :-/
