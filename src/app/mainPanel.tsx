@@ -59,7 +59,7 @@ let resizerStyle = {
         socketConnected: state.socketConnected
     };
 })
-export class ActiveLists extends BaseComponent<Props, State>{
+export class MainPanel extends BaseComponent<Props, State>{
     constructor(props:Props){
         super(props);
         this.state = {

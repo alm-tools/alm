@@ -19,7 +19,7 @@ import {SelectListView} from "./selectListView";
 import {InputDialog} from "./dialogs/inputDialog";
 
 import {StatusBar} from "./statusBar";
-import {ActiveLists} from "./activeLists";
+import {MainPanel} from "./mainPanel";
 import sb = require('./statusBar');
 import {FindAndReplace} from "./findAndReplace";
 import * as state from "./state/state";
@@ -83,7 +83,7 @@ export class Root extends ui.BaseComponent<{}, State>{
 
                 <FindAndReplace/>
 
-                <ActiveLists/>
+                <MainPanel/>
 
                 <StatusBar ref="statusBar"/>
             </div>;
