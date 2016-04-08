@@ -12,7 +12,7 @@ export interface TabInstance {
 export interface StoreState {
     activeProject?: ActiveProjectConfigDetails;
     errorsExpanded?: boolean;
-    errorsUpdate?: ErrorsUpdate;
+    errorsUpdate?: LimitedErrorsUpdate;
     /** Is the current file in the activeProject */
     activeProjectFilePathTruthTable?: { [filePath: string]: boolean };
 
@@ -108,7 +108,7 @@ export let collapseErrors = redux.add('collapseErrors', (state, payload: {}): St
     };
 });
 
-export let setErrorsUpdate = redux.add('setErrorsUpdate', (state, payload: ErrorsUpdate): StoreState => {
+export let setErrorsUpdate = redux.add('setErrorsUpdate', (state, payload: LimitedErrorsUpdate): StoreState => {
     return {
         errorsUpdate: payload
     };

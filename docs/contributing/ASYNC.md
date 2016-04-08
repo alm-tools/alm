@@ -71,6 +71,9 @@ export const {worker} = sw.startWorker({
     workerContract: contract.worker,
     masterImplementation: Master
 });
+export function start() {
+    // Any optional initilization on worker;
+}
 ```
 
 ## Worker
@@ -97,6 +100,8 @@ export const {master} = sw.runWorker({
     masterContract: contract.master
 });
 ```
+
+You generally want to export a `start` function in the master and just call that to ensure that `master` file is loaded (hence worker started).
 
 [socket]: https://github.com/alm-tools/alm/tree/e34bbf9cb6227f3cd150737fef5a47f212e2ad7a/src/socket
 [fileListing]: https://github.com/alm-tools/alm/tree/master/src/server/workers/fileListing

@@ -16,7 +16,7 @@ import * as utils from "../../../common/utils";
 let {resolve} = utils;
 import * as fsu from "../../utils/fsu";
 import fuzzaldrin = require('fuzzaldrin');
-import * as errorsCache from "./cache/errorsCache";
+import {errorsCache} from "./cache/tsErrorsCache";
 
 export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQuery): Promise<Types.GetCompletionsAtPositionResponse> {
     let {filePath, position, prefix} = query;

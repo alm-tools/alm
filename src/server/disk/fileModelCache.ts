@@ -17,6 +17,7 @@ export function getOpenFile(filePath: string) {
     }
 }
 export function getOrCreateOpenFile(filePath: string, autoCreate = false) {
+    filePath = fsu.consistentPath(filePath);
     var file = getOpenFile(filePath);
     if (!file) {
         /** If you request a file that isn't there ... we are going to create it */

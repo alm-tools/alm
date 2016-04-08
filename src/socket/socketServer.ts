@@ -5,17 +5,20 @@ import * as fsu from "../server/utils/fsu";
 import * as flm from "../server/workers/fileListing/fileListingMaster";
 import * as workingDir from "../server/disk/workingDir";
 import {FileModel} from "../server/disk/fileModel";
-import * as activeProject from "../server/workers/lang/activeProject";
-import * as projectService from "../server/workers/lang/projectService";
 import * as gitService from "../server/workers/external/gitService";
 import * as findAndReplaceMultiService from "../server/workers/external/findAndReplaceMultiService";
 import * as session from "../server/disk/session";
 let resolve = sls.resolve;
 
 import * as fmc from "../server/disk/fileModelCache";
+import * as activeProjectConfig from "../server/disk/activeProjectConfig";
 
-import * as outputStatusCache from "../server/workers/lang/cache/outputStatusCache";
-import * as errorCache from "../server/workers/lang/cache/errorsCache";
+import * as globalErrorCache from "../server/globalErrorCache";
+import * as projectServiceMaster from "../server/workers/lang/projectServiceMaster";
+
+// ASYNC
+// TODO: Stuff that needs to move into the worker
+// import * as outputStatusCache from "../server/workers/lang/cache/outputStatusCache";
 
 namespace Server {
     export var echo: typeof contract.server.echo = (data, client) => {
@@ -89,18 +92,20 @@ namespace Server {
      * Config stuff
      */
     export var availableProjects: typeof contract.server.availableProjects = (data) => {
-        return activeProject.availableProjects.current();
+        return activeProjectConfig.availableProjects.current();
     };
     export var getActiveProjectConfigDetails: typeof contract.server.getActiveProjectConfigDetails = (data) => {
-        return activeProject.activeProjectConfigDetailsUpdated.current();
+        return activeProjectConfig.activeProjectConfigDetailsUpdated.current();
     };
     export var setActiveProjectConfigDetails: typeof contract.server.setActiveProjectConfigDetails = (data) => {
-        activeProject.setActiveProjectConfigDetails(data);
+        activeProjectConfig.syncCore(data);
         return resolve({});
     };
     export var isFilePathInActiveProject: typeof contract.server.isFilePathInActiveProject = (data) => {
-        let inActiveProject = !!activeProject.GetProject.ifCurrent(data.filePath);
-        return resolve({inActiveProject});
+        return activeProjectConfig.projectFilePathsUpdated.current().then(res => {
+            const inActiveProject = res.filePaths.some(fp => fp === data.filePath);
+            return { inActiveProject };
+        });
     };
     export var setOpenUITabs: typeof contract.server.setOpenUITabs = (data) => {
         session.setOpenUITabs(data.sessionId, data.openTabs);
@@ -110,30 +115,30 @@ namespace Server {
         return resolve(session.getOpenUITabs(data.sessionId));
     };
     export var activeProjectFilePaths: typeof contract.server.activeProjectFilePaths = (data) => {
-        return activeProject.activeProjectFilePathsUpdated.current();
+        return activeProjectConfig.projectFilePathsUpdated.current();
     };
 
     /**
      * Error handling
      */
     export var getErrors: typeof contract.server.getErrors = (data) => {
-        return resolve(errorCache.getErrorsLimited());
+        return resolve(globalErrorCache.errorsCache.getErrorsLimited());
     }
 
     /**
      * Project service
      */
-    export var getCompletionsAtPosition : typeof contract.server.getCompletionsAtPosition = projectService.getCompletionsAtPosition;
-    export var quickInfo : typeof contract.server.quickInfo = projectService.quickInfo;
-    export var getRenameInfo : typeof contract.server.getRenameInfo = projectService.getRenameInfo;
-    export var getDefinitionsAtPosition : typeof contract.server.getDefinitionsAtPosition = projectService.getDefinitionsAtPosition;
-    export var getDoctorInfo : typeof contract.server.getDoctorInfo = projectService.getDoctorInfo;
-    export var getReferences : typeof contract.server.getReferences = projectService.getReferences;
-    export var formatDocument : typeof contract.server.formatDocument = projectService.formatDocument;
-    export var formatDocumentRange : typeof contract.server.formatDocumentRange = projectService.formatDocumentRange;
-    export var getNavigateToItems : typeof contract.server.getNavigateToItems = projectService.getNavigateToItems;
-    export var getDependencies : typeof contract.server.getDependencies = projectService.getDependencies;
-    export var getAST : typeof contract.server.getAST = projectService.getAST;
+    export var getCompletionsAtPosition : typeof contract.server.getCompletionsAtPosition = projectServiceMaster.worker.getCompletionsAtPosition;
+    export var quickInfo : typeof contract.server.quickInfo = projectServiceMaster.worker.quickInfo;
+    export var getRenameInfo : typeof contract.server.getRenameInfo = projectServiceMaster.worker.getRenameInfo;
+    export var getDefinitionsAtPosition : typeof contract.server.getDefinitionsAtPosition = projectServiceMaster.worker.getDefinitionsAtPosition;
+    export var getDoctorInfo : typeof contract.server.getDoctorInfo = projectServiceMaster.worker.getDoctorInfo;
+    export var getReferences : typeof contract.server.getReferences = projectServiceMaster.worker.getReferences;
+    export var formatDocument : typeof contract.server.formatDocument = projectServiceMaster.worker.formatDocument;
+    export var formatDocumentRange : typeof contract.server.formatDocumentRange = projectServiceMaster.worker.formatDocumentRange;
+    export var getNavigateToItems : typeof contract.server.getNavigateToItems = projectServiceMaster.worker.getNavigateToItems;
+    export var getDependencies : typeof contract.server.getDependencies = projectServiceMaster.worker.getDependencies;
+    export var getAST : typeof contract.server.getAST = projectServiceMaster.worker.getAST;
 
     /**
      * Git service
@@ -171,17 +176,18 @@ export function register(app: http.Server) {
 
     flm.filePathsUpdated.pipe(cast.filePathsUpdated);
 
-    errorCache.errorsUpdated.pipe(cast.errorsUpdated);
-    activeProject.availableProjects.pipe(cast.availableProjectsUpdated);
-    activeProject.activeProjectConfigDetailsUpdated.pipe(cast.activeProjectConfigDetailsUpdated);
-    activeProject.activeProjectFilePathsUpdated.pipe(cast.activeProjectFilePathsUpdated);
+    globalErrorCache.errorsCache.errorsUpdated.pipe(cast.errorsUpdated);
+    activeProjectConfig.availableProjects.pipe(cast.availableProjectsUpdated);
+    activeProjectConfig.activeProjectConfigDetailsUpdated.pipe(cast.activeProjectConfigDetailsUpdated);
+    activeProjectConfig.projectFilePathsUpdated.pipe(cast.activeProjectFilePathsUpdated);
 
     /** FARM */
     findAndReplaceMultiService.farmResultsUpdated.pipe(cast.farmResultsUpdated);
 
     /** JS Output Status */
-    outputStatusCache.fileOuputStatusUpdated.pipe(cast.fileOuputStatusUpdated);
-    outputStatusCache.completeOutputStatusCacheUpdated.pipe(cast.completeOutputStatusCacheUpdated);
+    // ASYNC
+    // outputStatusCache.fileOuputStatusUpdated.pipe(cast.fileOuputStatusUpdated);
+    // outputStatusCache.completeOutputStatusCacheUpdated.pipe(cast.completeOutputStatusCacheUpdated);
 
     // For testing
     // setInterval(() => cast.hello.emit({ text: 'nice' }), 1000);

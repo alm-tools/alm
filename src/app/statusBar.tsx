@@ -32,7 +32,7 @@ export interface Props {
     errorsExpanded?: boolean;
     activeProject?: ActiveProjectConfigDetails;
     activeProjectFiles?: { [filePath: string]: boolean };
-    errorsUpdate?: ErrorsUpdate;
+    errorsUpdate?: LimitedErrorsUpdate;
     socketConnected?: boolean;
     tabs?: state.TabInstance[];
     selectedTabIndex?: number;

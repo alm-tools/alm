@@ -5,25 +5,49 @@
  */
 import * as sw from "../../utils/simpleWorker";
 
-// TODO: These are the imports that shouldn't be here once we have true process seperation
+// Just for types
 import * as fmc from "../../disk/fileModelCache";
 import * as flm from "../fileListing/fileListingMaster";
+import * as types from "../../../common/types";
+import * as socketContract from "../../../socket/socketContract";
 
 // API provided by the worker (language tools)
 export var worker = {
-    // TODO:
-    // endpoint to tell file paths updated
-    // endpoint to tell about file edited
-    // endpoint to tell about file saved
-    //
+    echo: {} as sw.QRFunction<{ data: string }, { data: string }>,
+
+    filePathsUpdated: {} as sw.QRFunction<{}, {}>,
+    fileEdited: {} as sw.QRFunction<{ filePath: string; edit: CodeEdit }, {}>,
+    fileChangedOnDisk : {} as sw.QRFunction<{ filePath: string; contents: string }, {}>,
+
     // Project Service stuff
+    getCompletionsAtPosition : {} as typeof socketContract.server.getCompletionsAtPosition,
+    quickInfo : {} as typeof socketContract.server.quickInfo,
+    getRenameInfo : {} as typeof socketContract.server.getRenameInfo,
+    getDefinitionsAtPosition : {} as typeof socketContract.server.getDefinitionsAtPosition,
+    getDoctorInfo : {} as typeof socketContract.server.getDoctorInfo,
+    getReferences : {} as typeof socketContract.server.getReferences,
+    formatDocument: {} as typeof socketContract.server.formatDocument,
+    formatDocumentRange: {} as typeof socketContract.server.formatDocumentRange,
+    getNavigateToItems : {} as typeof socketContract.server.getNavigateToItems,
+    getDependencies : {} as typeof socketContract.server.getDependencies,
+    getAST : {} as typeof socketContract.server.getAST,
+
+    // Used to tell the worker about what project it should work on
+    // Note: The project validation / expansion happens locally. Only the hard stuff of *analysis* is done by the worker
+    // This makes the worker bit more host agnostic
+    setActiveProjectConfigDetails: {} as sw.QRFunction<{ activeProjectConfigDetails: ActiveProjectConfigDetails }, {}>,
 }
 
 // API provided by master (web server)
 export var master = {
-    getOrCreateOpenFile: fmc.getOrCreateOpenFile,
+    getFileContents: {} as sw.QRFunction<{filePath:string},{contents:string}>,
+    getOpenFilePaths: {} as sw.QRFunction<{},string[]>,
+
+    // Sinks for important events
+    receiveErrorCacheDelta: {} as sw.QRFunction<ErrorCacheDelta, {}>,
+    receiveFileOuputStatusUpdate: {} as sw.QRFunction<types.JSOutputStatus, {}>,
+    receiveCompleteOutputStatusCacheUpdate: {} as sw.QRFunction<types.JSOutputStatusCache, {}>,
 
     // TODO:
-    // endpoint to tell about errors
     // endpoint to tell about file output statuses
 }

@@ -39,11 +39,19 @@ interface ErrorsByFilePath {
  * We don't send all the errors to front end continuously.
  * But we do still tell the total count.
  */
-interface ErrorsUpdate {
+interface LimitedErrorsUpdate {
     errorsByFilePath: ErrorsByFilePath;
     totalCount: number;
     syncCount: number;
     tooMany: boolean;
+}
+
+/**
+ * Allows true syncing of one cache with another
+ */
+type ErrorCacheDelta = {
+    added: ErrorsByFilePath;
+    removed: ErrorsByFilePath;
 }
 
 /**
