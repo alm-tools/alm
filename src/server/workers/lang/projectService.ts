@@ -7,8 +7,6 @@
 import * as activeProject from "./activeProject";
 let getProject = activeProject.GetProject.ifCurrentOrErrorOut;
 
-import * as fileModelCache from "../../disk/fileModelCache";
-
 import {Types} from "../../../socket/socketContract";
 import * as types from "../../../common/types";
 
@@ -374,18 +372,25 @@ export function getJSOutputStatus(query: Types.FilePathQuery, autoEmit = true): 
     const jsFile = output.outputFiles.filter(x => x.name.endsWith(".js"))[0];
 
     /**
+     * We just write to disk for now
+     * Would be better if it interacted with master
+     */
+    const getContents = fsu.readFile;
+    const setContents = fsu.writeFile;
+
+    /**
      * If we have compileOnSave as false then the output status isn't relevant
      */
     let state = output.emitSkipped ? types.JSOutputState.EmitSkipped
         : (project.configFile.project.compileOnSave === false) || !jsFile ? types.JSOutputState.NoJSFile
-        : fileModelCache.getOrCreateOpenFile(jsFile.name).getContents() === jsFile.text ? types.JSOutputState.JSUpToDate
+        : getContents(jsFile.name) === jsFile.text ? types.JSOutputState.JSUpToDate
         : types.JSOutputState.JSOutOfDate;
 
     /**
      * If the state is JSOutOfDate we can easily fix that to bring it up to date for `compileOnSave`
      */
-    if (autoEmit && project.configFile.project.compileOnSave !== false) {
-        fileModelCache.getOrCreateOpenFile(jsFile.name).setContents(jsFile.text);
+    if (autoEmit && state === types.JSOutputState.JSOutOfDate && project.configFile.project.compileOnSave !== false) {
+        setContents(jsFile.name, jsFile.text);
         state = types.JSOutputState.JSUpToDate;
     }
 
