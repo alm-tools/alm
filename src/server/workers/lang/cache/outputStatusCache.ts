@@ -10,6 +10,7 @@ import * as activeProject from "../activeProject";
 import * as events from "../../../../common/events";
 import * as projectService from "../projectService";
 import * as utils from "../../../../common/utils";
+import * as project from "../core/project";
 
 /**
  * Expose changes to the outside world
@@ -42,3 +43,6 @@ const updateEmitForFile = utils.triggeredDebounce({
  */
 export const fileEdited = updateEmitForFile;
 export const fileChangedOnDisk = updateEmitForFile;
+export const doCompleteProjectCacheUpdate = (proj: project.Project) => {
+    // TODO: the rest
+}

@@ -35,12 +35,11 @@ export function setActiveProjectConfigDetails(_activeProjectConfigDetails: Activ
     initialSync = true;
     activeProjectConfigDetails = _activeProjectConfigDetails;
     const configFileDetails = ConfigFile.getConfigFileFromDiskOrInMemory(activeProjectConfigDetails);
-    ConfigFile.createProjectFromConfigFile(configFileDetails).then((project)=>{
+    return ConfigFile.createProjectFromConfigFile(configFileDetails).then((project)=>{
         currentProject = project;
         clearErrors();
         refreshAllProjectDiagnostics();
-    }).then(()=>{
-        // TODO : Initial output status cache update
+        return project; 
     });
 }
 

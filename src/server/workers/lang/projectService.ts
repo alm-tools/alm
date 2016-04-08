@@ -363,7 +363,7 @@ export function getAST(query: Types.GetASTQuery): Promise<Types.GetASTResponse> 
  */
 import {getRawOutput} from "./modules/building";
 export type GetJSOutputStatusResponse = {inActiveProject:boolean, outputStatus?: types.JSOutputStatus};
-export function getJSOutputStatus(query: Types.FilePathQuery): GetJSOutputStatusResponse {
+export function getJSOutputStatus(query: Types.FilePathQuery, autoEmit = true): GetJSOutputStatusResponse {
     const project = activeProject.GetProject.ifCurrent(query.filePath);
     if (!project) {
         return {
@@ -384,7 +384,7 @@ export function getJSOutputStatus(query: Types.FilePathQuery): GetJSOutputStatus
     /**
      * If the state is JSOutOfDate we can easily fix that to bring it up to date for `compileOnSave`
      */
-    if (project.configFile.project.compileOnSave !== false) {
+    if (autoEmit && project.configFile.project.compileOnSave !== false) {
         fileModelCache.getOrCreateOpenFile(jsFile.name).setContents(jsFile.text);
         state = types.JSOutputState.JSUpToDate;
     }

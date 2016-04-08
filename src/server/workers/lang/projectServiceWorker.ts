@@ -6,9 +6,20 @@ import * as projectService from "./projectService";
 
 namespace Worker {
     export const echo: typeof contract.worker.echo = (data) => Promise.resolve(data);
+
+    /**
+     * This is sort of the entry point of the worker. Nothing really happens till this gets called
+     */
     export const setActiveProjectConfigDetails: typeof contract.worker.setActiveProjectConfigDetails = (details) => {
-        activeProject.setActiveProjectConfigDetails(details.activeProjectConfigDetails);
-        return Promise.resolve({});
+        return activeProject
+            .setActiveProjectConfigDetails(details.activeProjectConfigDetails)
+            .then((proj) => {
+                // Initial output status cache update
+                if (!proj.configFile.project.compileOnSave) {
+                    outputStatusCache.doCompleteProjectCacheUpdate(proj);
+                }
+                return {};
+            });
     }
 
     /**
