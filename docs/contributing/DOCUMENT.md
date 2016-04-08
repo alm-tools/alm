@@ -11,7 +11,10 @@ The doc cache sends any edits to the document to the server.
 The doc cache also subscribes to server edits.
 
 ## OriginId
-The docCache makes sure that edits that were created by itself aren't applied by adding an `originId` to code edits. `originId` is unique by each document in a browser window. This is okay because *documents are unique by filePath* in a browser window.
+The docCache makes sure that edits that were created by itself aren't applied by adding an `originId` to code edits. `originId` is unique by each document in a browser window. This is okay because *documents are unique by filePath* in a browser window. The following demonstrates a multi-monitor/multi-browser-window demo working just fine.
+
+
+![multimonitor](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/multiMonitor.gif)
 
 ## Syntax Highlighting
 For the purpose of TypeScript Syntax Highlighting the docCache also keeps the document up to date in the `classifierCache` ([classifierCache.ts][classifierCache.ts]) by sending it edits. [More on Syntax Highlighting][syntax].
@@ -21,3 +24,4 @@ For the purpose of TypeScript Syntax Highlighting the docCache also keeps the do
 [codeEditor.ts]:https://github.com/alm-tools/alm/blob/master/src/app/codemirror/codeEditor.tsx
 [classifierCache.ts]:https://github.com/alm-tools/alm/blob/master/src/app/codemirror/mode/classifierCache.ts
 [syntax]: ./SYNTAX.md
+
