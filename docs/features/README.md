@@ -27,6 +27,7 @@
     * [Go to Definition](#goto-definition)
     * [Find References](#find-references)
     * [Active Lists](#active-list)
+    * [JavaScript emit](#javascript-emit)
 * [TypeScript Analysis](#dependency-view)
     * [Dependency View](#dependency-view)
     * [AST View](#ast-view)
@@ -158,6 +159,12 @@ Easy as `Ctrl|⌘ + Shift + B`
 Going through your error list is a breeze with `F8` (goto next) and `Shift+F8` (goto previous).
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/activeList.gif)
+
+# JavaScript Emit
+
+As soon as you edit a TypeScript file we do an intelligent emit of the expected JavaScript. We also to a full emit check on initial project load.
+
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/emit.gif)
 
 # Dependency View
 
