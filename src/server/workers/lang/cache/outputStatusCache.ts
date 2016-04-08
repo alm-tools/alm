@@ -22,11 +22,8 @@ export const completeOutputStatusCacheUpdated = new events.TypedEvent<types.JSOu
  */
 let outputStatusCache: types.JSOutputStatusCache = {};
 
-/**
- * Subscribe to external changes
- */
-export const fileEdited = utils.triggeredDebounce({
-    func: (e: { filePath: string, edit: CodeEdit }) => {
+const updateEmitForFile = utils.triggeredDebounce({
+    func: (e: { filePath: string }) => {
         const res = projectService.getJSOutputStatus(e);
         if (!res.inActiveProject) return;
 
@@ -41,8 +38,8 @@ export const fileEdited = utils.triggeredDebounce({
     milliseconds: 2000
 });
 
-export function fileChangedOnDisk(evt: { filePath: string; contents: string }) {
-    // TODO:
-    //     // clear whats there
-    //     // Query the active project for new output. Diff and write it out
-}
+/**
+ * Subscribe to external changes
+ */
+export const fileEdited = updateEmitForFile;
+export const fileChangedOnDisk = updateEmitForFile;
