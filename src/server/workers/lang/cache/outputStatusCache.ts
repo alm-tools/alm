@@ -25,6 +25,7 @@ let outputStatusCache: types.JSOutputStatusCache = {};
 /**
  * Subscribe to external changes
  */
+// ASYNC
 // fileModelCache.didEdit.on(utils.triggeredDebounce({
 //     func: (e: { filePath: string, edit: CodeEdit }) => {
 //         const res = projectService.getJSOutputStatus(e);

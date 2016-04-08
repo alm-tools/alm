@@ -177,10 +177,9 @@ export function register(app: http.Server) {
     flm.filePathsUpdated.pipe(cast.filePathsUpdated);
 
     globalErrorCache.errorsCache.errorsUpdated.pipe(cast.errorsUpdated);
-    // ASYNC
-    // activeProject.availableProjects.pipe(cast.availableProjectsUpdated);
-    // activeProject.activeProjectConfigDetailsUpdated.pipe(cast.activeProjectConfigDetailsUpdated);
-    // activeProject.activeProjectFilePathsUpdated.pipe(cast.activeProjectFilePathsUpdated);
+    activeProjectConfig.availableProjects.pipe(cast.availableProjectsUpdated);
+    activeProjectConfig.activeProjectConfigDetailsUpdated.pipe(cast.activeProjectConfigDetailsUpdated);
+    activeProjectConfig.projectFilePathsUpdated.pipe(cast.activeProjectFilePathsUpdated);
 
     /** FARM */
     findAndReplaceMultiService.farmResultsUpdated.pipe(cast.farmResultsUpdated);
