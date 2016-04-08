@@ -15,7 +15,7 @@ namespace Worker {
             .setActiveProjectConfigDetails(details.activeProjectConfigDetails)
             .then((proj) => {
                 // Initial output status cache update
-                if (!proj.configFile.project.compileOnSave) {
+                if (proj.configFile.project.compileOnSave) {
                     outputStatusCache.doCompleteProjectCacheUpdate(proj);
                 }
                 return {};

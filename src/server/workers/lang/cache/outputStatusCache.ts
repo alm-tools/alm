@@ -44,5 +44,13 @@ const updateEmitForFile = utils.triggeredDebounce({
 export const fileEdited = updateEmitForFile;
 export const fileChangedOnDisk = updateEmitForFile;
 export const doCompleteProjectCacheUpdate = (proj: project.Project) => {
-    // TODO: the rest
+    console.log('[EMIT] Checking whole project emit');
+    outputStatusCache = {};
+    // proj.getProjectSourceFiles().forEach(sf=>{
+    //     const filePath = sf.fileName;
+    //     const res = projectService.getJSOutputStatus({ filePath });
+    //     outputStatusCache[filePath] = res.outputStatus;
+    // });
+    completeOutputStatusCacheUpdated.emit(outputStatusCache);
+    console.log('[EMIT] Complete');
 }
