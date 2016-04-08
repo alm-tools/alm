@@ -7,6 +7,7 @@ import {cast, server} from "../../../socket/socketClient";
 import * as utils from "../../../common/utils";
 import * as classifierCache from "./classifierCache";
 import {RefactoringsByFilePath, Refactoring} from "../../../common/types";
+import * as state from "../../state/state";
 
 /**
  * Modes. New modes need to be added
@@ -103,6 +104,9 @@ function getOrCreateDoc(filePath: string) {
 
                 // Send the edit
                 server.editFile({ filePath: filePath, edit: codeEdit });
+
+                // Keep the ouput status cache informed
+                state.ifJSStatusWasCurrentThenMoveToOutOfDate({inputFilePath: filePath});
             });
 
             // setup to get doc changes from server

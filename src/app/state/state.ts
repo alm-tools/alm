@@ -262,3 +262,22 @@ export const completeOuputStatusCacheUpdated = redux.add('completeOuputStatusCac
         outputStatusCache
     };
 });
+
+export const ifJSStatusWasCurrentThenMoveToOutOfDate = redux.add('ifJSStatusWasCurrentThenMoveToOutOfDate', (state: StoreState, payload: {inputFilePath:string}): StoreState => {
+    const oldState = state.outputStatusCache[payload.inputFilePath];
+    // If we didn't think it was up to date then don't care
+    if (!oldState || oldState.state !== types.JSOutputState.JSUpToDate)
+    {
+        return {};
+    }
+    // It might be out of date now. So move it there till the backend tells us something different
+    const newState: typeof oldState = {
+        inputFilePath: oldState.inputFilePath,
+        outputFilePath: oldState.outputFilePath,
+        state: types.JSOutputState.JSOutOfDate
+    };
+    const outputStatusCache = redux.updateFields({ [payload.inputFilePath]: newState })(state.outputStatusCache);
+    return {
+        outputStatusCache
+    };
+});
