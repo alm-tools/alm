@@ -39,10 +39,12 @@ export function setActiveProjectConfigDetails(_activeProjectConfigDetails: Activ
         currentProject = project;
         clearErrors();
         refreshAllProjectDiagnostics();
+    }).then(()=>{
+        // TODO : Initial output status cache update
     });
 }
 
-function sync(){
+function sync() {
     setActiveProjectConfigDetails(activeProjectConfigDetails);
 }
 

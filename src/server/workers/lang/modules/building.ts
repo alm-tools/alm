@@ -38,3 +38,34 @@ export function getRawOutput(proj: project.Project, filePath: string): ts.EmitOu
     let output: ts.EmitOutput = services.getEmitOutput(filePath);
     return output;
 }
+
+
+type EmitOuputWithInputFile = (ts.EmitOutput & { inputFilePath: string });
+
+/**
+ * Taken from services.ts and modified to not take a filePath
+ * see discussion : https://gitter.im/Microsoft/TypeScript?at=570742b8c65c9a6f7f27c94c
+ */
+export function getWholeProgramRawOutput(proj: project.Project): EmitOuputWithInputFile[] {
+    const services = proj.languageService;
+    const program = services.getProgram();
+    const result: EmitOuputWithInputFile[] = program.getSourceFiles().map(sourceFile => {
+        // The following is pretty much a verbatim copy paste of services.ts `getEmitOuput`
+        const outputFiles: ts.OutputFile[] = [];
+        function writeFile(fileName: string, data: string, writeByteOrderMark: boolean) {
+            outputFiles.push({
+                name: fileName,
+                writeByteOrderMark: writeByteOrderMark,
+                text: data
+            });
+        }
+
+        const emitOutput = program.emit(sourceFile, writeFile);
+        return {
+            inputFilePath: sourceFile.fileName,
+            outputFiles,
+            emitSkipped: emitOutput.emitSkipped
+        };
+    });
+    return result;
+}

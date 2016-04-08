@@ -27,7 +27,6 @@ const updateEmitForFile = utils.triggeredDebounce({
         const res = projectService.getJSOutputStatus(e);
         if (!res.inActiveProject) return;
 
-        const currentStatus = outputStatusCache[e.filePath];
         const newStatus = res.outputStatus;
         outputStatusCache[e.filePath] = newStatus;
         fileOuputStatusUpdated.emit(newStatus);
