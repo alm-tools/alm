@@ -33,7 +33,7 @@ enum SearchMode {
     Command,
     Project,
     Symbol,
-    SourceCode,
+    FilesInProject,
 }
 
 let selectedStyle = {
@@ -94,7 +94,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
             this.searchState.openOmniSearch(SearchMode.Symbol);
         });
         commands.omniProjectSourcefile.on(() => {
-            this.searchState.openOmniSearch(SearchMode.SourceCode);
+            this.searchState.openOmniSearch(SearchMode.FilesInProject);
         });
     }
 
@@ -236,7 +236,7 @@ class SearchState {
     /** symols */
     symbols: Types.NavigateToItem[] = [];
     /** source code files */
-    sourceCodeFilePaths: string[] = [];
+    filesPathsInProject: string[] = [];
 
     /** Modes can use this to store their results */
     filteredValues:any[] = [];
@@ -317,10 +317,10 @@ class SearchState {
                 searchingName: "Symbols"
             },
             {
-                mode: SearchMode.SourceCode,
-                description: 'Search for SourceFile in active project',
-                shortcut: 's',
-                searchingName: "SourceCode"
+                mode: SearchMode.FilesInProject,
+                description: 'Search for TypeScript file in active project',
+                shortcut: 't',
+                searchingName: "Files In Project"
             }
         ];
 
@@ -347,7 +347,7 @@ class SearchState {
             });
         }
 
-        if (this.mode == SearchMode.SourceCode){
+        if (this.mode == SearchMode.FilesInProject){
             let fileList: string[] = this.filteredValues;
             renderedResults = this.createRenderedForList(fileList,(filePath)=>{
                 // Create rendered
@@ -502,7 +502,7 @@ class SearchState {
             return;
         }
 
-        if (this.mode == SearchMode.SourceCode) {
+        if (this.mode == SearchMode.FilesInProject) {
             let filePath = this.filteredValues[index];
             let {line} = utils.getFilePathLine(this.parsedFilterValue);
             if (filePath) {
@@ -557,9 +557,9 @@ class SearchState {
                 this.filteredValues = this.filteredValues.slice(0,this.maxShowCount);
             }
 
-            if (this.mode == SearchMode.SourceCode) {
+            if (this.mode == SearchMode.FilesInProject) {
                 let {filePath} = utils.getFilePathLine(this.parsedFilterValue);
-                this.filteredValues = fuzzyFilter(this.sourceCodeFilePaths, filePath);
+                this.filteredValues = fuzzyFilter(this.filesPathsInProject, filePath);
             }
 
             if (this.mode == SearchMode.Command) {
@@ -621,8 +621,8 @@ class SearchState {
             });
         }
 
-        if (this.mode == SearchMode.SourceCode){
-            this.sourceCodeFilePaths = Object.keys(state.getState().activeProjectFilePathTruthTable);
+        if (this.mode == SearchMode.FilesInProject){
+            this.filesPathsInProject = Object.keys(state.getState().activeProjectFilePathTruthTable);
         }
 
         return Promise.resolve();

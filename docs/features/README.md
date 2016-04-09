@@ -48,17 +48,21 @@ Use the command search (`Ctrl|⌘ + Shift + P`) to see all the shortcuts at your
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/commandSearch.gif)
 
-
-## Symbol Search
-The s**Y**mbol search mode (`Ctrl|⌘ + Shift + Y`) lets navigate your projects with meaning
-
-![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/symbolSearch.gif)
-
 ## Project Search
 
 Search for and set the **active** TypeScript project (`tsconfig.json`) using project search (`Alt + Shift + P`)
 
-![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/projectSearch.gif)
+## Symbol Search
+
+The s**Y**mbol search mode (`Ctrl|⌘ + Alt + Y`) lets navigate your projects with meaning.
+
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/symbolSearch.gif)
+
+## Project FilePath Search
+
+The Project FilePath search mode (`Ctrl|⌘ + Alt + P`) lets navigate just your project files.
+
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/filesPathsInProject.png)
 
 # Sublime
 > Imitation is the sincerest form of flattery
