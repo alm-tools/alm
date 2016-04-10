@@ -60,6 +60,7 @@ function getLabel(proposal: { template: TemplateConfig }): Text {
 /** Our keymap */
 var ourMap = {
     Tab: selectNextVariable,
+    'Shift-Tab': selectPreviousVariable,
     Enter: function(cm) { selectNextVariable(cm, true) },
     Esc: uninstall
 }
@@ -374,6 +375,49 @@ function selectNextVariable(cm, exitOnEnd) {
                 return;
             }
             state.varIndex = 0;
+        }
+        var marker = state.selectableMarkers[state.varIndex];
+        var pos = marker.find();
+        cm.setSelection(pos.from, pos.to);
+        var templateVar = marker._templateVar;
+        for (var i = 0; i < state.marked.length; i++) {
+            var m = state.marked[i];
+            if (m == marker) {
+                m.className = "";
+                m.startStyle = "";
+                m.endStyle = "";
+            } else {
+                if (m._templateVar == marker._templateVar) {
+                    m.className = "CodeMirror-templates-variable-selected";
+                    m.startStyle = "";
+                    m.endStyle = "";
+                } else {
+                    m.className = "CodeMirror-templates-variable";
+                    m.startStyle = "CodeMirror-templates-variable-start";
+                    m.endStyle = "CodeMirror-templates-variable-end";
+                }
+            }
+        }
+        cm.refresh();
+    } else {
+        // No tokens - exit.
+        exit(cm);
+    }
+}
+
+/** Same as select Next Variable. I just added a `--` on varIndex instead of `++` and fixed the looping logic */
+function selectPreviousVariable(cm, exitOnEnd) {
+    var state = cm._templateState;
+    if (state.selectableMarkers.length > 0) {
+        state.varIndex--;
+        if (state.varIndex < 0) {
+            // If we reach the last token and exitOnEnd is true, we exit instead of
+            // looping back to the first token.
+            if (exitOnEnd) {
+                exit(cm);
+                return;
+            }
+            state.varIndex = state.selectableMarkers.length - 1;
         }
         var marker = state.selectableMarkers[state.varIndex];
         var pos = marker.find();
