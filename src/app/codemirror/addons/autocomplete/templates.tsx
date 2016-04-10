@@ -67,13 +67,9 @@ interface TemplateConfig {
     functionCompletion?: boolean;
 }
 interface TemplatesForContext {
-    name: string;
     context: string;
     templates: TemplateConfig[];
 }
-
-/** our global templates registry */
-let templatesMap:{[mode:string]:Template[]} = {};
 
 function startsWith(str: string, token: string) {
     return str.slice(0, token.length).toUpperCase() == token.toUpperCase();
@@ -501,13 +497,6 @@ function uninstall(cm) {
     delete cm._templateState;
 }
 
-/** Filters out the templates based on the text and the mode of the editor */
-export function getCompletionTemplates(cm: CodeMirror.EditorFromTextArea, text: string): Template[]{
-    var mode = cm.getDoc().getMode().name;
-    var list = templatesMap[mode] || [];
-    return list.filter(template=> startsWith(template.name, text));
-}
-
 /** Renders templates into hints */
 export function renderTemplates(cm: CodeMirror.EditorFromTextArea, templates: Template[]): ExtendedCodeMirrorHint[] {
     var mode = cm.getDoc().getMode().name;
@@ -542,25 +531,11 @@ export function renderTemplates(cm: CodeMirror.EditorFromTextArea, templates: Te
         });
 }
 
-export function addTemplates(templates: TemplatesForContext) {
-    var context = templates.context;
-    if (context) {
-        var list = templatesMap[context];
-        if (!list) {
-            list = [];
-            templatesMap[context] = list;
-        }
-        templates.templates.forEach(function(template) {
-            list.push(new Template(template));
-        });
-    }
-}
-
 /** Based on https://github.com/angelozerr/CodeMirror-XQuery/blob/master/codemirror-javascript/addon/hint/javascript/javascript-templates.js#L1 */
-var templates: TemplatesForContext = {
-    "name":
-    "typescript",
-    "context": "typescript", "templates": [
+const templates: TemplatesForContext[] = [
+{
+    context: "typescript",
+    templates: [
         {
             "name": "for",
             "description": "iterate over array",
@@ -599,5 +574,30 @@ var templates: TemplatesForContext = {
         { "name": "@author", "description": "author name", "template": "@author ${user}" },
         { "name": "while", "description": "while loop with condition", "template": "while (${condition}) {\n\t${cursor}\n}" }
     ]
-};
-addTemplates(templates);
+}
+];
+
+/** our global templates registry */
+export class TemplatesRegistry {
+    private templatesByContext: {[mode:string]:Template[]} = Object.create(null);
+    constructor(config: TemplatesForContext[]){
+        config.forEach(templatesForContext => {
+            const context = templatesForContext.context;
+            const list = this.templatesByContext[context] = this.templatesByContext[context] || [];
+            templatesForContext.templates.forEach(function(template) {
+                list.push(new Template(template));
+            });
+        });
+    }
+
+    /**
+     * Filters out the templates based on the text and the mode of the editor
+     */
+    // We only really query for TypeScript context at the moment 🌹
+    getCompletionTemplates(cm: CodeMirror.EditorFromTextArea, text: string): Template[] {
+        const context = cm.getDoc().getMode().name;
+        const templates = this.templatesByContext[context] || [];
+        return templates.filter(template=> startsWith(template.name, text));
+    }
+}
+export const templatesRegistry = new TemplatesRegistry(templates);

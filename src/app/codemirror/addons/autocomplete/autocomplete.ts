@@ -199,7 +199,7 @@ export class AutoCompleter {
 
 
                 // Langauge Mode Snippets
-                const snippets = templates.getCompletionTemplates(editor, token.string);
+                const snippets = templates.templatesRegistry.getCompletionTemplates(editor, token.string);
                 const snippetsRendered = templates.renderTemplates(editor, snippets);
 
                 // Add snippets to list
