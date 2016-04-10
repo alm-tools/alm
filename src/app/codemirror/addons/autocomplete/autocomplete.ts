@@ -13,6 +13,14 @@ import * as jumpy from "../jumpy";
 require('./autocomplete.css');
 import * as templates from "./templates";
 
+/**
+ * Key strokes can have different effect based on this state
+ * So moved this check out into a utility
+ */
+export function isCompletionActive(ed: CM.EditorFromTextArea): boolean {
+    return (ed as any).state.completionActive;
+}
+
 /** Enable showhint for this code mirror */
 export function setupOptions(cmOptions: any, filePath: string) {
     cmOptions.showHint = true;
@@ -63,7 +71,7 @@ export function setupCodeMirror(cm: CodeMirror.EditorFromTextArea){
 
         timeout = setTimeout(function() {
             // if a completion is already active ... then cm will call us anyways :)
-            if ((editor as any).state.completionActive) {
+            if (isCompletionActive(editor)) {
                 // For some reason it doesn't for `.`
                 // Suspect its because `token` changes and therefore show-hint hides it ¯\_(ツ)_/¯
                 let cur = editor.getDoc().getCursor();
@@ -77,7 +85,7 @@ export function setupCodeMirror(cm: CodeMirror.EditorFromTextArea){
 
     /** We don't get input reads on `(` for some reason */
     cm.on('keyup', function(ed: any, evt: KeyboardEvent) {
-        if (evt.which === 57 && !ed.state.completionActive) {
+        if (evt.which === 57 && !isCompletionActive(ed)) {
             CodeMirror.showHint(cm as any);
         }
     });
