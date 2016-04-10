@@ -593,7 +593,7 @@ var templates: TemplatesForContext = {
         { "name": "try", "description": "try catch block", "template": "try {\n\t${cursor}\n} catch (e) {\n\t// ${todo}: handle exception\n}" },
         { "name": "catch", "description": "catch block", "template": "catch (e) {\n\t${cursor}// ${todo}: handle exception\n}" },
         { "name": "function", "description": "function", "template": "function ${name}(${}) {\n\t${cursor}\n}" },
-        { "name": "function", "description": "anonymous function", "template": "function (${}) {\n\t${cursor}\n}" },
+        { "name": "functiona", "description": "anonymous function", "template": "function (${}) {\n\t${cursor}\n}" },
         { "name": "new", "description": "create new object", "template": "var ${name} = new ${type}(${arguments});" },
         { "name": "lazy", "description": "lazy creation", "template": "if (${name:var} == null) {\n\t${name} = new ${type}(${arguments});\n\t${cursor}\n}\n\nreturn ${name};" },
         { "name": "null", "description": "<code>null</code>", "template": "<code>null</code>" },
