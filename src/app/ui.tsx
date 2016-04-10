@@ -177,3 +177,46 @@ export function kindToColor(kind: string, lighten = false) {
             return base;
     }
 }
+
+/**
+ * For consitent icon lookup against kind
+ */
+import {FAIconName,toFontAwesomeCharCode} from "./utils/fontAwesomeToCharCode";
+export function kindToIcon(kind: string):string {
+    switch (kind) {
+        case ts.ScriptElementKind.keyword:
+            return toFontAwesomeCharCode(FAIconName.key);
+        case 'snippet':
+            return toFontAwesomeCharCode(FAIconName.exchange);
+        case ts.ScriptElementKind.scriptElement:
+        case ts.ScriptElementKind.moduleElement:
+        case ts.ScriptElementKind.classElement:
+        case ts.ScriptElementKind.localClassElement:
+        case ts.ScriptElementKind.interfaceElement:
+        case ts.ScriptElementKind.typeElement:
+        case ts.ScriptElementKind.enumElement:
+        case ts.ScriptElementKind.alias:
+        case ts.ScriptElementKind.typeParameterElement:
+        case ts.ScriptElementKind.primitiveType:
+            return toFontAwesomeCharCode(FAIconName.archive);
+        case ts.ScriptElementKind.variableElement:
+        case ts.ScriptElementKind.localVariableElement:
+        case ts.ScriptElementKind.memberVariableElement:
+        case ts.ScriptElementKind.letElement:
+        case ts.ScriptElementKind.constElement:
+        case ts.ScriptElementKind.label:
+        case ts.ScriptElementKind.parameterElement:
+        case ts.ScriptElementKind.indexSignatureElement:
+            return toFontAwesomeCharCode(FAIconName.at);
+        case ts.ScriptElementKind.functionElement:
+        case ts.ScriptElementKind.localFunctionElement:
+        case ts.ScriptElementKind.memberFunctionElement:
+        case ts.ScriptElementKind.memberGetAccessorElement:
+        case ts.ScriptElementKind.memberSetAccessorElement:
+        case ts.ScriptElementKind.callSignatureElement:
+        case ts.ScriptElementKind.constructorImplementationElement:
+            return toFontAwesomeCharCode(FAIconName.circleArrowRight);
+        default:
+            return toFontAwesomeCharCode(FAIconName.info);
+    }
+}

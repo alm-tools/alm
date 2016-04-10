@@ -64,9 +64,25 @@ li.CodeMirror-hint-active {
  * Everything below is custom 🌹
  * custom classes in our hints
  */
+
+.cm-hint.left-left {
+    padding: 2px 5px;
+    display: table-cell;
+    transition: color .2s cubic-bezier(0.23, 1, 0.32, 1);
+    font-size: 8px;
+
+    /* copy from font awesome */
+    font: normal normal normal 10px/1 FontAwesome;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.CodeMirror-hint-active .cm-hint.left-left {
+    color: #333 !important;
+}
+
 .cm-hint.left {
-    color: #FF8888;
-    background: rgba(255, 0, 0, 0.31);
+    color: #666;
 
     display: table-cell;
     padding-right: 4px;
