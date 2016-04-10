@@ -13,6 +13,14 @@ export interface ExtendedCodeMirrorHint extends CodeMirror.Hint {
 }
 
 /**
+ * Key strokes can have different effect based on this state
+ * So moved this check out into a utility
+ */
+export function isCompletionActive(ed: CodeMirror.EditorFromTextArea): boolean {
+    return !!(ed as any).state.completionActive;
+}
+
+/**
  * A common shared render function
  */
 import {kindToColor, kindToIcon} from "../../../ui";

@@ -4,11 +4,11 @@
  *
  * NOTE: Known issues
  * pressing tab interferes with autocomplete
- * presseing escape interferes with autocomplete 
+ * presseing escape interferes with autocomplete
  */
 require("./templates.css");
 import CodeMirror = require('codemirror');
-import {ExtendedCodeMirrorHint,render} from "./autocompleteShared";
+import {ExtendedCodeMirrorHint, render, isCompletionActive} from "./autocompleteShared";
 let Pos = CodeMirror.Pos;
 
 /** Extensions by templates extension */
@@ -86,10 +86,19 @@ function getLabel(proposal: { template: TemplateConfig }): Text {
 
 /** Our keymap */
 const ourKeyMap = {
-    Tab: selectNextVariable,
+    Tab: function(cm) {
+        // if (isCompletionActive(cm)) return;
+        selectNextVariable(cm);
+    },
     'Shift-Tab': selectPreviousVariable,
-    Enter: function(cm) { selectNextVariable(cm, true) },
-    Esc: uninstall
+    Enter: function(cm) {
+        // if (isCompletionActive(cm)) return;
+        selectNextVariable(cm, true);
+    },
+    Esc: function(cm) {
+        // if (isCompletionActive(cm)) return;
+        uninstall(cm);
+    }
 }
 
 /** Creates a new template state */
@@ -383,7 +392,7 @@ function onChange(cm: CodeMirror.Editor, textChanged: CodeMirror.EditorChange) {
     }
 }
 
-function selectNextVariable(cm, exitOnEnd) {
+function selectNextVariable(cm, exitOnEnd = false) {
     var state = cm._templateState;
     if (state.selectableMarkers.length > 0) {
         state.varIndex++;

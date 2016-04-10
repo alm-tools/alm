@@ -5,21 +5,13 @@ require('codemirror/addon/hint/javascript-hint');
 
 import {createMap} from "../../../../common/utils";
 import {server,cast} from "../../../../socket/socketClient";
-import {ExtendedCodeMirrorHint, render} from "./autocompleteShared";
+import {ExtendedCodeMirrorHint, render, isCompletionActive} from "./autocompleteShared";
 import * as types from "../../../../common/types";
 import * as state from "../../../state/state";
 import * as jumpy from "../jumpy";
 
 require('./autocomplete.css');
 import * as templates from "./templates";
-
-/**
- * Key strokes can have different effect based on this state
- * So moved this check out into a utility
- */
-export function isCompletionActive(ed: CM.EditorFromTextArea): boolean {
-    return (ed as any).state.completionActive;
-}
 
 /** Enable showhint for this code mirror */
 export function setupOptions(cmOptions: any, filePath: string) {
