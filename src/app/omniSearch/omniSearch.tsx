@@ -397,12 +397,16 @@ class SearchState {
             renderedResults = this.createRenderedForList(filtered,(symbol)=>{
                 // Create rendered
                 let matched = renderMatchedSegments(symbol.name,this.parsedFilterValue);
+                const color = ui.kindToColor(symbol.kind);
+                const icon = ui.kindToIcon(symbol.kind);
                 return (
                     <div>
                         <div style={csx.horizontal}>
                             <span>{matched}</span>
                             <span style={csx.flex}></span>
-                            <strong style={{color:ui.kindToColor(symbol.kind)} as any}>{symbol.kind}</strong>
+                            <strong style={{color}}>{symbol.kind}</strong>
+                            &nbsp;
+                            <span style={csx.extend({color, fontFamily:'FontAwesome'})}>{icon}</span>
                         </div>
                         <div>{symbol.fileName}:{symbol.position.line+1}</div>
                     </div>
