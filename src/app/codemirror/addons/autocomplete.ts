@@ -11,6 +11,16 @@ import {kindToColor} from "../../ui";
 
 require('./autocomplete.css');
 import * as templates from "./templates";
+namespace AutocompleteStyles {
+    /**
+     * We have a rows of hints with each hint being
+     * `left`      `main`        `right`
+     * for type    for content   for docs
+     */
+    export const leftClassName = 'cm-hint left';
+    export const mainClassName = 'cm-hint main';
+    export const rightClassName = 'cm-hint right';
+}
 
 /** Enable showhint for this code mirror */
 export function setupOptions(cmOptions: any, filePath: string) {
@@ -112,9 +122,9 @@ export class AutoCompleter {
             let [color, colorBackground] = [kindToColor(original.kind), kindToColor(original.kind, true)];
 
             elt.innerHTML = `
-                <strong class="cm-hint left" style="color:${color};background:${colorBackground}">${original.kind}</strong>
-                <span class="cm-hint main">${original.name}</span>
-                <span class="cm-hint right">${original.display}</span>
+                <strong class="${AutocompleteStyles.leftClassName}" style="color:${color};background:${colorBackground}">${original.kind}</strong>
+                <span class="${AutocompleteStyles.mainClassName}">${original.name}</span>
+                <span class="${AutocompleteStyles.rightClassName}">${original.display}</span>
             `.replace(/\s+/g,' ');
         }
 
