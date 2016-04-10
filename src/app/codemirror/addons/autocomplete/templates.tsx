@@ -1,7 +1,10 @@
 /**
  * and https://github.com/angelozerr/CodeMirror-XQuery/wiki/Completion-with-Templates
  * based on https://github.com/angelozerr/CodeMirror-XQuery/blob/master/codemirror-extension/addon/hint/templates-hint.js
- * I prefer the term "snippets"
+ *
+ * NOTE: Known issues
+ * pressing tab interferes with autocomplete
+ * presseing escape interferes with autocomplete 
  */
 require("./templates.css");
 import CodeMirror = require('codemirror');
@@ -82,7 +85,7 @@ function getLabel(proposal: { template: TemplateConfig }): Text {
 }
 
 /** Our keymap */
-var ourMap = {
+const ourKeyMap = {
     Tab: selectNextVariable,
     'Shift-Tab': selectPreviousVariable,
     Enter: function(cm) { selectNextVariable(cm, true) },
@@ -255,7 +258,7 @@ export class Template {
         // Have to be before selectNextVariable, since selectNextVariable
         // may exit and remove the keymap again.
         cm.on("change", onChange);
-        cm.addKeyMap(ourMap);
+        cm.addKeyMap(ourKeyMap);
 
         selectNextVariable(cm, true);
     }
@@ -488,7 +491,7 @@ function uninstall(cm) {
     state.marked.length = 0;
     state.selectableMarkers.length = 0;
     cm.off("change", onChange);
-    cm.removeKeyMap(ourMap);
+    cm.removeKeyMap(ourKeyMap);
     delete cm._templateState;
 }
 
