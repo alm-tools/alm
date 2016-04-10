@@ -34,21 +34,3 @@ declare module CodeMirror {
         rootDoc: boolean;
     }
 }
-
-/** Extensions by templates extension */
-declare module CodeMirror {
-    interface Hint {
-        template?: any;
-        data?: Hint;
-        info?: Function;
-
-        /** Used by autocomplete as well */
-        comment?: string;
-    }
-    interface TextMarkerOptions {
-        _templateVar?: string;
-    }
-    interface TextMarker {
-        _templateVar?: string;
-    }
-}

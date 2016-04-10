@@ -8,6 +8,26 @@ import CodeMirror = require('codemirror');
 import {ExtendedCodeMirrorHint,render} from "./autocompleteShared";
 let Pos = CodeMirror.Pos;
 
+/** Extensions by templates extension */
+declare global {
+    module CodeMirror {
+        interface Hint {
+            template?: Template;
+            data?: Hint;
+            info?: Function;
+
+            /** Used by autocomplete as well */
+            comment?: string;
+        }
+        interface TextMarkerOptions {
+            _templateVar?: string;
+        }
+        interface TextMarker {
+            _templateVar?: string;
+        }
+    }
+}
+
 /**
  * Template specific interfaces
  */
@@ -161,7 +181,7 @@ export class Template {
         return this._content;
     }
 
-    insert = (cm: CodeMirror.Editor, data: Marker) => {
+    insert = (cm: CodeMirror.Editor, data: CodeMirror.Hints) => {
         let state = goIntoInsertMode(cm);
 
         const from: CodeMirror.Position = this._functionCompletion ? { line: data.from.line, ch: data.from.ch + 1 } : data.from;
