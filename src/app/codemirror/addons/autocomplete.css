@@ -28,11 +28,12 @@
 
     /** customizations */
 
-    /** theoretically its needed ... but as soon as we add it height no longer works (css limitation)
+    /** theoretically `display:table` is needed ... but as soon as we add it height no longer works (css limitation)
      * But since table-row table-cell children work even without this ... lets do that :)
      */
     /** display: table; */
     background: #272822;
+    border: 1px solid #333;
 }
 
 .CodeMirror-hint {
@@ -68,8 +69,8 @@ li.CodeMirror-hint-active {
     background: rgba(255, 0, 0, 0.31);
 
     display: table-cell;
-    padding-right: 2px;
-    padding-left: 2px;
+    padding-right: 4px;
+    padding-left: 4px;
 
     transition: color .2s cubic-bezier(0.23, 1, 0.32, 1);
 
@@ -84,8 +85,8 @@ li.CodeMirror-hint-active {
 .cm-hint.main {
     display: table-cell;
 
-    padding-right: 2px;
-    padding-left: 2px;
+    padding-right: 4px;
+    padding-left: 4px;
 }
 .CodeMirror-hint-active .cm-hint.main {
 }
@@ -93,8 +94,8 @@ li.CodeMirror-hint-active {
 .cm-hint.right {
     display: table-cell;
 
-    padding-right: 2px;
-    padding-left: 2px;
+    padding-right: 4px;
+    padding-left: 4px;
 
     max-width: 200px;
 
