@@ -38,7 +38,13 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
     if (completionList.length > maxSuggestions) completionList = completionList.slice(0, maxSuggestions);
 
     // Potentially use it more aggresively at some point
-    function docComment(c: ts.CompletionEntry): { display: string; comment: string; } {
+    // This queries the langauge service so its a bit slow
+    function docComment(c: ts.CompletionEntry): {
+        /** The display parts e.g. (a:number)=>string */
+        display: string;
+        /** The doc comment */
+        comment: string;
+    } {
         var completionDetails = project.languageService.getCompletionEntryDetails(filePath, position, c.name);
 
         // Show the signatures for methods / functions
@@ -78,6 +84,9 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
         };
     });
 
+    /**
+     * Add function signature help
+     */
     if (query.prefix == '(') {
         var signatures = project.languageService.getSignatureHelpItems(query.filePath, query.position);
         if (signatures && signatures.items) {
