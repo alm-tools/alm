@@ -30,14 +30,14 @@ export class BaseComponent<Props, State> extends React.Component<Props, State>{
      * - call this *before* calling state action
      *   (as its a bit undeterministic and sometimes runs render / didUpdate immediately after calling action)
      */
-    afterComponentDidUpdate(cb:()=>void):void{
+    afterComponentDidUpdate(cb: () => void): void {
         this._afterComponentDidUpdateQueue.push(cb);
     }
     /**
      * You generally want afterComponentDidUpdate.
      */
-    componentDidUpdate(){
-        this._afterComponentDidUpdateQueue.forEach(cb=>cb());
+    componentDidUpdate() {
+        this._afterComponentDidUpdateQueue.forEach(cb => cb());
         this._afterComponentDidUpdateQueue = [];
     }
 
@@ -76,7 +76,7 @@ require('react-toggle/style.css')
  */
 import toastr = require("toastr");
 require('toastr/build/toastr.css');
-commands.esc.on(()=>{
+commands.esc.on(() => {
     toastr.clear();
 });
 export function notifyInfoQuickDisappear(message: string) {
@@ -85,10 +85,10 @@ export function notifyInfoQuickDisappear(message: string) {
 export function notifyInfoNormalDisappear(message: string) {
     toastr.info(message);
 }
-export function notifyWarningNormalDisappear(message: string, options?:{onClick:()=>void}) {
+export function notifyWarningNormalDisappear(message: string, options?: { onClick: () => void }) {
     toastr.warning(message, null, options && { onclick: options.onClick });
 }
-export function notifySuccessNormalDisappear(message: string){
+export function notifySuccessNormalDisappear(message: string) {
     toastr.success(message);
 }
 export function comingSoon(featureName: string) {
@@ -99,7 +99,7 @@ export function comingSoon(featureName: string) {
 /**
  * Keyboard handling
  */
- /** Utility function for keyboard handling */
+/** Utility function for keyboard handling */
 export function getKeyStates(e: React.SyntheticEvent) {
     let event: KeyboardEvent = e as any; // This is a lie .... but a convinient one as react provides the same stuff
     let nativeEvent: KeyboardEvent = e.nativeEvent as any; // This is the truth
@@ -130,50 +130,50 @@ export function indent(indent: number, tabSize = 4) {
 /**
  * General utility for consistent coloring
  */
-export function kindToColor(kind:string, lighten = false){
-     let add = lighten?50:0;
-     let opacity = lighten?0.2:1;
-     let base = 'white';
-     switch(kind){
-         case ts.ScriptElementKind.keyword:
-         case 'snippet':
-             // redish
-             return `rgba(${0xf9 + add},${0x26 + add},${0x72 + add},${opacity})`;
-         case ts.ScriptElementKind.scriptElement:
-         case ts.ScriptElementKind.moduleElement:
-         case ts.ScriptElementKind.classElement:
-         case ts.ScriptElementKind.localClassElement:
-         case ts.ScriptElementKind.interfaceElement:
-         case ts.ScriptElementKind.typeElement:
-         case ts.ScriptElementKind.enumElement:
-         case ts.ScriptElementKind.alias:
-         case ts.ScriptElementKind.typeParameterElement:
-         case ts.ScriptElementKind.primitiveType:
-             // yelloish
-             // #e6db74
-             return `rgba(${0xe6 + add},${0xdb + add},${0x74 + add},${opacity})`;
-         case ts.ScriptElementKind.variableElement:
-         case ts.ScriptElementKind.localVariableElement:
-         case ts.ScriptElementKind.memberVariableElement:
-         case ts.ScriptElementKind.letElement:
-         case ts.ScriptElementKind.constElement:
-         case ts.ScriptElementKind.label:
-         case ts.ScriptElementKind.parameterElement:
-         case ts.ScriptElementKind.indexSignatureElement:
-             // blueish
-             // #66d9ef
-             return `rgba(${0x66 + add},${0xd9 + add},${0xef + add},${opacity})`;
-         case ts.ScriptElementKind.functionElement:
-         case ts.ScriptElementKind.localFunctionElement:
-         case ts.ScriptElementKind.memberFunctionElement:
-         case ts.ScriptElementKind.memberGetAccessorElement:
-         case ts.ScriptElementKind.memberSetAccessorElement:
-         case ts.ScriptElementKind.callSignatureElement:
-         case ts.ScriptElementKind.constructorImplementationElement:
-             // greenish
-             // #a6e22e
-             return `rgba(${0xa6 + add},${0xe2 + add},${0x2e + add},${opacity})`;
-         default:
-             return base;
-     }
- }
+export function kindToColor(kind: string, lighten = false) {
+    let add = lighten ? 50 : 0;
+    let opacity = lighten ? 0.2 : 1;
+    let base = 'white';
+    switch (kind) {
+        case ts.ScriptElementKind.keyword:
+        case 'snippet':
+            // redish
+            return `rgba(${0xf9 + add},${0x26 + add},${0x72 + add},${opacity})`;
+        case ts.ScriptElementKind.scriptElement:
+        case ts.ScriptElementKind.moduleElement:
+        case ts.ScriptElementKind.classElement:
+        case ts.ScriptElementKind.localClassElement:
+        case ts.ScriptElementKind.interfaceElement:
+        case ts.ScriptElementKind.typeElement:
+        case ts.ScriptElementKind.enumElement:
+        case ts.ScriptElementKind.alias:
+        case ts.ScriptElementKind.typeParameterElement:
+        case ts.ScriptElementKind.primitiveType:
+            // yelloish
+            // #e6db74
+            return `rgba(${0xe6 + add},${0xdb + add},${0x74 + add},${opacity})`;
+        case ts.ScriptElementKind.variableElement:
+        case ts.ScriptElementKind.localVariableElement:
+        case ts.ScriptElementKind.memberVariableElement:
+        case ts.ScriptElementKind.letElement:
+        case ts.ScriptElementKind.constElement:
+        case ts.ScriptElementKind.label:
+        case ts.ScriptElementKind.parameterElement:
+        case ts.ScriptElementKind.indexSignatureElement:
+            // blueish
+            // #66d9ef
+            return `rgba(${0x66 + add},${0xd9 + add},${0xef + add},${opacity})`;
+        case ts.ScriptElementKind.functionElement:
+        case ts.ScriptElementKind.localFunctionElement:
+        case ts.ScriptElementKind.memberFunctionElement:
+        case ts.ScriptElementKind.memberGetAccessorElement:
+        case ts.ScriptElementKind.memberSetAccessorElement:
+        case ts.ScriptElementKind.callSignatureElement:
+        case ts.ScriptElementKind.constructorImplementationElement:
+            // greenish
+            // #a6e22e
+            return `rgba(${0xa6 + add},${0xe2 + add},${0x2e + add},${opacity})`;
+        default:
+            return base;
+    }
+}
