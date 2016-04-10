@@ -522,9 +522,9 @@ export function renderTemplates(cm: CodeMirror.EditorFromTextArea, templates: Te
                 label += '- ' + template.description;
             }
             var completion: ExtendedCodeMirrorHint = {
-                "text": label,
-                "template": template
+                text: label,
             };
+            completion.template = template;
             completion.comment = template.description;
             completion.data = completion;
             completion.hint = function(cm, data: CodeMirror.Hints, completion: ExtendedCodeMirrorHint) {
