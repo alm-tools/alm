@@ -77,6 +77,7 @@ li.CodeMirror-hint-active {
     /* Because of using table - row on parent spacing between items needs to come from here as well */
     padding-top: 2px;
     padding-bottom: 2px;
+    text-align: right;
 }
 .CodeMirror-hint-active .cm-hint.left {
     color: white !important;
