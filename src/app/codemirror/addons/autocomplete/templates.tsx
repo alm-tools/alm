@@ -527,6 +527,7 @@ export function renderTemplates(cm: CodeMirror.EditorFromTextArea, templates: Te
                 kind: 'snippet',
                 name: template.name,
                 display: template.description,
+                comment: template.template
             }
             return completion;
         });

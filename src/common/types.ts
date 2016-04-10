@@ -134,10 +134,10 @@ export type JSOutputStatusCache = { [inputFilePath: string]: JSOutputStatus }
  * Complete related stuff
  */
 export interface Completion {
-    name?: string; // stuff like "toString"
     kind?: string; // stuff like "var"
-    comment?: string; // the docComment if any
+    name?: string; // stuff like "toString"
     display?: string; // This is displayParts (for functions)
+    comment?: string; // the docComment if any
 
     /** If snippet is specified then the above stuff is ignored */
     snippet?: {
