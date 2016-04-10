@@ -188,9 +188,9 @@ export class AutoCompleter {
                 // Function completion snippets
                 const functionCompletionSnippets = res.completions.filter(x=>!!x.snippet).map(x=>{
                     const template = new templates.Template({
-                        name: 'Signature',
-                        description: 'signature',
-                        template: x.snippet,
+                        name: x.snippet.name,
+                        description: x.snippet.description,
+                        template: x.snippet.template,
                         functionCompletion: true,
                     });
                     return template

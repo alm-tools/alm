@@ -91,20 +91,30 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
         var signatures = project.languageService.getSignatureHelpItems(query.filePath, query.position);
         if (signatures && signatures.items) {
             signatures.items.forEach((item) => {
-                var snippet: string = item.parameters.map((p, i) => {
-                    var display = '${' + (i + 1) + ':' + ts.displayPartsToString(p.displayParts) + '}';
-                    if (i === signatures.argumentIndex) {
-                        return display;
-                    }
+                const template: string = item.parameters.map((p, i) => {
+                    const display = '${' + (i + 1) + ':' + ts.displayPartsToString(p.displayParts) + '}';
                     return display;
                 }).join(ts.displayPartsToString(item.separatorDisplayParts));
 
-                // We do not use the label for now. But it looks too good to kill off
-                var label: string = ts.displayPartsToString(item.prefixDisplayParts)
-                    + snippet
+                const name: string = item.parameters.map((p)=>ts.displayPartsToString(p.displayParts))
+                    .join(ts.displayPartsToString(item.separatorDisplayParts));
+
+                // e.g. test(something:string):any;
+                // prefix: test(
+                // template: ${something}
+                // suffix: ): any;
+                const description: string =
+                    ts.displayPartsToString(item.prefixDisplayParts)
+                    + template
                     + ts.displayPartsToString(item.suffixDisplayParts);
 
-                completionsToReturn.unshift({ snippet });
+                completionsToReturn.unshift({
+                    snippet: {
+                        template,
+                        name,
+                        description: description
+                    }
+                });
             });
         }
     }

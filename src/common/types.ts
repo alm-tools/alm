@@ -140,5 +140,9 @@ export interface Completion {
     display?: string; // This is displayParts (for functions)
 
     /** If snippet is specified then the above stuff is ignored */
-    snippet?: string;
+    snippet?: {
+        name: string;
+        description: string;
+        template: string;
+    };
 }

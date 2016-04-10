@@ -54,7 +54,7 @@ interface TemplateConfig {
     name: string;
     description: string;
 
-    /** A string version of the template. We can use this to generate tokens */
+    /** A string version of the template. We parse this to TokenStream */
     template: string;
 
     /**
@@ -130,8 +130,8 @@ function goIntoInsertMode(cm: CodeMirror.Editor) {
 //   { cursor: true }
 //       The cursor will be placed here after completing the template
 export class Template {
-    public name: any;
-    public description: any;
+    public name: string;
+    public description: string;
     public template: string;
 
     private _content: string;
@@ -140,9 +140,9 @@ export class Template {
     private _functionCompletion: boolean;
 
     constructor(data: TemplateConfig) {
-        this.name = data.name; // Optional
-        this.description = data.description; // Optional
+        this.name = data.name;
         this.template = data.template;
+        this.description = data.description;
         this._functionCompletion = !!data.functionCompletion;
     }
 
@@ -262,14 +262,14 @@ export class Template {
 }
 
 /** goes from string to ParsedToken stream */
-function parseTemplate(content: string): ParsedToken[] {
+function parseTemplate(template: string): ParsedToken[] {
     var tokens: ParsedToken[] = [];
     var varParsing = false;
     var last = null;
     var token = '';
     var lastVariableIndex = 0;
-    for (var i = 0; i < content.length; i++) {
-        var current = content.charAt(i);
+    for (var i = 0; i < template.length; i++) {
+        var current = template.charAt(i);
         if (current == "\n") {
             if (token != '') {
                 tokens.push(token);
@@ -311,9 +311,9 @@ function parseTemplate(content: string): ParsedToken[] {
                     token = '';
                 }
             } else {
-                if (current == "$" && (i + 1) <= content.length) {
+                if (current == "$" && (i + 1) <= template.length) {
                     i++;
-                    var next = content.charAt(i);
+                    var next = template.charAt(i);
                     if (next == "{") {
                         varParsing = true;
                         addChar = false;
