@@ -442,7 +442,6 @@ export function getCompletions(cm: CodeMirror.EditorFromTextArea, text: string) 
                 label += '- ' + template.description;
             }
             var completion: ExtendedCodeMirrorHint = {
-                "className": "CodeMirror-hint-template",
                 "text": label,
                 "template": template
             };

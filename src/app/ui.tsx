@@ -136,6 +136,7 @@ export function kindToColor(kind:string, lighten = false){
      let base = 'white';
      switch(kind){
          case ts.ScriptElementKind.keyword:
+         case 'snippet':
              // redish
              return `rgba(${0xf9 + add},${0x26 + add},${0x72 + add},${opacity})`;
          case ts.ScriptElementKind.scriptElement:
