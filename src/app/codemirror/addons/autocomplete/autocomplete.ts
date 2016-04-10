@@ -178,11 +178,24 @@ export class AutoCompleter {
                     list: res.completions.filter(x=>!x.snippet).map(completionToCodeMirrorHint)
                 };
 
+                // Function completion snippets
+                const functionCompletionSnippets = res.completions.filter(x=>!!x.snippet).map(x=>{
+                    const template = new templates.Template({
+                        name: 'Function Completion',
+                        description: 'signature',
+                        template: x.snippet
+                    });
+                    return template
+                });
+                const functionCompletionSnippetsRendered = templates.renderTemplates(editor, functionCompletionSnippets);
 
-                // Add snippets
+
+                // Langauge Mode Snippets
                 const snippets = templates.getCompletionTemplates(editor, token.string);
                 const snippetsRendered = templates.renderTemplates(editor, snippets);
-                completionInfo.list = completionInfo.list.concat(snippetsRendered);
+
+                // Add snippets to list
+                completionInfo.list = completionInfo.list.concat(snippetsRendered.concat(functionCompletionSnippetsRendered));
 
                 setupCompletionDocs(completionInfo);
 

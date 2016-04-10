@@ -108,7 +108,7 @@ function goIntoInsertMode(cm: CodeMirror.Editor) {
 //   { line_separator: true }
 //       If the template surrounds existing text, the existing text will be
 //       placed here. Not implemented currently.
-class Template {
+export class Template {
     public name: any;
     public description: any;
     public source: any;
