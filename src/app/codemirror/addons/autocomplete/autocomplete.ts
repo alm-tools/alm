@@ -23,7 +23,7 @@ export function setupOptions(cmOptions: any, filePath: string) {
     };
 
     // Debugging
-    // cmOptions.hintOptions.closeOnUnfocus = false; // DEBUG
+    cmOptions.hintOptions.closeOnUnfocus = false; // DEBUG
 }
 
 /** Mostly make completions more aggressive */

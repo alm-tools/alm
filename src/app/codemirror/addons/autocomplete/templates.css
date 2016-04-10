@@ -1,13 +1,15 @@
+/** Other instances of the placeholder being edited right now */
+.CodeMirror-templates-variable-selected {
+  background-color: #444;
+}
+
+/** Other place holders that user can cycle to */
 .CodeMirror-templates-variable {
-  outline: solid #4664A5 1px;
+  outline: solid #666 1px;
 }
 
 .CodeMirror-templates-variable-start {
 }
 
 .CodeMirror-templates-variable-end {
-}
-
-.CodeMirror-templates-variable-selected {
-  background-color: #B4D7FF;
 }
