@@ -45,7 +45,8 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
         /** The doc comment */
         comment: string;
     } {
-        var completionDetails = project.languageService.getCompletionEntryDetails(filePath, position, c.name);
+        const completionDetails = project.languageService.getCompletionEntryDetails(filePath, position, c.name);
+        const comment = ts.displayPartsToString(completionDetails.documentation || []);
 
         // Show the signatures for methods / functions
         var display: string;
@@ -62,7 +63,6 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
         }
         display = display.trim();
 
-        var comment = ts.displayPartsToString(completionDetails.documentation || []);
         return { display: display, comment: comment };
     }
 
