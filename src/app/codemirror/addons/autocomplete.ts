@@ -4,7 +4,8 @@ require('codemirror/addon/hint/show-hint');
 require('codemirror/addon/hint/javascript-hint');
 
 import {createMap} from "../../../common/utils";
-import {server,cast,Types} from "../../../socket/socketClient";
+import {server,cast} from "../../../socket/socketClient";
+import * as types from "../../../common/types";
 import * as state from "../../state/state";
 import * as jumpy from "./jumpy";
 import {kindToColor} from "../../ui";
@@ -85,11 +86,6 @@ export function setupCodeMirror(cm: CodeMirror.EditorFromTextArea){
     });
 }
 
-/** Exists to allow us to pass throught the `original` information around */
-interface ExtendedCodeMirrorHint extends CodeMirror.Hint{
-    original?: Types.Completion
-}
-
 export class AutoCompleter {
     /** if not the last request ... don't show results */
     lastRequest: number;
@@ -117,8 +113,8 @@ export class AutoCompleter {
         let noCompletions: CodeMirror.Hints = null;
 
 
-        function render(elt: HTMLLIElement, data: CodeMirror.Hints, cur: ExtendedCodeMirrorHint) {
-            let original: Types.Completion = cur.original;
+        function render(elt: HTMLLIElement, data: CodeMirror.Hints, cur: types.ExtendedCodeMirrorHint) {
+            let original: types.Completion = cur.original;
             let [color, colorBackground] = [kindToColor(original.kind), kindToColor(original.kind, true)];
 
             elt.innerHTML = `
@@ -128,8 +124,8 @@ export class AutoCompleter {
             `.replace(/\s+/g,' ');
         }
 
-        function completionToCodeMirrorHint(completion: Types.Completion): ExtendedCodeMirrorHint {
-            let result: ExtendedCodeMirrorHint = {
+        function completionToCodeMirrorHint(completion: types.Completion): types.ExtendedCodeMirrorHint {
+            let result: types.ExtendedCodeMirrorHint = {
                 text: completion.name,
                 render: render,
                 original: completion,
@@ -145,7 +141,7 @@ export class AutoCompleter {
             var tooltip = null;
             CodeMirror.on(obj, "close", function() { remove(tooltip); });
             CodeMirror.on(obj, "update", function() { remove(tooltip); });
-            CodeMirror.on(obj, "select", function(cur: ExtendedCodeMirrorHint, node) {
+            CodeMirror.on(obj, "select", function(cur: types.ExtendedCodeMirrorHint, node) {
               remove(tooltip);
               var content = cur.comment;
               if (content) {

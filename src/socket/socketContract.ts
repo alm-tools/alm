@@ -168,15 +168,7 @@ export namespace Types {
         prefix: string;
     }
 
-    export interface Completion {
-        name?: string; // stuff like "toString"
-        kind?: string; // stuff like "var"
-        comment?: string; // the docComment if any
-        display?: string; // This is either displayParts (for functions) or just the kind duplicated
-
-        /** If snippet is specified then the above stuff is ignored */
-        snippet?: string;
-    }
+    export type Completion = types.Completion;
     export interface GetCompletionsAtPositionResponse {
         completions: Completion[];
         endsInPunctuation: boolean;
