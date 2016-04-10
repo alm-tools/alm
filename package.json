@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "clipboard": "^1.4.2",
-    "codemirror": "5.9.0",
+    "codemirror": "5.13.4",
     "css-loader": "^0.17.0",
     "csx": "4.0.0",
     "d3": "^3.5.12",
