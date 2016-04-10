@@ -178,8 +178,11 @@ export class AutoCompleter {
                     list: res.completions.filter(x=>!x.snippet).map(completionToCodeMirrorHint)
                 };
 
+
                 // Add snippets
-                completionInfo.list = completionInfo.list.concat(templates.getCompletions(editor, token.string));
+                const snippets = templates.getCompletionTemplates(editor, token.string);
+                const snippetsRendered = templates.renderTemplates(editor, snippets);
+                completionInfo.list = completionInfo.list.concat(snippetsRendered);
 
                 setupCompletionDocs(completionInfo);
 

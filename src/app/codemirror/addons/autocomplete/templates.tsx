@@ -475,11 +475,18 @@ function uninstall(cm) {
     delete cm._templateState;
 }
 
-export function getCompletions(cm: CodeMirror.EditorFromTextArea, text: string) : ExtendedCodeMirrorHint[] {
+/** Filters out the templates based on the text and the mode of the editor */
+export function getCompletionTemplates(cm: CodeMirror.EditorFromTextArea, text: string): Template[]{
     var mode = cm.getDoc().getMode().name;
     var list = templatesMap[mode] || [];
-    return list
-        .filter(template=> startsWith(template.name, text))
+    return list.filter(template=> startsWith(template.name, text));
+}
+
+/** Renders templates into hints */
+export function renderTemplates(cm: CodeMirror.EditorFromTextArea, templates: Template[]): ExtendedCodeMirrorHint[] {
+    var mode = cm.getDoc().getMode().name;
+    var list = templatesMap[mode] || [];
+    return templates
         .map(template => {
             var label = template.name;
             if (template.description) {
