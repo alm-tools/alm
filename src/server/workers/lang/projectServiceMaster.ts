@@ -8,7 +8,7 @@ import * as types from "../../../common/types";
 
 // *sinks* for important caches
 import {errorsCache} from "../../globalErrorCache";
-export const fileOuputStatusUpdated = new TypedEvent<types.JSOutputStatus>();
+export const fileOutputStatusUpdated = new TypedEvent<types.JSOutputStatus>();
 export const completeOutputStatusCacheUpdated = new TypedEvent<types.JSOutputStatusCache>();
 
 namespace Master {
@@ -27,9 +27,9 @@ namespace Master {
             errorsCache.applyDelta(data);
             return resolve({});
         };
-    export const receiveFileOuputStatusUpdate: typeof contract.master.receiveFileOuputStatusUpdate
+    export const receiveFileOutputStatusUpdate: typeof contract.master.receiveFileOutputStatusUpdate
         = (data) => {
-            fileOuputStatusUpdated.emit(data);
+            fileOutputStatusUpdated.emit(data);
             return resolve({});
         }
     export const receiveCompleteOutputStatusCacheUpdate: typeof contract.master.receiveCompleteOutputStatusCacheUpdate

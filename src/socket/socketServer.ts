@@ -181,7 +181,7 @@ export function register(app: http.Server) {
     findAndReplaceMultiService.farmResultsUpdated.pipe(cast.farmResultsUpdated);
 
     /** JS Output Status */
-    projectServiceMaster.fileOuputStatusUpdated.pipe(cast.fileOuputStatusUpdated);
+    projectServiceMaster.fileOutputStatusUpdated.pipe(cast.fileOutputStatusUpdated);
     projectServiceMaster.completeOutputStatusCacheUpdated.pipe(cast.completeOutputStatusCacheUpdated);
 
     // For testing

@@ -45,7 +45,7 @@ export var master = {
 
     // Sinks for important events
     receiveErrorCacheDelta: {} as sw.QRFunction<ErrorCacheDelta, {}>,
-    receiveFileOuputStatusUpdate: {} as sw.QRFunction<types.JSOutputStatus, {}>,
+    receiveFileOutputStatusUpdate: {} as sw.QRFunction<types.JSOutputStatus, {}>,
     receiveCompleteOutputStatusCacheUpdate: {} as sw.QRFunction<types.JSOutputStatusCache, {}>,
 
     // TODO:

@@ -110,7 +110,7 @@ export var cast = {
     farmResultsUpdated: new TypedEvent<Types.FarmNotification>(),
 
     /** JS Ouput status  */
-    fileOuputStatusUpdated: new TypedEvent<types.JSOutputStatus>(),
+    fileOutputStatusUpdated: new TypedEvent<types.JSOutputStatus>(),
     completeOutputStatusCacheUpdated: new TypedEvent<types.JSOutputStatusCache>(),
 }
 
