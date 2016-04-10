@@ -188,11 +188,13 @@ export function kindToIcon(kind: string):string {
             return toFontAwesomeCharCode(FAIconName.key);
         case 'snippet':
             return toFontAwesomeCharCode(FAIconName.exchange);
+        case ts.ScriptElementKind.classElement:
+            return toFontAwesomeCharCode(FAIconName.copyright);
+        case ts.ScriptElementKind.interfaceElement:
+            return toFontAwesomeCharCode(FAIconName.infoCircle);
         case ts.ScriptElementKind.scriptElement:
         case ts.ScriptElementKind.moduleElement:
-        case ts.ScriptElementKind.classElement:
         case ts.ScriptElementKind.localClassElement:
-        case ts.ScriptElementKind.interfaceElement:
         case ts.ScriptElementKind.typeElement:
         case ts.ScriptElementKind.enumElement:
         case ts.ScriptElementKind.alias:

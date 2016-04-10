@@ -377,7 +377,9 @@ export enum FAIconName {
     vk,
     weibo,
     renren,
+    copyright,
     at,
+    infoCricle,
 }
 
 export function toFontAwesomeCharCode(iconName:FAIconName) {
@@ -760,6 +762,8 @@ export function toFontAwesomeCharCode(iconName:FAIconName) {
         case FAIconName.vk: return "\uf189";
         case FAIconName.weibo: return "\uf18a";
         case FAIconName.renren: return "\uf18b";
+        case FAIconName.copyright: return "\uf1f9";
         case FAIconName.at: return "\uf1fa";
+        case FAIconName.infoCricle: return  '\uf05a';
     }
 }
