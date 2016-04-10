@@ -183,7 +183,8 @@ export class AutoCompleter {
                     const template = new templates.Template({
                         name: 'Signature',
                         description: 'signature',
-                        template: x.snippet
+                        template: x.snippet,
+                        functionCompletion: true,
                     });
                     return template
                 });
