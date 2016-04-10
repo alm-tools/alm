@@ -33,7 +33,7 @@ export function setupCodeMirror(cm: CodeMirror.EditorFromTextArea){
     // Don't be aggresive on these ending characters
     let ignoreEnds = createMap([
         ';', ',',
-        '(', ')',
+        ')',
         '`','"',"'",
         "{","}","[","]",
         " "
@@ -73,6 +73,13 @@ export function setupCodeMirror(cm: CodeMirror.EditorFromTextArea){
             }
             CodeMirror.showHint(cm as any);
         }, 150);
+    });
+
+    /** We don't get input reads on `(` for some reason */
+    cm.on('keyup', function(ed: any, evt: KeyboardEvent) {
+        if (evt.which === 57 && !ed.state.completionActive) {
+            CodeMirror.showHint(cm as any);
+        }
     });
 }
 
