@@ -38,7 +38,7 @@ import blaster = require('./addons/blaster');
 // Css overrides
 require('./codeEditor.css')
 
-import autocomplete = require('./addons/autocomplete');
+import autocomplete = require('./addons/autocomplete/autocomplete');
 import linter = require('./addons/linter');
 import search = require("./addons/search");
 import typescriptMode = require("./mode/typescriptMode");

@@ -5,6 +5,7 @@
  */
 require("./templates.css");
 import CodeMirror = require('codemirror');
+import {ExtendedCodeMirrorHint} from "./autocompleteShared";
 let Pos = CodeMirror.Pos;
 
 /**
@@ -430,7 +431,7 @@ function uninstall(cm) {
     delete cm._templateState;
 }
 
-export function getCompletions(cm: CodeMirror.EditorFromTextArea, text: string) : CodeMirror.Hint[] {
+export function getCompletions(cm: CodeMirror.EditorFromTextArea, text: string) : ExtendedCodeMirrorHint[] {
     var mode = cm.getDoc().getMode().name;
     var list = templatesMap[mode] || [];
     return list
@@ -440,7 +441,7 @@ export function getCompletions(cm: CodeMirror.EditorFromTextArea, text: string) 
             if (template.description) {
                 label += '- ' + template.description;
             }
-            var completion: CodeMirror.Hint = {
+            var completion: ExtendedCodeMirrorHint = {
                 "className": "CodeMirror-hint-template",
                 "text": label,
                 "template": template
@@ -454,6 +455,11 @@ export function getCompletions(cm: CodeMirror.EditorFromTextArea, text: string) 
                 var content = completion.template.content();
                 return content;
             };
+            completion.original = {
+                kind: 'snippet',
+                name: template.name,
+                display: template.description,
+            }
             return completion;
         });
 }
