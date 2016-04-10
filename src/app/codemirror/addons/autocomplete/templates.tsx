@@ -87,16 +87,13 @@ function getLabel(proposal: { template: TemplateConfig }): Text {
 /** Our keymap */
 const ourKeyMap = {
     Tab: function(cm) {
-        // if (isCompletionActive(cm)) return;
         selectNextVariable(cm);
     },
     'Shift-Tab': selectPreviousVariable,
     Enter: function(cm) {
-        // if (isCompletionActive(cm)) return;
         selectNextVariable(cm, true);
     },
     Esc: function(cm) {
-        // if (isCompletionActive(cm)) return;
         uninstall(cm);
     }
 }
