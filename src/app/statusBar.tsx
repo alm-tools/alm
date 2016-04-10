@@ -25,7 +25,7 @@ let notificationKeyboardStyle = {
     padding: '5px',
     background: 'grey',
 }
-const ouputStatusStyle = csx.extend(styles.noSelect,{fontSize:'.6rem'});
+const ouputStatusStyle = csx.extend(styles.noSelect, {fontSize:'.6rem'});
 
 export interface Props {
     // from react-redux ... connected below
@@ -116,13 +116,13 @@ export class StatusBar extends BaseComponent<Props, State>{
 
         return (
             <div>
-                <div style={csx.extend(styles.statusBar,csx.horizontal,csx.center)}>
+                <div style={csx.extend(styles.statusBar,csx.horizontal,csx.center, styles.noWrap)}>
                     {/* Left sections */}
                     <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)}
                         onClick={this.toggleErrors}
                         className="hint--top"
                         data-hint={`${this.props.errorsUpdate.totalCount} errors. Click to toggle message panel.`}>
-                        <span style={csx.extend(this.props.errorsUpdate.totalCount?styles.statusBarError:styles.statusBarSuccess,{transition: 'color .4s'}, styles.noWrap)}>
+                        <span style={csx.extend(this.props.errorsUpdate.totalCount?styles.statusBarError:styles.statusBarSuccess,{transition: 'color .4s'})}>
                             {this.props.errorsUpdate.totalCount} <Icon name="times-circle"/>
                         </span>
                     </span>
