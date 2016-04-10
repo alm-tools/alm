@@ -78,7 +78,7 @@ li.CodeMirror-hint-active {
     -moz-osx-font-smoothing: grayscale;
 }
 .CodeMirror-hint-active .cm-hint.left-left {
-    color: #333 !important;
+    color: white !important;
 }
 
 .cm-hint.left {
