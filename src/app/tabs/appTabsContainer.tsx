@@ -456,7 +456,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             let titleIcon: JSX.Element;
             if (!t.saved){
                 style.push(tabHeaderUnsaved);
-                titleIcon = <Icon style={titleCloseStyle} name="life-ring" onClick={handleTitleClose}/>
+                titleIcon = <Icon style={titleCloseStyle} name="life-ring" title="Save and close" onClick={handleTitleClose}/>
             }
             else {
                 titleIcon = <Icon style={titleCloseStyle} name="times" onClick={handleTitleClose}/>;
