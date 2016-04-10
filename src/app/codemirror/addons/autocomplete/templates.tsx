@@ -5,7 +5,7 @@
  */
 require("./templates.css");
 import CodeMirror = require('codemirror');
-import {ExtendedCodeMirrorHint} from "./autocompleteShared";
+import {ExtendedCodeMirrorHint,render} from "./autocompleteShared";
 let Pos = CodeMirror.Pos;
 
 /**
@@ -455,6 +455,8 @@ export function getCompletions(cm: CodeMirror.EditorFromTextArea, text: string) 
                 var content = completion.template.content();
                 return content;
             };
+            /** Really the only customization we do for template rendering */
+            completion.render = render;
             completion.original = {
                 kind: 'snippet',
                 name: template.name,
