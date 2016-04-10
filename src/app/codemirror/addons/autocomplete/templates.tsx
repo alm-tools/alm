@@ -570,7 +570,7 @@ var templates: TemplatesForContext = {
             "template": "for (var ${2:index} = 0; ${index} < ${1:array}.length; ${index}++) {\n\t${cursor}\n}"
         },
         {
-            "name": "for",
+            "name": "fort",
             "description": "iterate over array with temporary variable",
             "template": "for (var ${index} = 0; ${index} < ${array}.length; ${index}++) {\n\tvar ${array_element} = ${array}[${index}];\n\t${cursor}\n}"
         },
