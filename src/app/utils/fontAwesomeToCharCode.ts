@@ -379,7 +379,7 @@ export enum FAIconName {
     renren,
     copyright,
     at,
-    infoCricle,
+    infoCircle,
 }
 
 export function toFontAwesomeCharCode(iconName:FAIconName) {
@@ -764,6 +764,6 @@ export function toFontAwesomeCharCode(iconName:FAIconName) {
         case FAIconName.renren: return "\uf18b";
         case FAIconName.copyright: return "\uf1f9";
         case FAIconName.at: return "\uf1fa";
-        case FAIconName.infoCricle: return  '\uf05a';
+        case FAIconName.infoCircle: return  '\uf05a';
     }
 }
