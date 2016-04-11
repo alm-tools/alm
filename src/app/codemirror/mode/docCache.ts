@@ -33,11 +33,9 @@ let supportedModesMap = {
     coffee: 'coffeescript', coffeescript: 'coffeescript',
 };
 
-let docByFilePathPromised: { [filePath: string]: Promise<CodeMirror.Doc> } = {};
-
 export function getLinkedDoc(filePath: string): Promise<CodeMirror.Doc> {
     return getOrCreateDoc(filePath)
-        .then(doc=> {
+        .then(({doc, sourceId, isTsFile}) => {
 
             // Some housekeeping: clear previous links that no longer seem active
             // SetTimeout because we might have created the doc but not the CM instance yet
@@ -51,11 +49,44 @@ export function getLinkedDoc(filePath: string): Promise<CodeMirror.Doc> {
                 markForRemove.forEach(linked=> { doc.unlinkDoc(linked); });
             }, 2000);
 
-            return doc.linkedDoc({ sharedHist: true })
+            // Create a linked doc
+            const linkedDoc = doc.linkedDoc({ sharedHist: true });
+
+
+            // Keep the classifier cache in sync
+            // Has to be done on each doc (sadly) because:
+            // `beforeChange` on parent doc is not called by Code mirror if changes originate in this doc :-/
+            // we need `beforeChange` to make sure query to indent is made with right classifications
+            if (isTsFile) {
+                (linkedDoc as any).on('beforeChange', (doc: CodeMirror.Doc, change: CodeMirror.EditorChange) => {
+                    if (change.origin == sourceId) {
+                        return;
+                    }
+
+                    let codeEdit: CodeEdit = {
+                        from: { line: change.from.line, ch: change.from.ch },
+                        to: { line: change.to.line, ch: change.to.ch },
+                        newText: change.text.join('\n'),
+                        sourceId: sourceId
+                    };
+
+                    // Keep the classifier in sync
+                    classifierCache.editFile(filePath, codeEdit);
+                });
+            }
+
+            return linkedDoc;
         });
 }
 
-function getOrCreateDoc(filePath: string) {
+type DocPromiseResult = {
+    doc: CodeMirror.Doc,
+    sourceId: string,
+    isTsFile: boolean,
+}
+let docByFilePathPromised: { [filePath: string]: Promise<DocPromiseResult> } = Object.create(null);
+
+function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
     if (docByFilePathPromised[filePath]) {
         return docByFilePathPromised[filePath];
     }
@@ -85,7 +116,6 @@ function getOrCreateDoc(filePath: string) {
 
             // setup to push doc changes to server
             (doc as any).on('change', (doc: CodeMirror.Doc, change: CodeMirror.EditorChange) => {
-
                 // console.log('sending server edit', sourceId)
 
                 if (change.origin == sourceId) {
@@ -98,9 +128,6 @@ function getOrCreateDoc(filePath: string) {
                     newText: change.text.join('\n'),
                     sourceId: sourceId
                 };
-
-                // Keep the classifier in sync
-                if (isTsFile) { classifierCache.editFile(filePath, codeEdit); }
 
                 // Send the edit
                 server.editFile({ filePath: filePath, edit: codeEdit });
@@ -148,7 +175,7 @@ function getOrCreateDoc(filePath: string) {
             })
 
             // Finally return the doc
-            return doc;
+            return { doc, sourceId, isTsFile };
         });
     }
 }
@@ -160,7 +187,7 @@ function getOrCreateDocs(filePaths: string[]): Promise<{ [filePath: string]: Cod
     let promises = filePaths.map(fp => getOrCreateDoc(fp));
     return Promise.all(promises).then(docs => {
         let res: { [filePath: string]: CodeMirror.Doc } = {};
-        docs.forEach(doc => res[doc.filePath] = doc);
+        docs.forEach(({doc}) => res[doc.filePath] = doc);
         return res;
     });
 }
