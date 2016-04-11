@@ -580,12 +580,21 @@ const templates: TemplatesForContext[] = [
 /** our global templates registry */
 export class TemplatesRegistry {
     private templatesByContext: {[mode:string]:Template[]} = Object.create(null);
+    private exactMatchTemplatesbyContext: {
+        [mode: string]: {
+            [name: string]: Template
+        }
+    } = Object.create(null);
+
     constructor(config: TemplatesForContext[]){
         config.forEach(templatesForContext => {
             const context = templatesForContext.context;
             const list = this.templatesByContext[context] = this.templatesByContext[context] || [];
+            this.exactMatchTemplatesbyContext[context] = Object.create(null);
             templatesForContext.templates.forEach(function(template) {
-                list.push(new Template(template));
+                const parsedTemplate = new Template(template);
+                this.exactMatchTemplatesbyContext[context][template.name] = parsedTemplate;
+                list.push(parsedTemplate);
             });
         });
     }
@@ -598,6 +607,15 @@ export class TemplatesRegistry {
         const context = cm.getDoc().getMode().name;
         const templates = this.templatesByContext[context] || [];
         return templates.filter(template=> startsWith(template.name, text));
+    }
+
+    /**
+     * Returns a template if it matches exactly
+     */
+    getExactMatchTemplate(cm: CodeMirror.EditorFromTextArea, text: string): Template | null {
+        const context = cm.getDoc().getMode().name;
+        const templates = this.exactMatchTemplatesbyContext[context] || {};
+        return templates[text];
     }
 }
 export const templatesRegistry = new TemplatesRegistry(templates);
