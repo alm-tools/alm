@@ -199,11 +199,15 @@ export class AutoCompleter {
 
 
                 // Langauge Mode Snippets
-                const snippets = templates.templatesRegistry.getCompletionTemplates(editor, token.string);
+                const snippets = templates.templatesRegistry.getNonExactMatchCompletionTemplates(editor, token.string);
                 const snippetsRendered = templates.renderTemplates(editor, snippets);
 
+                // Exact match snippets
+                const exactMatchSnippet = templates.templatesRegistry.getExactMatchTemplate(editor, token.string);
+                const exactMatchSnippetsRendered = templates.renderTemplates(editor, exactMatchSnippet ? [exactMatchSnippet] : []);
+
                 // Add snippets to list
-                completionInfo.list = functionCompletionSnippetsRendered.concat(completionInfo.list).concat(snippetsRendered);
+                completionInfo.list = functionCompletionSnippetsRendered.concat(exactMatchSnippetsRendered).concat(completionInfo.list).concat(snippetsRendered);
 
                 setupCompletionDocs(completionInfo);
 

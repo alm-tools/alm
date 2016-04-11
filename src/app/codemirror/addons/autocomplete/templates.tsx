@@ -591,7 +591,7 @@ export class TemplatesRegistry {
             const context = templatesForContext.context;
             const list = this.templatesByContext[context] = this.templatesByContext[context] || [];
             this.exactMatchTemplatesbyContext[context] = Object.create(null);
-            templatesForContext.templates.forEach(function(template) {
+            templatesForContext.templates.forEach((template) => {
                 const parsedTemplate = new Template(template);
                 this.exactMatchTemplatesbyContext[context][template.name] = parsedTemplate;
                 list.push(parsedTemplate);
@@ -603,10 +603,10 @@ export class TemplatesRegistry {
      * Filters out the templates based on the text and the mode of the editor
      */
     // We only really query for TypeScript context at the moment 🌹
-    getCompletionTemplates(cm: CodeMirror.EditorFromTextArea, text: string): Template[] {
+    getNonExactMatchCompletionTemplates(cm: CodeMirror.EditorFromTextArea, text: string): Template[] {
         const context = cm.getDoc().getMode().name;
         const templates = this.templatesByContext[context] || [];
-        return templates.filter(template=> startsWith(template.name, text));
+        return templates.filter(template=> template.name!==text && startsWith(template.name, text));
     }
 
     /**
@@ -615,6 +615,7 @@ export class TemplatesRegistry {
     getExactMatchTemplate(cm: CodeMirror.EditorFromTextArea, text: string): Template | null {
         const context = cm.getDoc().getMode().name;
         const templates = this.exactMatchTemplatesbyContext[context] || {};
+        console.log(text, templates[text]);
         return templates[text];
     }
 }
