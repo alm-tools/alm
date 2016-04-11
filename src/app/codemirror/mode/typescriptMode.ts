@@ -218,15 +218,15 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
             // WHAT HAPPENS
             //   indent is called for
             //   {
-            //     // Here 
+            //     // Here
             //   } // Here
             //
             if (textAfter.trim() == '}') {
                 // indent -= options.indentUnit;
             }
 
-            // console.log('INDENT',
-            //     indent,
+            // console.log(
+            //     'INDENT', indent,
             //     lineDescriptor.classificationMap ,
             //     `'${textAfter}'`, `'${line}'`
             // ); // DEBUG
