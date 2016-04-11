@@ -218,9 +218,14 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
             // {} // Here
             // }
             // ` TypeScript doesn't give the right indent
-            if (line.trim() == '{}') {
-                indent += options.indentUnit;
-            }
+            // But it does give it right for:
+            // `
+            // {} // Here
+            // `
+            // So I don't know :-/
+            // if (line.trim() == '{}') {
+            //     indent += options.indentUnit;
+            // }
 
             // console.log(
             //     'INDENT', indent,
