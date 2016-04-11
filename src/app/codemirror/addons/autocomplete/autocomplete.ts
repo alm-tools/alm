@@ -110,12 +110,14 @@ export class AutoCompleter {
         let noCompletions: CodeMirror.Hints = null;
 
 
-        function completionToCodeMirrorHint(completion: types.Completion): ExtendedCodeMirrorHint {
+        function completionToCodeMirrorHint(completion: types.Completion, queryString: string): ExtendedCodeMirrorHint {
             let result: ExtendedCodeMirrorHint = {
                 text: completion.name,
                 render: render,
-                original: completion,
                 comment: completion.comment,
+
+                original: completion,
+                queryString
             }
             return result;
         }
@@ -182,7 +184,7 @@ export class AutoCompleter {
                 let completionInfo = {
                     from,
                     to,
-                    list: res.completions.filter(x=>!x.snippet).map(completionToCodeMirrorHint)
+                    list: res.completions.filter(x=>!x.snippet).map(c=>completionToCodeMirrorHint(c,token.string))
                 };
 
                 // Function completion snippets

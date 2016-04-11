@@ -10,7 +10,16 @@
 import * as types from "../../../../common/types";
 export interface ExtendedCodeMirrorHint extends CodeMirror.Hint {
     original?: types.Completion;
+    /** For rending matched segments */
+    queryString?: string;
 }
+
+/**
+ * For highlighting matched segments
+ */
+import {renderMatchedSegments} from "../../../selectListView";
+import * as ReactServer from "react-dom/server";
+import * as React from "react";
 
 /**
  * Key strokes can have different effect based on this state
@@ -40,11 +49,12 @@ export function render(elt: HTMLLIElement, data: CodeMirror.Hints, cur: Extended
     let color = kindToColor(original.kind);
     let colorBackground = kindToColor(original.kind, true);
     let icon = kindToIcon(original.kind);
+    const text = cur.queryString ? ReactServer.renderToString(<span>{renderMatchedSegments(original.name,cur.queryString)}</span>) : original.name;
 
     elt.innerHTML = `
         <span class="${AutocompleteStyles.leftLeftClassName}" style="color:${color};background:${colorBackground}">${icon}</span>
         <strong class="${AutocompleteStyles.leftClassName}" style="color:${color};background:${colorBackground}">${original.kind}</strong>
-        <span class="${AutocompleteStyles.mainClassName}">${original.name}</span>
+        <span class="${AutocompleteStyles.mainClassName}">${text}</span>
         <span class="${AutocompleteStyles.rightClassName}">${original.display}</span>
     `.replace(/\s+/g,' ');
 }
