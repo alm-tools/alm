@@ -562,7 +562,7 @@ const templates: TemplatesForContext[] = [
         {
             "name": "for",
             "description": "iterate over array",
-            "template": "for (var ${2:index} = 0; ${index} < ${1:array}.length; ${index}++) {\n\t${cursor}\n}"
+            "template": "for (let ${2:index} = 0; ${index} < ${1:array}.length; ${index}++) {\n\t${cursor}\n}"
         },
         {
             "name": "fort",
@@ -572,12 +572,12 @@ const templates: TemplatesForContext[] = [
         {
             "name": "forin",
             "description": "iterate using for .. in",
-            "template": "for (var ${iterable_element} in ${iterable}) {\n\t${cursor}\n}"
+            "template": "for (const ${iterable_element} in ${iterable}) {\n\t${cursor}\n}"
         },
         {
             "name": "forof",
             "description": "iterate using for .. of",
-            "template": "for (var ${2:iterable_element} of ${1:iterable}) {\n\t${cursor}\n}"
+            "template": "for (const ${2:iterable_element} of ${1:iterable}) {\n\t${cursor}\n}"
         },
         { "name": "do", "description": "do while statement", "template": "do {\n\t${cursor}\n} while (${condition});" },
         { "name": "switch", "description": "switch case statement", "template": "switch (${key}) {\n\tcase ${value}:\n\t\t${cursor}\n\t\tbreak;\n\n\tdefault:\n\t\tbreak;\n}" },
