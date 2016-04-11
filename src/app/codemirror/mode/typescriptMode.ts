@@ -213,6 +213,15 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
 
             let indent = classifierCache.getIndentationAtPosition(options.filePath, lineDescriptor.lineStartIndex, indentOptions);
 
+            // For `
+            // {
+            // {} // Here
+            // }
+            // ` TypeScript doesn't give the right indent
+            if (line.trim() == '{}') {
+                indent += options.indentUnit;
+            }
+
             // console.log(
             //     'INDENT', indent,
             //     lineDescriptor.classificationMap ,
