@@ -14,6 +14,15 @@ let Pos = CodeMirror.Pos;
 /** Extensions by templates extension */
 declare global {
     module CodeMirror {
+        interface Editor {
+            /**
+             * This overload (with the aggressive parameter) does exist
+             * By default its false. And in that CodeMirror eats up whitespace.
+             * But we want to indent our whitespace in templates so we pass it as true
+             */
+            indentLine(line: number, dir?: string, aggressive?: boolean): void;
+        }
+
         interface Hint {
             template?: Template;
             data?: Hint;
@@ -250,10 +259,8 @@ export class Template {
         // This will typically indent the rest of the code according
         // to the indentation of the first line.
         //
-        // Don't indent whitespace lines as CM will just remove the whitespace
-        // and not actually call the indent function on mode.
-        // Ignoring (as we have done) is not the perfect solution as
-        // this means you only get one `\t` instead of perhaps proper `\t\t` 
+        // For Whitespace lines we need to tell code mirror to be aggressive
+        // Other CM just eats the indents.
         //
         // We do the indentation after creating the markers, so that the
         // markers are moved accordingly.
@@ -262,6 +269,9 @@ export class Template {
             const targetLine = startLine + x;
             if (lines[x].trim()) {
                 cm.indentLine(targetLine);
+            }
+            else {
+                cm.indentLine(targetLine, "smart", true);
             }
         }
 
