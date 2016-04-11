@@ -87,7 +87,7 @@ const ourKeyMap = {
     },
     'Shift-Tab': selectPreviousVariable,
     Enter: function(cm) {
-        selectNextVariable(cm, true);
+        gotoLastAndExit(cm);
     },
     Esc: function(cm) {
         uninstall(cm);
@@ -385,6 +385,14 @@ function onChange(cm: CodeMirror.Editor, textChanged: CodeMirror.EditorChange) {
     }
 }
 
+function gotoLastAndExit(cm){
+    var state = cm._templateState;
+    if (state.selectableMarkers.length > 0) {
+        state.varIndex = state.selectableMarkers.length;
+    }
+    exit(cm);
+}
+
 function selectNextVariable(cm, exitOnEnd = false) {
     var state = cm._templateState;
     if (state.selectableMarkers.length > 0) {
@@ -427,18 +435,15 @@ function selectNextVariable(cm, exitOnEnd = false) {
     }
 }
 
-/** Same as select Next Variable. I just added a `--` on varIndex instead of `++` and fixed the looping logic */
-function selectPreviousVariable(cm, exitOnEnd) {
+/** Same as select Next Variable.
+ * I just added a `--` on varIndex instead of `++` and fixed the looping logic
+ * Also remove exit on last logic 
+ */
+function selectPreviousVariable(cm) {
     var state = cm._templateState;
     if (state.selectableMarkers.length > 0) {
         state.varIndex--;
         if (state.varIndex < 0) {
-            // If we reach the last token and exitOnEnd is true, we exit instead of
-            // looping back to the first token.
-            if (exitOnEnd) {
-                exit(cm);
-                return;
-            }
             state.varIndex = state.selectableMarkers.length - 1;
         }
         var marker = state.selectableMarkers[state.varIndex];
@@ -568,9 +573,6 @@ const templates: TemplatesForContext[] = [
         { "name": "functiona", "description": "anonymous function", "template": "function (${}) {\n\t${cursor}\n}" },
         { "name": "new", "description": "create new object", "template": "var ${name} = new ${type}(${arguments});" },
         { "name": "lazy", "description": "lazy creation", "template": "if (${name:var} == null) {\n\t${name} = new ${type}(${arguments});\n\t${cursor}\n}\n\nreturn ${name};" },
-        { "name": "null", "description": "<code>null</code>", "template": "<code>null</code>" },
-        { "name": "true", "description": "<code>true</code>", "template": "<code>true</code>" },
-        { "name": "false", "description": "<code>false</code>", "template": "<code>false</code>" },
         { "name": "@author", "description": "author name", "template": "@author ${user}" },
         { "name": "while", "description": "while loop with condition", "template": "while (${condition}) {\n\t${cursor}\n}" }
     ]
