@@ -33,9 +33,13 @@ let supportedModesMap = {
     coffee: 'coffeescript', coffeescript: 'coffeescript',
 };
 
+// to track the source of changes, local vs. network
+const localSourceId: string = utils.createId();
+const cameFromNetworkSourceId: string = 'came-from-network';
+
 export function getLinkedDoc(filePath: string): Promise<CodeMirror.Doc> {
     return getOrCreateDoc(filePath)
-        .then(({doc, sourceId, isTsFile}) => {
+        .then(({doc, isTsFile}) => {
 
             // Some housekeeping: clear previous links that no longer seem active
             // SetTimeout because we might have created the doc but not the CM instance yet
@@ -57,17 +61,16 @@ export function getLinkedDoc(filePath: string): Promise<CodeMirror.Doc> {
             // Has to be done on each doc (sadly) because:
             // `beforeChange` on parent doc is not called by Code mirror if changes originate in this doc :-/
             // we need `beforeChange` to make sure query to indent is made with right classifications
+            //
+            // Also note : this is only called on explicit user editing this doc. So we do no origin checking.
+            // Also: whenever we change the parent doc manually (all cm.doc come here including templates), we have to do classification syncing there (not here)
             if (isTsFile) {
                 (linkedDoc as any).on('beforeChange', (doc: CodeMirror.Doc, change: CodeMirror.EditorChange) => {
-                    if (change.origin == sourceId) {
-                        return;
-                    }
-
                     let codeEdit: CodeEdit = {
                         from: { line: change.from.line, ch: change.from.ch },
                         to: { line: change.to.line, ch: change.to.ch },
                         newText: change.text.join('\n'),
-                        sourceId: sourceId
+                        sourceId: localSourceId
                     };
 
                     // Keep the classifier in sync
@@ -81,7 +84,6 @@ export function getLinkedDoc(filePath: string): Promise<CodeMirror.Doc> {
 
 type DocPromiseResult = {
     doc: CodeMirror.Doc,
-    sourceId: string,
     isTsFile: boolean,
 }
 let docByFilePathPromised: { [filePath: string]: Promise<DocPromiseResult> } = Object.create(null);
@@ -103,9 +105,6 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
 
             // console.log(mode,supportedModesMap[ext]); // Debug mode
 
-            // to track the source of changes , local vs. network
-            let sourceId = utils.createId();
-
             // Add to classifier cache
             if (isTsFile) { classifierCache.addFile(filePath, res.contents); }
 
@@ -118,7 +117,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
             (doc as any).on('change', (doc: CodeMirror.Doc, change: CodeMirror.EditorChange) => {
                 // console.log('sending server edit', sourceId)
 
-                if (change.origin == sourceId) {
+                if (change.origin == cameFromNetworkSourceId) {
                     return;
                 }
 
@@ -126,7 +125,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                     from: { line: change.from.line, ch: change.from.ch },
                     to: { line: change.to.line, ch: change.to.ch },
                     newText: change.text.join('\n'),
-                    sourceId: sourceId
+                    sourceId: localSourceId
                 };
 
                 // Send the edit
@@ -143,12 +142,12 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
 
                 let codeEdit = res.edit;
 
-                if (res.filePath == filePath && codeEdit.sourceId !== sourceId) {
+                if (res.filePath == filePath && codeEdit.sourceId !== localSourceId) {
                     // Keep the classifier in sync
                     if (isTsFile) { classifierCache.editFile(filePath, codeEdit); }
 
-                    // Note that we use *our source id* as this is now a change *we are making to code mirror* :)
-                    doc.replaceRange(codeEdit.newText, codeEdit.from, codeEdit.to, sourceId);
+                    // Note that we use *mark as coming from server* so we don't go into doc.change handler later on :)
+                    doc.replaceRange(codeEdit.newText, codeEdit.from, codeEdit.to, cameFromNetworkSourceId);
                 }
             });
 
@@ -163,11 +162,11 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                     // preserve cursor
                     let cursor = doc.getCursor();
 
-                    // Note that we use *our source id* as this is now a change *we are making to code mirror* :)
+                    // Note that we use *mark as coming from server* so we don't go into doc.change handler later on :)
                     // Not using setValue as it doesn't take sourceId
                     let lastLine = doc.lastLine();
                     let lastCh = doc.getLine(lastLine).length;
-                    doc.replaceRange(res.contents, { line: 0, ch: 0 }, { line: lastLine, ch: lastCh }, sourceId);
+                    doc.replaceRange(res.contents, { line: 0, ch: 0 }, { line: lastLine, ch: lastCh }, cameFromNetworkSourceId);
 
                     // restore cursor
                     doc.setCursor(cursor);
@@ -175,7 +174,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
             })
 
             // Finally return the doc
-            return { doc, sourceId, isTsFile };
+            return { doc, isTsFile };
         });
     }
 }
@@ -199,9 +198,20 @@ export function applyRefactoringsToTsDocs(refactorings: RefactoringsByFilePath) 
             let doc = docsByFilePath[fp];
             let changes = refactorings[fp];
             for (let change of changes) {
-                let from = classifierCache.getLineAndCharacterOfPosition(fp, change.span.start);
-                let to = classifierCache.getLineAndCharacterOfPosition(fp, change.span.start + change.span.length);
-                doc.replaceRange(change.newText, from, to, '*refactor');
+
+                const from = classifierCache.getLineAndCharacterOfPosition(fp, change.span.start);
+                const to = classifierCache.getLineAndCharacterOfPosition(fp, change.span.start + change.span.length);
+                const sourceId = 'refactor';
+
+                // Keep the classifier cache in sync
+                classifierCache.editFile(change.filePath, {
+                    from: from,
+                    to: to,
+                    sourceId,
+                    newText: change.newText
+                });
+
+                doc.replaceRange(change.newText, from, to, `*${sourceId}`);
             }
         });
     });
