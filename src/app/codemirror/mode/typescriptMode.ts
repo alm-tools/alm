@@ -202,6 +202,7 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
             lineDescriptor: LineDescriptor,
             textAfter: string,
             line?: string /*always passed but marked optional as its not documented */ ): number {
+
             let indentOptions: ts.EditorOptions = {
                 IndentSize: options.indentUnit,
                 TabSize: options.tabSize,
@@ -209,21 +210,8 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
                 IndentStyle: ts.IndentStyle.Smart,
                 ConvertTabsToSpaces: !options.indentWithTabs
             }
+
             let indent = classifierCache.getIndentationAtPosition(options.filePath, lineDescriptor.lineStartIndex, indentOptions);
-
-
-            // if called for a } things become complex. `|` denotes the cursor and user just pressed `enter` :
-            // FOR
-            // {|}
-            // WHAT HAPPENS
-            //   indent is called for
-            //   {
-            //     // Here
-            //   } // Here
-            //
-            if (textAfter.trim() == '}') {
-                // indent -= options.indentUnit;
-            }
 
             // console.log(
             //     'INDENT', indent,
