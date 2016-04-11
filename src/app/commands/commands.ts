@@ -437,7 +437,6 @@ sublimeMap[`Shift-${mod}-B`] = additionalEditorCommands.findReferences;
 sublimeMap[`${mod}-Alt-L`] = additionalEditorCommands.format;
 sublimeMap[`${mod}-Alt-O`] = additionalEditorCommands.toggleBlaster;
 sublimeMap[`${mod}-Alt-Z`] = additionalEditorCommands.gitResetFile;
-sublimeMap[`${mod}-Alt-H-T`] = additionalEditorCommands.htmlToTsx;
 
 // we have our own cursor history
 delete defaultMap[`${mod}-U`];
@@ -545,6 +544,13 @@ function addEditorMapToCommands(map: { [shortcut: string]: string }) {
 addEditorMapToCommands(sublimeMap);
 addEditorMapToCommands(defaultMap);
 addEditorMapToCommands(basicMap);
+// For our custom *editor* commands that don't have a keymap entry
+// We add them manually
+new UICommand({
+    description: 'Editor: HTML to TSX',
+    context: CommandContext.Editor,
+    editorCommandName: additionalEditorCommands.htmlToTsx,
+})
 
 //* DEBUG
 // console.table(
