@@ -1,12 +1,13 @@
 /** Other instances of the placeholder being edited right now */
 .CodeMirror-templates-variable-selected {
-    /* Don't need this because we have match selection plugin anyways */
-    /*background-color: #444;*/
+    background-color: #666;
+    /*outline: solid #FFF 1px;*/
 }
 
 /** Other place holders that user can cycle to */
 .CodeMirror-templates-variable {
-    outline: solid #888 1px;
+    background-color: #111;
+    /*outline: solid #FFF 1px;*/
 }
 
 .CodeMirror-templates-variable-start {
