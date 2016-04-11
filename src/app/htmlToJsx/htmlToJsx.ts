@@ -152,7 +152,7 @@ function escapeSpecialChars(value) {
   return tempEl.innerHTML;
 }
 
-var HTMLtoJSX = function(config) {
+export var HTMLtoJSX = function(config) {
   this.config = config || {};
 
   if (this.config.createClass === undefined) {
@@ -496,16 +496,18 @@ HTMLtoJSX.prototype = {
  * @param {string} rawStyle Raw style attribute
  * @constructor
  */
-var StyleParser = function(rawStyle) {
-  this.parse(rawStyle);
-};
-StyleParser.prototype = {
+export class StyleParser {
+    styles = {};
+
+    constructor (rawStyle) {
+      this.parse(rawStyle);
+    };
+
   /**
    * Parse the specified inline style attribute value
    * @param {string} rawStyle Raw style attribute
    */
-  parse: function(rawStyle) {
-    this.styles = {};
+  parse = (rawStyle) => {
     rawStyle.split(';').forEach(function(style) {
       style = style.trim();
       var firstColon = style.indexOf(':');
@@ -517,7 +519,7 @@ StyleParser.prototype = {
         this.styles[key] = value;
       }
     }, this);
-  },
+  }
 
   /**
    * Convert the style information represented by this parser into a JSX
@@ -525,7 +527,7 @@ StyleParser.prototype = {
    *
    * @return {string}
    */
-  toJSXString: function() {
+  toJSXString = () => {
     var output = [];
     for (var key in this.styles) {
       if (!this.styles.hasOwnProperty(key)) {
@@ -534,7 +536,7 @@ StyleParser.prototype = {
       output.push(this.toJSXKey(key) + ': ' + this.toJSXValue(this.styles[key]));
     }
     return output.join(', ');
-  },
+  }
 
   /**
    * Convert the CSS style key to a JSX style key
@@ -542,13 +544,13 @@ StyleParser.prototype = {
    * @param {string} key CSS style key
    * @return {string} JSX style key
    */
-  toJSXKey: function(key) {
+  toJSXKey = (key) => {
     // Don't capitalize -ms- prefix
     if(/^-ms-/.test(key)) {
       key = key.substr(1);
     }
     return hyphenToCamelCase(key);
-  },
+  }
 
   /**
    * Convert the CSS style value to a JSX style value
@@ -556,7 +558,7 @@ StyleParser.prototype = {
    * @param {string} value CSS style value
    * @return {string} JSX style value
    */
-  toJSXValue: function(value) {
+  toJSXValue = (value) => {
     if (isNumeric(value)) {
       // If numeric, no quotes
       return value;
@@ -568,6 +570,4 @@ StyleParser.prototype = {
       return '\'' + value.replace(/'/g, '"') + '\'';
     }
   }
-};
-
-export = HTMLtoJSX;
+}

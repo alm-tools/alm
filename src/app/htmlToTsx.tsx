@@ -49,7 +49,7 @@ declare class HTMLtoJSXClass {
     });
     convert(html: string): string;
 }
-import HTMLtoJSX = require("./htmlToJsx/htmlToJsx");
+import {HTMLtoJSX} from "./htmlToJsx/htmlToJsx";
 export function convert(content: string, indentSize: number) {
     var indent = Array(indentSize + 1).join(' ');
     var converter = new HTMLtoJSX({ indent: indent, createClass: false });
