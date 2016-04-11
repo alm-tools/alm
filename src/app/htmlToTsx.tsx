@@ -30,7 +30,7 @@ CodeMirror.commands[commands.additionalEditorCommands.htmlToTsx] = (editor: Code
         doc.replaceSelection(convert(doc.getSelection(),4));
     }
     else {
-        ui.notifyWarningNormalDisappear('Please select the html you want converted');
+        ui.notifyWarningNormalDisappear('Please select the HTML you want converted to TSX and try again 🌹');
     }
 }
 
