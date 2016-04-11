@@ -567,7 +567,7 @@ const templates: TemplatesForContext[] = [
         {
             "name": "fort",
             "description": "iterate over array with temporary variable",
-            "template": "for (var ${index} = 0; ${index} < ${array}.length; ${index}++) {\n\tvar ${array_element} = ${array}[${index}];\n\t${cursor}\n}"
+            "template": "for (let ${index} = 0; ${index} < ${array}.length; ${index}++) {\n\tconst ${array_element} = ${array}[${index}];\n\t${cursor}\n}"
         },
         {
             "name": "forin",
