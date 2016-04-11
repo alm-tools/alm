@@ -137,6 +137,16 @@ namespace Server {
     export var getAST : typeof contract.server.getAST = projectServiceMaster.worker.getAST;
 
     /**
+     * Output Status
+     */
+    export const getCompleteOutputStatusCache: typeof contract.server.getCompleteOutputStatusCache =
+        (data) => {
+            return cast.completeOutputStatusCacheUpdated.current
+                ? cast.completeOutputStatusCacheUpdated.current()
+                : resolve({});
+        }
+
+    /**
      * Git service
      */
     export var gitStatus : typeof contract.server.gitStatus = gitService.gitStatus;
@@ -154,7 +164,7 @@ namespace Server {
 var _checkTypes: typeof contract.server = Server;
 
 /** Will be available after register is called */
-export var cast = contract.cast;
+export let cast = contract.cast;
 
 /** launch server */
 export function register(app: http.Server) {

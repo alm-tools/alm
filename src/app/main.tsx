@@ -76,6 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
     cast.filePathsUpdated.on((res) => {
         state.setFilePaths({filePaths:res.filePaths,rootDir:res.rootDir, completed: res.completed});
     });
+    server.getCompleteOutputStatusCache({}).then(res => {
+        state.completeOuputStatusCacheUpdated(res);
+    });
     cast.fileOutputStatusUpdated.on((res) => {
         state.fileOuputStatusUpdated(res);
     });

@@ -61,6 +61,11 @@ export var server = {
     getAST: {} as QRFunction<Types.GetASTQuery,Types.GetASTResponse>,
 
     /**
+     * Output Status
+     */
+    getCompleteOutputStatusCache: {} as QRFunction<{}, types.JSOutputStatusCache>,
+
+    /**
      * Git service
      */
     gitStatus: {} as QRFunction<{},string>,

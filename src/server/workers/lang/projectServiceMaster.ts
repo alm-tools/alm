@@ -10,6 +10,7 @@ import * as types from "../../../common/types";
 import {errorsCache} from "../../globalErrorCache";
 export const fileOutputStatusUpdated = new TypedEvent<types.JSOutputStatus>();
 export const completeOutputStatusCacheUpdated = new TypedEvent<types.JSOutputStatusCache>();
+completeOutputStatusCacheUpdated.emit(Object.create(null)); // So that we do not hold back any new joiners
 
 namespace Master {
     export const getFileContents: typeof contract.master.getFileContents
