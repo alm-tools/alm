@@ -18,6 +18,9 @@ The file [`classifierCache.ts`][classifierCache.ts] in our codebase provides a h
 ## Language Mode
 This is a CodeMirror concept. CodeMirror editors work on a *mode*, [check the docs](http://codemirror.net/doc/manual.html#modeapi). We have a [`typescriptMode.ts`][typescriptMode.ts] that just follows the CodeMirror mode API. This maintains its knowledge about the *position* and the *filePath* that is being rendered by  CodeMirror and just queries the tokens for this line from the `classifierCache`. Additionally based on the contents of the line being tokenized it provides  high level *semantic* classifications using heuristics (e.g. if a variable is after `:` and `CamelCased` its probably a type).
 
+## Keeping the ClassifierCache in sync
+We need to do it on `beforeChange` of linked docs (read the docs on [docCache.ts][docCache]) because this is the only way to make sure the `classifierCache` is up to date before `indent` is called on the mode. However since `change` is still called on the root doc we cannot do any syncing in that `change`. This means whenever we edit the root doc we have to make a relevant change in the classifierCache. Fortunately only stuff in `docCache.ts` edits the root doc, all other things (e.g. autocomplete, templates) edit docs that are attached to code mirror instances and are hence the *linked docs* which will update the classifierCache in their `beforeChange`.
+
 ## More
 You don't need to read any of this. But I wanted to reference it here for record:
 
