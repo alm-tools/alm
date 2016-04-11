@@ -412,6 +412,7 @@ export let additionalEditorCommands = {
     format: '',
     toggleBlaster: '',
     gitResetFile: '',
+    htmlToTsx: '',
 }
 utils.stringEnum(additionalEditorCommands);
 
@@ -436,6 +437,7 @@ sublimeMap[`Shift-${mod}-B`] = additionalEditorCommands.findReferences;
 sublimeMap[`${mod}-Alt-L`] = additionalEditorCommands.format;
 sublimeMap[`${mod}-Alt-O`] = additionalEditorCommands.toggleBlaster;
 sublimeMap[`${mod}-Alt-Z`] = additionalEditorCommands.gitResetFile;
+sublimeMap[`${mod}-Alt-H-T`] = additionalEditorCommands.htmlToTsx;
 
 // we have our own cursor history
 delete defaultMap[`${mod}-U`];

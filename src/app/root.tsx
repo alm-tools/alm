@@ -32,13 +32,15 @@ import * as format_placeholder from "./format";
 import * as gotoHistory_placeholder from "./gotoHistory";
 import * as clipboardRing from "./clipboardRing";
 import * as gitCommands from "./gitCommands";
+import * as htmlToTsx from "./htmlToTsx";
 var ensureImport = RenameVariable
     || GotoDefinition
     || FindReferences
     || format_placeholder
     || gotoHistory_placeholder
     || clipboardRing
-    || gitCommands;
+    || gitCommands
+    || htmlToTsx;
 
 export interface State {
     isOmniSearchOpen?: boolean;
