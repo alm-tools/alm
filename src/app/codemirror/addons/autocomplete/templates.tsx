@@ -615,7 +615,6 @@ export class TemplatesRegistry {
     getExactMatchTemplate(cm: CodeMirror.EditorFromTextArea, text: string): Template | null {
         const context = cm.getDoc().getMode().name;
         const templates = this.exactMatchTemplatesbyContext[context] || {};
-        console.log(text, templates[text]);
         return templates[text];
     }
 }
