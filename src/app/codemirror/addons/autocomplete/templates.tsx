@@ -249,12 +249,20 @@ export class Template {
         // Auto-indent everything except the first line.
         // This will typically indent the rest of the code according
         // to the indentation of the first line.
+        //
+        // Don't indent whitespace lines as CM will just remove the whitespace
+        // and not actually call the indent function on mode.
+        // Ignoring (as we have done) is not the perfect solution as
+        // this means you only get one `\t` instead of perhaps proper `\t\t` 
+        //
         // We do the indentation after creating the markers, so that the
         // markers are moved accordingly.
-        var lines = content.split("\n");
-        for (var x = 1; x < lines.length; x++) {
-            var targetLine = startLine + x;
-            cm.indentLine(targetLine);
+        const lines = content.split("\n");
+        for (let x = 1; x < lines.length; x++) {
+            const targetLine = startLine + x;
+            if (lines[x].trim()) {
+                cm.indentLine(targetLine);
+            }
         }
 
         // Have to be before selectNextVariable, since selectNextVariable
