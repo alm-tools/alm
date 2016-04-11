@@ -436,8 +436,8 @@ function selectNextVariable(cm, exitOnEnd = false) {
 }
 
 /** Same as select Next Variable.
- * I just added a `--` on varIndex instead of `++` and fixed the looping logic
- * Also remove exit on last logic 
+ * I just added a `--` on varIndex instead of `++` and changed the loopAround logic accordingly
+ * Also remove exit on last logic
  */
 function selectPreviousVariable(cm) {
     var state = cm._templateState;
