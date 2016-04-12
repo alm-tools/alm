@@ -22,10 +22,10 @@ export function getEditorOptions(filePath: string): EditorOptions {
         : os.EOL;
 
     const indentSize =
-        config.indent_size || 4;
+        config.indent_size || 2;
 
     const tabSize =
-        config.tab_width || 4;
+        config.tab_width || 2;
 
     const indent_style = config.indent_style || 'space';
     const convertTabsToSpaces =
