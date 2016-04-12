@@ -1,7 +1,5 @@
 # EditorConfig is awesome: http://EditorConfig.org
 
-root = true
-
 # Indentation override for all TS files in src
 [*.{ts,tsx}]
 indent_style = space
