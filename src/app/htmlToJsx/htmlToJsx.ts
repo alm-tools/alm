@@ -558,7 +558,7 @@ export class StyleParser {
    * @param {string} key CSS style key
    * @return {string} JSX style key
    */
-  toJSXKey = (key) => {
+  private toJSXKey = (key) => {
     // Don't capitalize -ms- prefix
     if(/^-ms-/.test(key)) {
       key = key.substr(1);
@@ -572,7 +572,7 @@ export class StyleParser {
    * @param {string} value CSS style value
    * @return {string} JSX style value
    */
-  toJSXValue = (value) => {
+  private toJSXValue = (value) => {
     if (isNumeric(value)) {
       // If numeric, no quotes
       return value;
