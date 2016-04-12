@@ -17,7 +17,7 @@ export var server = {
     /**
      * File stuff
      */
-    openFile: {} as QRFunction<{ filePath: string }, { contents: string, saved: boolean }>,
+    openFile: {} as QRFunction<{ filePath: string }, { contents: string, saved: boolean, editorOptions: types.EditorOptions }>,
     closeFile: {} as QRFunction<{ filePath: string }, {}>,
     editFile: {} as QRFunction<{ filePath: string, edit: CodeEdit }, { saved: boolean }>,
     saveFile: {} as QRFunction<{ filePath: string }, {}>,

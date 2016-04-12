@@ -40,7 +40,7 @@ namespace Server {
      */
     export var openFile: typeof contract.server.openFile = (data) => {
         let file = fmc.getOrCreateOpenFile(data.filePath, /*autoCreate*/ true);
-        return resolve({ contents: file.getContents(), saved: file.saved() });
+        return resolve({ contents: file.getContents(), saved: file.saved(), editorOptions: file.editorOptions });
     }
     export var closeFile: typeof contract.server.openFile = (data) => {
         fmc.closeOpenFile(data.filePath);
