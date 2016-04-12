@@ -4,7 +4,7 @@ import * as fileModelCache from "./fileModelCache";
 /**
  * Our global dictionary
  */
-const watchedEditorConfigFiles: {[filePath: string]: boolean} = Object.create(null);
+const watchedEditorConfigFiles: { [filePath: string]: boolean } = Object.create(null);
 
 export function start() {
     flm.filePathsCompleted.on((res) => {
@@ -17,6 +17,6 @@ export function start() {
     });
 }
 
-function watchedEditorConfigChanged(){
+function watchedEditorConfigChanged() {
     fileModelCache.watchedEditorConfigChanged();
 }
