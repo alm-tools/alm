@@ -29,6 +29,6 @@ declare module 'editorconfig' {
         insert_final_newline: boolean,
         tab_width: number
     }
-    export function parse(filePath: string, options: Options): Promise<Result>;
-    export function parseSync(filePath: string, options: Options): Result;
+    export function parse(filePath: string, options?: Options): Promise<Result>;
+    export function parseSync(filePath: string, options?: Options): Result;
 }

@@ -5,8 +5,7 @@ import fs = require('fs');
 import chokidar = require('chokidar');
 import {TypedEvent} from "../../common/events";
 
-import * as editorconfig from "editorconfig";
-import {EditorOptions} from "ntypescript";
+import {getEditorOptions, EditorOptions} from "./editorOptions";
 
 /**
  * Loads a file from disk
@@ -39,6 +38,11 @@ export class FileModel {
      */
     public didStatusChange = new TypedEvent<{saved:boolean;eol:string}>();
 
+    /**
+     * Editor config
+     */
+    editorOptions: EditorOptions;
+
     constructor(public config: {
         filePath: string;
     }) {
@@ -48,6 +52,7 @@ export class FileModel {
         this.text = this.splitlines(contents);
         this.savedText = this.text.slice();
         this.watchFile();
+        this.editorOptions = getEditorOptions(config.filePath);
     }
 
     getContents() {
