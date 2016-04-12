@@ -8,13 +8,22 @@ import * as os from "os";
 export function getEditorOptions(filePath: string): EditorOptions {
     const config = editorconfig.parseSync(filePath);
 
-    // TODO: convert config to options
-    // console.log(config);
+    // console.log(filePath, config); // DEBUG
+
+    // Convert editorconfig to EditorOptions
+    const newLineCharacter =
+        config.end_of_line && config.end_of_line === 'lf' ? '\n'
+        : config.end_of_line && config.end_of_line === 'crlf' ? '\r\n'
+        : os.EOL;
+
+    const indentSize =
+        config.indent_size || 4;
+
 
     return {
-        indentSize: 4,
+        indentSize,
         tabSize: 4,
-        newLineCharacter: os.EOL,
+        newLineCharacter,
         convertTabsToSpaces: true,
     }
 }

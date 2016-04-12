@@ -103,6 +103,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                         ? supportedModesMap[ext]
                         : 'text';
 
+            // console.log(res.editorOptions); // DEBUG
             // console.log(mode,supportedModesMap[ext]); // Debug mode
 
             // Add to classifier cache
