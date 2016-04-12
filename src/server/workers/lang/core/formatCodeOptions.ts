@@ -7,14 +7,9 @@
  */
 
 import os = require('os');
+import {EditorOptions} from "../../../../common/types";
 
-/// The following two interfaces come from typescript.d.ts but camelCased for JSON parsing
-export interface EditorOptions {
-    indentSize: number;
-    tabSize: number;
-    newLineCharacter: string;
-    convertTabsToSpaces: boolean;
-}
+/// The following interface come from typescript.d.ts but camelCased for JSON parsing
 export interface FormatCodeOptions extends EditorOptions {
     insertSpaceAfterCommaDelimiter: boolean;
     insertSpaceAfterSemicolonInForStatements: boolean;

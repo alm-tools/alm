@@ -5,7 +5,8 @@ import fs = require('fs');
 import chokidar = require('chokidar');
 import {TypedEvent} from "../../common/events";
 
-import {getEditorOptions, EditorOptions} from "./editorOptions";
+import {getEditorOptions} from "./editorOptions";
+import {EditorOptions} from "../../common/types";
 
 /**
  * Loads a file from disk
