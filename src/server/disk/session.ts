@@ -128,6 +128,7 @@ export function readDiskSessionsFile() {
         '.',
         './src',
         './ts',
+        './lib',
         './App-UI/src'
     ].map(x => x + '/tsconfig.json');
     if (commandLine.getOptions().init) {
