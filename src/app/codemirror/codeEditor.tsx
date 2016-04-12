@@ -179,6 +179,11 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         docCache.getLinkedDoc(this.props.filePath).then(({doc, editorOptions})=>{
             this.codeMirror.swapDoc(doc);
 
+			// Set editor options
+			this.codeMirror.setOption('indentUnit', editorOptions.indentSize);
+			this.codeMirror.setOption('tabSize', editorOptions.tabSize);
+			this.codeMirror.setOption('indentWithTabs', !editorOptions.convertTabsToSpaces);
+
             if (this.props.preview) {
                 let preview = this.props.preview;
                 let from = doc.posFromIndex(preview.start);
