@@ -258,11 +258,13 @@ export namespace Types {
      * Formatting
      */
     export interface FormatDocumentQuery extends FilePathQuery {
+        editorOptions: types.EditorOptions;
     }
     export interface FormatDocumentResponse {
         refactorings: types.RefactoringsByFilePath
     }
     export interface FormatDocumentRangeQuery extends FilePathQuery {
+        editorOptions: types.EditorOptions;
         from: EditorPosition;
         to: EditorPosition;
     }

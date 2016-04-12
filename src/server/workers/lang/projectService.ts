@@ -271,11 +271,11 @@ export function getReferences(query: Types.GetReferencesQuery): Promise<Types.Ge
 import * as formatting from "./modules/formatting";
 export function formatDocument(query: Types.FormatDocumentQuery): Promise<Types.FormatDocumentResponse> {
     let project = getProject(query.filePath);
-    return resolve({ refactorings: formatting.formatDocument(project, query.filePath) });
+    return resolve({ refactorings: formatting.formatDocument(project, query.filePath, query.editorOptions) });
 }
 export function formatDocumentRange(query: Types.FormatDocumentRangeQuery): Promise<Types.FormatDocumentRangeResponse> {
     let project = getProject(query.filePath);
-    return resolve({ refactorings: formatting.formatDocumentRange(project, query.filePath, query.from, query.to) });
+    return resolve({ refactorings: formatting.formatDocumentRange(project, query.filePath, query.from, query.to, query.editorOptions) });
 }
 
 
