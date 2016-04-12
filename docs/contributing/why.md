@@ -16,11 +16,4 @@ Wanted to create something that would help all TypeScript developers, all they n
 * Having a TypeScript first IDE means I have more *keyboard shortcut space* available specific for TypeScript.
 
 ## atom-typescript
-We did some previous work on atom-typescript : Now atom is a *seriously* great project, but doing the kind of stuff we wanted to do was *too much modification of atom for a single plugin* e.g. :
-* We want to highjack the tree view to hide build resources + highjack renaming to support code refactoring
-* Have our own error panel (or build panel or find references panel)
-* Intercept the symbol provider to show typescript project wide symbols
-* Have a background worker doing our analysis for us, this has performance and platform issues if you use *atom as node*.
-* Plus some things like a *build server* support doesn't seem like a valid thing to add as atom plugin.
-* There are lots of times when it breakes due to no fault of our own, (we totally appreciate the effort atom team puts in this but nonetheless). Examples [here](https://github.com/TypeStrong/atom-typescript/issues/596), [here](https://github.com/TypeStrong/atom-typescript/issues/583), [here](https://github.com/TypeStrong/atom-typescript/issues/611#issuecomment-142780859), [here](https://github.com/TypeStrong/atom-typescript/issues/728#issuecomment-157255806)
-* Also an atom *plugin* should work *the way you want it to work*. This software will come with its own *strong* opinions to give a consistent workflow.
+We did some previous work on atom-typescript : Now atom is a *seriously* great project and in fact is the editor I am using to write this doc, but doing the kind of stuff I wanted to do can be *too much modification of atom for a single plugin*.
