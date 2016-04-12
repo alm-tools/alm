@@ -1,6 +1,10 @@
 import * as flm from "../workers/fileListing/fileListingMaster";
+import * as fileModelCache from "./fileModelCache";
 
-const watchedEditorConfigFiles = Object.create(null);
+/**
+ * Our global dictionary
+ */
+const watchedEditorConfigFiles: {[filePath: string]: boolean} = Object.create(null);
 
 export function start() {
     flm.filePathsCompleted.on((res) => {
@@ -11,4 +15,8 @@ export function start() {
         // TODO:
         // Make sure we watch any `.editorconfig` files
     });
+}
+
+function watchedEditorConfigChanged(){
+    fileModelCache.watchedEditorConfigChanged();
 }

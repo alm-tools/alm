@@ -64,6 +64,18 @@ export function saveOpenFile(filePath: string) {
 }
 
 /**
+ * Editor Config Stuff
+ */
+export function watchedEditorConfigChanged() {
+    // TODO:
+    // Recheck editor config for all open files :-/
+    // The files should emit '`editorConfigChanged`' individually
+    // We should be listening to these events and pushing them out
+    // The front end editor should be listening to this event by filePath too.
+}
+
+
+/**
  * File Tree managment functions
  */
 
