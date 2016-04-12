@@ -626,7 +626,7 @@ export class TemplatesRegistry {
     getNonExactMatchCompletionTemplates(cm: CodeMirror.EditorFromTextArea, text: string): Template[] {
         const context = cm.getDoc().getMode().name;
         const templates = this.templatesByContext[context] || [];
-        return templates.filter(template=> template.name!==text && startsWith(template.name, text));
+        return templates.filter(template=> template.name!==text && startsWith(template.name, text)).sort();
     }
 
     /**
