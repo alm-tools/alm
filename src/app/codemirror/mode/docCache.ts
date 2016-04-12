@@ -8,6 +8,7 @@ import * as utils from "../../../common/utils";
 import * as classifierCache from "./classifierCache";
 import {RefactoringsByFilePath, Refactoring} from "../../../common/types";
 import * as state from "../../state/state";
+import {EditorOptions} from "../../../common/types";
 
 /**
  * Modes. New modes need to be added
@@ -37,9 +38,14 @@ let supportedModesMap = {
 const localSourceId: string = utils.createId();
 const cameFromNetworkSourceId: string = 'came-from-network';
 
-export function getLinkedDoc(filePath: string): Promise<CodeMirror.Doc> {
+export type GetLinkedDocResponse = {
+    doc: CodeMirror.Doc;
+    editorOptions: EditorOptions
+}
+
+export function getLinkedDoc(filePath: string): Promise<GetLinkedDocResponse> {
     return getOrCreateDoc(filePath)
-        .then(({doc, isTsFile}) => {
+        .then(({doc, isTsFile, editorOptions}) => {
 
             // Some housekeeping: clear previous links that no longer seem active
             // SetTimeout because we might have created the doc but not the CM instance yet
@@ -78,13 +84,14 @@ export function getLinkedDoc(filePath: string): Promise<CodeMirror.Doc> {
                 });
             }
 
-            return linkedDoc;
+            return {doc: linkedDoc, editorOptions: editorOptions};
         });
 }
 
 type DocPromiseResult = {
     doc: CodeMirror.Doc,
     isTsFile: boolean,
+    editorOptions: EditorOptions,
 }
 let docByFilePathPromised: { [filePath: string]: Promise<DocPromiseResult> } = Object.create(null);
 
@@ -175,7 +182,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
             })
 
             // Finally return the doc
-            return { doc, isTsFile };
+            return { doc, isTsFile, editorOptions: res.editorOptions };
         });
     }
 }

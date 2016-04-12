@@ -176,7 +176,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         }
 
 		// Load the document
-        docCache.getLinkedDoc(this.props.filePath).then((doc)=>{
+        docCache.getLinkedDoc(this.props.filePath).then(({doc, editorOptions})=>{
             this.codeMirror.swapDoc(doc);
 
             if (this.props.preview) {
