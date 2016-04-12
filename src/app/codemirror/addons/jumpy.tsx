@@ -13,6 +13,16 @@ import Modal = require('react-modal');
 
 require('./jumpy.css');
 
+declare global {
+    namespace CodeMirror{
+        export interface Doc {
+            // Because we use `beforeChange` to apply changes to classifier immediately (needed for indent queries)
+            // We don't want to do that if jumpy is shown (as jumpy will cancel those changes)
+            _jumpyShown: boolean;
+        }
+    }
+}
+
 let lowerCharacters = [];
 for (let i = 'a'.charCodeAt(0); i <= 'z'.charCodeAt(0); i++) {
     lowerCharacters.push(String.fromCharCode(i));
@@ -45,6 +55,7 @@ export function getState(cm:Editor): JumpyState{
 }
 
 function createOverlays(cm: Editor) {
+    cm.getDoc()._jumpyShown = true;
     let doc = cm.getDoc();
     let {from,to} = cm.getViewport();
     let text = cm.getDoc().getRange({line:from,ch:0},{line:to,ch:0});
@@ -100,6 +111,7 @@ function createOverlays(cm: Editor) {
 }
 
 function clearAnyOverlay(cm: Editor) {
+    cm.getDoc()._jumpyShown = false;
     let state = getState(cm);
     if (state.shown) {
         state.widgets.forEach(wg => wg.node.parentElement.removeChild(wg.node));

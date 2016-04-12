@@ -72,6 +72,10 @@ export function getLinkedDoc(filePath: string): Promise<GetLinkedDocResponse> {
             // Also: whenever we change the parent doc manually (all cm.doc come here including templates), we have to do classification syncing there (not here)
             if (isTsFile) {
                 (linkedDoc as any).on('beforeChange', (doc: CodeMirror.Doc, change: CodeMirror.EditorChange) => {
+
+                    // Jumpy needs to use the same event
+                    if (doc._jumpyShown) return;
+
                     let codeEdit: CodeEdit = {
                         from: { line: change.from.line, ch: change.from.ch },
                         to: { line: change.to.line, ch: change.to.ch },
