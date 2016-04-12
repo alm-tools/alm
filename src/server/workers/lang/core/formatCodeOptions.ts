@@ -9,7 +9,7 @@
 import os = require('os');
 
 /// The following two interfaces come from typescript.d.ts but camelCased for JSON parsing
-interface EditorOptions {
+export interface EditorOptions {
     indentSize: number;
     tabSize: number;
     newLineCharacter: string;

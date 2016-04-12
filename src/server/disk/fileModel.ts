@@ -5,6 +5,9 @@ import fs = require('fs');
 import chokidar = require('chokidar');
 import {TypedEvent} from "../../common/events";
 
+import * as editorconfig from "editorconfig";
+import {EditorOptions} from "ntypescript";
+
 /**
  * Loads a file from disk
  * watches it on fs and then if it changes sends the new content to the client
