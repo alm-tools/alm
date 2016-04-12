@@ -1,8 +1,13 @@
 # Deployment
 Once you are happy with the code:
-* Just run [`npm version`](https://docs.npmjs.com/cli/version) with major/minor/patch.
+* Just run [`npm version`](https://docs.npmjs.com/cli/version) with `major` OR `minor` OR `patch`.
 * Push the outcome to github (`git push --follow-tags`). Travis will automatically deploy tagged commits to NPM!
-* Write release notes on Github https://github.com/alm-tools/alm/releases
+* Write release notes on Github https://github.com/alm-tools/alm/releases.
+
+## Release Guidelines
+* Be sure to mention any breaking changes at least 🌹.
+* TypeScript version upgrades should be considered a minor release. Try to link to reasons for upgrading TypeScript (some new cool feature or fix you wanted).
+* If there is a significant change in the TypeScript compiler consider doing a major release.
 
 # Initial Travis Setup
 *Just for record on how this was setup*.
