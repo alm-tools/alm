@@ -5,7 +5,7 @@ Wanted to create something that would help all TypeScript developers, all they n
 * Works the same on the *server* as your local file system. Remote editing FTW!
 * Heck..you can check in the IDE as a `devDependency`!
 * Like cloud9 ... but on your server!
-* MultiMonitor: Just open a new tab!
+* MultiMonitor: Just open a new browser tab (we have this as command as well `Duplicate Window`)!
 * Dev setups are expensive. Its potentially a joy to work on your office machine from wherever.
 
 ## TypeScript ❤
