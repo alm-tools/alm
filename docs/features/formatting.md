@@ -6,8 +6,9 @@ We support the following key [editorconfig][editorconfig] properties out of the 
 
 * `end_of_line`: `lf` | `crlf` | `os` (Default. This is recommended for git reasons 🌹)
 * `indent_size`: `:number` (Default: 2)
-* `tab_width`: `:number` (Default: 2)
 * `indent_style`: `tab` | `space` (Default)
+
+* `tab_width`: `:number` (Default: 2) Note : only relevant if you use `tab`s
 
 Just create an `.editorconfig` file in the root of your project.
 
