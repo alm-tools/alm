@@ -19,6 +19,7 @@ import * as docCache from "./codemirror/mode/docCache";
 import {CodeEditor} from "./codemirror/codeEditor";
 import {RefactoringsByFilePath, Refactoring, EditorOptions} from "../common/types";
 import {inputDialog} from "./dialogs/inputDialog";
+import {jumpToLine} from "./codemirror/cmUtils";
 
 // Wire up the code mirror command to come here
 CodeMirror.commands[commands.additionalEditorCommands.goToLine] = (editor: CodeMirror.EditorFromTextArea) => {
@@ -29,9 +30,7 @@ CodeMirror.commands[commands.additionalEditorCommands.goToLine] = (editor: CodeM
         header: "Line Number",
         onOk: (value: string) => {
             const line = +value - 1;
-            const from = { line, ch: 0 }
-            doc.setCursor(from);
-            editor.scrollIntoView(from);
+            jumpToLine({line,editor});
         },
         onEsc: () => {
 
