@@ -105,6 +105,24 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             keyMap: 'sublime',
             theme: 'monokai',
             indentUnit: 4,
+			indentWithTabs: false,
+
+			// Soft tabs (tabs to spaces):
+			// https://github.com/codemirror/CodeMirror/issues/988#issuecomment-37692827
+            extraKeys: {
+                Tab: function(cm) {
+                    if (cm.doc.somethingSelected()) {
+                        return CodeMirror.Pass;
+                    }
+					if (cm.getOption("indentWithTabs")) {
+						return CodeMirror.Pass;
+					}
+                    var spacesPerTab = cm.getOption("indentUnit");
+                    var spacesToInsert = spacesPerTab - (cm.doc.getCursor("start").ch % spacesPerTab);
+                    var spaces = Array(spacesToInsert + 1).join(" ");
+                    cm.replaceSelection(spaces, "end", "+input");
+                }
+            },
 
 			lineNumbers: true,
 			foldGutter: true,
