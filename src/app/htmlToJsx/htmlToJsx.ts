@@ -152,32 +152,46 @@ function escapeSpecialChars(value) {
   return tempEl.innerHTML;
 }
 
-export var HTMLtoJSX = function(config) {
-  this.config = config || {};
+export type Config = {
+    createClass?: boolean;
+    outputClassName?: string;
+    /** as a string e.g. '    ' or '\t' */
+    indent?: string;
+}
 
-  if (this.config.createClass === undefined) {
-    this.config.createClass = true;
-  }
-  if (!this.config.indent) {
-    this.config.indent = '  ';
-  }
-};
-HTMLtoJSX.prototype = {
+export class HTMLtoJSX {
+    private config: Config;
+    private output: string;
+    private level: number;
+    private _inPreTag: boolean;
+
+
+    constructor(config:Config) {
+      this.config = config || {};
+
+      if (this.config.createClass === undefined) {
+        this.config.createClass = true;
+      }
+      if (!this.config.indent) {
+        this.config.indent = '  ';
+      }
+    }
+
   /**
    * Reset the internal state of the converter
    */
-  reset: function() {
+  reset = () => {
     this.output = '';
     this.level = 0;
     this._inPreTag = false;
-  },
+  }
   /**
    * Main entry point to the converter. Given the specified HTML, returns a
    * JSX object representing it.
    * @param {string} html HTML to convert
    * @return {string} JSX
    */
-  convert: function(html) {
+  convert = (html) => {
     this.reset();
 
     var containerEl = createElement('div');
@@ -211,7 +225,7 @@ HTMLtoJSX.prototype = {
       this.output += '});';
     }
     return this.output;
-  },
+  }
 
   /**
    * Cleans up the specified HTML so it's in a format acceptable for
@@ -220,14 +234,14 @@ HTMLtoJSX.prototype = {
    * @param {string} html HTML to clean
    * @return {string} Cleaned HTML
    */
-  _cleanInput: function(html) {
+  _cleanInput = (html) => {
     // Remove unnecessary whitespace
     html = html.trim();
     // Ugly method to strip script tags. They can wreak havoc on the DOM nodes
     // so let's not even put them in the DOM.
     html = html.replace(/<script([\s\S]*?)<\/script>/g, '');
     return html;
-  },
+  }
 
   /**
    * Determines if there's only one top-level node in the DOM tree. That is,
@@ -236,7 +250,7 @@ HTMLtoJSX.prototype = {
    * @param {DOMElement} containerEl Container element
    * @return {boolean}
    */
-  _onlyOneTopLevel: function(containerEl) {
+  _onlyOneTopLevel = (containerEl) => {
     // Only a single child element
     if (
       containerEl.childNodes.length === 1
@@ -262,7 +276,7 @@ HTMLtoJSX.prototype = {
       }
     }
     return true;
-  },
+  }
 
   /**
    * Gets a newline followed by the correct indentation for the current
@@ -270,40 +284,40 @@ HTMLtoJSX.prototype = {
    *
    * @return {string}
    */
-  _getIndentedNewline: function() {
+  _getIndentedNewline = () => {
     return '\n' + repeatString(this.config.indent, this.level + 2);
-  },
+  }
 
   /**
    * Handles processing the specified node
    *
    * @param {Node} node
    */
-  _visit: function(node) {
+  _visit = (node) => {
     this._beginVisit(node);
     this._traverse(node);
     this._endVisit(node);
-  },
+  }
 
   /**
    * Traverses all the children of the specified node
    *
    * @param {Node} node
    */
-  _traverse: function(node) {
+  _traverse = (node) => {
     this.level++;
     for (var i = 0, count = node.childNodes.length; i < count; i++) {
       this._visit(node.childNodes[i]);
     }
     this.level--;
-  },
+  }
 
   /**
    * Handle pre-visit behaviour for the specified node.
    *
    * @param {Node} node
    */
-  _beginVisit: function(node) {
+  _beginVisit = (node) => {
     switch (node.nodeType) {
       case NODE_TYPE.ELEMENT:
         this._beginVisitElement(node);
@@ -320,14 +334,14 @@ HTMLtoJSX.prototype = {
       default:
         console.warn('Unrecognised node type: ' + node.nodeType);
     }
-  },
+  }
 
   /**
    * Handles post-visit behaviour for the specified node.
    *
    * @param {Node} node
    */
-  _endVisit: function(node) {
+  _endVisit = (node) => {
     switch (node.nodeType) {
       case NODE_TYPE.ELEMENT:
         this._endVisitElement(node);
@@ -337,14 +351,14 @@ HTMLtoJSX.prototype = {
       case NODE_TYPE.COMMENT:
         break;
     }
-  },
+  }
 
   /**
    * Handles pre-visit behaviour for the specified element node
    *
    * @param {DOMElement} node
    */
-  _beginVisitElement: function(node) {
+  _beginVisitElement = (node) => {
     var tagName = node.tagName.toLowerCase();
     var attributes = [];
     for (var i = 0, count = node.attributes.length; i < count; i++) {
@@ -370,14 +384,14 @@ HTMLtoJSX.prototype = {
     if (!this._isSelfClosing(node)) {
       this.output += '>';
     }
-  },
+  }
 
   /**
    * Handles post-visit behaviour for the specified element node
    *
    * @param {Node} node
    */
-  _endVisitElement: function(node) {
+  _endVisitElement = (node) => {
     var tagName = node.tagName.toLowerCase();
     // De-indent a bit
     // TODO: It's inefficient to do it this way :/
@@ -391,7 +405,7 @@ HTMLtoJSX.prototype = {
     if (tagName === 'pre') {
       this._inPreTag = false;
     }
-  },
+  }
 
   /**
    * Determines if this element node should be rendered as a self-closing
@@ -400,18 +414,18 @@ HTMLtoJSX.prototype = {
    * @param {Node} node
    * @return {boolean}
    */
-  _isSelfClosing: function(node) {
+  _isSelfClosing = (node) => {
     // If it has children, it's not self-closing
     // Exception: All children of a textarea are moved to a "defaultValue" attribute, style attributes are dangerously set.
     return !node.firstChild || node.tagName.toLowerCase() === 'textarea' || node.tagName.toLowerCase() === 'style';
-  },
+  }
 
   /**
    * Handles processing of the specified text node
    *
    * @param {TextNode} node
    */
-  _visitText: function(node) {
+  _visitText = (node) => {
     var parentTag = node.parentNode && node.parentNode.tagName.toLowerCase();
     if (parentTag === 'textarea' || parentTag === 'style') {
       // Ignore text content of textareas and styles, as it will have already been moved
@@ -437,16 +451,16 @@ HTMLtoJSX.prototype = {
       }
     }
     this.output += text;
-  },
+  }
 
   /**
    * Handles processing of the specified text node
    *
    * @param {Text} node
    */
-  _visitComment: function(node) {
+  _visitComment = (node) => {
     this.output += '{/*' + node.textContent.replace('*/', '* /') + '*/}';
-  },
+  }
 
   /**
    * Gets a JSX formatted version of the specified attribute from the node
@@ -455,7 +469,7 @@ HTMLtoJSX.prototype = {
    * @param {object}     attribute
    * @return {string}
    */
-  _getElementAttribute: function(node, attribute) {
+  _getElementAttribute = (node, attribute) => {
     switch (attribute.name) {
       case 'style':
         return this._getStyleAttribute(attribute.value);
@@ -476,7 +490,7 @@ HTMLtoJSX.prototype = {
         }
         return result;
     }
-  },
+  }
 
   /**
    * Gets a JSX formatted version of the specified element styles
@@ -484,7 +498,7 @@ HTMLtoJSX.prototype = {
    * @param {string} styles
    * @return {string}
    */
-  _getStyleAttribute: function(styles) {
+  _getStyleAttribute = (styles) => {
     var jsxStyles = new StyleParser(styles).toJSXString();
     return 'style={{' + jsxStyles + '}}';
   }

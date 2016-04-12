@@ -39,16 +39,6 @@ CodeMirror.commands[commands.additionalEditorCommands.htmlToTsx] = (editor: Code
  * https://github.com/reactjs/react-magic
  * https://www.npmjs.com/package/htmltojsx
  */
-/** This type isn't really used below but I still wanted to document the expected API */
-declare class HTMLtoJSXClass {
-    constructor(options?: {
-        createClass?: boolean;
-        outputClassName?: string;
-        /** as a string e.g. '    ' or '\t' */
-        indent?: string;
-    });
-    convert(html: string): string;
-}
 import {HTMLtoJSX} from "./htmlToJsx/htmlToJsx";
 export function convert(content: string, indentSize: number) {
     var indent = Array(indentSize + 1).join(' ');
