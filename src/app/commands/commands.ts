@@ -403,7 +403,12 @@ export var windows = /win/i.test(navigator.platform);
 export var modName = mac ? '⌘' : 'Ctrl';
 let mod = mac ? 'Cmd' : 'Ctrl';
 
-/** Commands *we* authored */
+/**
+ * Commands *we* authored.
+ * For new commands there are the following more places you need to update:
+ * - Commands that have keyboard shortcuts just add them to the keymap below
+ * - Otherwise they are registered manually at the bottom of the file
+ */
 export let additionalEditorCommands = {
     renameVariable: '',
     gotoDefinition: '',
@@ -413,6 +418,7 @@ export let additionalEditorCommands = {
     toggleBlaster: '',
     gitResetFile: '',
     htmlToTsx: '',
+    goToLine: '',
 }
 utils.stringEnum(additionalEditorCommands);
 
@@ -437,6 +443,7 @@ sublimeMap[`Shift-${mod}-B`] = additionalEditorCommands.findReferences;
 sublimeMap[`${mod}-Alt-L`] = additionalEditorCommands.format;
 sublimeMap[`${mod}-Alt-O`] = additionalEditorCommands.toggleBlaster;
 sublimeMap[`${mod}-Alt-Z`] = additionalEditorCommands.gitResetFile;
+sublimeMap[`${mod}-G`] = additionalEditorCommands.goToLine;
 
 // we have our own cursor history
 delete defaultMap[`${mod}-U`];

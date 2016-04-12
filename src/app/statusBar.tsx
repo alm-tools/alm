@@ -41,6 +41,8 @@ export interface Props {
 export interface State {
 }
 
+const projectTipKeboard = ReactDOMServer.renderToString(<div style={notificationKeyboardStyle}>Alt+Shift+P</div>);
+
 /**
  * The singleton status bar
  */
@@ -69,9 +71,7 @@ export class StatusBar extends BaseComponent<Props, State>{
         statusBar = this;
     }
 
-    render(){
-
-        let projectTipKeboard = ReactDOMServer.renderToString(<div style={notificationKeyboardStyle}>Alt+Shift+P</div>);
+    render() {
         let tab = state.getSelectedTab();
         let filePath = tab && utils.getFilePathFromUrl(tab.url);
         let protocol = tab && utils.getFilePathAndProtocolFromUrl(tab.url).protocol;

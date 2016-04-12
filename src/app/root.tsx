@@ -33,6 +33,7 @@ import * as gotoHistory_placeholder from "./gotoHistory";
 import * as clipboardRing from "./clipboardRing";
 import * as gitCommands from "./gitCommands";
 import * as htmlToTsx from "./htmlToTsx";
+import * as goToLine from "./goToLine";
 var ensureImport = RenameVariable
     || GotoDefinition
     || FindReferences
@@ -40,7 +41,8 @@ var ensureImport = RenameVariable
     || gotoHistory_placeholder
     || clipboardRing
     || gitCommands
-    || htmlToTsx;
+    || htmlToTsx
+    || goToLine;
 
 export interface State {
     isOmniSearchOpen?: boolean;
