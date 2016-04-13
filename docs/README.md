@@ -1,7 +1,6 @@
 ## Table of Contents
 
-* [Read Me](/README.md)
-* [Introduction](/docs/introduction/README.md)
+* [Introduction](/docs/introduction.md)
   * [Motivation](/docs/introduction/Motivation.md)
   * [Three Principles](/docs/introduction/ThreePrinciples.md)
   * [Prior Art](/docs/introduction/PriorArt.md)
