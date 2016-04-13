@@ -1,9 +1,5 @@
 {
-  "gitbook": "2.4.3",
-  "structure": {
-    "summary": "docs/SUMMARY.md",
-    "readme": "docs/README.md"
-  },
+  "root": "./docs",
   "plugins": ["edit-link", "github"],
   "pluginsConfig": {
     "edit-link": {
