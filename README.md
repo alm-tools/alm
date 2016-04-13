@@ -10,18 +10,7 @@
 
 ## Why
 
-* [Super easy to setup](https://github.com/alm-tools/alm/tree/master#usage). Just `npm install` and open your browser.
-
-* There are lots of [other reasons why you might use this project OR use the source code](https://github.com/alm-tools/alm/blob/master/docs/contributing/why.md). Effectively this is `transpiler`, `editor`, `analyzer`, `DX workflow` rolled into one.
-
-## Requirements
-The requirements are what you would already have for even a basic NodeJS developer:
-
-* NodeJS (V4 and above).
-* Google Chrome.
-* Git available on system path.
-
-That is it!
+[Checkout the website](http://alm.tools)
 
 ## Usage
 

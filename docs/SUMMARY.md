@@ -3,3 +3,4 @@
   * [Editor Config](/features/editorconfig.md)
   * [tsconfig.json](/features/tsconfig.md)
 * [Contributing / Design Notes](/contributing/README.md)
+  * [Why?](/contributing/why.md)
