@@ -25,7 +25,7 @@ That is it!
 
 ## Usage
 
-> Till we consider it stable for release we are not pushing to NPM. So for now you need to get it using the [CONTRIBUTING guide](https://github.com/alm-tools/alm/blob/master/docs/contributing/README.md).
+> Till we consider it stable for release we are not pushing to NPM. So for now you need to get it using the [CONTRIBUTING guide][contributing].
 
 Get it:
 ```
