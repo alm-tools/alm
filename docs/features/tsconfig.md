@@ -2,7 +2,7 @@
 
 The `tsconfig.json` file is the *standard* way of providing compiler options to TypeScript compiler. We use it for all our TypeScript specific configuration as well. You can generate this file with alm using `alm -i`.
 
-
+## TSConfig contents
 The following are the key properties of `tsconfig.json`:
 
 * [`compilerOptions`](#compileroptions)
@@ -95,3 +95,10 @@ You can use this property to fine tune the result of running a TypeScript code f
 
 ### More
 The *official* options of `tsconfig.json` (ones understood by `tsc`) are documented [in the schema](http://json.schemastore.org/tsconfig)
+
+## TSConfig selection
+You can select the tsconfig.json in various ways:
+* By default we check common locations (e.g. `.`, `./src`, `./ts` etc.)
+* See if the last session had one and use that
+* You can select one when you start the app `alm -p ./super-special/tsconfig.json`
+* You can select one using project search command from the UI. When you have multiple `tsconfig.json` files in your project this allows you to switch between them.
