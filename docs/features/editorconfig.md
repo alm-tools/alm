@@ -13,7 +13,13 @@ We support the following key [editorconfig][editorconfig] properties out of the 
 
 > Note : `tab_width` is only relevant if you use `tab`s (which we don't recommend you use anyways).
 
-Just create an `.editorconfig` file in the root of your project.
+Just create an `.editorconfig` file in the root of your project. Here is a sample:
+
+```ini
+[*.{ts,tsx}]
+indent_style = space
+indent_size = 2
+```
 
 ## TypeScript Formatting Configuration
 
