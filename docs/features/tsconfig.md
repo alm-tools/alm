@@ -5,12 +5,12 @@ The `tsconfig.json` file is the *standard* way of providing compiler options to 
 
 The following are the key properties of `tsconfig.json`:
 
-* [`compilerOptions`](#compilerOptions)
-* [`filesGlob`](#filesGlob)
+* [`compilerOptions`](#compileroptions)
+* [`filesGlob`](#filesglob)
 * [`files`](#files)
 * [`exclude`](#exclude)
-* [`compileOnSave`](#compileOnSave)
-* [`formatCodeOptions`](#formatCodeOptions)
+* [`compileOnSave`](#compileonsave)
+* [`formatCodeOptions`](#formatcodeoptions)
 
 ### compilerOptions
 The key compiler options. e.g:
