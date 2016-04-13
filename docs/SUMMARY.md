@@ -1,4 +1,4 @@
-* [Quick Start](/docs/quickstart.md)
-* [Features](/docs/features/README.md)
-  * [tsconfig.json](/docs/features/tsconfig.md) 
-* [Contributing Docs](/docs/contributing/README.md)
+* [Quick Start](/quickstart.md)
+* [Features](/features/README.md)
+  * [tsconfig.json](/features/tsconfig.md)
+* [Contributing Docs](/contributing/README.md)
