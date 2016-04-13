@@ -31,8 +31,13 @@ import {register} from "./socket/socketServer";
 register(server);
 
 
-// Start listening
 let clOptions = cl.getOptions();
+/** If the cl options favor early exit (e.g. -i) do that */
+if (clOptions.init) {
+    // TODO: 
+}
+
+// Start listening
 var portfinder = require('portfinder');
 portfinder.basePort = clOptions.port;
 portfinder.getPort(function (err, port) {
