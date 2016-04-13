@@ -1,5 +1,5 @@
 {
-  "gitbook": ">= 3.0.0",
+  "gitbook": ">=3.0.0-pre.0",
   "root": "./docs",
   "plugins": ["edit-link", "github"],
   "pluginsConfig": {
