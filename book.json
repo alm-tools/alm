@@ -1,0 +1,15 @@
+{
+  "structure": {
+    "summary": "docs/README.md"
+  },
+  "plugins": ["edit-link", "github"],
+  "pluginsConfig": {
+    "edit-link": {
+      "base": "https://github.com/alm-tools/alm/tree/master",
+      "label": "Edit This Page"
+    },
+    "github": {
+      "url": "https://github.com/alm-tools/alm/"
+    }
+  }
+}
