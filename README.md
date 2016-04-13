@@ -43,9 +43,9 @@ Now open it in your favorite browser (pssst `chrome`) at the URL mentioned in yo
 
 ## Features
 
-[We work hard on our :memo:][docs]
+> [We work hard :construction_worker: on our :memo:][docs]
 
-[![](https://raw.githubusercontent.com/alm-tools/alm/master/cover.jpg)][docs]
+[![][cover]][docs]
 
 
 ## Contributing
@@ -56,3 +56,5 @@ A key motivation for this project is to educate the community of about creating 
 MIT
 
 [docs]: https://basarat.gitbooks.io/alm/content/
+[contributing]: https://basarat.gitbooks.io/alm/content/contributing/
+[cover]: https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/cover_small.png
