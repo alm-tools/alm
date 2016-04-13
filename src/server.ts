@@ -9,8 +9,17 @@ import open = require('open');
 import serverStarted = require('./server/serverStarted');
 import cl = require('./server/commandLine');
 import workingDir = require('./server/disk/workingDir');
+import * as session from "./server/disk/session";
 
-var publicPath = path.resolve(__dirname, 'public');
+const publicPath = path.resolve(__dirname, 'public');
+
+const clOptions = cl.getOptions();
+/** If the cl options favor early exit (e.g. -i) do that */
+if (clOptions.init) {
+    session.readDiskSessionsFile();
+    console.log('[TSCONFIG] Initialized');
+    process.exit(0);
+}
 
 // Create express app and http server
 var app = express();
@@ -29,13 +38,6 @@ app.use(express.static(publicPath, {}));
 // Setup a socket server
 import {register} from "./socket/socketServer";
 register(server);
-
-
-let clOptions = cl.getOptions();
-/** If the cl options favor early exit (e.g. -i) do that */
-if (clOptions.init) {
-    // TODO: 
-}
 
 // Start listening
 var portfinder = require('portfinder');

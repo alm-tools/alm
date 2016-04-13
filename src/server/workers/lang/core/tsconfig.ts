@@ -214,7 +214,7 @@ var projectFileName = 'tsconfig.json';
  */
 var invisibleFilesGlob = ["./**/*.ts", "./**/*.tsx"];
 
-export var defaults: ts.CompilerOptions = {
+export const defaults: ts.CompilerOptions = {
     target: ts.ScriptTarget.ES5,
     module: ts.ModuleKind.CommonJS,
     moduleResolution: ts.ModuleResolutionKind.NodeJs,
@@ -494,7 +494,7 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
 }
 
 /** Creates a project by source file location. Defaults are assumed unless overriden by the optional spec. */
-export function createProjectRootSync(srcFile: string, defaultOptions?: ts.CompilerOptions) {
+export function createProjectRootSync(srcFile: string, defaultOptions: ts.CompilerOptions = defaults, overWrite = true) {
     if (!fs.existsSync(srcFile)) {
         throw new Error(errors.CREATE_FILE_MUST_EXIST);
     }
@@ -503,12 +503,12 @@ export function createProjectRootSync(srcFile: string, defaultOptions?: ts.Compi
     var dir = fs.lstatSync(srcFile).isDirectory() ? srcFile : path.dirname(srcFile);
     var projectFilePath = path.normalize(dir + '/' + projectFileName);
 
-    if (fs.existsSync(projectFilePath))
+    if (!overWrite && fs.existsSync(projectFilePath))
         throw new Error(errors.CREATE_PROJECT_ALREADY_EXISTS);
 
     // We need to write the raw spec
     var projectSpec: TypeScriptProjectRawSpecification = {};
-    projectSpec.compilerOptions = tsToRawCompilerOptions(defaultOptions || defaults);
+    projectSpec.compilerOptions = tsToRawCompilerOptions(defaultOptions);
     projectSpec.compileOnSave = true;
     projectSpec.exclude = ["node_modules", "typings/browser", "typings/browser.d.ts"];
 
