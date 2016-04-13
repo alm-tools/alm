@@ -15,4 +15,4 @@ This guide is divided into three sections.
 
 The intension is that you read these step by step, dropping off and going out to build your next amazing application at whatever point you want 🌹
 
-* [Quick Start](/docs/quickstart.md)
+* [Quick Start](/quickstart.md)
