@@ -1,5 +1,6 @@
 * [Quick Start](/quickstart.md)
 * [Features](/features/README.md)
+  * [Omni Search](./features/omni-search.md)
 * [Configuration](/config/README.md)
   * [Editor Config](/config/editorconfig.md)
   * [tsconfig.json](/config/tsconfig.md)
