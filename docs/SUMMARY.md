@@ -2,6 +2,7 @@
 * [Features](/features/README.md)
   * [Omni Search](./features/omni-search.md)
   * [Editor](./features/editor.md)
+  * [Git](./features/git.md)
 * [Configuration](/config/README.md)
   * [Editor Config](/config/editorconfig.md)
   * [tsconfig.json](/config/tsconfig.md)

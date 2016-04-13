@@ -2,19 +2,10 @@
 
 # Features
 
-The features can be broadly divide into Text Editing features and TypeScript specific features.
+The features can be broadly divided into Text Editing features and TypeScript specific features.
 
 > **TIP** Keyboard shortcut `Ctrl|⌘` means `Ctrl` on windows and `⌘` on Mac.
 
-* [Editor](#omni-search)
-    * [Sublime Text Users](#sublime)
-    * [Seamless external editing](#disk-watching)
-    * [Editing First](#focus)
-    * [Jumpy](#jumpy)
-    * [Multi Monitor](#multi-monitor)
-    * [Cursor History](#cursor-history)
-    * [Clipboard Ring](#clipboard-ring)
-    * [Blaster](#blaster)
 * [TypeScript Editing](#errors)
     * [Errors](#errors)
     * [Syntax Highlighting](#syntax-highlighting)
@@ -28,8 +19,6 @@ The features can be broadly divide into Text Editing features and TypeScript spe
 * [TypeScript Analysis](#dependency-view)
     * [Dependency View](#dependency-view)
     * [AST View](#ast-view)
-* [Git](#git-reset-file)
-    * [Git Reset File](#git-reset-file)
 
 # Errors
 
@@ -105,9 +94,3 @@ Command : `Ast View`. Useful when authoring new features.
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/ast.png)
 
 Also command : `TypeScript: Ast Full` that includes the `trivia` (punctuation, comments etc. received from `ts.Node.getChildren()`) as well.
-
-# Git Reset File
-
-Quickly go back to the last Git commited version of the file using `Alt + Ctrl|⌘ + Z`. Of course you can undo this reset with `Ctrl|⌘ + Z`.
-
-![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/gitResetFile.gif)
