@@ -1,4 +1,5 @@
 * [Quick Start](/quickstart.md)
 * [Features](/features/README.md)
+  * [Editor Config](/features/editorconfig.md)
   * [tsconfig.json](/features/tsconfig.md)
 * [Contributing Docs](/contributing/README.md)
