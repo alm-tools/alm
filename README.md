@@ -43,7 +43,9 @@ Now open it in your favorite browser (pssst `chrome`) at the URL mentioned in yo
 
 ## Features
 
-Checkout the [feature documentation](https://github.com/alm-tools/alm/tree/master/docs/features).
+[We work hard on our :memo:][docs]
+
+[![](https://raw.githubusercontent.com/alm-tools/alm/master/cover.jpg)][docs]
 
 
 ## Contributing
@@ -52,3 +54,5 @@ A key motivation for this project is to educate the community of about creating 
 ## License
 
 MIT
+
+[docs]: https://basarat.gitbooks.io/alm/content/
