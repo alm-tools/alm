@@ -1,8 +1,8 @@
 * [Quick Start](/quickstart.md)
 * [Features](/features/README.md)
-* Configuration
-  * [Editor Config](/features/editorconfig.md)
-  * [tsconfig.json](/features/tsconfig.md)
-  * [Command Line Options](/features/command-line.md)
+* [Configuration](/config/README.md)
+  * [Editor Config](/config/editorconfig.md)
+  * [tsconfig.json](/config/tsconfig.md)
+  * [Command Line Options](/config/command-line.md)
 * [Contributing / Design Notes](/contributing/README.md)
   * [Why?](/contributing/why.md)
