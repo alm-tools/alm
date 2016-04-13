@@ -28,10 +28,8 @@ alm -o
 
 # Using the editor
 
-One of the key goals of this editor is to make everything possible with just the keyboard.
-
-> **TIP** Keyboard shortcut `Ctrl|⌘` means `Ctrl` on windows and `⌘` on Mac.
+> One of the key goals of this editor is to make everything possible with just the keyboard.
 
 Once you have the editor open you will be presented with a window like the following:
 
-TODO: add image
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/quickstart/1initial.png)

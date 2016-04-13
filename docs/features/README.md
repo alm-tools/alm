@@ -1,8 +1,8 @@
 > Not all these features might be pushed to npm yet. Remember the planned release is 2017 :rose:
 
-
-
 # Features
+
+> **TIP** Keyboard shortcut `Ctrl|⌘` means `Ctrl` on windows and `⌘` on Mac.
 
 * [Editor](#omni-search)
     * [Omni Search](#omni-search)
