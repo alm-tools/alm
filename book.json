@@ -11,5 +11,10 @@
     "github": {
       "url": "https://github.com/alm-tools/alm/"
     }
+  },
+  "links": {
+    "sidebar": {
+      "About": "http://alm.tools"
+    }
   }
 }
