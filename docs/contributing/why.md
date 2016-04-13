@@ -15,5 +15,5 @@ Wanted to create something that would help all TypeScript developers, all they n
 * Provide you with a base editor that you can build internal projects on top of TypeScript with. The code editing experience should be top notch ... beyond this you can add stuff like WYSIWYG editors taking advantage of the full TypeScript language service.
 * Having a TypeScript first IDE means I have more *keyboard shortcut space* available specific for TypeScript.
 
-## atom-typescript
-We did some previous work on atom-typescript : Now atom is a *seriously* great project and in fact is the editor I am using to write this doc, but doing the kind of stuff I wanted to do can be *too much modification of atom for a single plugin*.
+## As a Plugins
+We did some previous work on atom-typescript. Now atom is a *seriously* great project and in fact is the editor I am using to write this doc, but doing the kind of stuff I wanted to do can be *too much modification of atom for a single plugin*.

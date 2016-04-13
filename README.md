@@ -10,7 +10,7 @@
 
 ## Why
 
-[Checkout the website](http://alm.tools)
+[Checkout the website](http://alm.tools) and if you need more reasons [we have them](https://basarat.gitbooks.io/alm/content/contributing/why.html).
 
 ## Usage
 
