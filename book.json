@@ -1,16 +1,6 @@
 {
   "gitbook": ">=3.0.0-pre.0",
   "root": "./docs",
-  "plugins": ["edit-link", "github"],
-  "pluginsConfig": {
-    "edit-link": {
-      "base": "https://github.com/alm-tools/alm/tree/master",
-      "label": "Edit This Page"
-    },
-    "github": {
-      "url": "https://github.com/alm-tools/alm/"
-    }
-  },
   "links": {
     "sidebar": {
       "About": "http://alm.tools"
