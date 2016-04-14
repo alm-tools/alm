@@ -13,6 +13,9 @@ export interface ComponentProps {
 
     // what you can tell us about
     onSavedChanged: (saved: boolean) => void;
+
+    // Useful
+    saved: boolean;
 }
 
 export interface Component extends React.Component<any, any> {

@@ -477,7 +477,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             let Component = tabRegistry.getComponentByUrl(t.url);
 
             return <div className="app-tabs-container-component-div" key={t.id} style={[csx.flex,csx.flexRoot,style, {maxWidth:'100%'}]}>
-                <Component ref={t.id} url={t.url} onSavedChanged={(saved)=>{this.onSavedChanged(saved,i)}}/>
+                <Component ref={t.id} url={t.url} onSavedChanged={(saved)=>{this.onSavedChanged(saved,i)}} saved={t.saved}/>
             </div>
         });
 

@@ -52,7 +52,7 @@ export class Code extends ui.BaseComponent<Props, State> implements tab.Componen
             filePath={this.filePath}
             onFocusChange={
                 /* Auto save on focus loss */
-                (focus) => !focus && this.save()
+                (focus) => !focus && !this.props.saved && this.save()
             }
             />
         );
