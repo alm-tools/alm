@@ -22,18 +22,21 @@ require('codemirror/addon/fold/foldgutter.css');
 require('codemirror/addon/selection/active-line');
 // Highlight matching brackets
 require('codemirror/addon/edit/matchbrackets');
-// Auto close brackets and strings
-require('codemirror/addon/edit/closebrackets');
 // Auto match tags (great for TSX!)
 require('codemirror/addon/edit/matchtags');
 // Auto highlight same words selected
 require('codemirror/addon/search/match-highlighter');
 
 // Our Addons
-require('./addons/text-hover');
+import textHover = require('./addons/text-hover');
 require('./addons/text-hover.css');
-require('./addons/jumpy');
+import jumpy = require('./addons/jumpy');
 import blaster = require('./addons/blaster');
+import insertMatchingPair = require('./addons/insertMatchingPair');
+const ensureImport = textHover
+    || jumpy
+    || blaster
+	|| insertMatchingPair;
 
 // Css overrides
 require('./codeEditor.css')
