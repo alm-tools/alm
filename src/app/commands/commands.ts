@@ -112,6 +112,7 @@ export var closeOtherTabs = new UICommand({
 });
 
 export var duplicateWindow = new UICommand({
+    keyboardShortcut: 'mod+alt+d', // nick
     description: "Window: Duplicate in a new browser window",
     context: CommandContext.Global,
 });
