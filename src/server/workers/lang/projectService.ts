@@ -17,12 +17,13 @@ import fuzzaldrin = require('fuzzaldrin');
 import {errorsCache} from "./cache/tsErrorsCache";
 
 export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQuery): Promise<Types.GetCompletionsAtPositionResponse> {
-    let {filePath, position, prefix} = query;
-    let project = getProject(query.filePath);
+    const {filePath, position, prefix} = query;
+    const project = getProject(query.filePath);
+    const service = project.languageService;
 
-    var completions: ts.CompletionInfo = project.languageService.getCompletionsAtPosition(filePath, position);
-    var completionList = completions ? completions.entries.filter(x=> !!x) : [];
-    var endsInPunctuation = utils.prefixEndsInPunctuation(prefix);
+    const completions: ts.CompletionInfo = service.getCompletionsAtPosition(filePath, position);
+    let completionList = completions ? completions.entries.filter(x=> !!x) : [];
+    const endsInPunctuation = utils.prefixEndsInPunctuation(prefix);
 
     if (prefix.length && prefix.trim().length && !endsInPunctuation) {
         // Didn't work good for punctuation
@@ -88,7 +89,7 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
      * Add function signature help
      */
     if (query.prefix == '(') {
-        var signatures = project.languageService.getSignatureHelpItems(query.filePath, query.position);
+        const signatures = service.getSignatureHelpItems(query.filePath, query.position);
         if (signatures && signatures.items) {
             signatures.items.forEach((item) => {
                 const template: string = item.parameters.map((p, i) => {
