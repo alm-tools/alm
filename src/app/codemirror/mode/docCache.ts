@@ -23,15 +23,20 @@ require('codemirror/mode/dart/dart');
 require('codemirror/mode/haml/haml');
 require('codemirror/mode/gfm/gfm');
 require('codemirror/mode/coffeescript/coffeescript');
+require('codemirror/mode/clike/clike');
+require('codemirror/mode/mllike/mllike');
+/** Maps file extension to a `mime` type or mode `name` */
 let supportedModesMap = {
     js: 'javascript', json: 'javascript',
-    xml: 'text/html', html: 'text/html',
+    xml: 'text/html', html: 'text/html', cshtml: 'text/html',
     css: 'css', less: 'text/x-less', gss: 'text/x-gss',
-    sass: 'sass',
+    sass: 'sass', scss: 'sass',
     dart: 'dart',
     haml: 'haml',
     markdown: 'gfm', md: 'gfm',
     coffee: 'coffeescript', coffeescript: 'coffeescript',
+    cs: 'text/x-csharp', cpp: 'text/x-c++src', java: 'text/x-java',
+    fs: 'text/x-fsharp', ml: 'text/x-ocaml',
 };
 
 // to track the source of changes, local vs. network
