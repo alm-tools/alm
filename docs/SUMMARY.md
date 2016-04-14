@@ -10,3 +10,4 @@
   * [Command Line Options](/config/command-line.md)
 * [Contributing / Design Notes](/contributing/README.md)
   * [Why?](/contributing/why.md)
+  * [Why CodeMirror?](/contributing/codemirror.md)
