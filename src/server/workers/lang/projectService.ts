@@ -120,6 +120,11 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
         }
     }
 
+    /**
+     * TODO: Add file path completions
+     */
+
+
     return resolve({
         completions: completionsToReturn,
         endsInPunctuation: endsInPunctuation

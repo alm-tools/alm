@@ -145,6 +145,13 @@ export interface Completion {
         description: string;
         template: string;
     };
+
+    /** If a path completion is specified then the above stuff is ignored */
+    pathCompletions?: {
+        fileName: string;
+        relativePath: string;
+        fullPath: string;
+    }
 }
 
 /**
