@@ -29,8 +29,8 @@ require('codemirror/mode/mllike/mllike');
 let supportedModesMap = {
     js: 'javascript', json: 'javascript',
     xml: 'text/html', html: 'text/html', cshtml: 'text/html',
-    css: 'css', less: 'text/x-less', gss: 'text/x-gss',
-    sass: 'sass', scss: 'sass',
+    css: 'css', less: 'text/x-less', gss: 'text/x-gss', scss: 'text/x-scss',
+    sass: 'sass',
     dart: 'dart',
     haml: 'haml',
     markdown: 'gfm', md: 'gfm',
