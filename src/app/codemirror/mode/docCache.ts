@@ -11,9 +11,10 @@ import * as state from "../../state/state";
 import {EditorOptions} from "../../../common/types";
 
 /**
+ * http://codemirror.net/mode/
  * Modes. New modes need to be added
  * - to the require call
- * - to all the extensions that map to that mode name or its specialization
+ * - to all the extensions that map to that mode name or its mime
  */
 require('codemirror/mode/javascript/javascript');
 require('codemirror/mode/xml/xml');
@@ -25,6 +26,7 @@ require('codemirror/mode/gfm/gfm');
 require('codemirror/mode/coffeescript/coffeescript');
 require('codemirror/mode/clike/clike');
 require('codemirror/mode/mllike/mllike');
+require('codemirror/mode/shell/shell');
 /** Maps file extension to a `mime` type or mode `name` */
 let supportedModesMap = {
     js: 'javascript', json: 'javascript',
@@ -37,6 +39,7 @@ let supportedModesMap = {
     coffee: 'coffeescript', coffeescript: 'coffeescript',
     cs: 'text/x-csharp', cpp: 'text/x-c++src', java: 'text/x-java',
     fs: 'text/x-fsharp', ml: 'text/x-ocaml',
+    sh: 'text/x-sh'
 };
 
 // to track the source of changes, local vs. network
