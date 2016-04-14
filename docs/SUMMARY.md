@@ -11,3 +11,5 @@
 * [Contributing / Design Notes](/contributing/README.md)
   * [Why?](/contributing/why.md)
   * [Why CodeMirror?](/contributing/codemirror.md)
+  * [Syntax Highlighting](/contributing/syntax.md)
+  * [Document Syncing](/contributing/document.md)

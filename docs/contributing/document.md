@@ -24,4 +24,4 @@ For the purpose of TypeScript Syntax Highlighting the docCache also keeps the do
 [docCache.ts]:https://github.com/alm-tools/alm/blob/master/src/app/codemirror/mode/docCache.ts
 [codeEditor.ts]:https://github.com/alm-tools/alm/blob/master/src/app/codemirror/codeEditor.tsx
 [classifierCache.ts]:https://github.com/alm-tools/alm/blob/master/src/app/codemirror/mode/classifierCache.ts
-[syntax]: ./SYNTAX.md
+[syntax]: ./syntax.md

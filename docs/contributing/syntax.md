@@ -29,6 +29,6 @@ You don't need to read any of this. But I wanted to reference it here for record
 * https://github.com/Microsoft/TypeScript/issues/5545
 
 [classifierCache.ts]:https://github.com/alm-tools/alm/blob/master/src/app/codemirror/mode/classifierCache.ts
-[docCache]:[./DOCUMENT.md]
+[docCache]:[./document.md]
 [typescriptMode.ts]:https://github.com/alm-tools/alm/blob/master/src/app/codemirror/mode/typescriptMode.ts
-[codemirror]:[./CODEMIRROR.md]
+[codemirror]:[./codemirror.md]
