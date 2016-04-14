@@ -142,7 +142,6 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             autoCloseBrackets: true,
 
             // Match tags (great for tsx!)
-            // Doesn't work right now.
             // It needs `tag` token to work (see code in `xml-fold.js` i.e. `/\btag\b/``)
             matchTags: {bothTags: true},
 
