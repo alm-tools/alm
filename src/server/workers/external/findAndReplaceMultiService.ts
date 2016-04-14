@@ -9,6 +9,11 @@ import * as utils from "../../../common/utils";
 import {TypedEvent} from "../../../common/events";
 
 /**
+ * Don't want to crash by running out of memory.
+ */
+const maxCount = 10000;
+
+/**
  * Maintains current farm state
  */
 class FarmState {
@@ -44,8 +49,15 @@ class FarmState {
         ].concat(config.globs));
 
         grep.stdout.on('data', (data) => {
-            if (farmState.disposed) return;
             // console.log(`Grep stdout: ${data}`);
+
+            /** If no one cares anymore */
+            if (farmState.disposed) return;
+
+            /**
+             * Don't want to run out of memory
+             */
+            if (this.results.length > maxCount) return;
 
             // Sample :
             // src/typings/express/express.d.ts:907:                app.enable('foo')
