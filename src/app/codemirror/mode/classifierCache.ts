@@ -33,13 +33,6 @@ export function getLineAndCharacterOfPosition(filePath: string, pos: number): Ed
     return languageServiceHost.getLineAndCharacterOfPosition(filePath, pos);
 }
 
-/**
- * Closebrackets works by force feeding these characters and checking if we would call them a string
- * See `enteringString` in closeBrackets
- * So we see if string ends with these ;)
- */
-const closeBracketPairs = {[`'`]:true,[`"`]:true,["`"]:true};
-
 export function getClassificationsForLine(filePath: string, lineStart: number, string: string): ClassifiedSpan[] {
 
     /**
@@ -53,19 +46,6 @@ export function getClassificationsForLine(filePath: string, lineStart: number, s
             start:0,
             length: string.length
         };
-
-        /** Close brackets check */
-        const lastChar = string.substr(string.length - 1);
-        if (closeBracketPairs[lastChar]) {
-            /** This doesn't actually highlight the editor so no harm in calling it all string 🌹 */
-            return [{
-                textSpan: fullLineTextSpan,
-                startInLine: 0,
-                string,
-                classificationType: ts.ClassificationType.stringLiteral,
-                classificationTypeName: ClassificationTypeNames.stringLiteral,
-            }];
-        }
 
         return [{
             textSpan: fullLineTextSpan,
