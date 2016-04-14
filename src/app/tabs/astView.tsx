@@ -102,7 +102,7 @@ ${this.state.text.substring(node.pos, node.end)}
 
         const content = this.state.error
             ? <ErrorMessage text={this.state.error}/>
-            : <div style={csx.extend(csx.flex,csx.horizontal)}>
+            : <div style={csx.extend(csx.flex,csx.horizontal, {maxWidth: '100%'})}>
                 <div style={csx.extend(csx.flex,csx.scroll)} ref="graphRoot" className="ast-view">
                     {
                         // The ast tree view goes here
@@ -205,15 +205,14 @@ class ASTViewRenderer {
 
         this.rootNode = config.rootNode;
 
-        this.svgRoot = d3.select(this.root.dom).append("svg")
+        this.svgRoot = d3.select(this.root.dom).append("svg");
         this.graph = this.svgRoot.append("g")
             .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
+        d3.select(this.root.dom).on("resize", this.update);
+
         // Kick off by selecting the root node
         this.select(this.rootNode);
-
-        d3.select(this.root.dom).on("resize", this.update);
-        this.update();
     }
 
     selected: NodeDisplay;
