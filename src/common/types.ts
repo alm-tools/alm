@@ -147,7 +147,7 @@ export interface Completion {
     };
 
     /** If a path completion is specified then the above stuff is ignored */
-    pathCompletions?: {
+    pathCompletion?: {
         fileName: string;
         relativePath: string;
         fullPath: string;

@@ -24,15 +24,6 @@ function getExternalModuleNames(program: ts.Program): string[] {
     return entries;
 }
 
-export interface GetRelativePathsInProjectResponse {
-    files: {
-        name: string;
-        relativePath: string;
-        fullPath: string;
-    }[];
-    endsInPunctuation: boolean;
-}
-
 export interface GetPathCompletions {
     project: Project;
     filePath: string;
@@ -40,12 +31,12 @@ export interface GetPathCompletions {
     includeExternalModules: boolean;
 }
 
-export function getPathCompletions(query: GetPathCompletions): GetRelativePathsInProjectResponse {
+export function getPathCompletions(query: GetPathCompletions): types.Completion[] {
     var project = query.project;
     var sourceDir = path.dirname(query.filePath);
     var filePaths = project.configFile.project.files.filter(p=> p !== query.filePath);
     var files: {
-        name: string;
+        fileName: string;
         relativePath: string;
         fullPath: string;
     }[] = [];
@@ -53,7 +44,7 @@ export function getPathCompletions(query: GetPathCompletions): GetRelativePathsI
     if (query.includeExternalModules) {
         var externalModules = getExternalModuleNames(project.languageService.getProgram());
         externalModules.forEach(e=> files.push({
-            name: `${e}`,
+            fileName: `${e}`,
             relativePath: e,
             fullPath: e
         }));
@@ -61,21 +52,18 @@ export function getPathCompletions(query: GetPathCompletions): GetRelativePathsI
 
     filePaths.forEach(p=> {
         files.push({
-            name: path.basename(p, '.ts'),
+            fileName: path.basename(p, '.ts'),
             relativePath: fsu.removeExt(fsu.makeRelativePath(sourceDir, p)),
             fullPath: p
         });
     });
 
-    var endsInPunctuation: boolean = utils.prefixEndsInPunctuation(query.prefix);
-
+    const endsInPunctuation: boolean = utils.prefixEndsInPunctuation(query.prefix);
     if (!endsInPunctuation)
         files = fuzzaldrin.filter(files, query.prefix, { key: 'name' });
 
-    var response: GetRelativePathsInProjectResponse = {
-        files: files,
-        endsInPunctuation: endsInPunctuation
-    };
-
-    return response;
+    return files.map(f => {
+        const result: types.Completion = { pathCompletion: f };
+        return result;
+    });
 }
