@@ -560,10 +560,10 @@ new UICommand({
     editorCommandName: additionalEditorCommands.htmlToTsx,
 })
 
-//* DEBUG
-// console.table(
-//     commandRegistry
-//         .filter(c=>c.config.context == CommandContext.Editor)
-//         .map(c=>({cmd:c.config.description, shortcut:c.config.keyboardShortcut}))
-// );
+/* DEBUG
+console.table(
+    commandRegistry
+        .filter(c=>c.config.context == CommandContext.Editor)
+        .map(c=>({cmd:c.config.description, shortcut:c.config.keyboardShortcut}))
+);
 /* DEBUG */
