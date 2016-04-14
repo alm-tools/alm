@@ -25,13 +25,22 @@ function getExternalModuleNames(program: ts.Program): string[] {
 }
 
 export interface GetPathCompletions {
+    position: number;
     project: Project;
     filePath: string;
     prefix: string;
-    includeExternalModules: boolean;
 }
 
 export function getPathCompletions(query: GetPathCompletions): types.Completion[] {
+    // TODO: Determine based on position in filePath
+    const inReferenceTagPath = false;
+    const inES6ModuleImportString = false;
+    const inImportRequireString = false;
+
+    if (!inReferenceTagPath && !inES6ModuleImportString && !inImportRequireString){
+        return [];
+    }
+
     var project = query.project;
     var sourceDir = path.dirname(query.filePath);
     var filePaths = project.configFile.project.files.filter(p=> p !== query.filePath);
@@ -41,7 +50,7 @@ export function getPathCompletions(query: GetPathCompletions): types.Completion[
         fullPath: string;
     }[] = [];
 
-    if (query.includeExternalModules) {
+    if (!inReferenceTagPath) {
         var externalModules = getExternalModuleNames(project.languageService.getProgram());
         externalModules.forEach(e=> files.push({
             fileName: `${e}`,

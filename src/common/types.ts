@@ -151,6 +151,8 @@ export interface Completion {
         fileName: string;
         relativePath: string;
         fullPath: string;
+        // TODO:
+        // Also tell about the `string` start and end `index` which is what the completion should replace
     }
 }
 
