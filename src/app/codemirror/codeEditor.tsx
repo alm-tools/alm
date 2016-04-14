@@ -60,6 +60,7 @@ import { Provider } from 'react-redux';
 import * as utils from "../../common/utils";
 import * as cursorLocation from "../cursorHistory";
 import * as events from "../../common/events";
+import * as cmUtils from "./cmUtils";
 
 interface Props {
 	onFocusChange?: (focused: boolean) => any;
@@ -268,7 +269,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
     gotoPosition = (position: EditorPosition) => {
         this.afterReady(()=>{
-			this.codeMirror.getDoc().setCursor(position);
+            cmUtils.jumpToLine({ line: position.line, ch: position.ch, editor: this.codeMirror });
             this.codeMirror.focus();
 		});
     }
