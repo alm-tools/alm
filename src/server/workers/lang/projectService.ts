@@ -394,7 +394,7 @@ export function getJSOutputStatus(query: Types.FilePathQuery, autoEmit = true): 
      * We just write to disk for now
      * Would be better if it interacted with master
      */
-    const getContents = fsu.readFile;
+    const getContents = (filePath: string) => fsu.existsSync(filePath) ? fsu.readFile(filePath) : '';
     const setContents = fsu.writeFile;
 
     /**
