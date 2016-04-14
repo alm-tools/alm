@@ -456,12 +456,24 @@ delete sublimeMap[`${mod}-K ${mod}-U`];
 delete sublimeMap[`${mod}-K ${mod}-L`];
 sublimeMap['Alt-='] = "upcaseAtCursor"; // Because alt+u didn't work on mac
 sublimeMap['Alt--'] = "downcaseAtCursor";
-// Sublime map got a function. We don't want that function (our registry breaks)
-// https://github.com/codemirror/CodeMirror/pull/3689
-sublimeMap[`${mod}-/`] = "toggleCodeComment";
-CodeMirror.commands["toggleCodeComment"] = function(cm) {
-    cm.toggleComment({ indent: true });
+
+// Swap line should also come with indent
+const origSwapLineUp = CodeMirror.commands['swapLineUp'];
+const origSwapLineDown = CodeMirror.commands['swapLineDown'];
+const indentCurrentLine = (cm) => {
+    if (cm.isReadOnly()) return CodeMirror.Pass;
+    const line = cm.getCursor().line;
+    cm.indentLine(line);
 }
+CodeMirror.commands['swapLineUp'] = function(cm){
+    origSwapLineUp.apply(this,arguments);
+    indentCurrentLine(cm);
+}
+CodeMirror.commands['swapLineDown'] = function(cm){
+    origSwapLineDown.apply(this,arguments);
+    indentCurrentLine(cm);
+}
+
 // console.log(csx.extend(basicMap,defaultMap,sublimeMap)); // DEBUG
 
 /** Comamnds we don't support as an editor command */
