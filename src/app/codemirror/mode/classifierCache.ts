@@ -32,17 +32,45 @@ export function setContents(filePath:string, contents:string){
 export function getLineAndCharacterOfPosition(filePath: string, pos: number): EditorPosition {
     return languageServiceHost.getLineAndCharacterOfPosition(filePath, pos);
 }
+
+/**
+ * Closebrackets works by force feeding these characters and checking if we would call them a string
+ * See `enteringString` in closeBrackets
+ * So we see if string ends with these ;)
+ */
+const closeBracketPairs = {[`'`]:true,[`"`]:true,["`"]:true};
+
 export function getClassificationsForLine(filePath: string, lineStart: number, string: string): ClassifiedSpan[] {
+
     /**
      * Protect against code mirror optimized rendering.
      * If string does not match expected line contents tokenize as whitespace till the precise call is made.
      */
-    if (!languageService.getNonBoundSourceFile(filePath).text.substr(lineStart).startsWith(string)){
+    const trueLineContents = languageService.getNonBoundSourceFile(filePath).text.substr(lineStart);
+    if (!trueLineContents.startsWith(string)){
+
+        const fullLineTextSpan = {
+            start:0,
+            length: string.length
+        };
+
+        /** Close brackets check */
+        const lastChar = string.substr(string.length - 1);
+        if (closeBracketPairs[lastChar]) {
+            /** This doesn't actually highlight the editor so no harm in calling it all string 🌹 */
+            return [{
+                textSpan: fullLineTextSpan,
+                startInLine: 0,
+                string,
+                classificationType: ts.ClassificationType.stringLiteral,
+                classificationTypeName: ClassificationTypeNames.stringLiteral,
+            }];
+        }
+
         return [{
-            textSpan:{
-                start:0,
-                length: string.length
-            },
+            textSpan: fullLineTextSpan,
+            startInLine: 0,
+            string,
             classificationType: ts.ClassificationType.whiteSpace,
             classificationTypeName: ClassificationTypeNames.whiteSpace,
         }];
@@ -95,8 +123,8 @@ export function getClassificationsForLine(filePath: string, lineStart: number, s
         })
         .filter(c=> !!c);
 
-    // Add a string for easier debugging
-    classifications.forEach(c => {
+    // Add a string for easier debugging + startInLine for creating a 'map' of positions later on
+    classifications.forEach((c: ClassifiedSpan) => {
         c.startInLine = c.textSpan.start - lineStart;
         c.string = string.substr(c.startInLine, c.textSpan.length)
     });
