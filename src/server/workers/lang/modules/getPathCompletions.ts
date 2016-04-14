@@ -32,6 +32,9 @@ export interface GetPathCompletions {
 }
 
 export function getPathCompletions(query: GetPathCompletions): types.Completion[] {
+    const sourceFile = query.project.languageService.getNonBoundSourceFile(query.filePath);
+    const positionNode = ts.getTokenAtPosition(sourceFile, query.position);
+
     // TODO: Determine based on position in filePath
     const inReferenceTagPath = false;
     const inES6ModuleImportString = false;
