@@ -2,7 +2,10 @@ import * as path from "path";
 import {Project} from "../core/project";
 import * as utils from "../../../../common/utils";
 import * as fsu from "../../../utils/fsu";
-var fuzzaldrin: { filter: (list: any[], prefix: string, property?: { key: string }) => any } = require('fuzzaldrin');
+import * as types from "../../../../common/types";
+import {Types} from "../../../../socket/socketContract";
+
+import fuzzaldrin = require('fuzzaldrin');
 
 /** From https://github.com/Microsoft/TypeScript/pull/2173/files */
 function getExternalModuleNames(program: ts.Program): string[] {
