@@ -169,8 +169,8 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
         token(stream: CodeMirror.StringStream, lineDescriptor: LineDescriptor): string {
             if (stream.sol()) {
 
-                let classifications = classifierCache.getClassificationsForLine(options.filePath, lineDescriptor.lineStartIndex, stream.string);
-                let classificationInformation = getClassificationInformationForLine(classifications);
+                const classifications = classifierCache.getClassificationsForLine(options.filePath, lineDescriptor.lineStartIndex, stream.string);
+                const classificationInformation = getClassificationInformationForLine(classifications);
 
                 // console.log('%c'+stream.string,"font-size: 20px");
                 // console.table(classifications.map(c=> ({ str: c.string, cls: c.classificationTypeName,startInLine:c.startInLine })));
@@ -184,12 +184,12 @@ function typeScriptModeFactory(options: CodeMirror.EditorConfiguration, spec: an
                 lineDescriptor.lineStartIndex = lineDescriptor.lineStartIndex + stream.string.length + 1;
             }
 
-            var classifiedSpan = lineDescriptor.classificationMap[stream.pos];
+            const classifiedSpan = lineDescriptor.classificationMap[stream.pos];
             // console.log(lineDescriptor.lineNumber, stream.pos,lineDescriptor.classificationMap);
             if (classifiedSpan) {
-                var textBefore: string = stream.string.substr(0, stream.pos);
+                const textBefore: string = stream.string.substr(0, stream.pos);
                 stream.pos += classifiedSpan.string.length;
-                var nextTenChars: string = stream.string.substr(stream.pos, 10);
+                const nextTenChars: string = stream.string.substr(stream.pos, 10);
                 return getStyleForToken(classifiedSpan, textBefore, nextTenChars,lineDescriptor.lineHasJSX);
             } else {
                 stream.skipToEnd();
