@@ -50,6 +50,10 @@ export class Code extends ui.BaseComponent<Props, State> implements tab.Componen
             <CodeEditor
             ref='editor'
             filePath={this.filePath}
+            onFocusChange={
+                /* Auto save on focus loss */
+                (focus) => !focus && this.save()
+            }
             />
         );
     }
