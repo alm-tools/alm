@@ -458,6 +458,7 @@ sublimeMap['Alt-='] = "upcaseAtCursor"; // Because alt+u didn't work on mac
 sublimeMap['Alt--'] = "downcaseAtCursor";
 
 // Swap line should also come with indent
+// + use VSCode shortcuts as they are consistent across win/mac
 const origSwapLineUp = CodeMirror.commands['swapLineUp'];
 const origSwapLineDown = CodeMirror.commands['swapLineDown'];
 const indentCurrentLine = (cm) => {
@@ -473,6 +474,8 @@ CodeMirror.commands['swapLineDown'] = function(cm){
     origSwapLineDown.apply(this,arguments);
     indentCurrentLine(cm);
 }
+sublimeMap['Alt-Up'] = 'swapLineUp';
+sublimeMap['Alt-Down'] = 'swapLineDown';
 
 // console.log(csx.extend(basicMap,defaultMap,sublimeMap)); // DEBUG
 
