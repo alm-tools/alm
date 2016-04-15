@@ -49,8 +49,9 @@ interface Marker {
     to: CodeMirror.Position
 
     /** only a single instance of the variable is selectable */
-    variable: string;
     selectable: boolean;
+    variable: string;
+    variableIndex: number;
 }
 type ParsedVariable = {
     index: number;
@@ -204,7 +205,8 @@ export class Template {
                     from: from,
                     to: to,
                     variable: token.variable.name,
-                    selectable: selectable
+                    selectable: selectable,
+                    variableIndex: token.variable.index
                 });
                 variableHasBeenAdded[token.variable.name] = true;
             } else if (token.cursor) {
@@ -213,6 +215,9 @@ export class Template {
                 throw new Error('Unknown in Template:' + JSON.stringify(token));
             }
         }
+
+        /** Sort the markers to go up by variable indices */
+        markers.sort(m => m.variableIndex);
 
         const to = data.to;
         const startLine = from.line;
