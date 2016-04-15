@@ -36,12 +36,12 @@ export const defaultSnippets: TemplatesForContext[] = [
         {
             "name": "forin",
             "description": "iterate using for .. in",
-            "template": "for (const ${iterable_element} in ${iterable}) {\n\t${cursor}\n}"
+            "template": "for (const ${2:key} in ${1:iterable}) {\n\t${cursor}\n}"
         },
         {
             "name": "forof",
             "description": "iterate using for .. of",
-            "template": "for (const ${2:iterable_element} of ${1:iterable}) {\n\t${cursor}\n}"
+            "template": "for (const ${2:item} of ${1:iterable}) {\n\t${cursor}\n}"
         },
         {
             "name": "import",
