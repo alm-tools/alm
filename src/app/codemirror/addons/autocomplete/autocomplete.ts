@@ -125,18 +125,31 @@ export class AutoCompleter {
         }
         function pathCompletionToCodeMirrorHint(completion: types.Completion, queryString: string): ExtendedCodeMirrorHint {
             let result: ExtendedCodeMirrorHint = {
-                text: completion.pathCompletion.fileName,
+                text: completion.pathCompletion.relativePath,
                 render: render,
                 comment: completion.pathCompletion.fullPath,
 
                 // Information the render function needs
                 original: {
                     kind: 'path',
-                    name: completion.pathCompletion.fileName,
-                    display: completion.pathCompletion.relativePath,
+                    name: completion.pathCompletion.relativePath,
+                    display: completion.pathCompletion.fileName,
                     comment: completion.pathCompletion.fullPath
                 },
-                queryString
+                queryString,
+
+                // Information special to path compleitions
+                hint: function(cm: CodeMirror.EditorFromTextArea, data: CodeMirror.Hints, c: ExtendedCodeMirrorHint) {
+                    // Basically copied from the show-hint plugin
+                    // Modified to:
+                    // keep the quote characters
+                    let from = c.from || data.from;
+                    from = {line: from.line, ch: from.ch + 1}
+                    let to = c.to || data.to;
+                    to = {line: to.line, ch: to.ch - 1};
+
+                    (cm as any).replaceRange(c.text, from, to, "complete");
+                }
             }
             return result;
         }
