@@ -2,8 +2,7 @@
 
 Having a great autocomplete experience is at the heart of the design goals for TypeScript. Hopefully you find the autocomplete behaviours in alm better than the rest.
 
-## Aggressive
-We have an aggressive autocomplete i.e. it should show up by itself whenever it makes sense. You can always trigger it explicitly with `Ctrl + Space`.
+> We have an aggressive autocomplete i.e. it should show up by itself whenever it makes sense. You can always trigger it explicitly with `Ctrl + Space`.
 
 ## Snippets
 Snippets are at the heart of a great autocomplete experience. We provide snippets for common TypeScript constructs e.g. here is an `if` snippet in action:
