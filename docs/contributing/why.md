@@ -1,5 +1,5 @@
 ## Helping All TypeScript Developers
-Wanted to create something that would help all TypeScript developers, all they need is NodeJS (which they already have because of `npm install typescript -g`). We have experience in writing solutions (e.g. cyclic analysis, dependency viewer, AST visualizer) that we want to share with *everyone* not just people that *use a particular IDE*.
+Wanted to create something that would help all TypeScript developers, all they need is NodeJS (which they already have because of `npm install typescript -g`). We have experience in writing solutions (e.g. cyclic analysis, dependency viewer, AST visualizer) that we want to share with *everyone* not just people that *use a particular IDE*. You can use this with VSCode / VS / Sublime / Atom / Eclipse / Whatever else you have 🌹
 
 ## Light weight
 * Dev setups are expensive. `npm install` is cheap.

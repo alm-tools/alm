@@ -3,7 +3,7 @@ Our goal with this project is to have a super simple + low barrier to entry for 
 # Requirements
 You need:
 
-* git (If you are windows please install the version of git that has git bash and run `npm install` from that). 
+* git (If you are windows please install the version of git that has git bash and run `npm install` from that).
 * node v4+ (I use node v5 personally)
 
 # Setup
@@ -65,13 +65,13 @@ More reading (You don't need to read these ... but if you are bored):
 * `server/lang` our main API stuff on top of the core TypeScript Language Service.
 
 # How does the frontend talk to the backend
-Documented in the [principles of ASYNC](./ASYNC.md).
+Documented in the [principles of ASYNC][async].
 
 # How is global state managed
 State for visual components in mostly managed by redux which we have made type-safe. [Checkout the docs](./REDUX.md).
 
 # Conventions
-Please see [CONVENTIONS.md](./CONVENTIONS.md)
+Please see [conventions.md][conventions]
 
 # Deployment
 Please see [DEPLOYMENT.md](./DEPLOYMENT.md)
@@ -109,3 +109,5 @@ Since I am still doing a lot of *thinking* then *rethinking* I'm trying not to p
 [issues]: https://github.com/alm-tools/alm/issues
 [gitter]: https://gitter.im/alm-tools/alm
 [twitter]: https://twitter.com/basarat
+[async]: ./async.md
+[conventions]: ./conventions.md
