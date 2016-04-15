@@ -43,6 +43,16 @@ export const defaultSnippets: TemplatesForContext[] = [
             "description": "iterate using for .. of",
             "template": "for (const ${2:iterable_element} of ${1:iterable}) {\n\t${cursor}\n}"
         },
+        {
+            "name": "import",
+            "description": "ES6 style import",
+            "template": "import ${2:name} from '${1:path}';${cursor}"
+        },
+        {
+            "name": "importr",
+            "description": "CommonJs Style Import",
+            "template": "import ${1} = require('${2:path}');${cursor}"
+        },
         { "name": "do", "description": "do while statement", "template": "do {\n\t${cursor}\n} while (${condition});" },
         { "name": "switch", "description": "switch case statement", "template": "switch (${key}) {\n\tcase ${value}:\n\t\t${cursor}\n\t\tbreak;\n\n\tdefault:\n\t\tbreak;\n}" },
         { "name": "if", "description": "if statement", "template": "if (${condition}) {\n\t${cursor}\n}" },
