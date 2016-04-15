@@ -1,3 +1,10 @@
+# Process overview
+The following shows the process boundaries
+
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/design/process.png)
+
+We have two libraries to manage this (designed for simple RPC) and both of them follow the same principle of `QueryResponse` async programming.
+
 # Async programming
 
 There are NPM libraries for such stuff but none written with the requirements of TypeScript in mind.
