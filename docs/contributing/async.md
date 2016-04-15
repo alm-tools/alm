@@ -10,12 +10,12 @@ Consider a function that takes a JavaScript object `Query` and returns a *promis
 * use it as is on the *called side*, but just register with the JSON layer as a responder for the query (detected by `name`).
 
 ## Contract
-On thing to note is the *as long as its runtime dependencies allow it* gotcha. This is not always true, so we just create a *pseudo* object and call it `contract`. The calling side needs to do nothing with this object (except mutate it as documented), but the *called side* needs to provide a concrete implementation.
-*  We just let TypeScript verify the overall implementation on the *called side* by a line like `var _checkTypes: typeof contract.worker = Worker;`).
+On thing to note is the *as long as its runtime dependencies allow it* gotcha (e.g. some function might depend on `fs` and you don't want to import such a module on the client). This is not always true, so we just create a *pseudo* object and call it `contract`. The calling side needs to do nothing with this object (except mutate it as documented), but the *called side* needs to provide a concrete implementation.
+* We just let TypeScript verify the overall implementation on the *called side* by a line like `var _checkTypes: typeof contract.worker = Worker;`).
 * Additionally individual function implementations use the contract too (e.g. `export var fileListUpdated: typeof contract.master.fileListUpdated = (q) => {`) and let TypeScript do the necessary type inference (`Query`) and validation `Promise<Qesponse>`.
 
 ## Two way
-The contract can be two way by *just having two contracts*. E.g. for a socket : `client -> server` and `server -> client`. Having a contracts seperated from implementations also means that we don't have to deal with cyclic dependencies when writing the implementations.
+The contract can be two way by *just having two contracts*. E.g. for a socket : `client -> server` and `server -> client`. Having a contracts separated from implementations also means that we don't have to deal with cyclic dependencies when writing the implementations.
 
 ## Libraries
 To take the contract + implementation and work the magic we have two libraries, `socketLib` and `simpleWorker`, that work over sockets and IPC respectively.
