@@ -133,7 +133,6 @@ export function indent(indent: number, tabSize = 4) {
 export function kindToColor(kind: string, lighten = false) {
     let add = lighten ? 50 : 0;
     let opacity = lighten ? 0.2 : 1;
-    let base = 'white';
     switch (kind) {
         case ts.ScriptElementKind.keyword:
         case 'snippet':
@@ -170,11 +169,12 @@ export function kindToColor(kind: string, lighten = false) {
         case ts.ScriptElementKind.memberSetAccessorElement:
         case ts.ScriptElementKind.callSignatureElement:
         case ts.ScriptElementKind.constructorImplementationElement:
+        case 'path':
             // greenish
             // #a6e22e
             return `rgba(${0xa6 + add},${0xe2 + add},${0x2e + add},${opacity})`;
         default:
-            return base;
+            return `rgba(${0xaa + add},${0xaa + add},${0xaa + add},${opacity})`;
     }
 }
 
@@ -184,10 +184,12 @@ export function kindToColor(kind: string, lighten = false) {
 import {FAIconName,toFontAwesomeCharCode} from "./utils/fontAwesomeToCharCode";
 export function kindToIcon(kind: string):string {
     switch (kind) {
-        case ts.ScriptElementKind.keyword:
-            return toFontAwesomeCharCode(FAIconName.key);
         case 'snippet':
             return toFontAwesomeCharCode(FAIconName.exchange);
+        case 'path':
+            return toFontAwesomeCharCode(FAIconName.fileText);
+        case ts.ScriptElementKind.keyword:
+            return toFontAwesomeCharCode(FAIconName.key);
         case ts.ScriptElementKind.classElement:
             return toFontAwesomeCharCode(FAIconName.copyright);
         case ts.ScriptElementKind.interfaceElement:

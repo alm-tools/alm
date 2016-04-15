@@ -110,13 +110,32 @@ export class AutoCompleter {
         let noCompletions: CodeMirror.Hints = null;
 
 
+        /** Purely designed to attach the render function + any information the render function needs */
         function completionToCodeMirrorHint(completion: types.Completion, queryString: string): ExtendedCodeMirrorHint {
             let result: ExtendedCodeMirrorHint = {
                 text: completion.name,
                 render: render,
                 comment: completion.comment,
 
+                // Information the render function needs
                 original: completion,
+                queryString
+            }
+            return result;
+        }
+        function pathCompletionToCodeMirrorHint(completion: types.Completion, queryString: string): ExtendedCodeMirrorHint {
+            let result: ExtendedCodeMirrorHint = {
+                text: completion.pathCompletion.fileName,
+                render: render,
+                comment: completion.pathCompletion.fullPath,
+
+                // Information the render function needs
+                original: {
+                    kind: 'path',
+                    name: completion.pathCompletion.fileName,
+                    display: completion.pathCompletion.relativePath,
+                    comment: completion.pathCompletion.fullPath
+                },
                 queryString
             }
             return result;
@@ -184,8 +203,11 @@ export class AutoCompleter {
                 let completionInfo = {
                     from,
                     to,
-                    list: res.completions.filter(x=>!x.snippet).map(c=>completionToCodeMirrorHint(c,token.string))
+                    list: res.completions.filter(x=>!x.snippet && !x.pathCompletion).map(c=>completionToCodeMirrorHint(c,token.string))
                 };
+
+                // Path Completions
+                const pathCompletions = res.completions.filter(x => !!x.pathCompletion).map(c => pathCompletionToCodeMirrorHint(c, token.string));
 
                 // Function completion snippets
                 const functionCompletionSnippets = res.completions.filter(x=>!!x.snippet).map(x=>{
@@ -209,7 +231,7 @@ export class AutoCompleter {
                 const exactMatchSnippetsRendered = templates.renderTemplates(editor, exactMatchSnippet ? [exactMatchSnippet] : []);
 
                 // Add snippets to list
-                completionInfo.list = functionCompletionSnippetsRendered.concat(exactMatchSnippetsRendered).concat(completionInfo.list).concat(snippetsRendered);
+                completionInfo.list = pathCompletions.concat(functionCompletionSnippetsRendered).concat(exactMatchSnippetsRendered).concat(completionInfo.list).concat(snippetsRendered);
 
                 setupCompletionDocs(completionInfo);
 

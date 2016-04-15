@@ -31,14 +31,31 @@ export interface GetPathCompletions {
     prefix: string;
 }
 
+function isStringLiteralInES6ImportDeclaration(node: ts.Node) {
+    if (node.kind !== ts.SyntaxKind.StringLiteral) return false;
+    while (node.parent.kind !== ts.SyntaxKind.SourceFile
+        && node.parent.kind !== ts.SyntaxKind.ImportDeclaration) {
+        node = node.parent;
+    }
+    return node.parent && node.parent.kind === ts.SyntaxKind.ImportDeclaration;
+}
+function isStringLiteralInImportRequireDeclaration(node: ts.Node) {
+    if (node.kind !== ts.SyntaxKind.StringLiteral) return false;
+    while (node.parent.kind !== ts.SyntaxKind.SourceFile
+        && node.parent.kind !== ts.SyntaxKind.ImportEqualsDeclaration) {
+        node = node.parent;
+    }
+    return node.parent && node.parent.kind === ts.SyntaxKind.ImportEqualsDeclaration;
+}
+
 export function getPathCompletions(query: GetPathCompletions): types.Completion[] {
     const sourceFile = query.project.languageService.getNonBoundSourceFile(query.filePath);
     const positionNode = ts.getTokenAtPosition(sourceFile, query.position);
 
     // TODO: Determine based on position in filePath
     const inReferenceTagPath = false;
-    const inES6ModuleImportString = false;
-    const inImportRequireString = false;
+    const inES6ModuleImportString = isStringLiteralInES6ImportDeclaration(positionNode);
+    const inImportRequireString = isStringLiteralInImportRequireDeclaration(positionNode);
 
     if (!inReferenceTagPath && !inES6ModuleImportString && !inImportRequireString){
         return [];
@@ -46,7 +63,7 @@ export function getPathCompletions(query: GetPathCompletions): types.Completion[
 
     var project = query.project;
     var sourceDir = path.dirname(query.filePath);
-    var filePaths = project.configFile.project.files.filter(p=> p !== query.filePath);
+    var filePaths = project.configFile.project.files.filter(p=> p !== query.filePath && !p.endsWith('.json'));
     var files: {
         fileName: string;
         relativePath: string;
