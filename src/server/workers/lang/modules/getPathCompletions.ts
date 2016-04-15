@@ -48,6 +48,12 @@ function isStringLiteralInImportRequireDeclaration(node: ts.Node) {
     return node.parent && node.parent.kind === ts.SyntaxKind.ImportEqualsDeclaration;
 }
 
+/** Removes the quote characters / `.` and `/` as they cause fuzzaldrin to break */
+function sanitizePrefix(prefix: string){
+    const result = prefix.replace(/\.|\/|\'|\"|/g, '');
+    return result;
+}
+
 export function getPathCompletions(query: GetPathCompletions): types.Completion[] {
     const sourceFile = query.project.languageService.getNonBoundSourceFile(query.filePath);
     const positionNode = ts.getTokenAtPosition(sourceFile, query.position);
@@ -87,9 +93,10 @@ export function getPathCompletions(query: GetPathCompletions): types.Completion[
         });
     });
 
-    const endsInPunctuation: boolean = utils.prefixEndsInPunctuation(query.prefix);
+    const sanitizedPrefix = sanitizePrefix(query.prefix);
+    const endsInPunctuation: boolean = utils.prefixEndsInPunctuation(sanitizedPrefix);
     if (!endsInPunctuation)
-        files = fuzzaldrin.filter(files, query.prefix, { key: 'name' });
+        files = fuzzaldrin.filter(files, sanitizedPrefix, { key: 'fileName' });
 
     return files.map(f => {
         const result: types.Completion = { pathCompletion: f };
