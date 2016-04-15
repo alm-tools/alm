@@ -51,7 +51,7 @@ export const defaultSnippets: TemplatesForContext[] = [
         {
             "name": "importr",
             "description": "CommonJs Style Import",
-            "template": "import ${1} = require('${2:path}');${cursor}"
+            "template": "import ${1:name} = require('${2:path}');${cursor}"
         },
         { "name": "do", "description": "do while statement", "template": "do {\n\t${cursor}\n} while (${condition});" },
         { "name": "switch", "description": "switch case statement", "template": "switch (${key}) {\n\tcase ${value}:\n\t\t${cursor}\n\t\tbreak;\n\n\tdefault:\n\t\tbreak;\n}" },
