@@ -15,4 +15,5 @@
   * [CodeMirror](/contributing/codemirror.md)
   * [Syntax Highlighting](/contributing/syntax.md)
   * [Document Syncing](/contributing/document.md)
-  * [Motivations](/contributing/why.md)
+  * [Deployment](/contributing/deployment.md)
+  * [Why?](/contributing/why.md)

@@ -1,6 +1,6 @@
-Our Editor is just a wrapper around codemirror.
+> Our Editor is just a react wrapper around CodeMirror with a few custom addons.
 
-# Docs
+# Code Mirror Docs
 https://codemirror.net/doc/manual.html
 https://codemirror.net/doc/manual.html#api
 
@@ -23,8 +23,9 @@ cm.scrollIntoView({from: cursor.from(), to: cursor.to()});
 ```
 
 
-## VS ACE
+## ACE
 Reasons we went with codemirror
-* sparse documentation
-* not on NPM (at least officially, and come with a bunch of *webworkers* that are hard to integrate / remove)
+
+* Sparse documentation
+* Not on NPM (at least officially, and come with a bunch of *webworkers* that are hard to integrate / remove)
 * The CodeMirror dev is extremely friendly
