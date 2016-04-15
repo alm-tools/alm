@@ -1,4 +1,4 @@
-Our goal with this project is to have a super simple + low barrier to entry for development. All you should need is nodejs + git. There should be be no complexity in the development setup or workflow.
+> Our goal with this project is to have a super simple + low barrier to entry for development. All you should need is nodejs + git. There should be be no complexity in the development setup or workflow 🌹
 
 # Requirements
 You need:
