@@ -3,6 +3,7 @@
   * [Omni Search](./features/omni-search.md)
   * [Editor](./features/editor.md)
   * [TypeScript](./features/typescript.md)
+  * [AutoComplete](./features/autocomplete.md)
   * [Git](./features/git.md)
 * [Configuration](/config/README.md)
   * [Editor Config](/config/editorconfig.md)
