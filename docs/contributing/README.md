@@ -74,7 +74,7 @@ State for visual components in mostly managed by redux which we have made type-s
 Please see [conventions.md][conventions]
 
 # Deployment
-Please see [DEPLOYMENT.md](./DEPLOYMENT.md)
+Please see [deployment.md][deployment]
 
 # Various NPM commands
 
@@ -96,6 +96,8 @@ This will install the latest version of NTypeScript and run a build to make sure
 
 > Note: NTypeScript makes the `ts` variable available globally in our backend / frontend  code bases. So you don't need to do any explicit `import * as ts` in new files.
 
+> Also be sure to checkout the [deployment guide][deployment].
+
 ### Running tsc in watch mode
 If you did something which resulted in a lot of errors you can run tsc in watch mode in a new window:
 
@@ -111,3 +113,4 @@ Since I am still doing a lot of *thinking* then *rethinking* I'm trying not to p
 [twitter]: https://twitter.com/basarat
 [async]: ./async.md
 [conventions]: ./conventions.md
+[deployment]: ./deployment.md
