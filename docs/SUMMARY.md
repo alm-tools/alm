@@ -8,6 +8,7 @@
   * [Git](/features/git.md)
   * [Dependency Analysis](/features/dependency.md)
   * [AST](/features/ast.md)
+  * [File Tree View](/features/tree.md)
 * [Configuration](/config/README.md)
   * [Editor Config](/config/editorconfig.md)
   * [tsconfig.json](/config/tsconfig.md)
