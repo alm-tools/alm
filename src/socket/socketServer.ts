@@ -1,6 +1,7 @@
 import * as sls from "../socketLib/socketLibServer";
 import * as contract from "./socketContract";
 import http = require("http");
+import https = require("https");
 import * as fsu from "../server/utils/fsu";
 import * as flm from "../server/workers/fileListing/fileListingMaster";
 import * as workingDir from "../server/disk/workingDir";
@@ -167,7 +168,7 @@ var _checkTypes: typeof contract.server = Server;
 export let cast = contract.cast;
 
 /** launch server */
-export function register(app: http.Server) {
+export function register(app: http.Server | https.Server) {
     let runResult = sls.run({
         app,
         serverImplementation: Server,

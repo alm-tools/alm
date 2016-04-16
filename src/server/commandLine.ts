@@ -17,9 +17,11 @@ var argv: {
     safe?: boolean;
     i?: boolean;
     h?: string;
+    httpskey?: string;
+    httpscert?: string;
     _?: string[];
 } = minimist(process.argv.slice(2), {
-    string: ['dir', 'config', 'host'],
+    string: ['dir', 'config', 'host', 'httpskey', 'httpscert'],
     boolean: ['open', 'safe', 'init'],
     alias: {
         't': ['port'],
@@ -45,6 +47,10 @@ interface CommandLineOptions {
     safe: boolean;
     init: boolean;
     filePaths: string[];
+    host: string;
+
+    httpskey?: string;
+    httpscert?: string;
 }
 export let getOptions = utils.once((): CommandLineOptions => {
     let options: CommandLineOptions = {
@@ -55,6 +61,9 @@ export let getOptions = utils.once((): CommandLineOptions => {
         project: argv.p,
         init: argv.i,
         filePaths: [],
+        host: argv.h,
+        httpskey: argv.httpskey,
+        httpscert: argv.httpscert
     }
     if (typeof options.port !== 'number') {
         options.port = defaultPort;
@@ -90,6 +99,13 @@ export let getOptions = utils.once((): CommandLineOptions => {
             options.project = options.project + '/' + 'tsconfig.json';
         }
         console.log('TSCONFIG: ', options.project);
+    }
+
+    if (options.httpskey) {
+        options.httpskey = workingDir.makeAbsoluteIfNeeded(options.httpskey);
+    }
+    if (options.httpscert) {
+        options.httpscert = workingDir.makeAbsoluteIfNeeded(options.httpscert);
     }
 
     return options;

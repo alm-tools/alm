@@ -1,5 +1,6 @@
 import express = require("express");
 import http = require('http');
+import https = require('https');
 import cookieParser = require('cookie-parser');
 
 import {errorCodes, exit} from "./server/errorCodes";
@@ -22,9 +23,14 @@ if (clOptions.init) {
     process.exit(0);
 }
 
-// Create express app and http server
-var app = express();
-let server = http.createServer(app);
+/** Enable HTTPS if all options are passed in */
+const useHttps = clOptions.httpskey && clOptions.httpscert;
+
+// Create express app and http|https server
+const app = express();
+const server = useHttps
+    ? https.createServer({ key: clOptions.httpskey, cert: clOptions.httpscert }, app)
+    : http.createServer(app);
 
 // Everything uses cookies
 app.use(cookieParser());
@@ -41,7 +47,7 @@ import {register} from "./socket/socketServer";
 register(server);
 
 // Start listening
-var portfinder = require('portfinder');
+const portfinder = require('portfinder');
 portfinder.basePort = clOptions.port;
 portfinder.getPort(function (err, port) {
     if (err) {
@@ -53,14 +59,15 @@ portfinder.getPort(function (err, port) {
         && port !== clOptions.port) {
         console.log(chalk.magenta(`[WEB] WARNING: Desired port is not available so using port ${port}`));
     }
-    server.listen(port, function(err) {
+    server.listen(port, clOptions.host, function(err) {
         if (err) {
             console.error(err);
             exit(errorCodes.couldNotListen);
         }
-        console.log(`Dashboard at http://localhost:${port}`);
+        const host = clOptions.host in {'localhost':true,'127.0.0.1':true,'0.0.0.0': true} ? 'localhost' : clOptions.host
+        console.log(`DASHBOARD:`, chalk.green(`http://${host}:${port}`));
         if (clOptions.open) {
-            open(`http://localhost:${port}`);
+            open(`http://${host}:${port}`);
         }
         serverStarted.started();
     });
@@ -69,7 +76,7 @@ portfinder.getPort(function (err, port) {
 /**
  * Notify user of updates
  */
-var pkg = require('../package.json');
+const pkg = require('../package.json');
 require('update-notifier')({
   pkg,
 }).notify();
