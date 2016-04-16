@@ -12,6 +12,8 @@ The heart of the editor is [CodeMirror for quite a few reasons][codemirror]. It 
 * [Clipboard Ring](#clipboard-ring)
 * [Blaster](#blaster)
 
+> Note: At any time you press `Esc` we take you to the editor. After all that is the ❤️ of your design.
+
 ## Sublime
 
 Sublime users will feel right at home as they get to use all their favorite features as it is e.g. `Ctrl|⌘ + P` (find file), `Ctrl|⌘ + Shift + P` (find command), `Ctrl|⌘ + /` (comment uncomment code), `Ctrl|⌘ + D` (select next match) and even `Alt + Shift + ⇅` for column selection   
