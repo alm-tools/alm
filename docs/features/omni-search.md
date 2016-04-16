@@ -1,3 +1,5 @@
+> **TIP** Keyboard shortcut `Ctrl|⌘` means `Ctrl` on windows and `⌘` on Mac.
+
 A unified search input for the following:
 
 * [File Search](#file-search)
