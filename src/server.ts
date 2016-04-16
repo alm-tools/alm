@@ -10,6 +10,7 @@ import serverStarted = require('./server/serverStarted');
 import cl = require('./server/commandLine');
 import workingDir = require('./server/disk/workingDir');
 import * as session from "./server/disk/session";
+import * as chalk from "chalk";
 
 const publicPath = path.resolve(__dirname, 'public');
 
@@ -50,7 +51,7 @@ portfinder.getPort(function (err, port) {
     /** If the user *did* specify a port and we end up not using it */
     if (clOptions.port !== cl.defaultPort
         && port !== clOptions.port) {
-        console.log(`[WEB] WARNING: Desired port is not available so using port ${port}`);
+        console.log(chalk.magenta(`[WEB] WARNING: Desired port is not available so using port ${port}`));
     }
     server.listen(port, function(err) {
         if (err) {
