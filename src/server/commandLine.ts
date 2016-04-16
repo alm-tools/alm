@@ -4,8 +4,10 @@ import * as utils from "../common/utils";
 import * as workingDir from "./disk/workingDir";
 import * as fsu from "./utils/fsu";
 
-let defaultPort = process.env.PORT /* the port by Windows azure */
+export const defaultPort = process.env.PORT /* the port by Windows azure */
     || 4444;
+
+const defaultHost = '0.0.0.0';
 
 var argv: {
     t?: number;
@@ -14,21 +16,24 @@ var argv: {
     p?: string;
     safe?: boolean;
     i?: boolean;
+    h?: string;
     _?: string[];
 } = minimist(process.argv.slice(2), {
-    string: ['dir', 'config'],
+    string: ['dir', 'config', 'host'],
     boolean: ['open', 'safe', 'init'],
     alias: {
         't': ['port'],
         'd': ['dir'],
         'o': ['open'],
         'p': ['project'],
-        'i': ['init']
+        'i': ['init'],
+        'h': ['host']
     },
     default: {
         t: defaultPort,
         d: process.cwd(),
-        o: true
+        o: true,
+        h: defaultHost
     }
 });
 

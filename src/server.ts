@@ -47,6 +47,11 @@ portfinder.getPort(function (err, port) {
         console.error(err);
         exit(errorCodes.couldNotListen);
     }
+    /** If the user *did* specify a port and we end up not using it */
+    if (clOptions.port !== cl.defaultPort
+        && port !== clOptions.port) {
+        console.log(`[WEB] WARNING: Desired port is not available so using port ${port}`);
+    }
     server.listen(port, function(err) {
         if (err) {
             console.error(err);
