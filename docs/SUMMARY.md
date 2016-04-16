@@ -5,6 +5,7 @@
   * [TypeScript](/features/typescript.md)
   * [AutoComplete](/features/autocomplete.md)
   * [Git](/features/git.md)
+  * [Dependency Analysis](/features/dependency.md)
   * [AST](/features/ast.md)
 * [Configuration](/config/README.md)
   * [Editor Config](/config/editorconfig.md)
