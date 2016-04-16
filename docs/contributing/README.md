@@ -68,7 +68,7 @@ More reading (You don't need to read these ... but if you are bored):
 Documented in the [principles of ASYNC][async].
 
 # How is global state managed
-State for visual components in mostly managed by redux which we have made type-safe. [Checkout the docs](./REDUX.md).
+State for visual components in mostly managed by redux which we have made type-safe. [Checkout the docs][redux].
 
 # Conventions
 Please see [conventions.md][conventions]
@@ -114,3 +114,4 @@ Since I am still doing a lot of *thinking* then *rethinking* I'm trying not to p
 [async]: ./async.md
 [conventions]: ./conventions.md
 [deployment]: ./deployment.md
+[redux]: ./redux.md

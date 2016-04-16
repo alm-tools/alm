@@ -16,4 +16,5 @@
   * [Syntax Highlighting](/contributing/syntax.md)
   * [Document Syncing](/contributing/document.md)
   * [Deployment](/contributing/deployment.md)
+  * [Redux](/contributing/redux.md)
   * [Why?](/contributing/why.md)
