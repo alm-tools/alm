@@ -15,10 +15,3 @@ The features can be broadly divided into Text Editing features and TypeScript sp
 Get a quick overview of the project structure by opening up the dependency view (use the command search). You can zoom, pan, drag points around and hover over nodes. ([more details](https://github.com/alm-tools/alm/blob/master/docs/features/dependencyView.md))
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/dependencyView.png)
-
-# AST View
-
-Command : `Ast View`. Useful when authoring new features.
-![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/ast.png)
-
-Also command : `TypeScript: Ast Full` that includes the `trivia` (punctuation, comments etc. received from `ts.Node.getChildren()`) as well.
