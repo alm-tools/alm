@@ -33,7 +33,7 @@ export function parse<T>(str: string): ParsedData<T> {
     catch (e) {
         let error:{message:string;at:number} = e;
 
-        function indexToPosition(index:number):{line:number,ch:number}{
+        const indexToPosition = (index:number):{line:number,ch:number} => {
             let beforeLines = splitlines(content.substr(0, index));
             return {
                 line: Math.max(beforeLines.length - 1, 0),

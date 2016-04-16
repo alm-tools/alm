@@ -13,7 +13,7 @@
     "resume": "bash ./scripts/resume.sh",
     "tsc": "ntsc -p ./src",
     "tscw": "ntsc -p ./src -w",
-    "latest": "npm install ntypescript@latest --save --save-exact && npm run tsc"
+    "typescript": "npm install ntypescript@latest --save --save-exact && npm run tsc"
   },
   "repository": {
     "type": "git",
@@ -48,7 +48,7 @@
     "mkdirp": "^0.5.1",
     "mv": "^2.1.1",
     "ncp": "^2.0.0",
-    "ntypescript": "1.201603300104.1",
+    "ntypescript": "1.201604160006.1",
     "open": "0.0.5",
     "ora": "^0.2.0",
     "portfinder": "^0.4.0",

@@ -90,7 +90,7 @@ This will just run the right things again (pull + install + initial compile).
 ### Updating TypeScript Version
 We use [NTypeScript](https://github.com/TypeStrong/ntypescript). NTypeScript keeps itself updated with Microsoft/Typescript every night. To update the version used by alm.tools simply run
 ```
-npm run update
+npm run typescript
 ```
 This will install the latest version of NTypeScript and run a build to make sure everything still compiles.
 

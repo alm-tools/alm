@@ -52,12 +52,12 @@ function simpleReplace(codeMirror: CodeMirror.EditorFromTextArea, newText: strin
 
         // Take them to the next match if any
         findNext(cm, false);
-
-        /** straight out of search function. Just trimed out as we know our query is a regex already */
-        function doReplace() {
-            cursor.replace(text.replace(/\$(\d)/g, function(_, i) { return match[i]; }));
-        };
     }
+    
+    /** straight out of search function. Just trimed out as we know our query is a regex already */
+    function doReplace() {
+        cursor.replace(text.replace(/\$(\d)/g, function(_, i) { return match[i]; }));
+    };
 }
 
 /** Based on simpleReplace defined above, but using `previous` search + no support for all */
