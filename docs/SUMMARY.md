@@ -10,7 +10,7 @@
   * [tsconfig.json](/config/tsconfig.md)
   * [Command Line Options](/config/command-line.md)
 * [Contributing / Design Notes](/contributing/README.md)
-  * [Process Overview](/contributing/async.md)
+  * [Architecture Overview](/contributing/async.md)
   * [Conventions](/contributing/conventions.md)
   * [CodeMirror](/contributing/codemirror.md)
   * [Syntax Highlighting](/contributing/syntax.md)
