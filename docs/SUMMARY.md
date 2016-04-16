@@ -2,6 +2,7 @@
 * [Features](/features/README.md)
   * [Omni Search](/features/omni-search.md)
   * [Editor](/features/editor.md)
+    * [Tabs](/features/tabs.md)
   * [TypeScript](/features/typescript.md)
   * [AutoComplete](/features/autocomplete.md)
   * [Git](/features/git.md)

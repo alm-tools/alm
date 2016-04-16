@@ -8,7 +8,6 @@ The heart of the editor is [CodeMirror for quite a few reasons][codemirror]. It 
 * [Seamless external editing](#disk-watching)
 * [Editing First](#focus)
 * [Jumpy](#jumpy)
-* [Multi Monitor](#multi-monitor)
 * [Cursor History](#cursor-history)
 * [Clipboard Ring](#clipboard-ring)
 * [Blaster](#blaster)
@@ -35,11 +34,6 @@ No matter where you are, `esc` will always take you to the currently focused edi
 Just press `shift+enter` and you can jump anywhere in the current editor.
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/jumpy.gif)
-
-## Multi Monitor
-Need to use more than one monitor? Just open a new browser window! As many as you like, cause they all sync up!
-
-![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/multiMonitor.gif)
 
 ## Cursor History
 Your cursor history is preserved across all open files. `Ctrl|⌘ + U` and `Ctrl|⌘ + Shift + U`.
