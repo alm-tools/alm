@@ -64,6 +64,7 @@ import * as utils from "../../common/utils";
 import * as cursorLocation from "../cursorHistory";
 import * as events from "../../common/events";
 import * as cmUtils from "./cmUtils";
+import * as types from "../../common/types";
 
 interface Props {
 	onFocusChange?: (focused: boolean) => any;
@@ -196,14 +197,26 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             this.disposible.add({ dispose: () => this.codeMirror.off('cursorActivity', this.handleCursorActivity) });
         }
 
+        const loadEditorOptions = (editorOptions:types.EditorOptions) => {
+            // Set editor options
+            this.codeMirror.setOption('indentUnit', editorOptions.indentSize);
+            this.codeMirror.setOption('tabSize', editorOptions.tabSize);
+            this.codeMirror.setOption('indentWithTabs', !editorOptions.convertTabsToSpaces);
+        }
+
+        // Subscribe to changing editor options
+        this.disposible.add(cast.editorOptionsChanged.on((res) => {
+            if (res.filePath === this.props.filePath){
+                loadEditorOptions(res.editorOptions);
+            }
+        }));
+
 		// Load the document
         docCache.getLinkedDoc(this.props.filePath).then(({doc, editorOptions})=>{
             this.codeMirror.swapDoc(doc);
 
-			// Set editor options
-			this.codeMirror.setOption('indentUnit', editorOptions.indentSize);
-			this.codeMirror.setOption('tabSize', editorOptions.tabSize);
-			this.codeMirror.setOption('indentWithTabs', !editorOptions.convertTabsToSpaces);
+            // Load editor options
+			loadEditorOptions(editorOptions);
 
             if (this.props.preview) {
                 let preview = this.props.preview;

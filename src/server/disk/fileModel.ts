@@ -40,6 +40,12 @@ export class FileModel {
     public didStatusChange = new TypedEvent<{saved:boolean;eol:string}>();
 
     /**
+     * Editor config changed
+     * Only after initial load
+     */
+    public editorOptionsChanged = new TypedEvent<EditorOptions>();
+
+    /**
      * Editor config
      */
     editorOptions: EditorOptions;
@@ -127,6 +133,15 @@ export class FileModel {
     setContents(contents: string) {
         this.text = this.splitlines(contents);
         this.save();
+    }
+
+    /**
+     * Someone else should call this if an editor config file changes
+     * Here we need to re-evalute our options
+     */
+    recheckEditorOptions() {
+        this.editorOptions = getEditorOptions(this.config.filePath);
+        this.editorOptionsChanged.emit(this.editorOptions);
     }
 
     /** Great for error messages etc. Ofcourse `0` based */

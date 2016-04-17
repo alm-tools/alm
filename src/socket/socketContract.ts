@@ -99,6 +99,9 @@ export var cast = {
     /** If any of the file status changes */
     didStatusChange: new TypedEvent<{ filePath: string, saved: boolean, eol: string}>(),
 
+    /** If file editor options change */
+    editorOptionsChanged: new TypedEvent<{ filePath: string, editorOptions: types.EditorOptions }>(),
+
     /** Errors for a file path */
     errorsUpdated: new TypedEvent<LimitedErrorsUpdate>(),
 

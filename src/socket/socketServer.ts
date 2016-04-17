@@ -180,6 +180,7 @@ export function register(app: http.Server | https.Server) {
     fmc.savedFileChangedOnDisk.pipe(cast.savedFileChangedOnDisk);
     fmc.didEdit.pipe(cast.didEdit);
     fmc.didStatusChange.pipe(cast.didStatusChange);
+    fmc.editorOptionsChanged.pipe(cast.editorOptionsChanged);
 
     flm.filePathsUpdated.pipe(cast.filePathsUpdated);
 

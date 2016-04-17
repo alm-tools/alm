@@ -9,6 +9,7 @@ import * as types from "../../common/types";
 export var savedFileChangedOnDisk = new TypedEvent<{ filePath: string; contents: string }>();
 export var didEdit = new TypedEvent<{ filePath: string; edit: CodeEdit }>();
 export var didStatusChange = new TypedEvent<types.FileStatus>();
+export var editorOptionsChanged = new TypedEvent<{filePath: string; editorOptions: types.EditorOptions}>();
 
 let openFiles: FileModel[] = [];
 export function getOpenFile(filePath: string) {
@@ -36,6 +37,9 @@ export function getOrCreateOpenFile(filePath: string, autoCreate = false) {
         });
         file.didStatusChange.on((evt) => {
             didStatusChange.emit({ filePath, saved: evt.saved, eol: evt.eol });
+        });
+        file.editorOptionsChanged.on((editorOptions) => {
+            editorOptionsChanged.emit({ filePath, editorOptions });
         });
         openFiles.push(file);
     }
@@ -67,6 +71,7 @@ export function saveOpenFile(filePath: string) {
  * Editor Config Stuff
  */
 export function watchedEditorConfigChanged() {
+    getOpenFiles().forEach(fm => fm.recheckEditorOptions());
     // TODO:
     // Recheck editor config for all open files :-/
     // The files should emit '`editorConfigChanged`' individually
