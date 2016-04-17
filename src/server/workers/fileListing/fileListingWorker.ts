@@ -35,7 +35,7 @@ namespace Worker {
         // Utility to send new file list
         var sendNewFileList = () => {
             let filePaths = Object.keys(liveList)
-                .filter(x=>
+                .filter(x =>
                     // Remove .git we have no use for that here
                     !x.includes('/.git/')
                     // MAC
@@ -44,10 +44,10 @@ namespace Worker {
                 // sort
                 .sort((a, b) => {
                     // sub dir wins!
-                    if (b.startsWith(a)){
+                    if (b.startsWith(a)) {
                         return -1;
                     }
-                    if (a.startsWith(b)){
+                    if (a.startsWith(b)) {
                         return 1;
                     }
 
@@ -63,7 +63,7 @@ namespace Worker {
                 // Convert ot file path type
                 .map(filePath => {
                     let type = liveList[filePath];
-                    return {filePath, type};
+                    return { filePath, type };
                 });
 
             master.fileListUpdated({
@@ -77,63 +77,63 @@ namespace Worker {
          * - initial partial serach
          * - later updates which might be called a lot because of some directory of files removed
          */
-         let sendNewFileListThrottled = throttle(sendNewFileList, 1500);
+        let sendNewFileListThrottled = throttle(sendNewFileList, 1500);
 
-         /**
-          * Utility function to get the listing from a directory
-          */
-         const getListing = (dirPath: string): Promise<types.FilePath[]> => {
-             return new Promise((resolve)=>{
-                 let mg = new glob.Glob('**', { cwd: dirPath }, (e, globResult) => {
-                     if (e) {
-                         console.error('Globbing error:', e);
-                     }
+        /**
+         * Utility function to get the listing from a directory
+         */
+        const getListing = (dirPath: string): Promise<types.FilePath[]> => {
+            return new Promise((resolve) => {
+                let mg = new glob.Glob('**', { cwd: dirPath }, (e, globResult) => {
+                    if (e) {
+                        console.error('Globbing error:', e);
+                    }
 
-                     let list = globResult.map(nl=> {
-                         let p = path.resolve(dirPath,nl);
-                         let type = mg.cache[p] && mg.cache[p] == 'FILE' ? types.FilePathType.File : types.FilePathType.Dir;
-                         return {
-                             filePath: fsu.consistentPath(p),
-                             type,
-                         }
-                     });
+                    let list = globResult.map(nl => {
+                        let p = path.resolve(dirPath, nl);
+                        let type = mg.cache[p] && mg.cache[p] == 'FILE' ? types.FilePathType.File : types.FilePathType.Dir;
+                        return {
+                            filePath: fsu.consistentPath(p),
+                            type,
+                        }
+                    });
 
-                     resolve(list);
-                 });
-             });
-         }
+                    resolve(list);
+                });
+            });
+        }
 
         // create initial list using 10x faster glob.Glob!
-        (function () {
-           let cwd = q.directory;
-           var mg = new glob.Glob('**', { cwd }, (e, newList) => {
-               if (e) {
-                   console.error('Globbing error:', e);
-               }
+        (function() {
+            let cwd = q.directory;
+            var mg = new glob.Glob('**', { cwd }, (e, newList) => {
+                if (e) {
+                    console.error('Globbing error:', e);
+                }
 
-               let list = newList.map(nl=> {
-                   let p = path.resolve(cwd,nl);
-                   let type = mg.cache[p] && mg.cache[p] == 'FILE' ? types.FilePathType.File : types.FilePathType.Dir;
-                   return {
-                       filePath: fsu.consistentPath(p),
-                       type,
-                   }
-               });
+                let list = newList.map(nl => {
+                    let p = path.resolve(cwd, nl);
+                    let type = mg.cache[p] && mg.cache[p] == 'FILE' ? types.FilePathType.File : types.FilePathType.Dir;
+                    return {
+                        filePath: fsu.consistentPath(p),
+                        type,
+                    }
+                });
 
-               // Initial search complete!
-               completed = true;
-               list.forEach(entry => liveList[entry.filePath] = entry.type);
-               sendNewFileList();
-           });
-           /** Still send the listing while globbing so user gets immediate feedback */
-           mg.on('match',(match)=>{
-               let p = path.resolve(cwd,match);
-               if (mg.cache[p]){
-                  liveList[fsu.consistentPath(p)] = mg.cache[p] == 'FILE' ? types.FilePathType.File : types.FilePathType.Dir;
-                  sendNewFileListThrottled();
-               }
-           });
-       })();
+                // Initial search complete!
+                completed = true;
+                list.forEach(entry => liveList[entry.filePath] = entry.type);
+                sendNewFileList();
+            });
+            /** Still send the listing while globbing so user gets immediate feedback */
+            mg.on('match', (match) => {
+                let p = path.resolve(cwd, match);
+                if (mg.cache[p]) {
+                    liveList[fsu.consistentPath(p)] = mg.cache[p] == 'FILE' ? types.FilePathType.File : types.FilePathType.Dir;
+                    sendNewFileListThrottled();
+                }
+            });
+        })();
 
 
         function fileAdded(filePath: string) {
@@ -155,7 +155,7 @@ namespace Worker {
              * - glob the folder
              * - send the folder throttled
              */
-            getListing(dirPath).then(res=>{
+            getListing(dirPath).then(res => {
                 res.forEach(fpDetails => {
                     if (!liveList[fpDetails.filePath]) {
                         let type = fpDetails.type
@@ -163,7 +163,7 @@ namespace Worker {
                     }
                 });
                 sendNewFileListThrottled();
-            }).catch(res=>{
+            }).catch(res => {
                 console.error('[FLW] DirPath listing failed:', dirPath, res);
             });
         }
@@ -177,7 +177,7 @@ namespace Worker {
         function dirDeleted(dirPath: string) {
             dirPath = fsu.consistentPath(dirPath);
             Object.keys(liveList).forEach(filePath => {
-                if (filePath.startsWith(dirPath)){
+                if (filePath.startsWith(dirPath)) {
                     delete liveList[filePath];
                 }
             });
@@ -211,6 +211,6 @@ export const {master} = sw.runWorker({
     masterContract: contract.master
 });
 
-function debug(...args){
-    console.error.apply(console,args);
+function debug(...args) {
+    console.error.apply(console, args);
 }
