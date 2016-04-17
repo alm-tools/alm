@@ -43,6 +43,7 @@ const updateEmitForFile = utils.triggeredDebounce({
  */
 export const fileEdited = updateEmitForFile;
 export const fileChangedOnDisk = updateEmitForFile;
+export const fileSaved = updateEmitForFile;
 export const doCompleteProjectCacheUpdate = (proj: project.Project) => {
     console.log('[EMIT] Starting');
     outputStatusCache = {};

@@ -59,4 +59,5 @@ export function start() {
     fileListingMaster.filePathsUpdated.on(()=>worker.filePathsUpdated({}));
     fmc.didEdit.on((edit)=>worker.fileEdited(edit));
     fmc.savedFileChangedOnDisk.on((update)=>worker.fileChangedOnDisk(update));
+    fmc.didStatusChange.on((update) => update.saved && worker.fileSaved({ filePath: update.filePath }));
 }

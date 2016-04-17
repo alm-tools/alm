@@ -18,6 +18,7 @@ export var worker = {
     filePathsUpdated: {} as sw.QRFunction<{}, {}>,
     fileEdited: {} as sw.QRFunction<{ filePath: string; edit: CodeEdit }, {}>,
     fileChangedOnDisk : {} as sw.QRFunction<{ filePath: string; contents: string }, {}>,
+    fileSaved : {} as sw.QRFunction<{ filePath: string }, {}>,
 
     // Project Service stuff
     getCompletionsAtPosition : {} as typeof socketContract.server.getCompletionsAtPosition,

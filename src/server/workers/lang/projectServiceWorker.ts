@@ -39,6 +39,10 @@ namespace Worker {
         outputStatusCache.fileChangedOnDisk(details);
         return Promise.resolve({});
     }
+    export const fileSaved: typeof contract.worker.fileSaved = (details) => {
+        outputStatusCache.fileSaved(details);
+        return Promise.resolve({});
+    }
 
     /**
      * Project Service
