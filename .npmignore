@@ -2,4 +2,4 @@ src/server/devtime.txt
 cover.jpg
 book.json
 docs
-/test/**
+/src/tests/**
