@@ -84,7 +84,7 @@ namespace Worker {
          */
         const getListing = (dirPath: string): Promise<types.FilePath[]> => {
             return new Promise((resolve) => {
-                let mg = new glob.Glob('**', { cwd: dirPath }, (e, globResult) => {
+                let mg = new glob.Glob('**', { cwd: dirPath, dot: true }, (e, globResult) => {
                     if (e) {
                         console.error('Globbing error:', e);
                     }
@@ -106,7 +106,7 @@ namespace Worker {
         // create initial list using 10x faster glob.Glob!
         (function() {
             let cwd = q.directory;
-            var mg = new glob.Glob('**', { cwd }, (e, newList) => {
+            var mg = new glob.Glob('**', { cwd, dot: true }, (e, newList) => {
                 if (e) {
                     console.error('Globbing error:', e);
                 }
