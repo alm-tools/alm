@@ -14,6 +14,7 @@ import {diagnosticToCodeError} from "./modules/building";
 import {makeBlandError} from "../../../common/utils";
 import {TypedEvent} from "../../../common/events";
 import equal = require('deep-equal');
+import * as chalk from "chalk";
 
 import {master as masterType} from "./projectServiceContract";
 let master: typeof masterType;
@@ -39,7 +40,7 @@ export function setActiveProjectConfigDetails(_activeProjectConfigDetails: Activ
         currentProject = project;
         clearErrors();
         refreshAllProjectDiagnostics();
-        return project; 
+        return project;
     });
 }
 
@@ -110,7 +111,7 @@ const refreshAllProjectDiagnostics = () => {
 
 
         console.error('[TSC] Error Analysis Duration:', Math.ceil((new Date().getTime() - timeStart)/1000) + 's');
-        console.log(`[TSC] FileCount: ${filePaths.length}, ErrorCount: ${errors.length}`)
+        console.log(`[TSC] FileCount: ${filePaths.length} `, errors.length? chalk.red(`Errors: ${errors.length}`): chalk.green(`Errors: ${errors.length}`));
         initialSync = false;
     }
 };
