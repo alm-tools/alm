@@ -78,24 +78,31 @@ export function triggeredDebounce<Arg>(config:{
     func: (arg:Arg)=>void,
     mustcall: (newArg:Arg,oldArg:Arg)=>boolean,
     milliseconds: number}): (arg:Arg) => void {
-    let lastArg, lastCallTimeStamp;
+    let lastArg, lastCallTimeStamp, hasALastArg = false;
+    let pendingTimeout = null;
 
     const later = function() {
         const timeSinceLast = now() - lastCallTimeStamp;
 
         if (timeSinceLast < config.milliseconds) {
-            const timeout = setTimeout(later, config.milliseconds - timeSinceLast);
+            if (pendingTimeout) {
+                clearTimeout(pendingTimeout);
+                pendingTimeout = null;
+            }
+            pendingTimeout = setTimeout(later, config.milliseconds - timeSinceLast);
         } else {
             config.func(lastArg);
         }
     };
 
     return function(arg:Arg) {
-        const stateChangeSignificant = config.mustcall(arg,lastArg);
+        const stateChangeSignificant = hasALastArg && config.mustcall(arg,lastArg);
         if (stateChangeSignificant) {
             config.func(lastArg);
         }
         lastArg = arg;
+        hasALastArg = true;
+
         lastCallTimeStamp = now();
         later();
     };
