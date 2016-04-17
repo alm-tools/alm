@@ -209,8 +209,11 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
                 let preview = this.props.preview;
                 let from = doc.posFromIndex(preview.start);
                 let to = doc.posFromIndex(preview.start + preview.length);
-				doc.setCursor(from);
-				this.codeMirror.scrollIntoView(from);
+                cmUtils.jumpToLine({
+                    line: from.line,
+                    ch: from.ch,
+                    editor: this.codeMirror
+                });
             }
 
 			this.afterReadyQueue.forEach(cb=>cb());
