@@ -15,7 +15,6 @@
     "tscw": "ntsc -p ./src -w",
     "typescript": "npm install ntypescript@latest --save --save-exact && npm run tsc",
     "postversion": "git push --follow-tags",
-    "mocha": "mocha ./src/tests",
     "mochaw": "mocha ./src/tests -w"
   },
   "repository": {
