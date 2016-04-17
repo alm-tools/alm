@@ -104,10 +104,10 @@ export class StatusBar extends BaseComponent<Props, State>{
             </span>
             :<span
                 className="hint--top"
-                style={csx.extend(styles.noSelect,styles.statusBarError,styles.hand)}
+                style={csx.extend(styles.statusBarSection, styles.noSelect,styles.statusBarError,styles.hand)}
                 onClick={() => ui.notifyWarningNormalDisappear(`There is no active project. Please select from the available ones <br/> <br/> ${projectTipKeboard}`, { onClick: () => commands.omniSelectProject.emit({}) }) }
                 data-hint="There is no active TypeScript project. Robots deactivated.">
-                    <Icon name="eye-slash"/>
+                    <Icon name="heartbeat"/>
              </span>;
 
         let inActiveProjectSection =
@@ -122,7 +122,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                         data-hint="File is part of the currently active project. 💻 providing code intelligence.">
                         <Icon name="eye"/>
                      </span>
-                    :this.props.activeProject && <span
+                    :<span
                         className="hint--top"
                         style={csx.extend(styles.noSelect,styles.statusBarError,styles.hand)}
                         onClick={() => ui.notifyWarningNormalDisappear(`The file is not a part of the currently active TypeScript project <br/> <br/> ${projectTipKeboard}`, { onClick: () => commands.omniSelectProject.emit({}) }) }
