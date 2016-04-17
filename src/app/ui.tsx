@@ -88,8 +88,8 @@ export function notifyInfoNormalDisappear(message: string) {
 export function notifyWarningNormalDisappear(message: string, options?: { onClick: () => void }) {
     toastr.warning(message, null, options && { onclick: options.onClick });
 }
-export function notifySuccessNormalDisappear(message: string) {
-    toastr.success(message);
+export function notifySuccessNormalDisappear(message: string,  options?: { onClick: () => void }) {
+    toastr.success(message, null, options && { onclick: options.onClick });
 }
 export function comingSoon(featureName: string) {
     toastr.info(`Coming soon! : ${featureName}`);

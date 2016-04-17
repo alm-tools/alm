@@ -27,6 +27,18 @@ let notificationKeyboardStyle = {
 }
 const ouputStatusStyle = csx.extend(styles.noSelect, {fontSize:'.6rem'});
 
+const activeProjectContainerStyle = csx.extend(
+    styles.statusBarSection, styles.hand,
+    {
+        border: '1px solid grey',
+        paddingTop: '2',
+        paddingBottom: '2px',
+        paddingLeft: '4px',
+        paddingRight: '4px',
+        fontSize: '.7rem'
+    }
+);
+
 export interface Props {
     // from react-redux ... connected below
     errorsExpanded?: boolean;
@@ -75,6 +87,28 @@ export class StatusBar extends BaseComponent<Props, State>{
         let tab = state.getSelectedTab();
         let filePath = tab && utils.getFilePathFromUrl(tab.url);
         let protocol = tab && utils.getFilePathAndProtocolFromUrl(tab.url).protocol;
+
+        const hasActiveProject = this.props.activeProject
+            ?<span
+                className="hint--top"
+                data-hint="Active Project path. Click to open project file"
+                style={activeProjectContainerStyle}
+                onClick={()=>this.openFile(this.props.activeProject.tsconfigFilePath)}>
+                <span
+                    className="hint--top"
+                    style={csx.extend(styles.noSelect,styles.statusBarSuccess,styles.hand,{marginRight: '5px'})}
+                    data-hint="Active TypeScript Project">
+                        <Icon name="heartbeat"/>
+                 </span>
+                {this.props.activeProject.name}
+            </span>
+            :<span
+                className="hint--top"
+                style={csx.extend(styles.noSelect,styles.statusBarError,styles.hand)}
+                onClick={() => ui.notifyWarningNormalDisappear(`There is no active project. Please select from the available ones <br/> <br/> ${projectTipKeboard}`, { onClick: () => commands.omniSelectProject.emit({}) }) }
+                data-hint="There is no active TypeScript project. Robots deactivated.">
+                    <Icon name="eye-slash"/>
+             </span>;
 
         let inActiveProjectSection =
             !tab
@@ -126,17 +160,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                             {this.props.errorsUpdate.totalCount} <Icon name="times-circle"/>
                         </span>
                     </span>
-                    {this.props.activeProject
-                        ?<span style={csx.extend(styles.statusBarSection,styles.hand)} onClick={()=>this.openFile(this.props.activeProject.tsconfigFilePath)}>
-                            {this.props.activeProject.name}
-                        </span>
-                        :<span
-                            className="hint--top"
-                            style={csx.extend(styles.noSelect,styles.statusBarError,styles.hand)}
-                            onClick={() => ui.notifyWarningNormalDisappear(`There is no active project. Please select from the available ones <br/> <br/> ${projectTipKeboard}`, { onClick: () => commands.omniSelectProject.emit({}) }) }
-                            data-hint="There is no active TypeScript project. Robots deactivated.">
-                                <Icon name="eye-slash"/>
-                         </span>}
+                    {hasActiveProject}
                     {inActiveProjectSection}
                     {filePath
                         ?<span
