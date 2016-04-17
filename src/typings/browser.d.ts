@@ -12,6 +12,7 @@
 /// <reference path="browser\ambient\minimatch\minimatch.d.ts" />
 /// <reference path="browser\ambient\minimist\minimist.d.ts" />
 /// <reference path="browser\ambient\mkdirp\mkdirp.d.ts" />
+/// <reference path="browser\ambient\mocha\mocha.d.ts" />
 /// <reference path="browser\ambient\mousetrap\mousetrap.d.ts" />
 /// <reference path="browser\ambient\node\node.d.ts" />
 /// <reference path="browser\ambient\ora\ora.d.ts" />

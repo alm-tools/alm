@@ -10,6 +10,7 @@
 /// <reference path="main\ambient\minimatch\minimatch.d.ts" />
 /// <reference path="main\ambient\minimist\minimist.d.ts" />
 /// <reference path="main\ambient\mkdirp\mkdirp.d.ts" />
+/// <reference path="main\ambient\mocha\mocha.d.ts" />
 /// <reference path="main\ambient\mousetrap\mousetrap.d.ts" />
 /// <reference path="main\ambient\node\node.d.ts" />
 /// <reference path="main\ambient\ora\ora.d.ts" />

@@ -14,7 +14,9 @@
     "tsc": "ntsc -p ./src",
     "tscw": "ntsc -p ./src -w",
     "typescript": "npm install ntypescript@latest --save --save-exact && npm run tsc",
-    "postversion": "git push --follow-tags"
+    "postversion": "git push --follow-tags",
+    "mocha": "mocha ./src/tests",
+    "mochaw": "mocha ./src/tests -w"
   },
   "repository": {
     "type": "git",
@@ -70,6 +72,7 @@
     "jquery": "^2.1.4",
     "less": "^2.5.3",
     "less-loader": "^2.2.2",
+    "mocha": "^2.4.5",
     "mousetrap": "^1.5.3",
     "normalize.css": "^3.0.3",
     "onresize": "^1.0.1",
