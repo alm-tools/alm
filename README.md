@@ -6,15 +6,13 @@
 
 [![Build Status](https://travis-ci.org/alm-tools/alm.svg?branch=master)](https://travis-ci.org/alm-tools/alm)
 
-> ⚠️ This project is not on NPM yet. Lookout for final release by about 2017. 🌟 it to help it move along 🌹
+> Semantic releases start once 🌟 count > 1000. Don't forget to share 🌹
 
 ## Why
 
 [Checkout the website](http://alm.tools) and if you need more reasons [we have them](https://basarat.gitbooks.io/alm/content/contributing/why.html).
 
 ## Usage
-
-> Till we consider it stable for release we are not pushing to NPM. So for now you need to get it using the [CONTRIBUTING guide][contributing].
 
 Get it:
 ```
@@ -38,7 +36,7 @@ Now open it in your favorite browser (pssst `chrome`) at the URL mentioned in yo
 
 
 ## Contributing
-A key motivation for this project is to educate the community of about creating great TypeScript tools. So we would love to help you understand how the project works. [Checkout the developer / contributor docs](./docs/contributing/README.md).
+A key motivation for this project is to educate the community of about creating great TypeScript tools. So we would love to help you understand how the project works. [Checkout the developer / contributor docs][contributing].
 
 ## License
 
