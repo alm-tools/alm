@@ -35,7 +35,7 @@ const updateEmitForFile = utils.triggeredDebounce({
     mustcall: (n, o) => {
         return o && o.filePath !== n.filePath;
     },
-    milliseconds: 2000
+    milliseconds: 1000
 });
 
 /**
