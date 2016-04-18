@@ -11,6 +11,8 @@ export function doBuild(tsconfigFilePath: string) {
     let noErrors = true;
 
     // TODO: build
+    // NOTE: before we can do build server stuff
+    // we need to upgrade setActiveProjectConfigDetails to accept file contents upfront instead of asking the master for it.
 
     if (noErrors){
         console.log(chalk.green('Build Succeeded'));
