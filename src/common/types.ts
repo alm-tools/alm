@@ -165,3 +165,15 @@ export interface EditorOptions {
     newLineCharacter: string;
     convertTabsToSpaces: boolean;
 }
+
+/**
+ * project data loader stuff
+ */
+export interface FilePathWithContent {
+    filePath: string;
+    contents: string;
+}
+export interface ProjectDataLoadedResponse {
+    tsconfigFilePath: string;
+    filePathWithContents: FilePathWithContent[];
+}
