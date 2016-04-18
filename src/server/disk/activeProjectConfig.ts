@@ -11,6 +11,7 @@
 import {TypedEvent} from "../../common/events";
 import * as utils from "../../common/utils";
 import * as tsconfig from "../workers/lang/core/tsconfig";
+import * as types from "../../common/types";
 
 /** Disk access / session stuff */
 import * as session from "./session";
@@ -28,8 +29,8 @@ let activeProjectConfigDetails: ActiveProjectConfigDetails = null;
 export let activeProjectConfigDetailsUpdated = new TypedEvent<ActiveProjectConfigDetails>();
 
 /** Only if the file is valid will we end up here */
-let configFile: tsconfig.TypeScriptConfigFileDetails = null;
-export let configFileUpdated = new TypedEvent<tsconfig.TypeScriptConfigFileDetails>();
+let configFile: types.TypeScriptConfigFileDetails = null;
+export let configFileUpdated = new TypedEvent<types.TypeScriptConfigFileDetails>();
 export let projectFilePathsUpdated = new TypedEvent<{ filePaths: string[] }>();
 
 /**
@@ -179,7 +180,7 @@ namespace ConfigFile {
      * This explicilty loads the project from the filesystem
      * For (lib.d.ts) and other (.d.ts files where project is not found) creation is done in memory
      */
-    export function getConfigFileFromDiskOrInMemory(config: ActiveProjectConfigDetails): tsconfig.TypeScriptConfigFileDetails {
+    export function getConfigFileFromDiskOrInMemory(config: ActiveProjectConfigDetails): types.TypeScriptConfigFileDetails {
         if (!config.tsconfigFilePath) {
             // TODO: THIS isn't RIGHT ...
             // as this function is designed to work *from a single source file*.

@@ -1,6 +1,7 @@
 import path = require('path');
 import tsconfig = require('./tsconfig');
 import {selectMany}  from "../../../../common/utils";
+import * as types from "../../../../common/types";
 
 import {master as masterType} from "../projectServiceContract";
 let master: typeof masterType;
@@ -16,9 +17,9 @@ import * as lsh from "../../../../languageServiceHost/languageServiceHost";
 export class Project {
     public languageServiceHost: LanguageServiceHost;
     public languageService: ts.LanguageService;
-    public configFile: tsconfig.TypeScriptConfigFileDetails;
+    public configFile: types.TypeScriptConfigFileDetails;
 
-    init(_configFile: tsconfig.TypeScriptConfigFileDetails) {
+    init(_configFile: types.TypeScriptConfigFileDetails) {
         this.configFile = _configFile;
         let initialized = Promise.resolve();
 

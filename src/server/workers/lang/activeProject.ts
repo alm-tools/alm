@@ -137,7 +137,7 @@ import {Project} from "./core/project";
 namespace ConfigFile {
 
     /** Create a project from a project file */
-    export function createProjectFromConfigFile(configFile: tsconfig.TypeScriptConfigFileDetails) {
+    export function createProjectFromConfigFile(configFile: types.TypeScriptConfigFileDetails) {
         var project = new Project();
         return project.init(configFile).then(()=>project);
     }
@@ -163,7 +163,7 @@ namespace ConfigFile {
      * This explicilty loads the project from the filesystem
      * For (lib.d.ts) and other (.d.ts files where project is not found) creation is done in memory
      */
-    export function getConfigFileFromDiskOrInMemory(config: ActiveProjectConfigDetails): tsconfig.TypeScriptConfigFileDetails {
+    export function getConfigFileFromDiskOrInMemory(config: ActiveProjectConfigDetails): types.TypeScriptConfigFileDetails {
         if (!config.tsconfigFilePath) {
             // TODO: THIS isn't RIGHT ...
             // as this function is designed to work *from a single source file*.

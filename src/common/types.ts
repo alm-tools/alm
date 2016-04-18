@@ -12,8 +12,8 @@ export enum TriState {
 }
 
 export const errors = {
-    CALLED_WHEN_NO_ACTIVE_PROJECT_FOR_FILE_PATH : "A query *that needs an active project* was made when there is no active project for given filePath",
-    CALLED_WHEN_NO_ACTIVE_PROJECT_GLOBAL : "A query *that needs an active project* was made when there is no active project"
+    CALLED_WHEN_NO_ACTIVE_PROJECT_FOR_FILE_PATH: "A query *that needs an active project* was made when there is no active project for given filePath",
+    CALLED_WHEN_NO_ACTIVE_PROJECT_GLOBAL: "A query *that needs an active project* was made when there is no active project"
 }
 
 
@@ -174,6 +174,46 @@ export interface FilePathWithContent {
     contents: string;
 }
 export interface ProjectDataLoadedResponse {
-    tsconfigFilePath: string;
+    configFile: TypeScriptConfigFileDetails;
     filePathWithContents: FilePathWithContent[];
+}
+
+/**
+ * TSConfig details
+ */
+
+export interface UsefulFromPackageJson {
+    /** We need this as this is the name the user is going to import **/
+    name: string;
+    /** we need this to figure out the basePath (will depend on how `outDir` is relative to this directory) */
+    directory: string;
+    /** This is going to be typescript.definition */
+    definition: string;
+    main: string;
+}
+
+/**
+ * This is `TypeScriptProjectRawSpecification` parsed further
+ * Designed for use throughout out code base
+ */
+export interface TypeScriptProjectSpecification {
+    compilerOptions: ts.CompilerOptions;
+    files: string[];
+    typings: string[]; // These are considered externs for .d.ts. Note : duplicated in files
+    filesGlob?: string[];
+    formatCodeOptions: ts.FormatCodeOptions;
+    compileOnSave: boolean;
+    buildOnSave: boolean;
+    package?: UsefulFromPackageJson;
+    externalTranspiler?: string | { name: string; options?: any };
+    scripts: { postbuild?: string };
+}
+
+export interface TypeScriptConfigFileDetails {
+    /** The path to the project file. This acts as the baseDIR */
+    projectFileDirectory: string;
+    /** The actual path of the project file (including tsconfig.json) */
+    projectFilePath: string;
+    project: TypeScriptProjectSpecification;
+    inMemory: boolean;
 }

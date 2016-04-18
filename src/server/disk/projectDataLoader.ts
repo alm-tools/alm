@@ -4,13 +4,14 @@
  * This can be slow (and can cause nasty deadlocks).
  * So we use this this `projectDataLoader` to load all the data upfront in the server memory and push it down to the worker
  */
-import {FilePathWithContent, ProjectDataLoadedResponse} from "../../common/types";
+import {FilePathWithContent, ProjectDataLoadedResponse,TypeScriptConfigFileDetails} from "../../common/types";
 import * as fmc from "./fileModelCache";
 import * as tsconfig from "../workers/lang/core/tsconfig";
 
-export function getProjectDataLoaded(tsconfigFilePath: string): ProjectDataLoadedResponse {
+export function getProjectDataLoaded(configFile: TypeScriptConfigFileDetails): ProjectDataLoadedResponse {
     // TODO:
     return {
-        tsconfigFilePath,filePathWithContents:[]
+        configFile,
+        filePathWithContents:[]
     }
 }
