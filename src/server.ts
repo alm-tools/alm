@@ -24,7 +24,11 @@ if (clOptions.init) {
 }
 /** Build server */
 if (clOptions.build) {
-    // TODO: 
+    const sessionFileContents = session.readDiskSessionsFile();
+    const tsconfig = sessionFileContents.relativePathToTsconfig;
+    const {doBuild} = require('./build');
+    const doBuildTyped: {(tsconfigFilePath:string):void} = doBuild;
+    doBuildTyped(tsconfig);
 }
 
 /** Enable HTTPS if all options are passed in */
