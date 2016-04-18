@@ -3,6 +3,7 @@ import * as path from "path";
 import * as utils from "../common/utils";
 import * as workingDir from "./disk/workingDir";
 import * as fsu from "./utils/fsu";
+import * as chalk from "chalk";
 
 export const defaultPort = process.env.PORT /* the port by Windows azure */
     || 4444;
@@ -16,19 +17,21 @@ var argv: {
     p?: string;
     safe?: boolean;
     i?: boolean;
+    b?: boolean;
     h?: string;
     httpskey?: string;
     httpscert?: string;
     _?: string[];
 } = minimist(process.argv.slice(2), {
     string: ['dir', 'config', 'host', 'httpskey', 'httpscert'],
-    boolean: ['open', 'safe', 'init'],
+    boolean: ['open', 'safe', 'init', 'build'],
     alias: {
         't': ['port'],
         'd': ['dir'],
         'o': ['open'],
         'p': ['project'],
         'i': ['init'],
+        'b': ['build'],
         'h': ['host']
     },
     default: {
@@ -46,6 +49,7 @@ interface CommandLineOptions {
     open: boolean;
     safe: boolean;
     init: boolean;
+    build: boolean;
     filePaths: string[];
     host: string;
 
@@ -60,6 +64,7 @@ export let getOptions = utils.once((): CommandLineOptions => {
         safe: argv.safe,
         project: argv.p,
         init: argv.i,
+        build: argv.b,
         filePaths: [],
         host: argv.h,
         httpskey: argv.httpskey,
@@ -90,7 +95,7 @@ export let getOptions = utils.once((): CommandLineOptions => {
     }
 
     if (options.init && options.project) {
-        console.log('The project option is ignored if you specific init. The initialized file *is* the project.');
+        console.log(chalk.red('The project option is ignored if you specific --init'));
     }
 
     if (options.project) {

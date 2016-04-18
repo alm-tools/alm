@@ -22,6 +22,10 @@ if (clOptions.init) {
     console.log('[TSCONFIG] Initialized');
     process.exit(0);
 }
+/** Build server */
+if (clOptions.build) {
+    // TODO: 
+}
 
 /** Enable HTTPS if all options are passed in */
 const useHttps = clOptions.httpskey && clOptions.httpscert;
