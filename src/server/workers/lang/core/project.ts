@@ -2,6 +2,7 @@ import path = require('path');
 import tsconfig = require('./tsconfig');
 import {selectMany}  from "../../../../common/utils";
 import * as types from "../../../../common/types";
+import * as typescriptDir from "./typeScriptDir";
 
 import {master as masterType} from "../projectServiceContract";
 let master: typeof masterType;
@@ -34,7 +35,7 @@ export class Project {
 
         // Add the `lib.d.ts`
         if (!_configFile.project.compilerOptions.noLib) {
-            initialized = addFile(getDefaultLibFilePath(_configFile.project.compilerOptions));
+            initialized = addFile(typescriptDir.getDefaultLibFilePath(_configFile.project.compilerOptions));
         }
 
         // Add all the files
@@ -52,7 +53,7 @@ export class Project {
      * Note: this function is exceedingly slow on cold boot (13s on vscode codebase) as it calls getProgram.getSourceFiles
      */
     public getProjectSourceFiles(): ts.SourceFile[] {
-        var libFile = getDefaultLibFilePath(this.configFile.project.compilerOptions);
+        var libFile = typescriptDir.getDefaultLibFilePath(this.configFile.project.compilerOptions);
         var files
             = this.languageService.getProgram().getSourceFiles().filter(x=> x.fileName !== libFile);
         return files;
@@ -84,17 +85,8 @@ export class Project {
 }
 
 /**
- * Lib file handling
- */
-export var getDefaultLibFilePath = (options: ts.CompilerOptions) => {
-    var filename = ts.getDefaultLibFileName(options);
-    return (path.join(path.dirname(require.resolve('ntypescript')), filename)).split('\\').join('/');
-}
-export var typescriptDirectory = path.dirname(require.resolve('ntypescript')).split('\\').join('/');
-
-/**
  * Similar to the base, just adds stuff that uses `require.resolve` to load lib.d.ts
  */
 export class LanguageServiceHost extends lsh.LanguageServiceHost {
-    getDefaultLibFileName = ()=>getDefaultLibFilePath(this.compilerOptions);
+    getDefaultLibFileName = ()=> typescriptDir.getDefaultLibFilePath(this.compilerOptions);
 }

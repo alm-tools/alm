@@ -166,21 +166,19 @@ export interface EditorOptions {
     convertTabsToSpaces: boolean;
 }
 
-/**
- * project data loader stuff
- */
-export interface FilePathWithContent {
-    filePath: string;
-    contents: string;
-}
-export interface ProjectDataLoadedResponse {
-    configFile: TypeScriptConfigFileDetails;
-    filePathWithContents: FilePathWithContent[];
-}
 
 /**
  * TSConfig details
  */
+
+export interface FilePathWithContent {
+    filePath: string;
+    contents: string;
+}
+export interface ProjectDataLoaded {
+    configFile: TypeScriptConfigFileDetails;
+    filePathWithContents: FilePathWithContent[];
+}
 
 export interface UsefulFromPackageJson {
     /** We need this as this is the name the user is going to import **/
