@@ -5,6 +5,7 @@ import * as fmc from "../../disk/fileModelCache";
 import {resolve,selectMany} from "../../../common/utils";
 import {TypedEvent} from "../../../common/events";
 import * as types from "../../../common/types";
+import * as projectDataLoader from "../../disk/projectDataLoader";
 
 // *sinks* for important caches
 import {errorsCache} from "../../globalErrorCache";
@@ -54,7 +55,8 @@ import * as activeProjectConfig  from "../../disk/activeProjectConfig";
 import * as fileListingMaster from "../fileListing/fileListingMaster";
 export function start() {
     activeProjectConfig.activeProjectConfigDetailsUpdated.on((activeProjectConfigDetails)=>{
-        worker.setActiveProjectConfigDetails({activeProjectConfigDetails});
+        const projectData = projectDataLoader.getProjectDataLoaded(activeProjectConfigDetails);
+        worker.setActiveProjectConfigDetails({projectData});
     });
     fileListingMaster.filePathsUpdated.on(()=>worker.filePathsUpdated({}));
     fmc.didEdit.on((edit)=>worker.fileEdited(edit));

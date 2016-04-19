@@ -20,31 +20,25 @@ export class Project {
     public languageService: ts.LanguageService;
     public configFile: types.TypeScriptConfigFileDetails;
 
-    init(_configFile: types.TypeScriptConfigFileDetails) {
-        this.configFile = _configFile;
-        let initialized = Promise.resolve();
+    init(projectData: types.ProjectDataLoaded) {
+        this.configFile = projectData.configFile;
+        let initialized = Promise.resolve({});
 
-        this.languageServiceHost = new LanguageServiceHost(_configFile.project.compilerOptions);
+        this.languageServiceHost = new LanguageServiceHost(projectData.configFile.project.compilerOptions);
         const addFile = (filePath:string) => {
             return master
                 .getFileContents({filePath})
                 .then((res)=>{
-                    this.languageServiceHost.addScript(filePath, res.contents);
+
                 });
         }
 
-        // Add the `lib.d.ts`
-        if (!_configFile.project.compilerOptions.noLib) {
-            initialized = addFile(typescriptDir.getDefaultLibFilePath(_configFile.project.compilerOptions));
-        }
-
         // Add all the files
-        //
-        // chained as parent asks us to create a project
-        //  ->  and then we start asking parent for files.
-        //  Something aweful happens if all this is tailing off the "create project" request from the parent
-        _configFile.project.files.forEach((filePath) => initialized = initialized.then(() => addFile(filePath)));
-        initialized.then(()=>this.languageService = ts.createLanguageService(this.languageServiceHost, ts.createDocumentRegistry()));
+        projectData.filePathWithContents.forEach(({filePath,contents}) => {
+            this.languageServiceHost.addScript(filePath, contents);
+        });
+
+        this.languageService = ts.createLanguageService(this.languageServiceHost, ts.createDocumentRegistry());
         return initialized;
     }
 

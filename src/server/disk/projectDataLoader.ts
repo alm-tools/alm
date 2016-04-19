@@ -8,8 +8,12 @@ import {FilePathWithContent, ProjectDataLoaded ,TypeScriptConfigFileDetails} fro
 import * as fmc from "./fileModelCache";
 import * as tsconfig from "../workers/lang/core/tsconfig";
 import * as typescriptDir from "../workers/lang/core/typeScriptDir";
+import * as types from "../../common/types";
 
-export function getProjectDataLoaded(configFile: TypeScriptConfigFileDetails): ProjectDataLoaded {
+export function getProjectDataLoaded(activeProjectConfigDetails: ActiveProjectConfigDetails): ProjectDataLoaded {
+
+    const configFile: TypeScriptConfigFileDetails = tsconfig.getProjectSync(activeProjectConfigDetails.tsconfigFilePath);
+
     const response: ProjectDataLoaded = {
         configFile,
         filePathWithContents:[]

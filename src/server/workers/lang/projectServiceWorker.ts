@@ -12,7 +12,7 @@ namespace Worker {
      */
     export const setActiveProjectConfigDetails: typeof contract.worker.setActiveProjectConfigDetails = (details) => {
         return activeProject
-            .setActiveProjectConfigDetails(details.activeProjectConfigDetails)
+            .setActiveProjectConfigDetails(details.projectData)
             .then((proj) => {
                 // Initial output status cache update
                 if (proj.configFile.project.compileOnSave) {

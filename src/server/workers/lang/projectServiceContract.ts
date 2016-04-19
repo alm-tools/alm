@@ -36,7 +36,7 @@ export var worker = {
     // Used to tell the worker about what project it should work on
     // Note: The project validation / expansion happens locally. Only the hard stuff of *analysis* is done by the worker
     // This makes the worker bit more host agnostic
-    setActiveProjectConfigDetails: {} as sw.QRFunction<{ activeProjectConfigDetails: ActiveProjectConfigDetails }, {}>,
+    setActiveProjectConfigDetails: {} as sw.QRFunction<{ projectData: types.ProjectDataLoaded }, {}>,
 }
 
 // API provided by master (web server)

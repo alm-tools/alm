@@ -24,7 +24,7 @@ export function setMaster(m: typeof masterType) {
 }
 
 /** The active project name */
-let activeProjectConfigDetails: ActiveProjectConfigDetails = null;
+let activeProjectConfigDetails: types.ProjectDataLoaded = null;
 /** The currently active project */
 let currentProject: project.Project = null;
 
@@ -33,11 +33,10 @@ let currentProject: project.Project = null;
   * Clear any previously reported errors and recalculate the errors
   * This is what the user should call if they want to manually sync as well
   */
-export function setActiveProjectConfigDetails(_activeProjectConfigDetails: ActiveProjectConfigDetails) {
+export function setActiveProjectConfigDetails(projectData: types.ProjectDataLoaded) {
     initialSync = true;
-    activeProjectConfigDetails = _activeProjectConfigDetails;
-    const configFileDetails = ConfigFile.getConfigFileFromDiskOrInMemory(activeProjectConfigDetails);
-    return ConfigFile.createProjectFromConfigFile(configFileDetails).then((project)=>{
+    activeProjectConfigDetails = projectData;
+    return ConfigFile.createProjectFromConfigFile(projectData).then((project)=>{
         currentProject = project;
         clearErrors();
         refreshAllProjectDiagnostics();
@@ -73,7 +72,7 @@ export function fileEdited(evt: { filePath: string, edit: CodeEdit }) {
     }
 
     // Also watch edits to the current config file
-    let currentConfigFilePath = activeProjectConfigDetails && activeProjectConfigDetails.tsconfigFilePath;
+    let currentConfigFilePath = activeProjectConfigDetails && activeProjectConfigDetails.configFile.projectFilePath;
     if (evt.filePath == currentConfigFilePath) {
         sync();
     }
@@ -138,9 +137,9 @@ import {Project} from "./core/project";
 namespace ConfigFile {
 
     /** Create a project from a project file */
-    export function createProjectFromConfigFile(configFile: types.TypeScriptConfigFileDetails) {
+    export function createProjectFromConfigFile(projectData: types.ProjectDataLoaded) {
         var project = new Project();
-        return project.init(configFile).then(()=>project);
+        return project.init(projectData).then(()=>project);
     }
 
     /**
