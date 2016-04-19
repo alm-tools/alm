@@ -21,9 +21,11 @@ var argv: {
     h?: string;
     httpskey?: string;
     httpscert?: string;
+    user?: string;
+    pass?: string;
     _?: string[];
 } = minimist(process.argv.slice(2), {
-    string: ['dir', 'config', 'host', 'httpskey', 'httpscert'],
+    string: ['dir', 'config', 'host', 'httpskey', 'httpscert', 'user', 'pass'],
     boolean: ['open', 'safe', 'init', 'build'],
     alias: {
         't': ['port'],
@@ -55,6 +57,9 @@ interface CommandLineOptions {
 
     httpskey?: string;
     httpscert?: string;
+
+    user?: string;
+    pass?: string;
 }
 export let getOptions = utils.once((): CommandLineOptions => {
     let options: CommandLineOptions = {
@@ -68,7 +73,9 @@ export let getOptions = utils.once((): CommandLineOptions => {
         filePaths: [],
         host: argv.h,
         httpskey: argv.httpskey,
-        httpscert: argv.httpscert
+        httpscert: argv.httpscert,
+        user: argv.user,
+        pass: argv.pass
     }
     if (typeof options.port !== 'number') {
         options.port = defaultPort;

@@ -40,6 +40,12 @@ const server = useHttps
     ? https.createServer({ key: clOptions.httpskey, cert: clOptions.httpscert }, app)
     : http.createServer(app);
 
+// Basic auth
+if (clOptions.user && clOptions.pass) {
+    var basicAuth = require('basic-auth-connect');
+    app.use(basicAuth(clOptions.user, clOptions.pass));
+}
+
 // Everything uses cookies
 app.use(cookieParser());
 
