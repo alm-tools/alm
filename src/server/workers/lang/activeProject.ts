@@ -7,6 +7,7 @@ import utils = require("../../../common/utils");
 import * as json from "../../../common/json";
 import * as tsconfig from "./core/tsconfig";
 import * as project from "./core/project";
+import {typescriptDirectory} from "./core/typeScriptDir";
 import * as types from "../../../common/types";
 import {errorsCache} from "./cache/tsErrorsCache";
 const {setErrorsByFilePaths, clearErrors, clearErrorsForFilePath} = errorsCache;
@@ -175,7 +176,7 @@ namespace ConfigFile {
 
         try {
             // If we are asked to look at stuff in lib.d.ts create its own project
-            if (path.dirname(filePath) == project.typescriptDirectory) {
+            if (path.dirname(filePath) == typescriptDirectory) {
                 return tsconfig.getDefaultInMemoryProject(filePath);
             }
 
