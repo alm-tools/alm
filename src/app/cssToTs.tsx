@@ -19,6 +19,15 @@ import * as docCache from "./codemirror/mode/docCache";
 import {CodeEditor} from "./codemirror/codeEditor";
 import {RefactoringsByFilePath, Refactoring} from "../common/types";
 
+/* Test:
+const styles = {
+  box-sizing: border-box;
+  outline: none;
+  padding: 0;
+  margin: 0;
+}
+ */
+
 // Wire up the code mirror command to come here
 CodeMirror.commands[commands.additionalEditorCommands.cssToTs] = (editor: CodeMirror.EditorFromTextArea) => {
     let doc = editor.getDoc();
@@ -27,8 +36,19 @@ CodeMirror.commands[commands.additionalEditorCommands.cssToTs] = (editor: CodeMi
         var selection = doc.listSelections()[0]; // only the first is formatted at the moment
         let from = selection.anchor;
         let to = selection.head;
-        const indentSize = editor.getOption("indentUnit");
-        doc.replaceSelection(convert(doc.getSelection(), indentSize));
+
+        // Calculate result
+        const {asLines,asString} = convert(doc.getSelection());
+
+        // Put in new text
+        doc.replaceSelection(asString);
+
+        // Auto indent
+        const firstLine = selection.head.line;
+        for (let i = 0; i < asLines.length; i++) {
+            const line = firstLine + i;
+            editor.indentLine(line, "smart", true);
+        }
     }
     else {
         ui.notifyWarningNormalDisappear('Please select the CSS you want converted to TS and try again 🌹');
@@ -41,7 +61,9 @@ CodeMirror.commands[commands.additionalEditorCommands.cssToTs] = (editor: CodeMi
  * https://www.npmjs.com/package/htmltojsx
  */
 import {StyleParser} from "./htmlToJsx/htmlToJsx";
-export function convert(content: string, indentSize: number) {
-    const style = new StyleParser(styles)
-    return style.toJSXString();
+export function convert(content: string): { asLines: string[], asString: string } {
+    const style = new StyleParser(content);
+    const asLines = style.toJSXString().split(',').map(x => x.trim());
+    const asString = asLines.join(',\n');
+    return { asLines, asString };
 }
