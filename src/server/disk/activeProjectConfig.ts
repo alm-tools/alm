@@ -129,7 +129,7 @@ export function sync() {
     });
 }
 
-/** call this after we have some verified project config */
+/** ensures that the `projectConfig` can actually be parsed. If so propogates the set event. */
 export function syncCore(projectConfig:AvailableProjectConfig){
     let activeProjectName = (activeProjectConfigDetails && activeProjectConfigDetails.name);
 
