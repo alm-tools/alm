@@ -20,10 +20,10 @@ import {CodeEditor} from "./codemirror/codeEditor";
 import {RefactoringsByFilePath, Refactoring} from "../common/types";
 
 // Wire up the code mirror command to come here
-CodeMirror.commands[commands.additionalEditorCommands.htmlToTsx] = (editor: CodeMirror.EditorFromTextArea) => {
+CodeMirror.commands[commands.additionalEditorCommands.cssToTs] = (editor: CodeMirror.EditorFromTextArea) => {
     let doc = editor.getDoc();
     let filePath = editor.filePath;
-    if (doc.somethingSelected()){
+    if (doc.somethingSelected()) {
         var selection = doc.listSelections()[0]; // only the first is formatted at the moment
         let from = selection.anchor;
         let to = selection.head;
@@ -31,7 +31,7 @@ CodeMirror.commands[commands.additionalEditorCommands.htmlToTsx] = (editor: Code
         doc.replaceSelection(convert(doc.getSelection(), indentSize));
     }
     else {
-        ui.notifyWarningNormalDisappear('Please select the HTML you want converted to TSX and try again 🌹');
+        ui.notifyWarningNormalDisappear('Please select the CSS you want converted to TS and try again 🌹');
     }
 }
 
@@ -40,10 +40,8 @@ CodeMirror.commands[commands.additionalEditorCommands.htmlToTsx] = (editor: Code
  * https://github.com/reactjs/react-magic
  * https://www.npmjs.com/package/htmltojsx
  */
-import {HTMLtoJSX} from "./htmlToJsx/htmlToJsx";
+import {StyleParser} from "./htmlToJsx/htmlToJsx";
 export function convert(content: string, indentSize: number) {
-    var indent = Array(indentSize + 1).join(' ');
-    var converter = new HTMLtoJSX({ indent: indent, createClass: false });
-    var output = converter.convert(content);
-    return output;
+    const style = new StyleParser(styles)
+    return style.toJSXString();
 }

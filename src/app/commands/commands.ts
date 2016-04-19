@@ -419,6 +419,7 @@ export let additionalEditorCommands = {
     toggleBlaster: '',
     gitResetFile: '',
     htmlToTsx: '',
+    cssToTs: '',
     goToLine: '',
 }
 utils.stringEnum(additionalEditorCommands);
@@ -574,6 +575,12 @@ new UICommand({
     context: CommandContext.Editor,
     editorCommandName: additionalEditorCommands.htmlToTsx,
 })
+new UICommand({
+    description: 'Editor: CSS to TS',
+    context: CommandContext.Editor,
+    editorCommandName: additionalEditorCommands.cssToTs,
+})
+
 
 /* DEBUG
 console.table(
