@@ -81,7 +81,7 @@
     "react-draggable": "^1.0.2",
     "react-modal": "^0.6.1",
     "react-redux": "^4.0.0",
-    "react-toggle": "^2.0.1",
+    "react-toggle": "2.1.0",
     "redux": "^3.0.4",
     "style-loader": "^0.12.3",
     "toastr": "^2.1.2",
