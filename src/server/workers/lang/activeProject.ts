@@ -16,6 +16,7 @@ import {makeBlandError} from "../../../common/utils";
 import {TypedEvent} from "../../../common/events";
 import equal = require('deep-equal');
 import * as chalk from "chalk";
+import {AvailableProjectConfig} from "../../../common/types";
 
 import {master as masterType} from "./projectServiceContract";
 let master: typeof masterType;
@@ -163,7 +164,7 @@ namespace ConfigFile {
      * This explicilty loads the project from the filesystem
      * For (lib.d.ts) and other (.d.ts files where project is not found) creation is done in memory
      */
-    export function getConfigFileFromDiskOrInMemory(config: ActiveProjectConfigDetails): types.TypeScriptConfigFileDetails {
+    export function getConfigFileFromDiskOrInMemory(config: AvailableProjectConfig): types.TypeScriptConfigFileDetails {
         if (!config.tsconfigFilePath) {
             // TODO: THIS isn't RIGHT ...
             // as this function is designed to work *from a single source file*.

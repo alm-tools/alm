@@ -9,6 +9,7 @@ import * as ui from "./ui";
 import {cast,server} from "../socket/socketClient";
 import * as commands from "./commands/commands";
 import * as types from "../common/types";
+import {AvailableProjectConfig} from "../common/types";
 import {Clipboard} from "./clipboard";
 import {PendingRequestsIndicator} from "./pendingRequestsIndicator";
 import {Icon} from "./icon";
@@ -30,7 +31,7 @@ let notificationKeyboardStyle = {
 export interface Props {
     // from react-redux ... connected below
     errorsExpanded?: boolean;
-    activeProject?: ActiveProjectConfigDetails;
+    activeProject?: AvailableProjectConfig;
     activeProjectFiles?: { [filePath: string]: boolean };
     selectedTabIndex?: number;
     errorsUpdate?: LimitedErrorsUpdate;

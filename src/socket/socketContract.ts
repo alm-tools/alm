@@ -1,6 +1,7 @@
 import * as sl from "../socketLib/socketLib";
 import {QRFunction, QRServerFunction, TypedEvent} from "../socketLib/socketLib";
 import * as types from "../common/types";
+import {AvailableProjectConfig} from "../common/types";
 
 /**
  * Consists of the following contracts
@@ -32,9 +33,9 @@ export var server = {
     /**
      * config stuff
      */
-    availableProjects: {} as QRFunction<{}, ActiveProjectConfigDetails[]>,
-    getActiveProjectConfigDetails: {} as QRFunction<{}, ActiveProjectConfigDetails>,
-    setActiveProjectConfigDetails: {} as QRFunction<ActiveProjectConfigDetails, {}>,
+    availableProjects: {} as QRFunction<{}, AvailableProjectConfig[]>,
+    getActiveProjectConfigDetails: {} as QRFunction<{}, AvailableProjectConfig>,
+    setActiveProjectConfigDetails: {} as QRFunction<AvailableProjectConfig, {}>,
     isFilePathInActiveProject: {} as QRFunction<{ filePath: string }, { inActiveProject: boolean }>,
     setOpenUITabs: {} as QRFunction<{ sessionId: string, openTabs: types.SessionTabInUI[] }, {}>,
     getOpenUITabs: {} as QRFunction<{ sessionId: id }, { sessionId: string; openTabs: types.SessionTabInUI[] }>,
@@ -106,10 +107,10 @@ export var cast = {
     errorsUpdated: new TypedEvent<LimitedErrorsUpdate>(),
 
     /** Available projects updated */
-    availableProjectsUpdated: new TypedEvent<ActiveProjectConfigDetails[]>(),
+    availableProjectsUpdated: new TypedEvent<AvailableProjectConfig[]>(),
 
     /** Active project name updated */
-    activeProjectConfigDetailsUpdated: new TypedEvent<ActiveProjectConfigDetails>(),
+    activeProjectConfigDetailsUpdated: new TypedEvent<AvailableProjectConfig>(),
 
     /** Active project files` */
     activeProjectFilePathsUpdated: new TypedEvent<{filePaths:string[]}>(),

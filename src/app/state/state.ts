@@ -1,6 +1,7 @@
 import * as types from "../../common/types";
 import {SimpleRedux} from "./simpleRedux";
 import * as utils from "../../common/utils";
+import {AvailableProjectConfig} from "../../common/types";
 
 export interface TabInstance {
     id: string;
@@ -10,7 +11,7 @@ export interface TabInstance {
 
 /** make sure you update initial state */
 export interface StoreState {
-    activeProject?: ActiveProjectConfigDetails;
+    activeProject?: AvailableProjectConfig;
     errorsExpanded?: boolean;
     errorsUpdate?: LimitedErrorsUpdate;
     /** Is the current file in the activeProject */
@@ -71,7 +72,7 @@ export var getState = redux.getState;
 export var subscribe = redux.subscribe;
 export let subscribeSub = redux.subscribeSub;
 
-export let setActiveProject = redux.add('setActiveProject', (state, payload: ActiveProjectConfigDetails): StoreState => {
+export let setActiveProject = redux.add('setActiveProject', (state, payload: AvailableProjectConfig): StoreState => {
     return {
         activeProject: payload,
     };

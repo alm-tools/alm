@@ -9,7 +9,7 @@ import fs = require('fs');
 import ts = require('ntypescript');
 import * as json from "../../../../common/json";
 import {makeBlandError} from "../../../../common/utils";
-import {UsefulFromPackageJson, TypeScriptProjectSpecification, TypeScriptConfigFileDetails} from "../../../../common/types";
+import {PackageJsonParsed, ParsedTsconfigJson, TypeScriptConfigFileDetails} from "../../../../common/types";
 
 import simpleValidator = require('./simpleValidator');
 var types = simpleValidator.types;
@@ -139,8 +139,6 @@ interface TypeScriptProjectRawSpecification {
     formatCodeOptions?: formatting.FormatCodeOptions;   // optional: formatting options
     compileOnSave?: boolean;                            // optional: compile on save. Ignored to build tools. Used by IDEs
     buildOnSave?: boolean;
-    externalTranspiler?: string | { name: string; options?: any };
-    scripts?: { postbuild?: string };
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -296,14 +294,13 @@ export function getDefaultInMemoryProject(srcFile: string): TypeScriptConfigFile
     files = increaseProjectForReferenceAndImports(files);
     files = uniq(files.map(fsu.consistentPath));
 
-    let project: TypeScriptProjectSpecification = {
+    let project: ParsedTsconfigJson = {
         compilerOptions: defaults,
         files,
         typings: typings.ours.concat(typings.implicit),
         formatCodeOptions: formatting.defaultFormatCodeOptions(),
         compileOnSave: true,
         buildOnSave: false,
-        scripts: {},
     };
 
     return {
@@ -390,7 +387,7 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
     // Remove all relativeness
     projectSpec.files = projectSpec.files.map((file) => path.resolve(projectFileDirectory, file));
 
-    var pkg: UsefulFromPackageJson = null;
+    var pkg: PackageJsonParsed = null;
     try {
         var packagePath = travelUpTheDirectoryTreeTillYouFind(projectFileDirectory, 'package.json');
         if (packagePath) {
@@ -408,7 +405,7 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
         // console.error('no package.json found', projectFileDirectory, ex.message);
     }
 
-    var project: TypeScriptProjectSpecification = {
+    var project: ParsedTsconfigJson = {
         compilerOptions: {},
         files: projectSpec.files.map(x => path.resolve(projectFileDirectory, x)),
         filesGlob: projectSpec.filesGlob,
@@ -416,8 +413,6 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
         compileOnSave: projectSpec.compileOnSave == undefined ? true : projectSpec.compileOnSave,
         package: pkg,
         typings: [],
-        externalTranspiler: projectSpec.externalTranspiler == undefined ? undefined : projectSpec.externalTranspiler,
-        scripts: projectSpec.scripts || {},
         buildOnSave: !!projectSpec.buildOnSave,
     };
 

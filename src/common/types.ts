@@ -171,6 +171,19 @@ export interface EditorOptions {
  * TSConfig details
  */
 
+/**
+ * These are the projects that the user can select from.
+ * Just the name and config path really
+ */
+export interface AvailableProjectConfig {
+    name: string;
+    isImplicit: boolean;
+    tsconfigFilePath?: string;
+}
+
+/**
+ * Project Data : the config file + all the file path contents
+ */
 export interface FilePathWithContent {
     filePath: string;
     contents: string;
@@ -180,7 +193,10 @@ export interface ProjectDataLoaded {
     filePathWithContents: FilePathWithContent[];
 }
 
-export interface UsefulFromPackageJson {
+/**
+ * Our analysis of stuff we want from package.json
+ */
+export interface PackageJsonParsed {
     /** We need this as this is the name the user is going to import **/
     name: string;
     /** we need this to figure out the basePath (will depend on how `outDir` is relative to this directory) */
@@ -194,7 +210,7 @@ export interface UsefulFromPackageJson {
  * This is `TypeScriptProjectRawSpecification` parsed further
  * Designed for use throughout out code base
  */
-export interface TypeScriptProjectSpecification {
+export interface ParsedTsconfigJson {
     compilerOptions: ts.CompilerOptions;
     files: string[];
     typings: string[]; // These are considered externs for .d.ts. Note : duplicated in files
@@ -202,9 +218,7 @@ export interface TypeScriptProjectSpecification {
     formatCodeOptions: ts.FormatCodeOptions;
     compileOnSave: boolean;
     buildOnSave: boolean;
-    package?: UsefulFromPackageJson;
-    externalTranspiler?: string | { name: string; options?: any };
-    scripts: { postbuild?: string };
+    package?: PackageJsonParsed;
 }
 
 export interface TypeScriptConfigFileDetails {
@@ -212,6 +226,6 @@ export interface TypeScriptConfigFileDetails {
     projectFileDirectory: string;
     /** The actual path of the project file (including tsconfig.json) */
     projectFilePath: string;
-    project: TypeScriptProjectSpecification;
+    project: ParsedTsconfigJson;
     inMemory: boolean;
 }

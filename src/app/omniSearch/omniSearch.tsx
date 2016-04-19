@@ -14,6 +14,7 @@ import {Icon} from "../icon";
 import {TypedEvent} from "../../common/events";
 import * as state from "../state/state";
 import * as types from "../../common/types";
+import {AvailableProjectConfig} from "../../common/types";
 import * as CodeMirror from "codemirror";
 import {Robocop} from "../robocop";
 import * as utils from "../../common/utils";
@@ -230,7 +231,7 @@ class SearchState {
     filePaths: string [] = [];
     filePathsCompleted: boolean = false;
     /** project */
-    availableProjects: ActiveProjectConfigDetails[] = [];
+    availableProjects: AvailableProjectConfig[] = [];
     /** commands */
     commands = commands.commandRegistry;
     /** symols */
@@ -380,7 +381,7 @@ class SearchState {
         }
 
         if (this.mode == SearchMode.Project){
-            let filteredProjects: ActiveProjectConfigDetails[] = this.filteredValues;
+            let filteredProjects: AvailableProjectConfig[] = this.filteredValues;
             renderedResults = this.createRenderedForList(filteredProjects,(project)=>{
                 // Create rendered
                 let matched = renderMatchedSegments(project.name,this.parsedFilterValue);
@@ -487,7 +488,7 @@ class SearchState {
         }
 
         if (this.mode == SearchMode.Project) {
-            let activeProject: ActiveProjectConfigDetails = this.filteredValues[index];
+            let activeProject: AvailableProjectConfig = this.filteredValues[index];
             if (activeProject) {
                 server.setActiveProjectConfigDetails(activeProject);
                 state.setActiveProject(activeProject);
@@ -574,7 +575,7 @@ class SearchState {
 
             if (this.mode == SearchMode.Project) {
                 this.filteredValues = this.parsedFilterValue
-                    ? getFilteredItems<ActiveProjectConfigDetails>({ items: this.availableProjects, textify: (p) => p.name, filterValue: this.parsedFilterValue })
+                    ? getFilteredItems<AvailableProjectConfig>({ items: this.availableProjects, textify: (p) => p.name, filterValue: this.parsedFilterValue })
                     : this.availableProjects;
             }
 

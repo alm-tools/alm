@@ -12,6 +12,7 @@ import {TypedEvent} from "../../common/events";
 import * as utils from "../../common/utils";
 import * as tsconfig from "../workers/lang/core/tsconfig";
 import * as types from "../../common/types";
+import {AvailableProjectConfig} from "../../common/types";
 
 /** Disk access / session stuff */
 import * as session from "./session";
@@ -25,8 +26,8 @@ import * as fsu from "../utils/fsu";
  * Global variables
  */
 /** The active project name */
-let activeProjectConfigDetails: ActiveProjectConfigDetails = null;
-export let activeProjectConfigDetailsUpdated = new TypedEvent<ActiveProjectConfigDetails>();
+let activeProjectConfigDetails: AvailableProjectConfig = null;
+export let activeProjectConfigDetailsUpdated = new TypedEvent<AvailableProjectConfig>();
 
 /** Only if the file is valid will we end up here */
 let configFile: types.TypeScriptConfigFileDetails = null;
@@ -80,7 +81,7 @@ export function start() {
 }
 
 /** All the available projects */
-export const availableProjects = new TypedEvent<ActiveProjectConfigDetails[]>();
+export const availableProjects = new TypedEvent<AvailableProjectConfig[]>();
 function refreshAvailableProjects() {
     return flm.filePathsCompleted.current().then((list) => {
         // Detect some tsconfig.json
@@ -91,7 +92,7 @@ function refreshAvailableProjects() {
             return weightConfig(a) - weightConfig(b);
         });
 
-        let projectConfigs: ActiveProjectConfigDetails[] = tsconfigs.map(Utils.tsconfigToActiveProjectConfigDetails);
+        let projectConfigs: AvailableProjectConfig[] = tsconfigs.map(Utils.tsconfigToActiveProjectConfigDetails);
 
         // If no tsconfigs add an implicit one!
         if (projectConfigs.length == 0) {
@@ -107,7 +108,7 @@ function refreshAvailableProjects() {
 
 /** General purpose utility functions specific to this file */
 namespace Utils {
-    export function tsconfigToActiveProjectConfigDetails(tsconfig: string): ActiveProjectConfigDetails {
+    export function tsconfigToActiveProjectConfigDetails(tsconfig: string): AvailableProjectConfig {
         let relative = workingDir.makeRelative(tsconfig);
         let isNodeModule = relative.includes('node_modules');
         return {
@@ -129,7 +130,7 @@ export function sync() {
 }
 
 /** call this after we have some verified project config */
-export function syncCore(projectConfig:ActiveProjectConfigDetails){
+export function syncCore(projectConfig:AvailableProjectConfig){
     let activeProjectName = (activeProjectConfigDetails && activeProjectConfigDetails.name);
 
     try {
@@ -180,7 +181,7 @@ namespace ConfigFile {
      * This explicilty loads the project from the filesystem
      * For (lib.d.ts) and other (.d.ts files where project is not found) creation is done in memory
      */
-    export function getConfigFileFromDiskOrInMemory(config: ActiveProjectConfigDetails): types.TypeScriptConfigFileDetails {
+    export function getConfigFileFromDiskOrInMemory(config: AvailableProjectConfig): types.TypeScriptConfigFileDetails {
         if (!config.tsconfigFilePath) {
             // TODO: THIS isn't RIGHT ...
             // as this function is designed to work *from a single source file*.

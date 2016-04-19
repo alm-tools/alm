@@ -9,8 +9,9 @@ import * as fmc from "./fileModelCache";
 import * as tsconfig from "../workers/lang/core/tsconfig";
 import * as typescriptDir from "../workers/lang/core/typeScriptDir";
 import * as types from "../../common/types";
+import {AvailableProjectConfig} from "../../common/types";
 
-export function getProjectDataLoaded(activeProjectConfigDetails: ActiveProjectConfigDetails): ProjectDataLoaded {
+export function getProjectDataLoaded(activeProjectConfigDetails: AvailableProjectConfig): ProjectDataLoaded {
 
     const configFile: TypeScriptConfigFileDetails = tsconfig.getProjectSync(activeProjectConfigDetails.tsconfigFilePath);
 
