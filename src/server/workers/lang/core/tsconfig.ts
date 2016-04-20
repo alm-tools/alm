@@ -9,7 +9,8 @@ import fs = require('fs');
 import ts = require('ntypescript');
 import * as json from "../../../../common/json";
 import {makeBlandError} from "../../../../common/utils";
-import {PackageJsonParsed, ParsedTsconfigJson, TypeScriptConfigFileDetails} from "../../../../common/types";
+import {PackageJsonParsed, TsconfigJsonParsed, TypeScriptConfigFileDetails} from "../../../../common/types";
+import {increaseCompilationContext} from "./compilationContextExpander";
 
 import simpleValidator = require('./simpleValidator');
 var types = simpleValidator.types;
@@ -291,10 +292,10 @@ export function getDefaultInMemoryProject(srcFile: string): TypeScriptConfigFile
 
     var files = [srcFile];
     var typings = getDefinitionsForNodeModules(dir, files);
-    files = increaseProjectForReferenceAndImports(files);
+    files = increaseCompilationContext(files);
     files = uniq(files.map(fsu.consistentPath));
 
-    let project: ParsedTsconfigJson = {
+    let project: TsconfigJsonParsed = {
         compilerOptions: defaults,
         files,
         typings: typings.ours.concat(typings.implicit),
@@ -405,7 +406,7 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
         // console.error('no package.json found', projectFileDirectory, ex.message);
     }
 
-    var project: ParsedTsconfigJson = {
+    var project: TsconfigJsonParsed = {
         compilerOptions: {},
         files: projectSpec.files.map(x => path.resolve(projectFileDirectory, x)),
         filesGlob: projectSpec.filesGlob,
@@ -429,7 +430,7 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
     project.compilerOptions = rawToTsCompilerOptions(projectSpec.compilerOptions, projectFileDirectory);
 
     // Expand files to include references
-    project.files = increaseProjectForReferenceAndImports(project.files);
+    project.files = increaseCompilationContext(project.files);
 
     // Expand files to include node_modules / package.json / typescript.definition
     var typings = getDefinitionsForNodeModules(dir, project.files);
@@ -477,80 +478,6 @@ export function createProjectRootSync(srcFile: string, defaultOptions: ts.Compil
 /////////////////////////////////////////////
 /////////////// UTILITIES ///////////////////
 /////////////////////////////////////////////
-
-function increaseProjectForReferenceAndImports(files: string[]): string[] {
-
-    var filesMap = simpleValidator.createMap(files);
-    var willNeedMoreAnalysis = (file: string) => {
-        if (!filesMap[file]) {
-            filesMap[file] = true;
-            files.push(file);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    var getReferencedOrImportedFiles = (files: string[]): string[] => {
-        var referenced: string[][] = [];
-
-        files.forEach(file => {
-            try {
-                var content = fmc.getOrCreateOpenFile(file).getContents();
-            }
-            catch (ex) {
-                // if we cannot read a file for whatever reason just quit
-                return;
-            }
-            var preProcessedFileInfo = ts.preProcessFile(content, true),
-                dir = path.dirname(file);
-
-            let extensions = ['.ts', '.d.ts', '.tsx'];
-            function getIfExists(filePathNoExt: string) {
-                for (let ext of extensions) {
-                    if (fs.existsSync(filePathNoExt + ext)) {
-                        return filePathNoExt + ext;
-                    }
-                }
-            }
-
-            referenced.push(
-                preProcessedFileInfo.referencedFiles.map(fileReference => {
-                    // We assume reference paths are always relative
-                    var file = path.resolve(dir, fsu.consistentPath(fileReference.fileName));
-                    // Try by itself then with extensions
-                    if (fs.existsSync(file)) {
-                        return file;
-                    }
-                    return getIfExists(file);
-                }).filter(file => !!file)
-                    .concat(
-                    preProcessedFileInfo.importedFiles
-                        .filter((fileReference) => pathIsRelative(fileReference.fileName))
-                        .map(fileReference => {
-                            let fileNoExt = path.resolve(dir, fileReference.fileName);
-                            let file = getIfExists(fileNoExt);
-                            if (!file) {
-                                file = getIfExists(`${file}/index`);
-                            }
-                            return file;
-                        }).filter(file => !!file)
-                    )
-            );
-        });
-
-        return selectMany(referenced);
-    }
-
-    var more = getReferencedOrImportedFiles(files)
-        .filter(willNeedMoreAnalysis);
-    while (more.length) {
-        more = getReferencedOrImportedFiles(files)
-            .filter(willNeedMoreAnalysis);
-    }
-
-    return files;
-}
 
 /** There can be only one typing by name */
 interface Typings {
@@ -692,12 +619,6 @@ export function prettyJSON(object: any): string {
     return value;
 }
 
-// Not particularly awesome e.g. '/..foo' will be not relative
-export function pathIsRelative(str: string) {
-    if (!str.length) return false;
-    return str[0] == '.' || str.substring(0, 2) == "./" || str.substring(0, 3) == "../";
-}
-
 // Not optimized
 function selectMany<T>(arr: T[][]): T[] {
     var result = [];
@@ -769,7 +690,7 @@ export function travelUpTheDirectoryTreeTillYouFind(dir: string, fileOrDirectory
 }
 
 export function getPotentiallyRelativeFile(basePath: string, filePath: string) {
-    if (pathIsRelative(filePath)) {
+    if (fsu.isRelative(filePath)) {
         return fsu.consistentPath(path.resolve(basePath, filePath));
     }
     return fsu.consistentPath(filePath);

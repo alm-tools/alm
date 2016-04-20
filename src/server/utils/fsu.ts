@@ -75,3 +75,13 @@ export var isAbsolute = (filePath: string) => path.isAbsolute(filePath);
 
 /** is the filePath a directory? */
 export var isDir = (filePath: string): boolean => fs.lstatSync(filePath).isDirectory();
+
+/**
+ * See if path is relative.
+ */
+//  Not particularly awesome e.g. '/..foo' will be not relative ,
+//  but it shouldn't matter as the significance is really about if `cwd` matters
+export function isRelative(str: string) {
+    if (!str.length) return false;
+    return str[0] == '.' || str.substring(0, 2) == "./" || str.substring(0, 3) == "../";
+}

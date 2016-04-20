@@ -1,8 +1,8 @@
-import {pathIsRelative} from "../core/tsconfig";
 import {consistentPath} from "../../../utils/fsu";
 import tsconfig = require("../core/tsconfig");
 import * as path from "path";
 import * as fs from "fs";
+import {isRelative} from "../../../utils/fsu";
 import {getSourceFileImports} from "./astUtils";
 import {Types} from "../../../../socket/socketContract";
 import * as types from "../../../../common/types";
@@ -15,7 +15,7 @@ export function getProgramDependencies(projectFile: types.TypeScriptConfigFileDe
         var dir = path.dirname(filePath);
 
         var targets = getSourceFileImports(file)
-            .filter((fileReference) => pathIsRelative(fileReference))
+            .filter((fileReference) => isRelative(fileReference))
             .map(fileReference => {
             var file = path.resolve(dir, fileReference + '.ts');
             if (!fs.existsSync(file)) {

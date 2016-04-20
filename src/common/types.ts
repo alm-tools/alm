@@ -210,7 +210,7 @@ export interface PackageJsonParsed {
  * This is `TypeScriptProjectRawSpecification` parsed further
  * Designed for use throughout out code base
  */
-export interface ParsedTsconfigJson {
+export interface TsconfigJsonParsed {
     compilerOptions: ts.CompilerOptions;
     files: string[];
     typings: string[]; // These are considered externs for .d.ts. Note : duplicated in files
@@ -226,6 +226,6 @@ export interface TypeScriptConfigFileDetails {
     projectFileDirectory: string;
     /** The actual path of the project file (including tsconfig.json) */
     projectFilePath: string;
-    project: ParsedTsconfigJson;
+    project: TsconfigJsonParsed;
     inMemory: boolean;
 }
