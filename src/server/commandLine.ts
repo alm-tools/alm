@@ -10,21 +10,7 @@ export const defaultPort = process.env.PORT /* the port by Windows azure */
 
 const defaultHost = '0.0.0.0';
 
-var argv: {
-    t?: number;
-    d?: string;
-    o?: boolean;
-    p?: string;
-    safe?: boolean;
-    i?: boolean;
-    b?: boolean;
-    h?: string;
-    httpskey?: string;
-    httpscert?: string;
-    user?: string;
-    pass?: string;
-    _?: string[];
-} = minimist(process.argv.slice(2), {
+const minimistOpts: minimist.Opts = {
     string: ['dir', 'config', 'host', 'httpskey', 'httpscert', 'user', 'pass'],
     boolean: ['open', 'safe', 'init', 'build'],
     alias: {
@@ -42,7 +28,23 @@ var argv: {
         o: true,
         h: defaultHost
     }
-});
+};
+
+var argv: {
+    t?: number;
+    d?: string;
+    o?: boolean;
+    p?: string;
+    safe?: boolean;
+    i?: boolean;
+    b?: boolean;
+    h?: string;
+    httpskey?: string;
+    httpscert?: string;
+    user?: string;
+    pass?: string;
+    _?: string[];
+} = minimist(process.argv.slice(2), minimistOpts);
 
 interface CommandLineOptions {
     port: number;
@@ -62,6 +64,8 @@ interface CommandLineOptions {
     pass?: string;
 }
 export let getOptions = utils.once((): CommandLineOptions => {
+    protectAgainstLongStringsWithSingleDash();
+
     let options: CommandLineOptions = {
         port: argv.t,
         dir: argv.d,
@@ -122,3 +126,19 @@ export let getOptions = utils.once((): CommandLineOptions => {
 
     return options;
 });
+
+
+/**
+ * E.g. the user does `-user` instead of `--user`
+ */
+function protectAgainstLongStringsWithSingleDash(){
+    const singleDashMatchers:string[] =
+        (minimistOpts.string as string[]).concat(minimistOpts.boolean as string[])
+        .map(x=>'-' + x);
+    const args = process.argv.slice(2);
+    const didUserTypeWithJustOneDash = args.filter(arg=>singleDashMatchers.some(ss=>ss==arg));
+    if (didUserTypeWithJustOneDash.length){
+        console.log(chalk.red('You provided the following arguments with a single dash. You probably meant to provide double dashes (--)'), didUserTypeWithJustOneDash);
+        process.exit(1);
+    }
+}
