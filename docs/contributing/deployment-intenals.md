@@ -8,4 +8,3 @@ We have an npm `postversion` script setup to run `git push --follow-tags` which 
 * Toggle switch on travis using https://travis-ci.org/
 * NPM deploy setup by simply running `travis setup npm` (you get `travis` from `gem install travis`). Then setup the API key using https://github.com/npm/npm/issues/8970#issuecomment-122854271
 * `all_branches` in `.travis.yml` is set to `true` because of https://github.com/travis-ci/travis-ci/issues/1675#issuecomment-37851765
-* Had to upgrade the travis `npm` to `v3` because of https://github.com/alm-tools/alm/issues/59. Done using https://github.com/travis-ci/travis-ci/issues/4653#issuecomment-194051953
