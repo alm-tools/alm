@@ -408,14 +408,14 @@ export function getJSOutputStatus(query: Types.FilePathQuery, autoEmit = true): 
     const jsFile = output.outputFiles.filter(x => x.name.endsWith(".js"))[0];
 
     /**
-     * We just write to disk for now
+     * We just read/write from disk for now
      * Would be better if it interacted with master
      */
     const getContents = (filePath: string) => fsu.existsSync(filePath) ? fsu.readFile(filePath) : '';
     const setContents = fsu.writeFile;
 
     /**
-     * If we have compileOnSave as false then the output status isn't relevant
+     * Note: If we have compileOnSave as false then the output status isn't relevant
      */
     let state = output.emitSkipped ? types.JSOutputState.EmitSkipped
         : (project.configFile.project.compileOnSave === false) || !jsFile ? types.JSOutputState.NoJSFile
