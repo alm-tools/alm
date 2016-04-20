@@ -41,9 +41,10 @@ const server = useHttps
     : http.createServer(app);
 
 // Basic auth
-if (clOptions.user && clOptions.pass) {
-    var basicAuth = require('basic-auth-connect');
-    app.use(basicAuth(clOptions.user, clOptions.pass));
+if (clOptions.auth) {
+    const basicAuth = require('basic-auth-connect');
+    const [user,pass] = clOptions.auth.split(':');
+    app.use(basicAuth(user, pass));
 }
 
 // Everything uses cookies

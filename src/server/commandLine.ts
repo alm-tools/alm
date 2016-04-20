@@ -11,7 +11,7 @@ export const defaultPort = process.env.PORT /* the port by Windows azure */
 const defaultHost = '0.0.0.0';
 
 const minimistOpts: minimist.Opts = {
-    string: ['dir', 'config', 'host', 'httpskey', 'httpscert', 'user', 'pass'],
+    string: ['dir', 'config', 'host', 'httpskey', 'httpscert', 'auth'],
     boolean: ['open', 'safe', 'init', 'build'],
     alias: {
         't': ['port'],
@@ -20,7 +20,8 @@ const minimistOpts: minimist.Opts = {
         'p': ['project'],
         'i': ['init'],
         'b': ['build'],
-        'h': ['host']
+        'h': ['host'],
+        'a': ['auth']
     },
     default: {
         t: defaultPort,
@@ -41,8 +42,7 @@ var argv: {
     h?: string;
     httpskey?: string;
     httpscert?: string;
-    user?: string;
-    pass?: string;
+    auth?: string;
     _?: string[];
 } = minimist(process.argv.slice(2), minimistOpts);
 
@@ -60,8 +60,7 @@ interface CommandLineOptions {
     httpskey?: string;
     httpscert?: string;
 
-    user?: string;
-    pass?: string;
+    auth?: string;
 }
 export let getOptions = utils.once((): CommandLineOptions => {
     protectAgainstLongStringsWithSingleDash();
@@ -78,8 +77,7 @@ export let getOptions = utils.once((): CommandLineOptions => {
         host: argv.h,
         httpskey: argv.httpskey,
         httpscert: argv.httpscert,
-        user: argv.user,
-        pass: argv.pass
+        auth: argv.auth,
     }
     if (typeof options.port !== 'number') {
         options.port = defaultPort;

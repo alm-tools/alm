@@ -14,5 +14,4 @@ If you want to host the server publicly here are few more options that are helpf
 * `--httpskey`: path to a `.key` file
 * `--httpscert`: path to a `.cert` file
 * `--host`: By default we listen on `0.0.0.0` i.e. all local host names. You can restrict that by providing your own name e.g. `foo-pac-machine`
-* `--user`: Password required for basic auth
-* `--pass`: Password required for basic auth
+* `--auth`: `username:password` e.g. `--auth someusername:somepassword` (alias `-a`)
