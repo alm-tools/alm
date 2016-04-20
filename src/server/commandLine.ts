@@ -138,7 +138,7 @@ function protectAgainstLongStringsWithSingleDash(){
     const args = process.argv.slice(2);
     const didUserTypeWithJustOneDash = args.filter(arg=>singleDashMatchers.some(ss=>ss==arg));
     if (didUserTypeWithJustOneDash.length){
-        console.log(chalk.red('You provided the following arguments with a single dash. You probably meant to provide double dashes (--)'), didUserTypeWithJustOneDash);
+        console.log(chalk.red('You provided the following arguments with a single dash (-foo). You probably meant to provide double dashes (--foo)'), didUserTypeWithJustOneDash);
         process.exit(1);
     }
 }
