@@ -45,7 +45,7 @@ export const fileEdited = updateEmitForFile;
 export const fileChangedOnDisk = updateEmitForFile;
 export const fileSaved = updateEmitForFile;
 export const doCompleteProjectCacheUpdate = (proj: project.Project) => {
-    console.log('[EMIT] Starting');
+    console.log('[EMIT] Starting emit');
     outputStatusCache = {};
     proj.getProjectSourceFiles().forEach(sf=>{
         const filePath = sf.fileName;
@@ -53,5 +53,5 @@ export const doCompleteProjectCacheUpdate = (proj: project.Project) => {
         outputStatusCache[filePath] = res.outputStatus;
     });
     completeOutputStatusCacheUpdated.emit(outputStatusCache);
-    console.log('[EMIT] Complete');
+    console.log('[EMIT] Completed emit');
 }
