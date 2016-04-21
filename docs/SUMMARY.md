@@ -4,6 +4,7 @@
   * [Editor](/features/editor.md)
     * [Tabs](/features/tabs.md)
   * [TypeScript](/features/typescript.md)
+    * [CSS to TS](/features/css-to-ts.md)
   * [AutoComplete](/features/autocomplete.md)
   * [Git](/features/git.md)
   * [Dependency Analysis](/features/dependency.md)
