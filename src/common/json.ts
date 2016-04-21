@@ -70,8 +70,8 @@ export function stringify(object: Object, eol: string = '\n'): string {
             }
             return value;
         },
-        // indent 4 spaces
-        4);
+        // indent 2 spaces
+        2);
     value = value.split('\n').join(eol) + eol;
     cache = null;
     return value;

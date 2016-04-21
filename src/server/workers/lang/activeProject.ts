@@ -186,7 +186,7 @@ namespace ConfigFile {
         } catch (ex) {
             if (ex.message === tsconfig.errors.GET_PROJECT_NO_PROJECT_FOUND) {
                 // If we have a .d.ts file then it is its own project and return
-                if (tsconfig.endsWith(filePath.toLowerCase(), '.d.ts')) {
+                if (filePath.toLowerCase().endsWith('.d.ts')) {
                     return tsconfig.getDefaultInMemoryProject(filePath);
                 }
                 else {

@@ -471,7 +471,7 @@ export function createProjectRootSync(srcFile: string, defaultOptions: ts.Compil
     projectSpec.compileOnSave = true;
     projectSpec.exclude = ["node_modules", "typings/browser", "typings/browser.d.ts"];
 
-    fs.writeFileSync(projectFilePath, prettyJSON(projectSpec));
+    fs.writeFileSync(projectFilePath, json.stringify(projectSpec, os.EOL));
     return getProjectSync(srcFile);
 }
 
@@ -479,66 +479,15 @@ export function createProjectRootSync(srcFile: string, defaultOptions: ts.Compil
 /////////////// UTILITIES ///////////////////
 /////////////////////////////////////////////
 
-export function prettyJSON(object: any): string {
-    var cache = [];
-    var value = JSON.stringify(object,
-        // fixup circular reference
-        function(key, value) {
-            if (typeof value === 'object' && value !== null) {
-                if (cache.indexOf(value) !== -1) {
-                    // Circular reference found, discard key
-                    return;
-                }
-                // Store value in our collection
-                cache.push(value);
-            }
-            return value;
-        },
-    // indent 2 spaces
-        2);
-    value = value.split('\n').join(os.EOL) + os.EOL;
-    cache = null;
-    return value;
-}
-
-// Not optimized
-function selectMany<T>(arr: T[][]): T[] {
-    var result = [];
-    for (var i = 0; i < arr.length; i++) {
-        for (var j = 0; j < arr[i].length; j++) {
-            result.push(arr[i][j]);
-        }
-    }
-    return result;
-}
-
-export function endsWith(str: string, suffix: string): boolean {
-    return str && str.indexOf(suffix, str.length - suffix.length) !== -1;
-}
 
 function uniq(arr: string[]): string[] {
     var map = simpleValidator.createMap(arr);
     return Object.keys(map);
 }
 
-/**
- * Converts "C:\boo" , "C:\boo\foo.ts" => "./foo.ts"; Works on unix as well.
- */
-export function makeRelativePath(relativeFolder: string, filePath: string) {
-    var relativePath = path.relative(relativeFolder, filePath).split('\\').join('/');
-    if (relativePath[0] !== '.') {
-        relativePath = './' + relativePath;
-    }
-    return relativePath;
-}
-
-export function removeExt(filePath: string) {
-    return filePath.substr(0, filePath.lastIndexOf('.'));
-}
-
 export function removeTrailingSlash(filePath: string) {
     if (!filePath) return filePath;
-    if (endsWith(filePath, '/')) return filePath.substr(0, filePath.length - 1);
+    if (filePath.endsWith('/')) return filePath.substr(0, filePath.length - 1);
     return filePath;
 }
 
