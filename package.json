@@ -13,7 +13,8 @@
     "resume": "bash ./scripts/resume.sh",
     "tsc": "ntsc -p ./src",
     "tscw": "ntsc -p ./src -w",
-    "typescript": "npm install ntypescript@latest --save --save-exact && npm run tsc",
+    "uts": "npm install ntypescript@latest --save --save-exact && npm run tsc",
+    "ucm": "npm install codemirror@latest --save --save-exact && npm run tsc",
     "postversion": "git push --follow-tags",
     "mochaw": "mocha ./src/tests -w"
   },
