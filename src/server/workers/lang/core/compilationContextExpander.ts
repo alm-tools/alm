@@ -1,7 +1,6 @@
 import {createMap, selectMany} from "../../../../common/utils";
 import * as fmc from "../../../disk/fileModelCache";
 import * as path from "path";
-import * as fs from "fs";
 import * as fsu from "../../../utils/fsu";
 
 /**
@@ -38,7 +37,7 @@ export function increaseCompilationContext(files: string[]): string[] {
             let extensions = ['.ts', '.d.ts', '.tsx'];
             function getIfExists(filePathNoExt: string) {
                 for (let ext of extensions) {
-                    if (fs.existsSync(filePathNoExt + ext)) {
+                    if (fsu.existsSync(filePathNoExt + ext)) {
                         return filePathNoExt + ext;
                     }
                 }
@@ -49,7 +48,7 @@ export function increaseCompilationContext(files: string[]): string[] {
                     // We assume reference paths are always relative
                     var file = path.resolve(dir, fsu.consistentPath(fileReference.fileName));
                     // Try by itself then with extensions
-                    if (fs.existsSync(file)) {
+                    if (fsu.existsSync(file)) {
                         return file;
                     }
                     return getIfExists(file);
