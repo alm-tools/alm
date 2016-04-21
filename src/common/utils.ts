@@ -27,6 +27,17 @@ export function createMapByKey<K extends MapKey,V>(arr: V[], getKey:(item:V)=>K)
     return result;
 }
 
+/**
+ * Turns keys into values and values into keys
+ */
+export function reverseKeysAndValues(obj: { [key: string]: string }): { [key: string]: string } {
+    var toret = {};
+    Object.keys(obj).forEach(function(key) {
+        toret[obj[key]] = key;
+    });
+    return toret;
+}
+
 /** Sloppy but effective code to find distinct */
 export function distinct(arr: string[]): string[] {
     var map = createMap(arr);

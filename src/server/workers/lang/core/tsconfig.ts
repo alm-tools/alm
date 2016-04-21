@@ -8,9 +8,9 @@ import * as fsu from "../../../utils/fsu";
 import fs = require('fs');
 import ts = require('ntypescript');
 import * as json from "../../../../common/json";
-import {makeBlandError} from "../../../../common/utils";
+import {makeBlandError,reverseKeysAndValues} from "../../../../common/utils";
 import {PackageJsonParsed, TsconfigJsonParsed, TypeScriptConfigFileDetails} from "../../../../common/types";
-import {increaseCompilationContext} from "./compilationContextExpander";
+import {increaseCompilationContext, getDefinitionsForNodeModules} from "./compilationContextExpander";
 
 import simpleValidator = require('./simpleValidator');
 var types = simpleValidator.types;
@@ -328,7 +328,7 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
     // Keep going up till we find the project file
     var projectFile = '';
     try {
-        projectFile = travelUpTheDirectoryTreeTillYouFind(dir, projectFileName);
+        projectFile = fsu.travelUpTheDirectoryTreeTillYouFind(dir, projectFileName);
     }
     catch (e) {
         let err: Error = e;
@@ -390,7 +390,7 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
 
     var pkg: PackageJsonParsed = null;
     try {
-        var packagePath = travelUpTheDirectoryTreeTillYouFind(projectFileDirectory, 'package.json');
+        var packagePath = fsu.travelUpTheDirectoryTreeTillYouFind(projectFileDirectory, 'package.json');
         if (packagePath) {
             let packageJSONPath = getPotentiallyRelativeFile(projectFileDirectory, packagePath);
             let parsedPackage = JSON.parse(fmc.getOrCreateOpenFile(packageJSONPath).getContents());
@@ -479,124 +479,6 @@ export function createProjectRootSync(srcFile: string, defaultOptions: ts.Compil
 /////////////// UTILITIES ///////////////////
 /////////////////////////////////////////////
 
-/** There can be only one typing by name */
-interface Typings {
-    [name: string]: {
-        filePath: string;
-        /** Right now its just INF as we don't do version checks. First one wins! */
-        version: number; // (Simple : maj * 1000000 + min). Don't care about patch
-    };
-}
-
-/**
- *  Spec
- *  We will expand on files making sure that we don't have a `typing` with the same name
- *  Also if two node_modules reference a similar sub project (and also recursively) then the one with latest `version` field wins
- */
-function getDefinitionsForNodeModules(projectDir: string, files: string[]): { ours: string[]; implicit: string[], packagejson: string[] } {
-    let packagejson = [];
-
-    /** TODO use later when we care about versions */
-    function versionStringToNumber(version: string): number {
-        var [maj, min, patch] = version.split('.');
-        return parseInt(maj) * 1000000 + parseInt(min);
-    }
-
-    var typings: Typings = {};
-
-    // Find our `typings` (anything in a typings folder with extension `.d.ts` is considered a typing)
-    // These are INF powerful
-    var ourTypings = files
-        .filter(f=> path.basename(path.dirname(f)) == 'typings' && endsWith(f, '.d.ts')
-            || path.basename(path.dirname(path.dirname(f))) == 'typings' && endsWith(f, '.d.ts'));
-    ourTypings.forEach(f=> typings[path.basename(f)] = { filePath: f, version: Infinity });
-    var existing = createMap(files.map(fsu.consistentPath));
-
-    function addAllReferencedFilesWithMaxVersion(file: string) {
-        var dir = path.dirname(file);
-        try {
-            var content = fmc.getOrCreateOpenFile(file).getContents();
-        }
-        catch (ex) {
-            // if we cannot read a file for whatever reason just quit
-            return;
-        }
-        var preProcessedFileInfo = ts.preProcessFile(content, true);
-        var files = preProcessedFileInfo.referencedFiles.map(fileReference => {
-            // We assume reference paths are always relative
-            var file = path.resolve(dir, fileReference.fileName);
-            // Try by itself, .d.ts
-            if (fs.existsSync(file)) {
-                return file;
-            }
-            if (fs.existsSync(file + '.d.ts')) {
-                return file + '.d.ts';
-            }
-        }).filter(f=> !!f);
-
-        // Only ones we don't have by name yet
-        // TODO: replace INF with an actual version
-        files = files
-            .filter(f => !typings[path.basename(f)] || typings[path.basename(f)].version > Infinity);
-        // Add these
-        files.forEach(f => typings[path.basename(f)] = { filePath: f, version: Infinity });
-        // Keep expanding
-        files.forEach(f=> addAllReferencedFilesWithMaxVersion(f));
-    }
-
-    // Keep going up till we find node_modules
-    // at that point read the `package.json` for each file in node_modules
-    // And then if that package.json has `typescript.definition` we import that file
-    try {
-        var node_modules = travelUpTheDirectoryTreeTillYouFind(projectDir, 'node_modules', true);
-
-        // For each sub directory of node_modules look at package.json and then `typescript.definition`
-        var moduleDirs = getDirs(node_modules);
-        for (let moduleDir of moduleDirs) {
-            try {
-                var package_json = JSON.parse(fmc.getOrCreateOpenFile(`${moduleDir}/package.json`).getContents());
-                packagejson.push(`${moduleDir}/package.json`);
-            }
-            catch (ex) {
-                // Can't read package.json ... no worries ... move on to other modules
-                continue;
-            }
-            if (package_json.typescript && package_json.typescript.definition) {
-
-                let file = path.resolve(moduleDir, './', package_json.typescript.definition);
-
-                typings[path.basename(file)] = {
-                    filePath: file,
-                    version: Infinity
-                };
-                // Also add any files that this `.d.ts` references as long as they don't conflict with what we have
-                addAllReferencedFilesWithMaxVersion(file);
-            }
-        }
-
-    }
-    catch (ex) {
-        if (ex.message == "not found") {
-            // Sure we didn't find node_modules
-            // Thats cool
-        }
-        // this is best effort only at the moment
-        else {
-            console.error('Failed to read package.json from node_modules due to error:', ex, ex.stack);
-        }
-    }
-
-    var all = Object.keys(typings)
-        .map(typing => typings[typing].filePath)
-        .map(x=> fsu.consistentPath(x));
-    var implicit = all
-        .filter(x=> !existing[x]);
-    var ours = all
-        .filter(x=> existing[x]);
-
-    return { implicit, ours, packagejson };
-}
-
 export function prettyJSON(object: any): string {
     var cache = [];
     var value = JSON.stringify(object,
@@ -660,76 +542,9 @@ export function removeTrailingSlash(filePath: string) {
     return filePath;
 }
 
-/**
-  * returns the path if found
-  * @throws an error "not found" if not found */
-export function travelUpTheDirectoryTreeTillYouFind(dir: string, fileOrDirectory: string,
-    /** This is useful if we don't want to file `node_modules from inside node_modules` */
-    abortIfInside = false): string {
-    while (fs.existsSync(dir)) { // while directory exists
-
-        var potentialFile = dir + '/' + fileOrDirectory;
-
-        /** This means that we were *just* in this directory */
-        if (before == potentialFile) {
-            if (abortIfInside) {
-                throw new Error("not found")
-            }
-        }
-
-        if (fs.existsSync(potentialFile)) { // found it
-            return potentialFile;
-        }
-        else { // go up
-            var before = dir;
-            dir = path.dirname(dir);
-            // At root:
-            if (dir == before) throw new Error("not found");
-        }
-    }
-}
-
 export function getPotentiallyRelativeFile(basePath: string, filePath: string) {
     if (fsu.isRelative(filePath)) {
         return fsu.consistentPath(path.resolve(basePath, filePath));
     }
     return fsu.consistentPath(filePath);
-}
-
-function getDirs(rootDir: string): string[] {
-    var files = fs.readdirSync(rootDir)
-    var dirs = []
-
-    for (var file of files) {
-        if (file[0] != '.') {
-            var filePath = `${rootDir}/${file}`
-            var stat = fs.statSync(filePath);
-
-            if (stat.isDirectory()) {
-                dirs.push(filePath)
-            }
-        }
-    }
-    return dirs
-}
-
-/**
- * Create a quick lookup map from list
- */
-export function createMap(arr: string[]): { [string: string]: boolean } {
-    return arr.reduce((result: { [string: string]: boolean }, key: string) => {
-        result[key] = true;
-        return result;
-    }, <{ [string: string]: boolean }>{});
-}
-
-/**
- * Turns keys into values and values into keys
- */
-function reverseKeysAndValues(obj) {
-    var toret = {};
-    Object.keys(obj).forEach(function(key) {
-        toret[obj[key]] = key;
-    });
-    return toret;
 }

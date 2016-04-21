@@ -85,3 +85,53 @@ export function isRelative(str: string) {
     if (!str.length) return false;
     return str[0] == '.' || str.substring(0, 2) == "./" || str.substring(0, 3) == "../";
 }
+
+
+/**
+  * returns the path if found
+  * @throws an error "not found" if not found */
+export function travelUpTheDirectoryTreeTillYouFind(dir: string, fileOrDirectory: string,
+    /** This is useful if we don't want to file `node_modules from inside node_modules` */
+    abortIfInside = false): string {
+    while (fs.existsSync(dir)) { // while directory exists
+
+        var potentialFile = dir + '/' + fileOrDirectory;
+
+        /** This means that we were *just* in this directory */
+        if (before == potentialFile) {
+            if (abortIfInside) {
+                throw new Error("not found")
+            }
+        }
+
+        if (fs.existsSync(potentialFile)) { // found it
+            return potentialFile;
+        }
+        else { // go up
+            var before = dir;
+            dir = path.dirname(dir);
+            // At root:
+            if (dir == before) throw new Error("not found");
+        }
+    }
+}
+
+/**
+ * Gets the sub directories of a directory
+ */
+export function getDirs(rootDir: string): string[] {
+    var files = fs.readdirSync(rootDir)
+    var dirs = []
+
+    for (var file of files) {
+        if (file[0] != '.') {
+            var filePath = `${rootDir}/${file}`
+            var stat = fs.statSync(filePath);
+
+            if (stat.isDirectory()) {
+                dirs.push(filePath)
+            }
+        }
+    }
+    return dirs;
+}
