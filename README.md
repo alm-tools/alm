@@ -1,10 +1,11 @@
 # ALM tools for TypeScript
 
-[![Join the chat at https://gitter.im/alm-tools/alm](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/alm-tools/alm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at  gitter][gitter-image]][gitter-url]
 
-> Great languages come with great development tools.
+> With great languages come great development tools.
 
-[![Build Status](https://travis-ci.org/alm-tools/alm.svg?branch=master)](https://travis-ci.org/alm-tools/alm)
+[![Build Status][travis-image]][travis-url]
+[![NPM version][npm-image]][npm-url]
 
 > Semantic releases start once 🌟 count > 1000. Don't forget to share 🌹
 
@@ -45,3 +46,9 @@ MIT
 [docs]: https://basarat.gitbooks.io/alm/content/
 [contributing]: https://basarat.gitbooks.io/alm/content/contributing/
 [cover]: https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/cover_small.png
+[npm-image]: https://img.shields.io/npm/v/alm.svg?style=flat
+[npm-url]: https://npmjs.org/package/alm
+[travis-image]: https://travis-ci.org/alm-tools/alm.svg?branch=master
+[travis-url]:https://travis-ci.org/alm-tools/alm
+[gitter-image]: https://badges.gitter.im/Join%20Chat.svg
+[gitter-url]: https://gitter.im/alm-tools/alm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
