@@ -19,6 +19,16 @@ import * as docCache from "./codemirror/mode/docCache";
 import {CodeEditor} from "./codemirror/codeEditor";
 import {RefactoringsByFilePath, Refactoring} from "../common/types";
 
+/* Test:
+<!-- Hello world -->
+<div class="awesome" style="border: 1px solid red">
+  <label for="name">Enter your name: </label>
+  <input type="text" id="name" />
+</div>
+<p>Enter your HTML here</p>
+*/
+
+
 // Wire up the code mirror command to come here
 CodeMirror.commands[commands.additionalEditorCommands.htmlToTsx] = (editor: CodeMirror.EditorFromTextArea) => {
     let doc = editor.getDoc();
