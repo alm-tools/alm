@@ -139,11 +139,8 @@ export function syncCore(projectConfig:AvailableProjectConfig){
         projectFilePathsUpdated.emit({ filePaths: configFile.project.files });
 
         // Set the active project (the project we get returned might not be the active project name)
-        // e.g. on initial load
-        if (activeProjectName !== projectConfig.name) {
-            activeProjectConfigDetails = projectConfig;
-            activeProjectConfigDetailsUpdated.emit(activeProjectConfigDetails);
-        }
+        activeProjectConfigDetails = projectConfig;
+        activeProjectConfigDetailsUpdated.emit(activeProjectConfigDetails);
     }
     catch (ex) {
         // Ignore for now as `ConfigFile.getConfigFileFromDiskOrInMemory` already does the error reporting
