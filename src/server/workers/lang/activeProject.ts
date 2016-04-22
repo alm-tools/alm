@@ -52,9 +52,11 @@ function sync() {
 /**
  * File changing on disk
  */
-export function filePathsUpdated() {
-    // We should do a full sync. As the file paths from `tsconfig` might have changed
-    // But lets hold off on that idea as it might be slow
+export function fileListingDelta(delta: types.FileListingDelta) {
+    // TODO:
+    // Check if we have a current project
+    // If we have a current project does it have a `filesGlob` or `exclude`
+    // If so check if some files need to be *removed* or *added*
 }
 export function fileEdited(evt: { filePath: string, edit: CodeEdit }) {
     let proj = GetProject.ifCurrent(evt.filePath)

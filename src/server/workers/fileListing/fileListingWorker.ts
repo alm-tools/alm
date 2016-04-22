@@ -78,7 +78,7 @@ namespace Worker {
             // Send out the delta as well
             // Unless of course this is the *initial* sending of file listing
             if (bufferedAdded.length || bufferedRemoved.length) {
-                master.filePathsDelta({
+                master.fileListingDelta({
                     addedFilePaths: bufferedAdded,
                     removedFilePaths: bufferedRemoved
                 });

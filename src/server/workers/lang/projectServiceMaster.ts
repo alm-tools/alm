@@ -58,7 +58,7 @@ export function start() {
         const projectData = projectDataLoader.getProjectDataLoaded(activeProjectConfigDetails);
         worker.setActiveProjectConfigDetails({projectData});
     });
-    fileListingMaster.filePathsUpdated.on(()=>worker.filePathsUpdated({}));
+    fileListingMaster.fileListingDelta.on((delta)=>worker.fileListingDelta(delta));
     fmc.didEdit.on((edit)=>worker.fileEdited(edit));
     fmc.savedFileChangedOnDisk.on((update)=>worker.fileChangedOnDisk(update));
     fmc.didStatusChange.on((update) => update.saved && worker.fileSaved({ filePath: update.filePath }));

@@ -25,8 +25,8 @@ namespace Worker {
     /**
      * File information updates sent by the master. We tell the modules that care.
      */
-    export const filePathsUpdated: typeof contract.worker.filePathsUpdated = (details) => {
-        activeProject.filePathsUpdated();
+    export const fileListingDelta: typeof contract.worker.fileListingDelta = (delta) => {
+        activeProject.fileListingDelta(delta);
         return Promise.resolve({});
     }
     export const fileEdited: typeof contract.worker.fileEdited = (details) => {

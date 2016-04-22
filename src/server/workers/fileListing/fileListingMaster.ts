@@ -13,8 +13,8 @@ export const filePathsCompleted = new TypedEvent<{ filePaths: types.FilePath[]; 
 /**
  * Incremental and buffered
  */
-export const filePathsDelta = new TypedEvent<types.FileListingDelta>();
-const gfilePathsDelta = filePathsDelta;
+export const fileListingDelta = new TypedEvent<types.FileListingDelta>();
+const gfileListingDelta = fileListingDelta;
 
 namespace Master {
     export const increment: typeof contract.master.increment = (q) => {
@@ -32,8 +32,8 @@ namespace Master {
         return Promise.resolve({});
     }
 
-    export const filePathsDelta: typeof contract.master.filePathsDelta = (q) => {
-        gfilePathsDelta.emit(q);
+    export const fileListingDelta: typeof contract.master.fileListingDelta = (q) => {
+        gfileListingDelta.emit(q);
         return Promise.resolve({});
     }
 }
