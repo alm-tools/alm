@@ -1,6 +1,6 @@
 {
   "name": "alm",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "Application Lifecycle Management tools for TypeScript",
   "main": "src/server.js",
   "bin": {
