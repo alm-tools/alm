@@ -19,10 +19,6 @@
         "**/*.tsx",
         "!node_modules/**"
     ],
-    "files": [
-        "foo.ts",
-        "bas.tsx"
-    ],
     "exclude": [],
     "atom": {
         "rewriteTsconfig": true

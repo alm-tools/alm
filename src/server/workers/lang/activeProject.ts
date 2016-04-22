@@ -53,10 +53,21 @@ function sync() {
  * File changing on disk
  */
 export function fileListingDelta(delta: types.FileListingDelta) {
-    // TODO:
     // Check if we have a current project
-    // If we have a current project does it have a `filesGlob` or `exclude`
+    // If we have a current project does it have a `filesGlob`
     // If so check if some files need to be *removed* or *added*
+    if (!currentProject) return;
+    if (!currentProject.configFile.project.filesGlob) return;
+
+    // HEURISTIC : if some delta file path is *under* the `tsconfig.json` path. Just do a sync
+    // Checking expanded globs and making it is right feels harder
+    const projectDir = currentProject.configFile.projectFileDirectory;
+    if (
+        delta.addedFilePaths.some(({filePath}) => filePath.startsWith(projectDir))
+        || delta.removedFilePaths.some(({filePath}) => filePath.startsWith(projectDir))
+    ) {
+        sync();
+    }
 }
 export function fileEdited(evt: { filePath: string, edit: CodeEdit }) {
     let proj = GetProject.ifCurrent(evt.filePath)
