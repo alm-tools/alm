@@ -75,12 +75,16 @@ namespace Worker {
                 completed
             });
 
-            master.filePathsDelta({
-                addedFilePaths: bufferedAdded,
-                removedFilePaths: bufferedRemoved
-            });
-            bufferedAdded = [];
-            bufferedRemoved = [];
+            // Send out the delta as well
+            // Unless of course this is the *initial* sending of file listing
+            if (bufferedAdded.length || bufferedRemoved.length) {
+                master.filePathsDelta({
+                    addedFilePaths: bufferedAdded,
+                    removedFilePaths: bufferedRemoved
+                });
+                bufferedAdded = [];
+                bufferedRemoved = [];
+            }
         };
 
         /**
