@@ -17,6 +17,8 @@ import {TypedEvent} from "../../../common/events";
 import equal = require('deep-equal');
 import * as chalk from "chalk";
 import {AvailableProjectConfig} from "../../../common/types";
+import multimatch = require("multimatch");
+import * as fsu from "../../utils/fsu";
 
 import {master as masterType} from "./projectServiceContract";
 let master: typeof masterType;
@@ -46,8 +48,11 @@ export function setActiveProjectConfigDetails(projectData: types.ProjectDataLoad
 }
 
 function sync() {
-    setActiveProjectConfigDetails(activeProjectConfigDetails);
+    // setActiveProjectConfigDetails(activeProjectConfigDetails);
+    // TODO: we need to request new data load from master
 }
+
+const syncDebounced = utils.debounce(sync, 1000);
 
 /**
  * File changing on disk
@@ -59,14 +64,34 @@ export function fileListingDelta(delta: types.FileListingDelta) {
     if (!currentProject) return;
     if (!currentProject.configFile.project.filesGlob) return;
 
-    // HEURISTIC : if some delta file path is *under* the `tsconfig.json` path. Just do a sync
-    // Checking expanded globs and making it is right feels harder
     const projectDir = currentProject.configFile.projectFileDirectory;
+    const filesGlob = currentProject.configFile.project.filesGlob;
+
+    // HEURISTIC : if some delta file path is *under* the `tsconfig.json` path
     if (
         delta.addedFilePaths.some(({filePath}) => filePath.startsWith(projectDir))
         || delta.removedFilePaths.some(({filePath}) => filePath.startsWith(projectDir))
     ) {
-        sync();
+        /**
+         * Does something match the glob
+         */
+        const fullPaths = delta.addedFilePaths.concat(delta.removedFilePaths).map(c=>c.filePath);
+
+        /** Mutlimatch eccentricity */
+        //multimatch(['test/foo.ts.ts'],['**/*.ts']) OKAY
+        //multimatch(['/test/foo.ts.ts'],['**/*.ts']) OKAY
+        //multimatch(['./test/foo.ts.ts'],['**/*.ts']) NOT OKAY
+        // So remove .
+        const makeRelativeForMultiMatch =
+            (path:string) =>
+                fsu.makeRelativePath(projectDir,path).replace(/^\.|(\.\.)/, '');
+
+        const relativePaths = fullPaths.map(makeRelativeForMultiMatch);
+        const matched = !!multimatch(relativePaths,filesGlob).length;
+
+        if (matched) {
+            syncDebounced()
+        }
     }
 }
 export function fileEdited(evt: { filePath: string, edit: CodeEdit }) {
