@@ -32,6 +32,10 @@ namespace Worker {
         let completed = false;
         let liveList: LiveList = {};
 
+        // Effectively a list of the mutations that `liveList` is going through after initial sync
+        let bufferedAdded: types.FilePath[] = [];
+        let bufferedRemoved: types.FilePath[] = [];
+
         // Utility to send new file list
         const sendNewFileList = () => {
             let filePaths = Object.keys(liveList)
@@ -70,6 +74,13 @@ namespace Worker {
                 filePaths,
                 completed
             });
+
+            master.filePathsDelta({
+                addedFilePaths: bufferedAdded,
+                removedFilePaths: bufferedRemoved
+            });
+            bufferedAdded = [];
+            bufferedRemoved = [];
         };
 
         /**
@@ -81,6 +92,7 @@ namespace Worker {
 
         /**
          * Utility function to get the listing from a directory
+         * No side effects in this function
          */
         const getListing = (dirPath: string): Promise<types.FilePath[]> => {
             return new Promise((resolve) => {
@@ -143,6 +155,10 @@ namespace Worker {
             if (!liveList[filePath]) {
                 let type = types.FilePathType.File;
                 liveList[filePath] = type;
+                bufferedAdded.push({
+                    filePath,
+                    type
+                });
                 sendNewFileListThrottled();
             }
         }
@@ -150,6 +166,10 @@ namespace Worker {
         function dirAdded(dirPath: string) {
             dirPath = fsu.consistentPath(dirPath);
             liveList[dirPath] = types.FilePathType.Dir;
+            bufferedAdded.push({
+                filePath: dirPath,
+                type: types.FilePathType.Dir
+            });
 
             /**
              * - glob the folder
@@ -160,6 +180,10 @@ namespace Worker {
                     if (!liveList[fpDetails.filePath]) {
                         let type = fpDetails.type
                         liveList[fpDetails.filePath] = type;
+                        bufferedAdded.push({
+                            filePath: fpDetails.filePath,
+                            type
+                        });
                     }
                 });
                 sendNewFileListThrottled();
@@ -171,6 +195,10 @@ namespace Worker {
         function fileDeleted(filePath: string) {
             filePath = fsu.consistentPath(filePath);
             delete liveList[filePath];
+            bufferedRemoved.push({
+                filePath,
+                type: types.FilePathType.File
+            });
             sendNewFileListThrottled();
         }
 
@@ -178,6 +206,10 @@ namespace Worker {
             dirPath = fsu.consistentPath(dirPath);
             Object.keys(liveList).forEach(filePath => {
                 if (filePath.startsWith(dirPath)) {
+                    bufferedRemoved.push({
+                        filePath,
+                        type: liveList[filePath]
+                    });
                     delete liveList[filePath];
                 }
             });
