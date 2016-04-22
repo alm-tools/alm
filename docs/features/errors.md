@@ -1,16 +1,26 @@
 # Error Analysis
 
-We don't just lint your current file, *we do the entire active project*. No black magic needed.
+## That File
+
+We lint your current file as you edit it.
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/liveLinting.gif)
 
-# Active List
+## That Program
+
+And actually we do whole program analysis in the background.
+
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/wholeProgram.gif)
+
+> No black magic needed. Just a black color theme.
+
+## Active List
 
 Going through your error list is a breeze with `F8` (goto next) and `Shift+F8` (goto previous).
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/activeList.gif)
 
-# Error Panel Toggle
+## Error Panel Toggle
 
 While you learn TypeScript you might like the error panel open. But no one likes to be told they are wrong all the time. So `Ctrl|⌘ + ;` will toggle it for you
 
