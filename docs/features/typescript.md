@@ -2,21 +2,13 @@
 
 As we mentioned the editor design revolves around giving you the best access to the TypeScript language service.
 
-* [Errors](#errors)
 * [Syntax Highlighting](#syntax-highlighting)
 * [Rename Refactoring](#rename-refactoring)
 * [Tag, Bracket and Text matching](#matching)
 * [Doctor](#doctor)
 * [Go to Definition](#goto-definition)
 * [Find References](#find-references)
-* [Active Lists](#active-list)
 * [JavaScript emit](#javascript-emit)
-
-# Errors
-
-We don't just lint your current file, *we do the entire active project*. No black magic needed.
-
-![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/liveLinting.gif)
 
 # Syntax Highlighting
 Not just another text mate based grammar which [despite a lot of love](https://github.com/Microsoft/TypeScript-TmLanguage/blob/ab17d24fed148cd789fd632d74f170c7308d75ff/TypeScriptReact.tmLanguage) can still fall short. Compare:
@@ -62,11 +54,6 @@ Easy as `Ctrl|⌘ + Shift + B`
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/findReferences.gif)
 
-# Active List
-
-Going through your error list is a breeze with `F8` (goto next) and `Shift+F8` (goto previous).
-
-![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/activeList.gif)
 
 # JavaScript Emit
 

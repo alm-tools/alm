@@ -4,6 +4,7 @@
   * [Editor](/features/editor.md)
     * [Tabs](/features/tabs.md)
   * [TypeScript](/features/typescript.md)
+    * [Error Analysis](/features/errors.md)
     * [CSS to TS](/features/css-to-ts.md)
     * [HTML to TSX](/features/html-to-tsx.md)
     * [Dependency Analysis](/features/dependency.md)
