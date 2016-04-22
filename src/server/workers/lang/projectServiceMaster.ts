@@ -14,6 +14,11 @@ export const completeOutputStatusCacheUpdated = new TypedEvent<types.JSOutputSta
 completeOutputStatusCacheUpdated.emit(Object.create(null)); // So that we do not hold back any new joiners
 
 namespace Master {
+    export const sync: typeof contract.master.sync
+        = (data) => {
+            activeProjectConfig.sync();
+            return resolve({});
+        }
     export const getFileContents: typeof contract.master.getFileContents
         = (data) =>{
             const contents = fmc.getOrCreateOpenFile(data.filePath).getContents();

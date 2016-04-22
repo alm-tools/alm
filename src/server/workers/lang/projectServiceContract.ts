@@ -41,6 +41,7 @@ export var worker = {
 
 // API provided by master (web server)
 export var master = {
+    sync: {} as sw.QRFunction<{},{}>,
     getFileContents: {} as sw.QRFunction<{filePath:string},{contents:string}>,
     getOpenFilePaths: {} as sw.QRFunction<{},string[]>,
 

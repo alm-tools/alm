@@ -48,8 +48,8 @@ export function setActiveProjectConfigDetails(projectData: types.ProjectDataLoad
 }
 
 function sync() {
-    // setActiveProjectConfigDetails(activeProjectConfigDetails);
-    // TODO: we need to request new data load from master
+    // We need to request new data load from master
+    master.sync({});
 }
 
 const syncDebounced = utils.debounce(sync, 1000);
