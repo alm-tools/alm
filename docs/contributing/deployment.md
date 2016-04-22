@@ -4,6 +4,10 @@ Once you are happy with the code:
 * Just run [`npm version`](https://docs.npmjs.com/cli/version) : `npm version major` OR `npm version minor` OR `npm version patch`.
 * Write release notes on Github https://github.com/alm-tools/alm/releases.
 
+**Sample Output**
+
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/deployment.png)
+
 > You must have `git` on your system path for this to work.
 
 ## Release Guidelines
