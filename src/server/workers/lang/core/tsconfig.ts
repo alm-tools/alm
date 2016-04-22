@@ -18,7 +18,6 @@ var types = simpleValidator.types;
 // Most compiler options come from require('typescript').CompilerOptions, but
 // 'module' and 'target' cannot use the same enum as that interface since we
 // do not want to force users to put magic numbers in their tsconfig files
-// Possible: Use require('typescript').parseConfigFile in TS1.5
 // NOTE: see the changes in `commandLineParser.ts` in the TypeScript sources to see what needs updating
 /**
  * When adding you need to
