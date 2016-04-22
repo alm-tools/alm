@@ -6,18 +6,18 @@ import * as workingDir from "../../disk/workingDir";
 import * as types from "../../../common/types";
 
 /** called whenever the list of files we know about is updated */
-export var filePathsUpdated = new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string; completed: boolean;}>();
+export const filePathsUpdated = new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string; completed: boolean;}>();
 /** only called once for when the file paths are completed */
-export var filePathsCompleted = new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string; completed: boolean;}>();
+export const filePathsCompleted = new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string; completed: boolean;}>();
 
 namespace Master {
-    export var increment: typeof contract.master.increment = (q) => {
+    export const increment: typeof contract.master.increment = (q) => {
         return Promise.resolve({
             num: ++q.num
         });
     }
     /** warning, this function is named differently from the event filePathsUpdated for a reason */
-    export var fileListUpdated: typeof contract.master.fileListUpdated = (q) => {
+    export const fileListUpdated: typeof contract.master.fileListUpdated = (q) => {
         filePathsUpdated.emit({ filePaths: q.filePaths, rootDir: workingDir.getProjectRoot(), completed:q.completed });
         if (q.completed){
             filePathsCompleted.emit({ filePaths: q.filePaths, rootDir: workingDir.getProjectRoot(), completed:q.completed });

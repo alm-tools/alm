@@ -17,7 +17,7 @@ type LiveList = { [filePath: string]: types.FilePathType };
 let directoryUnderWatch: string;
 
 namespace Worker {
-    export var echo: typeof contract.worker.echo = (q) => {
+    export const echo: typeof contract.worker.echo = (q) => {
         return master.increment(q).then((res) => {
             return {
                 text: q.text,
@@ -26,14 +26,14 @@ namespace Worker {
         });
     }
 
-    export var setupWatch: typeof contract.worker.setupWatch = (q) => {
+    export const setupWatch: typeof contract.worker.setupWatch = (q) => {
         directoryUnderWatch = q.directory;
 
         let completed = false;
         let liveList: LiveList = {};
 
         // Utility to send new file list
-        var sendNewFileList = () => {
+        const sendNewFileList = () => {
             let filePaths = Object.keys(liveList)
                 .filter(x =>
                     // Remove .git we have no use for that here
@@ -105,8 +105,8 @@ namespace Worker {
 
         // create initial list using 10x faster glob.Glob!
         (function() {
-            let cwd = q.directory;
-            var mg = new glob.Glob('**', { cwd, dot: true }, (e, newList) => {
+            const cwd = q.directory;
+            const mg = new glob.Glob('**', { cwd, dot: true }, (e, newList) => {
                 if (e) {
                     console.error('Globbing error:', e);
                 }
