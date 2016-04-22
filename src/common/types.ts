@@ -85,7 +85,9 @@ export function getRefactoringsByFilePath(refactorings: Refactoring[]) {
     return loc;
 }
 
-/** For file listing we like to know if its a dir or file */
+/**
+ * For file listing we like to know if its a dir or file
+ */
 export enum FilePathType {
     File,
     Dir
@@ -94,7 +96,11 @@ export interface FilePath {
     filePath: string;
     type: FilePathType
 }
-
+/** For incremental buffered file listing changes */
+export interface FileListingDelta {
+    addedFilePaths: FilePath[];
+    removedFilePaths: FilePath[];
+}
 
 /**
  * File model stuff

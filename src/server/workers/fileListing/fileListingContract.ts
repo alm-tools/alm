@@ -14,4 +14,5 @@ export const worker = {
 export const master = {
     increment: {} as sw.QRFunction<{ num: number }, { num: number }>,
     fileListUpdated: {} as sw.QRFunction<({ filePaths: types.FilePath[], completed: boolean }), any>,
+    filePathsDelta: {} as sw.QRFunction<types.FileListingDelta, any>,
 }
