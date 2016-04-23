@@ -96,7 +96,9 @@ const notifier = require('update-notifier')({
   pkg,
   // updateCheckInterval: 0 // DEBUG
 });
-notifier.notify();
+notifier.notify({
+    defer: false
+});
 if (notifier.update) {
     const update: {
         latest: string;
