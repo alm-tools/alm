@@ -92,6 +92,15 @@ portfinder.getPort(function (err, port) {
  * Notify user of updates
  */
 const pkg = require('../package.json');
-require('update-notifier')({
+const notifier = require('update-notifier')({
   pkg,
-}).notify();
+});
+notifier.notify();
+if (notifier.update) {
+    const update: {
+        latest: string;
+        current: string;
+        type: 'latest' | 'major' | 'minor' | 'patch' | 'prerelease' | 'build';
+        name: string;
+    } = notifier.update;
+}
