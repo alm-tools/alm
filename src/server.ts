@@ -91,6 +91,8 @@ portfinder.getPort(function (err, port) {
 /**
  * Notify user of updates
  */
+import * as serverState from "./serverState";
+serverState.addRoute(app);
 const pkg = require('../package.json');
 const notifier = require('update-notifier')({
   pkg,
@@ -106,5 +108,5 @@ if (notifier.update) {
         type: 'latest' | 'major' | 'minor' | 'patch' | 'prerelease' | 'build';
         name: string;
     } = notifier.update;
-    // console.log(update); // DEBUG
+    serverState.setServerState({ update });
 }
