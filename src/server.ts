@@ -94,6 +94,7 @@ portfinder.getPort(function (err, port) {
 const pkg = require('../package.json');
 const notifier = require('update-notifier')({
   pkg,
+  // updateCheckInterval: 0 // DEBUG
 });
 notifier.notify();
 if (notifier.update) {
@@ -103,4 +104,5 @@ if (notifier.update) {
         type: 'latest' | 'major' | 'minor' | 'patch' | 'prerelease' | 'build';
         name: string;
     } = notifier.update;
+    // console.log(update); // DEBUG
 }
