@@ -1,6 +1,10 @@
+# Requirements
+* Latest Chrome
+* Latest NodeJS
+
 # Installation
 
-Installation is super easy. If you have nodejs / npm on your path all you need to do is:
+Installation is super easy:
 
 ```bash
 npm i alm -g
