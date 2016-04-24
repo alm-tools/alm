@@ -463,7 +463,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             }
 
             return <span
-                key={`tabHeader ${i}`}
+                key={`tabHeader ${t.id}`}
                 style={style}
                 onClick={(event)=>this.onTabClicked(event.nativeEvent as MouseEvent,i)}>
                 <span key={`tabHeaderTitle ${i}`}>{title}</span> {titleIcon}
