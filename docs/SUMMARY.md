@@ -24,4 +24,5 @@
   * [Document Syncing](/contributing/document.md)
   * [Deployment](/contributing/deployment.md)
   * [Redux](/contributing/redux.md)
+  * [Errors](/contributing/errors.md)
   * [Why?](/contributing/why.md)
