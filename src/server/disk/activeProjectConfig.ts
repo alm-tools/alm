@@ -37,14 +37,15 @@ export let projectFilePathsUpdated = new TypedEvent<{ filePaths: string[] }>();
 /**
  * Errors in tsconfig.json
  */
-export const errorsInTsconfig = new TypedEvent<ErrorsByFilePath>();
+import {ErrorsCache} from "../utils/errorsCache";
+export const errorsInTsconfig = new ErrorsCache();
 function setErrorsInTsconfig(filePath:string, errors:CodeError[]){
     console.log('TSCONFIG: Error', errors[0].message);
-    errorsInTsconfig.emit({[filePath]:errors});
+    errorsInTsconfig.setErrorsByFilePaths([filePath], errors);
 }
 function clearErrorsInTsconfig(filePath:string){
     console.log('TSCONFIG: All Good!', filePath);
-    errorsInTsconfig.emit({[filePath]:[]});
+    errorsInTsconfig.clearErrors();
 }
 
 /** The name used if we don't find a project */
