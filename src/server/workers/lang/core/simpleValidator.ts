@@ -37,7 +37,7 @@ export class SimpleValidator {
     private extraMembers = [];
     constructor(public validationInfo: ValidationInfo) {
         this.potentialLowerCaseMatch = {};
-        Object.keys(validationInfo).forEach(k=> this.potentialLowerCaseMatch[k.toLowerCase()] = k);
+        Object.keys(validationInfo.members).forEach(k=> this.potentialLowerCaseMatch[k.toLowerCase()] = k);
         this.extraMembers = validationInfo.extraMembers || [];
     }
 
