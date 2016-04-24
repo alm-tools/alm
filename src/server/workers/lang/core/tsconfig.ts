@@ -21,10 +21,12 @@ import {validate} from "./tsconfigValidation";
  * 	3 If its a path : Update `pathResolveTheseOptions`
  */
 interface CompilerOptions {
+    allowJs?: boolean;
     allowNonTsExtensions?: boolean;
     allowSyntheticDefaultImports?: boolean;
     allowUnreachableCode?: boolean;
     allowUnusedLabels?: boolean;
+    baseUrl?: string;
     charset?: string;
     codepage?: number;
     declaration?: boolean;
@@ -34,6 +36,7 @@ interface CompilerOptions {
     experimentalAsyncFunctions?: boolean;
     experimentalDecorators?: boolean;
     emitDecoratorMetadata?: boolean;
+    forceConsistentCasingInFileNames?: boolean;
     help?: boolean;
     isolatedModules?: boolean;
     init?: boolean;
@@ -41,6 +44,9 @@ interface CompilerOptions {
     inlineSources?: boolean;
     jsx?: string;
     locale?: string;
+    lib?: string[];
+    list?: string[];
+    listEmittedFiles?: boolean;
     listFiles?: boolean;
     mapRoot?: string;
     module?: string;
@@ -53,22 +59,32 @@ interface CompilerOptions {
     noFallthroughCasesInSwitch?: boolean;
     noImplicitAny?: boolean;
     noImplicitReturns?: boolean;
+    noImplicitUseStrict?: boolean;
     noLib?: boolean;
     noLibCheck?: boolean;
     noResolve?: boolean;
     out?: string;
     outFile?: string;
     outDir?: string;
+    paths?: ts.Map<string[]>;
     preserveConstEnums?: boolean;
+    pretty?: string;
     reactNamespace?: string;
     removeComments?: boolean;
     rootDir?: string;
+    rootDirs?: string[];
+    skipDefaultLibCheck?: boolean;
     sourceMap?: boolean;
     sourceRoot?: string;
+    strictNullChecks?: boolean;
     stripInternal?: boolean;
     suppressExcessPropertyErrors?: boolean;
     suppressImplicitAnyIndexErrors?: boolean;
+    suppressOutputPathCheck?: boolean;
     target?: string;
+    traceResolution?: boolean;
+    types?: string[];
+    typesRoot?: string;
     typesSearchPaths?: string[];
     version?: boolean;
     watch?: boolean;
@@ -343,6 +359,7 @@ const typescriptEnumMap = {
         'es3': ts.ScriptTarget.ES3,
         'es5': ts.ScriptTarget.ES5,
         'es6': ts.ScriptTarget.ES6,
+        'es2015': ts.ScriptTarget.ES2015,
         'latest': ts.ScriptTarget.Latest
     },
     module: {
