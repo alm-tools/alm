@@ -1,9 +1,4 @@
-/**
- * BIG CHANGES
- * - this uses fmc (allows us to read file in memory that user might be editing)
- */
 import * as fmc from "../../../disk/fileModelCache";
-
 import * as fsu from "../../../utils/fsu";
 import fs = require('fs');
 import ts = require('ntypescript');
