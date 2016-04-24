@@ -132,22 +132,18 @@ export function sync() {
 /** ensures that the `projectConfig` can actually be parsed. If so propogates the set event. */
 export function syncCore(projectConfig:AvailableProjectConfig){
     let activeProjectName = (activeProjectConfigDetails && activeProjectConfigDetails.name);
+    configFile = ConfigFile.getConfigFileFromDiskOrInMemory(projectConfig);
 
-    try {
-        configFile = ConfigFile.getConfigFileFromDiskOrInMemory(projectConfig);
-        configFileUpdated.emit(configFile);
-        projectFilePathsUpdated.emit({ filePaths: configFile.project.files });
+    // In case of error we exit as `ConfigFile.getConfigFileFromDiskOrInMemory` already does the error reporting
+    if (!configFile) return;
 
-        // Set the active project (the project we get returned might not be the active project name)
-        activeProjectConfigDetails = projectConfig;
-        activeProjectConfigDetailsUpdated.emit(activeProjectConfigDetails);
-    }
-    catch (ex) {
-        // Ignore for now as `ConfigFile.getConfigFileFromDiskOrInMemory` already does the error reporting
-    }
+    configFileUpdated.emit(configFile);
+    projectFilePathsUpdated.emit({ filePaths: configFile.project.files });
+
+    // Set the active project (the project we get returned might not be the active project name)
+    activeProjectConfigDetails = projectConfig;
+    activeProjectConfigDetailsUpdated.emit(activeProjectConfigDetails);
 }
-
-
 
 /**
  * Utility functions to convert a configFilePath into `configFile`
@@ -156,23 +152,6 @@ import fs = require("fs");
 import path = require("path");
 namespace ConfigFile {
     const typescriptDirectory = path.dirname(require.resolve('ntypescript')).split('\\').join('/');
-
-    /**
-     * Project file error reporting
-     */
-    function reportProjectFileErrors(ex: Error, filePath: string) {
-        var err: Error = ex;
-        if (ex.message === tsconfig.errors.GET_PROJECT_JSON_PARSE_FAILED
-            || ex.message === tsconfig.errors.GET_PROJECT_PROJECT_FILE_INVALID_OPTIONS
-            || ex.message === tsconfig.errors.GET_PROJECT_GLOB_EXPAND_FAILED) {
-            let details: tsconfig.ProjectFileErrorDetails = ex.details;
-            setErrorsInTsconfig(filePath,[details.error]);
-        }
-        else {
-            setErrorsInTsconfig(filePath, [utils.makeBlandError(filePath, `${ex.message}`)]);
-        }
-    }
-
 
     /**
      * This explicilty loads the project from the filesystem
@@ -188,31 +167,24 @@ namespace ConfigFile {
 
         const filePath = config.tsconfigFilePath;
 
-        try {
-            // If we are asked to look at stuff in lib.d.ts create its own project
-            if (path.dirname(filePath) == typescriptDirectory) {
-                return tsconfig.getDefaultInMemoryProject(filePath);
-            }
+        // If we are asked to look at stuff in lib.d.ts create its own project
+        if (path.dirname(filePath) == typescriptDirectory) {
+            return tsconfig.getDefaultInMemoryProject(filePath);
+        }
 
-            const projectFile = tsconfig.getProjectSync(filePath);
+        const {result:projectFile, error} = tsconfig.getProjectSync(filePath);
+        if (!error){
             clearErrorsInTsconfig(projectFile.projectFilePath);
             return projectFile;
-        } catch (ex) {
-            if (ex.message === tsconfig.errors.GET_PROJECT_NO_PROJECT_FOUND) {
-                // If we have a .d.ts file then it is its own project and return
-                if (filePath.toLowerCase().endsWith('.d.ts')) {
-                    return tsconfig.getDefaultInMemoryProject(filePath);
-                }
-                else {
-                    setErrorsInTsconfig(filePath, [utils.makeBlandError(filePath, 'No project file found')]);
-                    throw ex;
-                }
-            }
-            else {
-                reportProjectFileErrors(ex, filePath);
-                throw ex;
-            }
         }
+        else {
+            // If we have a .d.ts file then it is its own project and return
+            if (filePath.toLowerCase().endsWith('.d.ts')) {
+                return tsconfig.getDefaultInMemoryProject(filePath);
+            }
+            setErrorsInTsconfig(filePath, [error]);
+        }
+        return undefined;
     }
 }
 
