@@ -149,6 +149,16 @@ export class StatusBar extends BaseComponent<Props, State>{
                 </span>
             </span>;
 
+        const updateRendered =
+            serverState.update
+            && <span style={csx.extend(styles.statusBarSection) }>
+                <span
+                    className="hint--left hint--error"
+                    data-hint={ `Update ${serverState.update.latest} available (current: ${serverState.update.current})` + ". Please run `npm i -g alm`"}>
+                    <Icon style={{ color: styles.errorColor, cursor: 'pointer' }} name="wrench" onClick={this.whatsNew}/>
+                </span>
+            </span>;
+
         return (
             <div>
                 <div style={csx.extend(styles.statusBar,csx.horizontal,csx.center, styles.noWrap)}>
@@ -191,6 +201,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                         <span style={{paddingRight: '2px'} as any} onClick={this.giveStar} className="hint--left" data-hint="If you like it then you should have put a star on it 🌟. Also, go here for support ⚠️">🌟</span>
                         <span onClick={this.giveRose} className="hint--left" data-hint="Your love keep this rose alive 🌹">🌹</span>
                     </span>
+                    {updateRendered}
                 </div>
             </div>
         );
@@ -219,5 +230,11 @@ export class StatusBar extends BaseComponent<Props, State>{
 
     giveRose = () => {
         window.open('https://twitter.com/basarat')
+    }
+
+    whatsNew = () => {
+        /** We currently show the diff. Once we have semantic releases we will show release notes */
+        const update = serverState.update;
+        window.open(`https://github.com/alm-tools/alm/compare/v${update.current}...v${update.latest}`);
     }
 }
