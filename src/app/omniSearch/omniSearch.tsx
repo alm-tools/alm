@@ -45,7 +45,7 @@ let listItemStyle = {
     fontFamily: 'monospace'
 };
 
-let searchingNameStyle = { marginTop: '0', marginBottom: '0', marginLeft: '10px', border: '1px solid grey', padding: '4px 4px', background: 'black' };
+let searchingNameStyle = { marginTop: '0px', marginBottom: '0px', marginLeft: '10px', border: '1px solid grey', padding: '4px 4px', background: 'black' };
 
 @ui.Radium
 export class OmniSearch extends BaseComponent<Props, State>{
