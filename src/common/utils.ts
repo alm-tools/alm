@@ -30,7 +30,7 @@ export function createMapByKey<K extends MapKey,V>(arr: V[], getKey:(item:V)=>K)
 /**
  * Turns keys into values and values into keys
  */
-export function reverseKeysAndValues(obj: { [key: string]: string }): { [key: string]: string } {
+export function reverseKeysAndValues(obj: { [key: string]: string | number, [key: number]: string | number }): { [key: string]: string } {
     var toret = {};
     Object.keys(obj).forEach(function(key) {
         toret[obj[key]] = key;
@@ -43,6 +43,7 @@ export function distinct(arr: string[]): string[] {
     var map = createMap(arr);
     return Object.keys(map);
 }
+export const uniq = distinct;
 
 /**
  * Debounce
@@ -416,11 +417,3 @@ export function extend(...args: any[]): any {
     }
     return newObj;
 };
-
-/**
- * A uniq for strings
- */
-export function uniq(arr: string[]): string[] {
-    var map = createMap(arr);
-    return Object.keys(map);
-}
