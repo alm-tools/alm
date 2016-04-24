@@ -8,7 +8,7 @@ import * as fsu from "../../../utils/fsu";
 import fs = require('fs');
 import ts = require('ntypescript');
 import * as json from "../../../../common/json";
-import {makeBlandError,reverseKeysAndValues} from "../../../../common/utils";
+import {makeBlandError,reverseKeysAndValues, uniq} from "../../../../common/utils";
 import {PackageJsonParsed, TsconfigJsonParsed, TypeScriptConfigFileDetails} from "../../../../common/types";
 import {increaseCompilationContext, getDefinitionsForNodeModules} from "./compilationContextExpander";
 
@@ -389,10 +389,9 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
 
     var pkg: PackageJsonParsed = null;
     try {
-        var packagePath = fsu.travelUpTheDirectoryTreeTillYouFind(projectFileDirectory, 'package.json');
-        if (packagePath) {
-            let packageJSONPath = getPotentiallyRelativeFile(projectFileDirectory, packagePath);
-            let parsedPackage = JSON.parse(fmc.getOrCreateOpenFile(packageJSONPath).getContents());
+        const packageJSONPath = fsu.travelUpTheDirectoryTreeTillYouFind(projectFileDirectory, 'package.json');
+        if (packageJSONPath) {
+            const parsedPackage = JSON.parse(fmc.getOrCreateOpenFile(packageJSONPath).getContents());
             pkg = {
                 main: parsedPackage.main,
                 name: parsedPackage.name,
@@ -478,21 +477,8 @@ export function createProjectRootSync(srcFile: string, defaultOptions: ts.Compil
 /////////////// UTILITIES ///////////////////
 /////////////////////////////////////////////
 
-
-function uniq(arr: string[]): string[] {
-    var map = simpleValidator.createMap(arr);
-    return Object.keys(map);
-}
-
 export function removeTrailingSlash(filePath: string) {
     if (!filePath) return filePath;
     if (filePath.endsWith('/')) return filePath.substr(0, filePath.length - 1);
     return filePath;
-}
-
-export function getPotentiallyRelativeFile(basePath: string, filePath: string) {
-    if (fsu.isRelative(filePath)) {
-        return fsu.consistentPath(path.resolve(basePath, filePath));
-    }
-    return fsu.consistentPath(filePath);
 }

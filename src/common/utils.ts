@@ -416,3 +416,11 @@ export function extend(...args: any[]): any {
     }
     return newObj;
 };
+
+/**
+ * A uniq for strings
+ */
+export function uniq(arr: string[]): string[] {
+    var map = createMap(arr);
+    return Object.keys(map);
+}
