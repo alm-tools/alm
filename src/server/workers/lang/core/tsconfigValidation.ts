@@ -25,7 +25,7 @@ const compilerOptionsValidation: simpleValidator.ValidationInfo = {
     isolatedModules: { type: types.boolean },
     jsx: { type: types.string, validValues: ['preserve', 'react'] },
     locals: { type: types.string },
-    lib: { type: types.array, sub: { type: types.string } },
+    lib: { type: types.string },
     list: { type: types.array, sub: { type: types.string } },
     listEmittedFiles: { type: types.boolean },
     listFiles: { type: types.boolean },

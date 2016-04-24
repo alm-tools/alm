@@ -11,7 +11,8 @@ import {validate} from "./tsconfigValidation";
 /**
  * The CompilerOptions as read from a `tsconfig.json` file.
  * Most members copy pasted from ts.CompilerOptions
- * With few (e.g. `module`) replaced with `string`
+ * - With few (e.g. `module`) replaced with `string`
+ * - With a few (e.g. `lib`) replace with `string`
  * NOTE: see the changes in `commandLineParser.ts` in the TypeScript sources to see what needs updating
  *
  * When adding you need to
@@ -19,6 +20,7 @@ import {validate} from "./tsconfigValidation";
  * 	1 Add to `tsconfigValidation`
  * 	2 If its an enum : Update `typescriptEnumMap`
  * 	3 If its a path : Update `pathResolveTheseOptions`
+ * 	4 If its an array : Update `makeArrayTheseOptions`
  */
 interface CompilerOptions {
     allowJs?: boolean;
@@ -44,7 +46,7 @@ interface CompilerOptions {
     inlineSources?: boolean;
     jsx?: string;
     locale?: string;
-    lib?: string[];
+    lib?: string;
     list?: string[];
     listEmittedFiles?: boolean;
     listFiles?: boolean;
@@ -395,6 +397,15 @@ const pathResolveTheseOptions = [
     'rootDir',
 ];
 
+/**
+ * These are options that are converted into an array but given as a , seperated string
+ * e.g lib: "es5,es6.array"
+ * us: "es5","es6.array"
+ */
+const makeArrayTheseOptions = [
+    "lib"
+];
+
 //////////////////////////////////////////////////////////////////////
 
 /**
@@ -421,6 +432,16 @@ function rawToTsCompilerOptions(jsonOptions: CompilerOptions, projectDir: string
     pathResolveTheseOptions.forEach(option => {
         if (compilerOptions[option] !== undefined) {
             compilerOptions[option] = fsu.resolve(projectDir, compilerOptions[option] as string);
+        }
+    });
+
+    /**
+     * Parse options that need to be an array
+     */
+    makeArrayTheseOptions.forEach(option => {
+        if (compilerOptions[option] !== undefined) {
+            const value = compilerOptions[option] as string;
+            compilerOptions[option] = value.split(',').map(x => x.trim());
         }
     });
 
