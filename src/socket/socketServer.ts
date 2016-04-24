@@ -14,7 +14,7 @@ let resolve = sls.resolve;
 import * as fmc from "../server/disk/fileModelCache";
 import * as activeProjectConfig from "../server/disk/activeProjectConfig";
 
-import * as globalErrorCache from "../server/globalErrorCache";
+import {errorsCache} from "../server/globalErrorCache";
 import * as projectServiceMaster from "../server/workers/lang/projectServiceMaster";
 
 namespace Server {
@@ -119,7 +119,7 @@ namespace Server {
      * Error handling
      */
     export var getErrors: typeof contract.server.getErrors = (data) => {
-        return resolve(globalErrorCache.errorsCache.getErrorsLimited());
+        return resolve(errorsCache.getErrorsLimited());
     }
 
     /**
@@ -177,17 +177,23 @@ export function register(app: http.Server | https.Server) {
     });
     cast = runResult.cast;
 
+    /** File model */
     fmc.savedFileChangedOnDisk.pipe(cast.savedFileChangedOnDisk);
     fmc.didEdit.pipe(cast.didEdit);
     fmc.didStatusChange.pipe(cast.didStatusChange);
     fmc.editorOptionsChanged.pipe(cast.editorOptionsChanged);
 
+    /** File listing updates */
     flm.filePathsUpdated.pipe(cast.filePathsUpdated);
 
-    globalErrorCache.errorsCache.errorsUpdated.pipe(cast.errorsUpdated);
+    /** Active Project */
     activeProjectConfig.availableProjects.pipe(cast.availableProjectsUpdated);
     activeProjectConfig.activeProjectConfigDetailsUpdated.pipe(cast.activeProjectConfigDetailsUpdated);
     activeProjectConfig.projectFilePathsUpdated.pipe(cast.activeProjectFilePathsUpdated);
+    activeProjectConfig.errorsInTsconfig.errorsDelta.on((delta) => errorsCache.applyDelta(delta));
+
+    /** Errors */
+    errorsCache.errorsUpdated.pipe(cast.errorsUpdated);
 
     /** FARM */
     findAndReplaceMultiService.farmResultsUpdated.pipe(cast.farmResultsUpdated);
