@@ -26,10 +26,9 @@ export function getProjectDataLoaded(activeProjectConfigDetails: AvailableProjec
         response.filePathWithContents.push({filePath,contents});
     };
 
-    // Add the `lib.d.ts`
-    if (configFile.project.compilerOptions.noLib) {
-        addFile(typescriptDir.getDefaultLibFilePath(configFile.project.compilerOptions));
-    }
+    // Add the `lib` files
+    const libFiles = typescriptDir.getDefaultLibFilePaths(configFile.project.compilerOptions);
+    libFiles.map(addFile);
 
     // Add all the files
     configFile.project.files.forEach((filePath) => addFile(filePath));

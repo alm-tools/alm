@@ -1,6 +1,6 @@
 import path = require('path');
 import tsconfig = require('./tsconfig');
-import {selectMany}  from "../../../../common/utils";
+import {selectMany,createMap}  from "../../../../common/utils";
 import * as types from "../../../../common/types";
 import * as typescriptDir from "./typeScriptDir";
 
@@ -38,9 +38,9 @@ export class Project {
      * Note: this function is exceedingly slow on cold boot (13s on vscode codebase) as it calls getProgram.getSourceFiles
      */
     public getProjectSourceFiles(): ts.SourceFile[] {
-        var libFile = typescriptDir.getDefaultLibFilePath(this.configFile.project.compilerOptions);
+        var libFileLookup = createMap(typescriptDir.getDefaultLibFilePaths(this.configFile.project.compilerOptions));
         var files
-            = this.languageService.getProgram().getSourceFiles().filter(x=> x.fileName !== libFile);
+            = this.languageService.getProgram().getSourceFiles().filter(x=> !libFileLookup[x.fileName]);
         return files;
     }
 
@@ -73,5 +73,5 @@ export class Project {
  * Similar to the base, just adds stuff that uses `require.resolve` to load lib.d.ts
  */
 export class LanguageServiceHost extends lsh.LanguageServiceHost {
-    getDefaultLibFileName = ()=> typescriptDir.getDefaultLibFilePath(this.compilerOptions);
+    getDefaultLibFileName = () => typescriptDir.getDefaultLibFilePaths(this.compilerOptions)[0];
 }
