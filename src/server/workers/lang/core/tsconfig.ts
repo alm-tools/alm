@@ -186,94 +186,6 @@ export const defaults: ts.CompilerOptions = {
     suppressImplicitAnyIndexErrors: true
 };
 
-var typescriptEnumMap = {
-    target: {
-        'es3': ts.ScriptTarget.ES3,
-        'es5': ts.ScriptTarget.ES5,
-        'es6': ts.ScriptTarget.ES6,
-        'latest': ts.ScriptTarget.Latest
-    },
-    module: {
-        'none': ts.ModuleKind.None,
-        'commonjs': ts.ModuleKind.CommonJS,
-        'amd': ts.ModuleKind.AMD,
-        'umd': ts.ModuleKind.UMD,
-        'system': ts.ModuleKind.System,
-        'es6': ts.ModuleKind.ES6,
-        'es2015': ts.ModuleKind.ES2015,
-    },
-    moduleResolution: {
-        'node': ts.ModuleResolutionKind.NodeJs,
-        'classic': ts.ModuleResolutionKind.Classic
-    },
-    jsx: {
-        'preserve': ts.JsxEmit.Preserve,
-        'react': ts.JsxEmit.React
-    },
-    newLine: {
-        'CRLF': ts.NewLineKind.CarriageReturnLineFeed,
-        'LF': ts.NewLineKind.LineFeed
-    }
-};
-
-var jsonEnumMap: any = {};
-Object.keys(typescriptEnumMap).forEach(name => {
-    jsonEnumMap[name] = reverseKeysAndValues(typescriptEnumMap[name]);
-});
-
-function rawToTsCompilerOptions(jsonOptions: CompilerOptions, projectDir: string): ts.CompilerOptions {
-    // Cannot use Object.create because the compiler checks hasOwnProperty
-    const compilerOptions = extend(defaults);
-    for (var key in jsonOptions) {
-        if (typescriptEnumMap[key]) {
-            let name = jsonOptions[key];
-            let map = typescriptEnumMap[key];
-            compilerOptions[key] = map[name.toLowerCase()] || map[name.toUpperCase()];
-        }
-        else {
-            compilerOptions[key] = jsonOptions[key];
-        }
-    }
-
-    if (compilerOptions.outDir !== undefined) {
-        compilerOptions.outDir = path.resolve(projectDir, compilerOptions.outDir);
-    }
-
-    if (compilerOptions.rootDir !== undefined) {
-        compilerOptions.rootDir = path.resolve(projectDir, compilerOptions.rootDir);
-    }
-
-    if (compilerOptions.out !== undefined) {
-        compilerOptions.out = path.resolve(projectDir, compilerOptions.out);
-    }
-
-    if (compilerOptions.outFile !== undefined) {
-        // Till out is removed. Support outFile by just copying it to `out`
-        compilerOptions.out = path.resolve(projectDir, compilerOptions.outFile);
-    }
-
-    // The default for moduleResolution as implemented by the compiler
-    if (!jsonOptions.moduleResolution && compilerOptions.module !== ts.ModuleKind.CommonJS) {
-        compilerOptions.moduleResolution = ts.ModuleResolutionKind.Classic;
-    }
-
-    return compilerOptions;
-}
-
-function tsToRawCompilerOptions(compilerOptions: ts.CompilerOptions): CompilerOptions {
-    // Cannot use Object.create because JSON.stringify will only serialize own properties
-    const jsonOptions = extend({}, compilerOptions);
-
-    Object.keys(compilerOptions).forEach((key) => {
-        if (jsonEnumMap[key] && compilerOptions[key]) {
-            var value = <string>compilerOptions[key];
-            jsonOptions[key] = jsonEnumMap[key][value];
-        }
-    });
-
-    return jsonOptions;
-}
-
 export function getDefaultInMemoryProject(srcFile: string): TypeScriptConfigFileDetails {
     var dir = fs.lstatSync(srcFile).isDirectory() ? srcFile : path.dirname(srcFile);
 
@@ -459,4 +371,107 @@ export function createProjectRootSync(srcFile: string, defaultOptions: ts.Compil
 
     fs.writeFileSync(projectFilePath, json.stringify(projectSpec, os.EOL));
     return getProjectSync(srcFile);
+}
+
+//////////////////////////////////////////////////////////////////////
+
+/**
+ * ENUM to String and String to ENUM
+ */
+const typescriptEnumMap = {
+    target: {
+        'es3': ts.ScriptTarget.ES3,
+        'es5': ts.ScriptTarget.ES5,
+        'es6': ts.ScriptTarget.ES6,
+        'latest': ts.ScriptTarget.Latest
+    },
+    module: {
+        'none': ts.ModuleKind.None,
+        'commonjs': ts.ModuleKind.CommonJS,
+        'amd': ts.ModuleKind.AMD,
+        'umd': ts.ModuleKind.UMD,
+        'system': ts.ModuleKind.System,
+        'es6': ts.ModuleKind.ES6,
+        'es2015': ts.ModuleKind.ES2015,
+    },
+    moduleResolution: {
+        'node': ts.ModuleResolutionKind.NodeJs,
+        'classic': ts.ModuleResolutionKind.Classic
+    },
+    jsx: {
+        'preserve': ts.JsxEmit.Preserve,
+        'react': ts.JsxEmit.React
+    },
+    newLine: {
+        'CRLF': ts.NewLineKind.CarriageReturnLineFeed,
+        'LF': ts.NewLineKind.LineFeed
+    }
+};
+
+//////////////////////////////////////////////////////////////////////
+
+/**
+ * Raw To Compiler
+ */
+function rawToTsCompilerOptions(jsonOptions: CompilerOptions, projectDir: string): ts.CompilerOptions {
+    const compilerOptions = extend(defaults);
+
+    /** Parse the enums */
+    for (var key in jsonOptions) {
+        if (typescriptEnumMap[key]) {
+            let name = jsonOptions[key];
+            let map = typescriptEnumMap[key];
+            compilerOptions[key] = map[name.toLowerCase()] || map[name.toUpperCase()];
+        }
+        else {
+            compilerOptions[key] = jsonOptions[key];
+        }
+    }
+
+    /**
+     * Parse all paths to not be relative
+     */
+    if (compilerOptions.outDir !== undefined) {
+        compilerOptions.outDir = path.resolve(projectDir, compilerOptions.outDir);
+    }
+    if (compilerOptions.rootDir !== undefined) {
+        compilerOptions.rootDir = path.resolve(projectDir, compilerOptions.rootDir);
+    }
+    if (compilerOptions.outFile !== undefined) {
+        compilerOptions.outFile = path.resolve(projectDir, compilerOptions.outFile);
+    }
+    // Till `out` is removed. Support it by just copying it to `outFile`
+    if (compilerOptions.out !== undefined) {
+        compilerOptions.outFile = path.resolve(projectDir, compilerOptions.out);
+    }
+
+    /**
+     * The default for moduleResolution as implemented by the compiler
+     */
+    if (!jsonOptions.moduleResolution && compilerOptions.module !== ts.ModuleKind.CommonJS) {
+        compilerOptions.moduleResolution = ts.ModuleResolutionKind.Classic;
+    }
+
+    return compilerOptions;
+}
+
+/**
+ * Compiler to Raw
+ */
+function tsToRawCompilerOptions(compilerOptions: ts.CompilerOptions): CompilerOptions {
+    const jsonOptions = extend({}, compilerOptions);
+
+    /**
+     * Convert enums to raw
+     */
+    Object.keys(compilerOptions).forEach((key) => {
+        if (typescriptEnumMap[key] && compilerOptions[key]) {
+            const value = compilerOptions[key] as string;
+            const rawToTsMapForKey = typescriptEnumMap[key];
+            const reverseMap = reverseKeysAndValues(rawToTsMapForKey);
+            jsonOptions[key] = reverseMap[value];
+        }
+    });
+
+    return jsonOptions;
 }
