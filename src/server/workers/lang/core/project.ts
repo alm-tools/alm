@@ -20,18 +20,10 @@ export class Project {
     public languageService: ts.LanguageService;
     public configFile: types.TypeScriptConfigFileDetails;
 
-    init(projectData: types.ProjectDataLoaded) {
+    constructor(projectData: types.ProjectDataLoaded) {
         this.configFile = projectData.configFile;
-        let initialized = Promise.resolve({});
 
         this.languageServiceHost = new LanguageServiceHost(projectData.configFile.project.compilerOptions);
-        const addFile = (filePath:string) => {
-            return master
-                .getFileContents({filePath})
-                .then((res)=>{
-
-                });
-        }
 
         // Add all the files
         projectData.filePathWithContents.forEach(({filePath,contents}) => {
@@ -39,7 +31,6 @@ export class Project {
         });
 
         this.languageService = ts.createLanguageService(this.languageServiceHost, ts.createDocumentRegistry());
-        return initialized;
     }
 
     /**

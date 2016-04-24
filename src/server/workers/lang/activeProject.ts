@@ -39,12 +39,14 @@ let currentProject: project.Project = null;
 export function setActiveProjectConfigDetails(projectData: types.ProjectDataLoaded) {
     initialSync = true;
     activeProjectConfigDetails = projectData;
-    return ConfigFile.createProjectFromConfigFile(projectData).then((project)=>{
-        currentProject = project;
-        clearErrors();
-        refreshAllProjectDiagnostics();
-        return project;
-    });
+    currentProject = new project.Project(projectData);
+
+    /** Refresh them errors */
+    clearErrors();
+    refreshAllProjectDiagnostics();
+
+    /** Return active project for any chaining */
+    return currentProject;
 }
 
 function sync() {
@@ -172,14 +174,6 @@ const refreshFileDiagnostics = utils.debounce((filePath:string) => {
  * Utility functions to convert a `configFile` to a `project`
  */
 import path = require("path");
-import {Project} from "./core/project";
-namespace ConfigFile {
-    /** Create a project from a project file */
-    export function createProjectFromConfigFile(projectData: types.ProjectDataLoaded) {
-        var project = new Project();
-        return project.init(projectData).then(()=>project);
-    }
-}
 
 /** Get project functions */
 export namespace GetProject {

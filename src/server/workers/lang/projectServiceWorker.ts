@@ -11,15 +11,12 @@ namespace Worker {
      * This is sort of the entry point of the worker. Nothing really happens till this gets called
      */
     export const setActiveProjectConfigDetails: typeof contract.worker.setActiveProjectConfigDetails = (details) => {
-        return activeProject
-            .setActiveProjectConfigDetails(details.projectData)
-            .then((proj) => {
-                // Initial output status cache update
-                if (proj.configFile.project.compileOnSave) {
-                    outputStatusCache.doCompleteProjectCacheUpdate(proj);
-                }
-                return {};
-            });
+        const proj = activeProject.setActiveProjectConfigDetails(details.projectData);
+        // Initial output status cache update
+        if (proj.configFile.project.compileOnSave) {
+            outputStatusCache.doCompleteProjectCacheUpdate(proj);
+        }
+        return Promise.resolve({})
     }
 
     /**
