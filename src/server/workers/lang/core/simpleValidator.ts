@@ -69,10 +69,21 @@ export class SimpleValidator {
                 }
                 /** Do an array check */
                 if (validationInfo.type === 'array') {
-
+                    if (!Array.isArray(value)){
+                        errors.invalidValues.push(`Key: '${k}' should be an array. But set value is ${value}`);
+                    }
+                    /** TODO: check sub members */
                 }
+                /** Do an object check */
+                else if (validationInfo.type === 'object') {
+                    if (typeof value !== 'object'){
+                        errors.invalidValues.push(`Key: '${k}' should be an object. But set value is ${value}`);
+                    }
+                    /** TODO: check sub members */
+                }
+                /** Do the primitive type check */
                 else if (typeof value !== validationInfo.type) {
-                    errors.invalidValues.push(`Key: '${k}' has an invalid type: ${typeof value}`)
+                    errors.invalidValues.push(`Key: '${k}' has a value '${JSON.stringify(value)}' of an invalid type: ${typeof value}`)
                 }
             }
         });
