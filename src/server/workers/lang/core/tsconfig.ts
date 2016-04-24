@@ -154,11 +154,6 @@ export interface ProjectFileErrorDetails {
     error: CodeError;
 }
 
-function errorWithDetails(error: Error, details: ProjectFileErrorDetails): Error {
-    error.details = details;
-    return error;
-}
-
 import path = require('path');
 import expand = require('glob-expand');
 import os = require('os');
@@ -223,10 +218,13 @@ export function getDefaultInMemoryProject(srcFile: string): TypeScriptConfigFile
  * Use this to bootstrap the UI for what project the user might want to work on.
  * Note: Definition files (.d.ts) are considered thier own project
  */
-export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetails {
+type GetProjectSyncResponse = { error?: CodeError, result?: TypeScriptConfigFileDetails };
+export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
 
     if (!fsu.existsSync(pathOrSrcFile)) {
-        throw new Error(errors.GET_PROJECT_INVALID_PATH);
+        return {
+            error: makeBlandError(pathOrSrcFile, errors.GET_PROJECT_INVALID_PATH)
+        }
     }
 
     // Get the path directory
@@ -240,9 +238,10 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
     catch (e) {
         let err: Error = e;
         if (err.message == "not found") {
-            let bland = makeBlandError(fsu.consistentPath(pathOrSrcFile),err.message);
-            throw errorWithDetails(
-                new Error(errors.GET_PROJECT_NO_PROJECT_FOUND), { projectFilePath: fsu.consistentPath(pathOrSrcFile), error: bland });
+            let bland = makeBlandError(fsu.consistentPath(pathOrSrcFile), errors.GET_PROJECT_NO_PROJECT_FOUND);
+            return {
+                error: bland
+            };
         }
     }
     projectFile = path.normalize(projectFile);
@@ -254,15 +253,17 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
     try {
         var projectFileTextContent = fmc.getOrCreateOpenFile(projectFile).getContents();
     } catch (ex) {
-        throw new Error(errors.GET_PROJECT_FAILED_TO_OPEN_PROJECT_FILE);
+        return {
+            error: makeBlandError(pathOrSrcFile, errors.GET_PROJECT_FAILED_TO_OPEN_PROJECT_FILE)
+        }
     }
     let res = json.parse(projectFileTextContent);
     if (res.data) {
         projectSpec = res.data;
     }
     else {
-        throw errorWithDetails(
-            new Error(errors.GET_PROJECT_JSON_PARSE_FAILED), { projectFilePath, error: json.parseErrorToCodeError(projectFilePath,res.error)});
+        let bland = json.parseErrorToCodeError(projectFilePath,res.error);
+        return { error: bland };
     }
 
     // Setup default project options
@@ -286,9 +287,9 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
             projectSpec.files = expand({ filter: 'isFile', cwd: cwdPath }, toExpand);
         }
         catch (ex) {
-            throw errorWithDetails(
-                new Error(errors.GET_PROJECT_GLOB_EXPAND_FAILED),
-                { projectFilePath , error: makeBlandError(projectFilePath,ex.message)});
+            return {
+                error: makeBlandError(projectFilePath,ex.message)
+            }
         }
     }
 
@@ -326,10 +327,9 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
     // Validate the raw compiler options before converting them to TS compiler options
     var validationResult = validator.validate(projectSpec.compilerOptions);
     if (validationResult.errorMessage) {
-        throw errorWithDetails(
-            new Error(errors.GET_PROJECT_PROJECT_FILE_INVALID_OPTIONS),
-            { projectFilePath, error: makeBlandError(projectFilePath, validationResult.errorMessage) }
-        );
+        return {
+            error: makeBlandError(projectFilePath, validationResult.errorMessage)
+        };
     }
 
     // Convert the raw options to TS options
@@ -350,12 +350,13 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
     projectFileDirectory = fsu.consistentPath(projectFileDirectory);
 
     return {
-        projectFileDirectory: projectFileDirectory,
-        projectFilePath: projectFileDirectory + '/' + projectFileName,
-        project: project,
-        inMemory: false
+        result: {
+            projectFileDirectory: projectFileDirectory,
+            projectFilePath: projectFileDirectory + '/' + projectFileName,
+            project: project,
+            inMemory: false
+        }
     };
-
 }
 
 /** Creates a project by source file location. Defaults are assumed unless overriden by the optional spec. */
