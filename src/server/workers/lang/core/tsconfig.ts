@@ -338,7 +338,7 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
         }
     }
     projectFile = path.normalize(projectFile);
-    var projectFileDirectory = path.dirname(projectFile) + path.sep;
+    var projectFileDirectory = path.dirname(projectFile);
     let projectFilePath = fsu.consistentPath(projectFile);
 
     // We now have a valid projectFile. Parse it:
@@ -439,7 +439,7 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
     // Normalize to "/" for all files
     // And take the uniq values
     project.files = uniq(project.files.map(fsu.consistentPath));
-    projectFileDirectory = removeTrailingSlash(fsu.consistentPath(projectFileDirectory));
+    projectFileDirectory = fsu.consistentPath(projectFileDirectory);
 
     return {
         projectFileDirectory: projectFileDirectory,
@@ -471,14 +471,4 @@ export function createProjectRootSync(srcFile: string, defaultOptions: ts.Compil
 
     fs.writeFileSync(projectFilePath, json.stringify(projectSpec, os.EOL));
     return getProjectSync(srcFile);
-}
-
-/////////////////////////////////////////////
-/////////////// UTILITIES ///////////////////
-/////////////////////////////////////////////
-
-export function removeTrailingSlash(filePath: string) {
-    if (!filePath) return filePath;
-    if (filePath.endsWith('/')) return filePath.substr(0, filePath.length - 1);
-    return filePath;
 }
