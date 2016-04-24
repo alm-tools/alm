@@ -20,7 +20,7 @@ let buttonStyle = {
     border: '1px solid #464646',
     borderRadius: '3px',
     userSelect: 'none',
-    outline: '0',
+    outline: '0px',
 
     ':active': {
         backgroundImage: 'linear-gradient(#353434, #7B7B7B)',

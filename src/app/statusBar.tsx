@@ -32,7 +32,7 @@ const activeProjectContainerStyle = csx.extend(
     styles.statusBarSection, styles.hand,
     {
         border: '1px solid grey',
-        paddingTop: '2',
+        paddingTop: '2px',
         paddingBottom: '2px',
         paddingLeft: '4px',
         paddingRight: '4px',
