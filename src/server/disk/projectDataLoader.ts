@@ -11,9 +11,10 @@ import * as typescriptDir from "../workers/lang/core/typeScriptDir";
 import * as types from "../../common/types";
 import {AvailableProjectConfig} from "../../common/types";
 
+/** Only call this if the file has been validated 🌹 */
 export function getProjectDataLoaded(activeProjectConfigDetails: AvailableProjectConfig): ProjectDataLoaded {
 
-    const configFile: TypeScriptConfigFileDetails = tsconfig.getProjectSync(activeProjectConfigDetails.tsconfigFilePath);
+    const {result: configFile} = tsconfig.getProjectSync(activeProjectConfigDetails.tsconfigFilePath);
 
     const response: ProjectDataLoaded = {
         configFile,
