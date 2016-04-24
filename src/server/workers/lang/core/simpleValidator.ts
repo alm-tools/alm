@@ -41,12 +41,11 @@ export class SimpleValidator {
         this.extraMembers = validationInfo.extraMembers || [];
     }
 
-    validate = (config: any): Errors => {
-        var keys = Object.keys(config);
-        var errors = { invalidValues: [], extraKeys: [], errorMessage: '' };
-        keys.forEach(k=> {
+    validate = (toValidate: any): Errors => {
+        const errors = { invalidValues: [], extraKeys: [], errorMessage: '' };
+        Object.keys(toValidate).forEach(k=> {
             // Check extra keys
-            if (!this.validationInfo[k]) {
+            if (!this.validationInfo.members[k]) {
                 if (this.potentialLowerCaseMatch[k]) {
                     errors.extraKeys.push(`Key: '${k}' is a potential lower case match for '${this.potentialLowerCaseMatch[k]}'. Fix the casing.`);
                 }
@@ -59,8 +58,8 @@ export class SimpleValidator {
             }
             // Do validation
             else {
-                const validationInfo = this.validationInfo[k];
-                const value: any = config[k];
+                const validationInfo = this.validationInfo.members[k];
+                const value: any = toValidate[k];
                 /** Do a valid values check */
                 if (validationInfo.validValues && validationInfo.validValues.length) {
                     var validValues = validationInfo.validValues;
@@ -78,7 +77,7 @@ export class SimpleValidator {
             }
         });
 
-        var total = errors.invalidValues.concat(errors.extraKeys);
+        const total = errors.invalidValues.concat(errors.extraKeys);
         if (total.length) {
             errors.errorMessage = total.join("\n");
         }
