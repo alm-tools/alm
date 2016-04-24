@@ -3,7 +3,7 @@ import * as fsu from "../../../utils/fsu";
 import fs = require('fs');
 import ts = require('ntypescript');
 import * as json from "../../../../common/json";
-import {makeBlandError,reverseKeysAndValues, uniq} from "../../../../common/utils";
+import {makeBlandError,reverseKeysAndValues, uniq, extend} from "../../../../common/utils";
 import {PackageJsonParsed, TsconfigJsonParsed, TypeScriptConfigFileDetails} from "../../../../common/types";
 import {increaseCompilationContext, getDefinitionsForNodeModules} from "./compilationContextExpander";
 
@@ -221,16 +221,9 @@ Object.keys(typescriptEnumMap).forEach(name => {
     jsonEnumMap[name] = reverseKeysAndValues(typescriptEnumMap[name]);
 });
 
-function mixin(target: any, source: any): any {
-    for (var key in source) {
-        target[key] = source[key];
-    }
-    return target;
-}
-
 function rawToTsCompilerOptions(jsonOptions: CompilerOptions, projectDir: string): ts.CompilerOptions {
     // Cannot use Object.create because the compiler checks hasOwnProperty
-    var compilerOptions = <ts.CompilerOptions>mixin({}, defaults);
+    const compilerOptions = extend(defaults);
     for (var key in jsonOptions) {
         if (typescriptEnumMap[key]) {
             let name = jsonOptions[key];
@@ -269,7 +262,7 @@ function rawToTsCompilerOptions(jsonOptions: CompilerOptions, projectDir: string
 
 function tsToRawCompilerOptions(compilerOptions: ts.CompilerOptions): CompilerOptions {
     // Cannot use Object.create because JSON.stringify will only serialize own properties
-    var jsonOptions = <CompilerOptions>mixin({}, compilerOptions);
+    const jsonOptions = extend({}, compilerOptions);
 
     Object.keys(compilerOptions).forEach((key) => {
         if (jsonEnumMap[key] && compilerOptions[key]) {
