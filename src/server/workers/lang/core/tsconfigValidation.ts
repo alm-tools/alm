@@ -53,7 +53,5 @@ const compilerOptionsValidation: simpleValidator.ValidationInfo = {
     },
     extraMembers: []
 }
-
 const validator = new simpleValidator.SimpleValidator(compilerOptionsValidation);
-
 export const validate = validator.validate;

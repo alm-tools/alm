@@ -8,16 +8,17 @@ import {PackageJsonParsed, TsconfigJsonParsed, TypeScriptConfigFileDetails} from
 import {increaseCompilationContext, getDefinitionsForNodeModules} from "./compilationContextExpander";
 import {validate} from "./tsconfigValidation";
 
-// The CompilerOptions as read from a `tsconfig.json` file.
-// Most members copy pasted from ts.CompilerOptions
-// With few (e.g. `module`) replaced with `string`
-// NOTE: see the changes in `commandLineParser.ts` in the TypeScript sources to see what needs updating
 /**
+ * The CompilerOptions as read from a `tsconfig.json` file.
+ * Most members copy pasted from ts.CompilerOptions
+ * With few (e.g. `module`) replaced with `string`
+ * NOTE: see the changes in `commandLineParser.ts` in the TypeScript sources to see what needs updating
+ *
  * When adding you need to
  *  0 Add in this interface
- * 	1 Add to the validation
+ * 	1 Add to `tsconfigValidation`
  * 	2 If its an enum : Update `typescriptEnumMap`
- * 	3 If its a path : Update the `make relative` code
+ * 	3 If its a path : Update `pathResolveTheseOptions`
  */
 interface CompilerOptions {
     allowNonTsExtensions?: boolean;
@@ -30,8 +31,8 @@ interface CompilerOptions {
     diagnostics?: boolean;
     emitBOM?: boolean;
     experimentalAsyncFunctions?: boolean;
-    experimentalDecorators?: boolean;                 // Experimental. Needed for the next option `emitDecoratorMetadata` see : https://github.com/Microsoft/TypeScript/pull/3330
-    emitDecoratorMetadata?: boolean;                  // Experimental. Emits addition type information for this reflection API https://github.com/rbuckton/ReflectDecorators
+    experimentalDecorators?: boolean;
+    emitDecoratorMetadata?: boolean;
     help?: boolean;
     isolatedModules?: boolean;
     inlineSourceMap?: boolean;
@@ -39,7 +40,7 @@ interface CompilerOptions {
     jsx?: string;
     locale?: string;
     listFiles?: boolean;
-    mapRoot?: string;                                 // Optionally Specifies the location where debugger should locate map files after deployment
+    mapRoot?: string;
     module?: string;
     moduleResolution?: string;
     newLine?: string;
@@ -48,23 +49,23 @@ interface CompilerOptions {
     noEmitOnError?: boolean;
     noErrorTruncation?: boolean;
     noFallthroughCasesInSwitch?: boolean;
-    noImplicitAny?: boolean;                          // Error on inferred `any` type
+    noImplicitAny?: boolean;
     noImplicitReturns?: boolean;
     noLib?: boolean;
     noLibCheck?: boolean;
     noResolve?: boolean;
     out?: string;
-    outFile?: string;                                 // new name for out
-    outDir?: string;                                  // Redirect output structure to this directory
+    outFile?: string;
+    outDir?: string;
     preserveConstEnums?: boolean;
-    removeComments?: boolean;                         // Do not emit comments in output
+    removeComments?: boolean;
     rootDir?: string;
-    sourceMap?: boolean;                              // Generates SourceMaps (.map files)
-    sourceRoot?: string;                              // Optionally specifies the location where debugger should locate TypeScript source files after deployment
+    sourceMap?: boolean;
+    sourceRoot?: string;
     stripInternal?: boolean;
-    suppressExcessPropertyErrors?: boolean;           // Optionally disable strict object literal assignment checking
+    suppressExcessPropertyErrors?: boolean;
     suppressImplicitAnyIndexErrors?: boolean;
-    target?: string;                                  // 'es3'|'es5' (default)|'es6'
+    target?: string;
     version?: boolean;
     watch?: boolean;
 }
@@ -363,6 +364,16 @@ const typescriptEnumMap = {
     }
 };
 
+/**
+ * These are options that are relative paths to tsconfig.json
+ */
+const pathResolveTheseOptions = [
+    'out',
+    'outFile',
+    'outDir',
+    'rootDir',
+];
+
 //////////////////////////////////////////////////////////////////////
 
 /**
@@ -386,16 +397,15 @@ function rawToTsCompilerOptions(jsonOptions: CompilerOptions, projectDir: string
     /**
      * Parse all paths to not be relative
      */
-    if (compilerOptions.outDir !== undefined) {
-        compilerOptions.outDir = path.resolve(projectDir, compilerOptions.outDir);
-    }
-    if (compilerOptions.rootDir !== undefined) {
-        compilerOptions.rootDir = path.resolve(projectDir, compilerOptions.rootDir);
-    }
-    if (compilerOptions.outFile !== undefined) {
-        compilerOptions.outFile = path.resolve(projectDir, compilerOptions.outFile);
-    }
-    // Till `out` is removed. Support it by just copying it to `outFile`
+    pathResolveTheseOptions.forEach(option => {
+        if (compilerOptions[option] !== undefined) {
+            compilerOptions[option] = fsu.resolve(projectDir, compilerOptions[option] as string);
+        }
+    });
+
+    /**
+     * Till `out` is removed. Support it by just copying it to `outFile`
+     */
     if (compilerOptions.out !== undefined) {
         compilerOptions.outFile = path.resolve(projectDir, compilerOptions.out);
     }
