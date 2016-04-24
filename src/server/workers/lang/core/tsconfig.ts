@@ -28,6 +28,7 @@ interface CompilerOptions {
     charset?: string;
     codepage?: number;
     declaration?: boolean;
+    declarationDir?: string;
     diagnostics?: boolean;
     emitBOM?: boolean;
     experimentalAsyncFunctions?: boolean;
@@ -35,6 +36,7 @@ interface CompilerOptions {
     emitDecoratorMetadata?: boolean;
     help?: boolean;
     isolatedModules?: boolean;
+    init?: boolean;
     inlineSourceMap?: boolean;
     inlineSources?: boolean;
     jsx?: string;
@@ -58,6 +60,7 @@ interface CompilerOptions {
     outFile?: string;
     outDir?: string;
     preserveConstEnums?: boolean;
+    reactNamespace?: string;
     removeComments?: boolean;
     rootDir?: string;
     sourceMap?: boolean;
@@ -66,6 +69,7 @@ interface CompilerOptions {
     suppressExcessPropertyErrors?: boolean;
     suppressImplicitAnyIndexErrors?: boolean;
     target?: string;
+    typesSearchPaths?: string[];
     version?: boolean;
     watch?: boolean;
 }

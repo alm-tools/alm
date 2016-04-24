@@ -16,13 +16,11 @@ export interface MemberDefinition {
     type: Type;
     validValues?: string[];
     /** Only used if `type` is `object` or `array` */
-    objectDefinition?: ValidationInfo;
+    sub?: MemberDefinition;
 }
 
 export interface ValidationInfo {
-    members: { [name: string]: MemberDefinition };
-    /** These are members that you know about but don't make sense to validate for you */
-    extraMembers?: string[];
+    [name: string]: MemberDefinition;
 }
 
 export interface Errors {
@@ -34,23 +32,18 @@ export interface Errors {
 export class SimpleValidator {
 
     private potentialLowerCaseMatch: { [key: string]: string };
-    private extraMembers = [];
     constructor(public validationInfo: ValidationInfo) {
         this.potentialLowerCaseMatch = {};
-        Object.keys(validationInfo.members).forEach(k=> this.potentialLowerCaseMatch[k.toLowerCase()] = k);
-        this.extraMembers = validationInfo.extraMembers || [];
+        Object.keys(validationInfo).forEach(k=> this.potentialLowerCaseMatch[k.toLowerCase()] = k);
     }
 
     validate = (toValidate: any): Errors => {
         const errors = { invalidValues: [], extraKeys: [], errorMessage: '' };
         Object.keys(toValidate).forEach(k=> {
             // Check extra keys
-            if (!this.validationInfo.members[k]) {
+            if (!this.validationInfo[k]) {
                 if (this.potentialLowerCaseMatch[k]) {
                     errors.extraKeys.push(`Key: '${k}' is a potential lower case match for '${this.potentialLowerCaseMatch[k]}'. Fix the casing.`);
-                }
-                else if (this.extraMembers.some(m => m === k)) {
-                    return; // continue. as we don't care about validating this key
                 }
                 else {
                     errors.extraKeys.push(`Unknown Option: ${k}`)
@@ -58,7 +51,7 @@ export class SimpleValidator {
             }
             // Do validation
             else {
-                const validationInfo = this.validationInfo.members[k];
+                const validationInfo = this.validationInfo[k];
                 const value: any = toValidate[k];
                 /** Do a valid values check */
                 if (validationInfo.validValues && validationInfo.validValues.length) {
