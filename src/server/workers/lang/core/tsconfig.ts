@@ -8,11 +8,11 @@ import {PackageJsonParsed, TsconfigJsonParsed, TypeScriptConfigFileDetails} from
 import {increaseCompilationContext, getDefinitionsForNodeModules} from "./compilationContextExpander";
 
 import simpleValidator = require('./simpleValidator');
-var types = simpleValidator.types;
+const types = simpleValidator.types;
 
-// Most compiler options come from require('typescript').CompilerOptions, but
-// 'module' and 'target' cannot use the same enum as that interface since we
-// do not want to force users to put magic numbers in their tsconfig files
+// The CompilerOptions as read from a `tsconfig.json` file.
+// Most members copy pasted from ts.CompilerOptions
+// With few (e.g. `module`) replaced with `string`
 // NOTE: see the changes in `commandLineParser.ts` in the TypeScript sources to see what needs updating
 /**
  * When adding you need to
@@ -164,13 +164,18 @@ import expand = require('glob-expand');
 import os = require('os');
 import formatting = require('./formatCodeOptions');
 
-var projectFileName = 'tsconfig.json';
+const projectFileName = 'tsconfig.json';
 /**
- * This is what we use when the user doens't specify a files / filesGlob
+ * This is what we use when the user doesn't specify a files / filesGlob
  */
-var invisibleFilesGlob = ["./**/*.ts", "./**/*.tsx"];
+const invisibleFilesGlob = ["./**/*.ts", "./**/*.tsx"];
 
-export const defaults: ts.CompilerOptions = {
+/**
+ * What we use to
+ * * create a new tsconfig on disk
+ * * create an in memory project
+ */
+const defaultCompilerOptions: ts.CompilerOptions = {
     target: ts.ScriptTarget.ES5,
     module: ts.ModuleKind.CommonJS,
     moduleResolution: ts.ModuleResolutionKind.NodeJs,
@@ -186,6 +191,9 @@ export const defaults: ts.CompilerOptions = {
     suppressImplicitAnyIndexErrors: true
 };
 
+/**
+ * If you want to create a project on the fly
+ */
 export function getDefaultInMemoryProject(srcFile: string): TypeScriptConfigFileDetails {
     var dir = fs.lstatSync(srcFile).isDirectory() ? srcFile : path.dirname(srcFile);
 
@@ -195,7 +203,7 @@ export function getDefaultInMemoryProject(srcFile: string): TypeScriptConfigFile
     files = uniq(files.map(fsu.consistentPath));
 
     let project: TsconfigJsonParsed = {
-        compilerOptions: defaults,
+        compilerOptions: defaultCompilerOptions,
         files,
         typings: typings.ours.concat(typings.implicit),
         formatCodeOptions: formatting.defaultFormatCodeOptions(),
@@ -351,7 +359,7 @@ export function getProjectSync(pathOrSrcFile: string): TypeScriptConfigFileDetai
 }
 
 /** Creates a project by source file location. Defaults are assumed unless overriden by the optional spec. */
-export function createProjectRootSync(srcFile: string, defaultOptions: ts.CompilerOptions = defaults, overWrite = true) {
+export function createProjectRootSync(srcFile: string, defaultOptions: ts.CompilerOptions = defaultCompilerOptions, overWrite = true) {
     if (!fs.existsSync(srcFile)) {
         throw new Error(errors.CREATE_FILE_MUST_EXIST);
     }
@@ -414,7 +422,7 @@ const typescriptEnumMap = {
  * Raw To Compiler
  */
 function rawToTsCompilerOptions(jsonOptions: CompilerOptions, projectDir: string): ts.CompilerOptions {
-    const compilerOptions = extend(defaults);
+    const compilerOptions = extend(defaultCompilerOptions);
 
     /** Parse the enums */
     for (var key in jsonOptions) {
