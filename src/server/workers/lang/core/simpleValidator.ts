@@ -1,5 +1,5 @@
 /// Not useful for user input validation
-// But great for simple config validation 
+// But great for simple config validation
 // works only by "n" valid options
 
 export var types = {
@@ -29,7 +29,7 @@ export class SimpleValidator {
         Object.keys(validationInfo).forEach(k=> this.potentialLowerCaseMatch[k.toLowerCase()] = k);
     }
 
-    validate(config: any): Errors {
+    validate = (config: any): Errors => {
         var keys = Object.keys(config);
         var errors = { invalidValues: [], extraKeys: [], errorMessage: '' };
         keys.forEach(k=> {
@@ -41,7 +41,7 @@ export class SimpleValidator {
                 else {
                     errors.extraKeys.push(`Unknown Option: ${k}`)
                 }
-            }     
+            }
             // Do validation
             else {
                 var validationInfo = this.validationInfo[k];
@@ -65,12 +65,4 @@ export class SimpleValidator {
 
         return errors;
     }
-}
-
-
-export function createMap(arr: string[]): { [key: string]: boolean } {
-    return arr.reduce((result: { [key: string]: boolean }, key: string) => {
-        result[key] = true;
-        return result;
-    }, <{ [key: string]: boolean }>{});
 }
