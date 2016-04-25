@@ -4,7 +4,7 @@
 */
 
 .p-DockTabPanel {
-  
+
 }
 
 
@@ -63,8 +63,11 @@
   border: 1px solid #C0C0C0;
   border-bottom: none;
   padding: 0px 10px;
-  background: #E5E5E5;
   font: 12px Helvetica, Arial, sans-serif;
+  transition: background-color .2s, color .2s;
+  background: #333;
+  color: grey;
+  font-weight: bold;
 }
 
 
@@ -76,13 +79,15 @@
 .p-TabBar-tab.p-mod-current {
   min-height: 23px;
   max-height: 23px;
-  background: white;
+  background: #333;
+  color: #6edeef;
   transform: translateY(1px);
 }
 
 
 .p-TabBar-tab:hover:not(.p-mod-current) {
-  background: #F0F0F0;
+  background: #666;
+  color: white;
 }
 
 
