@@ -7,6 +7,7 @@ import * as ui from "./ui";
 import * as uix from "./uix";
 import * as csx from "csx";
 import {AppTabsContainer} from "./tabs/appTabsContainer";
+import {AppTabsContainerV2} from "./tabs/appTabsContainerV2";
 import * as commands from "./commands/commands";
 var Modal = require('react-modal');
 import * as styles from "./styles/styles";
@@ -84,7 +85,7 @@ export class Root extends ui.BaseComponent<{}, State>{
 
                 <div style={[csx.flex, csx.horizontal]}>
                     <FileTree/>
-                    <AppTabsContainer/>
+                    <AppTabsContainerV2/>
                 </div>
 
                 <FindAndReplace/>
