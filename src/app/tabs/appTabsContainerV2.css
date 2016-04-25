@@ -1,3 +1,8 @@
 .bas-content {
     min-width: 100px;
+    background-color: aqua;
+}
+#main-panel {
+    display: flex;
+    flex: 1;
 }

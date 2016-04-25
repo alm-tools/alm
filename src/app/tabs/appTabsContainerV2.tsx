@@ -83,12 +83,12 @@ export class AppTabsContainerV2 extends ui.BaseComponent<Props, State>{
 
     componentDidMount() {
         var panel = new DockPanel();
-        panel.id = 'main';
+        panel.id = 'main-panel';
 
-        panel.insertTabAfter(createContent('Red'));
-        panel.insertTabAfter(createContent('Red'));
-        panel.insertTabAfter(createContent('Red'));
-        panel.insertTabAfter(createContent('Red'));
+        panel.insertTabAfter(createContent('Content'));
+        panel.insertTabAfter(createContent('Content'));
+        panel.insertTabAfter(createContent('Content'));
+        panel.insertTabAfter(createContent('Content'));
 
         panel.attach(this.ctrls.root);
     }
@@ -99,8 +99,7 @@ export class AppTabsContainerV2 extends ui.BaseComponent<Props, State>{
 
     render() {
         return (
-            <div ref={root=>this.ctrls.root = root} style={[csx.vertical,csx.flex,{maxWidth:'100%'}]} className="app-tabs">
-                Hello World
+            <div ref={root=>this.ctrls.root = root} style={csx.extend(csx.vertical,csx.flex,{maxWidth:'100%'})} className="app-tabs">
             </div>
         );
     }

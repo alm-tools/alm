@@ -1,4 +1,7 @@
-/*copy pasted from http://phosphorjs.github.io/examples/dockpanel/*/
+/*
+   copy pasted from http://phosphorjs.github.io/examples/dockpanel/
+   Then customized for our UI
+*/
 
 .p-DockTabPanel {
   padding-right: 2px;
@@ -7,8 +10,7 @@
 
 
 .p-DockTabPanel > .p-StackedPanel {
-  padding: 10px;
-  background: white;
+  background: #333;
   border: 1px solid #C0C0C0;
   border-top: none;
   box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
