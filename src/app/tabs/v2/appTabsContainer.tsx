@@ -70,6 +70,9 @@ export interface State {
 
 export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
+    /** The Golden Layout */
+    layout: GoldenLayout;
+
     constructor(props: Props) {
         super(props);
 
@@ -110,14 +113,16 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             }]
         };
 
-        var myLayout = new GoldenLayout(config, this.ctrls.root);
+        this.layout = new GoldenLayout(config, this.ctrls.root);
 
         /**
          * Register all the tab components with layout
          */
-        // TODO: tab
+        tabRegistry.getTabConfigs().forEach(({protocol,config}) => {
+            this.layout.registerComponent(protocol, config.component);
+        });
 
-        myLayout.registerComponent('example', class Foo extends ui.BaseComponent<{text:string} & GLProps,{}>{
+        this.layout.registerComponent('example', class Foo extends ui.BaseComponent<{text:string} & GLProps,{}>{
             constructor(props){
                 super(props);
             }
@@ -126,7 +131,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             }
         });
 
-        myLayout.init();
+        this.layout.init();
 
 
         /** Restore any open tabs from last session */
@@ -145,8 +150,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             });
 
             tabState.addTabs(tabInstances);
-            tabState.selectTab(tabInstances.length - 1);
             // TODO: tab
+            // tabState.selectTab(tabInstances.length - 1);
             // this.focusAndUpdateStuffWeKnowAboutCurrentTab();
         });
     }
