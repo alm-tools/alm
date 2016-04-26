@@ -6,7 +6,7 @@
 /* Change the close tab icon */
 .lm_header .lm_tab .lm_close_tab {
     background-image: none;
-    top: 3px;
+    top: 2px;
 }
 .lm_close_tab:before {
     content: '\F00D';
