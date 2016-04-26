@@ -5,7 +5,6 @@
 
 import * as ui from "../ui";
 import * as React from "react";
-import * as state from "../state/state";
 
 import * as tab from "./tab";
 import * as tabRegistry from "./tabRegistry";
@@ -22,13 +21,34 @@ import {connect} from "react-redux";
 import * as styles from "../styles/styles";
 import {Tips} from "./tips";
 import {Icon} from "../icon";
-import {cast} from "../../socket/socketClient";
+import {cast, server} from "../../socket/socketClient";
 import * as alertOnLeave from "../utils/alertOnLeave";
 
 /**
- * Singleton
+ * Singleton + tab state migrated from redux to the local component
+ * This is because the component isn't very react friendly
  */
-export let appTabsContainer: AppTabsContainerV2;
+export let tabState: AppTabsState;
+export interface TabInstance {
+    id: string;
+    url: string;
+    saved: boolean,
+}
+class AppTabsState {
+    tabs: TabInstance[];
+    selectedTabIndex: number;
+    constructor(public appTabsContainer: AppTabsContainerV2) {
+        tabState = this;
+    }
+    addTabs(tabs: TabInstance[]) {
+        this.tabs = tabs;
+        // TODO: tab
+    }
+    selectTab(index: number) {
+        this.selectedTabIndex = index;
+        // TODO: tab
+    }
+}
 
 /** Phosphor */
 import {
@@ -52,9 +72,6 @@ const setSessionId = (sessionId: string) => {
 }
 
 export interface Props {
-    // redux connected below
-    tabs?: state.TabInstance[];
-    selectedTabIndex?: number;
 }
 
 export interface State {
@@ -81,7 +98,8 @@ export class AppTabsContainerV2 extends ui.BaseComponent<Props, State>{
     constructor(props: Props) {
         super(props);
 
-        appTabsContainer = this;
+        /** Setup the singleton */
+        new AppTabsState(this);
 
         this.state = {
             selected: 0,
@@ -91,6 +109,27 @@ export class AppTabsContainerV2 extends ui.BaseComponent<Props, State>{
     componentDidMount() {
         var panel = new DockPanel();
         panel.id = 'main-panel';
+
+        /** Restore any open tabs from last session */
+        server.getOpenUITabs({ sessionId: getSessionId() }).then((res) => {
+            setSessionId(res.sessionId);
+
+            if (!res.openTabs.length) return;
+
+            let openTabs = res.openTabs;
+            let tabInstances: TabInstance[] = openTabs.map(t=> {
+                return {
+                    id: createId(),
+                    url: t.url,
+                    saved: true
+                };
+            });
+
+            tabState.addTabs(tabInstances);
+            tabState.selectTab(tabInstances.length - 1);
+            // TODO: tab
+            // this.focusAndUpdateStuffWeKnowAboutCurrentTab();
+        });
 
         panel.insertTabAfter(createContent('Content'));
         panel.insertTabAfter(createContent('Content'));
