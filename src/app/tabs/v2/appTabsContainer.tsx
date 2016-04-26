@@ -7,8 +7,8 @@ import * as ui from "../../ui";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-import * as tab from "../tab";
-import * as tabRegistry from "../tabRegistry";
+import * as tab from "./tab";
+import * as tabRegistry from "./tabRegistry";
 import {Code} from "../codeTab";
 import {DependencyView} from "../dependencyView";
 import * as commands from "../../commands/commands";
@@ -111,6 +111,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         };
 
         var myLayout = new GoldenLayout(config, this.ctrls.root);
+
+        /**
+         * Register all the tab components with layout
+         */
+        // TODO: tab
 
         myLayout.registerComponent('example', class Foo extends ui.BaseComponent<{text:string} & GLProps,{}>{
             constructor(props){
