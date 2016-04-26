@@ -25,6 +25,11 @@ import {Icon} from "../icon";
 import {cast} from "../../socket/socketClient";
 import * as alertOnLeave from "../utils/alertOnLeave";
 
+/**
+ * Singleton
+ */
+export let appTabsContainer: AppTabsContainerV2;
+
 /** Phosphor */
 import {
   DockPanel
@@ -75,6 +80,8 @@ export class AppTabsContainerV2 extends ui.BaseComponent<Props, State>{
 
     constructor(props: Props) {
         super(props);
+
+        appTabsContainer = this;
 
         this.state = {
             selected: 0,
