@@ -36,18 +36,12 @@ export interface TabInstance {
     url: string;
     saved: boolean,
 }
+/** Golden layout */
+import * as GoldenLayout from "golden-layout";
+require('golden-layout/src/css/goldenlayout-base.css')
+require('golden-layout/src/css/goldenlayout-dark-theme.css')
 
-/** Phosphor */
-import {
-  DockPanel
-} from 'phosphor-dockpanel';
-
-import {
-  ResizeMessage, Widget
-} from 'phosphor-widget';
-require('./phosphorStyles.css')
-
-/** Some more styles */
+/** Some additional styles */
 require('./appTabsContainer.css')
 
 
@@ -64,22 +58,6 @@ export interface Props {
 export interface State {
 }
 
-
-/**
- * Create a placeholder content widget.
- */
-function createContent(title: string): Widget {
-  var widget = new Widget();
-  widget.addClass('bas-content');
-  widget.addClass(title.toLowerCase());
-
-  widget.title.text = title;
-  widget.title.closable = true;
-
-  return widget;
-}
-
-
 export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
     constructor(props: Props) {
@@ -90,8 +68,37 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     componentDidMount() {
-        var panel = new DockPanel();
-        panel.id = 'main-panel';
+        var config = {
+            content: [{
+                type: 'row',
+                content: [
+                    {
+                        type: 'component',
+                        componentName: 'example',
+                        componentState: { text: 'Component 1' }
+                    },
+                    {
+                        type: 'component',
+                        componentName: 'example',
+                        componentState: { text: 'Component 2' }
+                    },
+                    {
+                        type: 'component',
+                        componentName: 'example',
+                        componentState: { text: 'Component 3' }
+                    }
+                ]
+            }]
+        };
+
+        var myLayout = new GoldenLayout(config, this.ctrls.root);
+
+        myLayout.registerComponent('example', function(container, state) {
+            container.getElement().html('<h2>' + state.text + '</h2>');
+        });
+
+        myLayout.init();
+
 
         /** Restore any open tabs from last session */
         server.getOpenUITabs({ sessionId: getSessionId() }).then((res) => {
@@ -100,7 +107,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             if (!res.openTabs.length) return;
 
             let openTabs = res.openTabs;
-            let tabInstances: TabInstance[] = openTabs.map(t=> {
+            let tabInstances: TabInstance[] = openTabs.map(t => {
                 return {
                     id: createId(),
                     url: t.url,
@@ -113,13 +120,6 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             // TODO: tab
             // this.focusAndUpdateStuffWeKnowAboutCurrentTab();
         });
-
-        panel.insertTabAfter(createContent('Content'));
-        panel.insertTabAfter(createContent('Content'));
-        panel.insertTabAfter(createContent('Content'));
-        panel.insertTabAfter(createContent('Content'));
-
-        panel.attach(this.ctrls.root);
     }
 
     ctrls: {
@@ -128,7 +128,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
     render() {
         return (
-            <div ref={root=>this.ctrls.root = root} style={csx.extend(csx.vertical,csx.flex,{maxWidth:'100%'})} className="app-tabs">
+            <div ref={root => this.ctrls.root = root} style={csx.extend(csx.vertical, csx.flex, { maxWidth: '100%' }) } className="app-tabs">
             </div>
         );
     }

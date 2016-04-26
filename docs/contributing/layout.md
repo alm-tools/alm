@@ -1,18 +1,8 @@
 # Layout management
-We use the dockpanel and widget system from http://phosphorjs.github.io/
+We use golden-layout.
 
-## Installing
-Installing is done using:
+* Getting Started : https://www.golden-layout.com/tutorials/getting-started.html (simpler for us because we use webpack + npm module)
+* Examples : https://www.golden-layout.com/examples/
 
-```bash
-npm install phosphor-dockpanel@latest --save-dev
-npm install phosphor-widget@latest --save-dev
-```
-This makes sure we don't get duplicates.
-
-## Setup
-The phosphorjs layout needs to be the Root. A level above React. With react being used *inside* the components. This is the way [phosphide][phosphide] is setup with [applicationshell][applicationshell] being at the root.
-
-
-[phosphide]: https://github.com/phosphorjs/phosphide
-[applicationshell]: https://github.com/phosphorjs/phosphide/blob/master/src/core/applicationshell.ts
+## ReactJS Support
+Excellent ReactJS support. You can register react components with the same API as all other components (`layout.registerComponent`). But in the configuration you specify the type to be `react-component`. You also get to provide additional `props` to the component. Checkout the `Simple ReactJS example` in the examples.
