@@ -28,26 +28,13 @@ import * as alertOnLeave from "../utils/alertOnLeave";
  * Singleton + tab state migrated from redux to the local component
  * This is because the component isn't very react friendly
  */
-export let tabState: AppTabsState;
+declare var _helpMeGrabTheType: AppTabsContainerV2;
+export let tabState: typeof _helpMeGrabTheType.tabState;
+
 export interface TabInstance {
     id: string;
     url: string;
     saved: boolean,
-}
-class AppTabsState {
-    tabs: TabInstance[];
-    selectedTabIndex: number;
-    constructor(public appTabsContainer: AppTabsContainerV2) {
-        tabState = this;
-    }
-    addTabs(tabs: TabInstance[]) {
-        this.tabs = tabs;
-        // TODO: tab
-    }
-    selectTab(index: number) {
-        this.selectedTabIndex = index;
-        // TODO: tab
-    }
 }
 
 /** Phosphor */
@@ -99,11 +86,7 @@ export class AppTabsContainerV2 extends ui.BaseComponent<Props, State>{
         super(props);
 
         /** Setup the singleton */
-        new AppTabsState(this);
-
-        this.state = {
-            selected: 0,
-        };
+        tabState = this.tabState;
     }
 
     componentDidMount() {
@@ -149,4 +132,22 @@ export class AppTabsContainerV2 extends ui.BaseComponent<Props, State>{
             </div>
         );
     }
+
+    /**
+     * Tab State
+     */
+    tabs: TabInstance[] = [];
+    selectedTabIndex: number = NoSelectedTab;
+    tabState = {
+        addTabs: (tabs: TabInstance[]) => {
+            this.tabs = tabs;
+            // TODO: tab
+        },
+        selectTab: (index: number) => {
+            this.selectedTabIndex = index;
+            // TODO: tab
+        }
+    }
 }
+
+const NoSelectedTab = -1;
