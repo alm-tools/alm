@@ -31,13 +31,7 @@ import {Tips} from "./tips";
 import {Icon} from "../icon";
 import {cast} from "../../socket/socketClient";
 import * as alertOnLeave from "../utils/alertOnLeave";
-
-const getSessionId = () => window.location.hash.substr(1);
-const setSessionId = (sessionId: string) => {
-    const hash = '#' + sessionId;
-    window.location.hash = hash;
-    window.onhashchange = function() { window.location.hash = hash }
-}
+import {getSessionId, setSessionId} from "./clientSession";
 
 export interface Props {
     // redux connected below
