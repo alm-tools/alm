@@ -23,6 +23,7 @@ import {Tips} from "./../tips";
 import {Icon} from "../../icon";
 import {cast, server} from "../../../socket/socketClient";
 import * as alertOnLeave from "../../utils/alertOnLeave";
+import {getSessionId, setSessionId} from "../clientSession";
 
 /**
  * Singleton + tab state migrated from redux to the local component
@@ -44,13 +45,6 @@ require('golden-layout/src/css/goldenlayout-dark-theme.css')
 /** Some additional styles */
 require('./appTabsContainer.css')
 
-
-const getSessionId = () => window.location.hash.substr(1);
-const setSessionId = (sessionId: string) => {
-    const hash = '#' + sessionId;
-    window.location.hash = hash;
-    window.onhashchange = function() { window.location.hash = hash }
-}
 
 export interface Props {
 }
