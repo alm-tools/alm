@@ -3,32 +3,32 @@
  * e.g. selected tab, any handling of open tab requests etc.
  */
 
-import * as ui from "../ui";
+import * as ui from "../../ui";
 import * as React from "react";
 
-import * as tab from "./tab";
-import * as tabRegistry from "./tabRegistry";
-import {Code} from "./codeTab";
-import {DependencyView} from "./dependencyView";
-import * as commands from "../commands/commands";
-import * as utils from "../../common/utils";
+import * as tab from "../tab";
+import * as tabRegistry from "../tabRegistry";
+import {Code} from "../codeTab";
+import {DependencyView} from "../dependencyView";
+import * as commands from "../../commands/commands";
+import * as utils from "../../../common/utils";
 import csx = require('csx');
-import {createId} from "../../common/utils";
-import * as constants from "../../common/constants";
+import {createId} from "../../../common/utils";
+import * as constants from "../../../common/constants";
 
-import * as types from "../../common/types";
+import * as types from "../../../common/types";
 import {connect} from "react-redux";
-import * as styles from "../styles/styles";
-import {Tips} from "./tips";
-import {Icon} from "../icon";
-import {cast, server} from "../../socket/socketClient";
-import * as alertOnLeave from "../utils/alertOnLeave";
+import * as styles from "../../styles/styles";
+import {Tips} from "./../tips";
+import {Icon} from "../../icon";
+import {cast, server} from "../../../socket/socketClient";
+import * as alertOnLeave from "../../utils/alertOnLeave";
 
 /**
  * Singleton + tab state migrated from redux to the local component
  * This is because the component isn't very react friendly
  */
-declare var _helpMeGrabTheType: AppTabsContainerV2;
+declare var _helpMeGrabTheType: AppTabsContainer;
 export let tabState: typeof _helpMeGrabTheType.tabState;
 
 export interface TabInstance {
@@ -48,7 +48,7 @@ import {
 require('./phosphorStyles.css')
 
 /** Some more styles */
-require('./appTabsContainerV2.css')
+require('./appTabsContainer.css')
 
 
 const getSessionId = () => window.location.hash.substr(1);
@@ -80,7 +80,7 @@ function createContent(title: string): Widget {
 }
 
 
-export class AppTabsContainerV2 extends ui.BaseComponent<Props, State>{
+export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
     constructor(props: Props) {
         super(props);
