@@ -25,6 +25,7 @@ import {Icon} from "../../icon";
 import {cast, server} from "../../../socket/socketClient";
 import * as alertOnLeave from "../../utils/alertOnLeave";
 import {getSessionId, setSessionId} from "../clientSession";
+import * as onresize from "onresize";
 
 /**
  * Singleton + tab state migrated from redux to the local component
@@ -154,6 +155,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             // tabState.selectTab(tabInstances.length - 1);
             // this.focusAndUpdateStuffWeKnowAboutCurrentTab();
         });
+
+        /** Setup window resize */
+        this.disposible.add(onresize.on(()=>this.layout.updateSize()));
     }
 
     ctrls: {
