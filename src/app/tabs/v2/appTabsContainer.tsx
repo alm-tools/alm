@@ -86,19 +86,25 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                         type: 'react-component',
                         component: 'example',
                         title: 'first',
-                        props: { text: 'Component 1' }
+                        props: {
+                            text: 'pink'
+                        }
                     },
                     {
                         type: 'react-component',
                         component: 'example',
                         title: 'second',
-                        props: { text: 'Component 2' }
+                        props: {
+                            text: 'aqua'
+                        }
                     },
                     {
                         type: 'react-component',
                         component: 'example',
                         title: 'third',
-                        props: { text: 'Component 3' }
+                        props: {
+                            text: 'lightgreen'
+                        }
                     }
                 ]
             }]
@@ -111,7 +117,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 super(props);
             }
             render(){
-                return <div>{this.props.text}</div>
+                return <div style={{width:'100%',height:'100%',backgroundColor:this.props.text}}>{this.props.text}</div>
             }
         });
 
