@@ -5,6 +5,7 @@
 
 import * as ui from "../../ui";
 import * as React from "react";
+import * as ReactDOM from "react-dom";
 
 import * as tab from "../tab";
 import * as tabRegistry from "../tabRegistry";
@@ -39,8 +40,11 @@ export interface TabInstance {
 }
 /** Golden layout */
 import * as GoldenLayout from "golden-layout";
-require('golden-layout/src/css/goldenlayout-base.css')
-require('golden-layout/src/css/goldenlayout-dark-theme.css')
+require('golden-layout/src/css/goldenlayout-base.css');
+require('golden-layout/src/css/goldenlayout-dark-theme.css');
+/** Golden layout wants react / react-dom to be global */
+(window as any).React = React;
+(window as any).ReactDOM = ReactDOM;
 
 /** Some additional styles */
 require('./appTabsContainer.css')
@@ -67,19 +71,22 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 type: 'row',
                 content: [
                     {
-                        type: 'component',
-                        componentName: 'example',
-                        componentState: { text: 'Component 1' }
+                        type: 'react-component',
+                        component: 'example',
+                        title: 'first',
+                        props: { text: 'Component 1' }
                     },
                     {
-                        type: 'component',
-                        componentName: 'example',
-                        componentState: { text: 'Component 2' }
+                        type: 'react-component',
+                        component: 'example',
+                        title: 'second',
+                        props: { text: 'Component 2' }
                     },
                     {
-                        type: 'component',
-                        componentName: 'example',
-                        componentState: { text: 'Component 3' }
+                        type: 'react-component',
+                        component: 'example',
+                        title: 'third',
+                        props: { text: 'Component 3' }
                     }
                 ]
             }]
@@ -87,8 +94,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
         var myLayout = new GoldenLayout(config, this.ctrls.root);
 
-        myLayout.registerComponent('example', function(container, state) {
-            container.getElement().html('<h2>' + state.text + '</h2>');
+        myLayout.registerComponent('example', class Foo extends ui.BaseComponent<{text:string},{}>{
+            render(){
+                return <div>{this.props.text}</div>
+            }
         });
 
         myLayout.init();
