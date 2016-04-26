@@ -38,13 +38,25 @@ export interface TabInstance {
     url: string;
     saved: boolean,
 }
-/** Golden layout */
+
+/**
+ *
+ * Golden layout
+ *
+ */
 import * as GoldenLayout from "golden-layout";
 require('golden-layout/src/css/goldenlayout-base.css');
 require('golden-layout/src/css/goldenlayout-dark-theme.css');
 /** Golden layout wants react / react-dom to be global */
 (window as any).React = React;
 (window as any).ReactDOM = ReactDOM;
+/** Golden layout injects this prop into all react components */
+interface GLProps extends React.Props<any>{
+    /** https://golden-layout.com/docs/Container.html */
+    glContainer: {
+        setTitle:(title:string)=>any;
+    }
+}
 
 /** Some additional styles */
 require('./appTabsContainer.css')
@@ -94,7 +106,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
         var myLayout = new GoldenLayout(config, this.ctrls.root);
 
-        myLayout.registerComponent('example', class Foo extends ui.BaseComponent<{text:string},{}>{
+        myLayout.registerComponent('example', class Foo extends ui.BaseComponent<{text:string} & GLProps,{}>{
+            constructor(props){
+                super(props);
+            }
             render(){
                 return <div>{this.props.text}</div>
             }
