@@ -88,10 +88,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 content: [
                     {
                         type: 'react-component',
-                        component: 'example',
+                        component: 'file',
                         title: 'first',
                         props: {
-                            text: 'pink'
+                            url:'file:///Users/bas/repos/alm/tests/success/simple/bas.tsx'
                         }
                     },
                     {

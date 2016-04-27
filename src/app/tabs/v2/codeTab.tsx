@@ -5,6 +5,9 @@ import {server,cast} from "../../../socket/socketClient";
 import * as commands from "../../commands/commands";
 import * as utils from "../../../common/utils";
 
+import {store} from "../../state/state";
+import { Provider } from 'react-redux';
+
 import {CodeEditor} from "../../codemirror/codeEditor";
 
 export interface Props extends tab.ComponentProps {
@@ -47,14 +50,16 @@ export class Code extends ui.BaseComponent<Props, State> implements tab.Componen
 
     render() {
         return (
-            <CodeEditor
-            ref='editor'
-            filePath={this.filePath}
-            onFocusChange={
-                /* Auto save on focus loss */
-                (focus) => !focus && !this.props.saved && this.save()
-            }
-            />
+            <Provider store={store}>
+                <CodeEditor
+                ref='editor'
+                filePath={this.filePath}
+                onFocusChange={
+                    /* Auto save on focus loss */
+                    (focus) => !focus && !this.props.saved && this.save()
+                }
+                />
+            </Provider>
         );
     }
 
