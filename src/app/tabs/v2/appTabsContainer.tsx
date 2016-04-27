@@ -144,13 +144,13 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     addTabToLayout = (tab: TabInstance) => {
-        const {url} = tab;
+        const {url, id} = tab;
         const {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(tab.url);
         const props: tab.ComponentProps = {
             url,
             saved: true,
             onSavedChanged: (saved)=>this.onSavedChanged(tab,saved),
-            api: null // TODO: tab
+            api: this.createTabApi(id)
         };
         const title = tabRegistry.getTabConfigByUrl(url).getTitle(url);
 
@@ -162,9 +162,17 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         });
     }
 
+    createTabApi(id: string) {
+        // TODO: tab
+        const api: tab.TabApi = null;
+        this.tabApi[id] = api;
+        return api;
+    }
+
     /**
      * Tab State
      */
+    tabApi: {[id:string]: tab.TabApi } = Object.create(null);
     tabs: TabInstance[] = [];
     selectedTabIndex: number = NoSelectedTab;
     tabState = {
