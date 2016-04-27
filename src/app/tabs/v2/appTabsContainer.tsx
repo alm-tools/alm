@@ -82,38 +82,15 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     componentDidMount() {
+        /**
+         * Setup golden layout
+         */
         var config = {
             content: [{
-                type: 'row',
-                content: [
-                    {
-                        type: 'react-component',
-                        component: 'file',
-                        title: 'first',
-                        props: {
-                            url:'file:///Users/bas/repos/alm/tests/success/simple/bas.tsx'
-                        }
-                    },
-                    {
-                        type: 'react-component',
-                        component: 'example',
-                        title: 'second',
-                        props: {
-                            text: 'aqua'
-                        }
-                    },
-                    {
-                        type: 'react-component',
-                        component: 'example',
-                        title: 'third',
-                        props: {
-                            text: 'lightgreen'
-                        }
-                    }
-                ]
+                type: 'stack',
+                content: []
             }]
         };
-
         this.layout = new GoldenLayout(config, this.ctrls.root);
 
         /**
@@ -123,17 +100,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.layout.registerComponent(protocol, config.component);
         });
 
-        this.layout.registerComponent('example', class Foo extends ui.BaseComponent<{text:string} & GLProps,{}>{
-            constructor(props){
-                super(props);
-            }
-            render(){
-                return <div style={{width:'100%',height:'100%',backgroundColor:this.props.text}}>{this.props.text}</div>
-            }
-        });
-
+        // initialize the layout
         this.layout.init();
-
 
         /** Restore any open tabs from last session */
         server.getOpenUITabs({ sessionId: getSessionId() }).then((res) => {
@@ -171,6 +139,25 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         );
     }
 
+    onSavedChanged(tab: TabInstance, saved: boolean){
+        // TODO: tab
+    }
+
+    addTabToLayout = (tab: TabInstance) => {
+        const {url} = tab;
+        const {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(tab.url);
+        (this.layout.root.contentItems[0] as any).addChild({
+            type: 'react-component',
+            component: protocol,
+            title: "WIP title",
+            props: {
+                url,
+                saved: true,
+                onSavedChanged: (saved)=>this.onSavedChanged(tab,saved)
+            }
+        });
+    }
+
     /**
      * Tab State
      */
@@ -179,7 +166,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     tabState = {
         addTabs: (tabs: TabInstance[]) => {
             this.tabs = tabs;
-            // TODO: tab
+            tabs.forEach(this.addTabToLayout);
         },
         selectTab: (index: number) => {
             this.selectedTabIndex = index;
