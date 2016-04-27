@@ -149,7 +149,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         const props: tab.ComponentProps = {
             url,
             saved: true,
-            onSavedChanged: (saved)=>this.onSavedChanged(tab,saved)
+            onSavedChanged: (saved)=>this.onSavedChanged(tab,saved),
+            api: null // TODO: tab
         };
         const title = tabRegistry.getTabConfigByUrl(url).getTitle(url);
 

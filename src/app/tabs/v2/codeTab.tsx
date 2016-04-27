@@ -20,7 +20,7 @@ export interface State {
  * - All server code must go through here
  * - All tab type stuff must go through here
  */
-export class Code extends ui.BaseComponent<Props, State> implements tab.Component {
+export class Code extends ui.BaseComponent<Props, State> {
 
     constructor(props: Props) {
         super(props);
@@ -43,8 +43,11 @@ export class Code extends ui.BaseComponent<Props, State> implements tab.Componen
                 this.props.onSavedChanged(res.saved);
             }
         }));
+
+        // TODO: tab
+        // Listen to tab events
     }
-    componentWillUnmount(){
+    componentWillUnmount() {
         this.disposible.dispose();
     }
 

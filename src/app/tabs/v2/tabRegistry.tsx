@@ -9,7 +9,7 @@ import * as ui from "../../ui";
 /** Various tabs  */
 import {Code} from "./codeTab";
 
-type ComponentConstructor = { new (props: any): tab.Component };
+type ComponentConstructor = { new (props: tab.ComponentProps): ui.BaseComponent<tab.ComponentProps,any> };
 
 interface TabConfig {
     advancedSearch: boolean;
