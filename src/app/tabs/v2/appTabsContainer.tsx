@@ -146,15 +146,18 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     addTabToLayout = (tab: TabInstance) => {
         const {url} = tab;
         const {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(tab.url);
+        const props: tab.ComponentProps = {
+            url,
+            saved: true,
+            onSavedChanged: (saved)=>this.onSavedChanged(tab,saved)
+        };
+        const title = tabRegistry.getTabConfigByUrl(url).getTitle(url);
+
         (this.layout.root.contentItems[0] as any).addChild({
             type: 'react-component',
             component: protocol,
-            title: "WIP title",
-            props: {
-                url,
-                saved: true,
-                onSavedChanged: (saved)=>this.onSavedChanged(tab,saved)
-            }
+            title,
+            props
         });
     }
 
