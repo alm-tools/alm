@@ -26,6 +26,7 @@ import {cast, server} from "../../../socket/socketClient";
 import * as alertOnLeave from "../../utils/alertOnLeave";
 import {getSessionId, setSessionId} from "../clientSession";
 import * as onresize from "onresize";
+import {TypedEvent} from "../../../common/events";
 
 /**
  * Singleton + tab state migrated from redux to the local component
@@ -163,8 +164,22 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     createTabApi(id: string) {
-        // TODO: tab
-        const api: tab.TabApi = null;
+        const api: tab.TabApi = {
+            resize: new TypedEvent(),
+            focus: new TypedEvent(),
+            save: new TypedEvent(),
+            close: new TypedEvent<{}>(),
+            gotoPosition: new TypedEvent<EditorPosition>(),
+            search: {
+                doSearch: new TypedEvent<FindOptions>(),
+                hideSearch: new TypedEvent<{}>(),
+                findNext: new TypedEvent<FindOptions>(),
+                findPrevious: new TypedEvent<FindOptions>(),
+                replaceNext: new TypedEvent<{newText: string}>(),
+                replacePrevious: new TypedEvent<{newText: string}>(),
+                replaceAll: new TypedEvent<{newText: string}>()
+            }
+        };
         this.tabApi[id] = api;
         return api;
     }

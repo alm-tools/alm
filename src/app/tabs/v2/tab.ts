@@ -13,6 +13,7 @@ import {TypedEvent} from "../../../common/events";
  * Also since its props the component can ignore a few of these if it wants
  */
 export interface TabApi {
+    resize: TypedEvent<{}>,
     focus: TypedEvent<{}>,
     save: TypedEvent<{}>,
     close: TypedEvent<{}>,
