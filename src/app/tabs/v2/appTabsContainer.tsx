@@ -85,8 +85,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     componentDidMount() {
         /**
          * Setup golden layout
+         * https://golden-layout.com/docs/Config.html
          */
-        var config = {
+        var config:any = {
             content: [{
                 type: 'stack',
                 content: []
@@ -127,6 +128,20 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
         /** Setup window resize */
         this.disposible.add(onresize.on(()=>this.layout.updateSize()));
+
+        /** Setup for tab selection */
+        let lastConfig = this.layout.toConfig();
+        (this.layout as any).on('stateChanged', (evt) => {
+            let newConfig = this.layout.toConfig();
+
+            console.log('here', lastConfig, newConfig);
+            // TODO: tab
+            // Abort if nothing changed
+            // Figure out what changed (look at all type='stack' and check `activeItemIndex`)
+            // If selection changed raise
+
+            lastConfig = newConfig;
+        });
     }
 
     ctrls: {
