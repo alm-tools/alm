@@ -151,7 +151,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             url,
             saved: true,
             onSavedChanged: (saved)=>this.onSavedChanged(tab,saved),
-            api: this.createTabApi(id)
+            api: this.createTabApi(id),
         };
         const title = tabRegistry.getTabConfigByUrl(url).getTitle(url);
 
@@ -159,7 +159,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             type: 'react-component',
             component: protocol,
             title,
-            props
+            props,
+            id
         });
     }
 
