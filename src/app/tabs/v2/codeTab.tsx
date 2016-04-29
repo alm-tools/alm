@@ -46,6 +46,8 @@ export class Code extends ui.BaseComponent<Props, State> {
 
         // TODO: tab
         // Listen to tab events
+        const api = this.props.api;
+        this.disposible.add(api.focus.on(this.focus));
     }
     componentWillUnmount() {
         this.disposible.dispose();

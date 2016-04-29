@@ -87,7 +87,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
          * Setup golden layout
          * https://golden-layout.com/docs/Config.html
          */
-        var config:any = {
+        var config:GoldenLayout.Config = {
             content: [{
                 type: 'stack',
                 content: []
@@ -130,15 +130,29 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         this.disposible.add(onresize.on(()=>this.layout.updateSize()));
 
         /** Setup for tab selection */
-        let lastConfig = this.layout.toConfig();
+        let lastConfig: GoldenLayout.Config = this.layout.toConfig();
         (this.layout as any).on('stateChanged', (evt) => {
-            let newConfig = this.layout.toConfig();
+            let newConfig:GoldenLayout.Config = this.layout.toConfig();
 
-            console.log('here', lastConfig, newConfig);
+            console.log('here', lastConfig, newConfig); // DEBUG
+
             // TODO: tab
             // Abort if nothing changed
             // Figure out what changed (look at all type='stack' and check `activeItemIndex`)
             // If selection changed raise
+
+            const focusStackRoot = (config:{activeItemIndex:number,content:{id:string}[]}) => {
+                const selectedId = config.content[config.activeItemIndex].id;
+                if (selectedId){
+                    this.tabState.selectTab(selectedId);
+                }
+                // const content = config.content;
+                // content.forEach(c=>{
+                //
+                // }
+            }
+            newConfig.content.filter(c=>c.type == 'stack').forEach((s)=>focusStackRoot(s as any));
+
 
             lastConfig = newConfig;
         });
@@ -205,15 +219,16 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
      */
     tabApi: {[id:string]: tab.TabApi } = Object.create(null);
     tabs: TabInstance[] = [];
-    selectedTabIndex: number = NoSelectedTab;
+    selectedTabId: string = '';
     tabState = {
         addTabs: (tabs: TabInstance[]) => {
             this.tabs = tabs;
             tabs.forEach(this.addTabToLayout);
         },
-        selectTab: (index: number) => {
-            this.selectedTabIndex = index;
+        selectTab: (id: string) => {
+            this.selectedTabId = id;
             // TODO: tab
+            this.tabApi[id].focus.emit({});
         }
     }
 }
