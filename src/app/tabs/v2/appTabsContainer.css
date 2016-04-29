@@ -9,7 +9,7 @@
     top: 2px;
 }
 .lm_close_tab:before {
-    content: '\F00D';
+    content: '\F00D'; /* cross */
     font-family: FontAwesome;
 }
 
@@ -37,4 +37,14 @@
  */
 .lm_splitter {
     z-index: 5;
+}
+
+/**
+ * Style the tab based on saved state
+ */
+.lm_tab.unsaved {
+}
+.lm_tab.unsaved .lm_close_tab:before {
+    content: '\F1CD'; /* life-ring */
+    font-family: FontAwesome;
 }

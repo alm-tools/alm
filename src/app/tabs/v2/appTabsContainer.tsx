@@ -137,13 +137,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
          * and on state changes just focus on the last selected tab if any
          */
         (this.layout as any).on('tabCreated', (tabInfo) => {
-            const tab:JQuery = tabInfo.element;
-            const tabConfig = tabInfo.contentItem.config;
-            const id = tabConfig.id;
-            // mouse down because we want tab state to change even if user initiates a drag
-            tab.on('mousedown', () => {
-                this.tabState.selectTab(id);
-            });
+            this.createTabHandle(tabInfo);
         });
         (this.layout as any).on('stateChanged', (evt) => {
             // Due to state changes layout needs to happen on *all tabs* (because it might expose some other tabs)
@@ -166,8 +160,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         );
     }
 
-    onSavedChanged(tab: TabInstance, saved: boolean){
-        // TODO: tab
+    onSavedChanged(tab: TabInstance, saved: boolean) {
+        if (this.tabHandle[tab.id]) {
+            this.tabHandle[tab.id].setSaved(saved);
+        }
     }
 
     addTabToLayout = (tab: TabInstance) => {
@@ -213,10 +209,36 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         return api;
     }
 
+    createTabHandle(tabInfo){
+        const tab:JQuery = tabInfo.element;
+        const tabConfig = tabInfo.contentItem.config;
+        const id = tabConfig.id;
+        // mouse down because we want tab state to change even if user initiates a drag
+        tab.on('mousedown', () => {
+            this.tabState.selectTab(id);
+        });
+        this.tabHandle[id] = {
+            saved: true,
+            setSaved: (saved)=> {
+                this.tabHandle[id].saved = saved;
+                tab.toggleClass('unsaved', !saved);
+            }
+        }
+    }
+
     /**
      * Tab State
      */
     tabApi: {[id:string]: tab.TabApi } = Object.create(null);
+    /**
+     * This is different from the Tab Api in that its stuff *we* render for the tab
+     */
+    tabHandle: {
+        [id: string]: {
+            saved: boolean;
+            setSaved: (saved: boolean) => void;
+        }
+    } = Object.create(null);
     tabs: TabInstance[] = [];
     selectedTabId: string = '';
     tabState = {
