@@ -140,7 +140,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             const tab:JQuery = tabInfo.element;
             const tabConfig = tabInfo.contentItem.config;
             const id = tabConfig.id;
-            tab.on('click', () => {
+            // mouse down because we want tab state to change even if user initiates a drag
+            tab.on('mousedown', () => {
                 this.tabState.selectTab(id);
             });
         });
