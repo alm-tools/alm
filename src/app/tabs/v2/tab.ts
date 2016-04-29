@@ -36,15 +36,17 @@ export interface TabApi {
     }
 }
 
+/**
+ * Note: Because of golden-layout we cannot use *mutating* props.
+ * Basically finding a way to send new props will be fairly hacky
+ * So instead props *never change after the tab is created*.
+ */
 export interface TabProps {
     // what you get
     url: string;
 
     // what you can tell us about
     onSavedChanged: (saved: boolean) => void;
-
-    // Useful
-    saved: boolean;
 
     /** Tab API. Effectively allows the container to call functions on a Tab */
     api: TabApi;

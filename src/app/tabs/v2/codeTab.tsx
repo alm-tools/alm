@@ -32,14 +32,17 @@ export class Code extends ui.BaseComponent<Props, State> {
     refs: { [string: string]: any; editor: CodeEditor; }
 
     filePath: string;
+    saved: boolean = true;
     componentDidMount() {
 
         server.getFileStatus({filePath:this.filePath}).then((res)=>{
+            this.saved = res.saved;
             this.props.onSavedChanged(res.saved);
         });
 
         this.disposible.add(cast.didStatusChange.on(res=>{
             if (res.filePath == this.filePath) {
+                this.saved = res.saved;
                 this.props.onSavedChanged(res.saved);
             }
         }));
@@ -62,7 +65,7 @@ export class Code extends ui.BaseComponent<Props, State> {
                 filePath={this.filePath}
                 onFocusChange={
                     /* Auto save on focus loss */
-                    (focus) => !focus && !this.props.saved && this.save()
+                    (focus) => !focus && !this.saved && this.save()
                 }
                 />
             </Provider>
@@ -78,7 +81,10 @@ export class Code extends ui.BaseComponent<Props, State> {
     }
 
     save = () => {
-        server.saveFile({ filePath: this.filePath }).then(()=>{this.props.onSavedChanged(true)});
+        server.saveFile({ filePath: this.filePath }).then(()=>{
+            this.saved = true;
+            this.props.onSavedChanged(true);
+        });
     }
 
     close = () => {
