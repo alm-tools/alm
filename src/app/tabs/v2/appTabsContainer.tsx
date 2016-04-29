@@ -202,24 +202,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     createTabApi(id: string) {
-        // Note : i am using any as `new TypedEvent<FindOptions>()` breaks syntax highlighting
-        // but don't worry api is still type checked for members
-        const api: tab.TabApi = {
-            resize: new TypedEvent(),
-            focus: new TypedEvent(),
-            save: new TypedEvent(),
-            close: new TypedEvent() as any,
-            gotoPosition: new TypedEvent() as any,
-            search: {
-                doSearch: new TypedEvent() as any,
-                hideSearch: new TypedEvent() as any,
-                findNext: new TypedEvent() as any,
-                findPrevious: new TypedEvent() as any,
-                replaceNext: new TypedEvent() as any,
-                replacePrevious: new TypedEvent() as any,
-                replaceAll: new TypedEvent() as any
-            }
-        };
+        const api = newTabApi();
         this.tabApi[id] = api;
         return api;
     }
@@ -234,25 +217,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             return this.tabApi[this.selectedTabId];
         }
         else {
-            // Note : i am using any as `new TypedEvent<FindOptions>()` breaks syntax highlighting
-            // but don't worry api is still type checked for members
-            const api: tab.TabApi = {
-                resize: new TypedEvent(),
-                focus: new TypedEvent(),
-                save: new TypedEvent(),
-                close: new TypedEvent() as any,
-                gotoPosition: new TypedEvent() as any,
-                search: {
-                    doSearch: new TypedEvent() as any,
-                    hideSearch: new TypedEvent() as any,
-                    findNext: new TypedEvent() as any,
-                    findPrevious: new TypedEvent() as any,
-                    replaceNext: new TypedEvent() as any,
-                    replacePrevious: new TypedEvent() as any,
-                    replaceAll: new TypedEvent() as any
-                }
-            };
-            return api;
+            return newTabApi();
         }
     }
     getTabApi(id: string) {
@@ -307,3 +272,25 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 }
 
 const NoSelectedTab = -1;
+
+const newTabApi = ()=>{
+    // Note : i am using any as `new TypedEvent<FindOptions>()` breaks syntax highlighting
+    // but don't worry api is still type checked for members
+    const api: tab.TabApi = {
+        resize: new TypedEvent(),
+        focus: new TypedEvent(),
+        save: new TypedEvent(),
+        close: new TypedEvent() as any,
+        gotoPosition: new TypedEvent() as any,
+        search: {
+            doSearch: new TypedEvent() as any,
+            hideSearch: new TypedEvent() as any,
+            findNext: new TypedEvent() as any,
+            findPrevious: new TypedEvent() as any,
+            replaceNext: new TypedEvent() as any,
+            replacePrevious: new TypedEvent() as any,
+            replaceAll: new TypedEvent() as any
+        }
+    };
+    return api;
+}
