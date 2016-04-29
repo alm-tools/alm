@@ -127,7 +127,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         });
 
         /** Setup window resize */
-        this.disposible.add(onresize.on(()=>this.layout.updateSize()));
+        this.disposible.add(onresize.on(()=>this.resize()));
 
         /**
          * Tab selection
@@ -145,7 +145,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.tabState.resize();
 
             // If there was a selected tab focus on it again.
-            this.selectedTabId && this.tabState.selectTab(this.selectedTabId);
+            this.selectedTabInstance && this.tabState.selectTab(this.selectedTabInstance.id);
         });
 
         /**
@@ -201,6 +201,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         });
     }
 
+    resize() {
+        this.layout.updateSize();
+    }
+
     createTabApi(id: string) {
         const api = newTabApi();
         this.tabApi[id] = api;
@@ -213,8 +217,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
      * constantly checking if selected tab. (pain from v1).
      */
     getSelectedTabApiIfAny() {
-        if (this.tabApi[this.selectedTabId]) {
-            return this.tabApi[this.selectedTabId];
+        if (this.selectedTabInstance && this.tabApi[this.selectedTabInstance.id]) {
+            return this.tabApi[this.selectedTabInstance.id];
         }
         else {
             return newTabApi();
@@ -255,7 +259,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         }
     } = Object.create(null);
     tabs: TabInstance[] = [];
-    selectedTabId: string = '';
+    selectedTabInstance: TabInstance = null;
     tabState = {
         resize: () => {
             this.tabs.forEach(t=>this.tabApi[t.id].resize.emit({}));
@@ -265,7 +269,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             tabs.forEach(this.addTabToLayout);
         },
         selectTab: (id: string) => {
-            this.selectedTabId = id;
+            this.selectedTabInstance = this.tabs.find(t => t.id == id);
             this.tabApi[id].focus.emit({});
         }
     }
