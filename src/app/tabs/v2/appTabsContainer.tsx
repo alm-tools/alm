@@ -133,6 +133,14 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         let lastConfig: GoldenLayout.Config = this.layout.toConfig();
         // let calledIndex = 0;
         (this.layout as any).on('stateChanged', (evt) => {
+
+            // TODO: tab
+            // I tried to use the config to figure out the selected tab.
+            // That didn't work out so well
+            // So the plan is now to find the *selected* focused Dom element (hopefully tab header)
+            // Once we find a *header*.*tab* we get its `id` and call focus on the component inside that
+
+
             let newConfig:GoldenLayout.Config = this.layout.toConfig();
 
             // console.log('here', newConfig); // DEBUG
