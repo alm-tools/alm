@@ -25,4 +25,5 @@
   * [Deployment](/contributing/deployment.md)
   * [Redux](/contributing/redux.md)
   * [Errors](/contributing/errors.md)
+  * [Tabs](/contributing/tabs.md)
   * [Why?](/contributing/why.md)

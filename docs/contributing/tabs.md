@@ -1,4 +1,4 @@
-# Layout management
+# Tabs
 We use golden-layout.
 
 * Getting Started : https://www.golden-layout.com/tutorials/getting-started.html (simpler for us because we use webpack + npm module)
@@ -7,10 +7,10 @@ We use golden-layout.
 ## ReactJS Support
 Excellent ReactJS support. You can register react components with the same API as all other components (`layout.registerComponent`). But in the configuration you specify the type to be `react-component`. You also get to provide additional `props` to the component. Checkout the `Simple ReactJS example` in the examples.
 
-## More Tips
+## Tips from official docs
 * Configure the layout: https://golden-layout.com/docs/Config.html
 * Configure the items: https://golden-layout.com/docs/ItemConfig.html
 * Adding items after initialize: https://golden-layout.com/tutorials/dynamically-adding-components.html
 
-# TIP
-We just make a stack at the root and then add tabs to it.
+## Some notes
+* We just make a stack at the root and then add tabs to it.
