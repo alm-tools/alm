@@ -21,3 +21,12 @@
 .lm_tab.lm_active {
     /*color: #6edeef;*/
 }
+
+/*
+ * Make golden layout content flex based (this is the continer for items)
+ * golden layout already gives it an explicit height / width
+ * so with just making it a flex continer the children (our tabs) just work ;)
+ */
+.lm_content {
+    display: flex;
+}
