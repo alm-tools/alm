@@ -131,19 +131,23 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
         /** Setup for tab selection */
         let lastConfig: GoldenLayout.Config = this.layout.toConfig();
+        // let calledIndex = 0;
         (this.layout as any).on('stateChanged', (evt) => {
             let newConfig:GoldenLayout.Config = this.layout.toConfig();
 
-            console.log('here', lastConfig, newConfig); // DEBUG
+            // console.log('here', newConfig); // DEBUG
+            // console.log('called index',calledIndex++); // DEBUG
 
             // TODO: tab
             // Abort if nothing changed
-            // Figure out what changed (look at all type='stack' and check `activeItemIndex`)
             // If selection changed raise
 
-            const focusStackRoot = (config:{activeItemIndex:number,content:{id:string}[]}) => {
-                const selectedId = config.content[config.activeItemIndex].id;
-                if (selectedId){
+            // Figure out what changed (look at all type='stack' and check `activeItemIndex`)
+            type Stack = {activeItemIndex:number,content:{id:string}[]};
+            const focusStackRoot = (stack:Stack) => {
+                const selectedId = stack.content[stack.activeItemIndex].id;
+                console.log('focus stack root', selectedId)
+                if (selectedId) {
                     this.tabState.selectTab(selectedId);
                 }
                 // const content = config.content;
@@ -151,8 +155,24 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 //
                 // }
             }
-            newConfig.content.filter(c=>c.type == 'stack').forEach((s)=>focusStackRoot(s as any));
 
+            // Collect all stacks:
+            const stacks:Stack[] = [];
+            const addToStacks = (stack:Stack)=>stacks.push(stack);
+            const addChildrenToStacks = (x: {content:any[]}) => x.content.filter(c => c.type === 'stack').forEach(addToStacks);
+            // Collect from root
+            addChildrenToStacks(newConfig);
+            // If root is not a stack collect from row / column children
+            // TODO: tab
+            // Needs to be recursive
+            newConfig.content.filter(c => c.type === 'row' || c.type === 'column').forEach(x => addChildrenToStacks(x as any));
+
+            // TODO: tab
+            // Focus all stacks
+            // actually only the *right* one  should be focused
+            // right one (based on user dragging)
+            // right one (based on user clicking a tab)
+            stacks.forEach(focusStackRoot);
 
             lastConfig = newConfig;
         });
@@ -229,7 +249,6 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         },
         selectTab: (id: string) => {
             this.selectedTabId = id;
-            // TODO: tab
             this.tabApi[id].focus.emit({});
         }
     }
