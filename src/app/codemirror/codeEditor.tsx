@@ -285,6 +285,13 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 		}
 	}
 
+    resize = () => {
+        if (this.codeMirror) {
+            this.refresh();
+            setTimeout(()=> !this.isUnmounted && this.refresh(),500);
+		}
+    }
+
     gotoPosition = (position: EditorPosition) => {
         this.afterReady(()=>{
             cmUtils.jumpToLine({ line: position.line, ch: position.ch, editor: this.codeMirror });

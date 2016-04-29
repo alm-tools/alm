@@ -146,8 +146,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             });
         });
         (this.layout as any).on('stateChanged', (evt) => {
-            // TODO: tab
-            // Due to state changes layout needs to happen on *all tabs*
+            // Due to state changes layout needs to happen on *all tabs* (because it might expose some other tabs)
+            // PREF : you can go thorough all the `stack` in the layout and only call resize on the active ones.
+            this.tabState.resize();
 
             // If there was a selected tab focus on it again.
             this.selectedTabId && this.tabState.selectTab(this.selectedTabId);
@@ -219,6 +220,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     tabs: TabInstance[] = [];
     selectedTabId: string = '';
     tabState = {
+        resize: () => {
+            this.tabs.forEach(t=>this.tabApi[t.id].resize.emit({}));
+        },
         addTabs: (tabs: TabInstance[]) => {
             this.tabs = tabs;
             tabs.forEach(this.addTabToLayout);

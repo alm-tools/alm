@@ -48,6 +48,7 @@ export class Code extends ui.BaseComponent<Props, State> {
         // Listen to tab events
         const api = this.props.api;
         this.disposible.add(api.focus.on(this.focus));
+        this.disposible.add(api.resize.on(this.resize));
     }
     componentWillUnmount() {
         this.disposible.dispose();
@@ -66,6 +67,10 @@ export class Code extends ui.BaseComponent<Props, State> {
                 />
             </Provider>
         );
+    }
+
+    resize = () => {
+        this.refs.editor.resize();
     }
 
     focus = () => {
