@@ -139,6 +139,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         (this.layout as any).on('tabCreated', (tabInfo) => {
             this.createTabHandle(tabInfo);
         });
+        (this.layout as any).on('itemDestroyed', (evt) => {
+            if (evt.config && evt.config.id){
+                this.tabState.closedTab(evt.config.id);
+            }
+        });
         (this.layout as any).on('stateChanged', (evt) => {
             // Due to state changes layout needs to happen on *all tabs* (because it might expose some other tabs)
             // PREF : you can go thorough all the `stack` in the layout and only call resize on the active ones.
@@ -248,10 +253,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     /**
      * Tab State
      */
+    /** Our way to send stuff (events) down to the tab */
     tabApi: {[id:string]: tab.TabApi } = Object.create(null);
-    /**
-     * This is different from the Tab Api in that its stuff *we* render for the tab
-     */
+    /** This is different from the Tab Api in that its stuff *we* render for the tab */
     tabHandle: {
         [id: string]: {
             saved: boolean;
@@ -271,6 +275,19 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         selectTab: (id: string) => {
             this.selectedTabInstance = this.tabs.find(t => t.id == id);
             this.tabApi[id].focus.emit({});
+        },
+        closedTab: (id: string) => {
+            this.tabs = this.tabs.filter(t=>t.id !== id);
+            delete this.tabHandle[id];
+            delete this.tabApi[id];
+            // TODO: tab
+            // tell server about open tabs for session
+
+            if (this.selectedTabInstance && this.selectedTabInstance.id == id) {
+                this.selectedTabInstance = null;
+                // TODO: tab
+                // Figure out the next selected tab
+            }
         }
     }
 }
