@@ -14,6 +14,9 @@ import * as constants from "../common/constants";
 import {server, cast, pendingRequestsChanged, connectionStatusChanged} from "../socket/socketClient";
 var Modal = require('react-modal');
 
+// Having jQuery ($) on the console helps us debug certin libs that use jQuery
+import $ = require('jquery');
+(window as any).$ = $
 
 // prevent backspace
 import {preventBackspaceNav} from "./utils/preventBackspaceNav";
