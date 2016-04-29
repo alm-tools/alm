@@ -30,3 +30,11 @@
 .lm_content {
     display: flex;
 }
+
+/**
+ * Force the lm_splitter to be above CodeMirror / other tab stuff
+ * CodeMirror z-index : 2
+ */
+.lm_splitter {
+    z-index: 5;
+}
