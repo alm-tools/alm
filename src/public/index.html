@@ -17,6 +17,14 @@
 
     <style>
 
+    /* apply a natural box layout model to all elements, but allowing components to change */
+    html {
+      box-sizing: border-box;
+    }
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+
     /* Setup a 100% layout *with no scroll bars* */
     html, body, #app, #root {
         height: 100%;
