@@ -36,7 +36,7 @@ export interface TabApi {
     }
 }
 
-export interface ComponentProps {
+export interface TabProps {
     // what you get
     url: string;
 

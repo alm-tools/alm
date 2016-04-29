@@ -173,7 +173,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     addTabToLayout = (tab: TabInstance) => {
         const {url, id} = tab;
         const {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(tab.url);
-        const props: tab.ComponentProps = {
+        const props: tab.TabProps = {
             url,
             saved: true,
             onSavedChanged: (saved)=>this.onSavedChanged(tab,saved),

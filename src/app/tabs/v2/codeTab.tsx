@@ -10,7 +10,7 @@ import { Provider } from 'react-redux';
 
 import {CodeEditor} from "../../codemirror/codeEditor";
 
-export interface Props extends tab.ComponentProps {
+export interface Props extends tab.TabProps {
 }
 export interface State {
 }
