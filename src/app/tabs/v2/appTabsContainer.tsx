@@ -147,6 +147,22 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             // If there was a selected tab focus on it again.
             this.selectedTabId && this.tabState.selectTab(this.selectedTabId);
         });
+
+        /**
+         * General command handling
+         */
+        this.setupCommandHandling()
+    }
+
+    /**
+     * Lots of commands are raised in the app that we need to care about
+     * e.g. tab saving / tab switching / file opening etc.
+     * We do that all in here
+     */
+    setupCommandHandling(){
+        commands.saveTab.on((e) => {
+            this.getSelectedTabApiIfAny().save.emit({});
+        });
     }
 
     ctrls: {
@@ -206,6 +222,41 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         };
         this.tabApi[id] = api;
         return api;
+    }
+
+    /**
+     * If we have a selected tab we return its api.
+     * Otherwise we create one on the fly so you don't need to worry about
+     * constantly checking if selected tab. (pain from v1).
+     */
+    getSelectedTabApiIfAny() {
+        if (this.tabApi[this.selectedTabId]) {
+            return this.tabApi[this.selectedTabId];
+        }
+        else {
+            // Note : i am using any as `new TypedEvent<FindOptions>()` breaks syntax highlighting
+            // but don't worry api is still type checked for members
+            const api: tab.TabApi = {
+                resize: new TypedEvent(),
+                focus: new TypedEvent(),
+                save: new TypedEvent(),
+                close: new TypedEvent() as any,
+                gotoPosition: new TypedEvent() as any,
+                search: {
+                    doSearch: new TypedEvent() as any,
+                    hideSearch: new TypedEvent() as any,
+                    findNext: new TypedEvent() as any,
+                    findPrevious: new TypedEvent() as any,
+                    replaceNext: new TypedEvent() as any,
+                    replacePrevious: new TypedEvent() as any,
+                    replaceAll: new TypedEvent() as any
+                }
+            };
+            return api;
+        }
+    }
+    getTabApi(id: string) {
+        return this.tabApi[id];
     }
 
     createTabHandle(tabInfo){
