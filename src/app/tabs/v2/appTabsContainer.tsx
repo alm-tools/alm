@@ -194,20 +194,22 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     createTabApi(id: string) {
+        // Note : i am using any as `new TypedEvent<FindOptions>()` breaks syntax highlighting
+        // but don't worry api is still type checked for members
         const api: tab.TabApi = {
             resize: new TypedEvent(),
             focus: new TypedEvent(),
             save: new TypedEvent(),
-            close: new TypedEvent<{}>(),
-            gotoPosition: new TypedEvent<EditorPosition>(),
+            close: new TypedEvent() as any,
+            gotoPosition: new TypedEvent() as any,
             search: {
-                doSearch: new TypedEvent<FindOptions>(),
-                hideSearch: new TypedEvent<{}>(),
-                findNext: new TypedEvent<FindOptions>(),
-                findPrevious: new TypedEvent<FindOptions>(),
-                replaceNext: new TypedEvent<{newText: string}>(),
-                replacePrevious: new TypedEvent<{newText: string}>(),
-                replaceAll: new TypedEvent<{newText: string}>()
+                doSearch: new TypedEvent() as any,
+                hideSearch: new TypedEvent() as any,
+                findNext: new TypedEvent() as any,
+                findPrevious: new TypedEvent() as any,
+                replaceNext: new TypedEvent() as any,
+                replacePrevious: new TypedEvent() as any,
+                replaceAll: new TypedEvent() as any
             }
         };
         this.tabApi[id] = api;
