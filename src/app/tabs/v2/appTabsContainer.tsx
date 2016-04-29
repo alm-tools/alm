@@ -121,68 +121,35 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             });
 
             tabState.addTabs(tabInstances);
+            tabInstances.length && tabState.selectTab(tabInstances[tabInstances.length - 1].id);
             // TODO: tab
-            // tabState.selectTab(tabInstances.length - 1);
             // this.focusAndUpdateStuffWeKnowAboutCurrentTab();
         });
 
         /** Setup window resize */
         this.disposible.add(onresize.on(()=>this.layout.updateSize()));
 
-        /** Setup for tab selection */
-        let lastConfig: GoldenLayout.Config = this.layout.toConfig();
-        // let calledIndex = 0;
+        /**
+         * Tab selection
+         * I tried to use the config to figure out the selected tab.
+         * That didn't work out so well
+         * So the plan is to intercept the tab clicks to focus
+         * and on state changes just focus on the last selected tab if any
+         */
+        (this.layout as any).on('tabCreated', (tabInfo) => {
+            const tab:JQuery = tabInfo.element;
+            const tabConfig = tabInfo.contentItem.config;
+            const id = tabConfig.id;
+            tab.on('click', () => {
+                this.tabState.selectTab(id);
+            });
+        });
         (this.layout as any).on('stateChanged', (evt) => {
-
             // TODO: tab
-            // I tried to use the config to figure out the selected tab.
-            // That didn't work out so well
-            // So the plan is now to find the *selected* focused Dom element (hopefully tab header)
-            // Once we find a *header*.*tab* we get its `id` and call focus on the component inside that
+            // Due to state changes layout needs to happen on *all tabs*
 
-
-            let newConfig:GoldenLayout.Config = this.layout.toConfig();
-
-            // console.log('here', newConfig); // DEBUG
-            // console.log('called index',calledIndex++); // DEBUG
-
-            // TODO: tab
-            // Abort if nothing changed
-            // If selection changed raise
-
-            // Figure out what changed (look at all type='stack' and check `activeItemIndex`)
-            type Stack = {activeItemIndex:number,content:{id:string}[]};
-            const focusStackRoot = (stack:Stack) => {
-                const selectedId = stack.content[stack.activeItemIndex].id;
-                console.log('focus stack root', selectedId)
-                if (selectedId) {
-                    this.tabState.selectTab(selectedId);
-                }
-                // const content = config.content;
-                // content.forEach(c=>{
-                //
-                // }
-            }
-
-            // Collect all stacks:
-            const stacks:Stack[] = [];
-            const addToStacks = (stack:Stack)=>stacks.push(stack);
-            const addChildrenToStacks = (x: {content:any[]}) => x.content.filter(c => c.type === 'stack').forEach(addToStacks);
-            // Collect from root
-            addChildrenToStacks(newConfig);
-            // If root is not a stack collect from row / column children
-            // TODO: tab
-            // Needs to be recursive
-            newConfig.content.filter(c => c.type === 'row' || c.type === 'column').forEach(x => addChildrenToStacks(x as any));
-
-            // TODO: tab
-            // Focus all stacks
-            // actually only the *right* one  should be focused
-            // right one (based on user dragging)
-            // right one (based on user clicking a tab)
-            stacks.forEach(focusStackRoot);
-
-            lastConfig = newConfig;
+            // If there was a selected tab focus on it again.
+            this.selectedTabId && this.tabState.selectTab(this.selectedTabId);
         });
     }
 
