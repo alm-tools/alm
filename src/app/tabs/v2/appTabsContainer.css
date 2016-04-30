@@ -40,6 +40,14 @@
 }
 
 /**
+ * Force the lm_dropTargetIndicator to be above CodeMirror / other tab stuff
+ * CodeMirror z-index : 2
+ */
+.lm_dropTargetIndicator {
+    z-index: 5;
+}
+
+/**
  * Style the tab based on saved state
  */
 .lm_tab.unsaved {
