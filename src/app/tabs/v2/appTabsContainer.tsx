@@ -309,17 +309,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
             this.tabState.setTabs(this.tabs.filter(t=>t.id !== id));
 
-            // TODO: tab
-            // The next selection logic is wrong
-            // Consider 'a','b(active)','c'  | panel | 'd'
-            // And user closes 'd'. We should go to `b`, but right now we go to `c` *which is not even active*
-            if (this.selectedTabInstance && this.selectedTabInstance.id == id) {
-                // Figure out the next selected tab if any
-                let nxtTab =
-                    this.tabs.length == 1 ? null
-                    : index == 0 ? this.tabs[0] : this.tabs[index - 1];
-                this.selectedTabInstance = nxtTab;
-            }
+            // Figure out the tab which will become active
+            this.selectedTabInstance = GLUtil.prevOnClose({ id, config: this.layout.toConfig() });
 
             // No matter what we need to refocus on the selected tab
             // console.log(this.selectedTabInstance); // DEBUG
@@ -358,7 +349,8 @@ const newTabApi = ()=>{
 namespace GLUtil {
 
     /**
-     * Specialize the `Stack` type for how we configure all our stack items
+     * Specialize the `Stack` type in the golden-layout config
+     * because of how we configure golden-layout originally
      */
     type Stack = {
         type: 'stack'
@@ -366,10 +358,18 @@ namespace GLUtil {
             id: string;
             props: tab.TabProps
         }[];
+        activeItemIndex: number;
+    }
+
+    /** We map the stack to a tab stack which is more relevant to our configuration queries */
+    interface TabStack {
+        selectedIndex: number;
+        tabs: TabInstance[];
     }
 
     /**
      * A visitor for stack
+     * Navigates down to any root level stack or the stack as a child of an row / columns
      */
     export const visitAllStacks = (content: GoldenLayout.ItemConfig[], cb: (stack: Stack) => void) => {
         content.forEach(c => {
@@ -383,23 +383,71 @@ namespace GLUtil {
     }
 
     /**
-     * Get the tabs in order.
-     * Navigates down to any root level stack or the stack as a child of an row / columns
+     * Gets the tab instaces for a given stack
+     */
+    export function toTabStack(stack: Stack): TabStack {
+        const tabs: TabInstance[] = stack.content.map(c => {
+            const props: tab.TabProps = c.props;
+            const id = c.id;
+            return { id: id, url: props.url };
+        });
+        return {
+            selectedIndex: stack.activeItemIndex,
+            tabs
+        };
+    }
+
+    /**
+     * Get the tabs in order
      */
     export function orderedTabs(config:GoldenLayout.Config): TabInstance[] {
-        const result: TabInstance[] = [];
+        let result: TabInstance[] = [];
 
-        const addFromStack = (stack: Stack) => {
-            stack.content.forEach(c=>{
-                const props: tab.TabProps = c.props;
-                const id = c.id as string;
-                result.push({id:id, url: props.url});
-            });
-        }
+        const addFromStack = (stack: Stack) => result = result.concat(toTabStack(stack).tabs);
 
-        // Add root level stacks if any
+        // Add from all stacks
         visitAllStacks(config.content, addFromStack);
 
         return result;
+    }
+
+    /**
+     * It will be the previous tab on the current stack
+     * and if the stack is empty it will be the active tab on previous stack (if any)
+     */
+    export function prevOnClose(args: { id: string, config: GoldenLayout.Config }): TabInstance | null {
+        const stacksInOrder: TabStack[] = [];
+        visitAllStacks(args.config.content, (stack) => stacksInOrder.push(toTabStack(stack)));
+
+        /** Find the stack that has this id */
+        const stackWithClosingTab = stacksInOrder.find(s => s.tabs.some(t => t.id === args.id));
+
+        /** if the last tab in the stack */
+        if (stackWithClosingTab.tabs.length === 1) {
+            /** if this is the last stack then we will run out of tabs. Return null */
+            if (stacksInOrder.length == 1) {
+                return null;
+            }
+            /** return the active in the previous stack (with loop around) */
+            const previousStackIndex = utils.rangeLimited({
+                num: stacksInOrder.indexOf(stackWithClosingTab) - 1,
+                min: 0,
+                max: stacksInOrder.length - 1,
+                loopAround: true
+            });
+
+            const previousStack = stacksInOrder[previousStackIndex];
+            return previousStack.tabs[previousStack.selectedIndex];
+        }
+        /** Otherwise return the previous in the same stack (with loop around)*/
+        else {
+            const previousIndex = utils.rangeLimited({
+                num: stackWithClosingTab.tabs.map(t => t.id).indexOf(args.id) - 1,
+                min: 0,
+                max: stackWithClosingTab.tabs.length - 1,
+                loopAround: true
+            });
+            return stackWithClosingTab.tabs[previousIndex];
+        }
     }
 }
