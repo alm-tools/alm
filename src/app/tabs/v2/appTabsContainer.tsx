@@ -193,6 +193,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         commands.esc.on(() => {
             this.tabState.focusSelectedTabIfAny();
         });
+        commands.jumpToTab.on(()=>{
+            // TODO: tab
+            // jump to tab
+            console.log('here');
+        });
     }
 
     ctrls: {
