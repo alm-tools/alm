@@ -160,9 +160,16 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             if (evt.origin && typeof evt.origin._dropSegment === 'string') {
                 return;
             }
+            // Ignore the events where the number of tabs doesn't match up
+            // This is *also* because the user is dragging stuff
+            const config = this.layout.toConfig();
+            const orderedtabs = GLUtil.orderedTabs(this.layout.toConfig());
+            if (orderedtabs.length !== this.tabs.length) {
+                return;
+            }
 
             // Store the tabs in the right order
-            this.tabState.setTabs(GLUtil.orderedTabs(this.layout.toConfig()));
+            this.tabState.setTabs(orderedtabs);
 
             // If there was a selected tab focus on it again.
             this.selectedTabInstance && this.tabState.selectTab(this.selectedTabInstance.id);
