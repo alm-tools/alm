@@ -336,7 +336,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.tabState.setTabs(this.tabs.filter(t=>t.id !== id));
 
             // Figure out the tab which will become active
-            this.selectedTabInstance = GLUtil.prevOnClose({ id, config: this.layout.toConfig() });
+            if (this.selectedTabInstance && this.selectedTabInstance.id === id){
+                this.selectedTabInstance = GLUtil.prevOnClose({ id, config: this.layout.toConfig() });
+            }
 
             // No matter what we need to refocus on the selected tab
             // console.log(this.selectedTabInstance); // DEBUG
