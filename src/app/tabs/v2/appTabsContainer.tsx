@@ -283,9 +283,13 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         },
         selectTab: (id: string) => {
             this.selectedTabInstance = this.tabs.find(t => t.id == id);
-            this.tabApi[id].focus.emit({});
+            this.tabState.focusSelectedTab();
+        },
+        focusSelectedTab: () => {
+            this.selectedTabInstance && this.tabApi[this.selectedTabInstance.id].focus.emit({});
         },
         closedTab: (id: string) => {
+            const index = this.tabs.map(t=>t.id).indexOf(id);
             this.tabs = this.tabs.filter(t=>t.id !== id);
             delete this.tabHandle[id];
             delete this.tabApi[id];
@@ -293,9 +297,12 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             // tell server about open tabs for session
 
             if (this.selectedTabInstance && this.selectedTabInstance.id == id) {
-                this.selectedTabInstance = null;
-                // TODO: tab
-                // Figure out the next selected tab
+                // Figure out the next selected tab if any
+                let nxtTab =
+                    this.tabs.length == 1 ? null
+                    : index == 0 ? this.tabs[0] : this.tabs[index - 1];
+                this.selectedTabInstance = nxtTab;
+                this.tabState.focusSelectedTab();
             }
         }
     }
@@ -328,7 +335,7 @@ const newTabApi = ()=>{
 /**
  * Golden layout helpers
  */
-namespace GLHelpers {
+namespace GLUtil {
 
     /**
      * Specialize the `Stack` type for how we configure all our stack items
