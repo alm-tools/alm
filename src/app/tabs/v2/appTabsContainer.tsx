@@ -316,6 +316,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
             delete this.tabHandle[id];
             delete this.tabApi[id];
+            delete this.codeEditorMap[id];
 
             this.tabState.setTabs(this.tabs.filter(t=>t.id !== id));
 
