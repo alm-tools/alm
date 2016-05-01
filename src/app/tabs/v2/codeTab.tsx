@@ -47,6 +47,8 @@ export class Code extends ui.BaseComponent<Props, State> {
             }
         }));
 
+        this.props.setCodeEditor(this.refs.editor);
+
         // TODO: tab
         // Listen to tab events
         const api = this.props.api;

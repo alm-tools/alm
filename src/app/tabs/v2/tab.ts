@@ -4,6 +4,7 @@
 
 import * as React from "react";
 import {TypedEvent} from "../../../common/events";
+import {CodeEditor} from "../../codemirror/codeEditor";
 
 /**
  * API used to trigger effects in the component
@@ -47,6 +48,7 @@ export interface TabProps {
 
     // what you can tell us about
     onSavedChanged: (saved: boolean) => void;
+    setCodeEditor: (codeEditor: CodeEditor) => void;
 
     /** Tab API. Effectively allows the container to call functions on a Tab */
     api: TabApi;

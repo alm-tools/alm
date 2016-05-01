@@ -11,7 +11,7 @@ import CodeMirror = require('codemirror');
 /** Cant this in these UI components. Will cause cycles! */
 import * as codeEditor from "./codemirror/codeEditor";
 import {Code} from "./tabs/codeTab";
-import {appTabsContainer} from "./tabs/appTabsContainer";
+import {tabState} from "./tabs/v2/appTabsContainer";
 import * as docCache from "./codemirror/mode/docCache";
 
 /**
@@ -67,15 +67,6 @@ export namespace API {
     }
 
     export function getFocusedCodeEditorIfAny(): codeEditor.CodeEditor {
-        let {tabs, selectedTabIndex} = state.getState();
-        if (tabs.length == 0) return undefined;
-
-        let focusedTab = tabs[selectedTabIndex];
-        if (!focusedTab.url.startsWith('file:')) return undefined;
-
-        let focusedTabComponent: Code = appTabsContainer.refs[focusedTab.id] as Code;
-        let editor = focusedTabComponent.refs.editor;
-
-        return editor;
+        return tabState.getFocusedCodeEditorIfAny();
     }
 }

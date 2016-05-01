@@ -27,6 +27,7 @@ import * as alertOnLeave from "../../utils/alertOnLeave";
 import {getSessionId, setSessionId} from "../clientSession";
 import * as onresize from "onresize";
 import {TypedEvent} from "../../../common/events";
+import {CodeEditor} from "../../codemirror/codeEditor";
 
 /**
  * Singleton + tab state migrated from redux to the local component
@@ -210,6 +211,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             url,
             onSavedChanged: (saved)=>this.onSavedChanged(tab,saved),
             api: this.createTabApi(id),
+            setCodeEditor: (codeEditor: CodeEditor) => this.tabHandle[id].codeEditor = codeEditor
         };
         const title = tabRegistry.getTabConfigByUrl(url).getTitle(url);
 
@@ -268,7 +270,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             setSaved: (saved)=> {
                 this.tabHandle[id].saved = saved;
                 tab.toggleClass('unsaved', !saved);
-            }
+            },
+            codeEditor: null,
         }
     }
 
@@ -282,6 +285,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         [id: string]: {
             saved: boolean;
             setSaved: (saved: boolean) => void;
+            /**
+             * Having access to the current code editor is vital for some parts of the application
+             * For this reason we allow the CodeTab to tell us about its codeEditor instance
+             */
+            codeEditor?: CodeEditor;
         }
     } = Object.create(null);
     tabs: TabInstance[] = [];
@@ -318,6 +326,20 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             // No matter what we need to refocus on the selected tab
             // console.log(this.selectedTabInstance); // DEBUG
             this.tabState.focusSelectedTabIfAny();
+        },
+
+        /**
+         * Not to be used locally
+         */
+        getFocusedCodeEditorIfAny: (): CodeEditor => {
+            if (!this.selectedTabInstance
+                || !this.selectedTabInstance.id
+                || !this.selectedTabInstance.url.startsWith('file:')
+                || !this.tabHandle[this.selectedTabInstance.id]
+                || !this.tabHandle[this.selectedTabInstance.id].codeEditor) {
+                return null;
+            }
+            return this.tabHandle[this.selectedTabInstance.id].codeEditor;
         }
     }
 }
