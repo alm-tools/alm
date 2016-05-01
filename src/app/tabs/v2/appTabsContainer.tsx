@@ -281,13 +281,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             },
             triggerFocus: () => {
                 /**
-                 * SetTimeout needed because we call `triggerFocus` when
+                 * setTimeout needed because we call `triggerFocus` when
                  * golden-layout is still in the process of changing tabs sometimes
                  */
                 setTimeout(() => {
-                    // TODO: tab
-                    /** Still not right */
-                    tabInfo.header.setActiveContentItem(item);
+                    tabInfo.header.parent.setActiveContentItem(item);
                 });
             },
         }
@@ -356,12 +354,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
             // The close tab logic inside golden layout, can disconnect the active tab logic of ours
             // (we try to preserve current tab if some other tab closes)
-            // So no matter what we need to refocus on the selected tab
-            //
-            // console.log(this.selectedTabInstance); // DEBUG
+            // So no matter what we need to refocus on the selected tab from within Golden-Layout
             if (this.selectedTabInstance) {
                 this.tabHandle[this.selectedTabInstance.id].triggerFocus();
-                this.tabState.focusSelectedTabIfAny();
             }
         },
 
