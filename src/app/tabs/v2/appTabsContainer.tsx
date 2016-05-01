@@ -35,6 +35,7 @@ import {CodeEditor} from "../../codemirror/codeEditor";
  */
 declare var _helpMeGrabTheType: AppTabsContainer;
 export let tabState: typeof _helpMeGrabTheType.tabState;
+export const tabStateChanged = new TypedEvent<{}>();
 
 export interface TabInstance {
     id: string;
@@ -292,7 +293,16 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
      */
     codeEditorMap : {[id:string]: CodeEditor} = Object.create(null);
     tabs: TabInstance[] = [];
-    selectedTabInstance: TabInstance = null;
+    /** Selected tab instance */
+    _selectedTabInstance: TabInstance;
+    set selectedTabInstance(value: TabInstance) {
+        this._selectedTabInstance = value;
+        tabStateChanged.emit({});
+    }
+    get selectedTabInstance() {
+        return this._selectedTabInstance;
+    }
+    /** Tab Sate */
     tabState = {
         resize: () => {
             this.tabs.forEach(t=>this.tabApi[t.id].resize.emit({}));
@@ -339,6 +349,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 return null;
             }
             return this.codeEditorMap[this.selectedTabInstance.id];
+        },
+        getSelectedTab: (): TabInstance => {
+            return this.selectedTabInstance;
         }
     }
 }

@@ -13,6 +13,7 @@ import {AvailableProjectConfig} from "../common/types";
 import {Clipboard} from "./clipboard";
 import {PendingRequestsIndicator} from "./pendingRequestsIndicator";
 import {Icon} from "./icon";
+import {tabState,tabStateChanged} from "./tabs/v2/appTabsContainer";
 
 import {connect} from "react-redux";
 import {StoreState,expandErrors,collapseErrors} from "./state/state";
@@ -82,10 +83,11 @@ export class StatusBar extends BaseComponent<Props, State>{
 
     componentDidMount() {
         statusBar = this;
+        tabStateChanged.on(()=>this.forceUpdate());
     }
 
     render() {
-        let tab = state.getSelectedTab();
+        let tab = tabState.getSelectedTab();
         let filePath = tab && utils.getFilePathFromUrl(tab.url);
         let protocol = tab && utils.getFilePathAndProtocolFromUrl(tab.url).protocol;
 
