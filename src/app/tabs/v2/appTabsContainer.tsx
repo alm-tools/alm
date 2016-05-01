@@ -181,6 +181,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         commands.saveTab.on((e) => {
             this.getSelectedTabApiIfAny().save.emit({});
         });
+        commands.esc.on(() => {
+            this.tabState.focusSelectedTabIfAny();
+        });
     }
 
     ctrls: {
