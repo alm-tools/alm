@@ -110,6 +110,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
             if (!res.openTabs.length) return;
 
+            // Create tab instances
             let openTabs = res.openTabs;
             let tabInstances: TabInstance[] = openTabs.map(t => {
                 return {
@@ -119,10 +120,12 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 };
             });
 
-            tabState.addTabs(tabInstances);
+            // Add the tabs to the layout
+            this.tabs = tabInstances;
+            tabInstances.forEach(this.addTabToLayout);
+
+            // Select the last one
             tabInstances.length && tabState.selectTab(tabInstances[tabInstances.length - 1].id);
-            // TODO: tab
-            // this.focusAndUpdateStuffWeKnowAboutCurrentTab();
         });
 
         /** Setup window resize */
@@ -156,10 +159,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 return;
             }
 
+            // Store the tabs in the right order
+            this.tabState.setTabs(GLUtil.orderedTabs(this.layout.toConfig()));
+
             // If there was a selected tab focus on it again.
             this.selectedTabInstance && this.tabState.selectTab(this.selectedTabInstance.id);
-
-            // console.log(GLHelpers.orderedTabs(this.layout.toConfig())); // DEBUG
         });
 
         /**
@@ -247,7 +251,13 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         const tabConfig = tabInfo.contentItem.config;
         const id = tabConfig.id;
         // mouse down because we want tab state to change even if user initiates a drag
-        tab.on('mousedown', () => {
+        tab.on('mousedown', (evt) => {
+            // But not if the user is clicking the close button or center clicking (close)
+            const centerClick = evt.button === 1;
+            const closeButtonClicked = evt.target && evt.target.className == "lm_close_tab";
+            if (centerClick || closeButtonClicked) {
+                return;
+            }
             this.tabState.selectTab(id);
         });
         this.tabHandle[id] = {
@@ -277,24 +287,27 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         resize: () => {
             this.tabs.forEach(t=>this.tabApi[t.id].resize.emit({}));
         },
-        addTabs: (tabs: TabInstance[]) => {
+        setTabs: (tabs: TabInstance[]) => {
             this.tabs = tabs;
-            tabs.forEach(this.addTabToLayout);
+            // TODO: tab
+            // tell server about open tabs for session
         },
         selectTab: (id: string) => {
             this.selectedTabInstance = this.tabs.find(t => t.id == id);
-            this.tabState.focusSelectedTab();
+            this.tabState.focusSelectedTabIfAny();
+            // TODO: tab
+            // this.updateStuffWeKnowAboutCurrentTab();
         },
-        focusSelectedTab: () => {
+        focusSelectedTabIfAny: () => {
             this.selectedTabInstance && this.tabApi[this.selectedTabInstance.id].focus.emit({});
         },
         closedTab: (id: string) => {
             const index = this.tabs.map(t=>t.id).indexOf(id);
-            this.tabs = this.tabs.filter(t=>t.id !== id);
+
             delete this.tabHandle[id];
             delete this.tabApi[id];
-            // TODO: tab
-            // tell server about open tabs for session
+
+            this.tabState.setTabs(this.tabs.filter(t=>t.id !== id));
 
             if (this.selectedTabInstance && this.selectedTabInstance.id == id) {
                 // Figure out the next selected tab if any
@@ -302,8 +315,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                     this.tabs.length == 1 ? null
                     : index == 0 ? this.tabs[0] : this.tabs[index - 1];
                 this.selectedTabInstance = nxtTab;
-                this.tabState.focusSelectedTab();
             }
+
+            // No matter what we need to refocus on the selected tab
+            // console.log(this.selectedTabInstance); // DEBUG
+            this.tabState.focusSelectedTabIfAny();
         }
     }
 }
