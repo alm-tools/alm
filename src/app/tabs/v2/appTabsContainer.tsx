@@ -211,7 +211,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             url,
             onSavedChanged: (saved)=>this.onSavedChanged(tab,saved),
             api: this.createTabApi(id),
-            setCodeEditor: (codeEditor: CodeEditor) => this.tabHandle[id].codeEditor = codeEditor
+            setCodeEditor: (codeEditor: CodeEditor) => this.codeEditorMap[id] = codeEditor
         };
         const title = tabRegistry.getTabConfigByUrl(url).getTitle(url);
 
@@ -270,8 +270,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             setSaved: (saved)=> {
                 this.tabHandle[id].saved = saved;
                 tab.toggleClass('unsaved', !saved);
-            },
-            codeEditor: null,
+            }
         }
     }
 
@@ -285,13 +284,13 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         [id: string]: {
             saved: boolean;
             setSaved: (saved: boolean) => void;
-            /**
-             * Having access to the current code editor is vital for some parts of the application
-             * For this reason we allow the CodeTab to tell us about its codeEditor instance
-             */
-            codeEditor?: CodeEditor;
         }
     } = Object.create(null);
+    /**
+     * Having access to the current code editor is vital for some parts of the application
+     * For this reason we allow the CodeTab to tell us about its codeEditor instance
+     */
+    codeEditorMap : {[id:string]: CodeEditor} = Object.create(null);
     tabs: TabInstance[] = [];
     selectedTabInstance: TabInstance = null;
     tabState = {
@@ -335,11 +334,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             if (!this.selectedTabInstance
                 || !this.selectedTabInstance.id
                 || !this.selectedTabInstance.url.startsWith('file:')
-                || !this.tabHandle[this.selectedTabInstance.id]
-                || !this.tabHandle[this.selectedTabInstance.id].codeEditor) {
+                || !this.codeEditorMap[this.selectedTabInstance.id]) {
                 return null;
             }
-            return this.tabHandle[this.selectedTabInstance.id].codeEditor;
+            return this.codeEditorMap[this.selectedTabInstance.id];
         }
     }
 }
