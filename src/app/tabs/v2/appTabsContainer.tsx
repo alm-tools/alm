@@ -258,6 +258,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     createTabHandle(tabInfo){
+        // console.log(tabInfo);
+        const item = tabInfo.contentItem;
         const tab:JQuery = tabInfo.element;
         const tabConfig = tabInfo.contentItem.config;
         const id = tabConfig.id;
@@ -276,7 +278,18 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             setSaved: (saved)=> {
                 this.tabHandle[id].saved = saved;
                 tab.toggleClass('unsaved', !saved);
-            }
+            },
+            triggerFocus: () => {
+                /**
+                 * SetTimeout needed because we call `triggerFocus` when
+                 * golden-layout is still in the process of changing tabs sometimes
+                 */
+                setTimeout(() => {
+                    // TODO: tab
+                    /** Still not right */
+                    tabInfo.header.setActiveContentItem(item);
+                });
+            },
         }
     }
 
@@ -290,6 +303,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         [id: string]: {
             saved: boolean;
             setSaved: (saved: boolean) => void;
+            triggerFocus: () => void;
         }
     } = Object.create(null);
     /**
@@ -340,9 +354,15 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 this.selectedTabInstance = GLUtil.prevOnClose({ id, config: this.layout.toConfig() });
             }
 
-            // No matter what we need to refocus on the selected tab
+            // The close tab logic inside golden layout, can disconnect the active tab logic of ours
+            // (we try to preserve current tab if some other tab closes)
+            // So no matter what we need to refocus on the selected tab
+            //
             // console.log(this.selectedTabInstance); // DEBUG
-            this.tabState.focusSelectedTabIfAny();
+            if (this.selectedTabInstance) {
+                this.tabHandle[this.selectedTabInstance.id].triggerFocus();
+                this.tabState.focusSelectedTabIfAny();
+            }
         },
 
         /**
