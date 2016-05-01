@@ -144,9 +144,17 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             }
         });
         (this.layout as any).on('stateChanged', (evt) => {
+            // console.log(evt); // DEBUG
+
             // Due to state changes layout needs to happen on *all tabs* (because it might expose some other tabs)
             // PREF : you can go thorough all the `stack` in the layout and only call resize on the active ones.
             this.tabState.resize();
+
+            // Ignore the events where the user is dragging stuff
+            // This is because at this time the `config` doesn't contain the *dragged* item.
+            if (evt.origin && typeof evt.origin._dropSegment === 'string') {
+                return;
+            }
 
             // If there was a selected tab focus on it again.
             this.selectedTabInstance && this.tabState.selectTab(this.selectedTabInstance.id);
