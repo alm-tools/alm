@@ -71,7 +71,7 @@ export class Code extends ui.BaseComponent<Props, State> {
                         /* Auto save on focus loss */
                         !focus && !this.saved && this.save();
                         /** Tell tab container of activation */
-                        this.props.onFocused();
+                        focus && this.props.onFocused();
                     }
                 }
                 />
