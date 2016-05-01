@@ -309,6 +309,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
             this.tabState.setTabs(this.tabs.filter(t=>t.id !== id));
 
+            // TODO: tab
+            // The next selection logic is wrong
+            // Consider 'a','b(active)','c'  | panel | 'd'
+            // And user closes 'd'. We should go to `b`, but right now we go to `c` *which is not even active*
             if (this.selectedTabInstance && this.selectedTabInstance.id == id) {
                 // Figure out the next selected tab if any
                 let nxtTab =
