@@ -67,8 +67,12 @@ export class Code extends ui.BaseComponent<Props, State> {
                 ref='editor'
                 filePath={this.filePath}
                 onFocusChange={
-                    /* Auto save on focus loss */
-                    (focus) => !focus && !this.saved && this.save()
+                    (focus) => {
+                        /* Auto save on focus loss */
+                        !focus && !this.saved && this.save();
+                        /** Tell tab container of activation */
+                        this.props.onFocused();
+                    }
                 }
                 />
             </Provider>

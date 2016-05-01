@@ -211,6 +211,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         const props: tab.TabProps = {
             url,
             onSavedChanged: (saved)=>this.onSavedChanged(tab,saved),
+            onFocused: () => {
+                if (this.selectedTabInstance && this.selectedTabInstance.id === id)
+                    return;
+                this.tabState.selectTab(id)
+            },
             api: this.createTabApi(id),
             setCodeEditor: (codeEditor: CodeEditor) => this.codeEditorMap[id] = codeEditor
         };

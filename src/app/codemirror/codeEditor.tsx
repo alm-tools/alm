@@ -280,7 +280,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 		if (this.codeMirror) {
 			this.handleCursorActivity();
             this.resize();
-            setTimeout(()=> !this.isUnmounted && this.codeMirror.focus(),500);
+            this.codeMirror.focus();
 		}
 	}
 

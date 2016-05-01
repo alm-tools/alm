@@ -46,9 +46,18 @@ export interface TabProps {
     // what you get
     url: string;
 
-    // what you can tell us about
+    /**
+     * What the tab gets to tell the container
+     */
     onSavedChanged: (saved: boolean) => void;
+    /** Useful for stuff like code editor navigation recording etc */
     setCodeEditor: (codeEditor: CodeEditor) => void;
+    /**
+     * User can change *active* tab by clicking into a tab body
+     * Allow the tab to tell us about that.
+     * No need for blur as we automatically assume all others are blurred.
+     */
+    onFocused: () => void;
 
     /** Tab API. Effectively allows the container to call functions on a Tab */
     api: TabApi;
