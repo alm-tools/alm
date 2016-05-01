@@ -38,7 +38,6 @@ export let tabState: typeof _helpMeGrabTheType.tabState;
 export interface TabInstance {
     id: string;
     url: string;
-    saved: boolean,
 }
 
 /**
@@ -151,6 +150,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
             // If there was a selected tab focus on it again.
             this.selectedTabInstance && this.tabState.selectTab(this.selectedTabInstance.id);
+
+            // console.log(GLHelpers.orderedTabs(this.layout.toConfig())); // DEBUG
         });
 
         /**
@@ -314,4 +315,56 @@ const newTabApi = ()=>{
         }
     };
     return api;
+}
+
+/**
+ * Golden layout helpers
+ */
+namespace GLHelpers {
+
+    /**
+     * Specialize the `Stack` type for how we configure all our stack items
+     */
+    type Stack = {
+        type: 'stack'
+        content: {
+            id: string;
+            props: tab.TabProps
+        }[];
+    }
+
+    /**
+     * A visitor for stack
+     */
+    export const visitAllStacks = (content: GoldenLayout.ItemConfig[], cb: (stack: Stack) => void) => {
+        content.forEach(c => {
+            if (c.type === 'row' || c.type === 'column') {
+                visitAllStacks(c.content, cb);
+            }
+            if (c.type === 'stack') {
+                cb(c as any);
+            }
+        });
+    }
+
+    /**
+     * Get the tabs in order.
+     * Navigates down to any root level stack or the stack as a child of an row / columns
+     */
+    export function orderedTabs(config:GoldenLayout.Config): TabInstance[] {
+        const result: TabInstance[] = [];
+
+        const addFromStack = (stack: Stack) => {
+            stack.content.forEach(c=>{
+                const props: tab.TabProps = c.props;
+                const id = c.id as string;
+                result.push({id:id, url: props.url});
+            });
+        }
+
+        // Add root level stacks if any
+        visitAllStacks(config.content, addFromStack);
+
+        return result;
+    }
 }
