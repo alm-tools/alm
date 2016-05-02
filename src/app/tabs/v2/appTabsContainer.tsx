@@ -256,8 +256,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     addTabToLayout = (tab: TabInstance, sendToServer = true) => {
         this.tabs.push(tab);
         if (sendToServer) {
-            // TODO: tab
-            // send to server
+            this.sendTabInfoToServer();
         }
 
         const {url, id} = tab;
@@ -281,6 +280,15 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             title,
             props,
             id
+        });
+    }
+
+    private sendTabInfoToServer = () => {
+        server.setOpenUITabs({
+            sessionId: getSessionId(),
+            openTabs: this.tabs.map(t=>({
+                url: t.url
+            }))
         });
     }
 
@@ -380,8 +388,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         },
         setTabs: (tabs: TabInstance[]) => {
             this.tabs = tabs;
-            // TODO: tab
-            // tell server about open tabs for session
+            this.sendTabInfoToServer();
         },
         selectTab: (id: string) => {
             this.selectedTabInstance = this.tabs.find(t => t.id == id);
