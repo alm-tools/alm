@@ -181,6 +181,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         this.setupCommandHandling()
     }
 
+    /** Used to undo close tab */
+    closedTabs: TabInstance[] = [];
+
     /**
      * Lots of commands are raised in the app that we need to care about
      * e.g. tab saving / tab switching / file opening etc.
@@ -217,6 +220,18 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
              this.tabState.selectTab(codeTab.id);
              if (e.position) {
                  this.tabApi[codeTab.id].gotoPosition.emit(e.position);
+             }
+         });
+         commands.undoCloseTab.on(() => {
+             if (this.closedTabs.length) {
+                 let tab = this.closedTabs.pop();
+                 // Add tab
+                 this.tabs.push(tab);
+                 this.addTabToLayout(tab);
+                 // TODO: tab send tab info to server
+
+                 // Focus
+                 this.tabState.selectTab(tab.id);
              }
          });
     }
@@ -376,6 +391,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.selectedTabInstance && this.tabApi[this.selectedTabInstance.id].focus.emit({});
         },
         tabClosedInLayout: (id: string) => {
+            const closedTabInstance = this.tabs.find(t => t.id == id);
+            this.closedTabs.push(closedTabInstance);
+
             const index = this.tabs.map(t=>t.id).indexOf(id);
 
             delete this.tabHandle[id];
