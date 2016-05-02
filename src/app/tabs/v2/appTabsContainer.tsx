@@ -123,8 +123,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             });
 
             // Add the tabs to the layout
-            this.tabs = tabInstances;
-            tabInstances.forEach(this.addTabToLayout);
+            this.tabs = [];
+            tabInstances.forEach(t => this.addTabToLayout(t, false));
 
             // Select the last one
             tabInstances.length && tabState.selectTab(tabInstances[tabInstances.length - 1].id);
@@ -212,9 +212,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
              }
 
              // Add tab
-             this.tabs.push(codeTab);
              this.addTabToLayout(codeTab);
-             // TODO: tab send tab info to server
 
              // Focus
              this.tabState.selectTab(codeTab.id);
@@ -225,10 +223,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
          commands.undoCloseTab.on(() => {
              if (this.closedTabs.length) {
                  let tab = this.closedTabs.pop();
+
                  // Add tab
-                 this.tabs.push(tab);
                  this.addTabToLayout(tab);
-                 // TODO: tab send tab info to server
 
                  // Focus
                  this.tabState.selectTab(tab.id);
@@ -255,9 +252,14 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
     /**
      * Does exactly what it says.
-     * YOU should add this `this.tabs` AND (if wanted) send tab info to server
      */
-    addTabToLayout = (tab: TabInstance) => {
+    addTabToLayout = (tab: TabInstance, sendToServer = true) => {
+        this.tabs.push(tab);
+        if (sendToServer) {
+            // TODO: tab
+            // send to server
+        }
+
         const {url, id} = tab;
         const {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(tab.url);
         const props: tab.TabProps = {
