@@ -142,9 +142,7 @@ namespace Server {
      */
     export const getCompleteOutputStatusCache: typeof contract.server.getCompleteOutputStatusCache =
         (data) => {
-            return cast.completeOutputStatusCacheUpdated.current
-                ? cast.completeOutputStatusCacheUpdated.current()
-                : resolve({});
+            return cast.completeOutputStatusCacheUpdated.current();
         }
 
     /**
