@@ -13,6 +13,15 @@
     font-family: FontAwesome;
 }
 
+/* Add a tab number */
+/*.lm_title:before {
+    content: '1';
+    margin-right: 5px;
+    margin-bottom: .6em;
+    font-family: monospace;
+    font-size: .8em;
+}*/
+
 /* Further tab styling */
 .lm_tab {
     transition: color .2s;
