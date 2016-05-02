@@ -207,7 +207,13 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                  id: createId(),
                  url: `file://${e.filePath}`
              }
+
+             // Add tab
+             this.tabs.push(codeTab);
              this.addTabToLayout(codeTab);
+             // TODO: tab send tab info to server
+
+             // Focus
              this.tabState.selectTab(codeTab.id);
              if (e.position) {
                  this.tabApi[codeTab.id].gotoPosition.emit(e.position);
@@ -232,6 +238,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         }
     }
 
+    /**
+     * Does exactly what it says.
+     * YOU should add this `this.tabs` AND (if wanted) send tab info to server
+     */
     addTabToLayout = (tab: TabInstance) => {
         const {url, id} = tab;
         const {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(tab.url);
