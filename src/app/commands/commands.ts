@@ -459,8 +459,11 @@ delete sublimeMap['Esc'];
 // Cmd + U conflicted with our cursor history
 delete sublimeMap[`${mod}-K ${mod}-U`];
 delete sublimeMap[`${mod}-K ${mod}-L`];
-sublimeMap['Alt-='] = "upcaseAtCursor"; // Because alt+u didn't work on mac
+// Because alt+u didn't work on mac
+sublimeMap['Alt-='] = "upcaseAtCursor";
 sublimeMap['Alt--'] = "downcaseAtCursor";
+// Conflicts with jump to tab
+delete sublimeMap['Shift-Cmd-Enter'];
 
 // Swap line should also come with indent
 // + use VSCode shortcuts as they are consistent across win/mac
