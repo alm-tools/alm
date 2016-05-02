@@ -231,6 +231,24 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                  this.tabState.selectTab(tab.id);
              }
          });
+
+         /**
+          * Goto tab by index
+          */
+         let gotoIndex = (index: number) => {
+             // TODO: tab
+             // this doesn't change the tab in the layout :-/
+             this.tabs[index] && this.tabState.selectTab(this.tabs[index].id);
+         }
+         commands.gotoTab1.on(() => gotoIndex(0));
+         commands.gotoTab2.on(() => gotoIndex(1));
+         commands.gotoTab3.on(() => gotoIndex(2));
+         commands.gotoTab4.on(() => gotoIndex(3));
+         commands.gotoTab5.on(() => gotoIndex(4));
+         commands.gotoTab6.on(() => gotoIndex(5));
+         commands.gotoTab7.on(() => gotoIndex(6));
+         commands.gotoTab8.on(() => gotoIndex(7));
+         commands.gotoTab9.on(() => gotoIndex(8));
     }
 
     ctrls: {
