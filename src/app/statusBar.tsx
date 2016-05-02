@@ -48,8 +48,6 @@ export interface Props {
     activeProjectFiles?: { [filePath: string]: boolean };
     errorsUpdate?: LimitedErrorsUpdate;
     socketConnected?: boolean;
-    tabs?: state.TabInstance[];
-    selectedTabIndex?: number;
     outputStatusCache?: types.JSOutputStatusCache
 }
 export interface State {
@@ -69,8 +67,6 @@ export var statusBar: StatusBar;
         activeProjectFiles: state.activeProjectFilePathTruthTable,
         errorsUpdate: state.errorsUpdate,
         socketConnected: state.socketConnected,
-        tabs: state.tabs,
-        selectedTabIndex: state.selectedTabIndex,
         outputStatusCache: state.outputStatusCache
     };
 })
