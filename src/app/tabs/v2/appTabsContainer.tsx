@@ -198,6 +198,21 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             // jump to tab
             console.log('here');
         });
+
+        /**
+         * File opening commands
+         */
+         commands.doOpenFile.on((e) => {
+             let codeTab: TabInstance = {
+                 id: createId(),
+                 url: `file://${e.filePath}`
+             }
+             this.addTabToLayout(codeTab);
+             this.tabState.selectTab(codeTab.id);
+             if (e.position) {
+                 this.tabApi[codeTab.id].gotoPosition.emit(e.position);
+             }
+         });
     }
 
     ctrls: {
