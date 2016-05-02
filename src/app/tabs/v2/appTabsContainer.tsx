@@ -145,7 +145,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         });
         (this.layout as any).on('itemDestroyed', (evt) => {
             if (evt.config && evt.config.id){
-                this.tabState.closedTab(evt.config.id);
+                this.tabState.tabClosedInLayout(evt.config.id);
             }
         });
         (this.layout as any).on('stateChanged', (evt) => {
@@ -375,7 +375,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         focusSelectedTabIfAny: () => {
             this.selectedTabInstance && this.tabApi[this.selectedTabInstance.id].focus.emit({});
         },
-        closedTab: (id: string) => {
+        tabClosedInLayout: (id: string) => {
             const index = this.tabs.map(t=>t.id).indexOf(id);
 
             delete this.tabHandle[id];
