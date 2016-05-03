@@ -336,6 +336,27 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         // TODO: tab
         let currentItemAndParent = this.getCurrentTabRootStackIfAny();
         if (!currentItemAndParent) return;
+        const {item,parent} = currentItemAndParent;
+        console.log(item,parent);
+
+        // Very much a WIP
+        // Basing it on programatic reorder demo
+        // https://www.golden-layout.com/examples/#2e5d0456964b59f9eec1ecb44e1d31eb
+
+        // Remove from old
+        parent.removeChild(item, true);
+
+        // Create a new and add to that
+        // and prevent it from re-initialising any child items
+        const newElement = this.layout.createContentItem({
+            type: 'row',
+            content: []
+        }) as any as GoldenLayout.ContentItem;
+        newElement.isInitialised = true;
+
+        // Add to new layout
+        newElement.addChild(parent);
+        newElement.addChild(item);
     }
 
     private moveCurrentTabDownIfAny = () => {

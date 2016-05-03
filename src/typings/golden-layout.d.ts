@@ -368,6 +368,7 @@ namespace GoldenLayout {
     export interface ContentItem {
         /** BAS : it exists */
         addChild(config:any);
+        removeChild(child:any,keepInMemory?:boolean);
         /**
          * This items configuration in its current state
          */
