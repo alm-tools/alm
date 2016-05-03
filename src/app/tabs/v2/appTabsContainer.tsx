@@ -484,6 +484,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         /**
          * Fast tab jumping
          */
+         _showingTabIndexes: false,
          _jumpToTabNumber: (oneBasedIndex: number) => {
              const index = oneBasedIndex - 1;
              if (!this.tabs[index]) {
@@ -502,10 +503,24 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 evt.preventDefault();
                 this.tabState._jumpToTabNumber(tabNumber);
             }
+
+            if (evt.keyCode == 39) /* Right */ {
+                // TODO: tab
+                // move right
+            }
+            if (evt.keyCode == 40) /* Down */ {
+                // TODO: tab
+                // move down
+            }
+
             this.tabState.hideTabIndexes();
             // console.log(evt, tabNumber); // DEBUG
         },
         showTabIndexes: () => {
+            if (this.tabState._showingTabIndexes) {
+                this.tabState.hideTabIndexes();
+            }
+            this.tabState._showingTabIndexes = true;
             window.addEventListener('keydown', this.tabState._fastTabJumpListener);
             this.tabs.map((t,i)=>{
                 if (!this.tabHandle[t.id]){
@@ -515,6 +530,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             });
         },
         hideTabIndexes: () => {
+            this.tabState._showingTabIndexes = false;
             window.removeEventListener('keydown', this.tabState._fastTabJumpListener);
             this.tabs.map((t,i)=>{
                 if (!this.tabHandle[t.id]){
