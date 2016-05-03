@@ -308,6 +308,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         // If not find we just add it to the root
         let contentRoot = this.layout.root.contentItems[0];
 
+        // TODO: tab
+        // if the root is empty add a stack as the root
+
         if (this.selectedTabInstance) {
             const id = this.selectedTabInstance.id;
             const item: GoldenLayout.ContentItem = contentRoot.getItemsById(id)[0] as any;
