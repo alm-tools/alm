@@ -304,10 +304,18 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         };
         const title = tabRegistry.getTabConfigByUrl(url).getTitle(url);
 
-        // TODO: tab
         // Find the active stack if any.
         // If not find we just add it to the root
-        let contentRoot: {addChild: any} = this.layout.root.contentItems[0] as any;
+        let contentRoot = this.layout.root.contentItems[0];
+
+        if (this.selectedTabInstance) {
+            const id = this.selectedTabInstance.id;
+            const item: GoldenLayout.ContentItem = contentRoot.getItemsById(id)[0] as any;
+            if (item && item.parent && item.parent.type == 'stack') {
+                contentRoot = item.parent;
+            }
+        }
+
         contentRoot.addChild({
             type: 'react-component',
             component: protocol,

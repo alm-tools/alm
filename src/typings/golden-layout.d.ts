@@ -1,5 +1,6 @@
 declare module "golden-layout" {
     // Definitions by: Stephen Jelfs <https://github.com/stephenjelfs>
+    // Modifications prefixed with BAS
 
 interface GoldenLayout {
     /*
@@ -365,6 +366,8 @@ namespace GoldenLayout {
     }
 
     export interface ContentItem {
+        /** BAS : it exists */
+        addChild(config:any);
         /**
          * This items configuration in its current state
          */
