@@ -253,6 +253,22 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
          commands.gotoTab7.on(() => gotoIndex(6));
          commands.gotoTab8.on(() => gotoIndex(7));
          commands.gotoTab9.on(() => gotoIndex(8));
+
+         /**
+          * Close tab commands
+          */
+         commands.closeTab.on((e) => {
+             // Remove the selected
+             this.tabState.closeCurrentTab();
+         });
+          // TODO: tab
+        //   commands.closeOtherTabs.on((e)=>{
+        //       let tabs = this.props.tabs.filter((t,i)=>i == this.props.selectedTabIndex);
+        //       this.afterComponentDidUpdate(this.sendTabInfoToServer);
+        //       this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
+        //       state.setTabs(tabs);
+        //       this.selectTab(0);
+        //   });
     }
 
     ctrls: {
@@ -383,7 +399,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 tabIndexDisplay = $('<div class="alm_jumpIndex">' + index + '</div>');
                 tab.append(tabIndexDisplay);
             },
-            hideIndex: removeTabIndexDisplayIfAny
+            hideIndex: removeTabIndexDisplayIfAny,
+            triggerClose: () => {
+                tab.find('.lm_close_tab').trigger('click');
+            }
         }
     }
 
@@ -400,6 +419,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             triggerFocus: () => void;
             showIndex: (i: number) => void;
             hideIndex: () => void;
+            triggerClose: () => void;
         }
     } = Object.create(null);
     /**
@@ -458,6 +478,15 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             if (this.selectedTabInstance) {
                 this.tabHandle[this.selectedTabInstance.id].triggerFocus();
             }
+        },
+
+        /**
+         * Tab closing
+         */
+        closeCurrentTab: () => {
+            if (!this.selectedTabInstance) return;
+
+            this.tabHandle[this.selectedTabInstance.id].triggerClose();
         },
 
         /**
