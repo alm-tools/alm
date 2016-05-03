@@ -304,7 +304,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         };
         const title = tabRegistry.getTabConfigByUrl(url).getTitle(url);
 
-        (this.layout.root.contentItems[0] as any).addChild({
+        // TODO: tab
+        // Find the active stack if any.
+        // If not find we just add it to the root
+        let contentRoot: {addChild: any} = this.layout.root.contentItems[0] as any;
+        contentRoot.addChild({
             type: 'react-component',
             component: protocol,
             title,
