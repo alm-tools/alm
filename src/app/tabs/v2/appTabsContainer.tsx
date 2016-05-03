@@ -403,6 +403,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 });
             },
             showIndex: (index: number) => {
+                if (index > 9) {
+                    // Wow this user has too many tabs. Abort
+                    return;
+                }
                 tabIndexDisplay = $('<div class="alm_jumpIndex">' + index + '</div>');
                 tab.append(tabIndexDisplay);
             },
