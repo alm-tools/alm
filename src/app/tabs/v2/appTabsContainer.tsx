@@ -195,11 +195,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         });
         commands.esc.on(() => {
             this.tabState.focusSelectedTabIfAny();
+            this.tabState.hideTabIndexes();
         });
         commands.jumpToTab.on(()=>{
-            // TODO: tab
             // jump to tab
-            console.log('here');
+            this.tabState.showTabIndexes();
         });
 
         /**
@@ -242,6 +242,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
              const tab = this.tabs[index];
              this.tabHandle[tab.id].triggerFocus();
              this.tabState.selectTab(tab.id);
+             this.tabState.hideTabIndexes();
          }
          commands.gotoTab1.on(() => gotoIndex(0));
          commands.gotoTab2.on(() => gotoIndex(1));
@@ -356,6 +357,13 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             }
             this.tabState.selectTab(id);
         });
+        let tabIndexDisplay: JQuery = null;
+        const removeTabIndexDisplayIfAny = () => {
+            if (tabIndexDisplay) {
+                tabIndexDisplay.remove();
+                tabIndexDisplay = null;
+            }
+        }
         this.tabHandle[id] = {
             saved: true,
             setSaved: (saved)=> {
@@ -371,12 +379,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                     tabInfo.header.parent.setActiveContentItem(item);
                 });
             },
-            showIndex: () => {
-                console.log('show index');
+            showIndex: (index: number) => {
+                tabIndexDisplay = $('<div class="alm_jumpIndex">' + index + '</div>');
+                tab.append(tabIndexDisplay);
             },
-            hideIndex: () => {
-                console.log('hide index');
-            }
+            hideIndex: removeTabIndexDisplayIfAny
         }
     }
 
@@ -391,7 +398,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             saved: boolean;
             setSaved: (saved: boolean) => void;
             triggerFocus: () => void;
-            showIndex: () => void;
+            showIndex: (i: number) => void;
             hideIndex: () => void;
         }
     } = Object.create(null);
@@ -451,6 +458,26 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             if (this.selectedTabInstance) {
                 this.tabHandle[this.selectedTabInstance.id].triggerFocus();
             }
+        },
+
+        /**
+         * Fast tab jumping
+         */
+        showTabIndexes: () => {
+            this.tabs.map((t,i)=>{
+                if (!this.tabHandle[t.id]){
+                    return;
+                }
+                this.tabHandle[t.id].showIndex(i + 1);
+            });
+        },
+        hideTabIndexes: () => {
+            this.tabs.map((t,i)=>{
+                if (!this.tabHandle[t.id]){
+                    return;
+                }
+                this.tabHandle[t.id].hideIndex();
+            });
         },
 
         /**
