@@ -235,24 +235,16 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
          /**
           * Goto tab by index
           */
-         let gotoIndex = (index: number) => {
-             if (!this.tabs[index]) {
-                 return;
-             }
-             const tab = this.tabs[index];
-             this.tabHandle[tab.id].triggerFocus();
-             this.tabState.selectTab(tab.id);
-             this.tabState.hideTabIndexes();
-         }
-         commands.gotoTab1.on(() => gotoIndex(0));
-         commands.gotoTab2.on(() => gotoIndex(1));
-         commands.gotoTab3.on(() => gotoIndex(2));
-         commands.gotoTab4.on(() => gotoIndex(3));
-         commands.gotoTab5.on(() => gotoIndex(4));
-         commands.gotoTab6.on(() => gotoIndex(5));
-         commands.gotoTab7.on(() => gotoIndex(6));
-         commands.gotoTab8.on(() => gotoIndex(7));
-         commands.gotoTab9.on(() => gotoIndex(8));
+         const gotoNumber = this.tabState._jumpToTabNumber;
+         commands.gotoTab1.on(() => gotoNumber(1));
+         commands.gotoTab2.on(() => gotoNumber(2));
+         commands.gotoTab3.on(() => gotoNumber(3));
+         commands.gotoTab4.on(() => gotoNumber(4));
+         commands.gotoTab5.on(() => gotoNumber(5));
+         commands.gotoTab6.on(() => gotoNumber(6));
+         commands.gotoTab7.on(() => gotoNumber(7));
+         commands.gotoTab8.on(() => gotoNumber(8));
+         commands.gotoTab9.on(() => gotoNumber(9));
 
          /**
           * Close tab commands
@@ -492,15 +484,23 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         /**
          * Fast tab jumping
          */
+         _jumpToTabNumber: (oneBasedIndex: number) => {
+             const index = oneBasedIndex - 1;
+             if (!this.tabs[index]) {
+                 return;
+             }
+             const tab = this.tabs[index];
+             this.tabHandle[tab.id].triggerFocus();
+             this.tabState.selectTab(tab.id);
+             this.tabState.hideTabIndexes();
+         },
         _fastTabJumpListener: (evt:KeyboardEvent)=>{
             const keyCodeFor1 = 49;
             const tabNumber = evt.keyCode - keyCodeFor1 + 1;
 
             if (tabNumber >= 1 && tabNumber <= 9){
                 evt.preventDefault();
-                // TODO: tab
-                // jump to tab
-                console.log('Jump to tab index:', tabNumber);
+                this.tabState._jumpToTabNumber(tabNumber);
             }
             this.tabState.hideTabIndexes();
             // console.log(evt, tabNumber); // DEBUG
