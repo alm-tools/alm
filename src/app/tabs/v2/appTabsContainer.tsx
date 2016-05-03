@@ -307,17 +307,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         // Find the active stack if any.
         // If not find we just add it to the root
         let contentRoot = this.layout.root.contentItems[0];
+        let currentStackRoot = this.getCurrentTabRootStackIfAny();
+        if (currentStackRoot) contentRoot = currentStackRoot;
 
         // TODO: tab
         // if the root is empty add a stack as the root
-
-        if (this.selectedTabInstance) {
-            const id = this.selectedTabInstance.id;
-            const item: GoldenLayout.ContentItem = contentRoot.getItemsById(id)[0] as any;
-            if (item && item.parent && item.parent.type == 'stack') {
-                contentRoot = item.parent;
-            }
-        }
 
         contentRoot.addChild({
             type: 'react-component',
@@ -326,6 +320,24 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             props,
             id
         });
+    }
+
+    private getCurrentTabRootStackIfAny(): GoldenLayout.ContentItem | undefined{
+        if (this.selectedTabInstance) {
+            const id = this.selectedTabInstance.id;
+            const item: GoldenLayout.ContentItem = this.layout.root.contentItems[0].getItemsById(id)[0] as any;
+            if (item && item.parent && item.parent.type == 'stack') {
+                return item.parent;
+            }
+        }
+    }
+
+    private moveCurrentTabRightIfAny = () => {
+        // TODO: tab
+    }
+
+    private moveCurrentTabDownIfAny = () => {
+        // TODO: tab
     }
 
     private sendTabInfoToServer = () => {
@@ -524,12 +536,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             }
 
             if (evt.keyCode == 39) /* Right */ {
-                // TODO: tab
-                // move right
+                this.moveCurrentTabRightIfAny();
             }
             if (evt.keyCode == 40) /* Down */ {
-                // TODO: tab
-                // move down
+                this.moveCurrentTabDownIfAny();
             }
 
             this.tabState.hideTabIndexes();
