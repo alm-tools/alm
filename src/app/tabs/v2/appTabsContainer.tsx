@@ -307,8 +307,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         // Find the active stack if any.
         // If not find we just add it to the root
         let contentRoot = this.layout.root.contentItems[0];
-        let currentStackRoot = this.getCurrentTabRootStackIfAny();
-        if (currentStackRoot) contentRoot = currentStackRoot;
+        let currentItemAndParent = this.getCurrentTabRootStackIfAny();
+        if (currentItemAndParent) contentRoot = currentItemAndParent.parent;
 
         // TODO: tab
         // if the root is empty add a stack as the root
@@ -322,22 +322,26 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         });
     }
 
-    private getCurrentTabRootStackIfAny(): GoldenLayout.ContentItem | undefined{
+    private getCurrentTabRootStackIfAny(): {item: GoldenLayout.ContentItem, parent: GoldenLayout.ContentItem} | undefined{
         if (this.selectedTabInstance) {
             const id = this.selectedTabInstance.id;
             const item: GoldenLayout.ContentItem = this.layout.root.contentItems[0].getItemsById(id)[0] as any;
             if (item && item.parent && item.parent.type == 'stack') {
-                return item.parent;
+                return { item, parent: item.parent };
             }
         }
     }
 
     private moveCurrentTabRightIfAny = () => {
         // TODO: tab
+        let currentItemAndParent = this.getCurrentTabRootStackIfAny();
+        if (!currentItemAndParent) return;
     }
 
     private moveCurrentTabDownIfAny = () => {
         // TODO: tab
+        let currentItemAndParent = this.getCurrentTabRootStackIfAny();
+        if (!currentItemAndParent) return;
     }
 
     private sendTabInfoToServer = () => {
