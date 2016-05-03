@@ -371,6 +371,12 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                     tabInfo.header.parent.setActiveContentItem(item);
                 });
             },
+            showIndex: () => {
+                console.log('show index');
+            },
+            hideIndex: () => {
+                console.log('hide index');
+            }
         }
     }
 
@@ -385,6 +391,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             saved: boolean;
             setSaved: (saved: boolean) => void;
             triggerFocus: () => void;
+            showIndex: () => void;
+            hideIndex: () => void;
         }
     } = Object.create(null);
     /**

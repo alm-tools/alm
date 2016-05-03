@@ -14,13 +14,20 @@
 }
 
 /* Add a tab number */
-/*.lm_title:before {
-    content: '1';
-    margin-right: 5px;
-    margin-bottom: .6em;
-    font-family: monospace;
-    font-size: .8em;
-}*/
+.alm_jumpIndex {
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    background: #ad5000;
+    color:#fff;
+    font-weight: bold;
+    z-index: 4;
+    padding: 2px 5px;
+    border-radius: 50px;
+}
+.lm_active .alm_jumpIndex {
+  background: #ee7813;
+}
 
 /* Further tab styling */
 .lm_tab {
