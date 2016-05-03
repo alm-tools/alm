@@ -236,9 +236,12 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
           * Goto tab by index
           */
          let gotoIndex = (index: number) => {
-             // TODO: tab
-             // this doesn't change the tab in the layout :-/
-             this.tabs[index] && this.tabState.selectTab(this.tabs[index].id);
+             if (!this.tabs[index]) {
+                 return;
+             }
+             const tab = this.tabs[index];
+             this.tabHandle[tab.id].triggerFocus();
+             this.tabState.selectTab(tab.id);
          }
          commands.gotoTab1.on(() => gotoIndex(0));
          commands.gotoTab2.on(() => gotoIndex(1));
