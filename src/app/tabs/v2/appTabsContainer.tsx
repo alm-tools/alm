@@ -531,7 +531,6 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             const tabNumber = evt.keyCode - keyCodeFor1 + 1;
 
             if (tabNumber >= 1 && tabNumber <= 9){
-                evt.preventDefault();
                 this.tabState._jumpToTabNumber(tabNumber);
             }
 
@@ -541,6 +540,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             if (evt.keyCode == 40) /* Down */ {
                 this.moveCurrentTabDownIfAny();
             }
+
+            // prevent key prop
+            evt.preventDefault();
+            evt.stopPropagation();
+            evt.stopImmediatePropagation();
 
             this.tabState.hideTabIndexes();
             // console.log(evt, tabNumber); // DEBUG
