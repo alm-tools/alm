@@ -333,6 +333,26 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     private moveCurrentTabRightIfAny = () => {
+
+        /**
+         * Utility to create a container that doesn't reinitialize its children
+         */
+        const createContainer = (type:'stack'|'row'|'column') => {
+            const item = this.layout.createContentItem({
+                type: type,
+                content: []
+            }) as any as GoldenLayout.ContentItem;
+            item.isInitialised = true; // Prevents initilizing its children
+            return item;
+        }
+
+        /**
+         * Utility that doesn't *uninitalize* the child it is removing
+         */
+        const detachFromParent = (item: GoldenLayout.ContentItem) => {
+            item.parent.removeChild(item, true);
+        }
+
         // TODO: tab
         let currentItemAndParent = this.getCurrentTabRootStackIfAny();
         if (!currentItemAndParent) return;
@@ -354,17 +374,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             root.removeChild(parent, true);
 
             // Create a new containers
-            const newRootElement = this.layout.createContentItem({
-                type: 'row',
-                content: []
-            }) as any as GoldenLayout.ContentItem;
-            newRootElement.isInitialised = true; // prevent it from re-initialising any child items
-
-            const newItemRootElement = this.layout.createContentItem({
-                type: 'stack',
-                content: []
-            }) as any as GoldenLayout.ContentItem;
-            newItemRootElement.isInitialised = true; // prevent it from re-initialising any child items
+            const newRootElement = createContainer('row');
+            const newItemRootElement = createContainer('stack');
 
             // Add to new layout
             // First add item to move to a new stack
@@ -380,11 +391,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             parent.removeChild(item, true);
 
             // Create a new container
-            const newItemRootElement = this.layout.createContentItem({
-                type: 'stack',
-                content: []
-            }) as any as GoldenLayout.ContentItem;
-            newItemRootElement.isInitialised = true; // prevent it from re-initialising any child items
+            const newItemRootElement = createContainer('stack');
 
             // Add this new container
             newItemRootElement.addChild(item);
