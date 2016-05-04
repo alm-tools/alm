@@ -832,10 +832,13 @@ namespace TabMoveHelp {
         tabMoveDisplay = $(`
 <div class="alm_tabMove">
     <div>
-        RightArrow: Move Active Tab to a new pane on the right
+        <i class="fa fa-arrow-right"></i> Key:
+        Move Active Tab to a new rightmost pane
     </div>
+    <br/>
     <div>
-        DownArrow: Move Active Tab to a new pane on the bottom
+        <i class="fa fa-arrow-down"></i> Key:
+        Move Active Tab to a new bottom pane
     </div>
 </div>
             `);
