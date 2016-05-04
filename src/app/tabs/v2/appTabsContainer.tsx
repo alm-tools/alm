@@ -353,78 +353,56 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             item.parent.removeChild(item, true);
         }
 
-        // TODO: tab
         let currentItemAndParent = this.getCurrentTabRootStackIfAny();
         if (!currentItemAndParent) return;
         const {item,parent} = currentItemAndParent;
         const root = parent.parent;
-
-        // Very much a WIP
-        // Basing it on programatic reorder demo
-        // https://www.golden-layout.com/examples/#2e5d0456964b59f9eec1ecb44e1d31eb
 
         /** Can't move the last item */
         if (parent.contentItems.length === 1) {
             return;
         }
 
-        if (root.type === 'stack' || root.type === 'root') {
-            const oldParent = parent;
-
-            // Remove from old
-            detachFromParent(item);
-            detachFromParent(oldParent);
-
-            // Create a new containers
-            const newRootRow = createContainer('row');
-            const newItemStack = createContainer('stack');
-
-            // Add to new layout
-            // First add item to move to a new stack
-            newItemStack.addChild(item);
-            // Next group the old parent and the new item root in the new `row`
-            newRootRow.addChild(oldParent);
-            newRootRow.addChild(newItemStack);
-            // Finally add this new `row` to the old root
-            root.addChild(newRootRow);
-        }
-        else if (root.type === 'row') {
-            // Remove from old
-            detachFromParent(item);
-
-            // Create a new container
-            const newItemRootElement = createContainer('stack');
-
-            // Add this new container
-            newItemRootElement.addChild(item);
-
-            // Add this new container to the root
-            root.addChild(newItemRootElement);
-        }
-        else if (root.type === 'column') {
+        // If parent.parent is a `row` its prettier to just add to that row ;)
+        if (root.type === 'row') {
             // Create a new container for just this tab
             detachFromParent(item);
             const newItemRootElement = createContainer('stack');
             newItemRootElement.addChild(item);
 
-            // Create a new row with the old parent and this new stack
+            // Add this new container to the root
+            root.addChild(newItemRootElement);
+        }
+        else {
+            // Create a new container for just this tab
+            detachFromParent(item);
+            const newItemRootElement = createContainer('stack');
+            newItemRootElement.addChild(item);
+
+            // Create a new row with this new stack
             const newRootRow = createContainer('row');
-            setTimeout(() => {
+            newRootRow.addChild(newItemRootElement);
+
+            // Also add the old parent to this new row
+            const doTheDetachAndAdd = ()=>{
                 // Doing this detach immediately breaks the layout
                 // This is because for column / row when a child is removed the splitter is gone
-                // And by chance this is the splitter that the new row was going to :-/
+                // And by chance this is the splitter that the new item was going to :-/
                 detachFromParent(parent);
                 newRootRow.addChild(parent, 0);
-            }, 10);
-            newRootRow.addChild(newItemRootElement);
+            }
+            if (root.type === 'column') {
+                setTimeout(doTheDetachAndAdd, 10);
+            }
+            else {
+                // type `root` *must* only have a single item at a time :)
+                // So we *must* do it sync for that case
+                doTheDetachAndAdd();
+            }
 
             // Add this new container to the root
             root.addChild(newRootRow);
         }
-        else {
-            console.error('Not a `stack` or `row` or `column` or `root` ... I did not see this comming');
-        }
-
     }
 
     private moveCurrentTabDownIfAny = () => {
