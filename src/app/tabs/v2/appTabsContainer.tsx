@@ -398,7 +398,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             console.log('figure this out please');
         }
         else {
-            console.error('Not a `stack` or `row` or `column` ... I did not see this comming');
+            console.error('Not a `stack` or `row` or `column` or `root` ... I did not see this comming');
         }
 
     }
