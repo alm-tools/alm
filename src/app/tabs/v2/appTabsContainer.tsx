@@ -428,6 +428,22 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         return api;
     }
 
+    debugLayoutTree() {
+        const config = this.layout.toConfig();
+        const root = config.content;
+        const generateSpaces = (indent:number) => Array((indent * 2) + 1).map(i => " ").join(' ');
+        const printItem = (item, depth = 0) => {
+            const indent = generateSpaces(depth);
+            console.log(indent + item.type);
+
+            if (item.content) {
+                item.content.forEach(c => printItem(c, depth + 1));
+            }
+        }
+        // console.log(config);
+        printItem(config);
+    }
+
     /**
      * If we have a selected tab we return its api.
      * Otherwise we create one on the fly so you don't need to worry about
