@@ -485,15 +485,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.tabState.selectTab(id);
         });
         let tabIndexDisplay: JQuery = null;
-        let tabMoveDisplay: JQuery = null;
         const removeTabIndexDisplayIfAny = () => {
             if (tabIndexDisplay) {
                 tabIndexDisplay.remove();
                 tabIndexDisplay = null;
-            }
-            if (tabMoveDisplay){
-                tabMoveDisplay.remove();
-                tabMoveDisplay = null;
             }
         }
         this.tabHandle[id] = {
@@ -518,14 +513,6 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 }
                 tabIndexDisplay = $('<div class="alm_jumpIndex">' + index + '</div>');
                 tab.append(tabIndexDisplay);
-                if (this.selectedTabInstance && this.selectedTabInstance.id === id){
-                    // TODO: tab
-                    // show the tab move help
-                    tabMoveDisplay = $('<div class="alm_tabMove">'
-                        + `👉 key || 👇 key`
-                        + '</div>');
-                    tab.append(tabMoveDisplay);
-                }
             },
             hideIndex: removeTabIndexDisplayIfAny,
             triggerClose: () => {
@@ -671,6 +658,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 }
                 this.tabHandle[t.id].showIndex(i + 1);
             });
+            if (this.selectedTabInstance) {
+                TabMoveHelp.showHelp();
+            }
         },
         hideTabIndexes: () => {
             this.tabState._showingTabIndexes = false;
@@ -682,6 +672,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 }
                 this.tabHandle[t.id].hideIndex();
             });
+            TabMoveHelp.hideHelp();
         },
 
         /**
@@ -831,6 +822,29 @@ namespace GLUtil {
                 loopAround: true
             });
             return stackWithClosingTab.tabs[previousIndex];
+        }
+    }
+}
+
+namespace TabMoveHelp {
+    let tabMoveDisplay: JQuery = null;
+    export function showHelp(){
+        tabMoveDisplay = $(`
+<div class="alm_tabMove">
+    <div>
+        RightArrow: Move Active Tab to a new pane on the right
+    </div>
+    <div>
+        DownArrow: Move Active Tab to a new pane on the bottom
+    </div>
+</div>
+            `);
+        $(document.body).append(tabMoveDisplay);
+    }
+    export function hideHelp(){
+        if (tabMoveDisplay){
+            tabMoveDisplay.remove();
+            tabMoveDisplay = null;
         }
     }
 }
