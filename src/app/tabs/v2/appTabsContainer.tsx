@@ -485,10 +485,15 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.tabState.selectTab(id);
         });
         let tabIndexDisplay: JQuery = null;
+        let tabMoveDisplay: JQuery = null;
         const removeTabIndexDisplayIfAny = () => {
             if (tabIndexDisplay) {
                 tabIndexDisplay.remove();
                 tabIndexDisplay = null;
+            }
+            if (tabMoveDisplay){
+                tabMoveDisplay.remove();
+                tabMoveDisplay = null;
             }
         }
         this.tabHandle[id] = {
@@ -513,6 +518,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 }
                 tabIndexDisplay = $('<div class="alm_jumpIndex">' + index + '</div>');
                 tab.append(tabIndexDisplay);
+                if (this.selectedTabInstance && this.selectedTabInstance.id === id){
+                    // TODO: tab
+                    // show the tab move help
+                }
             },
             hideIndex: removeTabIndexDisplayIfAny,
             triggerClose: () => {
