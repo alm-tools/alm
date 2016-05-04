@@ -337,7 +337,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         let currentItemAndParent = this.getCurrentTabRootStackIfAny();
         if (!currentItemAndParent) return;
         const {item,parent} = currentItemAndParent;
-        console.log(item,parent);
+        const root = parent.parent;
 
         // Very much a WIP
         // Basing it on programatic reorder demo
@@ -345,18 +345,27 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
         // Remove from old
         parent.removeChild(item, true);
+        root.removeChild(parent, true);
 
-        // Create a new and add to that
-        // and prevent it from re-initialising any child items
-        const newElement = this.layout.createContentItem({
+
+        // Create a new containers
+        const newRootElement = this.layout.createContentItem({
             type: 'row',
             content: []
         }) as any as GoldenLayout.ContentItem;
-        newElement.isInitialised = true;
+        newRootElement.isInitialised = true; // prevent it from re-initialising any child items
+
+        const newItemRootElement = this.layout.createContentItem({
+            type: 'stack',
+            content: []
+        }) as any as GoldenLayout.ContentItem;
+        newItemRootElement.isInitialised = true; // prevent it from re-initialising any child items
 
         // Add to new layout
-        newElement.addChild(parent);
-        newElement.addChild(item);
+        newRootElement.addChild(parent);
+        newItemRootElement.addChild(item);
+        newRootElement.addChild(newItemRootElement);
+        root.addChild(newRootElement);
     }
 
     private moveCurrentTabDownIfAny = () => {
