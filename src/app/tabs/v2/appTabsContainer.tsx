@@ -369,11 +369,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         }
 
         if (root.type === 'stack' || root.type === 'root') {
-            const oldParentStack = parent;
+            const oldParent = parent;
 
             // Remove from old
             detachFromParent(item);
-            detachFromParent(oldParentStack);
+            detachFromParent(oldParent);
 
             // Create a new containers
             const newRootRow = createContainer('row');
@@ -383,7 +383,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             // First add item to move to a new stack
             newItemStack.addChild(item);
             // Next group the old parent and the new item root in the new `row`
-            newRootRow.addChild(oldParentStack);
+            newRootRow.addChild(oldParent);
             newRootRow.addChild(newItemStack);
             // Finally add this new `row` to the old root
             root.addChild(newRootRow);
@@ -402,9 +402,19 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             root.addChild(newItemRootElement);
         }
         else if (root.type === 'column') {
-            // TODO: tab
-            // i don't know :-/
-            console.log('figure this out please');
+            // Create a new container for just this tab
+            detachFromParent(item);
+            const newItemRootElement = createContainer('stack');
+            newItemRootElement.addChild(item);
+
+            // Create a new row with the old parent and this new stack
+            detachFromParent(parent); // This is what breaks this case for some reason :-/
+            const newRootRow = createContainer('row');
+            newRootRow.addChild(parent);
+            newRootRow.addChild(newItemRootElement);
+
+            // Add this new container to the root
+            root.addChild(newRootRow);
         }
         else {
             console.error('Not a `stack` or `row` or `column` or `root` ... I did not see this comming');
@@ -652,6 +662,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             if (this.tabState._showingTabIndexes) {
                 this.tabState.hideTabIndexes();
             }
+            this.debugLayoutTree();
             this.tabState._showingTabIndexes = true;
             window.addEventListener('keydown', this.tabState._fastTabJumpListener);
             this.tabs.map((t,i)=>{
