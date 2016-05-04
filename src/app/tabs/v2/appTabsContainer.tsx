@@ -409,6 +409,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
             // Create a new row with the old parent and this new stack
             detachFromParent(parent); // This is what breaks this case for some reason :-/
+            // Its breaking because if we remove a child from a column or a row the `split` is removed
             const newRootRow = createContainer('row');
             newRootRow.addChild(parent);
             newRootRow.addChild(newItemRootElement);
