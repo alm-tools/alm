@@ -343,32 +343,56 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         // Basing it on programatic reorder demo
         // https://www.golden-layout.com/examples/#2e5d0456964b59f9eec1ecb44e1d31eb
 
-        // Remove from old
-        parent.removeChild(item, true);
-        root.removeChild(parent, true);
+        if (root.type === 'stack') {
+            // Remove from old
+            parent.removeChild(item, true);
+            root.removeChild(parent, true);
 
+            // Create a new containers
+            const newRootElement = this.layout.createContentItem({
+                type: 'row',
+                content: []
+            }) as any as GoldenLayout.ContentItem;
+            newRootElement.isInitialised = true; // prevent it from re-initialising any child items
 
-        // Create a new containers
-        const newRootElement = this.layout.createContentItem({
-            type: 'row',
-            content: []
-        }) as any as GoldenLayout.ContentItem;
-        newRootElement.isInitialised = true; // prevent it from re-initialising any child items
+            const newItemRootElement = this.layout.createContentItem({
+                type: 'stack',
+                content: []
+            }) as any as GoldenLayout.ContentItem;
+            newItemRootElement.isInitialised = true; // prevent it from re-initialising any child items
 
-        const newItemRootElement = this.layout.createContentItem({
-            type: 'stack',
-            content: []
-        }) as any as GoldenLayout.ContentItem;
-        newItemRootElement.isInitialised = true; // prevent it from re-initialising any child items
+            // Add to new layout
+            // First add item to move to a new stack
+            newItemRootElement.addChild(item);
+            // Next group the old parent and the new item root in the new `row`
+            newRootElement.addChild(parent);
+            newRootElement.addChild(newItemRootElement);
+            // Finally add this new `row` to the old root
+            root.addChild(newRootElement);
+        }
+        else if (root.type === 'row') {
+            // Remove from old
+            parent.removeChild(item, true);
 
-        // Add to new layout
-        // First add item to move to a new stack
-        newItemRootElement.addChild(item);
-        // Next group the old parent and the new item root in the new `row`
-        newRootElement.addChild(parent);
-        newRootElement.addChild(newItemRootElement);
-        // Finally add this new `row` to the old root
-        root.addChild(newRootElement);
+            // Create a new container
+            const newItemRootElement = this.layout.createContentItem({
+                type: 'stack',
+                content: []
+            }) as any as GoldenLayout.ContentItem;
+            newItemRootElement.isInitialised = true; // prevent it from re-initialising any child items
+
+            // Add this new container
+            newItemRootElement.addChild(item);
+
+            // Add this new container to the root
+            root.addChild(newItemRootElement);
+        }
+        else {
+            // TODO: tab
+            // i don't know :-/
+            console.log('figure this out please');
+        }
+
     }
 
     private moveCurrentTabDownIfAny = () => {
