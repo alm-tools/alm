@@ -521,6 +521,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 if (this.selectedTabInstance && this.selectedTabInstance.id === id){
                     // TODO: tab
                     // show the tab move help
+                    tabMoveDisplay = $('<div class="alm_tabMove">'
+                        + `👉 key || 👇 key`
+                        + '</div>');
+                    tab.append(tabMoveDisplay);
                 }
             },
             hideIndex: removeTabIndexDisplayIfAny,
