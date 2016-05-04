@@ -433,8 +433,13 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         const root = config.content;
         const generateSpaces = (indent:number) => Array((indent * 2) + 1).map(i => " ").join(' ');
         const printItem = (item, depth = 0) => {
-            const indent = generateSpaces(depth);
-            console.log(indent + item.type);
+            if (!depth){
+                console.log('ROOT-----')
+            }
+            else {
+                const indent = generateSpaces(depth);
+                console.log(indent + item.type);
+            }
 
             if (item.content) {
                 item.content.forEach(c => printItem(c, depth + 1));
