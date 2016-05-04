@@ -362,9 +362,12 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         newItemRootElement.isInitialised = true; // prevent it from re-initialising any child items
 
         // Add to new layout
-        newRootElement.addChild(parent);
+        // First add item to move to a new stack
         newItemRootElement.addChild(item);
+        // Next group the old parent and the new item root in the new `row`
+        newRootElement.addChild(parent);
         newRootElement.addChild(newItemRootElement);
+        // Finally add this new `row` to the old root
         root.addChild(newRootElement);
     }
 
