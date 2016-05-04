@@ -408,10 +408,15 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             newItemRootElement.addChild(item);
 
             // Create a new row with the old parent and this new stack
-            detachFromParent(parent); // This is what breaks this case for some reason :-/
-            // Its breaking because if we remove a child from a column or a row the `split` is removed
             const newRootRow = createContainer('row');
-            newRootRow.addChild(parent);
+            setTimeout(() => {
+                // Doing this detach immediately breaks the layout
+                // This is because for column / row when a child is removed the splitter is gone
+                // And by chance this is the splitter that the new row was going to :-/
+                // But now the order is reversed :-/
+                detachFromParent(parent);
+                newRootRow.addChild(parent);
+            }, 10);
             newRootRow.addChild(newItemRootElement);
 
             // Add this new container to the root
