@@ -413,9 +413,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 // Doing this detach immediately breaks the layout
                 // This is because for column / row when a child is removed the splitter is gone
                 // And by chance this is the splitter that the new row was going to :-/
-                // But now the order is reversed :-/
                 detachFromParent(parent);
-                newRootRow.addChild(parent);
+                newRootRow.addChild(parent, 0);
             }, 10);
             newRootRow.addChild(newItemRootElement);
 
