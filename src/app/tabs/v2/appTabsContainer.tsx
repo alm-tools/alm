@@ -343,11 +343,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         // Basing it on programatic reorder demo
         // https://www.golden-layout.com/examples/#2e5d0456964b59f9eec1ecb44e1d31eb
 
-        // Plan
-        // Change the old `stack` and replace with a `stack` + `row`
-        // The stack parent is dead. Rest in peace
+        /** Can't move the last item */
+        if (parent.contentItems.length === 1) {
+            return;
+        }
 
-    
         if (root.type === 'stack' || root.type === 'root') {
             // Remove from old
             parent.removeChild(item, true);
