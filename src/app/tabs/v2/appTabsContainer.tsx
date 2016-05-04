@@ -369,22 +369,24 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         }
 
         if (root.type === 'stack' || root.type === 'root') {
+            const oldParentStack = parent;
+
             // Remove from old
             detachFromParent(item);
-            detachFromParent(parent);
+            detachFromParent(oldParentStack);
 
             // Create a new containers
-            const newRootElement = createContainer('row');
-            const newItemRootElement = createContainer('stack');
+            const newRootRow = createContainer('row');
+            const newItemStack = createContainer('stack');
 
             // Add to new layout
             // First add item to move to a new stack
-            newItemRootElement.addChild(item);
+            newItemStack.addChild(item);
             // Next group the old parent and the new item root in the new `row`
-            newRootElement.addChild(parent);
-            newRootElement.addChild(newItemRootElement);
+            newRootRow.addChild(oldParentStack);
+            newRootRow.addChild(newItemStack);
             // Finally add this new `row` to the old root
-            root.addChild(newRootElement);
+            root.addChild(newRootRow);
         }
         else if (root.type === 'row') {
             // Remove from old
