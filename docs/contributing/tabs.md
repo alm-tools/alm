@@ -13,4 +13,17 @@ Excellent ReactJS support. You can register react components with the same API a
 * Adding items after initialize: https://golden-layout.com/tutorials/dynamically-adding-components.html
 
 ## Some notes
-* We just make a stack at the root and then add tabs to it.
+* Initially we just make a stack at the root and then add tabs to it.
+
+## Row vs. column
+The following are rows in golden-layout lingo:
+
+```
+a b c
+```
+The following are columns
+```
+a
+b
+c
+```
