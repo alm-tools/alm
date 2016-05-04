@@ -332,26 +332,27 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         }
     }
 
-    private moveCurrentTabRightIfAny = () => {
-
+    private moveTabUtils = {
         /**
          * Utility to create a container that doesn't reinitialize its children
          */
-        const createContainer = (type:'stack'|'row'|'column') => {
+        createContainer: (type:'stack'|'row'|'column') => {
             const item = this.layout.createContentItem({
                 type: type,
                 content: []
             }) as any as GoldenLayout.ContentItem;
             item.isInitialised = true; // Prevents initilizing its children
             return item;
-        }
-
+        },
         /**
          * Utility that doesn't *uninitalize* the child it is removing
          */
-        const detachFromParent = (item: GoldenLayout.ContentItem) => {
-            item.parent.removeChild(item, true);
-        }
+         detachFromParent: (item: GoldenLayout.ContentItem) => {
+             item.parent.removeChild(item, true);
+         },
+    }
+
+    private moveCurrentTabRightIfAny = () => {
 
         let currentItemAndParent = this.getCurrentTabRootStackIfAny();
         if (!currentItemAndParent) return;
@@ -366,8 +367,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         // If parent.parent is a `row` its prettier to just add to that row ;)
         if (root.type === 'row') {
             // Create a new container for just this tab
-            detachFromParent(item);
-            const newItemRootElement = createContainer('stack');
+            this.moveTabUtils.detachFromParent(item);
+            const newItemRootElement = this.moveTabUtils.createContainer('stack');
             newItemRootElement.addChild(item);
 
             // Add this new container to the root
@@ -375,12 +376,12 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         }
         else {
             // Create a new container for just this tab
-            detachFromParent(item);
-            const newItemRootElement = createContainer('stack');
+            this.moveTabUtils.detachFromParent(item);
+            const newItemRootElement = this.moveTabUtils.createContainer('stack');
             newItemRootElement.addChild(item);
 
             // Create a new row with this new stack
-            const newRootRow = createContainer('row');
+            const newRootRow = this.moveTabUtils.createContainer('row');
             newRootRow.addChild(newItemRootElement);
 
             // Also add the old parent to this new row
@@ -388,7 +389,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 // Doing this detach immediately breaks the layout
                 // This is because for column / row when a child is removed the splitter is gone
                 // And by chance this is the splitter that the new item was going to :-/
-                detachFromParent(parent);
+                this.moveTabUtils.detachFromParent(parent);
                 newRootRow.addChild(parent, 0);
             }
             if (root.type === 'column') {
