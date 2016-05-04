@@ -387,10 +387,13 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             // Add this new container to the root
             root.addChild(newItemRootElement);
         }
-        else {
+        else if (root.type === 'column') {
             // TODO: tab
             // i don't know :-/
             console.log('figure this out please');
+        }
+        else {
+            console.error('Not a `stack` or `row` or `column` ... I did not see this comming');
         }
 
     }
