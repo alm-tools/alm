@@ -22,6 +22,8 @@ Search all the paths in the working directory to open a file (`Ctrl|⌘ + P`)
 
 Search for and set the **active** TypeScript project (`tsconfig.json`) using project search (`Alt + Shift + P`)
 
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/projectSearch.gif)
+
 ## Symbol Search
 
 The s**Y**mbol search mode (`Ctrl|⌘ + Alt + Y`) lets navigate your projects with meaning.
