@@ -650,6 +650,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.tabState.hideTabIndexes();
             // console.log(evt, tabNumber); // DEBUG
         },
+        _removeOnMouseDown: (evt:MouseEvent) => {
+            this.tabState.hideTabIndexes();
+        },
         showTabIndexes: () => {
             if (this.tabState._showingTabIndexes) {
                 this.tabState.hideTabIndexes();
@@ -657,6 +660,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.debugLayoutTree();
             this.tabState._showingTabIndexes = true;
             window.addEventListener('keydown', this.tabState._fastTabJumpListener);
+            window.addEventListener('mousedown', this.tabState._removeOnMouseDown);
             this.tabs.map((t,i)=>{
                 if (!this.tabHandle[t.id]){
                     return;
@@ -667,6 +671,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         hideTabIndexes: () => {
             this.tabState._showingTabIndexes = false;
             window.removeEventListener('keydown', this.tabState._fastTabJumpListener);
+            window.removeEventListener('mousedown', this.tabState._removeOnMouseDown);
             this.tabs.map((t,i)=>{
                 if (!this.tabHandle[t.id]){
                     return;
