@@ -370,8 +370,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
         if (root.type === 'stack' || root.type === 'root') {
             // Remove from old
-            parent.removeChild(item, true);
-            root.removeChild(parent, true);
+            detachFromParent(item);
+            detachFromParent(parent);
 
             // Create a new containers
             const newRootElement = createContainer('row');
@@ -388,7 +388,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         }
         else if (root.type === 'row') {
             // Remove from old
-            parent.removeChild(item, true);
+            detachFromParent(item);
 
             // Create a new container
             const newItemRootElement = createContainer('stack');
