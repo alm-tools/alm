@@ -380,9 +380,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             const newItemRootElement = this.moveTabUtils.createContainer('stack');
             newItemRootElement.addChild(item);
 
-            // Create a new row with this new stack
-            const newRootRow = this.moveTabUtils.createContainer('row');
-            newRootRow.addChild(newItemRootElement);
+            // Create a new layout to be the root of the two stacks
+            const newRootLayout = this.moveTabUtils.createContainer('row');
+            newRootLayout.addChild(newItemRootElement);
 
             // Also add the old parent to this new row
             const doTheDetachAndAdd = ()=>{
@@ -390,7 +390,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 // This is because for column / row when a child is removed the splitter is gone
                 // And by chance this is the splitter that the new item was going to :-/
                 this.moveTabUtils.detachFromParent(parent);
-                newRootRow.addChild(parent, 0);
+                newRootLayout.addChild(parent, 0);
             }
             if (root.type === 'column') {
                 setTimeout(doTheDetachAndAdd, 10);
@@ -402,14 +402,65 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             }
 
             // Add this new container to the root
-            root.addChild(newRootRow);
+            root.addChild(newRootLayout);
         }
     }
 
     private moveCurrentTabDownIfAny = () => {
-        // TODO: tab
+        // Very similar to moveCurrentTabRightIfAny
+        // Just replaced `row` with `column` and `column` with `row`.
+        // This code can be consolidated but leaving as seperate as I suspect they might diverge
         let currentItemAndParent = this.getCurrentTabRootStackIfAny();
         if (!currentItemAndParent) return;
+
+        const {item,parent} = currentItemAndParent;
+        const root = parent.parent;
+
+        /** Can't move the last item */
+        if (parent.contentItems.length === 1) {
+            return;
+        }
+
+        // If parent.parent is a `column` its prettier to just add to that column ;)
+        if (root.type === 'column') {
+            // Create a new container for just this tab
+            this.moveTabUtils.detachFromParent(item);
+            const newItemRootElement = this.moveTabUtils.createContainer('stack');
+            newItemRootElement.addChild(item);
+
+            // Add this new container to the root
+            root.addChild(newItemRootElement);
+        }
+        else {
+            // Create a new container for just this tab
+            this.moveTabUtils.detachFromParent(item);
+            const newItemRootElement = this.moveTabUtils.createContainer('stack');
+            newItemRootElement.addChild(item);
+
+            // Create a new layout to be the root of the two stacks
+            const newRootLayout = this.moveTabUtils.createContainer('column');
+            newRootLayout.addChild(newItemRootElement);
+
+            // Also add the old parent to this new row
+            const doTheDetachAndAdd = ()=>{
+                // Doing this detach immediately breaks the layout
+                // This is because for column / row when a child is removed the splitter is gone
+                // And by chance this is the splitter that the new item was going to :-/
+                this.moveTabUtils.detachFromParent(parent);
+                newRootLayout.addChild(parent, 0);
+            }
+            if (root.type === 'row') {
+                setTimeout(doTheDetachAndAdd, 10);
+            }
+            else {
+                // type `root` *must* only have a single item at a time :)
+                // So we *must* do it sync for that case
+                doTheDetachAndAdd();
+            }
+
+            // Add this new container to the root
+            root.addChild(newRootLayout);
+        }
     }
 
     private sendTabInfoToServer = () => {
@@ -649,7 +700,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             if (this.tabState._showingTabIndexes) {
                 this.tabState.hideTabIndexes();
             }
-            this.debugLayoutTree();
+            // this.debugLayoutTree(); // DEBUG
             this.tabState._showingTabIndexes = true;
             window.addEventListener('keydown', this.tabState._fastTabJumpListener);
             window.addEventListener('mousedown', this.tabState._removeOnMouseDown);
