@@ -648,7 +648,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
          */
         debouncedResize: utils.debounce(() => {
             this.tabState.resize();
-        },100),
+        },200),
         resize: () => {
             this.layout.updateSize();
             this.tabState.resizeJustTheTabs();

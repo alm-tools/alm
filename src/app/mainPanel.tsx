@@ -19,6 +19,7 @@ import {connect} from "react-redux";
 import {StoreState,expandErrors,collapseErrors} from "./state/state";
 import * as state from "./state/state";
 import * as gotoHistory from "./gotoHistory";
+import {tabState} from "./tabs/v2/appTabsContainer";
 
 let notificationKeyboardStyle = {
     border: '2px solid',
@@ -164,5 +165,12 @@ export class MainPanel extends BaseComponent<Props, State>{
 
     handleStop = () => {
         // TODO store as user setting
+    }
+
+    componentWillUpdate(nextProps: Props, nextState: State) {
+        if (nextState.height !== this.state.height
+            || nextProps.errorsExpanded !== this.props.errorsExpanded) {
+            tabState.debouncedResize();
+        }
     }
 }
