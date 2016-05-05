@@ -928,21 +928,21 @@ namespace TabMoveHelp {
         tabMoveDisplay = $(`
 <div class="alm_tabMove">
     <div>
-        Tab Number: Jump to tab
+        <span class="keyStrokeStyle">Tab Number</span> Jump to tab
     </div>
     <div>
-        ESC: Exit
+        <span class="keyStrokeStyle">ESC</span> Exit
     </div>
     <div>
-        <i class="fa fa-arrow-right"></i>:
+        <span class="keyStrokeStyle"><i class="fa fa-arrow-right"></i></span>
         Move active tab to a new rightmost pane
     </div>
     <div>
-        <i class="fa fa-arrow-down"></i>:
+        <span class="keyStrokeStyle"><i class="fa fa-arrow-down"></i></span>
         Move active tab to a new bottom pane
     </div>
     <div>
-        d: Duplicate current tab
+        <span class="keyStrokeStyle">d</span> Duplicate current tab
     </div>
 </div>
             `);

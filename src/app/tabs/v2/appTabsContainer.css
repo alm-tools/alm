@@ -46,6 +46,16 @@
 .alm_tabMove div {
     padding: 5px 0px;
 }
+.alm_tabMove .keyStrokeStyle {
+   font-size: 0.9rem;
+   background: #111;
+   padding-top: 1px;
+   padding-bottom: 1px;
+   padding-left: 4px;
+   padding-right: 4px;
+   border-radius: 5px;
+   border: 2px solid;
+};
 
 /* We add a `.alm_selected` class to the tru active tab */
 .lm_tab.alm_selected {
