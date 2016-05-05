@@ -200,8 +200,14 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.getSelectedTabApiIfAny().save.emit({});
         });
         commands.esc.on(() => {
+            // Focus selected tab
             this.tabState.focusSelectedTabIfAny();
+            // Exit jump tab mode
             this.tabState.hideTabIndexes();
+            // Hide search
+            if (this.tabApi[this.selectedTabInstance && this.selectedTabInstance.id]){
+                this.tabApi[this.selectedTabInstance && this.selectedTabInstance.id].search.hideSearch.emit({});
+            }
         });
         commands.jumpToTab.on(()=>{
             // jump to tab
@@ -665,6 +671,18 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         }
         if (value && value.id && this.tabHandle[value.id]) {
             this.tabHandle[value.id].addSelectedClass();
+        }
+        // We don't tell non current tabs about search states.
+        // So we need to tell them if they *come into focus*
+        if (value && value.id && this.tabApi[value.id]) {
+            const api = this.tabApi[value.id];
+            const options = state.getState().findOptions;
+            if (!options.isShown || !options.query) {
+                api.search.hideSearch.emit({});
+            }
+            else {
+                api.search.doSearch.emit(options);
+            }
         }
 
         this._selectedTabInstance = value;
