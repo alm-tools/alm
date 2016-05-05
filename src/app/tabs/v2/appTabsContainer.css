@@ -55,7 +55,7 @@
    padding-right: 4px;
    border-radius: 5px;
    border: 2px solid;
-};
+}
 
 /* We add a `.alm_selected` class to the tru active tab */
 .lm_tab.alm_selected {
