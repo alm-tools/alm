@@ -49,12 +49,21 @@ export class Code extends ui.BaseComponent<Props, State> {
 
         this.props.setCodeEditor(this.refs.editor);
 
-        // TODO: tab
         // Listen to tab events
         const api = this.props.api;
-        this.disposible.add(api.focus.on(this.focus));
         this.disposible.add(api.resize.on(this.resize));
-        this.disposible.add(api.save.on(this.save));
+        this.disposible.add(api.focus.on(this.focus));
+        this.disposible.add(api.focus.on(this.focus));
+        this.disposible.add(api.close.on(this.close));
+        this.disposible.add(api.gotoPosition.on(this.gotoPosition));
+        // Listen to search tab events
+        this.disposible.add(api.search.doSearch.on(this.search.doSearch));
+        this.disposible.add(api.search.hideSearch.on(this.search.hideSearch));
+        this.disposible.add(api.search.findNext.on(this.search.findNext));
+        this.disposible.add(api.search.findPrevious.on(this.search.findPrevious));
+        this.disposible.add(api.search.replaceNext.on(this.search.replaceNext));
+        this.disposible.add(api.search.replacePrevious.on(this.search.replacePrevious));
+        this.disposible.add(api.search.replaceAll.on(this.search.replaceAll));
     }
     componentWillUnmount() {
         this.disposible.dispose();
@@ -119,15 +128,15 @@ export class Code extends ui.BaseComponent<Props, State> {
             this.refs.editor.findPrevious(options);
         },
 
-        replaceNext: (newText: string) => {
+        replaceNext: ({newText}: { newText: string }) => {
             this.refs.editor.replaceNext(newText);
         },
 
-        replacePrevious: (newText: string) => {
+        replacePrevious: ({newText}: { newText: string }) => {
             this.refs.editor.replacePrevious(newText);
         },
 
-        replaceAll: (newText: string) => {
+        replaceAll: ({newText}: { newText: string }) => {
             this.refs.editor.replaceAll(newText);
         }
     }
