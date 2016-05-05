@@ -888,10 +888,15 @@ namespace TabMoveHelp {
         tabMoveDisplay = $(`
 <div class="alm_tabMove">
     <div>
+        Tab Number: Jump to tab
+    </div>
+    <div>
+        ESC: Exit
+    </div>
+    <div>
         <i class="fa fa-arrow-right"></i> Key:
         Move Active Tab to a new rightmost pane
     </div>
-    <br/>
     <div>
         <i class="fa fa-arrow-down"></i> Key:
         Move Active Tab to a new bottom pane

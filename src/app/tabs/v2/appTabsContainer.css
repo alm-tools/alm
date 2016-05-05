@@ -32,7 +32,7 @@
 .alm_tabMove {
     position: absolute;
     right: calc(50% - 200px);
-    top: calc(50% - 25px);
+    top: calc(50% - 5em);
     background: #333;
     color:#DDD;
     font-weight: bold;
@@ -42,6 +42,9 @@
     border: 3px solid #999;
     text-align: center;
     opacity: .8;
+}
+.alm_tabMove div {
+    padding: 5px 0px;
 }
 
 /* Further tab styling */
