@@ -115,6 +115,10 @@ export const jumpToTab = new UICommand({
     description: "Tabs: Jump to tab",
     context: CommandContext.Global,
 });
+export var duplicateTab = new UICommand({
+    description: "Tabs: Duplicate",
+    context: CommandContext.Global,
+});
 export var duplicateWindow = new UICommand({
     keyboardShortcut: 'mod+alt+d', // nick
     description: "Window: Duplicate in a new browser window",

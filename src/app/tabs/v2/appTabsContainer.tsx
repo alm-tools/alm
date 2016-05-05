@@ -205,32 +205,46 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         /**
          * File opening commands
          */
-         commands.doOpenFile.on((e) => {
-             let codeTab: TabInstance = {
-                 id: createId(),
-                 url: `file://${e.filePath}`
-             }
+        commands.doOpenFile.on((e) => {
+            let codeTab: TabInstance = {
+                id: createId(),
+                url: `file://${e.filePath}`
+            }
 
-             // Add tab
-             this.addTabToLayout(codeTab);
+            // Add tab
+            this.addTabToLayout(codeTab);
 
-             // Focus
-             this.tabState.selectTab(codeTab.id);
-             if (e.position) {
-                 this.tabApi[codeTab.id].gotoPosition.emit(e.position);
-             }
-         });
-         commands.undoCloseTab.on(() => {
-             if (this.closedTabs.length) {
-                 let tab = this.closedTabs.pop();
+            // Focus
+            this.tabState.selectTab(codeTab.id);
+            if (e.position) {
+                this.tabApi[codeTab.id].gotoPosition.emit(e.position);
+            }
+        });
+        commands.undoCloseTab.on(() => {
+            if (this.closedTabs.length) {
+                let tab = this.closedTabs.pop();
 
-                 // Add tab
-                 this.addTabToLayout(tab);
+                // Add tab
+                this.addTabToLayout(tab);
 
-                 // Focus
-                 this.tabState.selectTab(tab.id);
-             }
-         });
+                // Focus
+                this.tabState.selectTab(tab.id);
+            }
+        });
+        commands.duplicateTab.on((e) => {
+            if (!this.selectedTabInstance) return;
+
+            let codeTab: TabInstance = {
+                id: createId(),
+                url: this.selectedTabInstance.url
+            }
+
+            // Add tab
+            this.addTabToLayout(codeTab);
+
+            // Focus
+            this.tabState.selectTab(codeTab.id);
+        });
 
          /**
           * Goto tab by index
@@ -686,22 +700,22 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         /**
          * Fast tab jumping
          */
-         _showingTabIndexes: false,
-         _jumpToTabNumber: (oneBasedIndex: number) => {
-             const index = oneBasedIndex - 1;
-             if (!this.tabs[index]) {
-                 return;
-             }
-             const tab = this.tabs[index];
-             this.tabHandle[tab.id].triggerFocus();
-             this.tabState.selectTab(tab.id);
-             this.tabState.hideTabIndexes();
-         },
-        _fastTabJumpListener: (evt:KeyboardEvent)=>{
+        _showingTabIndexes: false,
+        _jumpToTabNumber: (oneBasedIndex: number) => {
+            const index = oneBasedIndex - 1;
+            if (!this.tabs[index]) {
+                return;
+            }
+            const tab = this.tabs[index];
+            this.tabHandle[tab.id].triggerFocus();
+            this.tabState.selectTab(tab.id);
+            this.tabState.hideTabIndexes();
+        },
+        _fastTabJumpListener: (evt: KeyboardEvent) => {
             const keyCodeFor1 = 49;
             const tabNumber = evt.keyCode - keyCodeFor1 + 1;
 
-            if (tabNumber >= 1 && tabNumber <= 9){
+            if (tabNumber >= 1 && tabNumber <= 9) {
                 this.tabState._jumpToTabNumber(tabNumber);
             }
 
@@ -710,6 +724,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             }
             if (evt.keyCode == 40) /* Down */ {
                 this.moveCurrentTabDownIfAny();
+            }
+            if (evt.keyCode == 68) /* d */ {
+                commands.duplicateTab.emit({});
             }
 
             // prevent key prop
@@ -917,12 +934,15 @@ namespace TabMoveHelp {
         ESC: Exit
     </div>
     <div>
-        <i class="fa fa-arrow-right"></i> Key:
-        Move Active Tab to a new rightmost pane
+        <i class="fa fa-arrow-right"></i>:
+        Move active tab to a new rightmost pane
     </div>
     <div>
-        <i class="fa fa-arrow-down"></i> Key:
-        Move Active Tab to a new bottom pane
+        <i class="fa fa-arrow-down"></i>:
+        Move active tab to a new bottom pane
+    </div>
+    <div>
+        d: Duplicate current tab
     </div>
 </div>
             `);
