@@ -375,6 +375,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             root.addChild(newItemRootElement);
         }
         else {
+            const indexOfParentInRoot = parent.parent.contentItems.findIndex((c) => c == parent);
+
             // Create a new container for just this tab
             this.moveTabUtils.detachFromParent(item);
             const newItemRootElement = this.moveTabUtils.createContainer('stack');
@@ -402,7 +404,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             }
 
             // Add this new container to the root
-            root.addChild(newRootLayout);
+            root.addChild(newRootLayout, indexOfParentInRoot);
         }
     }
 
@@ -432,6 +434,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             root.addChild(newItemRootElement);
         }
         else {
+            const indexOfParentInRoot = parent.parent.contentItems.findIndex((c) => c == parent);
+
             // Create a new container for just this tab
             this.moveTabUtils.detachFromParent(item);
             const newItemRootElement = this.moveTabUtils.createContainer('stack');
@@ -459,7 +463,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             }
 
             // Add this new container to the root
-            root.addChild(newRootLayout);
+            root.addChild(newRootLayout, indexOfParentInRoot);
         }
     }
 
