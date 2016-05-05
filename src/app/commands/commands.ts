@@ -464,6 +464,7 @@ sublimeMap['Alt-='] = "upcaseAtCursor";
 sublimeMap['Alt--'] = "downcaseAtCursor";
 // Conflicts with jump to tab
 delete sublimeMap['Shift-Cmd-Enter'];
+delete sublimeMap['Shift-Ctrl-Enter'];
 
 // Swap line should also come with indent
 // + use VSCode shortcuts as they are consistent across win/mac
