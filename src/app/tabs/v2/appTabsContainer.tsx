@@ -28,6 +28,7 @@ import {getSessionId, setSessionId} from "../clientSession";
 import * as onresize from "onresize";
 import {TypedEvent} from "../../../common/events";
 import {CodeEditor} from "../../codemirror/codeEditor";
+import * as state from "../../state/state";
 
 /**
  * Singleton + tab state migrated from redux to the local component
@@ -275,6 +276,32 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         //       state.setTabs(tabs);
         //       this.selectTab(0);
         //   });
+
+        /**
+         * Find and Replace
+         */
+         commands.findNext.on(() => {
+             let component = this.getSelectedTabApiIfAny();
+             let findOptions = state.getState().findOptions;
+             component.search.findNext.emit(findOptions);
+         });
+         commands.findPrevious.on(() => {
+             let component = this.getSelectedTabApiIfAny();
+             let findOptions = state.getState().findOptions;
+             component.search.findPrevious.emit(findOptions);
+         });
+         commands.replaceNext.on((e)=>{
+             let component = this.getSelectedTabApiIfAny();
+             component.search.replaceNext.emit(e);
+         });
+         commands.replacePrevious.on((e)=>{
+             let component = this.getSelectedTabApiIfAny();
+             component.search.replacePrevious.emit(e);
+         });
+         commands.replaceAll.on((e)=>{
+             let component = this.getSelectedTabApiIfAny();
+             component.search.replaceAll.emit(e);
+         });
     }
 
     ctrls: {
