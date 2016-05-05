@@ -576,7 +576,15 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             hideIndex: removeTabIndexDisplayIfAny,
             triggerClose: () => {
                 tab.find('.lm_close_tab').trigger('click');
-            }
+            },
+
+            /** Selected class */
+            addSelectedClass: () => {
+                tab.addClass('alm_selected');
+            },
+            removeSelectedClass: () => {
+                tab.removeClass('alm_selected');
+            },
         }
     }
 
@@ -594,6 +602,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             showIndex: (i: number) => void;
             hideIndex: () => void;
             triggerClose: () => void;
+
+            /** Selected class */
+            addSelectedClass: () => void;
+            removeSelectedClass: () => void;
         }
     } = Object.create(null);
     /**
@@ -605,6 +617,14 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     /** Selected tab instance */
     _selectedTabInstance: TabInstance;
     set selectedTabInstance(value: TabInstance) {
+        // The active tab class management
+        if (this._selectedTabInstance && this.tabHandle[this._selectedTabInstance.id]) {
+            this.tabHandle[this._selectedTabInstance.id].removeSelectedClass();
+        }
+        if (value && value.id && this.tabHandle[value.id]) {
+            this.tabHandle[value.id].addSelectedClass();
+        }
+
         this._selectedTabInstance = value;
         tabStateChanged.emit({});
     }

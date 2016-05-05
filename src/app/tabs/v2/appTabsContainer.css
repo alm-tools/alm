@@ -47,6 +47,11 @@
     padding: 5px 0px;
 }
 
+/* We add a `.alm_selected` class to the tru active tab */
+.lm_tab.alm_selected {
+    color: #6edeef;
+}
+
 /* Further tab styling */
 .lm_tab {
     transition: color .2s;
