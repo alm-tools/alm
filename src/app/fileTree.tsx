@@ -814,6 +814,13 @@ export class FileTree extends BaseComponent<Props, State>{
         (this.refs['__treeViewScroll'] as any).focus();
         this.ref(filePath).focus();
     }
+
+    componentWillUpdate(nextProps: Props, nextState: State) {
+        if (nextState.width !== this.state.width
+            || nextState.shown !== this.state.shown) {
+            setTimeout(() => tabState.resize(), 50);
+        }
+    }
 }
 
 export namespace TreeNode {
