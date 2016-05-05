@@ -11,6 +11,7 @@ import * as commands from "./commands/commands";
 import {connect} from "react-redux";
 import {Icon} from "./icon";
 import * as tabRegistry from "./tabs/tabRegistry";
+import {tabState} from "./tabs/v2/appTabsContainer";
 
 let {inputBlackStyle} = styles.Input;
 export let inputCodeStyle = {
@@ -87,7 +88,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         let shownStyle = this.props.findQuery.isShown ? {} : { display: 'none' };
 
         /** Detect advanced find needed or not */
-        let tab = state.getSelectedTab();
+        let tab = tabState.getSelectedTab();
         let advancedFind = tab && tabRegistry.getTabConfigByUrl(tab.url).advancedSearch;
 
         /** For Find and Replace Multi ... completely bail out */
