@@ -173,7 +173,12 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.tabState.setTabs(orderedtabs);
 
             // If there was a selected tab focus on it again.
-            this.selectedTabInstance && this.tabState.selectTab(this.selectedTabInstance.id);
+            if (this.tabState._resizingDontReFocus) {
+                this.tabState._resizingDontReFocus = false;
+            }
+            else {
+                this.selectedTabInstance && this.tabState.selectTab(this.selectedTabInstance.id);
+            }
         });
 
         /**
@@ -673,7 +678,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         /**
          * Resize handling
          */
+        _resizingDontReFocus: false,
         debouncedResize: utils.debounce(() => {
+            this.tabState._resizingDontReFocus = true;
             this.tabState.resize();
         },200),
         resize: () => {
