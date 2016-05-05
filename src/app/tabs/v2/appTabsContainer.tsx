@@ -283,7 +283,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
     render() {
         return (
-            <div ref={root => this.ctrls.root = root} style={csx.extend(csx.vertical, csx.flex, { maxWidth: '100%' }) } className="app-tabs">
+            <div ref={root => this.ctrls.root = root} style={csx.extend(csx.vertical, csx.flex, { maxWidth: '100%', overflow: 'hidden' }) } className="app-tabs">
             </div>
         );
     }
