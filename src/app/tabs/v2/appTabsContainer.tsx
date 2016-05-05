@@ -131,7 +131,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         });
 
         /** Setup window resize */
-        this.disposible.add(onresize.on(()=>this.resize()));
+        this.disposible.add(onresize.on(()=>this.tabState.resize()));
 
         /**
          * Tab selection
@@ -153,7 +153,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
             // Due to state changes layout needs to happen on *all tabs* (because it might expose some other tabs)
             // PREF : you can go thorough all the `stack` in the layout and only call resize on the active ones.
-            this.tabState.resize();
+            this.tabState.resizeJustTheTabs();
 
             // Ignore the events where the user is dragging stuff
             // This is because at this time the `config` doesn't contain the *dragged* item.
@@ -493,10 +493,6 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         });
     }
 
-    resize() {
-        this.layout.updateSize();
-    }
-
     createTabApi(id: string) {
         const api = newTabApi();
         this.tabApi[id] = api;
@@ -648,7 +644,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     /** Tab Sate */
     tabState = {
         resize: () => {
-            this.tabs.forEach(t=>this.tabApi[t.id].resize.emit({}));
+            this.layout.updateSize();
+        },
+        resizeJustTheTabs: () => {
+            this.tabs.forEach(t => this.tabApi[t.id].resize.emit({}));
         },
         setTabs: (tabs: TabInstance[]) => {
             this.tabs = tabs;
