@@ -643,12 +643,18 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
     /** Tab Sate */
     tabState = {
+        /**
+         * Resize handling
+         */
         resize: () => {
             this.layout.updateSize();
+            this.tabState.resizeJustTheTabs();
         },
         resizeJustTheTabs: () => {
             this.tabs.forEach(t => this.tabApi[t.id].resize.emit({}));
         },
+
+
         setTabs: (tabs: TabInstance[]) => {
             this.tabs = tabs;
             this.sendTabInfoToServer();
