@@ -262,4 +262,10 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         let val: boolean = e.target.checked;
         state.setFindOptionsIsFullWord(val);
     }
+
+    componentWillUpdate(nextProps: Props, nextState: State) {
+        if (nextProps.findQuery.isShown !== this.props.findQuery.isShown) {
+            tabState.debouncedResize();
+        }
+    }
 }
