@@ -6,7 +6,7 @@ The tree view is designed to be as keyboard friendly as the rest of the applicat
 ## Basic
 
 * Toggle: `Ctrl|⌘ + \`. Opening the tree view automatically focuses you to it.
-* Reveal Active File: `Ctrl|⌘ + Shift + 0`
+* Reveal Active File: `Ctrl|⌘ + Shift + \`
 * Focus: `Ctrl|⌘ + 0`. If its not open we open it
 
 ## Advanced
