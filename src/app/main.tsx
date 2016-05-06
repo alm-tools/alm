@@ -10,6 +10,7 @@ import * as state from "./state/state";
 import {store} from "./state/state";
 import * as ui from "./ui";
 import * as constants from "../common/constants";
+import {tabState} from "./tabs/v2/appTabsContainer";
 
 import {server, cast, pendingRequestsChanged, connectionStatusChanged} from "../socket/socketClient";
 var Modal = require('react-modal');
@@ -95,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         state.completeOuputStatusCacheUpdated(res);
     });
     commands.toggleDoctor.on(()=>{
-        if (!state.inActiveProjectFilePath(state.getSelectedFilePath())){
+        if (!state.inActiveProjectFilePath(tabState.getSelectedFilePath())){
             ui.notifyWarningNormalDisappear('Doctor is only available for files in active project');
             return;
         }

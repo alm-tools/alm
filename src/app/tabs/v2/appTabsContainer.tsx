@@ -855,6 +855,15 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         },
         getSelectedTab: (): TabInstance => {
             return this.selectedTabInstance;
+        },
+        getSelectedFilePath: (): string | undefined => {
+            const selected = this.selectedTabInstance;
+            if (selected) {
+                let url = selected.url;
+                if (url.startsWith('file://')){
+                    return utils.getFilePathFromUrl(url);
+                }
+            }
         }
     }
 }
