@@ -433,19 +433,20 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         /**
          * Other Types Of tabs
          */
-        // TODO: tab
-        //  commands.doOpenDependencyView.on((e) =>{
-        //      let codeTab: state.TabInstance = {
-        //          id: createId(),
-        //          url: `dependency://Dependency View`,
-        //          saved: true
-        //      }
-         //
-        //      this.afterComponentDidUpdate(this.sendTabInfoToServer);
-        //      this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
-        //      state.addTabAndSelect(codeTab);
-        //  });
-         //
+         commands.doOpenDependencyView.on((e) => {
+             let codeTab: TabInstance = {
+                 id: createId(),
+                 url: `dependency://Dependency View`,
+             }
+
+             // Add tab
+             this.addTabToLayout(codeTab);
+
+             // Focus
+             this.tabState.selectTab(codeTab.id);
+         });
+
+         // TODO: tab
         //  commands.findAndReplaceMulti.on((e) =>{
         //      // if open and active => focus
         //      // if open and not active => active
