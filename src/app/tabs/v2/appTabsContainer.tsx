@@ -289,6 +289,16 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 }
             }
         });
+        commands.closeFilesDirs.on((e)=>{
+            let toClose = (filePath:string) => {
+                return e.files.indexOf(filePath) !== -1 || e.dirs.some(dirPath => filePath.startsWith(dirPath));
+            }
+            let tabsToClose = this.tabs.filter((t,i)=> {
+                let {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(t.url);
+                return protocol === 'file' && toClose(filePath);
+            });
+            tabsToClose.forEach(t => this.tabHandle[t.id].triggerClose());
+        });
         commands.undoCloseTab.on(() => {
             if (this.closedTabs.length) {
                 let tab = this.closedTabs.pop();
