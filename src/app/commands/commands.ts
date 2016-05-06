@@ -83,12 +83,12 @@ export var gotoPrevious = new UICommand({
  */
 export var nextTab = new UICommand({
     keyboardShortcut: 'alt+k',
-    description: "Tabs: Focus on the Next",
+    description: "Tabs: Focus on the Next Tab",
     context: CommandContext.Global,
 });
 export var prevTab = new UICommand({
     keyboardShortcut: 'alt+j',
-    description: "Tabs: Focus on the Previous",
+    description: "Tabs: Focus on the Previous Tab",
     context: CommandContext.Global,
 });
 export var closeTab = new UICommand({
