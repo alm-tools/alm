@@ -232,6 +232,32 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 this.tabApi[codeTab.id].gotoPosition.emit(e.position);
             }
         });
+        commands.doOpenOrFocusFile.on((e)=>{
+            // if open and not focused then focus and goto pos
+            const existingTab =
+                // Open and current
+                (
+                    this.selectedTabInstance
+                    && utils.getFilePathFromUrl(this.selectedTabInstance.url) === e.filePath
+                    && this.selectedTabInstance
+                )
+                // Open but not current
+                || this.tabs.find(t => {
+                    return utils.getFilePathFromUrl(t.url) == e.filePath;
+                });
+            if (existingTab) {
+                // Focus if not focused
+                if (this.selectedTabInstance && this.selectedTabInstance.id !== existingTab.id){
+                    this.getTabApi(existingTab.id).focus.emit({});
+                }
+                if (e.position) {
+                    this.tabApi[existingTab.id].gotoPosition.emit(e.position);
+                }
+            }
+            else {
+                commands.doOpenFile.emit(e);
+            }
+        });
         commands.undoCloseTab.on(() => {
             if (this.closedTabs.length) {
                 let tab = this.closedTabs.pop();
