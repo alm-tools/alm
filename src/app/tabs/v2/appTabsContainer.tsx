@@ -428,6 +428,86 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
              let component = this.getSelectedTabApiIfAny();
              component.search.replaceAll.emit(e);
          });
+
+        /**
+         * Other Types Of tabs
+         */
+        // TODO: tab
+        //  commands.doOpenDependencyView.on((e) =>{
+        //      let codeTab: state.TabInstance = {
+        //          id: createId(),
+        //          url: `dependency://Dependency View`,
+        //          saved: true
+        //      }
+         //
+        //      this.afterComponentDidUpdate(this.sendTabInfoToServer);
+        //      this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
+        //      state.addTabAndSelect(codeTab);
+        //  });
+         //
+        //  commands.findAndReplaceMulti.on((e) =>{
+        //      // if open and active => focus
+        //      // if open and not active => active
+        //      // if not open and active
+        //      if (this.props.tabs.length
+        //          && utils.getFilePathAndProtocolFromUrl(this.props.tabs[this.props.selectedTabIndex].url).protocol === 'farm'){
+        //          this.getSelectedComponent().focus();
+        //          return;
+        //      }
+         //
+        //      let openTabIndex = this.props.tabs.map(t=> utils.getFilePathAndProtocolFromUrl(t.url).protocol === 'farm').indexOf(true);
+        //      if (openTabIndex !== -1) {
+        //          this.selectTab(openTabIndex);
+        //          return;
+        //      }
+         //
+        //      let farmTab: state.TabInstance = {
+        //          id: createId(),
+        //          url: `farm://Find And Replace`,
+        //          saved: true
+        //      }
+        //      this.afterComponentDidUpdate(this.sendTabInfoToServer);
+        //      this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
+        //      state.addTabAndSelect(farmTab);
+        //  });
+         //
+        //  let getCurrentFilePathOrWarn = () => {
+        //      let tab = state.getSelectedTab();
+        //      let notify = () => ui.notifyWarningNormalDisappear('Need a valid file path for this action. Make sure you have a *file* tab as active');
+        //      if (!tab) {
+        //          notify();
+        //          return;
+        //      }
+        //      let {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(tab.url);
+        //      if (protocol !== 'file'){
+        //          notify();
+        //          return;
+        //      }
+        //      return filePath;
+        //  }
+         //
+        //  let openAst = (mode:Types.ASTMode)=>{
+        //      let filePath = getCurrentFilePathOrWarn();
+        //      if (!filePath) return;
+         //
+        //      let codeTab: state.TabInstance = {
+        //          id: createId(),
+        //          url: `${mode == Types.ASTMode.visitor ? 'ast' : 'astfull'}://${filePath}`,
+        //          saved: true
+        //      }
+         //
+        //      this.afterComponentDidUpdate(this.sendTabInfoToServer);
+        //      this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
+        //      state.addTabAndSelect(codeTab);
+        //  }
+         //
+        //  commands.doOpenASTView.on((e) =>{
+        //      openAst(Types.ASTMode.visitor);
+        //  });
+         //
+        //  commands.doOpenASTFullView.on((e) =>{
+        //      openAst(Types.ASTMode.children);
+        //  });
     }
 
     ctrls: {
