@@ -291,6 +291,16 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         /**
          * Find and Replace
          */
+         state.subscribeSub(state => state.findOptions, (findQuery) => {
+             let api = this.getSelectedTabApiIfAny();
+             const options = state.getState().findOptions;
+             if (options.isShown){
+                 api.search.doSearch.emit(options);
+             }
+             else {
+                 api.search.hideSearch.emit(options);
+             }
+         });
          commands.findNext.on(() => {
              let component = this.getSelectedTabApiIfAny();
              let findOptions = state.getState().findOptions;
