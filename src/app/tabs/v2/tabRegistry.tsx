@@ -8,6 +8,7 @@ import * as ui from "../../ui";
 
 /** Various tabs  */
 import {Code} from "./codeTab";
+import {ASTView} from "./astView";
 
 type ComponentConstructor = { new (props: tab.TabProps): ui.BaseComponent<tab.TabProps,any> };
 
@@ -22,7 +23,17 @@ let tabs: {[protocol:string]:TabConfig} = {
         advancedSearch: true,
         getTitle: utils.getFileName,
         component: Code,
-    }
+    },
+    ast: {
+        advancedSearch: false,
+        getTitle: (url)=> `AST ${utils.getFileName(url)}`,
+        component: ASTView,
+    },
+    astfull: {
+        advancedSearch: false,
+        getTitle: (url)=> `AST Full ${utils.getFileName(url)}`,
+        component: ASTView,
+    },
 }
 
 export function getTabConfigs() {

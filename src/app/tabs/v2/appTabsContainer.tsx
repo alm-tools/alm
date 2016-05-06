@@ -23,6 +23,7 @@ import * as styles from "../../styles/styles";
 import {Tips} from "./../tips";
 import {Icon} from "../../icon";
 import {cast, server} from "../../../socket/socketClient";
+import {Types} from "../../../socket/socketContract";
 import * as alertOnLeave from "../../utils/alertOnLeave";
 import {getSessionId, setSessionId} from "../clientSession";
 import * as onresize from "onresize";
@@ -471,43 +472,43 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         //      state.addTabAndSelect(farmTab);
         //  });
          //
-        //  let getCurrentFilePathOrWarn = () => {
-        //      let tab = state.getSelectedTab();
-        //      let notify = () => ui.notifyWarningNormalDisappear('Need a valid file path for this action. Make sure you have a *file* tab as active');
-        //      if (!tab) {
-        //          notify();
-        //          return;
-        //      }
-        //      let {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(tab.url);
-        //      if (protocol !== 'file'){
-        //          notify();
-        //          return;
-        //      }
-        //      return filePath;
-        //  }
-         //
-        //  let openAst = (mode:Types.ASTMode)=>{
-        //      let filePath = getCurrentFilePathOrWarn();
-        //      if (!filePath) return;
-         //
-        //      let codeTab: state.TabInstance = {
-        //          id: createId(),
-        //          url: `${mode == Types.ASTMode.visitor ? 'ast' : 'astfull'}://${filePath}`,
-        //          saved: true
-        //      }
-         //
-        //      this.afterComponentDidUpdate(this.sendTabInfoToServer);
-        //      this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
-        //      state.addTabAndSelect(codeTab);
-        //  }
-         //
-        //  commands.doOpenASTView.on((e) =>{
-        //      openAst(Types.ASTMode.visitor);
-        //  });
-         //
-        //  commands.doOpenASTFullView.on((e) =>{
-        //      openAst(Types.ASTMode.children);
-        //  });
+         /** AST view */
+         let getCurrentFilePathOrWarn = () => {
+             let tab = this.tabState.getSelectedTab();
+             let notify = () => ui.notifyWarningNormalDisappear('Need a valid file path for this action. Make sure you have a *file* tab as active');
+             if (!tab) {
+                 notify();
+                 return;
+             }
+             let {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(tab.url);
+             if (protocol !== 'file'){
+                 notify();
+                 return;
+             }
+             return filePath;
+         }
+         let openAst = (mode: Types.ASTMode) => {
+             let filePath = getCurrentFilePathOrWarn();
+             if (!filePath) return;
+
+             let codeTab: TabInstance = {
+                 id: createId(),
+                 url: `${mode == Types.ASTMode.visitor ? 'ast' : 'astfull'}://${filePath}`,
+             }
+
+             // Add tab
+             this.addTabToLayout(codeTab);
+
+             // Focus
+             this.tabState.selectTab(codeTab.id);
+         }
+         commands.doOpenASTView.on((e) => {
+             openAst(Types.ASTMode.visitor);
+         });
+
+         commands.doOpenASTFullView.on((e) => {
+             openAst(Types.ASTMode.children);
+         });
     }
 
     ctrls: {
