@@ -187,7 +187,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
             return;
         }
 
-        if (mod && enter && !shift) {
+        if (mod && enter && !shift) { // Because `shift` is used by jump tab mode
             commands.replaceAll.emit({newText:this.replaceWith()});
             return;
         }
