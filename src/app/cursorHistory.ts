@@ -3,7 +3,7 @@
  */
 import * as commands from "./commands/commands";
 import * as utils from "../common/utils";
-import * as state from "./state/state";
+import {tabState} from "./tabs/v2/appTabsContainer";
 
 /** The current cursor location */
 let currentIndex = -1;
@@ -47,7 +47,7 @@ export function next() {
  * The current tab with id is fetched from state. So all you need is editorPosition
  */
 export let addEntry = utils.debounce((editorPosition: EditorPosition) => {
-    let selectedTab = state.getSelectedTab();
+    let selectedTab = tabState.getSelectedTab();
 
     /**
      * This can happen if we close the tabs too fast (because this function is debounced)

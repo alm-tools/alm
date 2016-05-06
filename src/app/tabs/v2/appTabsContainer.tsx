@@ -247,8 +247,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 });
             if (existingTab) {
                 // Focus if not focused
-                if (this.selectedTabInstance && this.selectedTabInstance.id !== existingTab.id){
-                    this.getTabApi(existingTab.id).focus.emit({});
+                if (!this.selectedTabInstance || this.selectedTabInstance.id !== existingTab.id){
+                    this.tabState.triggerFocusAndSetAsSelected(existingTab.id);
                 }
                 if (e.position) {
                     this.tabApi[existingTab.id].gotoPosition.emit(e.position);
@@ -256,6 +256,37 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             }
             else {
                 commands.doOpenFile.emit(e);
+            }
+        });
+        commands.doOpenOrFocusTab.on(e=>{
+            // if open and not focused then focus and goto pos
+            const existingTab =
+                this.tabs.find(t => {
+                    return t.id == e.tabId;
+                });
+            if (existingTab) {
+                // Focus if not focused
+                if (!this.selectedTabInstance || this.selectedTabInstance.id !== existingTab.id){
+                    this.tabState.triggerFocusAndSetAsSelected(existingTab.id);
+                }
+                if (e.position) {
+                    this.tabApi[existingTab.id].gotoPosition.emit(e.position);
+                }
+            }
+            else { // otherwise reopen
+                let codeTab: TabInstance = {
+                    id: e.tabId,
+                    url: e.tabUrl
+                }
+
+                // Add tab
+                this.addTabToLayout(codeTab);
+
+                // Focus
+                this.tabState.selectTab(codeTab.id);
+                if (e.position) {
+                    this.tabApi[codeTab.id].gotoPosition.emit(e.position);
+                }
             }
         });
         commands.undoCloseTab.on(() => {
@@ -759,6 +790,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         focusSelectedTabIfAny: () => {
             this.selectedTabInstance && this.tabApi[this.selectedTabInstance.id].focus.emit({});
         },
+        triggerFocusAndSetAsSelected: (id:string) => {
+            this.tabHandle[id].triggerFocus();
+            this.tabState.selectTab(id);
+        },
         tabClosedInLayout: (id: string) => {
             const closedTabInstance = this.tabs.find(t => t.id == id);
             this.closedTabs.push(closedTabInstance);
@@ -803,8 +838,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 return;
             }
             const tab = this.tabs[index];
-            this.tabHandle[tab.id].triggerFocus();
-            this.tabState.selectTab(tab.id);
+            this.tabState.triggerFocusAndSetAsSelected(tab.id);
             this.tabState.hideTabIndexes();
         },
         _fastTabJumpListener: (evt: KeyboardEvent) => {
