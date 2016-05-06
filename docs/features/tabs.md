@@ -28,6 +28,12 @@ Of course you can use the arrow keys to move to *right* or *bottom*:
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/tabs/moveToBottom.gif)
 
+# Drag and Drop
+
+Of course you can drag and drop the layout to your hearts content.
+
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/tabs/dragAndDrop.gif)
+
 # Multi Monitor
 You can open the browser as many times as you want and we keep them all in sync!
 
