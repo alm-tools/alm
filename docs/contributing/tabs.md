@@ -1,5 +1,5 @@
 # Tabs
-We use golden-layout.
+We use golden-layout. All the tab management is done by a single [`appTabsContainer`][code] container.
 
 * Getting Started : https://www.golden-layout.com/tutorials/getting-started.html (simpler for us because we use webpack + npm module)
 * Examples : https://www.golden-layout.com/examples/
@@ -27,3 +27,5 @@ a
 b
 c
 ```
+
+[code]:https://github.com/alm-tools/alm/blob/master/src/app/tabs/v2/appTabsContainer.tsx
