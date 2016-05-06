@@ -217,6 +217,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         /**
          * File opening commands
          */
+        commands.openFileFromDisk.on(() => {
+            ui.comingSoon("Open a file from the server disk");
+        });
         commands.doOpenFile.on((e) => {
             let codeTab: TabInstance = {
                 id: createId(),
@@ -346,6 +349,36 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
          commands.gotoTab7.on(() => gotoNumber(7));
          commands.gotoTab8.on(() => gotoNumber(8));
          commands.gotoTab9.on(() => gotoNumber(9));
+
+         /**
+          * Next and previous tabs
+          */
+         commands.nextTab.on(() => {
+             const currentTabId = this.selectedTabInstance && this.selectedTabInstance.id;
+             const currentIndex = this.tabs.findIndex(t => t.id === currentTabId) || 0;
+             let nextIndex = utils.rangeLimited({
+                 min: 0,
+                 max: this.tabs.length - 1,
+                 num: currentIndex + 1,
+                 loopAround: true
+             });
+             setTimeout(() => { // No idea why :-/
+                 this.tabState.triggerFocusAndSetAsSelected(this.tabs[nextIndex].id);
+             });
+         });
+         commands.prevTab.on(() => {
+             const currentTabId = this.selectedTabInstance && this.selectedTabInstance.id;
+             const currentIndex = this.tabs.findIndex(t => t.id === currentTabId) || 0;
+             let nextIndex = utils.rangeLimited({
+                 min: 0,
+                 max: this.tabs.length - 1,
+                 num: currentIndex - 1,
+                 loopAround: true
+             });
+             setTimeout(() => { // No idea why :-/
+                 this.tabState.triggerFocusAndSetAsSelected(this.tabs[nextIndex].id);
+             });
+         });
 
          /**
           * Close tab commands
