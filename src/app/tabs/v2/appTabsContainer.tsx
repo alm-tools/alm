@@ -356,7 +356,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
           */
          commands.nextTab.on(() => {
              const currentTabId = this.selectedTabInstance && this.selectedTabInstance.id;
-             const currentIndex = this.tabs.findIndex(t => t.id === currentTabId) || 0;
+             const currentIndex = this.tabs.findIndex(t => t.id === currentTabId);
              let nextIndex = utils.rangeLimited({
                  min: 0,
                  max: this.tabs.length - 1,
@@ -369,7 +369,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
          });
          commands.prevTab.on(() => {
              const currentTabId = this.selectedTabInstance && this.selectedTabInstance.id;
-             const currentIndex = this.tabs.findIndex(t => t.id === currentTabId) || 0;
+             const currentIndex = this.tabs.findIndex(t => t.id === currentTabId);
              let nextIndex = utils.rangeLimited({
                  min: 0,
                  max: this.tabs.length - 1,
@@ -445,34 +445,32 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
              // Focus
              this.tabState.selectTab(codeTab.id);
          });
+         commands.findAndReplaceMulti.on((e) =>{
+             // if open and active => focus
+             // if open and not active => active
+             // if not open and active
+             if (this.selectedTabInstance
+                 && utils.getFilePathAndProtocolFromUrl(this.selectedTabInstance && this.selectedTabInstance.url).protocol === 'farm'){
+                 this.tabState.focusSelectedTabIfAny();
+                 return;
+             }
 
-         // TODO: tab
-        //  commands.findAndReplaceMulti.on((e) =>{
-        //      // if open and active => focus
-        //      // if open and not active => active
-        //      // if not open and active
-        //      if (this.props.tabs.length
-        //          && utils.getFilePathAndProtocolFromUrl(this.props.tabs[this.props.selectedTabIndex].url).protocol === 'farm'){
-        //          this.getSelectedComponent().focus();
-        //          return;
-        //      }
-         //
-        //      let openTabIndex = this.props.tabs.map(t=> utils.getFilePathAndProtocolFromUrl(t.url).protocol === 'farm').indexOf(true);
-        //      if (openTabIndex !== -1) {
-        //          this.selectTab(openTabIndex);
-        //          return;
-        //      }
-         //
-        //      let farmTab: state.TabInstance = {
-        //          id: createId(),
-        //          url: `farm://Find And Replace`,
-        //          saved: true
-        //      }
-        //      this.afterComponentDidUpdate(this.sendTabInfoToServer);
-        //      this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
-        //      state.addTabAndSelect(farmTab);
-        //  });
-         //
+             let openTabIndex = this.tabs.findIndex(t=> utils.getFilePathAndProtocolFromUrl(t.url).protocol === 'farm');
+             if (openTabIndex != -1) {
+                 this.tabState.triggerFocusAndSetAsSelected(this.tabs[openTabIndex].id);
+                 return;
+             }
+
+             let farmTab: TabInstance = {
+                 id: createId(),
+                 url: `farm://Find And Replace`,
+             }
+             // Add tab
+             this.addTabToLayout(farmTab);
+
+             // Focus
+             this.tabState.selectTab(farmTab.id);
+         });
          /** AST view */
          let getCurrentFilePathOrWarn = () => {
              let tab = this.tabState.getSelectedTab();

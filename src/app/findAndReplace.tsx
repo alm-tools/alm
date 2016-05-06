@@ -10,7 +10,7 @@ import * as state from "./state/state";
 import * as commands from "./commands/commands";
 import {connect} from "react-redux";
 import {Icon} from "./icon";
-import * as tabRegistry from "./tabs/tabRegistry";
+import * as tabRegistry from "./tabs/v2/tabRegistry";
 import {tabState} from "./tabs/v2/appTabsContainer";
 
 let {inputBlackStyle} = styles.Input;

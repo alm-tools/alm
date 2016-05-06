@@ -10,6 +10,7 @@ import * as ui from "../../ui";
 import {Code} from "./codeTab";
 import {ASTView} from "./astView";
 import {DependencyView} from "./dependencyView";
+import {FindAndReplaceView} from "./findAndReplaceMulti";
 
 type ComponentConstructor = { new (props: tab.TabProps): ui.BaseComponent<tab.TabProps,any> };
 
@@ -39,6 +40,11 @@ let tabs: {[protocol:string]:TabConfig} = {
         advancedSearch: false,
         getTitle: ()=> 'Dependency View',
         component: DependencyView,
+    },
+    farm: { // find and replace multi
+        advancedSearch: false,
+        getTitle: (url)=> `Find In Project`,
+        component: FindAndReplaceView,
     },
 }
 
