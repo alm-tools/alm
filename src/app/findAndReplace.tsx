@@ -187,7 +187,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
             return;
         }
 
-        if (mod && enter) {
+        if (mod && enter && !shift) {
             commands.replaceAll.emit({newText:this.replaceWith()});
             return;
         }
