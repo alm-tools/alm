@@ -258,6 +258,14 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 commands.doOpenFile.emit(e);
             }
         });
+        commands.doOpenOrActivateFileTab.on((e) => {
+            // Basically we have to maintain the current focus
+            const activeElement = document.activeElement;
+            commands.doOpenOrFocusFile.emit(e);
+            if (activeElement) {
+                setTimeout(() => $(activeElement).focus(), 100);
+            }
+        });
         commands.doOpenOrFocusTab.on(e=>{
             // if open and not focused then focus and goto pos
             const existingTab =
