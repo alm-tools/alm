@@ -336,14 +336,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
              // Remove the selected
              this.tabState.closeCurrentTab();
          });
-          // TODO: tab
-        //   commands.closeOtherTabs.on((e)=>{
-        //       let tabs = this.props.tabs.filter((t,i)=>i == this.props.selectedTabIndex);
-        //       this.afterComponentDidUpdate(this.sendTabInfoToServer);
-        //       this.afterComponentDidUpdate(this.focusAndUpdateStuffWeKnowAboutCurrentTab);
-        //       state.setTabs(tabs);
-        //       this.selectTab(0);
-        //   });
+         commands.closeOtherTabs.on((e) => {
+             const currentTabId = this.selectedTabInstance && this.selectedTabInstance.id;
+             const otherTabs = this.tabs.filter(t => t.id !== currentTabId);
+             otherTabs.forEach(t => this.tabHandle[t.id].triggerClose());
+         });
 
         /**
          * Find and Replace
