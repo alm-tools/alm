@@ -1002,7 +1002,7 @@ namespace GLUtil {
      * Gets the tab instaces for a given stack
      */
     export function toTabStack(stack: Stack): TabStack {
-        const tabs: TabInstance[] = stack.content.map(c => {
+        const tabs: TabInstance[] = (stack.content || []).map(c => {
             const props: tab.TabProps = c.props;
             const id = c.id;
             return { id: id, url: props.url };
