@@ -83,6 +83,16 @@ export class DependencyView extends ui.BaseComponent<Props, State> {
             })
         );
 
+        const focused = () => {
+            this.props.onFocused();
+        }
+        this.refs.root.addEventListener('focus', focused);
+        this.disposible.add({
+            dispose: () => {
+                this.refs.root.removeEventListener('focus', focused);
+            }
+        })
+
         // Listen to tab events
         const api = this.props.api;
         this.disposible.add(api.resize.on(this.resize));
