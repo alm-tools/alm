@@ -11,7 +11,7 @@ import * as commands from "./commands/commands";
 import {connect} from "react-redux";
 import {Icon} from "./icon";
 import * as tabRegistry from "./tabs/v2/tabRegistry";
-import {tabState} from "./tabs/v2/appTabsContainer";
+import {tabState,tabStateChanged} from "./tabs/v2/appTabsContainer";
 
 let {inputBlackStyle} = styles.Input;
 export let inputCodeStyle = {
@@ -64,6 +64,10 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         this.disposible.add(commands.esc.on(() => {
             state.setFindOptionsIsShown(false);
             this.findInput() && this.findInput().focus();
+        }));
+
+        this.disposible.add(tabStateChanged.on(()=>{
+            this.forceUpdate()
         }));
     }
 
