@@ -67,7 +67,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         }));
 
         this.disposible.add(tabStateChanged.on(()=>{
-            this.forceUpdate()
+            this.forceUpdate();
         }));
     }
 
