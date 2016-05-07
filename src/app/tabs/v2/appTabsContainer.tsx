@@ -30,6 +30,7 @@ import * as onresize from "onresize";
 import {TypedEvent} from "../../../common/events";
 import {CodeEditor} from "../../codemirror/codeEditor";
 import * as state from "../../state/state";
+import * as pure from "../../../common/pure";
 
 /**
  * Singleton + tab state migrated from redux to the local component
@@ -150,8 +151,32 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 this.tabState.tabClosedInLayout(evt.config.id);
             }
         });
+        let oldConfig = this.layout.toConfig();
         (this.layout as any).on('stateChanged', (evt) => {
-            // console.log(evt); // DEBUG
+            const newConfig = this.layout.toConfig();
+            /**
+             * `golden-layout` plugs into the `componentWillUpdate` on our tab components
+             * If any tab component state changes it calls us with `stateChanged`
+             * These are not relevant for us so we use our super special diff to ignore these cases
+             *
+             * This diff can be improved
+             */
+            type SimpleContentItem = { type: string, dimension: any, content?: SimpleContentItem[] }
+            const contentEqual = (a: SimpleContentItem, b: SimpleContentItem) => {
+                if (a.type !== b.type) return false;
+                if (!pure.shallowEqual(a.dimension, b.dimension)) return false;
+                if (a.content) {
+                    if (!b.content) return false;
+                    if (a.content.length !== b.content.length) return false;
+                    return a.content.every((c, i) => contentEqual(c, b.content[i]));
+                }
+                return true;
+            }
+            const equal = contentEqual(oldConfig, newConfig);
+            oldConfig = newConfig;
+            if (equal) {
+                return;
+            }
 
             // Due to state changes layout needs to happen on *all tabs* (because it might expose some other tabs)
             // PREF : you can go thorough all the `stack` in the layout and only call resize on the active ones.
