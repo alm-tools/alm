@@ -28,6 +28,7 @@ require('codemirror/addon/edit/matchtags');
 require('codemirror/addon/search/match-highlighter');
 
 // Our Addons
+import * as gitStatus from "./addons/gitStatus";
 import textHover = require('./addons/text-hover');
 require('./addons/text-hover.css');
 import jumpy = require('./addons/jumpy');
@@ -173,8 +174,11 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         (options as any).foldGutter = true;
         options.gutters.push("CodeMirror-foldgutter");
 
+        // Git status
+        gitStatus.setupOptions(options, this.props.filePath);
+
         // lint
-        linter.setupOptions(options,this.props.filePath);
+        linter.setupOptions(options, this.props.filePath);
         // also lint on errors changing
         this.disposible.add(cast.errorsUpdated.on(()=> this.codeMirror && this.codeMirror.performLint()));
 		// and initially
@@ -196,6 +200,9 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             this.codeMirror.on('cursorActivity', this.handleCursorActivity);
             this.disposible.add({ dispose: () => this.codeMirror.off('cursorActivity', this.handleCursorActivity) });
         }
+
+        // Git status
+        this.disposible.add(gitStatus.setupCM(this.codeMirror));
 
         const loadEditorOptions = (editorOptions:types.EditorOptions) => {
             // Set editor options
