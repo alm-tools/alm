@@ -4,6 +4,9 @@ import {server} from "../../../socket/socketClient";
 import * as types from "../../../common/types";
 
 const gutterId = "CodeMirror-git-status";
+const addedClass = "git-added";
+const removedClass = "git-removed";
+const modifiedClass = "git-modified";
 
 require('./gitStatus.css');
 export function setupOptions(options: any, filePath: string) {
