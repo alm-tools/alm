@@ -20,7 +20,7 @@ export function setupOptions(options: any, filePath: string) {
 }
 
 enum GitDiffStatus  {
-    Added,
+    Added = 1,
     Removed,
     Modified
 }
@@ -37,34 +37,65 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
         marker.innerHTML = "●";
         return marker;
     }
+    /** Automatically clears any old marker */
+    function setMarker(line: number, className: string) {
+        cm.setGutterMarker(line, gutterId, makeMarker(className));
+    }
+    function clearMarker(line: number){
+        cm.setGutterMarker(line, gutterId, null);
+    }
 
     // The key Git diff logic
     let gitDiffStatusMap: {
         [line: number]: GitDiffStatus
     } = Object.create(null);
-    const refreshGitStatus = utils.debounce(() => {
+    const refreshGitStatus = () => {
         server.gitDiff({filePath}).then((res)=>{
-            // Clear all old
-            // TODO: don't delete if its in the new one as well and is same type
-            Object.keys(gitDiffStatusMap).forEach(line => {
-                cm.setGutterMarker(line, gutterId, null);
-            });
-            gitDiffStatusMap = Object.create(null);
-            // Add new
+            // Create new map
+            const newGitDiffStatusMap: typeof gitDiffStatusMap = Object.create(null);
+
+            // Add to new
             res.added.forEach(added => {
                 for (let line = added.from; line <= added.to; line++) {
-                    if (!gitDiffStatusMap[line]) {
-                        cm.setGutterMarker(line, gutterId, makeMarker(addedClass));
-                        gitDiffStatusMap[line] = GitDiffStatus.Added;
+                    if (gitDiffStatusMap[line] !== GitDiffStatus.Added) {
+                        setMarker(line, addedClass);
                     }
+                    newGitDiffStatusMap[line] = GitDiffStatus.Added;
                 }
             });
-        });
-    }, 2000);
+            res.modified.forEach(modified => {
+                for (let line = modified.from; line <= modified.to; line++) {
+                    if (gitDiffStatusMap[line] !== GitDiffStatus.Modified) {
+                        setMarker(line, modifiedClass);
+                    }
+                    newGitDiffStatusMap[line] = GitDiffStatus.Modified;
+                }
+            });
+            res.removed.forEach(line => {
+                if (gitDiffStatusMap[line] !== GitDiffStatus.Removed) {
+                    setMarker(line, removedClass);
+                }
+                newGitDiffStatusMap[line] = GitDiffStatus.Removed;
+            });
 
+            // Clean any excessive markers
+            Object.keys(gitDiffStatusMap).forEach(_line => {
+                const line = +_line;
+                if (!newGitDiffStatusMap[line]){
+                    clearMarker(line);
+                }
+            });
+
+            // New is now the old
+            gitDiffStatusMap = newGitDiffStatusMap;
+        });
+    };
+
+    const refreshGitStatusDebounced = utils.debounce(refreshGitStatus, 2000);
 
     const handleFocus = () => {
-        interval = setInterval(refreshGitStatus, 2000);
+        refreshGitStatus();
+        interval = setInterval(refreshGitStatusDebounced, 2000);
     }
     const handleBlur = () => {
         if (interval) clearInterval(interval);
@@ -72,15 +103,16 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
     }
     cm.on('focus', handleFocus);
     cm.on('blur', handleBlur);
-    // Add a few other things to call refreshGitStatus so we don't call it if user is doing stuff
-    cm.on('change', refreshGitStatus);
-    cm.on('cursorActivity', refreshGitStatus);
+    // Add a few other things to call refreshGitStatus to trigger further debouncing
+    // so we don't call it if user is doing stuff
+    cm.on('change', refreshGitStatusDebounced);
+    cm.on('cursorActivity', refreshGitStatusDebounced);
     return {
         dispose: () => {
             cm.off('focus', handleFocus);
             cm.off('blur', handleFocus);
-            cm.off('change', refreshGitStatus);
-            cm.off('cursorActivity', refreshGitStatus);
+            cm.off('change', refreshGitStatusDebounced);
+            cm.off('cursorActivity', refreshGitStatusDebounced);
         }
     }
 }

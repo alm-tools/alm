@@ -9,6 +9,7 @@
     color: yellow;
 }
 .git-removed {
+    color: red;
     bottom: -15px;
     margin-top: -15px;
     border-width: 15px;
