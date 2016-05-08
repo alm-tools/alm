@@ -102,3 +102,7 @@ You can select the tsconfig.json in various ways:
 * See if the last session had one and use that
 * You can select one when you start the app `alm -p ./super-special/tsconfig.json`
 * You can select one using project search command from the UI. When you have multiple `tsconfig.json` files in your project this allows you to switch between them.
+
+
+## Contributing
+[Details on the features implementation](/contributing/tsconfig.md)
