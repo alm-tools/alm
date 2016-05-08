@@ -55,6 +55,12 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
     } = Object.create(null);
     const refreshGitStatus = () => {
         server.gitDiff({filePath}).then((res)=>{
+            /**
+             * TODO: the diff logic below is *broken*
+             * This is because *CM markers move as lines get added / deleted*.
+             * So our past knowledge of `gitDiffStatusMap` is completely useless
+             */
+
             // Create new map
             const newGitDiffStatusMap: typeof gitDiffStatusMap = Object.create(null);
 
