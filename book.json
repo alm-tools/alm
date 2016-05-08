@@ -3,7 +3,8 @@
   "root": "./docs",
   "links": {
     "sidebar": {
-      "Made with 🌹": "https://twitter.com/basarat"
+      "Made with 🌹": "https://twitter.com/basarat",
+      "Don't forget to 🌟": "https://github.com/alm-tools/alm"
     }
   }
 }
