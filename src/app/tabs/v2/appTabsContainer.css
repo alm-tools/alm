@@ -105,3 +105,14 @@
     content: '\F1CD'; /* life-ring */
     font-family: FontAwesome;
 }
+
+/* Show Tips */
+.alm_tipRoot {
+    position: absolute;
+    top:0;
+    bottom:0;
+    right:0;
+    left:0;
+    display: flex;
+    pointer-events: none;
+}

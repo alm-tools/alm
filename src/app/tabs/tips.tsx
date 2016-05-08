@@ -102,7 +102,7 @@ export class Tips extends BaseComponent<Props, State>{
 
                     <span style={csx.extend(csx.newLayer, csx.flexRoot) }>
                         <span style={csx.extend(csx.flex, csx.centerCenter, tipStyle)}>
-                            {tip.message} <span style={tipKeyboardStyle}> {tip.keyboard} </span>
+                            {tip.message}&nbsp;<span style={tipKeyboardStyle}> {tip.keyboard} </span>
                         </span>
                     </span>
 

@@ -113,8 +113,6 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         server.getOpenUITabs({ sessionId: getSessionId() }).then((res) => {
             setSessionId(res.sessionId);
 
-            if (!res.openTabs.length) return;
-
             // Create tab instances
             let openTabs = res.openTabs;
             let tabInstances: TabInstance[] = openTabs.map(t => {
@@ -128,6 +126,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             // Add the tabs to the layout
             this.tabs = [];
             tabInstances.forEach(t => this.addTabToLayout(t, false));
+            this.tabState.refreshTipHelp();
 
             // Select the last one
             tabInstances.length && tabState.selectTab(tabInstances[tabInstances.length - 1].id);
@@ -926,14 +925,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.tabs.forEach(t => this.tabApi[t.id].resize.emit({}));
         },
 
-
         setTabs: (tabs: TabInstance[]) => {
             this.tabs = tabs;
             this.sendTabInfoToServer();
-
-            // TODO: tab
-            // If no tabs show tips
-            // If some tabs hide tips
+            this.tabState.refreshTipHelp();
         },
         selectTab: (id: string) => {
             this.selectedTabInstance = this.tabs.find(t => t.id == id);
@@ -945,6 +940,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         triggerFocusAndSetAsSelected: (id:string) => {
             this.tabHandle[id].triggerFocus();
             this.tabState.selectTab(id);
+        },
+        refreshTipHelp: () =>{
+            // If no tabs show tips
+            // If some tabs hide tips
+            this.tabs.length ? TipRender.hideTips() : TipRender.showTips();
         },
         tabClosedInLayout: (id: string) => {
             const closedTabInstance = this.tabs.find(t => t.id == id);
@@ -1243,6 +1243,25 @@ namespace TabMoveHelp {
         if (tabMoveDisplay){
             tabMoveDisplay.remove();
             tabMoveDisplay = null;
+        }
+    }
+}
+
+namespace TipRender {
+    let tipDisplay: JQuery = null;
+    export function showTips() {
+        if (!tipDisplay) {
+            const node = document.createElement('div');
+            node.className="alm_tipRoot";
+            tipDisplay = $(node);
+            $(document.body).append(node);
+            ReactDOM.render(<Tips/>,node);
+        }
+        tipDisplay.show();
+    }
+    export function hideTips() {
+        if (tipDisplay){
+            tipDisplay.hide();
         }
     }
 }
