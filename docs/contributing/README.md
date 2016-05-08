@@ -4,7 +4,7 @@
 You need:
 
 * git (If you are windows please install the version of git that has git bash and run `npm install` from that).
-* node v4+ (I use node v5 personally)
+* node v5+
 
 # Setup
 ```
