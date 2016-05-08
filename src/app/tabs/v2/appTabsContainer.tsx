@@ -159,7 +159,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
              * If any tab component state changes it calls us with `stateChanged`
              * These are not relevant for us so we use our super special diff to ignore these cases
              *
-             * This diff can be improved
+             * This diff can be improved (its too strict)
              */
             type SimpleContentItem = { type: string, dimension: any, content?: SimpleContentItem[] }
             const contentEqual = (a: SimpleContentItem, b: SimpleContentItem) => {
@@ -184,13 +184,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
             // Ignore the events where the user is dragging stuff
             // This is because at this time the `config` doesn't contain the *dragged* item.
-            if (evt.origin && typeof evt.origin._dropSegment === 'string') {
-                return;
-            }
-            // Ignore the events where the number of tabs doesn't match up
-            // This is *also* because the user is dragging stuff
-            const config = this.layout.toConfig();
-            const orderedtabs = GLUtil.orderedTabs(this.layout.toConfig());
+            const orderedtabs = GLUtil.orderedTabs(newConfig);
             if (orderedtabs.length !== this.tabs.length) {
                 return;
             }
