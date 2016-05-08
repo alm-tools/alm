@@ -60,29 +60,37 @@ export class ASTView extends ui.BaseComponent<Props, State> {
     componentDidMount() {
         const reloadData = () => {
             this.setState({ error: null });
-            server.openFile({filePath:this.filePath}).then(res=>{
-                this.setState({text: res.contents});
+            server.openFile({ filePath: this.filePath }).then(res => {
+                this.setState({ text: res.contents });
             });
 
-            server.getAST({mode:this.mode,filePath:this.filePath})
-                .then((res)=>{
+            server.getAST({ mode: this.mode, filePath: this.filePath })
+                .then((res) => {
                     this.astViewRenderer = new ASTViewRenderer({
                         rootNode: res.root,
                         _mainContent: $(this.refs.graphRoot),
                         display: this.display
                     })
                 })
-                .catch((err)=>{
+                .catch((err) => {
                     this.setState({
                         error: `Failed to get the AST details for the file ${this.filePath}. Make sure it is in the active project. Change project using Alt+Shift+P.`
                     });
                 });
-        }
+        };
+        const reloadDataDebounced = utils.debounce(reloadData, 2000);
 
         reloadData();
         this.disposible.add(
             cast.activeProjectConfigDetailsUpdated.on(()=>{
-                reloadData();
+                reloadDataDebounced();
+            })
+        );
+        this.disposible.add(
+            cast.didEdit.on((res) => {
+                if (res.filePath === this.filePath) {
+                    reloadDataDebounced();
+                }
             })
         );
 
