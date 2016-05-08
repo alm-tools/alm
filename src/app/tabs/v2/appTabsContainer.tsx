@@ -343,6 +343,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             }
         });
         commands.duplicateTab.on((e) => {
+            const currentFilePath = getCurrentFilePathOrWarn();
+            if (!currentFilePath) return;
             if (!this.selectedTabInstance) return;
 
             let codeTab: TabInstance = {
