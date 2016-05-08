@@ -23,6 +23,7 @@ export interface Props {
     info: Types.GetRenameInfoResponse;
     alreadyOpenFilePaths: string[];
     currentlyClosedFilePaths: string[];
+    unmount: () => any;
 }
 export interface State {
     invalidMessage?: string;
@@ -71,7 +72,7 @@ export class RenameVariable extends BaseComponent<Props, State>{
 
     componentDidMount() {
         this.disposible.add(commands.esc.on(() => {
-            this.unmount();
+            this.props.unmount();
         }));
 
         setTimeout(() => {
@@ -121,7 +122,7 @@ export class RenameVariable extends BaseComponent<Props, State>{
         return (
             <Modal
                   isOpen={true}
-                  onRequestClose={this.unmount}>
+                  onRequestClose={this.props.unmount}>
                   <div style={[csx.vertical, csx.flex]}>
                       <div style={[csx.horizontal]}>
                           <h4>Rename</h4>
@@ -212,7 +213,7 @@ export class RenameVariable extends BaseComponent<Props, State>{
             });
 
             uix.API.applyRefactorings(refactorings);
-            setTimeout(()=>{this.unmount()});
+            setTimeout(()=>{this.props.unmount()});
         }
     };
 
@@ -249,8 +250,8 @@ CodeMirror.commands[commands.additionalEditorCommands.renameVariable] = (editor:
 
             else {
                 let {alreadyOpenFilePaths, currentlyClosedFilePaths} = uix.API.getClosedVsOpenFilePaths(filePaths);
-                let node = document.createElement('div');
-                ReactDOM.render(<RenameVariable info={res} alreadyOpenFilePaths={alreadyOpenFilePaths} currentlyClosedFilePaths={currentlyClosedFilePaths} />, node);
+                const {node,unmount} = ui.getUnmountableNode();
+                ReactDOM.render(<RenameVariable info={res} alreadyOpenFilePaths={alreadyOpenFilePaths} currentlyClosedFilePaths={currentlyClosedFilePaths} unmount={unmount} />, node);
             }
         }
     });

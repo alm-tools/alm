@@ -21,6 +21,7 @@ import {RefactoringsByFilePath, Refactoring} from "../common/types";
 
 export interface Props {
     data: Types.GetDefinitionsAtPositionResponse;
+    unmount: () => any;
 }
 export interface State {
     selectedIndex?: number;
@@ -40,7 +41,7 @@ export class GotoDefinition extends BaseComponent<Props, State>{
 
     componentDidMount() {
         this.disposible.add(commands.esc.on(() => {
-            this.unmount();
+            this.props.unmount();
         }));
 
         setTimeout(() => {
@@ -91,7 +92,7 @@ export class GotoDefinition extends BaseComponent<Props, State>{
         return (
             <Modal
                   isOpen={true}
-                  onRequestClose={this.unmount}>
+                  onRequestClose={this.props.unmount}>
                   <div style={[csx.vertical, csx.flex]}>
                       <div style={[csx.horizontal]}>
                           <h4>Multiple Definitions Found</h4>
@@ -147,7 +148,7 @@ export class GotoDefinition extends BaseComponent<Props, State>{
                 position: def.position
             });
 
-            setTimeout(()=>{this.unmount()});
+            setTimeout(()=>{this.props.unmount()});
         }
     };
 
@@ -180,8 +181,8 @@ CodeMirror.commands[commands.additionalEditorCommands.gotoDefinition] = (editor:
             });
         }
         else {
-            let node = document.createElement('div');
-            ReactDOM.render(<GotoDefinition data={res}/>, node);
+            const {node,unmount} = ui.getUnmountableNode();
+            ReactDOM.render(<GotoDefinition data={res} unmount={unmount}/>, node);
         }
     });
 }

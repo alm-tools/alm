@@ -1,0 +1,1272 @@
+/**
+ * This maintains the User interface Tabs for app,
+ * e.g. selected tab, any handling of open tab requests etc.
+ */
+
+import * as ui from "../../ui";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+
+import * as tab from "./tab";
+import * as tabRegistry from "./tabRegistry";
+import * as commands from "../../commands/commands";
+import * as utils from "../../../common/utils";
+import csx = require('csx');
+import {createId} from "../../../common/utils";
+import * as constants from "../../../common/constants";
+
+import * as types from "../../../common/types";
+import {connect} from "react-redux";
+import * as styles from "../../styles/styles";
+import {Tips} from "./../tips";
+import {Icon} from "../../icon";
+import {cast, server} from "../../../socket/socketClient";
+import {Types} from "../../../socket/socketContract";
+import * as alertOnLeave from "../../utils/alertOnLeave";
+import {getSessionId, setSessionId} from "../clientSession";
+import * as onresize from "onresize";
+import {TypedEvent} from "../../../common/events";
+import {CodeEditor} from "../../codemirror/codeEditor";
+import * as state from "../../state/state";
+import * as pure from "../../../common/pure";
+
+/**
+ * Singleton + tab state migrated from redux to the local component
+ * This is because the component isn't very react friendly
+ */
+declare var _helpMeGrabTheType: AppTabsContainer;
+export let tabState: typeof _helpMeGrabTheType.tabState;
+export const tabStateChanged = new TypedEvent<{}>();
+
+export interface TabInstance {
+    id: string;
+    url: string;
+}
+
+/**
+ *
+ * Golden layout
+ *
+ */
+import * as GoldenLayout from "golden-layout";
+require('golden-layout/src/css/goldenlayout-base.css');
+require('golden-layout/src/css/goldenlayout-dark-theme.css');
+/** Golden layout wants react / react-dom to be global */
+(window as any).React = React;
+(window as any).ReactDOM = ReactDOM;
+/** Golden layout injects this prop into all react components */
+interface GLProps extends React.Props<any>{
+    /** https://golden-layout.com/docs/Container.html */
+    glContainer: {
+        setTitle:(title:string)=>any;
+    }
+}
+
+/** Some additional styles */
+require('./appTabsContainer.css')
+
+
+export interface Props {
+}
+
+export interface State {
+}
+
+export class AppTabsContainer extends ui.BaseComponent<Props, State>{
+
+    /** The Golden Layout */
+    layout: GoldenLayout;
+
+    constructor(props: Props) {
+        super(props);
+
+        /** Setup the singleton */
+        tabState = this.tabState;
+    }
+
+    componentDidMount() {
+        /**
+         * Setup golden layout
+         * https://golden-layout.com/docs/Config.html
+         */
+        var config:GoldenLayout.Config = {
+            content: [{
+                type: 'stack',
+                content: []
+            }]
+        };
+        this.layout = new GoldenLayout(config, this.ctrls.root);
+
+        /**
+         * Register all the tab components with layout
+         */
+        tabRegistry.getTabConfigs().forEach(({protocol,config}) => {
+            this.layout.registerComponent(protocol, config.component);
+        });
+
+        // initialize the layout
+        this.layout.init();
+
+        /** Restore any open tabs from last session */
+        server.getOpenUITabs({ sessionId: getSessionId() }).then((res) => {
+            setSessionId(res.sessionId);
+
+            // Create tab instances
+            let openTabs = res.openTabs;
+            let tabInstances: TabInstance[] = openTabs.map(t => {
+                return {
+                    id: createId(),
+                    url: t.url,
+                    saved: true
+                };
+            });
+
+            // Add the tabs to the layout
+            this.tabs = [];
+            tabInstances.forEach(t => this.addTabToLayout(t, false));
+            this.tabState.refreshTipHelp();
+
+            // Select the last one
+            tabInstances.length && tabState.selectTab(tabInstances[tabInstances.length - 1].id);
+        });
+
+        /** Setup window resize */
+        this.disposible.add(onresize.on(()=>this.tabState.resize()));
+
+        /**
+         * Tab selection
+         * I tried to use the config to figure out the selected tab.
+         * That didn't work out so well
+         * So the plan is to intercept the tab clicks to focus
+         * and on state changes just focus on the last selected tab if any
+         */
+        (this.layout as any).on('tabCreated', (tabInfo) => {
+            this.createTabHandle(tabInfo);
+        });
+        (this.layout as any).on('itemDestroyed', (evt) => {
+            if (evt.config && evt.config.id){
+                this.tabState.tabClosedInLayout(evt.config.id);
+            }
+        });
+        let oldConfig = this.layout.toConfig();
+        (this.layout as any).on('stateChanged', (evt) => {
+            const newConfig = this.layout.toConfig();
+            /**
+             * `golden-layout` plugs into the `componentWillUpdate` on our tab components
+             * If any tab component state changes it calls us with `stateChanged`
+             * These are not relevant for us so we use our super special diff to ignore these cases
+             *
+             * This diff can be improved (its too strict)
+             */
+            type SimpleContentItem = { type: string, dimension: any, content?: SimpleContentItem[], activeItemIndex?: number }
+            const contentEqual = (a: SimpleContentItem, b: SimpleContentItem) => {
+                if (a.type !== b.type) return false;
+                if (a.activeItemIndex !== b.activeItemIndex) return false;
+                if (!pure.shallowEqual(a.dimension, b.dimension)) return false;
+                if (a.content) {
+                    if (!b.content) return false;
+                    if (a.content.length !== b.content.length) return false;
+                    return a.content.every((c, i) => contentEqual(c, b.content[i]));
+                }
+                return true;
+            }
+            const equal = contentEqual(oldConfig, newConfig);
+            oldConfig = newConfig;
+            if (equal) {
+                return;
+            }
+
+            // Due to state changes layout needs to happen on *all tabs* (because it might expose some other tabs)
+            // PREF : you can go thorough all the `stack` in the layout and only call resize on the active ones.
+            this.tabState.resizeJustTheTabs();
+
+            // Ignore the events where the user is dragging stuff
+            // This is because at this time the `config` doesn't contain the *dragged* item.
+            const orderedtabs = GLUtil.orderedTabs(newConfig);
+            if (orderedtabs.length !== this.tabs.length) {
+                return;
+            }
+
+            // Store the tabs in the right order
+            this.tabState.setTabs(orderedtabs);
+
+            // If there was a selected tab focus on it again.
+            if (this.tabState._resizingDontReFocus) {
+                this.tabState._resizingDontReFocus = false;
+            }
+            else {
+                this.selectedTabInstance && this.tabState.selectTab(this.selectedTabInstance.id);
+            }
+        });
+
+        /**
+         * General command handling
+         */
+        this.setupCommandHandling()
+    }
+
+    /** Used to undo close tab */
+    closedTabs: TabInstance[] = [];
+
+    /**
+     * Lots of commands are raised in the app that we need to care about
+     * e.g. tab saving / tab switching / file opening etc.
+     * We do that all in here
+     */
+    setupCommandHandling(){
+        commands.saveTab.on((e) => {
+            this.getSelectedTabApiIfAny().save.emit({});
+        });
+        commands.esc.on(() => {
+            // Focus selected tab
+            this.tabState.focusSelectedTabIfAny();
+            // Exit jump tab mode
+            this.tabState.hideTabIndexes();
+            // Hide search
+            if (this.tabApi[this.selectedTabInstance && this.selectedTabInstance.id]){
+                this.tabApi[this.selectedTabInstance && this.selectedTabInstance.id].search.hideSearch.emit({});
+            }
+        });
+        commands.jumpToTab.on(()=>{
+            // jump to tab
+            this.tabState.showTabIndexes();
+        });
+
+        /**
+         * File opening commands
+         */
+        commands.openFileFromDisk.on(() => {
+            ui.comingSoon("Open a file from the server disk");
+        });
+        commands.doOpenFile.on((e) => {
+            let codeTab: TabInstance = {
+                id: createId(),
+                url: `file://${e.filePath}`
+            }
+
+            // Add tab
+            this.addTabToLayout(codeTab);
+
+            // Focus
+            this.tabState.selectTab(codeTab.id);
+            if (e.position) {
+                this.tabApi[codeTab.id].gotoPosition.emit(e.position);
+            }
+        });
+        commands.doOpenOrFocusFile.on((e)=>{
+            // if open and not focused then focus and goto pos
+            const existingTab =
+                // Open and current
+                (
+                    this.selectedTabInstance
+                    && utils.getFilePathFromUrl(this.selectedTabInstance.url) === e.filePath
+                    && this.selectedTabInstance
+                )
+                // Open but not current
+                || this.tabs.find(t => {
+                    return utils.getFilePathFromUrl(t.url) == e.filePath;
+                });
+            if (existingTab) {
+                // Focus if not focused
+                if (!this.selectedTabInstance || this.selectedTabInstance.id !== existingTab.id){
+                    this.tabState.triggerFocusAndSetAsSelected(existingTab.id);
+                }
+                if (e.position) {
+                    this.tabApi[existingTab.id].gotoPosition.emit(e.position);
+                }
+            }
+            else {
+                commands.doOpenFile.emit(e);
+            }
+        });
+        commands.doOpenOrActivateFileTab.on((e) => {
+            // Basically we have to maintain the current focus
+            const activeElement = document.activeElement;
+            commands.doOpenOrFocusFile.emit(e);
+            if (activeElement) {
+                setTimeout(() => $(activeElement).focus(), 100);
+            }
+        });
+        commands.doOpenOrFocusTab.on(e=>{
+            // if open and not focused then focus and goto pos
+            const existingTab =
+                this.tabs.find(t => {
+                    return t.id == e.tabId;
+                });
+            if (existingTab) {
+                // Focus if not focused
+                if (!this.selectedTabInstance || this.selectedTabInstance.id !== existingTab.id){
+                    this.tabState.triggerFocusAndSetAsSelected(existingTab.id);
+                }
+                if (e.position) {
+                    this.tabApi[existingTab.id].gotoPosition.emit(e.position);
+                }
+            }
+            else { // otherwise reopen
+                let codeTab: TabInstance = {
+                    id: e.tabId,
+                    url: e.tabUrl
+                }
+
+                // Add tab
+                this.addTabToLayout(codeTab);
+
+                // Focus
+                this.tabState.selectTab(codeTab.id);
+                if (e.position) {
+                    this.tabApi[codeTab.id].gotoPosition.emit(e.position);
+                }
+            }
+        });
+        commands.closeFilesDirs.on((e)=>{
+            let toClose = (filePath:string) => {
+                return e.files.indexOf(filePath) !== -1 || e.dirs.some(dirPath => filePath.startsWith(dirPath));
+            }
+            let tabsToClose = this.tabs.filter((t,i)=> {
+                let {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(t.url);
+                return protocol === 'file' && toClose(filePath);
+            });
+            tabsToClose.forEach(t => this.tabHandle[t.id].triggerClose());
+        });
+        commands.undoCloseTab.on(() => {
+            if (this.closedTabs.length) {
+                let tab = this.closedTabs.pop();
+
+                // Add tab
+                this.addTabToLayout(tab);
+
+                // Focus
+                this.tabState.selectTab(tab.id);
+            }
+        });
+        commands.duplicateTab.on((e) => {
+            const currentFilePath = getCurrentFilePathOrWarn();
+            if (!currentFilePath) return;
+            if (!this.selectedTabInstance) return;
+
+            let codeTab: TabInstance = {
+                id: createId(),
+                url: this.selectedTabInstance.url
+            }
+
+            // Add tab
+            this.addTabToLayout(codeTab);
+
+            // Focus
+            this.tabState.selectTab(codeTab.id);
+        });
+
+         /**
+          * Goto tab by index
+          */
+         const gotoNumber = this.tabState._jumpToTabNumber;
+         commands.gotoTab1.on(() => gotoNumber(1));
+         commands.gotoTab2.on(() => gotoNumber(2));
+         commands.gotoTab3.on(() => gotoNumber(3));
+         commands.gotoTab4.on(() => gotoNumber(4));
+         commands.gotoTab5.on(() => gotoNumber(5));
+         commands.gotoTab6.on(() => gotoNumber(6));
+         commands.gotoTab7.on(() => gotoNumber(7));
+         commands.gotoTab8.on(() => gotoNumber(8));
+         commands.gotoTab9.on(() => gotoNumber(9));
+
+         /**
+          * Next and previous tabs
+          */
+         commands.nextTab.on(() => {
+             const currentTabId = this.selectedTabInstance && this.selectedTabInstance.id;
+             const currentIndex = this.tabs.findIndex(t => t.id === currentTabId);
+             let nextIndex = utils.rangeLimited({
+                 min: 0,
+                 max: this.tabs.length - 1,
+                 num: currentIndex + 1,
+                 loopAround: true
+             });
+             setTimeout(() => { // No idea why :-/
+                 this.tabState.triggerFocusAndSetAsSelected(this.tabs[nextIndex].id);
+             });
+         });
+         commands.prevTab.on(() => {
+             const currentTabId = this.selectedTabInstance && this.selectedTabInstance.id;
+             const currentIndex = this.tabs.findIndex(t => t.id === currentTabId);
+             let nextIndex = utils.rangeLimited({
+                 min: 0,
+                 max: this.tabs.length - 1,
+                 num: currentIndex - 1,
+                 loopAround: true
+             });
+             setTimeout(() => { // No idea why :-/
+                 this.tabState.triggerFocusAndSetAsSelected(this.tabs[nextIndex].id);
+             });
+         });
+
+         /**
+          * Close tab commands
+          */
+         commands.closeTab.on((e) => {
+             // Remove the selected
+             this.tabState.closeCurrentTab();
+         });
+         commands.closeOtherTabs.on((e) => {
+             const currentTabId = this.selectedTabInstance && this.selectedTabInstance.id;
+             const otherTabs = this.tabs.filter(t => t.id !== currentTabId);
+             otherTabs.forEach(t => this.tabHandle[t.id].triggerClose());
+         });
+
+        /**
+         * Find and Replace
+         */
+         state.subscribeSub(state => state.findOptions, (findQuery) => {
+             let api = this.getSelectedTabApiIfAny();
+             const options = state.getState().findOptions;
+             if (options.isShown){
+                 api.search.doSearch.emit(options);
+             }
+             else {
+                 api.search.hideSearch.emit(options);
+             }
+         });
+         commands.findNext.on(() => {
+             let component = this.getSelectedTabApiIfAny();
+             let findOptions = state.getState().findOptions;
+             component.search.findNext.emit(findOptions);
+         });
+         commands.findPrevious.on(() => {
+             let component = this.getSelectedTabApiIfAny();
+             let findOptions = state.getState().findOptions;
+             component.search.findPrevious.emit(findOptions);
+         });
+         commands.replaceNext.on((e)=>{
+             let component = this.getSelectedTabApiIfAny();
+             component.search.replaceNext.emit(e);
+         });
+         commands.replacePrevious.on((e)=>{
+             let component = this.getSelectedTabApiIfAny();
+             component.search.replacePrevious.emit(e);
+         });
+         commands.replaceAll.on((e)=>{
+             let component = this.getSelectedTabApiIfAny();
+             component.search.replaceAll.emit(e);
+         });
+
+        /**
+         * Other Types Of tabs
+         */
+         commands.doOpenDependencyView.on((e) => {
+             let codeTab: TabInstance = {
+                 id: createId(),
+                 url: `dependency://Dependency View`,
+             }
+
+             // Add tab
+             this.addTabToLayout(codeTab);
+
+             // Focus
+             this.tabState.selectTab(codeTab.id);
+         });
+         commands.findAndReplaceMulti.on((e) =>{
+             // if open and active => focus
+             // if open and not active => active
+             // if not open and active
+             if (this.selectedTabInstance
+                 && utils.getFilePathAndProtocolFromUrl(this.selectedTabInstance && this.selectedTabInstance.url).protocol === 'farm'){
+                 this.tabState.focusSelectedTabIfAny();
+                 return;
+             }
+
+             let openTabIndex = this.tabs.findIndex(t=> utils.getFilePathAndProtocolFromUrl(t.url).protocol === 'farm');
+             if (openTabIndex != -1) {
+                 this.tabState.triggerFocusAndSetAsSelected(this.tabs[openTabIndex].id);
+                 return;
+             }
+
+             let farmTab: TabInstance = {
+                 id: createId(),
+                 url: `farm://Find And Replace`,
+             }
+             // Add tab
+             this.addTabToLayout(farmTab);
+
+             // Focus
+             this.tabState.selectTab(farmTab.id);
+         });
+         /** AST view */
+         let getCurrentFilePathOrWarn = () => {
+             let tab = this.tabState.getSelectedTab();
+             let notify = () => ui.notifyWarningNormalDisappear('Need a valid file path for this action. Make sure you have a *file* tab as active');
+             if (!tab) {
+                 notify();
+                 return;
+             }
+             let {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(tab.url);
+             if (protocol !== 'file'){
+                 notify();
+                 return;
+             }
+             return filePath;
+         }
+         let openAst = (mode: Types.ASTMode) => {
+             let filePath = getCurrentFilePathOrWarn();
+             if (!filePath) return;
+
+             let codeTab: TabInstance = {
+                 id: createId(),
+                 url: `${mode == Types.ASTMode.visitor ? 'ast' : 'astfull'}://${filePath}`,
+             }
+
+             // Add tab
+             this.addTabToLayout(codeTab);
+
+             // Focus
+             this.tabState.selectTab(codeTab.id);
+         }
+         commands.doOpenASTView.on((e) => {
+             openAst(Types.ASTMode.visitor);
+         });
+
+         commands.doOpenASTFullView.on((e) => {
+             openAst(Types.ASTMode.children);
+         });
+    }
+
+    ctrls: {
+        root?: HTMLDivElement
+    } = {}
+
+    render() {
+        return (
+            <div ref={root => this.ctrls.root = root} style={csx.extend(csx.vertical, csx.flex, { maxWidth: '100%', overflow: 'hidden' }) } className="app-tabs">
+            </div>
+        );
+    }
+
+    onSavedChanged(tab: TabInstance, saved: boolean) {
+        if (this.tabHandle[tab.id]) {
+            this.tabHandle[tab.id].setSaved(saved);
+        }
+    }
+
+    /**
+     * Does exactly what it says.
+     */
+    addTabToLayout = (tab: TabInstance, sendToServer = true) => {
+        this.tabs.push(tab);
+        if (sendToServer) {
+            this.sendTabInfoToServer();
+        }
+
+        const {url, id} = tab;
+        const {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(tab.url);
+        const props: tab.TabProps = {
+            url,
+            onSavedChanged: (saved)=>this.onSavedChanged(tab,saved),
+            onFocused: () => {
+                if (this.selectedTabInstance && this.selectedTabInstance.id === id)
+                    return;
+                this.tabState.selectTab(id)
+            },
+            api: this.createTabApi(id),
+            setCodeEditor: (codeEditor: CodeEditor) => this.codeEditorMap[id] = codeEditor
+        };
+        const title = tabRegistry.getTabConfigByUrl(url).getTitle(url);
+
+        // Find the active stack if any
+        let currentItemAndParent = this.getCurrentTabRootStackIfAny();
+
+        // By default we try to add to (in desending order)
+        //  The current stack
+        //  the root stack
+        //  the root
+        let contentRoot =
+            (currentItemAndParent && currentItemAndParent.parent)
+            || this.layout.root.contentItems[0]
+            || this.layout.root;
+
+        contentRoot.addChild({
+            type: 'react-component',
+            component: protocol,
+            title,
+            props,
+            id
+        });
+    }
+
+    private getCurrentTabRootStackIfAny(): {item: GoldenLayout.ContentItem, parent: GoldenLayout.ContentItem} | undefined{
+        if (this.selectedTabInstance) {
+            const id = this.selectedTabInstance.id;
+            const item: GoldenLayout.ContentItem = this.layout.root.contentItems[0].getItemsById(id)[0] as any;
+            if (item && item.parent && item.parent.type == 'stack') {
+                return { item, parent: item.parent };
+            }
+        }
+    }
+
+    private moveTabUtils = {
+        /**
+         * Utility to create a container that doesn't reinitialize its children
+         */
+        createContainer: (type:'stack'|'row'|'column') => {
+            const item = this.layout.createContentItem({
+                type: type,
+                content: []
+            }) as any as GoldenLayout.ContentItem;
+            item.isInitialised = true; // Prevents initilizing its children
+            return item;
+        },
+        /**
+         * Utility that doesn't *uninitalize* the child it is removing
+         */
+         detachFromParent: (item: GoldenLayout.ContentItem) => {
+             item.parent.removeChild(item, true);
+         },
+    }
+
+    private moveCurrentTabRightIfAny = () => {
+
+        let currentItemAndParent = this.getCurrentTabRootStackIfAny();
+        if (!currentItemAndParent) return;
+        const {item,parent} = currentItemAndParent;
+        const root = parent.parent;
+
+        /** Can't move the last item */
+        if (parent.contentItems.length === 1) {
+            return;
+        }
+
+        // If parent.parent is a `row` its prettier to just add to that row ;)
+        if (root.type === 'row') {
+            // Create a new container for just this tab
+            this.moveTabUtils.detachFromParent(item);
+            const newItemRootElement = this.moveTabUtils.createContainer('stack');
+            newItemRootElement.addChild(item);
+
+            // Add this new container to the root
+            root.addChild(newItemRootElement);
+        }
+        else {
+            const indexOfParentInRoot = parent.parent.contentItems.findIndex((c) => c == parent);
+
+            // Create a new container for just this tab
+            this.moveTabUtils.detachFromParent(item);
+            const newItemRootElement = this.moveTabUtils.createContainer('stack');
+            newItemRootElement.addChild(item);
+
+            // Create a new layout to be the root of the two stacks
+            const newRootLayout = this.moveTabUtils.createContainer('row');
+            newRootLayout.addChild(newItemRootElement);
+
+            // Also add the old parent to this new row
+            const doTheDetachAndAdd = ()=>{
+                // Doing this detach immediately breaks the layout
+                // This is because for column / row when a child is removed the splitter is gone
+                // And by chance this is the splitter that the new item was going to :-/
+                this.moveTabUtils.detachFromParent(parent);
+                newRootLayout.addChild(parent, 0);
+            }
+            if (root.type === 'column') {
+                setTimeout(doTheDetachAndAdd, 10);
+            }
+            else {
+                // type `root` *must* only have a single item at a time :)
+                // So we *must* do it sync for that case
+                doTheDetachAndAdd();
+            }
+
+            // Add this new container to the root
+            root.addChild(newRootLayout, indexOfParentInRoot);
+        }
+    }
+
+    private moveCurrentTabDownIfAny = () => {
+        // Very similar to moveCurrentTabRightIfAny
+        // Just replaced `row` with `column` and `column` with `row`.
+        // This code can be consolidated but leaving as seperate as I suspect they might diverge
+        let currentItemAndParent = this.getCurrentTabRootStackIfAny();
+        if (!currentItemAndParent) return;
+
+        const {item,parent} = currentItemAndParent;
+        const root = parent.parent;
+
+        /** Can't move the last item */
+        if (parent.contentItems.length === 1) {
+            return;
+        }
+
+        // If parent.parent is a `column` its prettier to just add to that column ;)
+        if (root.type === 'column') {
+            // Create a new container for just this tab
+            this.moveTabUtils.detachFromParent(item);
+            const newItemRootElement = this.moveTabUtils.createContainer('stack');
+            newItemRootElement.addChild(item);
+
+            // Add this new container to the root
+            root.addChild(newItemRootElement);
+        }
+        else {
+            const indexOfParentInRoot = parent.parent.contentItems.findIndex((c) => c == parent);
+
+            // Create a new container for just this tab
+            this.moveTabUtils.detachFromParent(item);
+            const newItemRootElement = this.moveTabUtils.createContainer('stack');
+            newItemRootElement.addChild(item);
+
+            // Create a new layout to be the root of the two stacks
+            const newRootLayout = this.moveTabUtils.createContainer('column');
+            newRootLayout.addChild(newItemRootElement);
+
+            // Also add the old parent to this new row
+            const doTheDetachAndAdd = ()=>{
+                // Doing this detach immediately breaks the layout
+                // This is because for column / row when a child is removed the splitter is gone
+                // And by chance this is the splitter that the new item was going to :-/
+                this.moveTabUtils.detachFromParent(parent);
+                newRootLayout.addChild(parent, 0);
+            }
+            if (root.type === 'row') {
+                setTimeout(doTheDetachAndAdd, 10);
+            }
+            else {
+                // type `root` *must* only have a single item at a time :)
+                // So we *must* do it sync for that case
+                doTheDetachAndAdd();
+            }
+
+            // Add this new container to the root
+            root.addChild(newRootLayout, indexOfParentInRoot);
+        }
+    }
+
+    private sendTabInfoToServer = () => {
+        server.setOpenUITabs({
+            sessionId: getSessionId(),
+            openTabs: this.tabs.map(t=>({
+                url: t.url
+            }))
+        });
+    }
+
+    createTabApi(id: string) {
+        const api = newTabApi();
+        this.tabApi[id] = api;
+        return api;
+    }
+
+    debugLayoutTree() {
+        const config = this.layout.toConfig();
+        const root = config.content;
+        const generateSpaces = (indent:number) => Array((indent * 2) + 1).map(i => " ").join(' ');
+        const printItem = (item, depth = 0) => {
+            if (!depth){
+                console.log('ROOT-----')
+            }
+            else {
+                const indent = generateSpaces(depth);
+                console.log(indent + item.type);
+            }
+
+            if (item.content) {
+                item.content.forEach(c => printItem(c, depth + 1));
+            }
+        }
+        // console.log(config);
+        printItem(config);
+    }
+
+    /**
+     * If we have a selected tab we return its api.
+     * Otherwise we create one on the fly so you don't need to worry about
+     * constantly checking if selected tab. (pain from v1).
+     */
+    getSelectedTabApiIfAny() {
+        if (this.selectedTabInstance && this.tabApi[this.selectedTabInstance.id]) {
+            return this.tabApi[this.selectedTabInstance.id];
+        }
+        else {
+            return newTabApi();
+        }
+    }
+    getTabApi(id: string) {
+        return this.tabApi[id];
+    }
+
+    createTabHandle(tabInfo){
+        // console.log(tabInfo);
+        const item = tabInfo.contentItem;
+        const tab:JQuery = tabInfo.element;
+        const tabConfig = tabInfo.contentItem.config;
+        const id = tabConfig.id;
+        // mouse down because we want tab state to change even if user initiates a drag
+        tab.on('mousedown', (evt) => {
+            // But not if the user is clicking the close button or center clicking (close)
+            const centerClick = evt.button === 1;
+            const closeButtonClicked = evt.target && evt.target.className == "lm_close_tab";
+            if (centerClick || closeButtonClicked) {
+                return;
+            }
+            this.tabState.selectTab(id);
+        });
+        let tabIndexDisplay: JQuery = null;
+        const removeTabIndexDisplayIfAny = () => {
+            if (tabIndexDisplay) {
+                tabIndexDisplay.remove();
+                tabIndexDisplay = null;
+            }
+        }
+        this.tabHandle[id] = {
+            saved: true,
+            setSaved: (saved)=> {
+                this.tabHandle[id].saved = saved;
+                tab.toggleClass('unsaved', !saved);
+            },
+            triggerFocus: () => {
+                /**
+                 * setTimeout needed because we call `triggerFocus` when
+                 * golden-layout is still in the process of changing tabs sometimes
+                 */
+                setTimeout(() => {
+                    tabInfo.header.parent.setActiveContentItem(item);
+                });
+            },
+            showIndex: (index: number) => {
+                if (index > 9) {
+                    // Wow this user has too many tabs. Abort
+                    return;
+                }
+                tabIndexDisplay = $('<div class="alm_jumpIndex">' + index + '</div>');
+                tab.append(tabIndexDisplay);
+            },
+            hideIndex: removeTabIndexDisplayIfAny,
+            triggerClose: () => {
+                tab.find('.lm_close_tab').trigger('click');
+            },
+
+            /** Selected class */
+            addSelectedClass: () => {
+                tab.addClass('alm_selected');
+            },
+            removeSelectedClass: () => {
+                tab.removeClass('alm_selected');
+            },
+        }
+    }
+
+    /**
+     * Tab State
+     */
+    /** Our way to send stuff (events) down to the tab */
+    tabApi: {[id:string]: tab.TabApi } = Object.create(null);
+    /** This is different from the Tab Api in that its stuff *we* render for the tab */
+    tabHandle: {
+        [id: string]: {
+            saved: boolean;
+            setSaved: (saved: boolean) => void;
+            triggerFocus: () => void;
+            showIndex: (i: number) => void;
+            hideIndex: () => void;
+            triggerClose: () => void;
+
+            /** Selected class */
+            addSelectedClass: () => void;
+            removeSelectedClass: () => void;
+        }
+    } = Object.create(null);
+    /**
+     * Having access to the current code editor is vital for some parts of the application
+     * For this reason we allow the CodeTab to tell us about its codeEditor instance
+     */
+    codeEditorMap : {[id:string]: CodeEditor} = Object.create(null);
+    tabs: TabInstance[] = [];
+    /** Selected tab instance */
+    _selectedTabInstance: TabInstance;
+    set selectedTabInstance(value: TabInstance) {
+        // The active tab class management
+        if (this._selectedTabInstance && this.tabHandle[this._selectedTabInstance.id]) {
+            this.tabHandle[this._selectedTabInstance.id].removeSelectedClass();
+        }
+        if (value && value.id && this.tabHandle[value.id]) {
+            this.tabHandle[value.id].addSelectedClass();
+        }
+        // We don't tell non current tabs about search states.
+        // So we need to tell them if they *come into focus*
+        if (value && value.id && this.tabApi[value.id]) {
+            const api = this.tabApi[value.id];
+            const options = state.getState().findOptions;
+            if (!options.isShown || !options.query) {
+                api.search.hideSearch.emit({});
+            }
+            else {
+                api.search.doSearch.emit(options);
+            }
+        }
+
+        this._selectedTabInstance = value;
+        tabStateChanged.emit({});
+    }
+    get selectedTabInstance() {
+        return this._selectedTabInstance;
+    }
+    /** Tab Sate */
+    tabState = {
+        /**
+         * Resize handling
+         */
+        _resizingDontReFocus: false,
+        debouncedResize: utils.debounce(() => {
+            this.tabState._resizingDontReFocus = true;
+            this.tabState.resize();
+        },200),
+        resize: () => {
+            this.layout.updateSize();
+            this.tabState.resizeJustTheTabs();
+        },
+        resizeJustTheTabs: () => {
+            this.tabs.forEach(t => this.tabApi[t.id].resize.emit({}));
+        },
+
+        setTabs: (tabs: TabInstance[]) => {
+            this.tabs = tabs;
+            this.sendTabInfoToServer();
+            this.tabState.refreshTipHelp();
+        },
+        selectTab: (id: string) => {
+            this.selectedTabInstance = this.tabs.find(t => t.id == id);
+            this.tabState.focusSelectedTabIfAny();
+        },
+        focusSelectedTabIfAny: () => {
+            this.selectedTabInstance && this.tabApi[this.selectedTabInstance.id].focus.emit({});
+        },
+        triggerFocusAndSetAsSelected: (id:string) => {
+            this.tabHandle[id].triggerFocus();
+            this.tabState.selectTab(id);
+        },
+        refreshTipHelp: () =>{
+            // If no tabs show tips
+            // If some tabs hide tips
+            this.tabs.length ? TipRender.hideTips() : TipRender.showTips();
+        },
+        tabClosedInLayout: (id: string) => {
+            const closedTabInstance = this.tabs.find(t => t.id == id);
+            this.closedTabs.push(closedTabInstance);
+
+            const index = this.tabs.map(t=>t.id).indexOf(id);
+
+            delete this.tabHandle[id];
+            delete this.tabApi[id];
+            delete this.codeEditorMap[id];
+
+            this.tabState.setTabs(this.tabs.filter(t=>t.id !== id));
+
+            // Figure out the tab which will become active
+            if (this.selectedTabInstance && this.selectedTabInstance.id === id){
+                this.selectedTabInstance = GLUtil.prevOnClose({ id, config: this.layout.toConfig() });
+            }
+
+            // The close tab logic inside golden layout, can disconnect the active tab logic of ours
+            // (we try to preserve current tab if some other tab closes)
+            // So no matter what we need to refocus on the selected tab from within Golden-Layout
+            if (this.selectedTabInstance) {
+                this.tabHandle[this.selectedTabInstance.id].triggerFocus();
+            }
+        },
+
+        /**
+         * Tab closing
+         */
+        closeCurrentTab: () => {
+            if (!this.selectedTabInstance) return;
+
+            this.tabHandle[this.selectedTabInstance.id].triggerClose();
+        },
+
+        /**
+         * Fast tab jumping
+         */
+        _showingTabIndexes: false,
+        _jumpToTabNumber: (oneBasedIndex: number) => {
+            const index = oneBasedIndex - 1;
+            if (!this.tabs[index]) {
+                return;
+            }
+            const tab = this.tabs[index];
+            this.tabState.triggerFocusAndSetAsSelected(tab.id);
+            this.tabState.hideTabIndexes();
+        },
+        _fastTabJumpListener: (evt: KeyboardEvent) => {
+            const keyCodeFor1 = 49;
+            const tabNumber = evt.keyCode - keyCodeFor1 + 1;
+
+            if (tabNumber >= 1 && tabNumber <= 9) {
+                this.tabState._jumpToTabNumber(tabNumber);
+            }
+
+            if (evt.keyCode == 39) /* Right */ {
+                this.moveCurrentTabRightIfAny();
+            }
+            if (evt.keyCode == 40) /* Down */ {
+                this.moveCurrentTabDownIfAny();
+            }
+            if (evt.keyCode == 68) /* d */ {
+                commands.duplicateTab.emit({});
+            }
+
+            // prevent key prop
+            evt.preventDefault();
+            evt.stopPropagation();
+            evt.stopImmediatePropagation();
+
+            this.tabState.hideTabIndexes();
+            // console.log(evt, tabNumber); // DEBUG
+        },
+        _removeOnMouseDown: (evt:MouseEvent) => {
+            this.tabState.hideTabIndexes();
+        },
+        showTabIndexes: () => {
+            if (this.tabState._showingTabIndexes) {
+                this.tabState.hideTabIndexes();
+            }
+            // this.debugLayoutTree(); // DEBUG
+            this.tabState._showingTabIndexes = true;
+            window.addEventListener('keydown', this.tabState._fastTabJumpListener);
+            window.addEventListener('mousedown', this.tabState._removeOnMouseDown);
+            this.tabs.map((t,i)=>{
+                if (!this.tabHandle[t.id]){
+                    return;
+                }
+                this.tabHandle[t.id].showIndex(i + 1);
+            });
+            if (this.selectedTabInstance) {
+                TabMoveHelp.showHelp();
+            }
+        },
+        hideTabIndexes: () => {
+            this.tabState._showingTabIndexes = false;
+            window.removeEventListener('keydown', this.tabState._fastTabJumpListener);
+            window.removeEventListener('mousedown', this.tabState._removeOnMouseDown);
+            this.tabs.map((t,i)=>{
+                if (!this.tabHandle[t.id]){
+                    return;
+                }
+                this.tabHandle[t.id].hideIndex();
+            });
+            TabMoveHelp.hideHelp();
+        },
+
+        /**
+         * Not to be used locally.
+         * This is an external API used to drive app tabs contianer for refactorings etc.
+         */
+        getFocusedCodeEditorIfAny: (): CodeEditor => {
+            if (!this.selectedTabInstance
+                || !this.selectedTabInstance.id
+                || !this.selectedTabInstance.url.startsWith('file:')
+                || !this.codeEditorMap[this.selectedTabInstance.id]) {
+                return null;
+            }
+            return this.codeEditorMap[this.selectedTabInstance.id];
+        },
+        getSelectedTab: (): TabInstance => {
+            return this.selectedTabInstance;
+        },
+        getSelectedFilePath: (): string | undefined => {
+            const selected = this.selectedTabInstance;
+            if (selected) {
+                let url = selected.url;
+                if (url.startsWith('file://')) {
+                    return utils.getFilePathFromUrl(url);
+                }
+            }
+        },
+        getOpenFilePaths: (): string[] => {
+            return this.tabs.filter(t => t.url.startsWith('file://')).map(t => utils.getFilePathFromUrl(t.url));
+        },
+        addTabs: (tabs: TabInstance[]) => {
+            tabs.forEach(tab => this.addTabToLayout(tab));
+        },
+    }
+}
+
+const NoSelectedTab = -1;
+
+const newTabApi = ()=>{
+    // Note : i am using any as `new TypedEvent<FindOptions>()` breaks syntax highlighting
+    // but don't worry api is still type checked for members
+    const api: tab.TabApi = {
+        resize: new TypedEvent(),
+        focus: new TypedEvent(),
+        save: new TypedEvent(),
+        close: new TypedEvent() as any,
+        gotoPosition: new TypedEvent() as any,
+        search: {
+            doSearch: new TypedEvent() as any,
+            hideSearch: new TypedEvent() as any,
+            findNext: new TypedEvent() as any,
+            findPrevious: new TypedEvent() as any,
+            replaceNext: new TypedEvent() as any,
+            replacePrevious: new TypedEvent() as any,
+            replaceAll: new TypedEvent() as any
+        }
+    };
+    return api;
+}
+
+/**
+ * Golden layout helpers
+ */
+namespace GLUtil {
+
+    /**
+     * Specialize the `Stack` type in the golden-layout config
+     * because of how we configure golden-layout originally
+     */
+    type Stack = {
+        type: 'stack'
+        content: {
+            id: string;
+            props: tab.TabProps
+        }[];
+        activeItemIndex: number;
+    }
+
+    /** We map the stack to a tab stack which is more relevant to our configuration queries */
+    interface TabStack {
+        selectedIndex: number;
+        tabs: TabInstance[];
+    }
+
+    /**
+     * A visitor for stack
+     * Navigates down to any root level stack or the stack as a child of an row / columns
+     */
+    export const visitAllStacks = (content: GoldenLayout.ItemConfig[], cb: (stack: Stack) => void) => {
+        content.forEach(c => {
+            if (c.type === 'row' || c.type === 'column') {
+                visitAllStacks(c.content, cb);
+            }
+            if (c.type === 'stack') {
+                cb(c as any);
+            }
+        });
+    }
+
+    /**
+     * Gets the tab instaces for a given stack
+     */
+    export function toTabStack(stack: Stack): TabStack {
+        const tabs: TabInstance[] = (stack.content || []).map(c => {
+            const props: tab.TabProps = c.props;
+            const id = c.id;
+            return { id: id, url: props.url };
+        });
+        return {
+            selectedIndex: stack.activeItemIndex,
+            tabs
+        };
+    }
+
+    /**
+     * Get the tabs in order
+     */
+    export function orderedTabs(config:GoldenLayout.Config): TabInstance[] {
+        let result: TabInstance[] = [];
+
+        const addFromStack = (stack: Stack) => result = result.concat(toTabStack(stack).tabs);
+
+        // Add from all stacks
+        visitAllStacks(config.content, addFromStack);
+
+        return result;
+    }
+
+    /**
+     * It will be the previous tab on the current stack
+     * and if the stack is empty it will be the active tab on previous stack (if any)
+     */
+    export function prevOnClose(args: { id: string, config: GoldenLayout.Config }): TabInstance | null {
+        const stacksInOrder: TabStack[] = [];
+        visitAllStacks(args.config.content, (stack) => stacksInOrder.push(toTabStack(stack)));
+
+        /** Find the stack that has this id */
+        const stackWithClosingTab = stacksInOrder.find(s => s.tabs.some(t => t.id === args.id));
+
+        /** if the last tab in the stack */
+        if (stackWithClosingTab.tabs.length === 1) {
+            /** if this is the last stack then we will run out of tabs. Return null */
+            if (stacksInOrder.length == 1) {
+                return null;
+            }
+            /** return the active in the previous stack (with loop around) */
+            const previousStackIndex = utils.rangeLimited({
+                num: stacksInOrder.indexOf(stackWithClosingTab) - 1,
+                min: 0,
+                max: stacksInOrder.length - 1,
+                loopAround: true
+            });
+
+            const previousStack = stacksInOrder[previousStackIndex];
+            return previousStack.tabs[previousStack.selectedIndex];
+        }
+        /** Otherwise return the previous in the same stack (with loop around)*/
+        else {
+            const previousIndex = utils.rangeLimited({
+                num: stackWithClosingTab.tabs.map(t => t.id).indexOf(args.id) - 1,
+                min: 0,
+                max: stackWithClosingTab.tabs.length - 1,
+                loopAround: true
+            });
+            return stackWithClosingTab.tabs[previousIndex];
+        }
+    }
+}
+
+namespace TabMoveHelp {
+    let tabMoveDisplay: JQuery = null;
+    export function showHelp(){
+        tabMoveDisplay = $(`
+<div class="alm_tabMove">
+    <div>
+        <span class="keyStrokeStyle">Tab Number</span> Jump to tab
+    </div>
+    <div>
+        <span class="keyStrokeStyle">ESC</span> Exit
+    </div>
+    <div>
+        <span class="keyStrokeStyle"><i class="fa fa-arrow-right"></i></span>
+        Move active tab to a new rightmost pane
+    </div>
+    <div>
+        <span class="keyStrokeStyle"><i class="fa fa-arrow-down"></i></span>
+        Move active tab to a new bottom pane
+    </div>
+    <div>
+        <span class="keyStrokeStyle">d</span> Duplicate current tab
+    </div>
+</div>
+            `);
+        $(document.body).append(tabMoveDisplay);
+    }
+    export function hideHelp(){
+        if (tabMoveDisplay){
+            tabMoveDisplay.remove();
+            tabMoveDisplay = null;
+        }
+    }
+}
+
+namespace TipRender {
+    let tipDisplay: JQuery = null;
+    export function showTips() {
+        if (!tipDisplay) {
+            const node = document.createElement('div');
+            node.className="alm_tipRoot";
+            tipDisplay = $(node);
+            $(document.body).append(node);
+            ReactDOM.render(<Tips/>,node);
+        }
+        tipDisplay.show();
+    }
+    export function hideTips() {
+        if (tipDisplay){
+            tipDisplay.hide();
+        }
+    }
+}

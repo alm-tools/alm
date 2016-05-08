@@ -10,8 +10,7 @@ import CodeMirror = require('codemirror');
 
 /** Cant this in these UI components. Will cause cycles! */
 import * as codeEditor from "./codemirror/codeEditor";
-import {Code} from "./tabs/codeTab";
-import {appTabsContainer} from "./tabs/appTabsContainer";
+import {tabState, TabInstance} from "./tabs/v2/appTabsContainer";
 import * as docCache from "./codemirror/mode/docCache";
 
 /**
@@ -40,7 +39,7 @@ export namespace API {
 
     export function getClosedVsOpenFilePaths(filePaths: string[]) {
         /** lookup all the *file* tabs that are open */
-        let allOpen = state.getOpenFilePaths();
+        let allOpen = tabState.getOpenFilePaths();
         let alreadyOpenFilePaths = filePaths.filter(fp => allOpen.indexOf(fp) != -1);
         let currentlyClosedFilePaths = filePaths.filter(fp => allOpen.indexOf(fp) == -1);
 
@@ -50,32 +49,20 @@ export namespace API {
     export function applyRefactorings(refactorings: RefactoringsByFilePath) {
         let {currentlyClosedFilePaths} = getClosedVsOpenFilePaths(Object.keys(refactorings));
 
-        // TODO: wire up as a call to app tabs container otherwise we do not send to server
-        // + code is duplicated
         let tabs = currentlyClosedFilePaths.map(fp => {
-            let codeTab: state.TabInstance = {
+            let codeTab: TabInstance = {
                 id: utils.createId(),
                 url: `file://${fp}`,
-                saved: true
             }
             return codeTab;
         });
-        state.addTabs(tabs);
+        tabState.addTabs(tabs);
 
         // Transact on docs
         docCache.applyRefactoringsToTsDocs(refactorings);
     }
 
     export function getFocusedCodeEditorIfAny(): codeEditor.CodeEditor {
-        let {tabs, selectedTabIndex} = state.getState();
-        if (tabs.length == 0) return undefined;
-
-        let focusedTab = tabs[selectedTabIndex];
-        if (!focusedTab.url.startsWith('file:')) return undefined;
-
-        let focusedTabComponent: Code = appTabsContainer.refs[focusedTab.id] as Code;
-        let editor = focusedTabComponent.refs.editor;
-
-        return editor;
+        return tabState.getFocusedCodeEditorIfAny();
     }
 }

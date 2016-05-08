@@ -13,6 +13,7 @@ import {AvailableProjectConfig} from "../common/types";
 import {Clipboard} from "./clipboard";
 import {PendingRequestsIndicator} from "./pendingRequestsIndicator";
 import {Icon} from "./icon";
+import {tabState,tabStateChanged} from "./tabs/v2/appTabsContainer";
 
 import {connect} from "react-redux";
 import {StoreState,expandErrors,collapseErrors} from "./state/state";
@@ -47,8 +48,6 @@ export interface Props {
     activeProjectFiles?: { [filePath: string]: boolean };
     errorsUpdate?: LimitedErrorsUpdate;
     socketConnected?: boolean;
-    tabs?: state.TabInstance[];
-    selectedTabIndex?: number;
     outputStatusCache?: types.JSOutputStatusCache
 }
 export interface State {
@@ -68,8 +67,6 @@ export var statusBar: StatusBar;
         activeProjectFiles: state.activeProjectFilePathTruthTable,
         errorsUpdate: state.errorsUpdate,
         socketConnected: state.socketConnected,
-        tabs: state.tabs,
-        selectedTabIndex: state.selectedTabIndex,
         outputStatusCache: state.outputStatusCache
     };
 })
@@ -82,10 +79,11 @@ export class StatusBar extends BaseComponent<Props, State>{
 
     componentDidMount() {
         statusBar = this;
+        tabStateChanged.on(()=>this.forceUpdate());
     }
 
     render() {
-        let tab = state.getSelectedTab();
+        let tab = tabState.getSelectedTab();
         let filePath = tab && utils.getFilePathFromUrl(tab.url);
         let protocol = tab && utils.getFilePathAndProtocolFromUrl(tab.url).protocol;
 

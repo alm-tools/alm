@@ -1,22 +1,22 @@
-import * as ui from "../ui";
+import * as ui from "../../ui";
 import * as csx from "csx";
 import * as React from "react";
 var ReactDOM = require("react-dom");
 import * as tab from "./tab";
-import {server, cast} from "../../socket/socketClient";
-import * as commands from "../commands/commands";
-import * as utils from "../../common/utils";
+import {server, cast} from "../../../socket/socketClient";
+import * as commands from "../../commands/commands";
+import * as utils from "../../../common/utils";
 import * as d3 from "d3";
 import * as $ from "jquery";
-import * as styles from "../styles/styles";
+import * as styles from "../../styles/styles";
 import * as onresize from "onresize";
-import {Clipboard} from "../clipboard";
-import {CodeEditor} from "../codemirror/codeEditor";
-import {Types} from "../../socket/socketContract";
-import {Icon} from "../icon";
+import {Clipboard} from "../../clipboard";
+import {CodeEditor} from "../../codemirror/codeEditor";
+import {Types} from "../../../socket/socketContract";
+import {Icon} from "../../icon";
 import * as Mousetrap from "mousetrap";
-import {Robocop} from "../robocop";
-import * as pure from "../../common/pure";
+import {Robocop} from "../../robocop";
+import * as pure from "../../../common/pure";
 
 type NodeDisplay = Types.NodeDisplay;
 let EOL = '\n';
@@ -26,7 +26,7 @@ let EOL = '\n';
  */
 let {inputBlackStyle} = styles.Input;
 import {inputCodeStyle, searchOptionsLabelStyle}
-from "../findAndReplace";
+from "../../findAndReplace";
 
 namespace ResultsStyles {
     export const root = csx.extend(
@@ -69,7 +69,7 @@ namespace ResultsStyles {
 /**
  * Props / State
  */
-export interface Props extends tab.ComponentProps {
+export interface Props extends tab.TabProps {
 }
 export interface State {
     completed?:boolean;
@@ -99,7 +99,7 @@ export interface State {
 }
 
 @ui.Radium
-export class FindAndReplaceView extends ui.BaseComponent<Props, State> implements tab.Component {
+export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
     constructor(props: Props) {
         super(props);
         let {protocol, filePath} = utils.getFilePathAndProtocolFromUrl(props.url);
@@ -258,6 +258,22 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
             this.openSearchResult(this.state.selected.filePath, this.state.selected.line);
             return false;
         });
+
+        // Listen to tab events
+        const api = this.props.api;
+        this.disposible.add(api.resize.on(this.resize));
+        this.disposible.add(api.focus.on(this.focus));
+        this.disposible.add(api.save.on(this.save));
+        this.disposible.add(api.close.on(this.close));
+        this.disposible.add(api.gotoPosition.on(this.gotoPosition));
+        // Listen to search tab events
+        this.disposible.add(api.search.doSearch.on(this.search.doSearch));
+        this.disposible.add(api.search.hideSearch.on(this.search.hideSearch));
+        this.disposible.add(api.search.findNext.on(this.search.findNext));
+        this.disposible.add(api.search.findPrevious.on(this.search.findPrevious));
+        this.disposible.add(api.search.replaceNext.on(this.search.replaceNext));
+        this.disposible.add(api.search.replacePrevious.on(this.search.replacePrevious));
+        this.disposible.add(api.search.replaceAll.on(this.search.replaceAll));
     }
 
     refs: {
@@ -584,6 +600,10 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
     /**
      * TAB implementation
      */
+    resize = () => {
+        // This layout doesn't need it
+    }
+
     /** Allows us to focus on input on certain keystrokes instead of search results */
     focusOnInput = () => setTimeout(()=>this.findInput().focus(),500);
     focus = () => {
@@ -614,13 +634,13 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> implement
         findPrevious: (options: FindOptions) => {
         },
 
-        replaceNext: (newText: string) => {
+        replaceNext: ({newText}: { newText: string }) => {
         },
 
-        replacePrevious: (newText: string) => {
+        replacePrevious: ({newText}: { newText: string }) => {
         },
 
-        replaceAll: (newText: string) => {
+        replaceAll: ({newText}: { newText: string }) => {
         }
     }
 }

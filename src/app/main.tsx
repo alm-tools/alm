@@ -10,10 +10,14 @@ import * as state from "./state/state";
 import {store} from "./state/state";
 import * as ui from "./ui";
 import * as constants from "../common/constants";
+import {tabState} from "./tabs/v2/appTabsContainer";
 
 import {server, cast, pendingRequestsChanged, connectionStatusChanged} from "../socket/socketClient";
 var Modal = require('react-modal');
 
+// Having jQuery ($) on the console helps us debug certin libs that use jQuery
+import $ = require('jquery');
+(window as any).$ = $
 
 // prevent backspace
 import {preventBackspaceNav} from "./utils/preventBackspaceNav";
@@ -64,6 +68,12 @@ document.addEventListener('DOMContentLoaded', () => {
     connectionStatusChanged.on(r=> {
         state.setSocketConnected(r.connected);
     });
+    server.getActiveProjectConfigDetails({}).then(res=>{
+        state.setActiveProject(res);
+    });
+    cast.activeProjectConfigDetailsUpdated.on(res => {
+        state.setActiveProject(res);
+    });
     server.activeProjectFilePaths({}).then(res=>{
         state.setFilePathsInActiveProject(res.filePaths);
     });
@@ -86,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         state.completeOuputStatusCacheUpdated(res);
     });
     commands.toggleDoctor.on(()=>{
-        if (!state.inActiveProjectFilePath(state.getSelectedFilePath())){
+        if (!state.inActiveProjectFilePath(tabState.getSelectedFilePath())){
             ui.notifyWarningNormalDisappear('Doctor is only available for files in active project');
             return;
         }

@@ -278,12 +278,18 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
 	focus = () => {
 		if (this.codeMirror) {
-			this.codeMirror.focus();
 			this.handleCursorActivity();
+            this.resize();
+            this.codeMirror.focus();
+		}
+	}
+
+    resize = () => {
+        if (this.codeMirror) {
             this.refresh();
             setTimeout(()=> !this.isUnmounted && this.refresh(),500);
 		}
-	}
+    }
 
     gotoPosition = (position: EditorPosition) => {
         this.afterReady(()=>{

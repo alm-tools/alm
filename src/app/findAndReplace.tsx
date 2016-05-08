@@ -10,7 +10,8 @@ import * as state from "./state/state";
 import * as commands from "./commands/commands";
 import {connect} from "react-redux";
 import {Icon} from "./icon";
-import * as tabRegistry from "./tabs/tabRegistry";
+import * as tabRegistry from "./tabs/v2/tabRegistry";
+import {tabState,tabStateChanged} from "./tabs/v2/appTabsContainer";
 
 let {inputBlackStyle} = styles.Input;
 export let inputCodeStyle = {
@@ -41,7 +42,6 @@ export interface State {
 @connect((state: state.StoreState): Props => {
     return {
         findQuery: state.findOptions,
-        selectedTabIndex: state.selectedTabIndex,
     };
 })
 @ui.Radium
@@ -63,6 +63,10 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         this.disposible.add(commands.esc.on(() => {
             state.setFindOptionsIsShown(false);
             this.findInput() && this.findInput().focus();
+        }));
+
+        this.disposible.add(tabStateChanged.on(()=>{
+            this.forceUpdate();
         }));
     }
 
@@ -87,7 +91,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         let shownStyle = this.props.findQuery.isShown ? {} : { display: 'none' };
 
         /** Detect advanced find needed or not */
-        let tab = state.getSelectedTab();
+        let tab = tabState.getSelectedTab();
         let advancedFind = tab && tabRegistry.getTabConfigByUrl(tab.url).advancedSearch;
 
         /** For Find and Replace Multi ... completely bail out */
@@ -186,7 +190,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
             return;
         }
 
-        if (mod && enter) {
+        if (mod && enter && !shift) { // Because `shift` is used by jump tab mode
             commands.replaceAll.emit({newText:this.replaceWith()});
             return;
         }
@@ -260,5 +264,11 @@ export class FindAndReplace extends BaseComponent<Props, State>{
     handleFullWordChange = (e) => {
         let val: boolean = e.target.checked;
         state.setFindOptionsIsFullWord(val);
+    }
+
+    componentWillUpdate(nextProps: Props, nextState: State) {
+        if (nextProps.findQuery.isShown !== this.props.findQuery.isShown) {
+            tabState.debouncedResize();
+        }
     }
 }

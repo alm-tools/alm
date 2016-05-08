@@ -47,16 +47,16 @@ export class Server {
         var toRet = instance;
         Object.keys(toRet).forEach(name => {
             // Override the actual emit function with one that sends it on to the server
-            toRet[name] = {
-                emit: (data: T) => {
-                    let castMessage: CastMessage<T> = {
-                        message: name,
-                        data: data
-                    };
-                    // console.log('EMIT TO ALL : ', name)
-                    this.io.sockets.emit(anycastMessageName, castMessage);
-                }
-            };
+            const evt = new TypedEvent();
+            toRet[name] = evt;
+            evt.on((data: T) => {
+                let castMessage: CastMessage<T> = {
+                    message: name,
+                    data: data
+                };
+                // console.log('EMIT TO ALL : ', name)
+                this.io.sockets.emit(anycastMessageName, castMessage);
+            });
         });
         return toRet;
     }

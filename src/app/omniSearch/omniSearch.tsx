@@ -42,7 +42,8 @@ let selectedStyle = {
     color: 'white'
 };
 let listItemStyle = {
-    fontFamily: 'monospace'
+    fontFamily: 'monospace',
+    boxSizing: 'content-box' /** Otherwise the items don't expand to encapsulate children */
 };
 
 let searchingNameStyle = { marginTop: '0px', marginBottom: '0px', marginLeft: '10px', border: '1px solid grey', padding: '4px 4px', background: 'black' };

@@ -70,6 +70,17 @@ export class TypedEvent<T> {
             return promise;
         }
     }
+
+    /**
+     * Allows you to join in with the last value
+     * So you don't need to do .current + .on
+     */
+    join = (listener: Listener<T>) => {
+        if (this._last != null) {
+            listener(this._last);
+        }
+        return this.on(listener);
+    }
 }
 
 /** single event listener queue */

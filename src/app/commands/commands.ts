@@ -83,12 +83,12 @@ export var gotoPrevious = new UICommand({
  */
 export var nextTab = new UICommand({
     keyboardShortcut: 'alt+k',
-    description: "Tabs: Focus on the Next",
+    description: "Tabs: Focus on the Next Tab",
     context: CommandContext.Global,
 });
 export var prevTab = new UICommand({
     keyboardShortcut: 'alt+j',
-    description: "Tabs: Focus on the Previous",
+    description: "Tabs: Focus on the Previous Tab",
     context: CommandContext.Global,
 });
 export var closeTab = new UICommand({
@@ -110,7 +110,15 @@ export var closeOtherTabs = new UICommand({
     description: "Tabs: Close other tabs",
     context: CommandContext.Global,
 });
-
+export const jumpToTab = new UICommand({
+    keyboardShortcut: 'mod+shift+enter',
+    description: "Tabs: Jump to tab",
+    context: CommandContext.Global,
+});
+export var duplicateTab = new UICommand({
+    description: "Tabs: Duplicate",
+    context: CommandContext.Global,
+});
 export var duplicateWindow = new UICommand({
     keyboardShortcut: 'mod+alt+d', // nick
     description: "Window: Duplicate in a new browser window",
@@ -455,8 +463,12 @@ delete sublimeMap['Esc'];
 // Cmd + U conflicted with our cursor history
 delete sublimeMap[`${mod}-K ${mod}-U`];
 delete sublimeMap[`${mod}-K ${mod}-L`];
-sublimeMap['Alt-='] = "upcaseAtCursor"; // Because alt+u didn't work on mac
+// Because alt+u didn't work on mac
+sublimeMap['Alt-='] = "upcaseAtCursor";
 sublimeMap['Alt--'] = "downcaseAtCursor";
+// Conflicts with jump to tab
+delete sublimeMap['Shift-Cmd-Enter'];
+delete sublimeMap['Shift-Ctrl-Enter'];
 
 // Swap line should also come with indent
 // + use VSCode shortcuts as they are consistent across win/mac

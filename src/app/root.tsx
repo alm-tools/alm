@@ -6,7 +6,7 @@ import * as React from "react";
 import * as ui from "./ui";
 import * as uix from "./uix";
 import * as csx from "csx";
-import {AppTabsContainer} from "./tabs/appTabsContainer";
+import {AppTabsContainer} from "./tabs/v2/appTabsContainer";
 import * as commands from "./commands/commands";
 var Modal = require('react-modal');
 import * as styles from "./styles/styles";

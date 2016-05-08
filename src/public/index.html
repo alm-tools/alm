@@ -17,6 +17,14 @@
 
     <style>
 
+    /* apply a natural box layout model to all elements, but allowing components to change */
+    html {
+      box-sizing: border-box;
+    }
+    *, *:before, *:after {
+      box-sizing: inherit;
+    }
+
     /* Setup a 100% layout *with no scroll bars* */
     html, body, #app, #root {
         height: 100%;
@@ -47,9 +55,9 @@
         background: transparent;
     }
 
-    /* Make react modal appear on top of Code mirror */
+    /* Make react modal appear on top of Code mirror and goldenlayout */
     .ReactModal__Overlay {
-        z-index: 4;
+        z-index: 100;
     }
     /* React modal color consistency */
     .ReactModal__Content.ReactModal__Content--after-open

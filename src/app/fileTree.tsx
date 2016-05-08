@@ -20,6 +20,7 @@ import {inputDialog} from "./dialogs/inputDialog";
 import * as Mousetrap from "mousetrap";
 import * as clipboard from "./clipboard";
 import * as pure from "../common/pure";
+import {tabState} from "./tabs/v2/appTabsContainer";
 type TruthTable = utils.TruthTable;
 
 export interface Props {
@@ -176,7 +177,7 @@ export class FileTree extends BaseComponent<Props, State>{
             if (!this.state.shown) {
                 this.setState({ shown: true });
             }
-            let selectedTab = state.getSelectedTab();
+            let selectedTab = tabState.getSelectedTab();
             if (selectedTab && selectedTab.url.startsWith('file://')){
                 let filePath = utils.getFilePathFromUrl(selectedTab.url);
 
@@ -812,6 +813,13 @@ export class FileTree extends BaseComponent<Props, State>{
         if (!this.ref(filePath)) return;
         (this.refs['__treeViewScroll'] as any).focus();
         this.ref(filePath).focus();
+    }
+
+    componentWillUpdate(nextProps: Props, nextState: State) {
+        if (nextState.width !== this.state.width
+            || nextState.shown !== this.state.shown) {
+            tabState.debouncedResize();
+        }
     }
 }
 

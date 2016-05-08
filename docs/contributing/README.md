@@ -107,6 +107,9 @@ If you did something which resulted in a lot of errors you can run tsc in watch 
 npm run tscw
 ```
 
+### Working on another branch
+Get the latest git commits from that branch. Next all you need to do is `npm install`. Now run `nodemon` like you would normally do.
+
 # Idea Tracking
 Since I am still doing a lot of *thinking* then *rethinking* I'm trying not to put too much stuff in the [issues][issues] as it spams the watchers. Instead I've been using a private trello but its very *raw* (like a pen an paper). Feel free to ask me questions on [gitter][gitter] about what's in my headspace. I try to be open about it on [twitter][twitter] anyways.
 

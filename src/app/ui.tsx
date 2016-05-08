@@ -41,19 +41,24 @@ export class BaseComponent<Props, State> extends React.Component<Props, State>{
         this._afterComponentDidUpdateQueue = [];
     }
 
-    /**
-     * Certain components control when they unmount themselves
-     * e.g. inline CodeMirror stuff, Modals
-     * This gives a convinient point for this logic
-     */
-    unmount = () => {
-        let parentElement = this.getParentDomNode();
-        ReactDOM.unmountComponentAtNode(parentElement);
-    }
     getParentDomNode = () => {
         let node = ReactDOM.findDOMNode(this);
         return node.parentElement;
     }
+}
+
+/**
+ * Certain components control when they unmount themselves
+ * e.g. inline CodeMirror stuff, Modals
+ * This gives a convinient point for this logic
+ */
+export function getUnmountableNode() {
+    let node = document.createElement('div');
+    const unmount = () => {
+        ReactDOM.unmountComponentAtNode(node);
+        node.remove();
+    }
+    return { node, unmount };
 }
 
 // Setup VelocityReact

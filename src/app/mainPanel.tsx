@@ -19,6 +19,7 @@ import {connect} from "react-redux";
 import {StoreState,expandErrors,collapseErrors} from "./state/state";
 import * as state from "./state/state";
 import * as gotoHistory from "./gotoHistory";
+import {tabState} from "./tabs/v2/appTabsContainer";
 
 let notificationKeyboardStyle = {
     border: '2px solid',
@@ -33,7 +34,6 @@ export interface Props {
     errorsExpanded?: boolean;
     activeProject?: AvailableProjectConfig;
     activeProjectFiles?: { [filePath: string]: boolean };
-    selectedTabIndex?: number;
     errorsUpdate?: LimitedErrorsUpdate;
     socketConnected?: boolean;
 }
@@ -55,7 +55,6 @@ let resizerStyle = {
         errorsExpanded: state.errorsExpanded,
         activeProject: state.activeProject,
         activeProjectFiles: state.activeProjectFilePathTruthTable,
-        selectedTabIndex: state.selectedTabIndex,
         errorsUpdate: state.errorsUpdate,
         socketConnected: state.socketConnected
     };
@@ -124,7 +123,7 @@ export class MainPanel extends BaseComponent<Props, State>{
         }
 
         return (
-            <div>
+            <div style={{zIndex:6 /* force over golden-layout */, backgroundColor:'rgb(39, 40, 34)'}}>
                 <ui.VelocityTransitionGroup
                     enter={{animation: "slideDown", duration: 150}}
                     leave={{animation: "slideUp", duration: 150}}>
@@ -164,5 +163,12 @@ export class MainPanel extends BaseComponent<Props, State>{
 
     handleStop = () => {
         // TODO store as user setting
+    }
+
+    componentWillUpdate(nextProps: Props, nextState: State) {
+        if (nextState.height !== this.state.height
+            || nextProps.errorsExpanded !== this.props.errorsExpanded) {
+            tabState.debouncedResize();
+        }
     }
 }
