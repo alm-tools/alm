@@ -1,4 +1,4 @@
-# ALM tools for TypeScript
+# The best IDE for TypeScript
 
 [![Join the chat at  gitter][gitter-image]][gitter-url]
 
