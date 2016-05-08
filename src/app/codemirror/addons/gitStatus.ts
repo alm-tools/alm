@@ -29,7 +29,6 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
     // if (cm) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
 
     const filePath = cm.filePath;
-    let interval = null;
 
     function makeMarker(className: string) {
         var marker = document.createElement("div");
@@ -100,20 +99,14 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
 
     const handleFocus = () => {
         refreshGitStatus();
-        interval = setInterval(refreshGitStatusDebounced, 2000);
     }
-    const handleBlur = () => {
-        if (interval) clearInterval(interval);
-        interval = null;
-    }
+
     cm.on('focus', handleFocus);
-    cm.on('blur', handleBlur);
     // Add a few other things to call refreshGitStatus with debouncing
     cm.on('change', refreshGitStatusDebounced);
     return {
         dispose: () => {
             cm.off('focus', handleFocus);
-            cm.off('blur', handleFocus);
             cm.off('change', refreshGitStatusDebounced);
         }
     }
