@@ -17,6 +17,7 @@ import * as project from "../core/project";
  */
 export const fileOuputStatusUpdated = new events.TypedEvent<types.JSOutputStatus>();
 export const completeOutputStatusCacheUpdated = new events.TypedEvent<types.JSOutputStatusCache>();
+export const liveBuildResults = new events.TypedEvent<types.LiveBuildResults>();
 
 /**
  * Hot cache
@@ -47,10 +48,15 @@ export const fileSaved = updateEmitForFile;
 export const doCompleteProjectCacheUpdate = (proj: project.Project) => {
     console.log('[EMIT] Starting emit');
     outputStatusCache = {};
-    proj.getProjectSourceFiles().forEach(sf=>{
+    const srcFiles = proj.getProjectSourceFiles();
+    srcFiles.forEach((sf,i)=>{
         const filePath = sf.fileName;
         const res = projectService.getJSOutputStatus({ filePath });
         outputStatusCache[filePath] = res.outputStatus;
+        liveBuildResults.emit({
+            builtCount: i + 1,
+            totalCount: srcFiles.length,
+        });
     });
     completeOutputStatusCacheUpdated.emit(outputStatusCache);
     console.log('[EMIT] Completed emit');

@@ -12,6 +12,8 @@ import {errorsCache} from "../../globalErrorCache";
 export const fileOutputStatusUpdated = new TypedEvent<types.JSOutputStatus>();
 export const completeOutputStatusCacheUpdated = new TypedEvent<types.JSOutputStatusCache>();
 completeOutputStatusCacheUpdated.emit(Object.create(null)); // So that we do not hold back any new joiners
+export const liveBuildResults = new TypedEvent<types.LiveBuildResults>();
+liveBuildResults.emit({builtCount:0,totalCount:0}); // So that we do not hold back any new joiners
 
 namespace Master {
     export const sync: typeof contract.master.sync
@@ -42,6 +44,11 @@ namespace Master {
     export const receiveCompleteOutputStatusCacheUpdate: typeof contract.master.receiveCompleteOutputStatusCacheUpdate
         = (data) => {
             completeOutputStatusCacheUpdated.emit(data);
+            return resolve({});
+        }
+    export const receiveLiveBuildResults: typeof contract.master.receiveLiveBuildResults
+        = (data) => {
+            liveBuildResults.emit(data);
             return resolve({});
         }
 }

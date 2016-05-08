@@ -49,6 +49,7 @@ export var master = {
     receiveErrorCacheDelta: {} as sw.QRFunction<ErrorCacheDelta, {}>,
     receiveFileOutputStatusUpdate: {} as sw.QRFunction<types.JSOutputStatus, {}>,
     receiveCompleteOutputStatusCacheUpdate: {} as sw.QRFunction<types.JSOutputStatusCache, {}>,
+    receiveLiveBuildResults: {} as sw.QRFunction<types.LiveBuildResults, {}>,
 
     // TODO:
     // endpoint to tell about file output statuses

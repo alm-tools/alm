@@ -75,6 +75,7 @@ outputStatusCache.fileOuputStatusUpdated.on((fileOuputStatusUpdate) => {
     return master.receiveFileOutputStatusUpdate(fileOuputStatusUpdate);
 });
 outputStatusCache.completeOutputStatusCacheUpdated.on((completeOutputStatusCacheUpdate) => master.receiveCompleteOutputStatusCacheUpdate(completeOutputStatusCacheUpdate));
+outputStatusCache.liveBuildResults.on((liveBuildResults) => master.receiveLiveBuildResults(liveBuildResults));
 
 /**
  * We send down the master to `activeProject` otherwise we get in a cyclic reference :-/

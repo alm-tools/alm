@@ -65,6 +65,7 @@ export var server = {
      * Output Status
      */
     getCompleteOutputStatusCache: {} as QRFunction<{}, types.JSOutputStatusCache>,
+    getLiveBuildResults: {} as QRFunction<{}, types.LiveBuildResults>,
 
     /**
      * Git service
@@ -121,6 +122,7 @@ export var cast = {
     /** JS Ouput status  */
     fileOutputStatusUpdated: new TypedEvent<types.JSOutputStatus>(),
     completeOutputStatusCacheUpdated: new TypedEvent<types.JSOutputStatusCache>(),
+    liveBuildResults: new TypedEvent<types.LiveBuildResults>(),
 }
 
 

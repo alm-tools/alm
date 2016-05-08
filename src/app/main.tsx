@@ -95,6 +95,12 @@ document.addEventListener('DOMContentLoaded', () => {
     cast.completeOutputStatusCacheUpdated.on((res) => {
         state.completeOuputStatusCacheUpdated(res);
     });
+    server.getLiveBuildResults({}).then(res => {
+        state.setLiveBuildResults(res);
+    });
+    cast.liveBuildResults.on((res) => {
+        state.setLiveBuildResults(res);
+    });
     commands.toggleDoctor.on(()=>{
         if (!state.inActiveProjectFilePath(tabState.getSelectedFilePath())){
             ui.notifyWarningNormalDisappear('Doctor is only available for files in active project');

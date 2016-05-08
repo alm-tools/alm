@@ -12,7 +12,8 @@ export interface StoreState {
     activeProjectFilePathTruthTable?: { [filePath: string]: boolean };
 
     /** JS Ouput status */
-    outputStatusCache?: types.JSOutputStatusCache
+    outputStatusCache?: types.JSOutputStatusCache,
+    liveBuildResults?: types.LiveBuildResults,
 
     pendingRequests?: string[];
 
@@ -40,6 +41,10 @@ let initialStoreState: StoreState = {
     },
     activeProjectFilePathTruthTable: {},
     outputStatusCache: {},
+    liveBuildResults: {
+        builtCount: 0,
+        totalCount: 0
+    },
     pendingRequests: [],
     findOptions: {
         isShown: false,
@@ -180,6 +185,12 @@ export const completeOuputStatusCacheUpdated = redux.add('completeOuputStatusCac
     const outputStatusCache = payload;
     return {
         outputStatusCache
+    };
+});
+
+export const setLiveBuildResults = redux.add('setLiveBuildResults', (state: StoreState, payload: types.LiveBuildResults): StoreState => {
+    return {
+        liveBuildResults: payload
     };
 });
 

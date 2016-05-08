@@ -135,6 +135,10 @@ export enum JSOutputState {
     JSOutOfDate,
 }
 export type JSOutputStatusCache = { [inputFilePath: string]: JSOutputStatus }
+export type LiveBuildResults = {
+    builtCount: number;
+    totalCount: number;
+}
 
 /**
  * Complete related stuff

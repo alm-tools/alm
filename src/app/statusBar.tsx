@@ -14,6 +14,7 @@ import {Clipboard} from "./clipboard";
 import {PendingRequestsIndicator} from "./pendingRequestsIndicator";
 import {Icon} from "./icon";
 import {tabState,tabStateChanged} from "./tabs/v2/appTabsContainer";
+import {Progress} from "./progress";
 
 import {connect} from "react-redux";
 import {StoreState,expandErrors,collapseErrors} from "./state/state";
@@ -48,7 +49,8 @@ export interface Props {
     activeProjectFiles?: { [filePath: string]: boolean };
     errorsUpdate?: LimitedErrorsUpdate;
     socketConnected?: boolean;
-    outputStatusCache?: types.JSOutputStatusCache
+    outputStatusCache?: types.JSOutputStatusCache;
+    liveBuildResults?: types.LiveBuildResults;
 }
 export interface State {
 }
@@ -67,7 +69,8 @@ export var statusBar: StatusBar;
         activeProjectFiles: state.activeProjectFilePathTruthTable,
         errorsUpdate: state.errorsUpdate,
         socketConnected: state.socketConnected,
-        outputStatusCache: state.outputStatusCache
+        outputStatusCache: state.outputStatusCache,
+        liveBuildResults: state.liveBuildResults,
     };
 })
 export class StatusBar extends BaseComponent<Props, State>{
@@ -190,6 +193,14 @@ export class StatusBar extends BaseComponent<Props, State>{
                     <span style={csx.extend(styles.statusBarSection)}>
                         <PendingRequestsIndicator />
                     </span>
+                    {
+                        this.props.liveBuildResults.builtCount !== this.props.liveBuildResults.totalCount &&
+                        <span style={csx.extend(styles.statusBarSection)}>
+                            <Progress current={this.props.liveBuildResults.builtCount} total={this.props.liveBuildResults.totalCount}> 
+                                {this.props.liveBuildResults.builtCount} / {this.props.liveBuildResults.totalCount}
+                            </Progress>
+                        </span>
+                    }
                     <span style={csx.extend(styles.statusBarSection)}>
                         {this.props.socketConnected?
                              <span className="hint--left hint--success" data-hint="Connected to server"> <Icon style={{color:styles.successColor, cursor:'pointer'}} name="flash" onClick={()=>ui.notifySuccessNormalDisappear("Connected to alm server")}/></span>

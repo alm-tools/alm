@@ -144,6 +144,10 @@ namespace Server {
         (data) => {
             return cast.completeOutputStatusCacheUpdated.current();
         }
+    export const getLiveBuildResults: typeof contract.server.getLiveBuildResults =
+        (data) => {
+            return cast.liveBuildResults.current();
+        }
 
     /**
      * Git service
@@ -199,6 +203,7 @@ export function register(app: http.Server | https.Server) {
     /** JS Output Status */
     projectServiceMaster.fileOutputStatusUpdated.pipe(cast.fileOutputStatusUpdated);
     projectServiceMaster.completeOutputStatusCacheUpdated.pipe(cast.completeOutputStatusCacheUpdated);
+    projectServiceMaster.liveBuildResults.pipe(cast.liveBuildResults);
 
     // For testing
     // setInterval(() => cast.hello.emit({ text: 'nice' }), 1000);
