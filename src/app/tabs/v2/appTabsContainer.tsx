@@ -930,12 +930,14 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         setTabs: (tabs: TabInstance[]) => {
             this.tabs = tabs;
             this.sendTabInfoToServer();
+
+            // TODO: tab
+            // If no tabs show tips
+            // If some tabs hide tips
         },
         selectTab: (id: string) => {
             this.selectedTabInstance = this.tabs.find(t => t.id == id);
             this.tabState.focusSelectedTabIfAny();
-            // TODO: tab
-            // this.updateStuffWeKnowAboutCurrentTab();
         },
         focusSelectedTabIfAny: () => {
             this.selectedTabInstance && this.tabApi[this.selectedTabInstance.id].focus.emit({});
