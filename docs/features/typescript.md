@@ -57,6 +57,10 @@ Easy as `Ctrl|⌘ + Shift + B`
 
 # JavaScript Emit
 
-As soon as you edit a TypeScript file we do an intelligent emit of the expected JavaScript. We also to a full emit check whenever an active TypeScript project is set.
+As soon as you edit a TypeScript file we do an intelligent emit of the expected JavaScript.
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/emit.gif)
+
+We also to a full emit check whenever an active TypeScript project is set.
+
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/build.gif)
