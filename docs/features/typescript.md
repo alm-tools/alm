@@ -9,6 +9,7 @@ As we mentioned the editor design revolves around giving you the best access to 
 * [Go to Definition](#goto-definition)
 * [Find References](#find-references)
 * [JavaScript emit](#javascript-emit)
+* [Sync](#sync)
 
 # Syntax Highlighting
 Not just another text mate based grammar which [despite a lot of love](https://github.com/Microsoft/TypeScript-TmLanguage/blob/ab17d24fed148cd789fd632d74f170c7308d75ff/TypeScriptReact.tmLanguage) can still fall short. Compare:
@@ -64,3 +65,12 @@ As soon as you edit a TypeScript file we do an intelligent emit of the expected 
 We also to a full emit check whenever an active TypeScript project is set.
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/build.gif)
+
+# Sync
+
+If anything goes bad with our error analysis / JavaScript emit knowledge (it shouldn't but edge cases happen!), you can do a `sync` command (`F6`).
+
+With `sync` we do:
+* Tsconfig re-evaluation
+* Complete refresh of Error analysis
+* Complete refresh of JavaScript output

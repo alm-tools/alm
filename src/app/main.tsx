@@ -101,6 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
     cast.liveBuildResults.on((res) => {
         state.setLiveBuildResults(res);
     });
+    commands.sync.on(()=>{
+        server.sync({});
+    });
     commands.toggleDoctor.on(()=>{
         if (!state.inActiveProjectFilePath(tabState.getSelectedFilePath())){
             ui.notifyWarningNormalDisappear('Doctor is only available for files in active project');

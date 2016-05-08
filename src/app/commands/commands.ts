@@ -126,6 +126,15 @@ export var duplicateWindow = new UICommand({
 });
 
 /**
+ * Build
+ */
+export var sync = new UICommand({
+    keyboardShortcut: 'f6', // vs
+    description: "TypeScript: Sync / ReBuild",
+    context: CommandContext.Global,
+});
+
+/**
  * Tab indexing
  * // c9, chrome, atom
  */

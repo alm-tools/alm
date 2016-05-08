@@ -40,6 +40,7 @@ export var server = {
     setOpenUITabs: {} as QRFunction<{ sessionId: string, openTabs: types.SessionTabInUI[] }, {}>,
     getOpenUITabs: {} as QRFunction<{ sessionId: id }, { sessionId: string; openTabs: types.SessionTabInUI[] }>,
     activeProjectFilePaths: {} as QRFunction<{}, { filePaths: string[] }>,
+    sync: {} as QRFunction<{}, {}>,
 
     /**
      * Error stuff

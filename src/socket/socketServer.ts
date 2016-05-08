@@ -114,6 +114,10 @@ namespace Server {
     export var activeProjectFilePaths: typeof contract.server.activeProjectFilePaths = (data) => {
         return activeProjectConfig.projectFilePathsUpdated.current();
     };
+    export var sync: typeof contract.server.sync = (data) => {
+        activeProjectConfig.sync();
+        return resolve({});
+    };
 
     /**
      * Error handling
