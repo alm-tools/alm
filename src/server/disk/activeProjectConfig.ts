@@ -70,9 +70,7 @@ export function start() {
     if (ses.relativePathToTsconfig) {
         let tsconfig = workingDir.makeAbsolute(ses.relativePathToTsconfig);
         if (fsu.existsSync(tsconfig)) {
-            activeProjectConfigDetails = Utils.tsconfigToActiveProjectConfigDetails(tsconfig);
-            activeProjectConfigDetailsUpdated.emit(activeProjectConfigDetails);
-            syncCore(activeProjectConfigDetails);
+            syncCore(Utils.tsconfigToActiveProjectConfigDetails(tsconfig));
             synced = true;
         }
     }
