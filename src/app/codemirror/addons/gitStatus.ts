@@ -1,3 +1,9 @@
+/**
+ * The git status plugin
+ *
+ * The best demo to understand this is the marker demo:
+ * https://codemirror.net/demo/marker.html
+ */
 import * as CodeMirror from "codemirror";
 import * as utils from "../../../common/utils";
 import {server} from "../../../socket/socketClient";
@@ -20,16 +26,39 @@ enum GitDiffStatus  {
 }
 
 export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => void } {
+    if (cm) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
+
     const filePath = cm.filePath;
     let interval = null;
 
+    function makeMarker(className: string) {
+        var marker = document.createElement("div");
+        marker.className = className;
+        marker.innerHTML = "●";
+        return marker;
+    }
+
     // The key Git diff logic
-    const gitDiffStatusMap: {
+    let gitDiffStatusMap: {
         [line: number]: GitDiffStatus
     } = Object.create(null);
     const refreshGitStatus = utils.debounce(() => {
-        server.gitDiff({filePath}).then(()=>{
-
+        server.gitDiff({filePath}).then((res)=>{
+            // Clear all old
+            // TODO: don't delete if its in the new one as well and is same type
+            Object.keys(gitDiffStatusMap).forEach(line => {
+                cm.setGutterMarker(line, gutterId, null);
+            });
+            gitDiffStatusMap = Object.create(null);
+            // Add new
+            res.added.forEach(added => {
+                for (let line = added.from; line <= added.to; line++) {
+                    if (!gitDiffStatusMap[line]) {
+                        cm.setGutterMarker(line, gutterId, makeMarker(addedClass));
+                        gitDiffStatusMap[line] = GitDiffStatus.Added;
+                    }
+                }
+            });
         });
     }, 2000);
 
