@@ -131,7 +131,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
 			lineNumbers: true,
 			foldGutter: true,
-            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+            gutters: ["CodeMirror-linenumbers"],
 
             // Active line addon
             styleActiveLine: true,
