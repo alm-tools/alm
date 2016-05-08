@@ -58,19 +58,19 @@ export function gitDiff(args: { filePath: string }): Promise<types.GitDiff> {
                 // n2 === 0 means all addition
                 if (n2 != null && +n2 === 0) {
                     added.push({
-                        from: +n3,
-                        to: +n3 + (n4 == null ? 0 : +n4)
+                        from: +n3 - 1,
+                        to: +n3 + (n4 == null ? 0 : +n4) - 1
                     });
                 }
                 // n4 === 0 means all deletion
                 else if (n4 != null && +n4 === 0) {
-                    removed.push(+n3);
+                    removed.push(+n3 - 1);
                 }
                 // modified
                 else {
                     modified.push({
-                        from: +n3,
-                        to: +n3 + (n4 == null ? 0 : +n4)
+                        from: +n3 - 1,
+                        to: +n3 + (n4 == null ? 0 : +n4) - 1
                     });
                 }
             });
