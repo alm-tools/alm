@@ -16,5 +16,9 @@ The main web process uses `projectDataLoader` to load the information based on t
 
 This is used in the project service worker. It gets data passed down from the main process worker and creates a `project`. This `project` is what is used as our main handle to the TypeScript langauge service.
 
+## Other files
+`tsconfig.ts` : Contains the main entry point for parsing / validation of `tsconfig.json`. Called from `activeProjectConfig.ts`.
+
+There are other files in the area that `tsconfig.ts` uses (e.g. `compilationContextExpander.ts` to load `node_modules` / do `<reference>` tag expansions) to create a proper *compilation context*.
 
 [process]: (/contributing/async.md)
