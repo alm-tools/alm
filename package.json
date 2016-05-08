@@ -1,7 +1,7 @@
 {
   "name": "alm",
   "version": "0.0.30",
-  "description": "Application Lifecycle Management tools for TypeScript",
+  "description": "The best IDE for TypeScript",
   "main": "src/server.js",
   "bin": {
     "alm": "./bin/alm"
