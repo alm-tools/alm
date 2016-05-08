@@ -27,4 +27,5 @@
   * [Errors](/contributing/errors.md)
   * [Tabs](/contributing/tabs.md)
   * [CSS](/contributing/css.md)
+  * [TSconfig](/contributing/tsconfig.md) 
   * [Why?](/contributing/why.md)

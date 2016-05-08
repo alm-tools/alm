@@ -111,12 +111,6 @@ export function fileEdited(evt: { filePath: string, edit: CodeEdit }) {
         // After a while update all project diagnostics as well
         refreshAllProjectDiagnosticsDebounced();
     }
-
-    // Also watch edits to the current config file
-    let currentConfigFilePath = activeProjectConfigDetails && activeProjectConfigDetails.configFile.projectFilePath;
-    if (evt.filePath == currentConfigFilePath) {
-        sync();
-    }
 }
 export function fileChangedOnDisk(evt: { filePath: string; contents: string }) {
     // Check if its a part of the current project .... if not ignore :)
