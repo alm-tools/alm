@@ -158,6 +158,7 @@ namespace Server {
      */
     export var gitStatus : typeof contract.server.gitStatus = gitService.gitStatus;
     export var gitReset : typeof contract.server.gitReset = gitService.gitReset;
+    export var gitDiff : typeof contract.server.gitDiff = gitService.gitDiff;
 
     /**
      * FARM

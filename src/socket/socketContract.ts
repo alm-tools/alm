@@ -73,6 +73,7 @@ export var server = {
      */
     gitStatus: {} as QRFunction<{},string>,
     gitReset: {} as QRFunction<{filePath:string},string>,
+    gitDiff: {} as QRFunction<{filePath:string},types.GitDiff>,
 
     /**
      * FARM

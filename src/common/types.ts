@@ -239,3 +239,17 @@ export interface TypeScriptConfigFileDetails {
     project: TsconfigJsonParsed;
     inMemory: boolean;
 }
+
+/**
+ * Git types
+ */
+/** Note : 0,2 means lines 0,1,2  */
+export type GitDiffSpan = {
+    from: number;
+    to: number;
+}
+export type GitDiff = {
+    added: GitDiffSpan[];
+    removed: number[];
+    modified: GitDiffSpan[];
+}

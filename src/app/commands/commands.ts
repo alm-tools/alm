@@ -55,6 +55,15 @@ export class UICommand extends events.TypedEvent<{}>{
 }
 
 /**
+ * BAS
+ */
+// export const bas = new UICommand({
+//     description: "BAS: I map this to whatever command I am currently testing",
+//     context: CommandContext.Global,
+// });
+
+
+/**
  * General purpose UI escape
  */
 export var esc = new UICommand({

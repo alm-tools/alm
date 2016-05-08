@@ -214,6 +214,13 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
      * We do that all in here
      */
     setupCommandHandling(){
+        // commands.bas.on((e) => {
+        //     const filePath = getCurrentFilePathOrWarn();
+        //     if (!filePath) return;
+        //     server.gitDiff({ filePath }).then(res => {
+        //         console.log(res);
+        //     });
+        // });
         commands.saveTab.on((e) => {
             this.getSelectedTabApiIfAny().save.emit({});
         });

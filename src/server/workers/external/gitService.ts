@@ -4,6 +4,7 @@
 import * as cp from "child_process";
 import * as wd from "../../disk/workingDir";
 import * as fmc from "../../disk/fileModelCache";
+import * as types from "../../../common/types";
 
 /** Main utility function to execute a command */
 let gitCmd = (...args: string[]):Promise<string> => {
@@ -24,4 +25,59 @@ export function gitStatus(args:{}): Promise<string> {
 export function gitReset(args:{filePath:string}): Promise<string> {
     fmc.saveOpenFile(args.filePath);
     return gitCmd('checkout --',args.filePath);
+}
+
+/**
+ * Docs : http://stackoverflow.com/q/37097761/390330
+ */
+const gitDiffRegex = /@@[^@@]*@@/g;
+export function gitDiff(args: { filePath: string }): Promise<types.GitDiff> {
+    fmc.saveOpenFile(args.filePath);
+    return gitCmd('diff -U0', args.filePath).then(res => {
+        const added: types.GitDiffSpan[] = [];
+        const removed: number[] = [];
+        const modified: types.GitDiffSpan[] = [];
+
+        const matches = res.match(gitDiffRegex);
+        if (matches) {
+            matches.forEach(m => {
+                // m is something like one of:
+                // @@ -n1[,n2] +n3[,n4] @@
+                console.log(m);
+
+                // Remove @@:
+                m = m.replace(/@@/g, '');
+                m = m.trim();
+
+                // m is now like:
+                // -n1[,n2] +n3[,n4]
+                const [n1n2, n3n4] = m.split(' ');
+                const [n1, n2] = n1n2.split(',');
+                const [n3, n4] = n3n4.split(',');
+
+                // n2 === 0 means all addition
+                if (n2 != null && +n2 === 0) {
+                    added.push({
+                        from: +n3,
+                        to: +n3 + (n4 == null ? 0 : +n4)
+                    });
+                }
+                // n4 === 0 means all deletion
+                else if (n4 != null && +n4 === 0) {
+                    removed.push(+n3);
+                }
+                // modified
+                else {
+                    modified.push({
+                        from: +n3,
+                        to: +n3 + (n4 == null ? 0 : +n4)
+                    });
+                }
+            });
+        }
+
+        return {
+            added, removed, modified
+        }
+    });
 }
