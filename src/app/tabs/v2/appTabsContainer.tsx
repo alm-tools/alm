@@ -9,8 +9,6 @@ import * as ReactDOM from "react-dom";
 
 import * as tab from "./tab";
 import * as tabRegistry from "./tabRegistry";
-import {Code} from "../codeTab";
-import {DependencyView} from "../dependencyView";
 import * as commands from "../../commands/commands";
 import * as utils from "../../../common/utils";
 import csx = require('csx');

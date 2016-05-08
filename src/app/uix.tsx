@@ -10,7 +10,6 @@ import CodeMirror = require('codemirror');
 
 /** Cant this in these UI components. Will cause cycles! */
 import * as codeEditor from "./codemirror/codeEditor";
-import {Code} from "./tabs/codeTab";
 import {tabState, TabInstance} from "./tabs/v2/appTabsContainer";
 import * as docCache from "./codemirror/mode/docCache";
 
