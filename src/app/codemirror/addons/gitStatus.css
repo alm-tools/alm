@@ -3,15 +3,13 @@
 }
 
 .git-added {
-    color: lime;
+    background-color: lime;
+    height: 100%;
 }
 .git-modified {
-    color: yellow;
+    background-color: yellow;
+    height: 100%;
 }
 .git-removed {
     color: red;
-    bottom: -15px;
-    margin-top: -15px;
-    border-width: 15px;
-    border-left-color: red;
 }

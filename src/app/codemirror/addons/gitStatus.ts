@@ -26,7 +26,7 @@ enum GitDiffStatus  {
 }
 
 export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => void } {
-    if (cm) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
+    // if (cm) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
 
     const filePath = cm.filePath;
     let interval = null;
@@ -34,7 +34,12 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
     function makeMarker(className: string) {
         var marker = document.createElement("div");
         marker.className = className;
-        marker.innerHTML = "●";
+        if (className === removedClass){
+            marker.innerHTML = "●";
+        }
+        else {
+            marker.innerHTML = "&nbsp";
+        }
         return marker;
     }
     /** Automatically clears any old marker */
@@ -91,7 +96,7 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
         });
     };
 
-    const refreshGitStatusDebounced = utils.debounce(refreshGitStatus, 2000);
+    const refreshGitStatusDebounced = utils.debounce(refreshGitStatus, 500);
 
     const handleFocus = () => {
         refreshGitStatus();
@@ -103,16 +108,13 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
     }
     cm.on('focus', handleFocus);
     cm.on('blur', handleBlur);
-    // Add a few other things to call refreshGitStatus to trigger further debouncing
-    // so we don't call it if user is doing stuff
+    // Add a few other things to call refreshGitStatus with debouncing
     cm.on('change', refreshGitStatusDebounced);
-    cm.on('cursorActivity', refreshGitStatusDebounced);
     return {
         dispose: () => {
             cm.off('focus', handleFocus);
             cm.off('blur', handleFocus);
             cm.off('change', refreshGitStatusDebounced);
-            cm.off('cursorActivity', refreshGitStatusDebounced);
         }
     }
 }
