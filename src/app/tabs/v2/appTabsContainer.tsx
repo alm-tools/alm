@@ -161,9 +161,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
              *
              * This diff can be improved (its too strict)
              */
-            type SimpleContentItem = { type: string, dimension: any, content?: SimpleContentItem[] }
+            type SimpleContentItem = { type: string, dimension: any, content?: SimpleContentItem[], activeItemIndex?: number }
             const contentEqual = (a: SimpleContentItem, b: SimpleContentItem) => {
                 if (a.type !== b.type) return false;
+                if (a.activeItemIndex !== b.activeItemIndex) return false;
                 if (!pure.shallowEqual(a.dimension, b.dimension)) return false;
                 if (a.content) {
                     if (!b.content) return false;
