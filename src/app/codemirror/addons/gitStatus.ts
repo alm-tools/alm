@@ -43,7 +43,8 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
     }
     /** Automatically clears any old marker */
     function setMarker(line: number, className: string) {
-        cm.setGutterMarker(line, gutterId, makeMarker(className));
+        const lineHandle = cm.setGutterMarker(line, gutterId, makeMarker(className));
+        // TODO: consider using this line handle to clear old markers :-/
     }
     function clearMarker(line: number){
         cm.setGutterMarker(line, gutterId, null);
