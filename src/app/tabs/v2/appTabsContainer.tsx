@@ -1054,7 +1054,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         },
 
         /**
-         * Not to be used locally
+         * Not to be used locally.
+         * This is an external API used to drive app tabs contianer for refactorings etc.
          */
         getFocusedCodeEditorIfAny: (): CodeEditor => {
             if (!this.selectedTabInstance
@@ -1072,11 +1073,17 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             const selected = this.selectedTabInstance;
             if (selected) {
                 let url = selected.url;
-                if (url.startsWith('file://')){
+                if (url.startsWith('file://')) {
                     return utils.getFilePathFromUrl(url);
                 }
             }
-        }
+        },
+        getOpenFilePaths: (): string[] => {
+            return this.tabs.filter(t => t.url.startsWith('file://')).map(t => utils.getFilePathFromUrl(t.url));
+        },
+        addTabs: (tabs: TabInstance[]) => {
+            tabs.forEach(tab => this.addTabToLayout(tab));
+        },
     }
 }
 

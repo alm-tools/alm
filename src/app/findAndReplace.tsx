@@ -42,7 +42,6 @@ export interface State {
 @connect((state: state.StoreState): Props => {
     return {
         findQuery: state.findOptions,
-        selectedTabIndex: state.selectedTabIndex,
     };
 })
 @ui.Radium
