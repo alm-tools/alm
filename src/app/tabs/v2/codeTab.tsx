@@ -53,7 +53,7 @@ export class Code extends ui.BaseComponent<Props, State> {
         const api = this.props.api;
         this.disposible.add(api.resize.on(this.resize));
         this.disposible.add(api.focus.on(this.focus));
-        this.disposible.add(api.focus.on(this.focus));
+        this.disposible.add(api.save.on(this.save));
         this.disposible.add(api.close.on(this.close));
         this.disposible.add(api.gotoPosition.on(this.gotoPosition));
         // Listen to search tab events
