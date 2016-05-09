@@ -43,7 +43,7 @@ export function gitDiff(args: { filePath: string }): Promise<types.GitDiff> {
             matches.forEach(m => {
                 // m is something like one of:
                 // @@ -n1[,n2] +n3[,n4] @@
-                console.log(m);
+                // console.log(m); // DEBUG
 
                 // Remove @@:
                 m = m.replace(/@@/g, '');
