@@ -19,11 +19,21 @@
     background: lime;
     border-top: 1px solid green;
     border-bottom: 1px solid green;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    opacity: .5;
+    opacity: .2;
+    width: .2em !important;
+    margin-right: .2em;
 }
 .git-scrollbar-modified {
+    background: yellow;
+    border-top: 1px solid yellow;
+    border-bottom: 1px solid yellow;
+    opacity: .2;
+    width: .2em !important;
+    margin-right: .2em;
 }
 .git-scrollbar-removed {
+    background: red;
+    opacity: .4;
+    width: .2em !important;
+    margin-right: .2em;
 }

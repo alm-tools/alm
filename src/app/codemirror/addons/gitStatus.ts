@@ -157,11 +157,29 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
             gitDiffStatusMap = newGitDiffStatusMap;
 
             // Now annotate the scroll bar with the new
-            const scrollBarAnnotations = {
-                added:[],
-                modified: [],
-                removed: [],
+            type ScrollBarAnnotation = {from:CodeMirror.Position,to:CodeMirror.Position};
+            type AnnotationList = ScrollBarAnnotation[]
+            const gitDiffSpanToAnnotationList = (span:types.GitDiffSpan):ScrollBarAnnotation => {
+                return {
+                    from: {
+                        line: span.from,
+                        ch: 0
+                    },
+                    to: {
+                        line: span.to,
+                        ch: 0
+                    }
+                }
             }
+            scrollbar.added.update(res.added.map(gitDiffSpanToAnnotationList));
+            scrollbar.modified.update(res.modified.map(gitDiffSpanToAnnotationList));
+            scrollbar.removed.update(res.removed.map(removed => {
+                const line = removed, ch = 0;
+                return {
+                    from: { line, ch },
+                    to: { line, ch }
+                }
+            }));
         });
     };
 
