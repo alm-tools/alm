@@ -44,7 +44,7 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
     /** Automatically clears any old marker */
     function setMarker(line: number, className: string) {
         const lineHandle = cm.setGutterMarker(line, gutterId, makeMarker(className));
-        // TODO: consider using this line handle to clear old markers :-/
+        return lineHandle;
     }
     function clearMarker(line: number){
         cm.setGutterMarker(line, gutterId, null);
@@ -52,15 +52,28 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
 
     // The key Git diff logic
     let gitDiffStatusMap: {
-        [line: number]: GitDiffStatus
+        [line: number]: {
+            type: GitDiffStatus,
+            handle: CodeMirror.LineHandle
+        }
     } = Object.create(null);
     const refreshGitStatus = () => {
         server.gitDiff({filePath}).then((res)=>{
-            /**
-             * TODO: the diff logic below is *broken*
-             * This is because *CM markers move as lines get added / deleted*.
-             * So our past knowledge of `gitDiffStatusMap` is completely useless
-             */
+            // We need to update the current gitDiffStatusMap as
+            // because *CM markers move as lines get added / deleted*.
+            Object.keys(gitDiffStatusMap).forEach(_line => {
+                const line = +_line;
+                const {type, handle} = gitDiffStatusMap[line];
+                const newLine: number | null = (cm as any).getLineNumber(handle);
+                if (newLine == null) {
+                }
+                else if(newLine !== line) {
+                    const old = gitDiffStatusMap[line];
+                    delete gitDiffStatusMap[line];
+                    gitDiffStatusMap[newLine] = old;
+                }
+                // else still good :)
+            });
 
             // Create new map
             const newGitDiffStatusMap: typeof gitDiffStatusMap = Object.create(null);
@@ -68,25 +81,37 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
             // Add to new
             res.added.forEach(added => {
                 for (let line = added.from; line <= added.to; line++) {
-                    if (gitDiffStatusMap[line] !== GitDiffStatus.Added) {
-                        setMarker(line, addedClass);
+                    if (!gitDiffStatusMap[line]
+                        || gitDiffStatusMap[line].type !== GitDiffStatus.Added) {
+                        const handle = setMarker(line, addedClass);
+                        newGitDiffStatusMap[line] = {
+                            type: GitDiffStatus.Added,
+                            handle: handle
+                        };
                     }
-                    newGitDiffStatusMap[line] = GitDiffStatus.Added;
                 }
             });
             res.modified.forEach(modified => {
                 for (let line = modified.from; line <= modified.to; line++) {
-                    if (gitDiffStatusMap[line] !== GitDiffStatus.Modified) {
-                        setMarker(line, modifiedClass);
+                    if (!gitDiffStatusMap[line]
+                        || gitDiffStatusMap[line].type !== GitDiffStatus.Modified) {
+                        const handle = setMarker(line, modifiedClass);
+                        newGitDiffStatusMap[line] = {
+                            type: GitDiffStatus.Modified,
+                            handle: handle
+                        };
                     }
-                    newGitDiffStatusMap[line] = GitDiffStatus.Modified;
                 }
             });
             res.removed.forEach(line => {
-                if (gitDiffStatusMap[line] !== GitDiffStatus.Removed) {
-                    setMarker(line, removedClass);
+                if (!gitDiffStatusMap[line]
+                    || gitDiffStatusMap[line].type !== GitDiffStatus.Removed) {
+                    const handle = setMarker(line, removedClass);
+                    newGitDiffStatusMap[line] = {
+                        type: GitDiffStatus.Removed,
+                        handle
+                    };
                 }
-                newGitDiffStatusMap[line] = GitDiffStatus.Removed;
             });
 
             // Clean any excessive markers
