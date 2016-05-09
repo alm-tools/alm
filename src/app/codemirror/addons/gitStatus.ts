@@ -81,7 +81,7 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
 
             // Add to new
             res.added.forEach(added => {
-                for (let line = added.from; line <= added.to; line++) {
+                for (let line = added.from; line < added.to; line++) {
                     if (!gitDiffStatusMap[line]
                         || gitDiffStatusMap[line].type !== GitDiffStatus.Added) {
                         const handle = setMarker(line, addedClass);
@@ -96,7 +96,7 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
                 }
             });
             res.modified.forEach(modified => {
-                for (let line = modified.from; line <= modified.to; line++) {
+                for (let line = modified.from; line < modified.to; line++) {
                     if (!gitDiffStatusMap[line]
                         || gitDiffStatusMap[line].type !== GitDiffStatus.Modified) {
                         const handle = setMarker(line, modifiedClass);

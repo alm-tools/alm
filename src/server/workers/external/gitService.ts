@@ -39,7 +39,7 @@ export function gitDiff(args: { filePath: string }): Promise<types.GitDiff> {
         fmc.saveOpenFile(args.filePath);
     }
 
-    return gitCmd('diff', '-U0', args.filePath).then(res => {
+    return gitCmd('diff', '-U0', '--no-color', args.filePath).then(res => {
         const added: types.GitDiffSpan[] = [];
         const removed: number[] = [];
         const modified: types.GitDiffSpan[] = [];
@@ -65,7 +65,7 @@ export function gitDiff(args: { filePath: string }): Promise<types.GitDiff> {
                 if (n2 != null && +n2 === 0) {
                     added.push({
                         from: +n3 - 1,
-                        to: +n3 + (n4 == null ? 0 : +n4) - 1
+                        to: +n3 + (n4 == null ? 1 : +n4) - 1
                     });
                 }
                 // n4 === 0 means all deletion
@@ -76,7 +76,7 @@ export function gitDiff(args: { filePath: string }): Promise<types.GitDiff> {
                 else {
                     modified.push({
                         from: +n3 - 1,
-                        to: +n3 + (n4 == null ? 0 : +n4) - 1
+                        to: +n3 + (n4 == null ? 1 : +n4) - 1
                     });
                 }
             });
