@@ -128,7 +128,7 @@ export function fileChangedOnDisk(evt: { filePath: string; contents: string }) {
 let initialSync = false;
 const refreshAllProjectDiagnostics = () => {
     if (currentProject) {
-        const timeStart = new Date().getTime();
+        const timer = utils.timer();
         if (initialSync) {
             console.error(`[TSC] Started Initial Error Analysis: ${currentProject.configFile.projectFilePath}`);
         }
@@ -145,7 +145,7 @@ const refreshAllProjectDiagnostics = () => {
         setErrorsByFilePaths(filePaths, errors);
 
 
-        console.error('[TSC] Error Analysis Duration:', Math.ceil((new Date().getTime() - timeStart)/1000) + 's');
+        console.error('[TSC] Error Analysis Duration:', timer.seconds());
         console.log(`[TSC] FileCount: ${filePaths.length} `, errors.length? chalk.red(`Errors: ${errors.length}`): chalk.green(`Errors: ${errors.length}`));
         initialSync = false;
     }

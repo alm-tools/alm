@@ -417,3 +417,17 @@ export function extend(...args: any[]): any {
     }
     return newObj;
 };
+
+/**
+ * Simple timer
+ */
+export function timer() {
+    let timeStart = new Date().getTime();
+    return {
+        /** <integer>s e.g 2s etc. */
+        seconds: () => {
+            const seconds = Math.ceil((new Date().getTime() - timeStart) / 1000) + 's';
+            return seconds;
+        }
+    }
+}
