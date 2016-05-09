@@ -425,12 +425,12 @@ export function timer() {
     let timeStart = new Date().getTime();
     return {
         /** <integer>s e.g 2s etc. */
-        seconds: () => {
+        get seconds() {
             const seconds = Math.ceil((new Date().getTime() - timeStart) / 1000) + 's';
             return seconds;
         },
         /** Milliseconds */
-        ms: () => {
+        get ms() {
             const ms = (new Date().getTime() - timeStart) + 'ms';
             return ms;
         }

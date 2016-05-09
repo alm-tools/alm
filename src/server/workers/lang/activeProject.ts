@@ -145,7 +145,7 @@ const refreshAllProjectDiagnostics = () => {
         setErrorsByFilePaths(filePaths, errors);
 
 
-        console.error('[TSC] Error Analysis Duration:', timer.seconds());
+        console.error('[TSC] Error Analysis Duration:', timer.seconds);
         console.log(`[TSC] FileCount: ${filePaths.length} `, errors.length? chalk.red(`Errors: ${errors.length}`): chalk.green(`Errors: ${errors.length}`));
         initialSync = false;
     }
