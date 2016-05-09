@@ -32,7 +32,12 @@ export function gitReset(args:{filePath:string}): Promise<string> {
  */
 const gitDiffRegex = /@@[^@@]*@@/g;
 export function gitDiff(args: { filePath: string }): Promise<types.GitDiff> {
-    fmc.saveOpenFile(args.filePath);
+    // Save the file if not saved
+    const file = fmc.getOpenFile(args.filePath);
+    if (!file.saved()) {
+        fmc.saveOpenFile(args.filePath);
+    }
+
     return gitCmd('diff -U0', args.filePath).then(res => {
         const added: types.GitDiffSpan[] = [];
         const removed: number[] = [];
