@@ -29,6 +29,7 @@ export function gitReset(args:{filePath:string}): Promise<string> {
 
 /**
  * Docs : http://stackoverflow.com/q/37097761/390330
+ * Some inspiration : https://github.com/jisaacks/GitGutter/blob/1f673cbe009e2e0f4393c25e83be895871b4923f/git_gutter_handler.py#L149-L177
  */
 const gitDiffRegex = /@@[^@@]*@@/g;
 export function gitDiff(args: { filePath: string }): Promise<types.GitDiff> {
