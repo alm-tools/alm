@@ -34,7 +34,7 @@ export function gitReset(args:{filePath:string}): Promise<string> {
 const gitDiffRegex = /@@[^@@]*@@/g;
 export function gitDiff(args: { filePath: string }): Promise<types.GitDiff> {
     // Save the file if not saved
-    const file = fmc.getOpenFile(args.filePath);
+    const file = fmc.getOrCreateOpenFile(args.filePath);
     if (!file.saved()) {
         fmc.saveOpenFile(args.filePath);
     }
