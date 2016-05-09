@@ -110,6 +110,11 @@ export class FileModel {
         let contents = fsu.existsSync(this.config.filePath) ? fsu.readFile(this.config.filePath) : '';
         let text = this.splitlines(contents);
 
+        // If new text same as current text nothing to do.
+        if (utils.arraysEqual(text,this.savedText)){
+            return;
+        }
+
         if (this.saved()) {
             this.text = text;
             this.savedText = this.text.slice();
