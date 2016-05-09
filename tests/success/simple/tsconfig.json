@@ -21,6 +21,6 @@
     ],
     "exclude": [],
     "atom": {
-        "rewriteTsconfig": true
+        "rewriteTsconfig": false
     }
 }

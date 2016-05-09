@@ -90,6 +90,9 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
                             handle: handle
                         };
                     }
+                    else {
+                        newGitDiffStatusMap[line] = gitDiffStatusMap[line];
+                    }
                 }
             });
             res.modified.forEach(modified => {
@@ -102,6 +105,9 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
                             handle: handle
                         };
                     }
+                    else {
+                        newGitDiffStatusMap[line] = gitDiffStatusMap[line];
+                    }
                 }
             });
             res.removed.forEach(line => {
@@ -112,6 +118,9 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
                         type: GitDiffStatus.Removed,
                         handle
                     };
+                }
+                else {
+                    newGitDiffStatusMap[line] = gitDiffStatusMap[line];
                 }
             });
 
