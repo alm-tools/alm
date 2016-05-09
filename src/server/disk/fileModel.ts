@@ -25,7 +25,6 @@ export class FileModel {
 
     /**
      * New contents is only sent if the file has no pending changes. Otherwise it is silently ignored
-     * Always emit ... even if we are the ones that saved
      */
     public onSavedFileChangedOnDisk = new TypedEvent<{ contents: string }>();
 
