@@ -13,3 +13,7 @@ Quickly go back to the last Git commited version of the file using `Alt + Ctrl|â
 New sections as green, modifications as yellow, and deletions as red dots.
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/gitStatus.png)
+
+We also show these in the scroll bar so you know exactly what you have touched in the file.
+
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/gitStatusScrollbar.png)
