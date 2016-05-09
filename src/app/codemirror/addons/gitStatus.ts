@@ -19,7 +19,7 @@ declare global {
             clear();
         }
         interface Editor {
-            annotateScrollbar(options: { className: string } | string): any /* Search Annotation */;
+            annotateScrollbar(options: { className: string } | string): Annotation;
         }
     }
 }
@@ -44,6 +44,12 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
     // if (cm) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
 
     const filePath = cm.filePath;
+
+    const scrollbar = {
+        added: cm.annotateScrollbar('git-scrollbar-added'),
+        modified: cm.annotateScrollbar('git-scrollbar-modified'),
+        removed: cm.annotateScrollbar('git-scrollbar-removed'),
+    }
 
     function makeMarker(className: string) {
         var marker = document.createElement("div");
@@ -149,6 +155,13 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
 
             // New is now the old
             gitDiffStatusMap = newGitDiffStatusMap;
+
+            // Now annotate the scroll bar with the new
+            const scrollBarAnnotations = {
+                added:[],
+                modified: [],
+                removed: [],
+            }
         });
     };
 
@@ -165,6 +178,9 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
         dispose: () => {
             cm.off('focus', handleFocus);
             cm.off('change', refreshGitStatusDebounced);
+            scrollbar.added.clear();
+            scrollbar.modified.clear();
+            scrollbar.removed.clear();
         }
     }
 }

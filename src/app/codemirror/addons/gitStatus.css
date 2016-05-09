@@ -14,3 +14,16 @@
     padding-top: .5em;
     color: red;
 }
+/* Inspired from codemirror/addon/search/matchesonscrollbar.css */
+.git-scrollbar-added {
+    background: lime;
+    border-top: 1px solid green;
+    border-bottom: 1px solid green;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    opacity: .5;
+}
+.git-scrollbar-modified {
+}
+.git-scrollbar-removed {
+}
