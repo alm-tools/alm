@@ -137,7 +137,7 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
         });
     };
 
-    const refreshGitStatusDebounced = utils.debounce(refreshGitStatus, 500);
+    const refreshGitStatusDebounced = utils.debounce(refreshGitStatus, 2000);
 
     const handleFocus = () => {
         refreshGitStatus();
