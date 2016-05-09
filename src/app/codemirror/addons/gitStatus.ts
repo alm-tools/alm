@@ -19,7 +19,7 @@ export function setupOptions(options: any, filePath: string) {
     options.gutters.unshift(gutterId);
 }
 
-enum GitDiffStatus  {
+enum GitDiffStatus {
     Added = 1,
     Removed,
     Modified
@@ -33,7 +33,7 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
     function makeMarker(className: string) {
         var marker = document.createElement("div");
         marker.className = className;
-        if (className === removedClass){
+        if (className === removedClass) {
             marker.innerHTML = "●";
         }
         else {
@@ -46,7 +46,7 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
         const lineHandle = cm.setGutterMarker(line, gutterId, makeMarker(className));
         return lineHandle;
     }
-    function clearMarker(line: number){
+    function clearMarker(line: number) {
         cm.setGutterMarker(line, gutterId, null);
     }
 
@@ -58,7 +58,7 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
         }
     } = Object.create(null);
     const refreshGitStatus = () => {
-        server.gitDiff({filePath}).then((res)=>{
+        server.gitDiff({ filePath }).then((res) => {
             // We need to update the current gitDiffStatusMap as
             // because *CM markers move as lines get added / deleted*.
             Object.keys(gitDiffStatusMap).forEach(_line => {
@@ -66,8 +66,9 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
                 const {type, handle} = gitDiffStatusMap[line];
                 const newLine: number | null = (cm as any).getLineNumber(handle);
                 if (newLine == null) {
+                    delete gitDiffStatusMap[line];
                 }
-                else if(newLine !== line) {
+                else if (newLine !== line) {
                     const old = gitDiffStatusMap[line];
                     delete gitDiffStatusMap[line];
                     gitDiffStatusMap[newLine] = old;
@@ -117,7 +118,7 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
             // Clean any excessive markers
             Object.keys(gitDiffStatusMap).forEach(_line => {
                 const line = +_line;
-                if (!newGitDiffStatusMap[line]){
+                if (!newGitDiffStatusMap[line]) {
                     clearMarker(line);
                 }
             });
