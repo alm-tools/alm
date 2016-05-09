@@ -9,6 +9,21 @@ import * as utils from "../../../common/utils";
 import {server} from "../../../socket/socketClient";
 import * as types from "../../../common/types";
 
+/** Provides cm.annotateScrollbar */
+require("codemirror/addon/scroll/annotatescrollbar");
+declare global {
+    module CodeMirror {
+        interface Position { } // Already declared elsewhere
+        interface Annotation {
+            update(annotations: { from: CodeMirror.Position; to: CodeMirror.Position }[]);
+            clear();
+        }
+        interface Editor {
+            annotateScrollbar(options: { className: string } | string): any /* Search Annotation */;
+        }
+    }
+}
+
 const gutterId = "CodeMirror-git-status";
 const addedClass = "git-added";
 const removedClass = "git-removed";
