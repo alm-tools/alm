@@ -66,6 +66,10 @@ We also to a full emit check whenever an active TypeScript project is set.
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/build.gif)
 
+`Ctrl|⌘ + Shift + M` toggles the output co**m**piled JS file for a give TypeScript file.
+
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/emitToggle.png)
+
 # Sync
 
 If anything goes bad with our error analysis / JavaScript emit knowledge (it shouldn't but edge cases happen!), you can do a `sync` command (`F6`).
