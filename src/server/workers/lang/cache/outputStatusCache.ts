@@ -45,6 +45,13 @@ const updateEmitForFile = utils.triggeredDebounce({
 export const fileEdited = updateEmitForFile;
 export const fileChangedOnDisk = updateEmitForFile;
 export const fileSaved = updateEmitForFile;
+
+/**
+ * Complete initial cache sending
+ */
+export const trottledSend = utils.throttle((e: types.LiveBuildResults) => {
+    liveBuildResults.emit(e);
+}, 1000);
 export const doCompleteProjectCacheUpdate = (proj: project.Project) => {
     console.log('[EMIT] Starting emit');
     outputStatusCache = {};
@@ -53,7 +60,7 @@ export const doCompleteProjectCacheUpdate = (proj: project.Project) => {
         const filePath = sf.fileName;
         const res = projectService.getJSOutputStatus({ filePath });
         outputStatusCache[filePath] = res.outputStatus;
-        liveBuildResults.emit({
+        trottledSend({
             builtCount: i + 1,
             totalCount: srcFiles.length,
         });
