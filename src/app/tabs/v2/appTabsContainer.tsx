@@ -242,6 +242,15 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         /**
          * File opening commands
          */
+        commands.toggleOutputJS.on(()=>{
+            if (!this.selectedTabInstance
+                || !this.selectedTabInstance.url
+                || !state.inActiveProjectUrl(this.selectedTabInstance.url)){
+                    ui.notifyWarningNormalDisappear('Your current tab needs to be a TypeScript file that is in the project and compile on save enabled');
+                    return;
+                }
+            // TODO: 
+        });
         commands.openFileFromDisk.on(() => {
             ui.comingSoon("Open a file from the server disk");
         });

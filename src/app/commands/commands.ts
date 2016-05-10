@@ -135,11 +135,16 @@ export var duplicateWindow = new UICommand({
 });
 
 /**
- * Build
+ * Build / output js
  */
 export var sync = new UICommand({
     keyboardShortcut: 'f6', // vs
     description: "TypeScript: Sync / ReBuild",
+    context: CommandContext.Global,
+});
+export var toggleOutputJS = new UICommand({
+    keyboardShortcut: 'mod+shift+m', // atom
+    description: "TypeScript: Toggle output js file",
     context: CommandContext.Global,
 });
 
@@ -487,6 +492,10 @@ sublimeMap['Alt--'] = "downcaseAtCursor";
 // Conflicts with jump to tab
 delete sublimeMap['Shift-Cmd-Enter'];
 delete sublimeMap['Shift-Ctrl-Enter'];
+// Conflicts with our js output toggle
+// was selectBetweenBrackets
+sublimeMap['Shift-Cmd-M'] = "...";
+sublimeMap['Shift-Ctrl-M'] = "...";
 
 // Swap line should also come with indent
 // + use VSCode shortcuts as they are consistent across win/mac
