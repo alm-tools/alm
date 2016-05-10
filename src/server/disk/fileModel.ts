@@ -94,9 +94,11 @@ export class FileModel {
         fsu.deleteFile(this.config.filePath);
     }
 
+    _justWroteFileToDisk = false;
     save() {
         let contents = this.text.join(this.newLine);
         fsu.writeFile(this.config.filePath, contents);
+        this._justWroteFileToDisk = true;
         this.savedText = this.text.slice();
         this.didStatusChange.emit({saved:true, eol: this.newLine});
     }
@@ -109,8 +111,15 @@ export class FileModel {
         let contents = fsu.existsSync(this.config.filePath) ? fsu.readFile(this.config.filePath) : '';
         let text = this.splitlines(contents);
 
+        // If we wrote the file no need to do any further checks
+        // Otherwise sometime we end up editing the file and change event fires too late and we think its new content
+        if (this._justWroteFileToDisk) {
+            this._justWroteFileToDisk = false;
+            return;
+        }
+
         // If new text same as current text nothing to do.
-        if (utils.arraysEqual(text,this.savedText)){
+        if (utils.arraysEqual(text, this.savedText)) {
             return;
         }
 
