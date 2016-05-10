@@ -371,6 +371,8 @@ export var doOpenOrFocusTab = new events.TypedEvent<{ tabId: string, tabUrl: str
 export var closeFilesDirs = new events.TypedEvent<{ files: string[], dirs: string[] }>();
 /** Needed by file tree, activates the tab but doesn't change focus away from tree view */
 export var doOpenOrActivateFileTab = new events.TypedEvent<{ filePath: string }>();
+/** Needed to toggle output js file. We toggle and also do not steal focus */
+export var doToggleFileTab = new events.TypedEvent<{ filePath: string }>();
 
 /**
  * Other tab types

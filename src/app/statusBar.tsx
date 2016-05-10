@@ -139,7 +139,7 @@ export class StatusBar extends BaseComponent<Props, State>{
         const fileOutputState = fileOutput && fileOutput.state;
 
         const openOutputJSFile = () => {
-            commands.doOpenOrFocusFile.emit({ filePath: fileOutput.outputFilePath });
+            commands.doToggleFileTab.emit({ filePath: fileOutput.outputFilePath });
         }
 
         const fileOutputStateRendered =

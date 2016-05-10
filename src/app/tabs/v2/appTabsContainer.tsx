@@ -250,10 +250,27 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 ui.notifyWarningNormalDisappear('Your current tab needs to be a TypeScript file in project and project should have compileOnSave enabled');
                 return;
             }
-            /** TODO: create a command toggleTabToRight */
-            commands.doOpenOrFocusFile.emit({
+            commands.doToggleFileTab.emit({
                 filePath: outputStatus.outputFilePath
             });
+        });
+        commands.doToggleFileTab.on(({filePath}) => {
+            // If tab is open we just close it
+            const existing = this.tabs.find(t => {
+                return utils.getFilePathFromUrl(t.url) == filePath;
+            });
+            if (existing) {
+                this.tabState.closeTabById(existing.id);
+                return;
+            }
+
+            // Othewise we open the tab, and select back to the current tab
+            const currentTabId = this.selectedTabInstance && this.selectedTabInstance.id;
+            commands.doOpenOrActivateFileTab.emit({ filePath });
+            this.moveCurrentTabRightIfAny();
+            if (currentTabId) {
+                this.tabState.triggerFocusAndSetAsSelected(currentTabId)
+            }
         });
         commands.openFileFromDisk.on(() => {
             ui.comingSoon("Open a file from the server disk");
@@ -995,8 +1012,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         closeCurrentTab: () => {
             if (!this.selectedTabInstance) return;
 
-            this.tabHandle[this.selectedTabInstance.id].triggerClose();
+            this.tabState.closeTabById(this.selectedTabInstance.id);
         },
+        closeTabById: (id: string) => {
+            this.tabHandle[id].triggerClose();
+        }
 
         /**
          * Fast tab jumping
