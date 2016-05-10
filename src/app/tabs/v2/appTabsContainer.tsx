@@ -1016,7 +1016,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         },
         closeTabById: (id: string) => {
             this.tabHandle[id].triggerClose();
-        }
+        },
 
         /**
          * Fast tab jumping
