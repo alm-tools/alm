@@ -133,9 +133,14 @@ export class StatusBar extends BaseComponent<Props, State>{
                      </span>}
             </span>;
 
-        const fileOutputState = protocol !== 'file' ? null
+        const fileOutput = protocol !== 'file' ? null
             : !this.props.outputStatusCache[filePath] ? null
-            : this.props.outputStatusCache[filePath].state;
+            : this.props.outputStatusCache[filePath]
+        const fileOutputState = fileOutput && fileOutput.state;
+
+        const openOutputJSFile = () => {
+            commands.doOpenOrFocusFile.emit({ filePath: fileOutput.outputFilePath });
+        }
 
         const fileOutputStateRendered =
             fileOutputState
@@ -144,8 +149,8 @@ export class StatusBar extends BaseComponent<Props, State>{
                 {
                     fileOutputState === types.JSOutputState.EmitSkipped ? null
                     : fileOutputState === types.JSOutputState.NoJSFile ? null
-                    : fileOutputState === types.JSOutputState.JSOutOfDate ? <span style={csx.extend(styles.statusBarError,{transition: 'color .5s'})}>❌ JS Outdated</span>
-                    : <span style={csx.extend(styles.statusBarSuccess,{transition: 'color .5s'})}>✓ JS Current</span>
+                    : fileOutputState === types.JSOutputState.JSOutOfDate ? <span style={csx.extend(styles.statusBarError,{transition: 'color .5s', cursor:'pointer'})} onClick={openOutputJSFile}>❌ JS Outdated</span>
+                    : <span style={csx.extend(styles.statusBarSuccess,{transition: 'color .5s', cursor:'pointer'})} onClick={openOutputJSFile}>✓ JS Current</span>
                 }
                 </span>
             </span>;
@@ -196,7 +201,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                     {
                         this.props.liveBuildResults.builtCount !== this.props.liveBuildResults.totalCount &&
                         <span style={csx.extend(styles.statusBarSection)}>
-                            <Progress current={this.props.liveBuildResults.builtCount} total={this.props.liveBuildResults.totalCount}> 
+                            <Progress current={this.props.liveBuildResults.builtCount} total={this.props.liveBuildResults.totalCount}>
                                 {this.props.liveBuildResults.builtCount} / {this.props.liveBuildResults.totalCount}
                             </Progress>
                         </span>
