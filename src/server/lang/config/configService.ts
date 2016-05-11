@@ -9,13 +9,6 @@
 import * as utils from "../../../common/utils";
 import * as lsh from "../../../languageServiceHost/languageServiceHost";
 
-const isSupportedFile = (filePath:string) => {
-    const supportedFileNames = {
-        'tsconfig.json': true
-    }
-    const fileName = utils.getFileName(filePath);
-    return !!supportedFileNames[fileName];
-}
 /**
  * A simpler project, wraps LanguageServiceHost and LanguageService
  * with default options we need for config purposes
@@ -30,14 +23,41 @@ class Project {
         });
         this.languageService = ts.createLanguageService(this.languageServiceHost, ts.createDocumentRegistry());
     }
+    isSupportedFile = (filePath:string) => {
+        const supportedFileNames = {
+            'tsconfig.json': true
+        }
+        const fileName = utils.getFileName(filePath);
+        return !!supportedFileNames[fileName];
+    }
 }
 const project = new Project();
 
 
 import * as fmc from "../../disk/fileModelCache";
-// TODO:
 // On open add
 // On edit edit
 // On save reload
+fmc.didOpenFile.on(e => {
+    if (project.isSupportedFile(e.filePath)) {
+        project.languageServiceHost.addScript(e.filePath, e.contents);
+    }
+});
+fmc.didEdit.on(e => {
+    if (project.isSupportedFile(e.filePath)) {
+        const {filePath, edit: codeEdit} = e;
+        project.languageServiceHost.applyCodeEdit(filePath, codeEdit.from, codeEdit.to, codeEdit.newText);
+    }
+});
+fmc.savedFileChangedOnDisk.on(e => {
+    if (project.isSupportedFile(e.filePath)) {
+        project.languageServiceHost.setContents(e.filePath, e.contents);
+    }
+});
+
+// TODO:
 // On edit debounce error update
 // Provide autocomplete
+const debouncedErrorUpdate = (filePath: string) => {
+    // Unlike the big brother Project this one only does live linting on the current file
+}
