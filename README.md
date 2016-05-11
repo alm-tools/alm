@@ -43,7 +43,7 @@ Now open it in your favorite browser (pssst `chrome`) at the URL mentioned in yo
 But since its good to show a list so in no particular order and incomplete list:
 
 * [x] Super slick syntax highlighting just for TypeScript
-* [x] TABS
+* [x] Tabs
 * [x] Panes
 * [x] Live file linting
 * [x] Project wide linting
@@ -74,6 +74,8 @@ But since its good to show a list so in no particular order and incomplete list:
 * [x] Matching bracking jumping
 * [x] TypeScript formatting
 * [x] editorconfig support
+* [x] HTML to TSX/JSX
+* [x] CSS to TS/JS
 * [x] File Tree
 * [x] On screen hints around current options (e.g. tree view)
 * [ ] [Add the feature you liked the most 🌹](https://github.com/alm-tools/alm/pulls)
