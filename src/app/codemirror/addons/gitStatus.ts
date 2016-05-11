@@ -80,6 +80,30 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
     } = Object.create(null);
     const refreshGitStatus = () => {
         server.gitDiff({ filePath }).then((res) => {
+            // Since this function is debounced and async the true editor text might
+            // not be what the server thought. So we might have lines out of bounds in the response.
+            // Lets fix that
+            const maxLineNumber = cm.getDoc().lineCount() - 1;
+            res.added = res.added.filter(x => {
+                return x.from <= maxLineNumber
+            });
+            res.modified = res.modified.filter(x => {
+                return x.from <= maxLineNumber
+            });
+            res.removed = res.removed.filter(x => {
+                return x <= maxLineNumber
+            });
+            res.added.forEach(x => {
+                if (x.to > maxLineNumber) {
+                    x.to = maxLineNumber;
+                }
+            });
+            res.modified.forEach(x => {
+                if (x.to > maxLineNumber) {
+                    x.to = maxLineNumber;
+                }
+            });
+
             // We need to update the current gitDiffStatusMap as
             // because *CM markers move as lines get added / deleted*.
             Object.keys(gitDiffStatusMap).forEach(_line => {
