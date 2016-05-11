@@ -15,6 +15,7 @@
     "tscw": "ntsc -p ./src -w",
     "uts": "npm install ntypescript@latest --save --save-exact && npm run tsc",
     "ucm": "npm install codemirror@latest --save --save-exact && npm run tsc",
+    "preversion": "npm run tsc",
     "postversion": "git push --follow-tags",
     "mochaw": "mocha ./src/tests -w"
   },
