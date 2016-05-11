@@ -81,8 +81,17 @@ export function getLinkedDoc(filePath: string): Promise<GetLinkedDocResponse> {
             if (isTsFile) {
                 (linkedDoc as any).on('beforeChange', (doc: CodeMirror.Doc, change: CodeMirror.EditorChange) => {
 
+                    // console.log(change); // DEBUG
+
                     // Jumpy needs to use the same event
                     if (doc._jumpyShown) return;
+
+                    // This is just the user pressing backspace on an empty file.
+                    // If we let it go through then the classifier cache will crash.
+                    // So abort
+                    if (change.from.line === change.to.line && change.from.ch === change.to.ch && change.text.length === 1 && change.text[0].length === 0){
+                        return;
+                    }
 
                     let codeEdit: CodeEdit = {
                         from: { line: change.from.line, ch: change.from.ch },
