@@ -30,7 +30,7 @@ Run it passing in the directory you want to serve up:
 alm .
 ```
 
-Now open it in your favorite browser (pssst `chrome`) at the URL mentioned in your console. (**protip** use `alm -o`)
+Now open it in `chrome` at the URL mentioned in your console. (**protip** use `alm -o` if your default browser is chrome)
 
 ![main](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/main.png)
 
