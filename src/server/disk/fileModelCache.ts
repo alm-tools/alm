@@ -10,6 +10,7 @@ export var savedFileChangedOnDisk = new TypedEvent<{ filePath: string; contents:
 export var didEdit = new TypedEvent<{ filePath: string; edit: CodeEdit }>();
 export var didStatusChange = new TypedEvent<types.FileStatus>();
 export var editorOptionsChanged = new TypedEvent<{filePath: string; editorOptions: types.EditorOptions}>();
+export var didOpenFile = new TypedEvent<{filePath: string, contents: string}>();
 
 let openFiles: FileModel[] = [];
 export function getOpenFile(filePath: string) {
@@ -28,6 +29,10 @@ export function getOrCreateOpenFile(filePath: string, autoCreate = false) {
 
         file = new FileModel({
             filePath: filePath
+        });
+        didOpenFile.emit({
+            filePath,
+            contents: file.getContents()
         });
         file.onSavedFileChangedOnDisk.on((evt) => {
             savedFileChangedOnDisk.emit({ filePath, contents: evt.contents });
