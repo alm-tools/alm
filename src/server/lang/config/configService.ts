@@ -11,7 +11,7 @@ import * as lsh from "../../../languageServiceHost/languageServiceHost";
 
 type SupportedFileConfig = {
     // For `.json` files we add some *var* declaration as a prefix into the code we feed to the langauge service
-    offset: string;
+    prelude?: string;
 }
 
 /**
@@ -30,7 +30,9 @@ class Project {
     }
     isSupportedFile = (filePath: string): SupportedFileConfig | null => {
         const supportedFileNames: { [filename: string]: SupportedFileConfig } = {
-            'tsconfig.json': { offset: 'export = ' }
+            'tsconfig.json': {
+                prelude: 'export = ',
+            }
         }
         const fileName = utils.getFileName(filePath);
         return supportedFileNames[fileName];
@@ -52,6 +54,7 @@ fmc.didEdit.on(e => {
     if (project.isSupportedFile(e.filePath)) {
         const {filePath, edit: codeEdit} = e;
         project.languageServiceHost.applyCodeEdit(filePath, codeEdit.from, codeEdit.to, codeEdit.newText);
+        debouncedErrorUpdate(filePath);
     }
 });
 fmc.savedFileChangedOnDisk.on(e => {
@@ -63,6 +66,6 @@ fmc.savedFileChangedOnDisk.on(e => {
 // TODO:
 // On edit debounce error update
 // Provide autocomplete
-const debouncedErrorUpdate = (filePath: string) => {
+const debouncedErrorUpdate = utils.debounce((filePath: string) => {
     // Unlike the big brother Project this one only does live linting on the current file
-}
+}, 500);

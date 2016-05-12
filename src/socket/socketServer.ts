@@ -17,6 +17,12 @@ import * as activeProjectConfig from "../server/disk/activeProjectConfig";
 import {errorsCache} from "../server/globalErrorCache";
 import * as projectServiceMaster from "../server/workers/lang/projectServiceMaster";
 
+/**
+ * Support editing config files
+ */
+import * as configService from "../server/lang/config/configService";
+const ensureImport = configService;
+
 namespace Server {
     export var echo: typeof contract.server.echo = (data, client) => {
         console.log('Echo request received:', data);
