@@ -21,7 +21,6 @@ import * as projectServiceMaster from "../server/workers/lang/projectServiceMast
  * Support editing config files
  */
 import * as configService from "../server/lang/config/configService";
-const ensureImport = configService;
 
 namespace Server {
     export var echo: typeof contract.server.echo = (data, client) => {
@@ -135,7 +134,14 @@ namespace Server {
     /**
      * Project service
      */
-    export var getCompletionsAtPosition : typeof contract.server.getCompletionsAtPosition = projectServiceMaster.worker.getCompletionsAtPosition;
+    export var getCompletionsAtPosition: typeof contract.server.getCompletionsAtPosition = (query) => {
+        if (configService.project.isSupportedFile(query.filePath)) {
+            return configService.getCompletionsAtPosition(query);
+        }
+        else {
+            return projectServiceMaster.worker.getCompletionsAtPosition(query);
+        }
+    }
     export var quickInfo : typeof contract.server.quickInfo = projectServiceMaster.worker.quickInfo;
     export var getRenameInfo : typeof contract.server.getRenameInfo = projectServiceMaster.worker.getRenameInfo;
     export var getDefinitionsAtPosition : typeof contract.server.getDefinitionsAtPosition = projectServiceMaster.worker.getDefinitionsAtPosition;

@@ -7,7 +7,9 @@
  * tsconfig.json
  */
 import * as utils from "../../../common/utils";
+import {Types} from "../../../socket/socketContract";
 import * as lsh from "../../../languageServiceHost/languageServiceHost";
+import fuzzaldrin = require('fuzzaldrin');
 
 type SupportedFileConfig = {
     // For `.json` files we add some *var* declaration as a prefix into the code we feed to the langauge service
@@ -38,7 +40,7 @@ class Project {
         return supportedFileNames[fileName];
     }
 }
-const project = new Project();
+export const project = new Project();
 
 
 import * as fmc from "../../disk/fileModelCache";
@@ -77,3 +79,115 @@ fmc.savedFileChangedOnDisk.on(e => {
 const debouncedErrorUpdate = utils.debounce((filePath: string) => {
     // Unlike the big brother Project this one only does live linting on the current file
 }, 500);
+
+/**
+ * Provide autocomplete
+ */
+export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQuery): Promise<Types.GetCompletionsAtPositionResponse> {
+     const {filePath, position, prefix} = query;
+     const service = project.languageService;
+
+     const completions: ts.CompletionInfo = service.getCompletionsAtPosition(filePath, position);
+     let completionList = completions ? completions.entries.filter(x=> !!x) : [];
+     const endsInPunctuation = utils.prefixEndsInPunctuation(prefix);
+
+     if (prefix.length && prefix.trim().length && !endsInPunctuation) {
+         // Didn't work good for punctuation
+         completionList = fuzzaldrin.filter(completionList, prefix.trim(), { key: 'name' });
+     }
+
+     /** Doing too many suggestions is slowing us down in some cases */
+     let maxSuggestions = 50;
+     /** Doc comments slow us down tremendously */
+     let maxDocComments = 10;
+
+     // limit to maxSuggestions
+     if (completionList.length > maxSuggestions) completionList = completionList.slice(0, maxSuggestions);
+
+     // Potentially use it more aggresively at some point
+     // This queries the langauge service so its a bit slow
+     function docComment(c: ts.CompletionEntry): {
+         /** The display parts e.g. (a:number)=>string */
+         display: string;
+         /** The doc comment */
+         comment: string;
+     } {
+         const completionDetails = project.languageService.getCompletionEntryDetails(filePath, position, c.name);
+         const comment = ts.displayPartsToString(completionDetails.documentation || []);
+
+         // Show the signatures for methods / functions
+         var display: string;
+         if (c.kind == "method" || c.kind == "function" || c.kind == "property") {
+             let parts = completionDetails.displayParts || [];
+             // don't show `(method)` or `(function)` as that is taken care of by `kind`
+             if (parts.length > 3) {
+                 parts = parts.splice(3);
+             }
+             display = ts.displayPartsToString(parts);
+         }
+         else {
+             display = '';
+         }
+         display = display.trim();
+
+         return { display: display, comment: comment };
+     }
+
+     let completionsToReturn: Types.Completion[] = completionList.map((c, index) => {
+         if (index < maxDocComments) {
+             var details = docComment(c);
+         }
+         else {
+             details = {
+                 display: '',
+                 comment: ''
+             }
+         }
+         return {
+             name: c.name,
+             kind: c.kind,
+             comment: details.comment,
+             display: details.display
+         };
+     });
+
+     /**
+      * Add function signature help
+      */
+     if (query.prefix == '(') {
+         const signatures = service.getSignatureHelpItems(query.filePath, query.position);
+         if (signatures && signatures.items) {
+             signatures.items.forEach((item) => {
+                 const template: string = item.parameters.map((p, i) => {
+                     const display = '${' + (i + 1) + ':' + ts.displayPartsToString(p.displayParts) + '}';
+                     return display;
+                 }).join(ts.displayPartsToString(item.separatorDisplayParts));
+
+                 const name: string = item.parameters.map((p)=>ts.displayPartsToString(p.displayParts))
+                     .join(ts.displayPartsToString(item.separatorDisplayParts));
+
+                 // e.g. test(something:string):any;
+                 // prefix: test(
+                 // template: ${something}
+                 // suffix: ): any;
+                 const description: string =
+                     ts.displayPartsToString(item.prefixDisplayParts)
+                     + template
+                     + ts.displayPartsToString(item.suffixDisplayParts);
+
+                 completionsToReturn.unshift({
+                     snippet: {
+                         template,
+                         name,
+                         description: description
+                     }
+                 });
+             });
+         }
+     }
+
+     return utils.resolve({
+         completions: completionsToReturn,
+         endsInPunctuation: endsInPunctuation
+     });
+ }
