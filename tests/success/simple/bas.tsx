@@ -15,17 +15,17 @@ function test(a, b?, c?) {
 }
 
 let dom = <div>
-    <img/>
+  <img/>
 </div>
 
 class Test {
-    private foo = 123;
-    test() {
-        return 'asdf' + `${this.foo}`;
-    }
+  private foo = 123;
+  test() {
+    return 'asdf' + `${this.foo}`;
+  }
 }
 
 const Comp = (props: { text: string }) => {
-    return <div>{props.text}</div>
+  return <div>{props.text}</div>
 }
 const comp = <Comp text="hello world"/>
