@@ -9,6 +9,7 @@ import {ExtendedCodeMirrorHint, render, isCompletionActive} from "./autocomplete
 import * as types from "../../../../common/types";
 import * as state from "../../../state/state";
 import * as jumpy from "../jumpy";
+import * as utils from "../../../../common/utils";
 
 require('./autocomplete.css');
 import * as templates from "./templates";
@@ -196,8 +197,8 @@ export class AutoCompleter {
             }
         }
 
-        // if in active project
-        if (state.inActiveProjectFilePath(editor.filePath)) {
+        // if in active project or a supported config file
+        if (state.inActiveProjectFilePath(editor.filePath) || utils.isSupportedConfigFile(editor.filePath)) {
             server.getCompletionsAtPosition({ filePath: this.filePath, position, prefix }).then(res=> {
                 if (this.lastRequest !== position){
                     cb(null);
