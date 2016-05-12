@@ -22,6 +22,14 @@ type Thenable<T> = Promise<T>;
  * Register our schemas
  * Mostly downloaded from http://json.schemastore.org/
  */
-const schemas = [
-    require('./schemas/tsconfig.json')
+const schemas: { fileName: string, content: JsonSchema.IJSONSchema }[] = [
+    {
+        fileName: 'tsconfig.json',
+        content: require('./schemas/tsconfig.json')
+    }
 ];
+
+const schemaService = new SchemaService.JSONSchemaService();
+schemas.forEach(config => {
+    schemaService.registerExternalSchema(config.fileName, [config.fileName], config.content);
+});
