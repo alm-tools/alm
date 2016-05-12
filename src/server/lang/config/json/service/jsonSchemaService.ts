@@ -13,8 +13,8 @@
 
 import Json = require('../jsonc');
 import {IJSONSchema, IJSONSchemaMap} from '../jsonSchema';
-import URI from './utils/uri';
-import Strings = require('./utils/strings');
+import URI from '../utils/uri';
+import Strings = require('../utils/strings');
 import Parser = require('../jsonParser');
 import {localize} from "../localize";
 type Thenable<T> = Promise<T>;

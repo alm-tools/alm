@@ -17,3 +17,11 @@ import SchemaService = require('./jsonSchemaService');
 import JsonSchema = require('../jsonSchema');
 import {localize} from "../localize";
 type Thenable<T> = Promise<T>;
+
+/**
+ * Register our schemas
+ * Mostly downloaded from http://json.schemastore.org/
+ */
+const schemas = [
+    require('./schemas/tsconfig.json')
+];

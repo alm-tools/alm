@@ -1,0 +1,255 @@
+{
+  "title": "JSON schema for the TypeScript compiler's configuration file",
+  "$schema": "http://json-schema.org/draft-04/schema#",
+
+  "definitions": {
+    "filesDefinition": {
+      "properties": {
+        "files": {
+          "type": "array",
+          "description": "If no 'files' property is present in a tsconfig.json, the compiler defaults to including all files the containing directory and subdirectories. When a 'files' property is specified, only those files are included.",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "not": {
+        "required": [ "exclude" ]
+      }
+    },
+    "excludeDefinition": {
+      "properties": {
+        "exclude": {
+          "type": "array",
+          "description": "The 'exclude' property cannot be used in conjunction with the 'files' property. If both are specified then the 'files' property takes precedence.",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "not": {
+        "required": [ "files" ]
+      }
+    },
+    "compileOnSaveDefinition": {
+      "properties": {
+        "compileOnSave": {
+          "type": "boolean",
+          "description": "Enable Compile-on-Save for this project."
+        }
+      }
+    },
+    "compilerOptionsDefinition": {
+      "properties": {
+        "compilerOptions": {
+          "type": "object",
+          "description": "Instructs the TypeScript compiler how to compile .ts files",
+          "properties": {
+            "charset": {
+              "description": "The character set of the input files.",
+              "type": "string"
+            },
+            "declaration": {
+              "description": "Generates corresponding d.ts files.",
+              "type": "boolean"
+            },
+            "diagnostics": {
+              "description": "Show diagnostic information.",
+              "type": "boolean"
+            },
+            "emitBOM": {
+              "description": "Emit a UTF-8 Byte Order Mark (BOM) in the beginning of output files.",
+              "type": "boolean"
+            },
+            "inlineSourceMap": {
+              "description": "Emit a single file with source maps instead of having a separate file.",
+              "type": "boolean"
+            },
+            "inlineSources": {
+              "description": "Emit the source alongside the sourcemaps within a single file; requires --inlineSourceMap to be set.",
+              "type": "boolean"
+            },
+            "jsx": {
+              "description": "Specify JSX code generation: 'preserve' or 'react'.",
+              "enum": [ "preserve", "react" ]
+            },
+            "reactNamespace": {
+              "description": "Specifies the object invoked for createElement and __spread when targeting 'react' JSX emit.",
+              "type": "string"
+            },
+            "listFiles": {
+              "description": "Print names of files part of the compilation.",
+              "type": "boolean"
+            },
+            "locale": {
+              "description": "The locale to use to show error messages, e.g. en-us.",
+              "type": "string"
+            },
+            "mapRoot": {
+              "description": "Specifies the location where debugger should locate map files instead of generated locations",
+              "type": "string",
+              "format": "uri"
+            },
+            "module": {
+              "description": "Specify module code generation: 'none', 'CommonJS', 'Amd', 'System', 'UMD', or 'es2015'.",
+              "enum": [ "commonjs", "amd", "umd", "system", "es6", "es2015", "none" ]
+            },
+            "newLine": {
+              "description": "Specifies the end of line sequence to be used when emitting files: 'CRLF' (dos) or 'LF' (unix).",
+              "enum": [ "CRLF", "LF" ]
+            },
+            "noEmit": {
+              "description": "Do not emit output.",
+              "type": "boolean"
+            },
+            "noEmitHelpers": {
+              "description": "Do not generate custom helper functions like __extends in compiled output.",
+              "type": "boolean"
+            },
+            "noEmitOnError": {
+              "description": "Do not emit outputs if any type checking errors were reported.",
+              "type": "boolean"
+            },
+            "noImplicitAny": {
+              "description": "Warn on expressions and declarations with an implied 'any' type.",
+              "type": "boolean"
+            },
+            "noLib": {
+              "description": "Do not include the default library file (lib.d.ts).",
+              "type": "boolean"
+            },
+            "noResolve": {
+              "description": "Do not add triple-slash references or module import targets to the list of compiled files.",
+              "type": "boolean"
+            },
+            "skipDefaultLibCheck": {
+              "type": "boolean"
+            },
+            "outFile": {
+              "description": "Concatenate and emit output to single file.",
+              "type": "string",
+              "format": "uri"
+            },
+            "outDir": {
+              "description": "Redirect output structure to the directory.",
+              "type": "string",
+              "format": "uri"
+            },
+            "preserveConstEnums": {
+              "description": "Do not erase const enum declarations in generated code.",
+              "type": "boolean"
+            },
+            "pretty": {
+              "description": "Stylize errors and messages using color and context. (experimental)",
+              "type": "boolean"
+            },
+            "removeComments": {
+              "description": "Do not emit comments to output.",
+              "type": "boolean"
+            },
+            "rootDir": {
+              "description": "Specifies the root directory of input files. Use to control the output directory structure with --outDir.",
+              "type": "string",
+              "format": "uri"
+            },
+            "isolatedModules": {
+              "description": "Unconditionally emit imports for unresolved files.",
+              "type": "boolean"
+            },
+            "sourceMap": {
+              "description": "Generates corresponding '.map' file.",
+              "type": "boolean"
+            },
+            "sourceRoot": {
+              "description": "Specifies the location where debugger should locate TypeScript files instead of source locations.",
+              "type": "string",
+              "format": "uri"
+            },
+            "suppressExcessPropertyErrors": {
+              "description": "Suppress excess property checks for object literals.",
+              "type": "boolean"
+            },
+            "suppressImplicitAnyIndexErrors": {
+              "description": "Suppress noImplicitAny errors for indexing objects lacking index signatures.",
+              "type": "boolean"
+            },
+            "stripInternal": {
+              "description": "Do not emit declarations for code that has an '@internal' annotation.",
+              "type": "boolean"
+            },
+            "target": {
+              "description": "Specify ECMAScript target version. Permitted values are 'es3', 'es5', or 'es2015'.",
+              "type": "string",
+              "pattern": "^([eE][sS]([356]|(2015)))$",
+              "default": "es3"
+            },
+            "watch": {
+              "description": "Watch input files.",
+              "type": "boolean"
+            },
+            "experimentalDecorators": {
+              "description": "Enables experimental support for ES7 decorators.",
+              "type": "boolean"
+            },
+            "emitDecoratorMetadata": {
+              "description": "Emit design-type metadata for decorated declarations in source.",
+              "type": "boolean"
+            },
+            "moduleResolution": {
+              "description": "Specifies module resolution strategy: 'node' (Node) or 'classic' (TypeScript pre 1.6) .",
+              "type": "string",
+              "pattern": "^(([Nn]ode)|([Cc]lassic))$",
+              "default": "classic"
+            },
+            "allowUnusedLabels": {
+              "type": "boolean",
+              "description": "Do not report errors on unused labels."
+            },
+            "noImplicitReturns": {
+              "type": "boolean",
+              "description": "Report error when not all code paths in function return a value."
+            },
+            "noFallthroughCasesInSwitch": {
+              "type": "boolean",
+              "description": "Report errors for fallthrough cases in switch statement."
+            },
+            "allowUnreachableCode": {
+              "type": "boolean",
+              "description": "Do not report errors on unreachable code."
+            },
+            "forceConsistentCasingInFileNames": {
+              "type": "boolean",
+              "description": "Disallow inconsistently-cased references to the same file."
+            },
+            "allowSyntheticDefaultImports": {
+              "type": "boolean",
+              "description": "Allow default imports from modules with no default export. This does not affect code emit, just typechecking."
+            },
+            "allowJs": {
+              "type": "boolean",
+              "description": "Allow javascript files to be compiled."
+            },
+            "noImplicitUseStrict": {
+              "type": "boolean",
+              "description": "Do not emit \"use strict\" directives in module output."
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "type": "object",
+  "allOf": [
+    { "$ref": "#/definitions/compilerOptionsDefinition" },
+    { "$ref": "#/definitions/compileOnSaveDefinition" },
+    {
+      "anyOf": [
+        { "$ref": "#/definitions/filesDefinition" },
+        { "$ref": "#/definitions/excludeDefinition" }
+      ]
+    }
+  ]
+}
