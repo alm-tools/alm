@@ -24,7 +24,13 @@ export function gitStatus(args:{}): Promise<string> {
 
 export function gitReset(args:{filePath:string}): Promise<string> {
     fmc.saveOpenFile(args.filePath);
-    return gitCmd('checkout --',args.filePath);
+    // Delay because if we reset the file immediately the ^ save
+    // makes the *change* detection in file model view to ignore what happened.
+    return new Promise((resolve,reject) =>
+        setTimeout(() => {
+            gitCmd('checkout --', args.filePath).then(resolve, reject);
+        }, 500)
+    );
 }
 
 /**
