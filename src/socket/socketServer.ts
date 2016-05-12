@@ -9,6 +9,7 @@ import {FileModel} from "../server/disk/fileModel";
 import * as gitService from "../server/workers/external/gitService";
 import * as findAndReplaceMultiService from "../server/workers/external/findAndReplaceMultiService";
 import * as session from "../server/disk/session";
+import * as utils from "../common/utils";
 let resolve = sls.resolve;
 
 import * as fmc from "../server/disk/fileModelCache";
@@ -135,7 +136,7 @@ namespace Server {
      * Project service
      */
     export var getCompletionsAtPosition: typeof contract.server.getCompletionsAtPosition = (query) => {
-        if (configService.project.isSupportedFile(query.filePath)) {
+        if (utils.isSupportedConfigFile(query.filePath)) {
             return configService.getCompletionsAtPosition(query);
         }
         else {

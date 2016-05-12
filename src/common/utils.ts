@@ -436,3 +436,16 @@ export function timer() {
         }
     }
 }
+
+
+const supportedConfigFileNames: { [fileName: string]: boolean } = {
+    'tsconfig.json': true
+}
+/**
+ * Files for which we have some intelligence
+ */
+export function isSupportedConfigFile(filePath: string): boolean {
+
+    const fileName = getFileName(filePath);
+    return !!supportedConfigFileNames[fileName];
+}

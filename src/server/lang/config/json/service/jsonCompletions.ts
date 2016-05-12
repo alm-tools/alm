@@ -33,3 +33,20 @@ const schemaService = new SchemaService.JSONSchemaService();
 schemas.forEach(config => {
     schemaService.registerExternalSchema(config.fileName, [config.fileName], config.content);
 });
+
+
+/**
+ * BAS: My functions
+ */
+import {Types}  from "../../../../../socket/socketContract";
+import * as utils from "../../../../../common/utils";
+export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQuery): Promise<Types.GetCompletionsAtPositionResponse> {
+    const {filePath, prefix} = query;
+    const completionsToReturn: Types.Completion[] = [];
+    const endsInPunctuation = utils.prefixEndsInPunctuation(prefix);
+
+    return utils.resolve({
+        completions: completionsToReturn,
+        endsInPunctuation: endsInPunctuation
+    });
+}
