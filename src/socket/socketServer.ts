@@ -21,7 +21,7 @@ import * as projectServiceMaster from "../server/workers/lang/projectServiceMast
 /**
  * Support editing config files
  */
-import * as configService from "../server/lang/config/configService";
+import * as jsonCompletions from "../server/lang/config/json/service/jsonCompletions";
 
 namespace Server {
     export var echo: typeof contract.server.echo = (data, client) => {
@@ -137,7 +137,7 @@ namespace Server {
      */
     export var getCompletionsAtPosition: typeof contract.server.getCompletionsAtPosition = (query) => {
         if (utils.isSupportedConfigFile(query.filePath)) {
-            return configService.getCompletionsAtPosition(query);
+            return jsonCompletions.getCompletionsAtPosition(query);
         }
         else {
             return projectServiceMaster.worker.getCompletionsAtPosition(query);

@@ -40,10 +40,21 @@ schemas.forEach(config => {
  */
 import {Types}  from "../../../../../socket/socketContract";
 import * as utils from "../../../../../common/utils";
+import * as fmc from "../../../../disk/fileModelCache";
 export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQuery): Promise<Types.GetCompletionsAtPositionResponse> {
     const {filePath, prefix} = query;
     const completionsToReturn: Types.Completion[] = [];
     const endsInPunctuation = utils.prefixEndsInPunctuation(prefix);
+
+    const contents = fmc.getOrCreateOpenFile(filePath).getContents();
+    const doc = Parser.parse(contents);
+    if (!doc.errors.length) {
+        doc.validate(schemas[0].content);
+        console.log('Schema Validation:',doc.errors,doc.warnings);
+    }
+    else {
+        console.log('Parse Errors:', doc.errors);
+    }
 
     return utils.resolve({
         completions: completionsToReturn,
