@@ -32,6 +32,107 @@ const request = (options: XHROptions): Thenable<XHRResponse> => {
 }
 // TODO: json ^ request-lite
 
+/**
+ * Copied straight out of JSONSchemaService
+ * Resolves *links* in schema definitions
+ * NOTE: Mutates the argument `schema` too!
+ */
+export function resolveSchemaContent(schema: IJSONSchema): Thenable<ResolvedSchema> {
+
+    let resolveErrors: string[] = [];
+
+    let findSection = (schema: IJSONSchema, path: string): any => {
+        if (!path) {
+            return schema;
+        }
+        let current: any = schema;
+        path.substr(1).split('/').some((part) => {
+            current = current[part];
+            return !current;
+        });
+        return current;
+    };
+
+    let resolveLink = (node: any, linkedSchema: IJSONSchema, linkPath: string): void => {
+        let section = findSection(linkedSchema, linkPath);
+        if (section) {
+            for (let key in section) {
+                if (section.hasOwnProperty(key) && !node.hasOwnProperty(key)) {
+                    node[key] = section[key];
+                }
+            }
+        } else {
+            resolveErrors.push(localize('json.schema.invalidref', '$ref \'{0}\' in {1} can not be resolved.', linkPath, linkedSchema.id));
+        }
+        delete node.$ref;
+    };
+
+    let resolveExternalLink = (node: any, uri: string, linkPath: string): Thenable<any> => {
+        return this.getOrAddSchemaHandle(uri).getUnresolvedSchema().then(unresolvedSchema => {
+            if (unresolvedSchema.errors.length) {
+                let loc = linkPath ? uri + '#' + linkPath : uri;
+                resolveErrors.push(localize('json.schema.problemloadingref', 'Problems loading reference \'{0}\': {1}', loc, unresolvedSchema.errors[0]));
+            }
+            resolveLink(node, unresolvedSchema.schema, linkPath);
+            return resolveRefs(node, unresolvedSchema.schema);
+        });
+    };
+
+    let resolveRefs = (node: IJSONSchema, parentSchema: IJSONSchema): Thenable<any> => {
+        let toWalk : IJSONSchema[] = [node];
+        let seen: IJSONSchema[] = [];
+
+        let openPromises: Thenable<any>[] = [];
+
+        let collectEntries = (...entries: IJSONSchema[]) => {
+            for (let entry of entries) {
+                if (typeof entry === 'object') {
+                    toWalk.push(entry);
+                }
+            }
+        };
+        let collectMapEntries = (...maps: IJSONSchemaMap[]) => {
+            for (let map of maps) {
+                if (typeof map === 'object') {
+                    for (let key in map) {
+                        let entry = map[key];
+                        toWalk.push(entry);
+                    }
+                }
+            }
+        };
+        let collectArrayEntries = (...arrays: IJSONSchema[][]) => {
+            for (let array of arrays) {
+                if (Array.isArray(array)) {
+                    toWalk.push.apply(toWalk, array);
+                }
+            }
+        };
+        while (toWalk.length) {
+            let next = toWalk.pop();
+            if (seen.indexOf(next) >= 0) {
+                continue;
+            }
+            seen.push(next);
+            if (next.$ref) {
+                let segments = next.$ref.split('#', 2);
+                if (segments[0].length > 0) {
+                    openPromises.push(resolveExternalLink(next, segments[0], segments[1]));
+                    continue;
+                } else {
+                    resolveLink(next, parentSchema, segments[1]);
+                }
+            }
+            collectEntries(next.items, next.additionalProperties, next.not);
+            collectMapEntries(next.definitions, next.properties, next.patternProperties, <IJSONSchemaMap> next.dependencies);
+            collectArrayEntries(next.anyOf, next.allOf, next.oneOf, <IJSONSchema[]> next.items);
+        }
+        return Promise.all(openPromises);
+    };
+
+    return resolveRefs(schema, schema).then(_ => new ResolvedSchema(schema, resolveErrors));
+}
+
 export interface IJSONSchemaService {
 
 	/**

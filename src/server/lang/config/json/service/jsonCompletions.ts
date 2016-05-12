@@ -45,16 +45,21 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
     const {filePath, prefix} = query;
     const completionsToReturn: Types.Completion[] = [];
     const endsInPunctuation = utils.prefixEndsInPunctuation(prefix);
+    const rawSchema = schemas[0].content;
 
     const contents = fmc.getOrCreateOpenFile(filePath).getContents();
     const doc = Parser.parse(contents);
-    if (!doc.errors.length) {
-        doc.validate(schemas[0].content);
-        console.log('Schema Validation:',doc.errors,doc.warnings);
-    }
-    else {
-        console.log('Parse Errors:', doc.errors);
-    }
+
+    SchemaService.resolveSchemaContent(rawSchema).then(res=>{
+        if (!doc.errors.length) {
+            doc.validate(res.schema);
+            console.log('Schema Validation:',doc.errors,doc.warnings);
+        }
+        else {
+            console.log('Parse Errors:', doc.errors);
+        }
+    });
+
 
     return utils.resolve({
         completions: completionsToReturn,
