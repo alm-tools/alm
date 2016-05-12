@@ -11,7 +11,7 @@ import * as lsh from "../../../languageServiceHost/languageServiceHost";
 
 type SupportedFileConfig = {
     // For `.json` files we add some *var* declaration as a prefix into the code we feed to the langauge service
-    prelude?: string;
+    prelude: string;
 }
 
 /**
@@ -46,20 +46,28 @@ import * as fmc from "../../disk/fileModelCache";
 // On edit edit
 // On save reload
 fmc.didOpenFile.on(e => {
-    if (project.isSupportedFile(e.filePath)) {
-        project.languageServiceHost.addScript(e.filePath, e.contents);
+    const config = project.isSupportedFile(e.filePath);
+    if (config) {
+        const prelude = config.prelude + '\n';
+        project.languageServiceHost.addScript(e.filePath, prelude + e.contents);
     }
 });
 fmc.didEdit.on(e => {
-    if (project.isSupportedFile(e.filePath)) {
+    const config = project.isSupportedFile(e.filePath);
+    if (config) {
+        const prelude = config.prelude;
         const {filePath, edit: codeEdit} = e;
-        project.languageServiceHost.applyCodeEdit(filePath, codeEdit.from, codeEdit.to, codeEdit.newText);
+        const from = { line: codeEdit.from.line + 1, ch: codeEdit.from.ch };
+        const to = { line: codeEdit.to.line + 1, ch: codeEdit.to.ch };
+        project.languageServiceHost.applyCodeEdit(filePath, from, to, codeEdit.newText);
         debouncedErrorUpdate(filePath);
     }
 });
 fmc.savedFileChangedOnDisk.on(e => {
-    if (project.isSupportedFile(e.filePath)) {
-        project.languageServiceHost.setContents(e.filePath, e.contents);
+    const config = project.isSupportedFile(e.filePath);
+    if (config) {
+        const prelude = config.prelude + '\n';
+        project.languageServiceHost.setContents(e.filePath, prelude + e.contents);
     }
 });
 
