@@ -78,6 +78,7 @@ But since its good to show a list so in no particular order and incomplete list:
 * [x] CSS to TS/JS
 * [x] File Tree
 * [x] On screen hints around current options (e.g. tree view)
+* [x] Snippets
 * [ ] [Add the feature you liked the most 🌹](https://github.com/alm-tools/alm/pulls)
 
 And of course my favorite:
