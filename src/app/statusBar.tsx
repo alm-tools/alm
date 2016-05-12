@@ -92,12 +92,12 @@ export class StatusBar extends BaseComponent<Props, State>{
 
         const hasActiveProject = this.props.activeProject
             ?<span
-                className="hint--top"
+                className="hint--top-right"
                 data-hint="Active Project path. Click to open project file"
                 style={activeProjectContainerStyle}
                 onClick={()=>this.openFile(this.props.activeProject.tsconfigFilePath)}>
                 <span
-                    className="hint--top"
+                    className="hint--top-right"
                     style={csx.extend(styles.noSelect,styles.statusBarSuccess,styles.hand,{marginRight: '5px'})}
                     data-hint="Active TypeScript Project">
                         <Icon name="heartbeat"/>
@@ -105,7 +105,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                 {this.props.activeProject.name}
             </span>
             :<span
-                className="hint--top"
+                className="hint--top-right"
                 style={csx.extend(styles.statusBarSection, styles.noSelect,styles.statusBarError,styles.hand)}
                 onClick={() => ui.notifyWarningNormalDisappear(`There is no active project. Please select from the available ones <br/> <br/> ${projectTipKeboard}`, { onClick: () => commands.omniSelectProject.emit({}) }) }
                 data-hint="There is no active TypeScript project. Robots deactivated.">
@@ -118,14 +118,14 @@ export class StatusBar extends BaseComponent<Props, State>{
             : <span style={styles.statusBarSection}>
                 {state.inActiveProjectUrl(tab.url)
                     ?<span
-                        className="hint--top hint--success"
+                        className="hint--top-right hint--success"
                         style={csx.extend(styles.noSelect,styles.statusBarSuccess, styles.hand)}
                         onClick={()=>ui.notifySuccessNormalDisappear(`The file is a part of the currently active TypeScript project and we are actively providing code intelligence`)}
                         data-hint="File is part of the currently active project. 💻 providing code intelligence.">
                         <Icon name="eye"/>
                      </span>
                     :<span
-                        className="hint--top"
+                        className="hint--top-right"
                         style={csx.extend(styles.noSelect,styles.statusBarError,styles.hand)}
                         onClick={() => ui.notifyWarningNormalDisappear(`The file is not a part of the currently active TypeScript project <br/> <br/> ${projectTipKeboard}`, { onClick: () => commands.omniSelectProject.emit({}) }) }
                         data-hint="File is not a part of the currently active project. Robots deactivated.">
@@ -171,7 +171,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                     {/* Left sections */}
                     <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)}
                         onClick={this.toggleErrors}
-                        className="hint--top"
+                        className="hint--top-right"
                         data-hint={`${this.props.errorsUpdate.totalCount} errors. Click to toggle message panel.`}>
                         <span style={csx.extend(this.props.errorsUpdate.totalCount?styles.statusBarError:styles.statusBarSuccess,{transition: 'color .4s'})}>
                             {this.props.errorsUpdate.totalCount} <Icon name="times-circle"/>
@@ -181,7 +181,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                     {inActiveProjectSection}
                     {filePath
                         ?<span
-                            className="hint--top"
+                            className="hint--top-right"
                             data-hint="Click to copy the file path to clipboard"
                             data-clipboard-text={filePath.replace(/\//g,commands.windows?'\\':'/')}
                             onClick={()=>ui.notifyInfoQuickDisappear("File path copied to clipboard")}
