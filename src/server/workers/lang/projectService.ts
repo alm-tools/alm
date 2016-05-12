@@ -23,7 +23,7 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
     const service = project.languageService;
 
     const completions: ts.CompletionInfo = service.getCompletionsAtPosition(filePath, position);
-    let completionList = completions ? completions.entries.filter(x=> !!x) : [];
+    let completionList = completions ? completions.entries.filter(x => !!x) : [];
     const endsInPunctuation = utils.prefixEndsInPunctuation(prefix);
 
     if (prefix.length && prefix.trim().length && !endsInPunctuation) {
@@ -98,7 +98,7 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
                     return display;
                 }).join(ts.displayPartsToString(item.separatorDisplayParts));
 
-                const name: string = item.parameters.map((p)=>ts.displayPartsToString(p.displayParts))
+                const name: string = item.parameters.map((p) => ts.displayPartsToString(p.displayParts))
                     .join(ts.displayPartsToString(item.separatorDisplayParts));
 
                 // e.g. test(something:string):any;
@@ -132,8 +132,8 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
     });
     completionsToReturn =
         pathCompletions.length
-        ? pathCompletions.concat(completionsToReturn)
-        : completionsToReturn;
+            ? pathCompletions.concat(completionsToReturn)
+            : completionsToReturn;
 
 
     return resolve({
@@ -189,7 +189,7 @@ export function getRenameInfo(query: Types.GetRenameInfoQuery): Promise<Types.Ge
     if (info && info.canRename) {
         var locations: { [filePath: string]: ts.TextSpan[] } = {};
         project.languageService.findRenameLocations(query.filePath, query.position, findInStrings, findInComments)
-            .forEach(loc=> {
+            .forEach(loc => {
                 if (!locations[loc.fileName]) locations[loc.fileName] = [];
 
                 // Using unshift makes them with maximum value on top ;)
@@ -221,7 +221,7 @@ export function getDefinitionsAtPosition(query: Types.GetDefinitionsAtPositionQu
 
     return resolve({
         projectFileDirectory: projectFileDirectory,
-        definitions: definitions.map(d=> {
+        definitions: definitions.map(d => {
             // If we can get the filename *we are in the same program :P*
             var pos = project.languageServiceHost.getLineAndCharacterOfPosition(d.fileName, d.textSpan.start);
             return {
@@ -251,7 +251,7 @@ export function getDoctorInfo(query: Types.GetDoctorInfoQuery): Promise<Types.Ge
 
     return defPromised.then((defRes) => {
         return quickInfoPromised.then((infoRes) => {
-            return getReferences({filePath,position}).then(refRes=>{
+            return getReferences({ filePath, position }).then(refRes => {
                 const valid = !!defRes.definitions.length || infoRes.valid || !!refRes.references.length || !!langHelp;
                 return {
                     valid,
@@ -335,7 +335,7 @@ export function getNavigateToItems(query: {}): Promise<Types.GetNavigateToItemsR
             node.kind === ts.SyntaxKind.StringLiteral ||
             node.kind === ts.SyntaxKind.NumericLiteral) {
 
-            return (<ts.Identifier | ts.LiteralExpression > node).text;
+            return (<ts.Identifier | ts.LiteralExpression>node).text;
         }
 
         return undefined;
@@ -379,7 +379,7 @@ export function getAST(query: Types.GetASTQuery): Promise<Types.GetASTResponse> 
     let project = getProject(query.filePath);
     var service = project.languageService;
 
-    var files = service.getProgram().getSourceFiles().filter(x=> x.fileName == query.filePath);
+    var files = service.getProgram().getSourceFiles().filter(x => x.fileName == query.filePath);
     if (!files.length) resolve({});
 
     var sourceFile = files[0];
@@ -396,7 +396,7 @@ export function getAST(query: Types.GetASTQuery): Promise<Types.GetASTResponse> 
  * JS Ouput
  */
 import {getRawOutput} from "./modules/building";
-export type GetJSOutputStatusResponse = {inActiveProject:boolean, outputStatus?: types.JSOutputStatus};
+export type GetJSOutputStatusResponse = { inActiveProject: boolean, outputStatus?: types.JSOutputStatus };
 export function getJSOutputStatus(query: Types.FilePathQuery, autoEmit = true): GetJSOutputStatusResponse {
     const project = activeProject.GetProject.ifCurrent(query.filePath);
     if (!project) {
@@ -419,8 +419,8 @@ export function getJSOutputStatus(query: Types.FilePathQuery, autoEmit = true): 
      */
     let state = output.emitSkipped ? types.JSOutputState.EmitSkipped
         : (project.configFile.project.compileOnSave === false) || !jsFile ? types.JSOutputState.NoJSFile
-        : getContents(jsFile.name) === jsFile.text ? types.JSOutputState.JSUpToDate
-        : types.JSOutputState.JSOutOfDate;
+            : getContents(jsFile.name) === jsFile.text ? types.JSOutputState.JSUpToDate
+                : types.JSOutputState.JSOutOfDate;
 
     /**
      * If the state is JSOutOfDate we can easily fix that to bring it up to date for `compileOnSave`
