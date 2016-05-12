@@ -9,6 +9,11 @@
 import * as utils from "../../../common/utils";
 import * as lsh from "../../../languageServiceHost/languageServiceHost";
 
+type SupportedFileConfig = {
+    // For `.json` files we add some *var* declaration as a prefix into the code we feed to the langauge service
+    offset: string;
+}
+
 /**
  * A simpler project, wraps LanguageServiceHost and LanguageService
  * with default options we need for config purposes
@@ -23,12 +28,12 @@ class Project {
         });
         this.languageService = ts.createLanguageService(this.languageServiceHost, ts.createDocumentRegistry());
     }
-    isSupportedFile = (filePath:string) => {
-        const supportedFileNames = {
-            'tsconfig.json': true
+    isSupportedFile = (filePath: string): SupportedFileConfig | null => {
+        const supportedFileNames: { [filename: string]: SupportedFileConfig } = {
+            'tsconfig.json': { offset: 'export = ' }
         }
         const fileName = utils.getFileName(filePath);
-        return !!supportedFileNames[fileName];
+        return supportedFileNames[fileName];
     }
 }
 const project = new Project();
