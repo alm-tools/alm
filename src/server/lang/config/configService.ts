@@ -27,13 +27,14 @@ class Project {
         this.languageServiceHost = new lsh.LanguageServiceHost({
             allowNonTsExtensions: true,
             allowJs: true,
+            noLib: true, // Will result in lots of errors but we don't want lib.d.ts completions
         });
         this.languageService = ts.createLanguageService(this.languageServiceHost, ts.createDocumentRegistry());
     }
     isSupportedFile = (filePath: string): SupportedFileConfig | null => {
         const supportedFileNames: { [filename: string]: SupportedFileConfig } = {
             'tsconfig.json': {
-                prelude: 'export = ',
+                prelude: 'var prelude: {bar: string, bas: "a" | "b"} = ',
             }
         }
         const fileName = utils.getFileName(filePath);
@@ -84,110 +85,104 @@ const debouncedErrorUpdate = utils.debounce((filePath: string) => {
  * Provide autocomplete
  */
 export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQuery): Promise<Types.GetCompletionsAtPositionResponse> {
-     const {filePath, position, prefix} = query;
-     const service = project.languageService;
+    /**
+     * Customizations for json lookup
+     */
+    const config = project.isSupportedFile(query.filePath);
+    const position = query.position + config.prelude.length;
 
-     const completions: ts.CompletionInfo = service.getCompletionsAtPosition(filePath, position);
-     let completionList = completions ? completions.entries.filter(x=> !!x) : [];
-     const endsInPunctuation = utils.prefixEndsInPunctuation(prefix);
+    /** The rest is conventional get completions logic: */
 
-     if (prefix.length && prefix.trim().length && !endsInPunctuation) {
-         // Didn't work good for punctuation
-         completionList = fuzzaldrin.filter(completionList, prefix.trim(), { key: 'name' });
-     }
+    const {filePath, prefix} = query;
+    const service = project.languageService;
 
-     /** Doing too many suggestions is slowing us down in some cases */
-     let maxSuggestions = 50;
-     /** Doc comments slow us down tremendously */
-     let maxDocComments = 10;
+    const completions: ts.CompletionInfo = service.getCompletionsAtPosition(filePath, position);
+    let completionList = completions ? completions.entries.filter(x => !!x) : [];
+    const endsInPunctuation = utils.prefixEndsInPunctuation(prefix);
 
-     // limit to maxSuggestions
-     if (completionList.length > maxSuggestions) completionList = completionList.slice(0, maxSuggestions);
+    if (prefix.length && prefix.trim().length && !endsInPunctuation) {
+        // Didn't work good for punctuation
+        completionList = fuzzaldrin.filter(completionList, prefix.trim(), { key: 'name' });
+    }
 
-     // Potentially use it more aggresively at some point
-     // This queries the langauge service so its a bit slow
-     function docComment(c: ts.CompletionEntry): {
-         /** The display parts e.g. (a:number)=>string */
-         display: string;
-         /** The doc comment */
-         comment: string;
-     } {
-         const completionDetails = project.languageService.getCompletionEntryDetails(filePath, position, c.name);
-         const comment = ts.displayPartsToString(completionDetails.documentation || []);
+    /** Doing too many suggestions is slowing us down in some cases */
+    let maxSuggestions = 50;
+    /** Doc comments slow us down tremendously */
+    let maxDocComments = 10;
 
-         // Show the signatures for methods / functions
-         var display: string;
-         if (c.kind == "method" || c.kind == "function" || c.kind == "property") {
-             let parts = completionDetails.displayParts || [];
-             // don't show `(method)` or `(function)` as that is taken care of by `kind`
-             if (parts.length > 3) {
-                 parts = parts.splice(3);
-             }
-             display = ts.displayPartsToString(parts);
-         }
-         else {
-             display = '';
-         }
-         display = display.trim();
+    // limit to maxSuggestions
+    if (completionList.length > maxSuggestions) completionList = completionList.slice(0, maxSuggestions);
 
-         return { display: display, comment: comment };
-     }
+    // Potentially use it more aggresively at some point
+    // This queries the langauge service so its a bit slow
+    function docComment(c: ts.CompletionEntry): {
+        /** The display parts e.g. (a:number)=>string */
+        display: string;
+        /** The doc comment */
+        comment: string;
+    } {
+        const completionDetails = project.languageService.getCompletionEntryDetails(filePath, position, c.name);
+        const comment = ts.displayPartsToString(completionDetails.documentation || []);
 
-     let completionsToReturn: Types.Completion[] = completionList.map((c, index) => {
-         if (index < maxDocComments) {
-             var details = docComment(c);
-         }
-         else {
-             details = {
-                 display: '',
-                 comment: ''
-             }
-         }
-         return {
-             name: c.name,
-             kind: c.kind,
-             comment: details.comment,
-             display: details.display
-         };
-     });
+        // Show the signatures for methods / functions
+        var display: string;
+        if (c.kind == "method" || c.kind == "function" || c.kind == "property") {
+            let parts = completionDetails.displayParts || [];
+            // don't show `(method)` or `(function)` as that is taken care of by `kind`
+            if (parts.length > 3) {
+                parts = parts.splice(3);
+            }
+            display = ts.displayPartsToString(parts);
+        }
+        else {
+            display = '';
+        }
+        display = display.trim();
 
-     /**
-      * Add function signature help
-      */
-     if (query.prefix == '(') {
-         const signatures = service.getSignatureHelpItems(query.filePath, query.position);
-         if (signatures && signatures.items) {
-             signatures.items.forEach((item) => {
-                 const template: string = item.parameters.map((p, i) => {
-                     const display = '${' + (i + 1) + ':' + ts.displayPartsToString(p.displayParts) + '}';
-                     return display;
-                 }).join(ts.displayPartsToString(item.separatorDisplayParts));
+        return { display: display, comment: comment };
+    }
 
-                 const name: string = item.parameters.map((p)=>ts.displayPartsToString(p.displayParts))
-                     .join(ts.displayPartsToString(item.separatorDisplayParts));
+    let completionsToReturn: Types.Completion[] = completionList.map((c, index) => {
+        if (index < maxDocComments) {
+            var details = docComment(c);
+        }
+        else {
+            details = {
+                display: '',
+                comment: ''
+            }
+        }
+        return {
+            name: c.name,
+            kind: c.kind,
+            comment: details.comment,
+            display: details.display
+        };
+    });
 
-                 // e.g. test(something:string):any;
-                 // prefix: test(
-                 // template: ${something}
-                 // suffix: ): any;
-                 const description: string =
-                     ts.displayPartsToString(item.prefixDisplayParts)
-                     + template
-                     + ts.displayPartsToString(item.suffixDisplayParts);
 
-                 completionsToReturn.unshift({
-                     snippet: {
-                         template,
-                         name,
-                         description: description
-                     }
-                 });
-             });
-         }
-     }
 
-     return utils.resolve({
-         completions: completionsToReturn,
-         endsInPunctuation: endsInPunctuation
-     });
- }
+    //  console.log('here2', completionsToReturn);
+    /**
+     * More json customizations
+     */
+    completionsToReturn = completionsToReturn
+        /** remove keywords */
+        .filter(c => c.kind != "keyword")
+        /** Remove any types introduced by the prelude */
+        .filter(c => c.kind != "var");
+
+    /**
+     * Make completions json friendly
+     */
+    completionsToReturn.forEach(c => {
+        if (c.name !== "false" || c.name !== "true") {
+            c.name = `"${c.name}"`
+        }
+    });
+
+    return utils.resolve({
+        completions: completionsToReturn,
+        endsInPunctuation: endsInPunctuation
+    });
+}
