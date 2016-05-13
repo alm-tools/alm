@@ -2,6 +2,12 @@
 
 The `tsconfig.json` file is the *standard* way of providing compiler options to TypeScript compiler. We use it for all our TypeScript specific configuration as well. You can generate this file with alm using `alm -i`.
 
+## Autocomplete
+We support autocomplete for many of the TSConfig options:
+
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/tsconfigCompletion.gif)
+
+
 ## TSConfig contents
 The following are the key properties of `tsconfig.json`:
 

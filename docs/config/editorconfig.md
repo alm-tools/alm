@@ -27,7 +27,7 @@ indent_size = 2
 For TypeScript specific stuff you can use the `formatCodeOptions` key in [`tsconfig.json`][tsconfig.json].
 
 [editorconfig]:http://editorconfig.org/
-[tsconfig.json]:/features/tsconfig.md
+[tsconfig.json]:/config/tsconfig.md
 
 [NotReallyUsed]: the-following-is-not-really-used-but-I-wanted-to-keep-these-links
 [editorOptions]: https://github.com/alm-tools/alm/blob/master/src/server/disk/editorOptions.ts
