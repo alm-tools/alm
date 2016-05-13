@@ -39,20 +39,16 @@ schemas.forEach(config => {
 import {Types}  from "../../../../../socket/socketContract";
 import * as utils from "../../../../../common/utils";
 import * as fmc from "../../../../disk/fileModelCache";
+import fuzzaldrin = require('fuzzaldrin');
 export function getCompletionsAtPosition(this:{}, query: Types.GetCompletionsAtPositionQuery): Promise<Types.GetCompletionsAtPositionResponse> {
     const {filePath, prefix} = query;
     const offset = query.position;
-    const completionsToReturn: Types.Completion[] = [];
+    let completionsToReturn: Types.Completion[] = [];
     const endsInPunctuation = utils.prefixEndsInPunctuation(prefix);
     const schema = schemas[0].content;
 
     const contents = fmc.getOrCreateOpenFile(filePath).getContents();
     const doc = Parser.parse(contents);
-
-    const result = utils.resolve({
-        completions: completionsToReturn,
-        endsInPunctuation: endsInPunctuation
-    });
 
     // TODO: validation :)
     if (!doc.errors.length) {
@@ -110,6 +106,7 @@ export function getCompletionsAtPosition(this:{}, query: Types.GetCompletionsAtP
 
                     completionsToReturn.push({
                         kind: "snippet",
+                        name: suggestion.label, // Needed for fuzzaldrin
                         snippet: {
                             name: suggestion.label,
                             description: suggestion.documentation,
@@ -154,7 +151,7 @@ export function getCompletionsAtPosition(this:{}, query: Types.GetCompletionsAtP
         if (node && node.type === 'object') {
             // don't suggest keys when the cursor is just before the opening curly brace
             if (node.start === offset) {
-                return result;
+                return;
             }
             // don't suggest properties that are already present
             let properties = (<Parser.ObjectASTNode>node).properties;
@@ -181,9 +178,18 @@ export function getCompletionsAtPosition(this:{}, query: Types.GetCompletionsAtP
 
 
     /**
-     * Finally return
+     * Finally filter and return
      */
-    return result;
+
+    if (prefix.length && prefix.trim().length && !endsInPunctuation) {
+        // Didn't work good for punctuation
+        completionsToReturn = fuzzaldrin.filter(completionsToReturn, prefix.trim(), { key: 'name' });
+    }
+
+    return utils.resolve({
+        completions: completionsToReturn,
+        endsInPunctuation: endsInPunctuation
+    });
 }
 
 /**
