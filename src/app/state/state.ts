@@ -8,7 +8,7 @@ export interface StoreState {
     activeProject?: AvailableProjectConfig;
     errorsExpanded?: boolean;
     errorsUpdate?: LimitedErrorsUpdate;
-    errorDisplayMode?: types.ErrorDisplayMode;
+    errorsDisplayMode?: types.ErrorsDisplayMode;
 
     /** Is the current file in the activeProject */
     activeProjectFilePathTruthTable?: { [filePath: string]: boolean };
@@ -41,7 +41,7 @@ let initialStoreState: StoreState = {
         syncCount: 0,
         tooMany: false,
     },
-    errorDisplayMode: types.ErrorDisplayMode.all,
+    errorsDisplayMode: types.ErrorsDisplayMode.all,
     activeProjectFilePathTruthTable: {},
     outputStatusCache: {},
     liveBuildResults: {
@@ -102,6 +102,12 @@ export let expandErrors = redux.add('expandErrors', (state, payload: {}): StoreS
 export let collapseErrors = redux.add('collapseErrors', (state, payload: {}): StoreState => {
     return {
         errorsExpanded: false,
+    };
+});
+
+export let setErrorsDisplayMode = redux.add('setErrorsDisplayMode', (state, payload: types.ErrorsDisplayMode): StoreState => {
+    return {
+        errorsDisplayMode: payload,
     };
 });
 

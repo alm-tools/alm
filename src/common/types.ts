@@ -261,7 +261,7 @@ export type GitDiff = {
 /**
  * Errors
  */
-export enum ErrorDisplayMode {
+export enum ErrorsDisplayMode {
     all = 1,
     openFiles = 2,
 }
