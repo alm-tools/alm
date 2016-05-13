@@ -81,13 +81,6 @@ export interface CompletionItem {
 	insertText?: string;
 
 	/**
-	 * An [edit](#TextEdit) which is applied to a document when selecting
-	 * this completion. When an edit is provided the value of
-	 * [insertText](#CompletionItem.insertText) is ignored.
-	 */
-	textEdit?: TextEdit;
-
-	/**
 	 * An data entry field that is preserved on a completion item between
 	 * a [CompletionRequest](#CompletionRequest) and a [CompletionResolveRequest]
 	 * (#CompletionResolveRequest)
