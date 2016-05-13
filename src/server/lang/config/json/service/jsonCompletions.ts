@@ -75,11 +75,29 @@ export function getCompletionsAtPosition(this:{}, query: Types.GetCompletionsAtP
             if (!proposed[suggestion.label]) {
                 proposed[suggestion.label] = true;
 
-                if (!suggestion.insertText) {
-                    // I don't think this is ever triggered, but to be safe
+                if (
+                    (!suggestion.insertText || !suggestion.insertText.match(/\{\{/g))) {
+                    let kind = ts.ScriptElementKind.unknown;
+                    switch (suggestion.kind) {
+                        case CompletionItemKind.Snippet:
+                            kind = ts.ScriptElementKind.unknown;
+                            break;
+                        case CompletionItemKind.Text:
+                            kind = ts.ScriptElementKind.unknown;
+                            break;
+                        case CompletionItemKind.Module:
+                            kind = ts.ScriptElementKind.moduleElement;
+                            break;
+                        case CompletionItemKind.Property:
+                            kind = ts.ScriptElementKind.memberVariableElement;
+                            break;
+                        case CompletionItemKind.Value:
+                            kind = ts.ScriptElementKind.memberVariableElement;
+                            break;
+                    }
                     completionsToReturn.push({
-                        kind: ts.ScriptElementKind.unknown,
-                        name: `"${suggestion.label}"`,
+                        kind,
+                        name: `${suggestion.label}`,
                         display: '',
                         comment: suggestion.documentation
                     });
