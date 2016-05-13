@@ -17,6 +17,7 @@ import {Icon} from "../../icon";
 import * as Mousetrap from "mousetrap";
 import {Robocop} from "../../robocop";
 import * as pure from "../../../common/pure";
+import * as buttons from "../../components/buttons";
 
 type NodeDisplay = Types.NodeDisplay;
 let EOL = '\n';
@@ -412,12 +413,10 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
                     {queryRegexStr}
                     {
                         !this.state.completed &&
-                            <button
+                            <buttons.ButtonBlack
                                 key="button"
                                 onClick={this.cancelAnyRunningSearch}
-                                style={styles.Button.buttonBlackStyle}>
-                                Cancel
-                            </button>
+                                text={"Cancel"}/>
                     }
                 </div>
                 {

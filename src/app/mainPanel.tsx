@@ -13,6 +13,7 @@ import {AvailableProjectConfig} from "../common/types";
 import {Clipboard} from "./clipboard";
 import {PendingRequestsIndicator} from "./pendingRequestsIndicator";
 import {Icon} from "./icon";
+import {ButtonBlack} from "./components/buttons";
 let {DraggableCore} = ui;
 
 import {connect} from "react-redux";
@@ -86,12 +87,28 @@ export class MainPanel extends BaseComponent<Props, State>{
 
             <div style={csx.extend(styles.errorsPanel.main, { height: this.state.height }) }>
                 {
-                    this.props.errorsUpdate.tooMany
-                    && <div
-                        style={styles.errorsPanel.headerSection}
-                        className="hint--bottom hint--info"
-                        data-hint="We only sync the top 50 per file with a limit of 250. That ensures that live linting doesn't slow anything else down.">
-                        {this.props.errorsUpdate.totalCount} total. Showing top {this.props.errorsUpdate.syncCount}.
+                    <div
+                        style={styles.errorsPanel.headerSection}>
+                        <div style={csx.horizontal}>
+                            <div>
+                                <ButtonBlack
+                                    text={"Show All"}
+                                    onClick={()=>state.setErrorsDisplayMode(types.ErrorsDisplayMode.all)}
+                                    isActive={this.props.errorsDisplayMode == types.ErrorsDisplayMode.all}/>
+                                <ButtonBlack
+                                    text={"Show Only Open Files"}
+                                    onClick={()=>state.setErrorsDisplayMode(types.ErrorsDisplayMode.openFiles)}
+                                    isActive={this.props.errorsDisplayMode == types.ErrorsDisplayMode.openFiles}/>
+                            </div>
+                            <div style={csx.flex}/>
+                            {this.props.errorsUpdate.tooMany
+                                && <div
+                                    style={styles.errorsPanel.tooMany}
+                                    className="hint--bottom-left hint--info"
+                                    data-hint="We only sync the top 50 per file with a limit of 250. That ensures that live linting doesn't slow anything else down.">
+                                    {this.props.errorsUpdate.totalCount} total. Showing top {this.props.errorsUpdate.syncCount}.
+                                </div>}
+                        </div>
                     </div>
                 }
 

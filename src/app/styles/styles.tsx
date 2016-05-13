@@ -121,11 +121,13 @@ export namespace errorsPanel {
     }
 
     export const headerSection = {
-        fontSize: '1.2rem',
-        fontWeight: 'bolder',
-        textAlign: 'center',
         flexShrink: 0,
         marginBottom: '5px',
+    }
+
+    export const tooMany = {
+        fontSize: '1.2rem',
+        fontWeight: 'bolder',
     }
 
     export let filePath = {
@@ -223,27 +225,6 @@ export namespace Input {
             boxShadow: '0px 0px 1px 1px #0099E0'
         }
     }
-}
-
-export namespace Button {
-    export const buttonBlackStyle = csx.extend(
-        csx.flexRoot,
-        {
-            color: textColor,
-            padding: '2px 3px',
-            display: 'inline-flex',
-            cursor: 'pointer',
-            backgroundImage: 'linear-gradient(#7B7B7B, #353434)',
-            border: '1px solid #464646',
-            borderRadius: '3px',
-            userSelect: 'none',
-            outline: '0px',
-            ':active': {
-                backgroundImage: 'linear-gradient(#353434, #7B7B7B)',
-                color: 'white',
-            }
-        }
-    );
 }
 
 /**
