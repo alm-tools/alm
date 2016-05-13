@@ -74,8 +74,32 @@ export function getCompletionsAtPosition(this:{}, query: Types.GetCompletionsAtP
         add: (suggestion: CompletionItem) => {
             if (!proposed[suggestion.label]) {
                 proposed[suggestion.label] = true;
-                // console.log("ADD suggestion:", suggestion);
-                // TODO: completions.push
+
+                if (!suggestion.insertText) {
+                    // I don't think this is ever triggered, but to be safe
+                    completionsToReturn.push({
+                        kind: ts.ScriptElementKind.unknown,
+                        name: `"${suggestion.label}"`,
+                        display: '',
+                        comment: suggestion.documentation
+                    });
+                }
+                else {
+                    /** Don't add a leading " */
+                    let template = !prefix.startsWith('"') ? suggestion.insertText : suggestion.insertText.substr(1);
+                    /** Replace `{{}}` with `${}` */
+                    template = template.replace(/\{\{/g,"${");
+                    template = template.replace(/\}\}/g,"}");
+
+                    completionsToReturn.push({
+                        kind: "snippet",
+                        snippet: {
+                            name: suggestion.label,
+                            description: suggestion.documentation,
+                            template,
+                        }
+                    });
+                }
             }
         },
         setAsIncomplete: () => {
