@@ -85,8 +85,7 @@ export function getCompletionsAtPosition(this:{}, query: Types.GetCompletionsAtP
                     });
                 }
                 else {
-                    /** Don't add a leading " */
-                    let template = !prefix.startsWith('"') ? suggestion.insertText : suggestion.insertText.substr(1);
+                    let template = suggestion.insertText;
                     /** Replace `{{}}` with `${}` */
                     template = template.replace(/\{\{/g,"${");
                     template = template.replace(/\}\}/g,"}");
@@ -371,7 +370,7 @@ function getTextForProperty(key: string, propertySchema: JsonSchema.IJSONSchema,
             var type = Array.isArray(propertySchema.type) ? propertySchema.type[0] : propertySchema.type;
             switch (type) {
                 case 'boolean':
-                    result += '{{false}}';
+                    result += '{{true}}';
                     break;
                 case 'string':
                     result += '"{{}}"';
