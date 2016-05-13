@@ -48,13 +48,16 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
     const contents = fmc.getOrCreateOpenFile(filePath).getContents();
     const doc = Parser.parse(contents);
 
+    // TODO: validation :)
     if (!doc.errors.length) {
         doc.validate(rawSchema);
-        console.log('Schema Validation:',doc.errors,doc.warnings);
+        // console.log('Schema Validation:',doc.errors,doc.warnings);
     }
     else {
-        console.log('Parse Errors:', doc.errors);
+        // console.log('Parse Errors:', doc.errors);
     }
+
+    // TODO: autocomplete :)
 
     return utils.resolve({
         completions: completionsToReturn,
