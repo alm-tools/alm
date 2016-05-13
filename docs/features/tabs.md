@@ -39,8 +39,8 @@ You can open the browser as many times as you want and we keep them all in sync!
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/multiMonitor.gif)
 
-We even have a handy dandy shortcut for duplicating the current browser window :
+We even have a handy dandy command (`Window : Duplicate`) for duplicating the current browser window :
 
-* Duplicate Window : `Ctrl|⌘ + Alt + D`
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/duplicateWindow.gif)
 
 [omnisearch]:/features/omni-search.md
