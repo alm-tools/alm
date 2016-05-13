@@ -36,6 +36,7 @@ export interface Props {
     activeProjectFiles?: { [filePath: string]: boolean };
     errorsUpdate?: LimitedErrorsUpdate;
     socketConnected?: boolean;
+    errorsDisplayMode?: types.ErrorsDisplayMode;
 }
 export interface State {
     /** height in pixels */
@@ -56,7 +57,8 @@ let resizerStyle = {
         activeProject: state.activeProject,
         activeProjectFiles: state.activeProjectFilePathTruthTable,
         errorsUpdate: state.errorsUpdate,
-        socketConnected: state.socketConnected
+        socketConnected: state.socketConnected,
+        errorsDisplayMode: state.errorsDisplayMode
     };
 })
 export class MainPanel extends BaseComponent<Props, State>{
@@ -82,43 +84,18 @@ export class MainPanel extends BaseComponent<Props, State>{
                 <div style={csx.extend(csx.flexRoot, csx.centerCenter, resizerStyle)}><Icon name="ellipsis-h"/></div>
             </DraggableCore>
 
-            <div style={csx.extend(styles.errorsPanel.main,{height: this.state.height})}>
+            <div style={csx.extend(styles.errorsPanel.main, { height: this.state.height }) }>
                 {
                     this.props.errorsUpdate.tooMany
                     && <div style={styles.errorsPanel.tooMany}>{this.props.errorsUpdate.totalCount} total. Showing top {this.props.errorsUpdate.syncCount}.</div>
                 }
 
-                {this.props.errorsUpdate.totalCount?
-                    Object.keys(this.props.errorsUpdate.errorsByFilePath)
-                    .filter(filePath=>!!this.props.errorsUpdate.errorsByFilePath[filePath].length)
-                    .map((filePath,i)=>{
-
-                        let errors =
-                            this.props.errorsUpdate.errorsByFilePath[filePath]
-                                .map((e, j) => (
-                                    <div key={`${i}:${j}`} style={csx.extend(styles.hand, styles.errorsPanel.errorDetailsContainer)} onClick={()=>this.openErrorLocation(e)}>
-                                        <div style={styles.errorsPanel.errorDetailsContent}>
-                                            <div style={styles.errorsPanel.errorMessage}>
-                                                🐛({e.from.line+1}:{e.from.ch+1}) {e.message}
-                                                {' '}<Clipboard text={`${e.filePath}:${e.from.line+1} ${e.message}`}/>
-                                            </div>
-                                            {e.preview?<div style={styles.errorsPanel.errorPreview}>{e.preview}</div>:''}
-                                        </div>
-                                    </div>
-                                ));
-
-                        return <div key={i}>
-                            <div style={styles.errorsPanel.filePath} onClick={()=>this.openErrorLocation(this.props.errorsUpdate.errorsByFilePath[filePath][0])}>
-                                <Icon name="file-code-o" style={{fontSize: '.8rem'}}/> {filePath} ({errors.length})
-                            </div>
-
-                            <div style={styles.errorsPanel.perFileList}>
-                                {errors}
-                            </div>
-                        </div>
-                    }): <div style={styles.errorsPanel.success}>No Errors ❤</div>
+                {
+                    this.props.errorsUpdate.totalCount
+                        ? this.renderErrors()
+                        : <div style={styles.errorsPanel.success}>No Errors ❤</div>
                 }
-            </div>
+                </div>
             </div>
         }
 
@@ -130,6 +107,40 @@ export class MainPanel extends BaseComponent<Props, State>{
                     {errorPanel}
                 </ui.VelocityTransitionGroup>
             </div>
+        );
+    }
+
+    renderErrors() {
+        const errorsToRender: ErrorsByFilePath = csx.extend(this.props.errorsUpdate.errorsByFilePath);
+        return (
+            Object.keys(errorsToRender)
+                .filter(filePath => !!errorsToRender[filePath].length)
+                .map((filePath, i) => {
+
+                    let errors =
+                        errorsToRender[filePath]
+                            .map((e, j) => (
+                                <div key={`${i}:${j}`} style={csx.extend(styles.hand, styles.errorsPanel.errorDetailsContainer) } onClick={() => this.openErrorLocation(e) }>
+                                    <div style={styles.errorsPanel.errorDetailsContent}>
+                                        <div style={styles.errorsPanel.errorMessage}>
+                                            🐛({e.from.line + 1}: {e.from.ch + 1}) {e.message}
+                                            {' '}<Clipboard text={`${e.filePath}:${e.from.line + 1} ${e.message}`}/>
+                                        </div>
+                                        {e.preview ? <div style={styles.errorsPanel.errorPreview}>{e.preview}</div> : ''}
+                                    </div>
+                                </div>
+                            ));
+
+                    return <div key={i}>
+                        <div style={styles.errorsPanel.filePath} onClick={() => this.openErrorLocation(errorsToRender[filePath][0]) }>
+                            <Icon name="file-code-o" style={{ fontSize: '.8rem' }}/> {filePath} ({errors.length})
+                        </div>
+
+                        <div style={styles.errorsPanel.perFileList}>
+                            {errors}
+                        </div>
+                    </div>
+                })
         );
     }
 
