@@ -28,10 +28,8 @@ const schemas: { fileName: string, content: JsonSchema.IJSONSchema }[] = [
         content: require('./schemas/tsconfig.json')
     }
 ];
-
-const schemaService = new SchemaService.JSONSchemaService();
 schemas.forEach(config => {
-    schemaService.registerExternalSchema(config.fileName, [config.fileName], config.content);
+    SchemaService.resolveSchemaContent(config.content);
 });
 
 
@@ -50,16 +48,13 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
     const contents = fmc.getOrCreateOpenFile(filePath).getContents();
     const doc = Parser.parse(contents);
 
-    SchemaService.resolveSchemaContent(rawSchema).then(res=>{
-        if (!doc.errors.length) {
-            doc.validate(res.schema);
-            console.log('Schema Validation:',doc.errors,doc.warnings);
-        }
-        else {
-            console.log('Parse Errors:', doc.errors);
-        }
-    });
-
+    if (!doc.errors.length) {
+        doc.validate(rawSchema);
+        console.log('Schema Validation:',doc.errors,doc.warnings);
+    }
+    else {
+        console.log('Parse Errors:', doc.errors);
+    }
 
     return utils.resolve({
         completions: completionsToReturn,
