@@ -148,7 +148,7 @@ export interface Completion {
     kind?: string;
     /** stuff like "toString" */
     name?: string;
-    /** This is displayParts (for functions) */
+    /** This is displayParts (for functions). Empty for `var` etc. */
     display?: string;
     /** the docComment if any */
     comment?: string;
