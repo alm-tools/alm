@@ -144,10 +144,14 @@ export type LiveBuildResults = {
  * Complete related stuff
  */
 export interface Completion {
-    kind?: string; // stuff like "var"
-    name?: string; // stuff like "toString"
-    display?: string; // This is displayParts (for functions)
-    comment?: string; // the docComment if any
+    /** stuff like "var"|"method" etc */
+    kind?: string;
+    /** stuff like "toString" */
+    name?: string;
+    /** This is displayParts (for functions) */
+    display?: string;
+    /** the docComment if any */
+    comment?: string;
 
     /** If snippet is specified then the above stuff is ignored */
     snippet?: {
