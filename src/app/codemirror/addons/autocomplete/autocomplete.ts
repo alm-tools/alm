@@ -229,7 +229,7 @@ export class AutoCompleter {
                         name: x.snippet.name,
                         description: x.snippet.description,
                         template: x.snippet.template,
-                        functionCompletion: true,
+                        functionCompletion: prefix && prefix == '(',
                     });
                     return template
                 });
