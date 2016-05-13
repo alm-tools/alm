@@ -49,10 +49,10 @@ export function getCompletionsAtPosition(this:{}, query: Types.GetCompletionsAtP
     const contents = fmc.getOrCreateOpenFile(filePath).getContents();
     const doc = Parser.parse(contents);
 
-    const result = {
+    const result = utils.resolve({
         completions: completionsToReturn,
         endsInPunctuation: endsInPunctuation
-    };
+    });
 
     // TODO: validation :)
     if (!doc.errors.length) {
@@ -142,7 +142,7 @@ export function getCompletionsAtPosition(this:{}, query: Types.GetCompletionsAtP
     /**
      * Finally return
      */
-    return utils.resolve(result);
+    return result;
 }
 
 /**
