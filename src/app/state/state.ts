@@ -8,6 +8,8 @@ export interface StoreState {
     activeProject?: AvailableProjectConfig;
     errorsExpanded?: boolean;
     errorsUpdate?: LimitedErrorsUpdate;
+    errorDisplayMode?: types.ErrorDisplayMode;
+
     /** Is the current file in the activeProject */
     activeProjectFilePathTruthTable?: { [filePath: string]: boolean };
 
@@ -39,6 +41,7 @@ let initialStoreState: StoreState = {
         syncCount: 0,
         tooMany: false,
     },
+    errorDisplayMode: types.ErrorDisplayMode.all,
     activeProjectFilePathTruthTable: {},
     outputStatusCache: {},
     liveBuildResults: {

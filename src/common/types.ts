@@ -257,3 +257,11 @@ export type GitDiff = {
     removed: number[];
     modified: GitDiffSpan[];
 }
+
+/**
+ * Errors
+ */
+export enum ErrorDisplayMode {
+    all = 1,
+    openFiles = 2,
+}
