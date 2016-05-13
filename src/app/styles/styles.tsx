@@ -115,15 +115,17 @@ export namespace errorsPanel {
         color: textColor,
         fontFamily: codeFont.fontFamily,
         padding: '6px',
-        overflow: 'auto',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column'
     }
 
-    export const tooMany = {
+    export const headerSection = {
         fontSize: '1.2rem',
         fontWeight: 'bolder',
-        borderBottom: `7px solid #444`,
-        padding: '9px',
-        textAlign: 'center'
+        textAlign: 'center',
+        flexShrink: 0,
+        marginBottom: '5px',
     }
 
     export let filePath = {

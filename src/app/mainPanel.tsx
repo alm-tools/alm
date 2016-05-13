@@ -87,7 +87,12 @@ export class MainPanel extends BaseComponent<Props, State>{
             <div style={csx.extend(styles.errorsPanel.main, { height: this.state.height }) }>
                 {
                     this.props.errorsUpdate.tooMany
-                    && <div style={styles.errorsPanel.tooMany}>{this.props.errorsUpdate.totalCount} total. Showing top {this.props.errorsUpdate.syncCount}.</div>
+                    && <div
+                        style={styles.errorsPanel.headerSection}
+                        className="hint--bottom hint--info"
+                        data-hint="We only sync the top 50 per file with a limit of 250 🔬 That ensures that live linting doesn't slow anything else down.">
+                        {this.props.errorsUpdate.totalCount} total. Showing top {this.props.errorsUpdate.syncCount}.
+                    </div>
                 }
 
                 {
@@ -113,6 +118,7 @@ export class MainPanel extends BaseComponent<Props, State>{
     renderErrors() {
         const errorsToRender: ErrorsByFilePath = csx.extend(this.props.errorsUpdate.errorsByFilePath);
         return (
+            <div style={{overflow:'auto'}}>{
             Object.keys(errorsToRender)
                 .filter(filePath => !!errorsToRender[filePath].length)
                 .map((filePath, i) => {
@@ -141,6 +147,7 @@ export class MainPanel extends BaseComponent<Props, State>{
                         </div>
                     </div>
                 })
+            }</div>
         );
     }
 
