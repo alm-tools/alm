@@ -398,6 +398,7 @@ const pathResolveTheseOptions = [
     'outFile',
     'outDir',
     'rootDir',
+    'baseUrl',
 ];
 
 //////////////////////////////////////////////////////////////////////
