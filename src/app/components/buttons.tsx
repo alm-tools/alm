@@ -30,6 +30,5 @@ const buttonBlackStyle = csx.extend(
 
 export const ButtonBlack = ui.Radium((props: { text: string, onClick: () => any, isActive?:boolean }) => {
     const style = csx.extend(buttonBlackStyle, props.isActive ? activeStyle : {});
-    console.log(style);
     return <button onClick={props.onClick} style={style}>{props.text}</button>;
 });
