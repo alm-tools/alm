@@ -392,6 +392,7 @@ const typescriptEnumMap = {
 
 /**
  * These are options that are relative paths to tsconfig.json
+ * Note: There is also `rootDirs` that is handled manually
  */
 const pathResolveTheseOptions = [
     'out',
@@ -429,6 +430,16 @@ function rawToTsCompilerOptions(jsonOptions: CompilerOptions, projectDir: string
             compilerOptions[option] = fsu.resolve(projectDir, compilerOptions[option] as string);
         }
     });
+
+    /**
+     * Support `rootDirs`
+     * https://github.com/Microsoft/TypeScript-Handbook/blob/release-2.0/pages/Module%20Resolution.md#virtual-directories-with-rootdirs
+     */
+    if (compilerOptions.rootDirs !== undefined && Array.isArray(compilerOptions.rootDirs)) {
+        compilerOptions.rootDirs = compilerOptions.rootDirs.map(rd => {
+            return fsu.resolve(projectDir, rd as string);
+        });
+    }
 
     /**
      * Till `out` is removed. Support it by just copying it to `outFile`
