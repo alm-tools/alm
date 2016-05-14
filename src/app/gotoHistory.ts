@@ -2,6 +2,7 @@ import * as ui from "./ui";
 import * as state from "./state/state";
 import * as commands from "./commands/commands";
 import * as utils from "../common/utils";
+import {tabState, tabStateChanged} from "./tabs/v2/appTabsContainer";
 
 /** Interfaces used by GotoHistory feature */
 interface GotoPosition {
@@ -25,12 +26,18 @@ var errorsInOpenFiles: TabWithGotoPositions = { members: [] };
 var buildOutput: TabWithGotoPositions = { members: [] };
 var referencesOutput: TabWithGotoPositions = { members: [] };
 
-state.subscribeSub(state => state.errorsUpdate.errorsByFilePath,(errorsByFilePath)=>{
+const reloadErrorsInOpenFiles = () => {
+    const errorsByFilePath = tabState.errorsByFilePathFiltered()
     let errorsFlattened = utils.selectMany(Object.keys(errorsByFilePath).map(x=>errorsByFilePath[x]));
     errorsInOpenFiles.members = errorsFlattened.map(x=>{
         return {filePath:x.filePath,line: x.from.line, col: x.from.ch}
     });
-})
+}
+
+state.subscribeSub(state => state.errorsUpdate.errorsByFilePath, reloadErrorsInOpenFiles);
+state.subscribeSub(state => state.errorsDisplayMode, reloadErrorsInOpenFiles);
+tabStateChanged.on(reloadErrorsInOpenFiles);
+
 
 /**
  * Use this to keep the *lastPosition* in error list in sync
