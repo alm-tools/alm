@@ -1122,6 +1122,24 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         addTabs: (tabs: TabInstance[]) => {
             tabs.forEach(tab => this.addTabToLayout(tab));
         },
+        errorsByFilePathFiltered: () => {
+            const allState = state.getState()
+            const allErrors = allState.errorsUpdate.errorsByFilePath;
+            const mode = allState.errorsDisplayMode;
+            if (mode === types.ErrorsDisplayMode.all)
+            {
+                return allErrors;
+            }
+            else {
+                const openFilePaths = utils.createMap(this.tabState.getOpenFilePaths());
+                const openFilePathsWithErrors = Object.keys(allErrors).filter(fp => openFilePaths[fp]);
+                const errorsByFilePath: ErrorsByFilePath = {};
+                openFilePathsWithErrors.forEach(fp => {
+                    errorsByFilePath[fp] = allErrors[fp];
+                });
+                return errorsByFilePath;
+            }
+        }
     }
 }
 

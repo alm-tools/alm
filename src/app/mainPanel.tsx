@@ -20,7 +20,7 @@ import {connect} from "react-redux";
 import {StoreState,expandErrors,collapseErrors} from "./state/state";
 import * as state from "./state/state";
 import * as gotoHistory from "./gotoHistory";
-import {tabState} from "./tabs/v2/appTabsContainer";
+import {tabState,tabStateChanged} from "./tabs/v2/appTabsContainer";
 
 let notificationKeyboardStyle = {
     border: '2px solid',
@@ -73,6 +73,9 @@ export class MainPanel extends BaseComponent<Props, State>{
     componentDidMount() {
         this.disposible.add(commands.toggleMessagePanel.on(()=>{
             state.getState().errorsExpanded?state.collapseErrors({}):state.expandErrors({});
+        }));
+        this.disposible.add(tabStateChanged.on(()=>{
+            this.forceUpdate();
         }));
     }
 
@@ -133,7 +136,7 @@ export class MainPanel extends BaseComponent<Props, State>{
     }
 
     renderErrors() {
-        const errorsToRender: ErrorsByFilePath = csx.extend(this.props.errorsUpdate.errorsByFilePath);
+        const errorsToRender: ErrorsByFilePath = tabState.errorsByFilePathFiltered();
         return (
             <div style={{overflow:'auto'}}>{
             Object.keys(errorsToRender)
