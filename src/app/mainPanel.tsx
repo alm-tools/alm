@@ -109,8 +109,13 @@ export class MainPanel extends BaseComponent<Props, State>{
                                     Filter:
                                 </label>
                                 <InputBlack
+                                    style={{marginRight:'10px', maxWidth:'200px'}}
                                     onChange={(value)=>state.setErrorsFilter(value)}
                                     value={this.props.errorsFilter}/>
+                                <ButtonBlack
+                                    text={"Clear"}
+                                    disabled={!this.props.errorsFilter.trim()}
+                                    onClick={()=>state.setErrorsFilter('')}/>
                             </div>
                             {this.props.errorsUpdate.tooMany
                                 && <div
@@ -144,7 +149,7 @@ export class MainPanel extends BaseComponent<Props, State>{
     }
 
     renderErrors() {
-        const errorsToRender: ErrorsByFilePath = tabState.errorsByFilePathFiltered();
+        const errorsToRender: ErrorsByFilePath = tabState.errorsByFilePathFiltered().errorsByFilePath;
         return (
             <div style={{overflow:'auto'}}>{
             Object.keys(errorsToRender)

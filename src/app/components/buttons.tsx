@@ -7,6 +7,9 @@ const activeStyle =  {
     backgroundImage: 'linear-gradient(#353434, #7B7B7B)',
     color: 'white',
 }
+const disabledStyle =  {
+    opacity: '.5',
+}
 const buttonBlackStyle = csx.extend(
     csx.flexRoot,
     {
@@ -14,7 +17,7 @@ const buttonBlackStyle = csx.extend(
         fontWeight:'bold',
         fontSize:'.6rem',
 
-        transition: '.2s color',
+        transition: '.2s color, .2s opacity',
 
         color: textColor,
         padding: '2px 3px',
@@ -28,7 +31,7 @@ const buttonBlackStyle = csx.extend(
     }
 );
 
-export const ButtonBlack = ui.Radium((props: { text: string, onClick: () => any, isActive?:boolean }) => {
-    const style = csx.extend(buttonBlackStyle, props.isActive ? activeStyle : {});
-    return <button onClick={props.onClick} style={style}>{props.text}</button>;
+export const ButtonBlack = ui.Radium((props: { text: string, onClick: () => any, isActive?:boolean, disabled?: boolean }) => {
+    const style = csx.extend(buttonBlackStyle, props.isActive ? activeStyle : {}, props.disabled ? disabledStyle : {});
+    return <button onClick={props.onClick} style={style} disabled={props.disabled}>{props.text}</button>;
 });

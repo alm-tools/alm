@@ -12,14 +12,16 @@ const inputBlackStyle = csx.extend(styles.modal.inputStyle, {
 });
 
 export const InputBlack = ui.Radium((props: {
+    style?: React.CSSProperties,
     value: string,
     onChange: (value: string) => any,
     onKeyDown?: () => any,
     placeholder?: string,
 }) => {
+    const style = csx.extend(inputBlackStyle, props.style || {});
     return (
         <input
-            style={inputBlackStyle}
+            style={style}
             type="text"
             placeholder={props.placeholder}
             value={props.value}

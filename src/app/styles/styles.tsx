@@ -1,6 +1,6 @@
 import csx = require('csx');
 
-export const textColor = '#999';
+export const textColor = '#AAA';
 export let errorColor = '#f92672';
 export let successColor = '#00c990';
 export let highlightColor = "#6edeef";
