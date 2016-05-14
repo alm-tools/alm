@@ -14,6 +14,7 @@ import {Clipboard} from "./clipboard";
 import {PendingRequestsIndicator} from "./pendingRequestsIndicator";
 import {Icon} from "./icon";
 import {ButtonBlack} from "./components/buttons";
+import {InputBlack} from "./components/inputs";
 let {DraggableCore} = ui;
 
 import {connect} from "react-redux";
@@ -38,6 +39,7 @@ export interface Props {
     errorsUpdate?: LimitedErrorsUpdate;
     socketConnected?: boolean;
     errorsDisplayMode?: types.ErrorsDisplayMode;
+    errorsFilter?: string;
 }
 export interface State {
     /** height in pixels */
@@ -59,7 +61,8 @@ let resizerStyle = {
         activeProjectFiles: state.activeProjectFilePathTruthTable,
         errorsUpdate: state.errorsUpdate,
         socketConnected: state.socketConnected,
-        errorsDisplayMode: state.errorsDisplayMode
+        errorsDisplayMode: state.errorsDisplayMode,
+        errorsFilter: state.errorsFilter,
     };
 })
 export class MainPanel extends BaseComponent<Props, State>{
@@ -93,7 +96,7 @@ export class MainPanel extends BaseComponent<Props, State>{
                     <div
                         style={styles.errorsPanel.headerSection}>
                         <div style={csx.horizontal}>
-                            <div>
+                            <div style={csx.extend(csx.horizontal, csx.flex, csx.center, {marginRight:'10px'})}>
                                 <ButtonBlack
                                     text={"Show All"}
                                     onClick={()=>state.setErrorsDisplayMode(types.ErrorsDisplayMode.all)}
@@ -102,8 +105,13 @@ export class MainPanel extends BaseComponent<Props, State>{
                                     text={"Show Only Open Files"}
                                     onClick={()=>state.setErrorsDisplayMode(types.ErrorsDisplayMode.openFiles)}
                                     isActive={this.props.errorsDisplayMode == types.ErrorsDisplayMode.openFiles}/>
+                                <label style={{marginLeft:'10px'}}>
+                                    Filter:
+                                </label>
+                                <InputBlack
+                                    onChange={(value)=>state.setErrorsFilter(value)}
+                                    value={this.props.errorsFilter}/>
                             </div>
-                            <div style={csx.flex}/>
                             {this.props.errorsUpdate.tooMany
                                 && <div
                                     style={styles.errorsPanel.tooMany}

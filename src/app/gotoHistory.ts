@@ -26,16 +26,17 @@ var errorsInOpenFiles: TabWithGotoPositions = { members: [] };
 var buildOutput: TabWithGotoPositions = { members: [] };
 var referencesOutput: TabWithGotoPositions = { members: [] };
 
-const reloadErrorsInOpenFiles = () => {
+const reloadErrorsInOpenFiles = utils.debounce(() => {
     const errorsByFilePath = tabState.errorsByFilePathFiltered()
-    let errorsFlattened = utils.selectMany(Object.keys(errorsByFilePath).map(x=>errorsByFilePath[x]));
-    errorsInOpenFiles.members = errorsFlattened.map(x=>{
-        return {filePath:x.filePath,line: x.from.line, col: x.from.ch}
+    let errorsFlattened = utils.selectMany(Object.keys(errorsByFilePath).map(x => errorsByFilePath[x]));
+    errorsInOpenFiles.members = errorsFlattened.map(x => {
+        return { filePath: x.filePath, line: x.from.line, col: x.from.ch }
     });
-}
+}, 500);
 
 state.subscribeSub(state => state.errorsUpdate.errorsByFilePath, reloadErrorsInOpenFiles);
 state.subscribeSub(state => state.errorsDisplayMode, reloadErrorsInOpenFiles);
+state.subscribeSub(state => state.errorsFilter, reloadErrorsInOpenFiles);
 tabStateChanged.on(reloadErrorsInOpenFiles);
 
 

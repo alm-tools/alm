@@ -1123,7 +1123,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             tabs.forEach(tab => this.addTabToLayout(tab));
         },
         errorsByFilePathFiltered: () => {
-            const allState = state.getState()
+            const allState = state.getState();
+            const filter = allState.errorsFilter.trim();
             const allErrors = allState.errorsUpdate.errorsByFilePath;
             const mode = allState.errorsDisplayMode;
             if (mode === types.ErrorsDisplayMode.all)
