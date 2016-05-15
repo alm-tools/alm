@@ -29,6 +29,7 @@ require('codemirror/addon/search/match-highlighter');
 
 // Our Addons
 import * as gitStatus from "./addons/gitStatus";
+import * as quickFix from "./addons/quickFix";
 import textHover = require('./addons/text-hover');
 require('./addons/text-hover.css');
 import jumpy = require('./addons/jumpy');
@@ -173,6 +174,11 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         // fold
         (options as any).foldGutter = true;
         options.gutters.push("CodeMirror-foldgutter");
+
+        // quickfix
+        if (!this.props.readOnly) {
+            quickFix.setupOptions(options);
+        }
 
         // Git status
         gitStatus.setupOptions(options);
