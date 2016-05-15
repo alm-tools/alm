@@ -10,6 +10,7 @@ import cmUtils = require("../cmUtils");
 import {Types} from "../../../socket/socketContract";
 import * as selectListView from "../../selectListView";
 import * as commands from "../../commands/commands";
+import * as ui from "../../ui";
 
 const gutterId = "CodeMirror-quick-fix";
 const gutterItemClassName = "CodeMirror-quick-fix-bulb";
@@ -99,7 +100,7 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
         });
     };
 
-    const refreshQuickFixesDebounced = utils.debounce(refreshQuickFixes, 2000);
+    const refreshQuickFixesDebounced = utils.debounce(refreshQuickFixes, 1000);
 
     const handleFocus = () => {
         refreshQuickFixes();
@@ -120,12 +121,15 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
 }
 
 CodeMirror.commands[commands.additionalEditorCommands.quickFix] = (cm: CodeMirror.EditorFromTextArea) => {
-    if (!cm.lastQuickFixInformation) return;
+    if (!cm.lastQuickFixInformation) {
+        ui.notifyInfoNormalDisappear('No active quick fixes for last editor position');
+        return;
+    }
     const fixes = cm.lastQuickFixInformation.fixes;
     selectListView.selectListView.show({
         header:'💡 Quick Fixes',
         data: fixes,
-        render: (fix) => fix.display,
+        render: (fix, highlighted) => highlighted,
         textify: (fix) => fix.display,
         onSelect: (fix) => {
             console.log('selected', fix)
