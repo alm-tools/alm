@@ -13,7 +13,6 @@ import {QuotesToQuotes} from "./quickFixes/quotesToQuotes";
 import {QuoteToTemplate} from "./quickFixes/quoteToTemplate";
 import {StringConcatToTemplate} from "./quickFixes/stringConcatToTemplate";
 import {TypeAssertPropertyAccessToAny} from "./quickFixes/typeAssertPropertyAccessToAny";
-import {TypeAssertPropertyAccessToType} from "./quickFixes/typeAssertPropertyAccessToType";
 import {ImplementInterface} from "./quickFixes/implementInterface";
 import {SingleLineCommentToJsdoc} from "./quickFixes/singleLineCommentToJsdoc";
 export var allQuickFixes: QuickFix[] = [
@@ -28,7 +27,6 @@ export var allQuickFixes: QuickFix[] = [
     new QuotesToQuotes(),
     new QuoteToTemplate(),
     new TypeAssertPropertyAccessToAny(),
-    new TypeAssertPropertyAccessToType(),
     new ImplementInterface(),
     new SingleLineCommentToJsdoc()
 ];

@@ -502,22 +502,16 @@ function getInfoForQuickFixAnalysis(query: Types.GetQuickFixesQuery): QuickFixQu
 
 export function getQuickFixes(query: Types.GetQuickFixesQuery): Promise<Types.GetQuickFixesResponse> {
     let project = getProject(query.filePath);
-
-    if (!project.includesSourceFile(query.filePath)) {
-        return resolve({ fixes: [] });
-    }
-
     var info = getInfoForQuickFixAnalysis(query);
 
-    // And then we let the quickFix determine if it wants provide any fixes for this file
-    // And if so we also treat the result as a display string
+    // We let the quickFix determine if it wants provide any fixes for this file
     var fixes = allQuickFixes
         .map(x => {
             var canProvide = x.canProvideFix(info);
             if (!canProvide)
                 return;
             else
-                return { key: x.key, display: canProvide.display, isNewTextSnippet: canProvide.isNewTextSnippet };
+                return { key: x.key, display: canProvide.display };
         })
         .filter(x => !!x);
 

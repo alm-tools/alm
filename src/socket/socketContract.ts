@@ -348,16 +348,6 @@ export namespace Types {
     /**
      * Quick Fix
      */
-    /** Some base interfaces */
-    export interface QuickFixRefactoring extends ts.TextChange {
-        filePath: string;
-
-        /** If you want to insert a snippet. Be careful that you shouldn't return more than one refatoring if you want to use this */
-        isNewTextSnippet?: boolean;
-    }
-    export interface QuickFixRefactoringsByFilePath { // Note : there is a utility function to create these for you
-        [filePath: string]: QuickFixRefactoring[];
-    }
     /** Query interfaces */
     export interface GetQuickFixesQuery extends FilePathPositionQuery {
         indentSize: number;
@@ -381,6 +371,6 @@ export namespace Types {
         additionalData?: any;
     }
     export interface ApplyQuickFixResponse {
-        refactorings: QuickFixRefactoringsByFilePath;
+        refactorings: types.RefactoringsByFilePath;
     }
 }

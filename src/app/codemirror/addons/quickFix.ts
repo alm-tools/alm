@@ -150,7 +150,7 @@ CodeMirror.commands[commands.additionalEditorCommands.quickFix] = (cm: CodeMirro
             }).then((res)=>{
                 // TODO: apply refactorings
                 console.log('Apply refactorings:', res.refactorings); // DEBUG
-
+                uix.API.applyRefactorings(res.refactorings);
             })
         }
     });
