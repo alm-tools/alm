@@ -8,7 +8,8 @@ import * as types from "../../../common/types";
 import * as state from "../../state/state";
 import cmUtils = require("../cmUtils");
 import {Types} from "../../../socket/socketContract";
-
+import * as selectListView from "../../selectListView";
+import * as commands from "../../commands/commands";
 
 const gutterId = "CodeMirror-quick-fix";
 const gutterItemClassName = "CodeMirror-quick-fix-bulb";
@@ -18,37 +19,50 @@ export function setupOptions(options: any) {
     options.gutters.unshift(gutterId);
 }
 
+/**
+ * Our addition to code mirror instances
+ */
+declare global {
+    module CodeMirror {
+        interface LineHandle { }
+        interface Editor {
+            lastQuickFixInformation: {
+                lineHandle: CodeMirror.LineHandle,
+                fixes: Types.QuickFixDisplay[]
+            } | null
+        }
+    }
+}
+
 export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => void } {
     // if (cm) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
 
     const filePath = cm.filePath;
-    let lastQuickFixInformation: {
-        lineHandle: CodeMirror.LineHandle,
-        fixes: Types.QuickFixDisplay[]
-    } = null;
+    cm.lastQuickFixInformation = null;
 
     function makeMarker() {
         var marker = document.createElement("div");
         marker.className = gutterItemClassName + ' hint--right hint--info';
         marker.setAttribute('data-hint', "Quick Fix");
         marker.innerHTML = "💡";
+        marker.onclick = () => cm.execCommand(commands.additionalEditorCommands.quickFix);
         return marker;
     }
     /** Automatically clears any old marker */
     function setMarker(line: number, fixes: Types.QuickFixDisplay[]) {
         clearAnyPreviousMarkerLocation();
-        lastQuickFixInformation = {
+        cm.lastQuickFixInformation = {
             lineHandle: cm.setGutterMarker(line, gutterId, makeMarker()),
             fixes
         };
     }
     function clearAnyPreviousMarkerLocation() {
-        if (lastQuickFixInformation) {
-            const newLine: number | null = (cm as any).getLineNumber(lastQuickFixInformation.lineHandle);
+        if (cm.lastQuickFixInformation) {
+            const newLine: number | null = (cm as any).getLineNumber(cm.lastQuickFixInformation.lineHandle);
             if (newLine != null) {
                 cm.setGutterMarker(newLine, gutterId, null);
             }
-            lastQuickFixInformation = null;
+            cm.lastQuickFixInformation = null;
         }
     }
 
@@ -74,12 +88,14 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
             filePath: cm.filePath,
             position
         }).then(res=>{
-            console.log(res);
-            if (res.fixes.length) {
-                setMarker(cur.line, res.fixes);
+            console.log(res); // DEBUG
+            if (cm.getDoc().getCursor().line !== cur.line) {
+                return;
             }
-            // TODO:
-            // Render the quick fixes
+            if (!res.fixes.length) {
+                return;
+            }
+            setMarker(cur.line, res.fixes);
         });
     };
 
@@ -101,4 +117,18 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
             clearAnyPreviousMarkerLocation();
         }
     }
+}
+
+CodeMirror.commands[commands.additionalEditorCommands.quickFix] = (cm: CodeMirror.EditorFromTextArea) => {
+    if (!cm.lastQuickFixInformation) return;
+    const fixes = cm.lastQuickFixInformation.fixes;
+    selectListView.selectListView.show({
+        header:'💡 Quick Fixes',
+        data: fixes,
+        render: (fix) => fix.display,
+        textify: (fix) => fix.display,
+        onSelect: (fix) => {
+            console.log('selected', fix)
+        }
+    });
 }
