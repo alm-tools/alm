@@ -250,11 +250,14 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
     if (projectSpec.filesGlob) { // If there is a files glob we will use that
         var toExpand = projectSpec.filesGlob;
     }
-    if (projectSpec.exclude) { // If there is an exclude we will use that
+    if (projectSpec.exclude) { // If there is an exclude we will add that
         toExpand = toExpand.concat(projectSpec.exclude.map(x=>`!./${x}`)) // as it is (for files)
         toExpand = toExpand.concat(projectSpec.exclude.map(x=>`!./${x}/**`)) // any sub directories (for dirs)
     }
-    if (toExpand) { // Expand whatever needs expanding
+    if (projectSpec.compilerOptions && projectSpec.compilerOptions.outDir) { // If there is an outDir we will exclude that as well
+        toExpand.push(`!./${projectSpec.compilerOptions.outDir}/**`);
+    }
+    if (toExpand) { // Finally expand whatever needs expanding
         try {
             projectSpec.files = expand({ filter: 'isFile', cwd: cwdPath }, toExpand);
         }
