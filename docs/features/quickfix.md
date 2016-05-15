@@ -1,5 +1,5 @@
 # Quick Fix
-Press the `TypeScript: Quick Fix` shortcut `alt+enter` at an error location to trigger quick fixes. Select the quick fix you want and press `enter` to commit e.g
+A light blub shows up if a quick fix is available. Trigger the `Quick Fix` command (use command search OR click on bulb OR use shortcut `alt+enter`) to see quick fixes. Select the quick fix you want and press `enter` to commit. Example quick fixes
 
 ## Add class and interface members
 

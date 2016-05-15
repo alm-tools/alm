@@ -12,6 +12,7 @@ import * as selectListView from "../../selectListView";
 import * as commands from "../../commands/commands";
 import * as ui from "../../ui";
 import * as uix from "../../uix";
+import * as React from "react";
 
 const gutterId = "CodeMirror-quick-fix";
 const gutterItemClassName = "CodeMirror-quick-fix-bulb";
@@ -138,7 +139,9 @@ CodeMirror.commands[commands.additionalEditorCommands.quickFix] = (cm: CodeMirro
     selectListView.selectListView.show({
         header:'💡 Quick Fixes',
         data: fixes,
-        render: (fix, highlighted) => highlighted,
+        render: (fix, highlighted) => {
+            return <div style={{fontFamily:'monospace'}}>{highlighted}</div>;
+        },
         textify: (fix) => fix.display,
         onSelect: (fix) => {
             server.applyQuickFix({
