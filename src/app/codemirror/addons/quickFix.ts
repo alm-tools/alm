@@ -11,6 +11,7 @@ import {Types} from "../../../socket/socketContract";
 import * as selectListView from "../../selectListView";
 import * as commands from "../../commands/commands";
 import * as ui from "../../ui";
+import * as uix from "../../uix";
 
 const gutterId = "CodeMirror-quick-fix";
 const gutterItemClassName = "CodeMirror-quick-fix-bulb";
@@ -29,7 +30,9 @@ declare global {
         interface Editor {
             lastQuickFixInformation: {
                 lineHandle: CodeMirror.LineHandle,
-                fixes: Types.QuickFixDisplay[]
+                fixes: Types.QuickFixDisplay[],
+                indentSize: number,
+                position: number,
             } | null
         }
     }
@@ -50,11 +53,17 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
         return marker;
     }
     /** Automatically clears any old marker */
-    function setMarker(line: number, fixes: Types.QuickFixDisplay[]) {
+    function setMarker(line: number, config: {
+        fixes: Types.QuickFixDisplay[],
+        indentSize: number,
+        position: number
+    }) {
         clearAnyPreviousMarkerLocation();
         cm.lastQuickFixInformation = {
             lineHandle: cm.setGutterMarker(line, gutterId, makeMarker()),
-            fixes
+            fixes: config.fixes,
+            indentSize: config.indentSize,
+            position: config.position
         };
     }
     function clearAnyPreviousMarkerLocation() {
@@ -96,7 +105,7 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
             if (!res.fixes.length) {
                 return;
             }
-            setMarker(cur.line, res.fixes);
+            setMarker(cur.line, { fixes: res.fixes, indentSize, position });
         });
     };
 
@@ -132,7 +141,17 @@ CodeMirror.commands[commands.additionalEditorCommands.quickFix] = (cm: CodeMirro
         render: (fix, highlighted) => highlighted,
         textify: (fix) => fix.display,
         onSelect: (fix) => {
-            console.log('selected', fix)
+            server.applyQuickFix({
+                key: fix.key,
+                indentSize: cm.lastQuickFixInformation.indentSize,
+                additionalData: null,
+                filePath: cm.filePath,
+                position: cm.lastQuickFixInformation.position
+            }).then((res)=>{
+                // TODO: apply refactorings
+                console.log('Apply refactorings:', res.refactorings); // DEBUG
+
+            })
         }
     });
 }

@@ -56,6 +56,7 @@ namespace Worker {
     export var getDependencies : typeof contract.worker.getDependencies = projectService.getDependencies;
     export var getAST : typeof contract.worker.getAST = projectService.getAST;
     export var getQuickFixes : typeof contract.worker.getQuickFixes = projectService.getQuickFixes;
+    export var applyQuickFix : typeof contract.worker.applyQuickFix = projectService.applyQuickFix;
 }
 
 // Ensure that the namespace follows the contract

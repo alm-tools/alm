@@ -58,10 +58,11 @@ export var server = {
     getDoctorInfo: {} as QRFunction<Types.GetDoctorInfoQuery, Types.GetDoctorInfoResponse>,
     formatDocument: {} as QRFunction<Types.FormatDocumentQuery, Types.FormatDocumentResponse>,
     formatDocumentRange: {} as QRFunction<Types.FormatDocumentRangeQuery, Types.FormatDocumentRangeResponse>,
-    getNavigateToItems: {} as QRFunction<{},Types.GetNavigateToItemsResponse>,
-    getDependencies: {} as QRFunction<{},Types.GetDependenciesResponse>,
-    getAST: {} as QRFunction<Types.GetASTQuery,Types.GetASTResponse>,
-    getQuickFixes: {} as QRFunction<Types.GetQuickFixesQuery,Types.GetQuickFixesResponse>,
+    getNavigateToItems: {} as QRFunction<{}, Types.GetNavigateToItemsResponse>,
+    getDependencies: {} as QRFunction<{}, Types.GetDependenciesResponse>,
+    getAST: {} as QRFunction<Types.GetASTQuery, Types.GetASTResponse>,
+    getQuickFixes: {} as QRFunction<Types.GetQuickFixesQuery, Types.GetQuickFixesResponse>,
+    applyQuickFix: {} as QRFunction<Types.ApplyQuickFixQuery, Types.ApplyQuickFixResponse>,
 
     /**
      * Output Status
