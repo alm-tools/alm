@@ -7,7 +7,7 @@ import * as fsu from "../../../utils/fsu";
  * The files that you provide in a tsconfig.json might not be the *complete* set of files
  * We preprocess these files to add additional files based on the contents of these files
  */
-export function increaseCompilationContext(files: string[]): string[] {
+export function increaseCompilationContext(files: string[], allowJs: boolean): string[] {
 
     var filesMap = createMap(files);
     var willNeedMoreAnalysis = (file: string) => {
@@ -35,6 +35,7 @@ export function increaseCompilationContext(files: string[]): string[] {
                 dir = path.dirname(file);
 
             let extensions = ['.ts', '.d.ts', '.tsx'];
+            if (allowJs) extensions.push('.js')
             function getIfExists(filePathNoExt: string) {
                 for (let ext of extensions) {
                     if (fsu.existsSync(filePathNoExt + ext)) {

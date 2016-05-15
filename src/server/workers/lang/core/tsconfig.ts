@@ -161,7 +161,7 @@ export function getDefaultInMemoryProject(srcFile: string): TypeScriptConfigFile
 
     var files = [srcFile];
     var typings = getDefinitionsForNodeModules(dir, files);
-    files = increaseCompilationContext(files);
+    files = increaseCompilationContext(files, false);
     files = uniq(files.map(fsu.consistentPath));
 
     let project: TsconfigJsonParsed = {
@@ -245,6 +245,9 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
         let bland = makeBlandError(projectFilePath, 'You must use an `outDir` if you are using `allowJs` in tsconfig.json');
         return { error: bland };
     }
+    if (projectSpec.compilerOptions.allowJs) {
+        projectSpec.compilerOptions.allowNonTsExtensions = true; // Of course.
+    }
 
     // Our customizations for "tsconfig.json"
     // Use grunt.file.expand type of logic
@@ -316,7 +319,7 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
     project.compilerOptions = rawToTsCompilerOptions(projectSpec.compilerOptions, projectFileDirectory);
 
     // Expand files to include references
-    project.files = increaseCompilationContext(project.files);
+    project.files = increaseCompilationContext(project.files, !!project.compilerOptions.allowJs);
 
     // Expand files to include node_modules / package.json / typescript.definition
     var typings = getDefinitionsForNodeModules(dir, project.files);
