@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "outDir": "./js"
+  },
+  "filesGlob": [
+    "./src/**"
+  ]
+}
