@@ -30,7 +30,7 @@ const removedClass = "git-removed";
 const modifiedClass = "git-modified";
 
 require('./gitStatus.css');
-export function setupOptions(options: any, filePath: string) {
+export function setupOptions(options: any) {
     options.gutters.unshift(gutterId);
 }
 

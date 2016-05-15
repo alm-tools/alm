@@ -175,7 +175,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         options.gutters.push("CodeMirror-foldgutter");
 
         // Git status
-        gitStatus.setupOptions(options, this.props.filePath);
+        gitStatus.setupOptions(options);
 
         // lint
         linter.setupOptions(options, this.props.filePath);
