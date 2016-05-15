@@ -1,14 +1,13 @@
 /**
- * The git status plugin
- *
- * The best demo to understand this is the marker demo:
- * https://codemirror.net/demo/marker.html
+ * The quick fix (bulb) plugin
  */
 import * as CodeMirror from "codemirror";
 import * as utils from "../../../common/utils";
 import {server} from "../../../socket/socketClient";
 import * as types from "../../../common/types";
 import * as state from "../../state/state";
+import cmUtils = require("../cmUtils");
+
 
 const gutterId = "CodeMirror-quick-fix";
 const gutterItemClassName = "CodeMirror-quick-fix-bulb";
@@ -50,10 +49,9 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
     const refreshQuickFixes = () => {
         clearAnyMarker();
 
-        // If multi cursor return
-        // If multi select return
-        let many = cm.getDoc().somethingSelected() || cm.getDoc().listSelections().length > 1;
-        if (many) {
+        // If !singleCursor return
+        let singleCursor = cmUtils.isSingleCursor(cm);
+        if (!singleCursor) {
             return;
         }
         // If not active project return
@@ -70,6 +68,9 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
             position
         }).then(res=>{
             console.log(res);
+            if (res.fixes.length) {
+                setMarker(cur.line);
+            }
             // TODO:
             // Render the quick fixes
         });

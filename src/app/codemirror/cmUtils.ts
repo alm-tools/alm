@@ -12,3 +12,11 @@ export function jumpToLine(config: {
     var middleHeight = config.editor.getScrollerElement().offsetHeight / 2;
     config.editor.scrollTo(null, t - middleHeight - 5);
 }
+
+
+/** Good for stuff that does not apply in multi cursor or selection mode */
+export function isSingleCursor(editor: CodeMirror.EditorFromTextArea): boolean {
+    const doc = editor.getDoc();
+    /** If something selected or multi cursor */
+    return !doc.somethingSelected() && !(doc.listSelections().length > 1);
+}
