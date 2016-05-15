@@ -131,6 +131,7 @@ const projectFileName = 'tsconfig.json';
  * This is what we use when the user doesn't specify a files / filesGlob
  */
 const invisibleFilesGlob = ["./**/*.ts", "./**/*.tsx"];
+const invisibleFilesGlobWithJS = ["./**/*.ts", "./**/*.tsx", "./**/*.js"];
 
 /**
  * What we use to
@@ -252,12 +253,17 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
     // Our customizations for "tsconfig.json"
     // Use grunt.file.expand type of logic
     var cwdPath = path.relative(process.cwd(), path.dirname(projectFile));
-    if (!projectSpec.files && !projectSpec.filesGlob) { // If there is no files and no filesGlob, we create an invisible one.
+    /** Determine the glob to expand */
+    if (!projectSpec.files && !projectSpec.filesGlob && projectSpec.compilerOptions.allowJs) {
+        var toExpand = invisibleFilesGlobWithJS;
+    }
+    else if (!projectSpec.files && !projectSpec.filesGlob) {
         var toExpand = invisibleFilesGlob;
     }
-    if (projectSpec.filesGlob) { // If there is a files glob we will use that
+    else if (projectSpec.filesGlob) { // If there is a files glob we will use that
         var toExpand = projectSpec.filesGlob;
     }
+    /** Other things that need to go in the glob */
     if (projectSpec.exclude) { // If there is an exclude we will add that
         toExpand = toExpand.concat(projectSpec.exclude.map(x=>`!./${x}`)) // as it is (for files)
         toExpand = toExpand.concat(projectSpec.exclude.map(x=>`!./${x}/**`)) // any sub directories (for dirs)
@@ -265,7 +271,8 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
     if (projectSpec.compilerOptions && projectSpec.compilerOptions.outDir) { // If there is an outDir we will exclude that as well
         toExpand.push(`!./${projectSpec.compilerOptions.outDir}/**`);
     }
-    if (toExpand) { // Finally expand whatever needs expanding
+    /** Finally expand whatever needs expanding */
+    if (toExpand) {
         try {
             projectSpec.files = expand({ filter: 'isFile', cwd: cwdPath }, toExpand);
         }
