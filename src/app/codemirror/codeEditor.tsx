@@ -210,6 +210,11 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         // Git status
         this.disposible.add(gitStatus.setupCM(this.codeMirror));
 
+        // quick fix
+        if (!this.props.readOnly) {
+            this.disposible.add(quickFix.setupCM(this.codeMirror));
+        }
+
         const loadEditorOptions = (editorOptions:types.EditorOptions) => {
             // Set editor options
             this.codeMirror.setOption('indentUnit', editorOptions.indentSize);
