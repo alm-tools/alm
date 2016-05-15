@@ -441,3 +441,113 @@ export function getJSOutputStatus(query: Types.FilePathQuery, autoEmit = true): 
         outputStatus
     };
 }
+
+/**
+ * Get Quick Fix
+ */
+import {QuickFix, QuickFixQueryInformation, Refactoring} from "./quickFix/quickFix";
+import * as qf from "./quickFix/quickFix";
+import {allQuickFixes} from "./quickFix/quickFixRegistry";
+function getDiagnositcsByFilePath(query: Types.FilePathQuery) {
+    let project = getProject(query.filePath);
+    var diagnostics = project.languageService.getSyntacticDiagnostics(query.filePath);
+    if (diagnostics.length === 0) {
+        diagnostics = project.languageService.getSemanticDiagnostics(query.filePath);
+    }
+    return diagnostics;
+}
+function getInfoForQuickFixAnalysis(query: Types.FilePathPositionQuery): QuickFixQueryInformation {
+    let project = getProject(query.filePath);
+    let program = project.languageService.getProgram();
+    let sourceFile = program.getSourceFile(query.filePath);
+    let sourceFileText: string,
+        fileErrors: ts.Diagnostic[],
+        positionErrors: ts.Diagnostic[],
+        positionErrorMessages: string[],
+        positionNode: ts.Node;
+    if (project.includesSourceFile(query.filePath)) {
+        sourceFileText = sourceFile.getFullText();
+        fileErrors = getDiagnositcsByFilePath(query);
+        /** We want errors that are *touching* and thefore expand the query position by one */
+        positionErrors = fileErrors.filter(e => ((e.start - 1) < query.position) && (e.start + e.length + 1) > query.position);
+        positionErrorMessages = positionErrors.map(e => ts.flattenDiagnosticMessageText(e.messageText, '\n'));
+        positionNode = ts.getTokenAtPosition(sourceFile, query.position);
+    } else {
+        sourceFileText = "";
+        fileErrors = [];
+        positionErrors = [];
+        positionErrorMessages = [];
+        positionNode = undefined;
+    }
+
+    let service = project.languageService;
+    let typeChecker = program.getTypeChecker();
+
+    return {
+        project,
+        program,
+        sourceFile,
+        sourceFileText,
+        fileErrors,
+        positionErrors,
+        positionErrorMessages,
+        position: query.position,
+        positionNode,
+        service,
+        typeChecker,
+        filePath: query.filePath
+    };
+}
+
+export interface GetQuickFixesQuery extends Types.FilePathPositionQuery { }
+export interface QuickFixDisplay {
+    /** Uniquely identifies which function will be called to carry out the fix */
+    key: string;
+    /** What will be displayed in the UI */
+    display: string;
+    /** Does this quickfix provide a snippet */
+    isNewTextSnippet: boolean;
+}
+export interface GetQuickFixesResponse {
+    fixes: QuickFixDisplay[];
+}
+export function getQuickFixes(query: GetQuickFixesQuery): Promise<GetQuickFixesResponse> {
+    let project = getProject(query.filePath);
+
+    if (!project.includesSourceFile(query.filePath)) {
+        return resolve({ fixes: [] });
+    }
+
+    var info = getInfoForQuickFixAnalysis(query);
+
+    // And then we let the quickFix determine if it wants provide any fixes for this file
+    // And if so we also treat the result as a display string
+    var fixes = allQuickFixes
+        .map(x => {
+            var canProvide = x.canProvideFix(info);
+            if (!canProvide)
+                return;
+            else
+                return { key: x.key, display: canProvide.display, isNewTextSnippet: canProvide.isNewTextSnippet };
+        })
+        .filter(x => !!x);
+
+    return resolve({ fixes });
+}
+
+export interface ApplyQuickFixQuery extends Types.FilePathPositionQuery {
+    key: string;
+
+    // This will need to be special cased
+    additionalData?: any;
+}
+export interface ApplyQuickFixResponse {
+    refactorings: qf.RefactoringsByFilePath;
+}
+export function applyQuickFix(query: ApplyQuickFixQuery): Promise<ApplyQuickFixResponse> {
+    var fix = allQuickFixes.filter(x => x.key == query.key)[0];
+    var info = getInfoForQuickFixAnalysis(query);
+    var res = fix.provideFix(info);
+    var refactorings = qf.getRefactoringsByFilePath(res);
+    return resolve({ refactorings });
+}
