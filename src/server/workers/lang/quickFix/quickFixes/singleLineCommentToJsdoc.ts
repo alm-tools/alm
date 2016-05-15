@@ -1,7 +1,7 @@
 import utils = require("../../../../../common/utils");
 import {QuickFix, QuickFixQueryInformation, Refactoring, CanProvideFixResponse} from "../quickFix";
 import * as ast from "../../modules/astUtils";
-import {EOL} from "os";
+const EOL = '\n';
 
 export class SingleLineCommentToJsdoc implements QuickFix {
     key = SingleLineCommentToJsdoc.name;

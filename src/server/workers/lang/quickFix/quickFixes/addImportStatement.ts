@@ -1,6 +1,6 @@
 import {QuickFix, QuickFixQueryInformation, Refactoring, CanProvideFixResponse} from "../quickFix";
 import * as ast from "../../modules/astUtils";
-import {EOL } from "os";
+const EOL = '\n';
 var { displayPartsToString, typeToDisplayParts } = ts;
 import path = require('path');
 import {Project} from "../../core/project";

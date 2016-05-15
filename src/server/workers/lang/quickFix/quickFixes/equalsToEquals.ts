@@ -1,6 +1,5 @@
 import {QuickFix, QuickFixQueryInformation, Refactoring, CanProvideFixResponse} from "../quickFix";
 import * as ast from "../../modules/astUtils";
-import {EOL} from "os";
 
 export class EqualsToEquals implements QuickFix {
     key = EqualsToEquals.name;

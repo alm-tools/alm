@@ -98,7 +98,7 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
             filePath: cm.filePath,
             position
         }).then(res=>{
-            console.log(res); // DEBUG
+            // console.log(res); // DEBUG
             if (cm.getDoc().getCursor().line !== cur.line) {
                 return;
             }
@@ -149,7 +149,7 @@ CodeMirror.commands[commands.additionalEditorCommands.quickFix] = (cm: CodeMirro
                 position: cm.lastQuickFixInformation.position
             }).then((res)=>{
                 // TODO: apply refactorings
-                console.log('Apply refactorings:', res.refactorings); // DEBUG
+                // console.log('Apply refactorings:', res.refactorings); // DEBUG
                 uix.API.applyRefactorings(res.refactorings);
             })
         }
