@@ -232,14 +232,19 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
         let bland = json.parseErrorToCodeError(projectFilePath,res.error);
         return { error: bland };
     }
+
+    // Setup default project options
+    if (!projectSpec.compilerOptions) projectSpec.compilerOptions = {};
+
     // Additional global level validations
     if (projectSpec.files && projectSpec.exclude) {
         let bland = makeBlandError(projectFilePath, 'You cannot use both "files" and "exclude" in tsconfig.json');
         return { error: bland };
     }
-
-    // Setup default project options
-    if (!projectSpec.compilerOptions) projectSpec.compilerOptions = {};
+    if (projectSpec.compilerOptions.allowJs && !projectSpec.compilerOptions.outDir) {
+        let bland = makeBlandError(projectFilePath, 'You must use an `outDir` if you are using `allowJs` in tsconfig.json');
+        return { error: bland };
+    }
 
     // Our customizations for "tsconfig.json"
     // Use grunt.file.expand type of logic
