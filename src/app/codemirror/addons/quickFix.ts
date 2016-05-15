@@ -49,9 +49,13 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
     const refreshQuickFixes = () => {
         clearAnyMarker();
 
-        // TODO:
         // If multi cursor return
         // If multi select return
+        let many = cm.getDoc().somethingSelected() || cm.getDoc().listSelections().length > 1;
+        if (many) {
+            return;
+        }
+        // TODO:
         // If not active project return
         // query the server with quick fixes
         // Render the quick fixes
@@ -68,10 +72,12 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
     cm.on('focus', handleFocus);
     // Add a few other things to call refresh with debouncing
     cm.on('change', refreshQuickFixesDebounced);
+    cm.on('cursorActivity', refreshQuickFixesDebounced);
     return {
         dispose: () => {
             cm.off('focus', handleFocus);
             cm.off('change', refreshQuickFixesDebounced);
+            cm.off('cursorActivity', refreshQuickFixesDebounced);
             clearAnyMarker();
         }
     }
