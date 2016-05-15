@@ -8,6 +8,7 @@ import * as CodeMirror from "codemirror";
 import * as utils from "../../../common/utils";
 import {server} from "../../../socket/socketClient";
 import * as types from "../../../common/types";
+import * as state from "../../state/state";
 
 const gutterId = "CodeMirror-quick-fix";
 const gutterItemClassName = "CodeMirror-quick-fix-bulb";
@@ -55,8 +56,11 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
         if (many) {
             return;
         }
-        // TODO:
         // If not active project return
+        if (!state.inActiveProjectFilePath(cm.filePath)) {
+            return;
+        }
+        // TODO:
         // query the server with quick fixes
         // Render the quick fixes
 
