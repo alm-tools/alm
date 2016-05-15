@@ -186,7 +186,7 @@ export class AddClassMethod implements QuickFix {
         // And the correct indent
         var indentLength = info.service.getIndentationAtPosition(
             memberTarget.getSourceFile().fileName, firstBrace.end, info.project.configFile.project.formatCodeOptions);
-        var indent = Array(indentLength + info.project.configFile.project.formatCodeOptions.IndentSize + 1).join(' ');
+        var indent = Array(indentLength + info.indentSize + 1).join(' ');
 
         // And add stuff after the first brace
         let refactoring: Refactoring = {

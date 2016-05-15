@@ -34,7 +34,7 @@ export class WrapInProperty implements QuickFix {
 
         let classIndent = info.service.getIndentationAtPosition(
             info.filePath, firstBrace.end, info.project.configFile.project.formatCodeOptions);
-        let indent = info.project.configFile.project.formatCodeOptions.IndentSize;
+        let indent = info.indentSize;
 
         let indentSetting = {
             classIndent,

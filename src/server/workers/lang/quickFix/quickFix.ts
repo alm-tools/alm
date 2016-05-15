@@ -24,6 +24,7 @@ export interface QuickFixQueryInformation {
     position: number;
     positionNode: ts.Node;
     filePath: string;
+    indentSize: number;
 
     /**
      * Either the previous or the current.

@@ -456,7 +456,7 @@ function getDiagnositcsByFilePath(query: Types.FilePathQuery) {
     }
     return diagnostics;
 }
-function getInfoForQuickFixAnalysis(query: Types.FilePathPositionQuery): QuickFixQueryInformation {
+function getInfoForQuickFixAnalysis(query: Types.GetQuickFixesQuery): QuickFixQueryInformation {
     let project = getProject(query.filePath);
     let program = project.languageService.getProgram();
     let sourceFile = program.getSourceFile(query.filePath);
@@ -495,11 +495,11 @@ function getInfoForQuickFixAnalysis(query: Types.FilePathPositionQuery): QuickFi
         positionNode,
         service,
         typeChecker,
-        filePath: query.filePath
+        filePath: query.filePath,
+        indentSize: query.indentSize
     };
 }
 
-export interface GetQuickFixesQuery extends Types.FilePathPositionQuery { }
 export interface QuickFixDisplay {
     /** Uniquely identifies which function will be called to carry out the fix */
     key: string;
@@ -511,7 +511,7 @@ export interface QuickFixDisplay {
 export interface GetQuickFixesResponse {
     fixes: QuickFixDisplay[];
 }
-export function getQuickFixes(query: GetQuickFixesQuery): Promise<GetQuickFixesResponse> {
+export function getQuickFixes(query: Types.GetQuickFixesQuery): Promise<GetQuickFixesResponse> {
     let project = getProject(query.filePath);
 
     if (!project.includesSourceFile(query.filePath)) {
@@ -535,7 +535,7 @@ export function getQuickFixes(query: GetQuickFixesQuery): Promise<GetQuickFixesR
     return resolve({ fixes });
 }
 
-export interface ApplyQuickFixQuery extends Types.FilePathPositionQuery {
+export interface ApplyQuickFixQuery extends Types.GetQuickFixesQuery {
     key: string;
 
     // This will need to be special cased

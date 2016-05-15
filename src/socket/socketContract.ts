@@ -342,4 +342,11 @@ export namespace Types {
          */
         rawJson: any;
     }
+
+    /**
+     * Quick Fix
+     */
+    export interface GetQuickFixesQuery extends FilePathPositionQuery {
+        indentSize: number;
+    }
 }
