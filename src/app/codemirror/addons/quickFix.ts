@@ -7,6 +7,7 @@ import {server} from "../../../socket/socketClient";
 import * as types from "../../../common/types";
 import * as state from "../../state/state";
 import cmUtils = require("../cmUtils");
+import {Types} from "../../../socket/socketContract";
 
 
 const gutterId = "CodeMirror-quick-fix";
@@ -21,6 +22,10 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
     // if (cm) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
 
     const filePath = cm.filePath;
+    let lastQuickFixInformation: {
+        lineHandle: CodeMirror.LineHandle,
+        fixes: Types.QuickFixDisplay[]
+    } = null;
 
     function makeMarker() {
         var marker = document.createElement("div");
@@ -29,19 +34,21 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
         marker.innerHTML = "💡";
         return marker;
     }
-    let _currentMarkerLineHandle: CodeMirror.LineHandle = null;
     /** Automatically clears any old marker */
-    function setMarker(line: number) {
+    function setMarker(line: number, fixes: Types.QuickFixDisplay[]) {
         clearAnyPreviousMarkerLocation();
-        _currentMarkerLineHandle = cm.setGutterMarker(line, gutterId, makeMarker());
+        lastQuickFixInformation = {
+            lineHandle: cm.setGutterMarker(line, gutterId, makeMarker()),
+            fixes
+        };
     }
     function clearAnyPreviousMarkerLocation() {
-        if (_currentMarkerLineHandle) {
-            const newLine: number | null = (cm as any).getLineNumber(_currentMarkerLineHandle);
+        if (lastQuickFixInformation) {
+            const newLine: number | null = (cm as any).getLineNumber(lastQuickFixInformation.lineHandle);
             if (newLine != null) {
                 cm.setGutterMarker(newLine, gutterId, null);
             }
-            _currentMarkerLineHandle = null;
+            lastQuickFixInformation = null;
         }
     }
 
@@ -69,7 +76,7 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
         }).then(res=>{
             console.log(res);
             if (res.fixes.length) {
-                setMarker(cur.line);
+                setMarker(cur.line, res.fixes);
             }
             // TODO:
             // Render the quick fixes
