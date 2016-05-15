@@ -1,3 +1,13 @@
 .CodeMirror-quick-fix {
     width: 0em;
 }
+
+.CodeMirror-quick-fix-bulb {
+    font-size: .8em;
+    transition: opacity .2s;
+    opacity: .5;
+    cursor: pointer;
+}
+.CodeMirror-quick-fix-bulb:hover {
+    opacity: 1 !important;
+}

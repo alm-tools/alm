@@ -28,26 +28,25 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
         marker.innerHTML = "💡";
         return marker;
     }
+    let _currentMarkerLineHandle: CodeMirror.LineHandle = null;
     /** Automatically clears any old marker */
-    let _currentMarker: CodeMirror.LineHandle = null;
     function setMarker(line: number) {
-        clearAnyMarker();
-        const lineHandle = cm.setGutterMarker(line, gutterId, makeMarker());
-        _currentMarker = lineHandle;
+        clearAnyPreviousMarkerLocation();
+        _currentMarkerLineHandle = cm.setGutterMarker(line, gutterId, makeMarker());
     }
-    function clearAnyMarker() {
-        if (_currentMarker){
-            const newLine: number | null = (cm as any).getLineNumber(_currentMarker);
-            if (newLine) {
+    function clearAnyPreviousMarkerLocation() {
+        if (_currentMarkerLineHandle) {
+            const newLine: number | null = (cm as any).getLineNumber(_currentMarkerLineHandle);
+            if (newLine != null) {
                 cm.setGutterMarker(newLine, gutterId, null);
             }
-            _currentMarker = null;
+            _currentMarkerLineHandle = null;
         }
     }
 
     // The key quick fix get logic
     const refreshQuickFixes = () => {
-        clearAnyMarker();
+        clearAnyPreviousMarkerLocation();
 
         // If !singleCursor return
         let singleCursor = cmUtils.isSingleCursor(cm);
@@ -91,7 +90,7 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
             cm.off('focus', handleFocus);
             cm.off('change', refreshQuickFixesDebounced);
             cm.off('cursorActivity', refreshQuickFixesDebounced);
-            clearAnyMarker();
+            clearAnyPreviousMarkerLocation();
         }
     }
 }
