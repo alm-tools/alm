@@ -1,5 +1,5 @@
 import {QuickFix, QuickFixQueryInformation, Refactoring, CanProvideFixResponse} from "../quickFix";
-import * as ast from "../astUtils";
+import * as ast from "../../modules/astUtils";
 
 function isBinaryAddition(node: ts.Node): boolean {
     return (node.kind == ts.SyntaxKind.BinaryExpression &&

@@ -1,5 +1,5 @@
 import {QuickFix, QuickFixQueryInformation, Refactoring, CanProvideFixResponse} from "../quickFix";
-import * as ast from "../astUtils";
+import * as ast from "../../modules/astUtils";
 import {EOL } from "os";
 var { displayPartsToString, typeToDisplayParts } = ts;
 import path = require('path');
@@ -7,7 +7,7 @@ import {Project} from "../../core/project";
 
 import {getPathCompletions} from "../../modules/getPathCompletions";
 
-function getIdentifierAndFileNames(error: ts.Diagnostic, project: Project) {
+function getIdentifierAndFileNames(error: ts.Diagnostic, project: Project, position: number) {
 
     var errorText: string = <any>error.messageText;
 
@@ -22,14 +22,14 @@ function getIdentifierAndFileNames(error: ts.Diagnostic, project: Project) {
     if (!match) return;
 
     var [, identifierName] = match;
-    var {files} = getPathCompletions({
+    var result = getPathCompletions({
+        position,
         project,
         filePath: error.file.fileName,
-        prefix: identifierName,
-        includeExternalModules: false
+        prefix: identifierName
     });
-    var file = files.length > 0 ? files[0].relativePath : undefined;
-    var basename = files.length > 0 ? files[0].name : undefined;
+    var file = result.length > 0 ? result[0].pathCompletion : undefined;
+    var basename = result.length > 0 ? result[0].pathCompletion.fileName : undefined;
     return { identifierName, file, basename };
 }
 
@@ -40,7 +40,7 @@ export class AddImportFromStatement implements QuickFix {
         var relevantError = info.positionErrors.filter(x=> x.code == 2304)[0];
         if (!relevantError) return;
         if (info.positionNode.kind !== ts.SyntaxKind.Identifier) return;
-        var matches = getIdentifierAndFileNames(relevantError, info.project);
+        var matches = getIdentifierAndFileNames(relevantError, info.project, info.position);
         if (!matches) return;
 
         var { identifierName, file} = matches;
@@ -52,7 +52,7 @@ export class AddImportFromStatement implements QuickFix {
         var identifier = <ts.Identifier>info.positionNode;
 
         var identifierName = identifier.text;
-        var fileNameforFix = getIdentifierAndFileNames(relevantError, info.project);
+        var fileNameforFix = getIdentifierAndFileNames(relevantError, info.project, info.position);
 
         // Add stuff at the top of the file
         let refactorings: Refactoring[] = [{

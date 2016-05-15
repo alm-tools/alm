@@ -1,5 +1,5 @@
 import {QuickFix, QuickFixQueryInformation, Refactoring, CanProvideFixResponse} from "../quickFix";
-import * as ast from "../astUtils";
+import * as ast from "../../modules/astUtils";
 
 
 export class TypeAssertPropertyAccessToType implements QuickFix {

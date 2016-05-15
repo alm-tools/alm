@@ -1,5 +1,5 @@
 import {QuickFix, QuickFixQueryInformation, Refactoring, CanProvideFixResponse} from "../quickFix";
-import * as ast from "../astUtils";
+import * as ast from "../../modules/astUtils";
 import {EOL} from "os";
 
 function getClassAndInterfaceName(error: ts.Diagnostic) {
@@ -7,7 +7,7 @@ function getClassAndInterfaceName(error: ts.Diagnostic) {
 
     var match = errorText.match(/Class \'(\w+)\' incorrectly implements interface \'(\w+)\'./);
 
-    // safety 
+    // safety
     if (!match || match.length !== 3) return;
 
     var [, className, interfaceName] = match;
@@ -37,29 +37,29 @@ export class ImplementInterface implements QuickFix {
 
         var match = getClassAndInterfaceName(relevantError);
         var {className, interfaceName} = match;
-        
-        // Get all the members of the interface: 
+
+        // Get all the members of the interface:
         let interfaceTarget = <ts.InterfaceDeclaration>ast.getNodeByKindAndName(info.program, ts.SyntaxKind.InterfaceDeclaration, className);
 
-        // The class that we are trying to add stuff to 
+        // The class that we are trying to add stuff to
         let classTarget = <ts.ClassDeclaration>ast.getNodeByKindAndName(info.program, ts.SyntaxKind.ClassDeclaration, className);
 
         // Then the last brace
         let braces = classTarget.getChildren().filter(x=> x.kind == ts.SyntaxKind.CloseBraceToken);
         let lastBrace = braces[braces.length - 1];
-        
+
         // And the correct indent
         var indentLength = info.service.getIndentationAtPosition(
-            classTarget.getSourceFile().fileName, lastBrace.getStart(), info.project.projectFile.project.formatCodeOptions);
-        var indent = Array(indentLength + info.project.projectFile.project.formatCodeOptions.IndentSize + 1).join(' ');
+            classTarget.getSourceFile().fileName, lastBrace.getStart(), info.project.configFile.project.formatCodeOptions);
+        var indent = Array(indentLength + info.project.configFile.project.formatCodeOptions.IndentSize + 1).join(' ');
 
         let refactorings: Refactoring[] = [];
-        
+
         //
         // The code for the error is actually from typeChecker.checkTypeRelatedTo so investigate that code more
         // also look at the code from the mixin PR on ms/typescript
         //
-        
+
         // And add stuff after the last brace
         // let refactoring: Refactoring = {
         //     span: {

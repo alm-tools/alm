@@ -1,5 +1,5 @@
 import {QuickFix, QuickFixQueryInformation, Refactoring, CanProvideFixResponse} from "../quickFix";
-import * as ast from "../astUtils";
+import * as ast from "../../modules/astUtils";
 import {EOL} from "os";
 
 export class ExtractVariable implements QuickFix {
@@ -162,13 +162,13 @@ function getArgumentDescription(node: ts.CallExpression, argumentIndex: number,
 }
 
 function startOfLine(info: QuickFixQueryInformation): number {
-    let {line} = info.project.languageServiceHost.getPositionFromIndex(info.filePath, info.position);
-    return info.project.languageServiceHost.getIndexFromPosition(info.filePath, { line, col: 0 });
+    let {line} = info.project.languageServiceHost.getLineAndCharacterOfPosition(info.filePath, info.position);
+    return info.project.languageServiceHost.getPositionOfLineAndCharacter(info.filePath, line, 0);
 }
 
 function indentAtPos(info: QuickFixQueryInformation): number {
     return info.service.getIndentationAtPosition(
-        info.filePath, info.positionNode.pos, info.project.projectFile.project.formatCodeOptions);
+        info.filePath, info.positionNode.pos, info.project.configFile.project.formatCodeOptions);
 }
 
 function createIndent(indent: number): string {

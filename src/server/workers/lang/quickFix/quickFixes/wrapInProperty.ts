@@ -1,5 +1,5 @@
 import {QuickFix, QuickFixQueryInformation, Refactoring, CanProvideFixResponse} from "../quickFix";
-import * as ast from "../astUtils";
+import * as ast from "../../modules/astUtils";
 import {EOL} from "os";
 
 interface IndentSetting {
@@ -33,8 +33,8 @@ export class WrapInProperty implements QuickFix {
         let firstBrace = classDecl.getChildren().filter(x=> x.kind == ts.SyntaxKind.OpenBraceToken)[0];
 
         let classIndent = info.service.getIndentationAtPosition(
-            info.filePath, firstBrace.end, info.project.projectFile.project.formatCodeOptions);
-        let indent = info.project.projectFile.project.formatCodeOptions.IndentSize;
+            info.filePath, firstBrace.end, info.project.configFile.project.formatCodeOptions);
+        let indent = info.project.configFile.project.formatCodeOptions.IndentSize;
 
         let indentSetting = {
             classIndent,

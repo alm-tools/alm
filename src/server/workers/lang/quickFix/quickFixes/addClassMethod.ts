@@ -1,5 +1,5 @@
 import {QuickFix, QuickFixQueryInformation, Refactoring, CanProvideFixResponse} from "../quickFix";
-import * as ast from "../astUtils";
+import * as ast from "../../modules/astUtils";
 import {EOL} from "os";
 
 function getIdentifierAndClassNames(error: ts.Diagnostic) {
@@ -185,8 +185,8 @@ export class AddClassMethod implements QuickFix {
 
         // And the correct indent
         var indentLength = info.service.getIndentationAtPosition(
-            memberTarget.getSourceFile().fileName, firstBrace.end, info.project.projectFile.project.formatCodeOptions);
-        var indent = Array(indentLength + info.project.projectFile.project.formatCodeOptions.IndentSize + 1).join(' ');
+            memberTarget.getSourceFile().fileName, firstBrace.end, info.project.configFile.project.formatCodeOptions);
+        var indent = Array(indentLength + info.project.configFile.project.formatCodeOptions.IndentSize + 1).join(' ');
 
         // And add stuff after the first brace
         let refactoring: Refactoring = {

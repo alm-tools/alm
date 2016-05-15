@@ -1,6 +1,6 @@
-import utils = require("../../utils");
+import utils = require("../../../../../common/utils");
 import {QuickFix, QuickFixQueryInformation, Refactoring, CanProvideFixResponse} from "../quickFix";
-import * as ast from "../astUtils";
+import * as ast from "../../modules/astUtils";
 import {EOL} from "os";
 
 export class SingleLineCommentToJsdoc implements QuickFix {
@@ -30,8 +30,8 @@ export class SingleLineCommentToJsdoc implements QuickFix {
     }
 
     provideFix(info: QuickFixQueryInformation): Refactoring[] {
-        
-        let comments = ts.getLeadingCommentRangesOfNode(info.positionNode, info.sourceFile);        
+
+        let comments = ts.getLeadingCommentRangesOfNode(info.positionNode, info.sourceFile);
         let relevantComment = comments[comments.length - 1];
         var oldText = info.sourceFileText.substring(relevantComment.pos, relevantComment.end);
         let newText = "/** " + oldText.substr(2).trim() + " */";

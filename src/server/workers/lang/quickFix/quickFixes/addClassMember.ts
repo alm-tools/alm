@@ -1,5 +1,5 @@
 import {QuickFix, QuickFixQueryInformation, Refactoring, CanProvideFixResponse} from "../quickFix";
-import * as ast from "../astUtils";
+import * as ast from "../../modules/astUtils";
 import {EOL} from "os";
 
 function getIdentifierAndClassNames(error: ts.Diagnostic) {
@@ -69,17 +69,17 @@ export class AddClassMember implements QuickFix {
         else if (parentOfParent.kind == ts.SyntaxKind.CallExpression) {
             let callExp = <ts.CallExpression>parentOfParent;
             let typeStringParts = ['('];
-            
+
             // Find the number of arguments
             let args = [];
             callExp.arguments.forEach(arg => {
                 var argName = (getLastNameAfterDot(arg.getText()));
                 var argType = getTypeStringForNode(arg, info.typeChecker);
-                
+
                 args.push(`${argName}: ${argType}`);
             });
             typeStringParts.push(args.join(', '));
-            
+
             // TODO: infer the return type as well if the next parent is an assignment
             // Currently its `any`
             typeStringParts.push(') => any');
@@ -104,8 +104,8 @@ export class AddClassMember implements QuickFix {
 
         // And the correct indent
         var indentLength = info.service.getIndentationAtPosition(
-            memberTarget.getSourceFile().fileName, firstBrace.end, info.project.projectFile.project.formatCodeOptions);
-        var indent = Array(indentLength + info.project.projectFile.project.formatCodeOptions.IndentSize + 1).join(' ');
+            memberTarget.getSourceFile().fileName, firstBrace.end, info.project.configFile.project.formatCodeOptions);
+        var indent = Array(indentLength + info.project.configFile.project.formatCodeOptions.IndentSize + 1).join(' ');
 
         // And add stuff after the first brace
         let refactoring: Refactoring = {
