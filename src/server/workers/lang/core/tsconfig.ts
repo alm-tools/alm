@@ -246,9 +246,6 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
         let bland = makeBlandError(projectFilePath, 'You must use an `outDir` if you are using `allowJs` in tsconfig.json');
         return { error: bland };
     }
-    if (projectSpec.compilerOptions.allowJs) {
-        projectSpec.compilerOptions.allowNonTsExtensions = true; // Of course.
-    }
 
     // Our customizations for "tsconfig.json"
     // Use grunt.file.expand type of logic
