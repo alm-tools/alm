@@ -2,13 +2,9 @@
  * Interfaces for quick fixes
  */
 import project = require("../core/project");
+import {Types} from "../../../../socket/socketContract";
 
-export interface Refactoring extends ts.TextChange {
-    filePath: string;
-
-    /** If you want to insert a snippet. Be careful that you shouldn't return more than one refatoring if you want to use this */
-    isNewTextSnippet?: boolean;
-}
+export type Refactoring = Types.QuickFixRefactoring;
 
 /** Note this interface has a few redundant stuff. This is intentional to precompute once */
 export interface QuickFixQueryInformation {
@@ -48,17 +44,12 @@ export interface QuickFix {
 
     canProvideFix(info: QuickFixQueryInformation): CanProvideFixResponse;
 
-    provideFix(info: QuickFixQueryInformation): Refactoring[];
-}
-
-/** You don't need to create this manually. Just use the util function */
-export interface RefactoringsByFilePath {
-    [filePath: string]: Refactoring[];
+    provideFix(info: QuickFixQueryInformation): Types.QuickFixRefactoring[];
 }
 
 /** Utility method. Reason is we want to transact by file path */
-export function getRefactoringsByFilePath(refactorings: Refactoring[]) {
-    var loc: RefactoringsByFilePath = {};
+export function getRefactoringsByFilePath(refactorings: Types.QuickFixRefactoring[]) {
+    var loc: Types.QuickFixRefactoringsByFilePath = {};
     for (let refac of refactorings) {
         if (!loc[refac.filePath]) loc[refac.filePath] = [];
         loc[refac.filePath].push(refac);
@@ -67,7 +58,7 @@ export function getRefactoringsByFilePath(refactorings: Refactoring[]) {
     // sort each of these in descending by start location
     for (let filePath in loc) {
         let refactorings = loc[filePath];
-        refactorings.sort((a: Refactoring, b: Refactoring) => {
+        refactorings.sort((a: Types.QuickFixRefactoring, b: Types.QuickFixRefactoring) => {
             return (b.span.start - a.span.start);
         });
     }

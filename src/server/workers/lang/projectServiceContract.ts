@@ -32,6 +32,7 @@ export var worker = {
     getNavigateToItems : {} as typeof socketContract.server.getNavigateToItems,
     getDependencies : {} as typeof socketContract.server.getDependencies,
     getAST : {} as typeof socketContract.server.getAST,
+    getQuickFixes : {} as typeof socketContract.server.getQuickFixes,
 
     // Used to tell the worker about what project it should work on
     // Note: The project validation / expansion happens locally. Only the hard stuff of *analysis* is done by the worker

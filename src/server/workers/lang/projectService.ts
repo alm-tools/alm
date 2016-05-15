@@ -445,7 +445,7 @@ export function getJSOutputStatus(query: Types.FilePathQuery, autoEmit = true): 
 /**
  * Get Quick Fix
  */
-import {QuickFix, QuickFixQueryInformation, Refactoring} from "./quickFix/quickFix";
+import {QuickFix, QuickFixQueryInformation} from "./quickFix/quickFix";
 import * as qf from "./quickFix/quickFix";
 import {allQuickFixes} from "./quickFix/quickFixRegistry";
 function getDiagnositcsByFilePath(query: Types.FilePathQuery) {
@@ -500,18 +500,7 @@ function getInfoForQuickFixAnalysis(query: Types.GetQuickFixesQuery): QuickFixQu
     };
 }
 
-export interface QuickFixDisplay {
-    /** Uniquely identifies which function will be called to carry out the fix */
-    key: string;
-    /** What will be displayed in the UI */
-    display: string;
-    /** Does this quickfix provide a snippet */
-    isNewTextSnippet: boolean;
-}
-export interface GetQuickFixesResponse {
-    fixes: QuickFixDisplay[];
-}
-export function getQuickFixes(query: Types.GetQuickFixesQuery): Promise<GetQuickFixesResponse> {
+export function getQuickFixes(query: Types.GetQuickFixesQuery): Promise<Types.GetQuickFixesResponse> {
     let project = getProject(query.filePath);
 
     if (!project.includesSourceFile(query.filePath)) {
@@ -534,17 +523,7 @@ export function getQuickFixes(query: Types.GetQuickFixesQuery): Promise<GetQuick
 
     return resolve({ fixes });
 }
-
-export interface ApplyQuickFixQuery extends Types.GetQuickFixesQuery {
-    key: string;
-
-    // This will need to be special cased
-    additionalData?: any;
-}
-export interface ApplyQuickFixResponse {
-    refactorings: qf.RefactoringsByFilePath;
-}
-export function applyQuickFix(query: ApplyQuickFixQuery): Promise<ApplyQuickFixResponse> {
+export function applyQuickFix(query: Types.ApplyQuickFixQuery): Promise<Types.ApplyQuickFixResponse> {
     var fix = allQuickFixes.filter(x => x.key == query.key)[0];
     var info = getInfoForQuickFixAnalysis(query);
     var res = fix.provideFix(info);

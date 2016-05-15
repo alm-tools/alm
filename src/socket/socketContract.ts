@@ -61,6 +61,7 @@ export var server = {
     getNavigateToItems: {} as QRFunction<{},Types.GetNavigateToItemsResponse>,
     getDependencies: {} as QRFunction<{},Types.GetDependenciesResponse>,
     getAST: {} as QRFunction<Types.GetASTQuery,Types.GetASTResponse>,
+    getQuickFixes: {} as QRFunction<Types.GetQuickFixesQuery,Types.GetQuickFixesResponse>,
 
     /**
      * Output Status
@@ -346,7 +347,39 @@ export namespace Types {
     /**
      * Quick Fix
      */
+    /** Some base interfaces */
+    export interface QuickFixRefactoring extends ts.TextChange {
+        filePath: string;
+
+        /** If you want to insert a snippet. Be careful that you shouldn't return more than one refatoring if you want to use this */
+        isNewTextSnippet?: boolean;
+    }
+    export interface QuickFixRefactoringsByFilePath { // Note : there is a utility function to create these for you
+        [filePath: string]: QuickFixRefactoring[];
+    }
+    /** Query interfaces */
     export interface GetQuickFixesQuery extends FilePathPositionQuery {
         indentSize: number;
+    }
+    export interface QuickFixDisplay {
+        /** Uniquely identifies which function will be called to carry out the fix */
+        key: string;
+        /** What will be displayed in the UI */
+        display: string;
+        /** Does this quickfix provide a snippet */
+        isNewTextSnippet: boolean;
+    }
+    /** Apply interfaces */
+    export interface GetQuickFixesResponse {
+        fixes: QuickFixDisplay[];
+    }
+    export interface ApplyQuickFixQuery extends Types.GetQuickFixesQuery {
+        key: string;
+
+        // This will need to be special cased
+        additionalData?: any;
+    }
+    export interface ApplyQuickFixResponse {
+        refactorings: QuickFixRefactoringsByFilePath;
     }
 }

@@ -60,11 +60,19 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
         if (!state.inActiveProjectFilePath(cm.filePath)) {
             return;
         }
-        // TODO:
         // query the server with quick fixes
-        // Render the quick fixes
-
+        const cur = cm.getDoc().getCursor();
         const indentSize = cm.getOption('indentUnit');
+        const position = cm.getDoc().indexFromPos(cur);
+        server.getQuickFixes({
+            indentSize,
+            filePath: cm.filePath,
+            position
+        }).then(res=>{
+            console.log(res);
+            // TODO:
+            // Render the quick fixes
+        });
     };
 
     const refreshQuickFixesDebounced = utils.debounce(refreshQuickFixes, 2000);
