@@ -24,7 +24,8 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
 
     function makeMarker() {
         var marker = document.createElement("div");
-        marker.className = gutterItemClassName;
+        marker.className = gutterItemClassName + ' hint--right hint--info';
+        marker.setAttribute('data-hint', "Quick Fix");
         marker.innerHTML = "💡";
         return marker;
     }
