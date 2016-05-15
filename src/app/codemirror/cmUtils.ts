@@ -20,3 +20,14 @@ export function isSingleCursor(editor: CodeMirror.EditorFromTextArea): boolean {
     /** If something selected or multi cursor */
     return !doc.somethingSelected() && !(doc.listSelections().length > 1);
 }
+
+/** Note: Only useful if in single cursor mode */
+export function isCursorInTopHalf(cm: CodeMirror.EditorFromTextArea): boolean {
+    let cursor = cm.getDoc().getCursor();
+    let scrollInfo = cm.getScrollInfo();
+    let topLine = cm.coordsChar({ top: scrollInfo.top, left: scrollInfo.left }, 'local').line;
+    let bottomLine = cm.coordsChar({ top: scrollInfo.top + scrollInfo.clientHeight, left: scrollInfo.left }, 'local').line + 1;
+
+    // Closer to top than bottom
+    return (cursor.line - topLine < bottomLine - cursor.line);
+}
