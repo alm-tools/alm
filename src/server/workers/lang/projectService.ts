@@ -285,6 +285,9 @@ export function getReferences(query: Types.GetReferencesQuery): Promise<Types.Ge
     })
 }
 
+/**
+ * Formatting
+ */
 import * as formatting from "./modules/formatting";
 export function formatDocument(query: Types.FormatDocumentQuery): Promise<Types.FormatDocumentResponse> {
     let project = getProject(query.filePath);
@@ -295,7 +298,9 @@ export function formatDocumentRange(query: Types.FormatDocumentRangeQuery): Prom
     return resolve({ refactorings: formatting.formatDocumentRange(project, query.filePath, query.from, query.to, query.editorOptions) });
 }
 
-
+/**
+ * Symbol search
+ */
 //--------------------------------------------------------------------------
 //  getNavigateToItems
 //--------------------------------------------------------------------------
@@ -308,7 +313,7 @@ export function formatDocumentRange(query: Types.FormatDocumentRangeQuery): Prom
 //  gave results from lib.d.ts
 //  I wanted the practice
 
-export function getNavigateToItems(query: {}): Promise<Types.GetNavigateToItemsResponse> {
+export function getNavigateToItems(query: {}): Promise<types.GetNavigateToItemsResponse> {
     let project = activeProject.GetProject.getCurrentIfAny();
     var languageService = project.languageService;
 
@@ -341,12 +346,12 @@ export function getNavigateToItems(query: {}): Promise<Types.GetNavigateToItemsR
         return undefined;
     }
 
-    var items: Types.NavigateToItem[] = [];
+    var items: types.NavigateToItem[] = [];
     for (let file of project.getProjectSourceFiles()) {
         let declarations = file.getNamedDeclarations();
         for (let index in declarations) {
             for (let declaration of declarations[index]) {
-                let item: Types.NavigateToItem = {
+                let item: types.NavigateToItem = {
                     name: getDeclarationName(declaration),
                     kind: getNodeKind(declaration),
                     filePath: file.fileName,
@@ -358,7 +363,7 @@ export function getNavigateToItems(query: {}): Promise<Types.GetNavigateToItemsR
         }
     }
 
-    return resolve({ items });
+    return utils.resolve({ items });
 }
 
 /**

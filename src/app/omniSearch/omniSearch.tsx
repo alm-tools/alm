@@ -10,13 +10,13 @@ import {debounce,createMap,rangeLimited,getFileName} from "../../common/utils";
 import {cast, server, Types} from "../../socket/socketClient";
 import * as commands from "../commands/commands";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
-import {Icon} from "../icon";
+import {Icon} from "../components/icon";
 import {TypedEvent} from "../../common/events";
 import * as state from "../state/state";
 import * as types from "../../common/types";
 import {AvailableProjectConfig} from "../../common/types";
 import * as CodeMirror from "codemirror";
-import {Robocop} from "../robocop";
+import {Robocop} from "../components/robocop";
 import * as utils from "../../common/utils";
 
 /** Stuff shared by the select list view */
@@ -236,7 +236,7 @@ class SearchState {
     /** commands */
     commands = commands.commandRegistry;
     /** symols */
-    symbols: Types.NavigateToItem[] = [];
+    symbols: types.NavigateToItem[] = [];
     /** source code files */
     filesPathsInProject: string[] = [];
 
@@ -395,7 +395,7 @@ class SearchState {
         }
 
         if (this.mode == SearchMode.Symbol){
-            let filtered: Types.NavigateToItem[] = this.filteredValues;
+            let filtered: types.NavigateToItem[] = this.filteredValues;
             renderedResults = this.createRenderedForList(filtered,(symbol)=>{
                 // Create rendered
                 let matched = renderMatchedSegments(symbol.name,this.parsedFilterValue);
@@ -500,7 +500,7 @@ class SearchState {
         }
 
         if (this.mode == SearchMode.Symbol) {
-            let symbol: Types.NavigateToItem = this.filteredValues[index];
+            let symbol: types.NavigateToItem = this.filteredValues[index];
             if (symbol) {
                 commands.doOpenOrFocusFile.emit({ filePath: symbol.filePath, position: symbol.position });
             }
@@ -582,7 +582,7 @@ class SearchState {
 
             if (this.mode == SearchMode.Symbol) {
                 this.filteredValues = this.parsedFilterValue
-                    ? getFilteredItems<Types.NavigateToItem>({ items: this.symbols, textify: (p) => p.name, filterValue: this.parsedFilterValue })
+                    ? getFilteredItems<types.NavigateToItem>({ items: this.symbols, textify: (p) => p.name, filterValue: this.parsedFilterValue })
                     : this.symbols;
                 this.filteredValues = this.filteredValues.slice(0,this.maxShowCount);
             }

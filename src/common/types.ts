@@ -16,8 +16,6 @@ export const errors = {
     CALLED_WHEN_NO_ACTIVE_PROJECT_GLOBAL: "A query *that needs an active project* was made when there is no active project"
 }
 
-
-
 /**
  * Session related types
  */
@@ -261,4 +259,27 @@ export type GitDiff = {
 export enum ErrorsDisplayMode {
     all = 1,
     openFiles = 2,
+}
+
+
+/**
+ * Documentation related stuff
+ */
+/** for project symbols view */
+export interface NavigateToItem {
+    name: string;
+    kind: string;
+    filePath: string;
+    position: EditorPosition;
+    fileName: string;
+}
+export interface GetNavigateToItemsResponse {
+   items: NavigateToItem[];
+}
+/** For top level module names */
+export interface GetTopLevelModuleNamesResponse {
+    /** Present in our project */
+    locals: NavigateToItem[];
+    /** Present external to our project e.g. lib.d.ts or node_modules */
+    externals: NavigateToItem[];
 }

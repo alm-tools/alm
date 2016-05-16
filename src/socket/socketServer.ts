@@ -157,6 +157,11 @@ namespace Server {
     export var applyQuickFix : typeof contract.server.applyQuickFix = projectServiceMaster.worker.applyQuickFix;
 
     /**
+     * Documentation browser
+     */
+    export var getTopLevelModuleNames : typeof contract.server.getTopLevelModuleNames = projectServiceMaster.worker.getTopLevelModuleNames;
+
+    /**
      * Output Status
      */
     export const getCompleteOutputStatusCache: typeof contract.server.getCompleteOutputStatusCache =

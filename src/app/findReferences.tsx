@@ -14,7 +14,7 @@ import Modal = require('react-modal');
 import {server} from "../socket/socketClient";
 import {Types} from "../socket/socketContract";
 import {modal} from "./styles/styles";
-import {Robocop} from "./robocop";
+import {Robocop} from "./components/robocop";
 import * as docCache from "./codemirror/mode/docCache";
 import {CodeEditor} from "./codemirror/codeEditor";
 import {RefactoringsByFilePath, Refactoring} from "../common/types";
@@ -77,7 +77,7 @@ export class FindReferences extends BaseComponent<Props, State>{
             let ref = selected && "selectedTabTitle";
             return (
                 <div ref={ref} key={item.filePath + i} style={[styles.tabHeader,active,{overflow:'auto'}]} onClick={()=>this.selectAndRefocus(i)}>
-                    <div>{utils.getFileName(item.filePath)} (line: {item.position.line + 1})</div>
+                    <div title={item.filePath}>{utils.getFileName(item.filePath)} (line: {item.position.line + 1})</div>
                 </div>
             );
         });

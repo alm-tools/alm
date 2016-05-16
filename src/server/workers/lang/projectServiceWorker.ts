@@ -3,6 +3,7 @@ import * as contract from "./projectServiceContract";
 import * as activeProject from "./activeProject"
 import * as outputStatusCache from "./cache/outputStatusCache"
 import * as projectService from "./projectService";
+import * as docs from "./docs/docs";
 
 namespace Worker {
     export const echo: typeof contract.worker.echo = (data) => Promise.resolve(data);
@@ -57,6 +58,11 @@ namespace Worker {
     export var getAST : typeof contract.worker.getAST = projectService.getAST;
     export var getQuickFixes : typeof contract.worker.getQuickFixes = projectService.getQuickFixes;
     export var applyQuickFix : typeof contract.worker.applyQuickFix = projectService.applyQuickFix;
+
+    /**
+     * Documentation Browser
+     */
+    export var getTopLevelModuleNames : typeof contract.worker.getTopLevelModuleNames = docs.getTopLevelModuleNames;
 }
 
 // Ensure that the namespace follows the contract

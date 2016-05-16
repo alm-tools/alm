@@ -10,12 +10,12 @@ import * as d3 from "d3";
 import * as $ from "jquery";
 import * as styles from "../../styles/styles";
 import * as onresize from "onresize";
-import {Clipboard} from "../../clipboard";
+import {Clipboard} from "../../components/clipboard";
 import {CodeEditor} from "../../codemirror/codeEditor";
 import {Types} from "../../../socket/socketContract";
-import {Icon} from "../../icon";
+import {Icon} from "../../components/icon";
 import * as Mousetrap from "mousetrap";
-import {Robocop} from "../../robocop";
+import {Robocop} from "../../components/robocop";
 import * as pure from "../../../common/pure";
 import * as buttons from "../../components/buttons";
 

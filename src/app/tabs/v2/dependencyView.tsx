@@ -10,7 +10,7 @@ import {Types} from "../../../socket/socketContract";
 import * as $ from "jquery";
 import * as styles from "../../styles/styles";
 import * as onresize from "onresize";
-import {Clipboard} from "../../clipboard";
+import {Clipboard} from "../../components/clipboard";
 
 type FileDependency = Types.FileDependency;
 let EOL = '\n';

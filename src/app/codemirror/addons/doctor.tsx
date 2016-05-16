@@ -9,7 +9,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as state from "../../state/state";
 import {connect} from "react-redux";
-import * as clipboard from "../../clipboard";
+import * as clipboard from "../../components/clipboard";
 import * as utils from "../../../common/utils";
 import {server} from "../../../socket/socketClient";
 import {Types} from "../../../socket/socketContract";

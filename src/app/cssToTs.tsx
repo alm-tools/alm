@@ -14,7 +14,7 @@ import Modal = require('react-modal');
 import {server} from "../socket/socketClient";
 import {Types} from "../socket/socketContract";
 import {modal} from "./styles/styles";
-import {Robocop} from "./robocop";
+import {Robocop} from "./components/robocop";
 import * as docCache from "./codemirror/mode/docCache";
 import {CodeEditor} from "./codemirror/codeEditor";
 import {RefactoringsByFilePath, Refactoring} from "../common/types";
