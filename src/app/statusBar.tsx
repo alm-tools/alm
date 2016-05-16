@@ -10,11 +10,11 @@ import {cast,server} from "../socket/socketClient";
 import * as commands from "./commands/commands";
 import * as types from "../common/types";
 import {AvailableProjectConfig} from "../common/types";
-import {Clipboard} from "./clipboard";
+import {Clipboard} from "./components/clipboard";
 import {PendingRequestsIndicator} from "./pendingRequestsIndicator";
-import {Icon} from "./icon";
+import {Icon} from "./components/icon";
 import {tabState,tabStateChanged} from "./tabs/v2/appTabsContainer";
-import {Progress} from "./progress";
+import {Progress} from "./components/progress";
 
 import {connect} from "react-redux";
 import {StoreState,expandErrors,collapseErrors} from "./state/state";

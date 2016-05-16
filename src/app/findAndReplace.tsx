@@ -9,7 +9,7 @@ import * as styles from "./styles/styles";
 import * as state from "./state/state";
 import * as commands from "./commands/commands";
 import {connect} from "react-redux";
-import {Icon} from "./icon";
+import {Icon} from "./components/icon";
 import * as tabRegistry from "./tabs/v2/tabRegistry";
 import {tabState,tabStateChanged} from "./tabs/v2/appTabsContainer";
 

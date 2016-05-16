@@ -19,7 +19,7 @@ import * as types from "../../../common/types";
 import {connect} from "react-redux";
 import * as styles from "../../styles/styles";
 import {Tips} from "./../tips";
-import {Icon} from "../../icon";
+import {Icon} from "../../components/icon";
 import {cast, server} from "../../../socket/socketClient";
 import {Types} from "../../../socket/socketContract";
 import * as alertOnLeave from "../../utils/alertOnLeave";
