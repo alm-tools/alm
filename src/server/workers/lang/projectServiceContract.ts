@@ -35,6 +35,9 @@ export var worker = {
     getQuickFixes : {} as typeof socketContract.server.getQuickFixes,
     applyQuickFix : {} as typeof socketContract.server.applyQuickFix,
 
+    /** Documentation browser */
+    getTopLevelModuleNames : {} as typeof socketContract.server.getTopLevelModuleNames, 
+
     // Used to tell the worker about what project it should work on
     // Note: The project validation / expansion happens locally. Only the hard stuff of *analysis* is done by the worker
     // This makes the worker bit more host agnostic

@@ -19,3 +19,5 @@ export const getDefaultLibFilePaths = (options: ts.CompilerOptions): string[] =>
     return [fileFromLibFolder(ts.getDefaultLibFileName(options))];
 }
 export const typescriptDirectory = path.dirname(require.resolve('ntypescript')).split('\\').join('/');
+
+export const isFileInTypeScriptDir = (filePath: string) => filePath.startsWith(typescriptDirectory);

@@ -65,6 +65,11 @@ export var server = {
     applyQuickFix: {} as QRFunction<Types.ApplyQuickFixQuery, Types.ApplyQuickFixResponse>,
 
     /**
+     * Documentation Browser
+     */
+    getTopLevelModuleNames: {} as QRFunction<{}, types.GetTopLevelModuleNamesResponse>,
+
+    /**
      * Output Status
      */
     getCompleteOutputStatusCache: {} as QRFunction<{}, types.JSOutputStatusCache>,

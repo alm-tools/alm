@@ -276,3 +276,10 @@ export interface NavigateToItem {
 export interface GetNavigateToItemsResponse {
    items: NavigateToItem[];
 }
+/** For top level module names */
+export interface GetTopLevelModuleNamesResponse {
+    /** Present in our project */
+    locals: NavigateToItem[];
+    /** Present external to our project e.g. lib.d.ts or node_modules */
+    externals: NavigateToItem[];
+}

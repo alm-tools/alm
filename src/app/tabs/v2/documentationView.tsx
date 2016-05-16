@@ -74,8 +74,8 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
 
     filePath: string;
     componentDidMount() {
-        this.loadData();
 
+        this.loadData();
         this.disposible.add(
             cast.activeProjectConfigDetailsUpdated.on(()=>{
                 this.loadData();
@@ -146,7 +146,9 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
     }
 
     loadData = () => {
-        // TODO: load data
+        server.getTopLevelModuleNames({}).then(res=>{
+            console.log(res);
+        })
     }
 
     /**

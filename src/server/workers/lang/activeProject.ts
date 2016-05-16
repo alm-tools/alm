@@ -174,7 +174,7 @@ export namespace GetProject {
     /**
      * Utility function used all the time
      */
-    export function ifCurrent(filePath: string): project.Project {
+    export function ifCurrent(filePath: string): project.Project | undefined {
         if (currentProject && currentProject.includesSourceFile(filePath)) {
             return currentProject;
         }
@@ -196,7 +196,7 @@ export namespace GetProject {
     }
 
     /**
-     * Get current if any
+     * Get current if any OR throw
      */
     export function getCurrentIfAny(): project.Project {
         if (!currentProject) {

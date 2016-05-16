@@ -1,21 +1,18 @@
+/**
+ * The docs module provides utilities documenation comments
+ */
+import * as projectService from "../projectService";
 import * as types from "../../../../common/types";
-import * as activeProject from "../activeProject";
+import {TypedEvent} from "../../../../common/events";
 import * as utils from "../../../../common/utils";
+import * as typescriptDir from "../core/typeScriptDir";
 
-//--------------------------------------------------------------------------
-//  getNavigateToItems
-//--------------------------------------------------------------------------
+/** We just use the *active* project if any */
+import * as activeProject from "../activeProject";
+let getProject = activeProject.GetProject.getCurrentIfAny;
 
-// Look at
-// https://github.com/Microsoft/TypeScript/blob/master/src/services/navigateTo.ts
-// for inspiration
-// Reason for forking:
-//  didn't give all results
-//  gave results from lib.d.ts
-//  I wanted the practice
-
-export function getNavigateToItems(query: {}): Promise<types.GetNavigateToItemsResponse> {
-    let project = activeProject.GetProject.getCurrentIfAny();
+export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModuleNamesResponse> {
+    let project = getProject();
     var languageService = project.languageService;
 
     let getNodeKind = ts.getNodeKind;
@@ -47,8 +44,11 @@ export function getNavigateToItems(query: {}): Promise<types.GetNavigateToItemsR
         return undefined;
     }
 
-    var items: types.NavigateToItem[] = [];
+    const locals: types.NavigateToItem[] = [];
+    const externals: types.NavigateToItem[] = [];
     for (let file of project.getProjectSourceFiles()) {
+        const filePath = file.fileName;
+        const addToList = typescriptDir.isFileInTypeScriptDir(filePath) ? externals : locals;
         let declarations = file.getNamedDeclarations();
         for (let index in declarations) {
             for (let declaration of declarations[index]) {
@@ -59,10 +59,11 @@ export function getNavigateToItems(query: {}): Promise<types.GetNavigateToItemsR
                     fileName: utils.getFileName(file.fileName),
                     position: project.languageServiceHost.getLineAndCharacterOfPosition(file.fileName, declaration.getStart())
                 }
-                items.push(item);
+                addToList.push(item);
             }
         }
     }
 
-    return utils.resolve({ items });
+    const result: types.GetTopLevelModuleNamesResponse = { locals, externals };
+    return utils.resolve(result);
 }
