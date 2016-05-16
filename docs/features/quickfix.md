@@ -22,20 +22,15 @@ Convert strings to template strings to get rid of those `\`
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/quickFix/quotesToTemplate.gif)
 
-## String concate to template
+## String concat to template
 Convert string concatenations to a template string
 
-![](https://raw.githubusercontent.com/TypeStrong/atom-typescript-examples/master/screens/stringConcatToTemplate.gif)
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/quickFix/stringConcatToTemplate.gif)
 
 ## Equals to Equals
 `==` and `!=` (because typing another `=` is hard)
 
-![](https://raw.githubusercontent.com/TypeStrong/atom-typescript-examples/master/screens/equalsToEquals.gif)
-
-## Wrap in read only property
-From constructor argument
-
-![](https://raw.githubusercontent.com/TypeStrong/atom-typescript-examples/master/screens/quickfix/wrapInReadonlyProperty.gif)
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/quickFix/equalsToEquals.gif)
 
 ## Import file
 If the file prefix matches
