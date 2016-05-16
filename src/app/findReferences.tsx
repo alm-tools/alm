@@ -77,7 +77,7 @@ export class FindReferences extends BaseComponent<Props, State>{
             let ref = selected && "selectedTabTitle";
             return (
                 <div ref={ref} key={item.filePath + i} style={[styles.tabHeader,active,{overflow:'auto'}]} onClick={()=>this.selectAndRefocus(i)}>
-                    <div>{utils.getFileName(item.filePath)} (line: {item.position.line + 1})</div>
+                    <div title={item.filePath}>{utils.getFileName(item.filePath)} (line: {item.position.line + 1})</div>
                 </div>
             );
         });
