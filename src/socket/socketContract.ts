@@ -58,7 +58,7 @@ export var server = {
     getDoctorInfo: {} as QRFunction<Types.GetDoctorInfoQuery, Types.GetDoctorInfoResponse>,
     formatDocument: {} as QRFunction<Types.FormatDocumentQuery, Types.FormatDocumentResponse>,
     formatDocumentRange: {} as QRFunction<Types.FormatDocumentRangeQuery, Types.FormatDocumentRangeResponse>,
-    getNavigateToItems: {} as QRFunction<{}, Types.GetNavigateToItemsResponse>,
+    getNavigateToItems: {} as QRFunction<{}, types.GetNavigateToItemsResponse>,
     getDependencies: {} as QRFunction<{}, Types.GetDependenciesResponse>,
     getAST: {} as QRFunction<Types.GetASTQuery, Types.GetASTResponse>,
     getQuickFixes: {} as QRFunction<Types.GetQuickFixesQuery, Types.GetQuickFixesResponse>,
@@ -280,21 +280,6 @@ export namespace Types {
     }
     export interface FormatDocumentRangeResponse {
         refactorings: types.RefactoringsByFilePath
-    }
-
-    /**
-     * Symbols
-     */
-     /** for project symbols view */
-     export interface NavigateToItem {
-         name: string;
-         kind: string;
-         filePath: string;
-         position: EditorPosition;
-         fileName: string;
-     }
-    export interface GetNavigateToItemsResponse {
-        items: NavigateToItem[];
     }
 
     /**
