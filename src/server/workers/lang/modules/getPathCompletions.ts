@@ -58,7 +58,7 @@ function sanitizePrefix(prefix: string){
     return result;
 }
 
-export function getPathCompletions(query: GetPathCompletions): types.Completion[] {
+export function getPathCompletionsForImport(query: GetPathCompletions): types.Completion[] {
     var project = query.project;
     var sourceDir = path.dirname(query.filePath);
     var filePaths = project.configFile.project.files.filter(p => p !== query.filePath && !p.endsWith('.json'));

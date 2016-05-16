@@ -35,7 +35,7 @@ Convert string concatenations to a template string
 ## Import file
 If the file prefix matches
 
-![](https://raw.githubusercontent.com/TypeStrong/atom-typescript-examples/master/screens/addImportStatement.gif)
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/quickFix/addImportStatement.gif)
 
 
 ## Single Line Comment To JsDoc
