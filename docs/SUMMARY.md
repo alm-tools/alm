@@ -12,6 +12,7 @@
   * [AutoComplete](/features/autocomplete.md)
   * [Git](/features/git.md)
   * [File Tree View](/features/tree.md)
+  * [Quick Fix](/features/quickfix.md)
 * [Configuration](/config/README.md)
   * [Editor Config](/config/editorconfig.md)
   * [tsconfig.json](/config/tsconfig.md)
@@ -29,4 +30,5 @@
   * [CSS](/contributing/css.md)
   * [TSconfig](/contributing/tsconfig.md)
   * [Dependencies](/contributing/dependencies.md)
+  * [Quick Fix](/contributing/quickfix.md)
   * [Why?](/contributing/why.md)
