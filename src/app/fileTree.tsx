@@ -392,15 +392,25 @@ export class FileTree extends BaseComponent<Props, State>{
                 return false;
             }
 
-            let files = selectedFilePathsDetails.filter(x => !x.isDir).map(x => x.filePath);
-            let dirs = selectedFilePathsDetails.filter(x => x.isDir).map(x => x.filePath);
-            server.deleteFromDisk({ files, dirs }).then(res => {
-                commands.closeFilesDirs.emit({ files, dirs });
+            inputDialog.open({
+                hideInput: true,
+                header:`Delete ${selectedFilePaths.length > 1 ? selectedFilePaths.length + ' items' : utils.getFileName(selectedFilePaths[0])}?`,
+                onOk:()=>{
+                    // TODO: delete
+                    let files = selectedFilePathsDetails.filter(x => !x.isDir).map(x => x.filePath);
+                    let dirs = selectedFilePathsDetails.filter(x => x.isDir).map(x => x.filePath);
+                    server.deleteFromDisk({ files, dirs }).then(res => {
+                        commands.closeFilesDirs.emit({ files, dirs });
 
-                // Leave selection in a useful state
-                let lastSelectedDetails = selectedFilePathsDetails[selectedFilePathsDetails.length - 1].filePath;
-                setAsOnlySelected(utils.getDirectory(lastSelectedDetails), true);
-            });
+                        // Leave selection in a useful state
+                        let lastSelectedDetails = selectedFilePathsDetails[selectedFilePathsDetails.length - 1].filePath;
+                        setAsOnlySelected(utils.getDirectory(lastSelectedDetails), true);
+                    });
+                },
+                onEsc: () => {
+                    setTimeout(handleFocusRequestBasic, 150);
+                }
+            })
 
             return false;
         });

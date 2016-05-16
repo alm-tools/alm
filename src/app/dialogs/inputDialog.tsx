@@ -25,12 +25,14 @@ export interface Props {
 export interface State {
     isOpen?: boolean;
     header?: string;
+    hideInput?: boolean;
 }
 export interface Options {
     header: string;
     onOk: (value:string) => void;
     onEsc: ()=>void;
     filterValue?: string;
+    hideInput?: boolean;
 }
 
 @ui.Radium
@@ -44,7 +46,8 @@ export class InputDialog extends BaseComponent<Props, State>{
     open(options: Options) {
         this.setState({
             isOpen: true,
-            header: options.header
+            header: options.header,
+            hideInput: !!options.hideInput
         });
         this.onOk = options.onOk;
         this.onEsc = options.onEsc;
@@ -69,6 +72,7 @@ export class InputDialog extends BaseComponent<Props, State>{
     }
 
     render() {
+        const inputStyle = this.state.hideInput ? { height: '0px', opacity: 0 } : styles.modal.inputStyle;
         return <Modal
             ref="modal"
             isOpen={this.state.isOpen}
@@ -89,7 +93,7 @@ export class InputDialog extends BaseComponent<Props, State>{
                     <input
                         type="text"
                         ref="mainInput"
-                        style={styles.modal.inputStyle}
+                        style={inputStyle}
                         onChange={this.onChangeFilter}
                         onKeyDown={this.onChangeSelected}
                         />
