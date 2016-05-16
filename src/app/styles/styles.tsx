@@ -18,6 +18,7 @@ export var tabHeaderContainer = {
 }
 
 export var tabHeader = {
+    fontSize: '.8em',
     fontFamily: 'Roboto, sans-serif',
     fontWeight: 'bold',
     paddingLeft: '10px',
