@@ -41,7 +41,7 @@ If the file prefix matches
 ## Single Line Comment To JsDoc
 JsDoc are associated with the next node. Single line comments are not. So this quickfix does the conversion for you
 
-![](https://raw.githubusercontent.com/TypeStrong/atom-typescript-examples/master/screens/quickfix/singleLineCommentToJsDoc.gif)
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/quickFix/singleLineCommentToJsdoc.gif)
 
 
 # Contributing
