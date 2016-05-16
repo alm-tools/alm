@@ -24,10 +24,14 @@ function getExternalModuleNames(program: ts.Program): string[] {
     return entries;
 }
 
+/** This is great for auto import */
 export interface GetPathCompletions {
-    position: number;
     project: Project;
     filePath: string;
+}
+/** This is great for autocomplete */
+export interface GetPathCompletionsForPosition extends GetPathCompletions {
+    position: number;
     prefix: string;
 }
 
@@ -54,11 +58,10 @@ function sanitizePrefix(prefix: string){
     return result;
 }
 
-export function getPathCompletions(query: GetPathCompletions): types.Completion[] {
+export function getPathCompletions(query: GetPathCompletionsForPosition): types.Completion[] {
     const sourceFile = query.project.languageService.getNonBoundSourceFile(query.filePath);
     const positionNode = ts.getTokenAtPosition(sourceFile, query.position);
 
-    // TODO: Determine based on position in filePath
     const inReferenceTagPath = false;
     const inES6ModuleImportString = isStringLiteralInES6ImportDeclaration(positionNode);
     const inImportRequireString = isStringLiteralInImportRequireDeclaration(positionNode);
