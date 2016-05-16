@@ -501,17 +501,18 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             // Focus
             this.tabState.selectTab(codeTab.id);
         });
-        commands.findAndReplaceMulti.on((e) => {
+        /** Only allows a single tab of a type */
+        const openOrFocusSingletonTab = ({protocol, url}: { protocol: string, url: string }) => {
             // if open and active => focus
             // if open and not active => active
             // if not open and active
             if (this.selectedTabInstance
-                && utils.getFilePathAndProtocolFromUrl(this.selectedTabInstance && this.selectedTabInstance.url).protocol === 'farm') {
+                && utils.getFilePathAndProtocolFromUrl(this.selectedTabInstance && this.selectedTabInstance.url).protocol === protocol) {
                 this.tabState.focusSelectedTabIfAny();
                 return;
             }
 
-            let openTabIndex = this.tabs.findIndex(t => utils.getFilePathAndProtocolFromUrl(t.url).protocol === 'farm');
+            let openTabIndex = this.tabs.findIndex(t => utils.getFilePathAndProtocolFromUrl(t.url).protocol === protocol);
             if (openTabIndex != -1) {
                 this.tabState.triggerFocusAndSetAsSelected(this.tabs[openTabIndex].id);
                 return;
@@ -519,13 +520,25 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
             let newTab: TabInstance = {
                 id: createId(),
-                url: `farm://Find And Replace`,
+                url,
             }
             // Add tab
             this.addTabToLayout(newTab);
 
             // Focus
             this.tabState.selectTab(newTab.id);
+        }
+        /** Documentation view */
+        commands.toggleDocumentationBrowser.on(()=>{
+            const protocol = tabRegistry.tabs.documentation.protocol;
+            const url = `${protocol}://Documentation`;
+            openOrFocusSingletonTab({ protocol, url });
+        });
+        /** Find and replace multi */
+        commands.findAndReplaceMulti.on((e) => {
+            const protocol = tabRegistry.tabs.farm.protocol;
+            const url = `${protocol}://Find And Replace`;
+            openOrFocusSingletonTab({ protocol, url });
         });
         /** AST view */
         let getCurrentFilePathOrWarn = () => {
@@ -562,33 +575,6 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         });
         commands.doOpenASTFullView.on((e) => {
             openAst(Types.ASTMode.children);
-        });
-        /** Documentation view */
-        commands.toggleDocumentationBrowser.on(()=>{
-            // if open and active => focus
-            // if open and not active => active
-            // if not open and active
-            if (this.selectedTabInstance
-                && utils.getFilePathAndProtocolFromUrl(this.selectedTabInstance && this.selectedTabInstance.url).protocol === 'documentation') {
-                this.tabState.focusSelectedTabIfAny();
-                return;
-            }
-
-            let openTabIndex = this.tabs.findIndex(t => utils.getFilePathAndProtocolFromUrl(t.url).protocol === 'documentation');
-            if (openTabIndex != -1) {
-                this.tabState.triggerFocusAndSetAsSelected(this.tabs[openTabIndex].id);
-                return;
-            }
-
-            let newTab: TabInstance = {
-                id: createId(),
-                url: `documentation://Documentation View`,
-            }
-            // Add tab
-            this.addTabToLayout(newTab);
-
-            // Focus
-            this.tabState.selectTab(newTab.id);
         });
     }
 
