@@ -23,13 +23,13 @@ function getIdentifierAndFileNames(error: ts.Diagnostic, project: Project, posit
 
     var [, identifierName] = match;
     var result = getPathCompletions({
-        position,
         project,
         filePath: error.file.fileName,
         prefix: identifierName
     });
-    var file = result.length > 0 ? result[0].pathCompletion : undefined;
-    var basename = result.length > 0 ? result[0].pathCompletion.fileName : undefined;
+    const files = result.map(x => x.pathCompletion);
+    var file = files.length > 0 ? files[0].relativePath : undefined;
+    var basename = files.length > 0 ? files[0].fileName : undefined;
     return { identifierName, file, basename };
 }
 

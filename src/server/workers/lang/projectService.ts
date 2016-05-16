@@ -15,7 +15,7 @@ let {resolve} = utils;
 import * as fsu from "../../utils/fsu";
 import fuzzaldrin = require('fuzzaldrin');
 import {errorsCache} from "./cache/tsErrorsCache";
-import {getPathCompletions} from "./modules/getPathCompletions";
+import {getPathCompletionsForAutocomplete} from "./modules/getPathCompletions";
 
 export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQuery): Promise<Types.GetCompletionsAtPositionResponse> {
     const {filePath, position, prefix} = query;
@@ -124,7 +124,7 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
     /**
      * Add file path completions
      */
-    const pathCompletions = getPathCompletions({
+    const pathCompletions = getPathCompletionsForAutocomplete({
         position,
         project,
         filePath,

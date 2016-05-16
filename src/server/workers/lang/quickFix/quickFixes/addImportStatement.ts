@@ -23,7 +23,6 @@ function getIdentifierAndFileNames(error: ts.Diagnostic, project: Project, posit
 
     var [, identifierName] = match;
     var result = getPathCompletions({
-        position,
         project,
         filePath: error.file.fileName,
         prefix: identifierName

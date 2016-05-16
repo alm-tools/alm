@@ -26,13 +26,13 @@ function getExternalModuleNames(program: ts.Program): string[] {
 
 /** This is great for auto import */
 export interface GetPathCompletions {
+    prefix: string;
     project: Project;
     filePath: string;
 }
 /** This is great for autocomplete */
-export interface GetPathCompletionsForPosition extends GetPathCompletions {
+export interface GetPathCompletionsForAutocomplete extends GetPathCompletions {
     position: number;
-    prefix: string;
 }
 
 function isStringLiteralInES6ImportDeclaration(node: ts.Node) {
@@ -58,7 +58,48 @@ function sanitizePrefix(prefix: string){
     return result;
 }
 
-export function getPathCompletions(query: GetPathCompletionsForPosition): types.Completion[] {
+export function getPathCompletions(query: GetPathCompletions): types.Completion[] {
+    var project = query.project;
+    var sourceDir = path.dirname(query.filePath);
+    var filePaths = project.configFile.project.files.filter(p => p !== query.filePath && !p.endsWith('.json'));
+    var files: {
+        fileName: string;
+        relativePath: string;
+        fullPath: string;
+    }[] = [];
+
+    var externalModules = getExternalModuleNames(project.languageService.getProgram());
+    externalModules.forEach(e => files.push({
+        fileName: `${e}`,
+        relativePath: e,
+        fullPath: e
+    }));
+
+    filePaths.forEach(p=> {
+        files.push({
+            fileName: path.basename(p, '.ts'),
+            relativePath: fsu.removeExt(fsu.makeRelativePath(sourceDir, p)),
+            fullPath: p
+        });
+    });
+
+    const sanitizedPrefix = sanitizePrefix(query.prefix);
+    const endsInPunctuation: boolean = utils.prefixEndsInPunctuation(sanitizedPrefix);
+    if (!endsInPunctuation)
+        files = fuzzaldrin.filter(files, sanitizedPrefix, { key: 'fileName' });
+
+    return files.map(f => {
+        const result: types.Completion = { pathCompletion: f };
+        return result;
+    });
+}
+
+/**
+ * Very similar to above. But
+ * - aborts if position not valid to autocomplete
+ * - automatically excludes `externalModules` if position is reference tag
+ */
+export function getPathCompletionsForAutocomplete(query: GetPathCompletionsForAutocomplete): types.Completion[] {
     const sourceFile = query.project.languageService.getNonBoundSourceFile(query.filePath);
     const positionNode = ts.getTokenAtPosition(sourceFile, query.position);
 
