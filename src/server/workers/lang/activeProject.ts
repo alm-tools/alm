@@ -7,7 +7,6 @@ import utils = require("../../../common/utils");
 import * as json from "../../../common/json";
 import * as tsconfig from "./core/tsconfig";
 import * as project from "./core/project";
-import {typescriptDirectory} from "./core/typeScriptDir";
 import * as types from "../../../common/types";
 import {errorsCache} from "./cache/tsErrorsCache";
 const {setErrorsByFilePaths, clearErrors, clearErrorsForFilePath} = errorsCache;

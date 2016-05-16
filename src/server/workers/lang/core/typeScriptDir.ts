@@ -4,10 +4,12 @@
 
 import * as path from "path";
 
-function fileFromLibFolder(fileName:string){
+/** Returns you the filePath of a fileName from the TypeScript folder */
+function fileFromLibFolder(fileName: string) {
     return path.join(path.dirname(require.resolve('ntypescript')), fileName).split('\\').join('/');
 }
 
+/** Based on the compiler options returns you the lib files that should be included */
 export const getDefaultLibFilePaths = (options: ts.CompilerOptions): string[] => {
     if (options.noLib) {
         return [];
@@ -18,6 +20,9 @@ export const getDefaultLibFilePaths = (options: ts.CompilerOptions): string[] =>
     }
     return [fileFromLibFolder(ts.getDefaultLibFileName(options))];
 }
+
+/** A constant pointing you to the TypeScript dir */
 export const typescriptDirectory = path.dirname(require.resolve('ntypescript')).split('\\').join('/');
 
+/** Tells you if a filePath is inside the TypeScript dir (most likely some lib file) */
 export const isFileInTypeScriptDir = (filePath: string) => filePath.startsWith(typescriptDirectory);
