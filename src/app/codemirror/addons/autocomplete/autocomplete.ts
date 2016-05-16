@@ -208,9 +208,9 @@ export class AutoCompleter {
                 let from = { line: cur.line, ch: token.start };
                 let to = { line: cur.line, ch: token.start + prefix.length };
 
-                // Don't eat the dot!
-                // (our projectService completions come back without the dot)
-                if (token.string == '.'){
+                // Don't eat these characters !
+                // (our projectService completions come back without these)
+                if (token.string == '.' || token.string == '{'){
                     from = to;
                 }
 
