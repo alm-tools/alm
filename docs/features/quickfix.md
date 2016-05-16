@@ -3,24 +3,24 @@ A light blub shows up if a quick fix is available. Trigger the `Quick Fix` comma
 
 ## Add class and interface members
 
-![](https://raw.githubusercontent.com/TypeStrong/atom-typescript-examples/master/screens/addClassMember.gif)
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/quickFix/addClassMember.gif)
 
 ## Type assert
 Insert type assertions on property access for easier migration from JS code
 
-![](https://raw.githubusercontent.com/TypeStrong/atom-typescript-examples/master/screens/typeAssertPropertyAccess.gif)
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/quickFix/typeAssert.gif)
 
 
 ## Toggle quote characters
 
 Single to double, double to single
 
-![](https://raw.githubusercontent.com/TypeStrong/atom-typescript-examples/master/screens/quotesToQuotes.gif)
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/quickFix/quotesToQuotes.gif)
 
 ## Quotes to template
 Convert strings to template strings to get rid of those `\`
 
-![](https://raw.githubusercontent.com/TypeStrong/atom-typescript-examples/master/screens/quotesToTemplate.gif)
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/quickFix/quotesToTemplate.gif)
 
 ## String concate to template
 Convert string concatenations to a template string
