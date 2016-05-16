@@ -11,6 +11,7 @@ import {Code} from "./codeTab";
 import {ASTView} from "./astView";
 import {DependencyView} from "./dependencyView";
 import {FindAndReplaceView} from "./findAndReplaceMulti";
+import {DocumentationView} from "./documentationView";
 
 type ComponentConstructor = { new (props: tab.TabProps): ui.BaseComponent<tab.TabProps,any> };
 
@@ -46,6 +47,11 @@ let tabs: {[protocol:string]:TabConfig} = {
         getTitle: (url)=> `Find In Project`,
         component: FindAndReplaceView,
     },
+    documentation: {
+        advancedSearch: false,
+        getTitle: (url)=> `Documentation Browser`,
+        component: DocumentationView,
+    }
 }
 
 export function getTabConfigs() {

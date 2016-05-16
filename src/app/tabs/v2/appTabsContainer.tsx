@@ -272,10 +272,6 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 this.tabState.triggerFocusAndSetAsSelected(currentTabId)
             }
         });
-        commands.toggleDocumentationBrowser.on(()=>{
-            // TODO: toggle documentation browser
-            ui.comingSoon("Open the documentation browser");
-        });
         commands.openFileFromDisk.on(() => {
             ui.comingSoon("Open a file from the server disk");
         });
@@ -363,8 +359,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             let toClose = (filePath:string) => {
                 return e.files.indexOf(filePath) !== -1 || e.dirs.some(dirPath => filePath.startsWith(dirPath));
             }
-            let tabsToClose = this.tabs.filter((t,i)=> {
-                let {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(t.url);
+            let tabsToClose = this.tabs.filter((t, i) => {
+                let {protocol, filePath} = utils.getFilePathAndProtocolFromUrl(t.url);
                 return protocol === 'file' && toClose(filePath);
             });
             tabsToClose.forEach(t => this.tabHandle[t.id].triggerClose());
@@ -397,177 +393,203 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.tabState.selectTab(codeTab.id);
         });
 
-         /**
-          * Goto tab by index
-          */
-         const gotoNumber = this.tabState._jumpToTabNumber;
-         commands.gotoTab1.on(() => gotoNumber(1));
-         commands.gotoTab2.on(() => gotoNumber(2));
-         commands.gotoTab3.on(() => gotoNumber(3));
-         commands.gotoTab4.on(() => gotoNumber(4));
-         commands.gotoTab5.on(() => gotoNumber(5));
-         commands.gotoTab6.on(() => gotoNumber(6));
-         commands.gotoTab7.on(() => gotoNumber(7));
-         commands.gotoTab8.on(() => gotoNumber(8));
-         commands.gotoTab9.on(() => gotoNumber(9));
+        /**
+         * Goto tab by index
+         */
+        const gotoNumber = this.tabState._jumpToTabNumber;
+        commands.gotoTab1.on(() => gotoNumber(1));
+        commands.gotoTab2.on(() => gotoNumber(2));
+        commands.gotoTab3.on(() => gotoNumber(3));
+        commands.gotoTab4.on(() => gotoNumber(4));
+        commands.gotoTab5.on(() => gotoNumber(5));
+        commands.gotoTab6.on(() => gotoNumber(6));
+        commands.gotoTab7.on(() => gotoNumber(7));
+        commands.gotoTab8.on(() => gotoNumber(8));
+        commands.gotoTab9.on(() => gotoNumber(9));
 
-         /**
-          * Next and previous tabs
-          */
-         commands.nextTab.on(() => {
-             const currentTabId = this.selectedTabInstance && this.selectedTabInstance.id;
-             const currentIndex = this.tabs.findIndex(t => t.id === currentTabId);
-             let nextIndex = utils.rangeLimited({
-                 min: 0,
-                 max: this.tabs.length - 1,
-                 num: currentIndex + 1,
-                 loopAround: true
-             });
-             setTimeout(() => { // No idea why :-/
-                 this.tabState.triggerFocusAndSetAsSelected(this.tabs[nextIndex].id);
-             });
-         });
-         commands.prevTab.on(() => {
-             const currentTabId = this.selectedTabInstance && this.selectedTabInstance.id;
-             const currentIndex = this.tabs.findIndex(t => t.id === currentTabId);
-             let nextIndex = utils.rangeLimited({
-                 min: 0,
-                 max: this.tabs.length - 1,
-                 num: currentIndex - 1,
-                 loopAround: true
-             });
-             setTimeout(() => { // No idea why :-/
-                 this.tabState.triggerFocusAndSetAsSelected(this.tabs[nextIndex].id);
-             });
-         });
+        /**
+         * Next and previous tabs
+         */
+        commands.nextTab.on(() => {
+            const currentTabId = this.selectedTabInstance && this.selectedTabInstance.id;
+            const currentIndex = this.tabs.findIndex(t => t.id === currentTabId);
+            let nextIndex = utils.rangeLimited({
+                min: 0,
+                max: this.tabs.length - 1,
+                num: currentIndex + 1,
+                loopAround: true
+            });
+            setTimeout(() => { // No idea why :-/
+                this.tabState.triggerFocusAndSetAsSelected(this.tabs[nextIndex].id);
+            });
+        });
+        commands.prevTab.on(() => {
+            const currentTabId = this.selectedTabInstance && this.selectedTabInstance.id;
+            const currentIndex = this.tabs.findIndex(t => t.id === currentTabId);
+            let nextIndex = utils.rangeLimited({
+                min: 0,
+                max: this.tabs.length - 1,
+                num: currentIndex - 1,
+                loopAround: true
+            });
+            setTimeout(() => { // No idea why :-/
+                this.tabState.triggerFocusAndSetAsSelected(this.tabs[nextIndex].id);
+            });
+        });
 
-         /**
-          * Close tab commands
-          */
-         commands.closeTab.on((e) => {
-             // Remove the selected
-             this.tabState.closeCurrentTab();
-         });
-         commands.closeOtherTabs.on((e) => {
-             const currentTabId = this.selectedTabInstance && this.selectedTabInstance.id;
-             const otherTabs = this.tabs.filter(t => t.id !== currentTabId);
-             otherTabs.forEach(t => this.tabHandle[t.id].triggerClose());
-         });
+        /**
+         * Close tab commands
+         */
+        commands.closeTab.on((e) => {
+            // Remove the selected
+            this.tabState.closeCurrentTab();
+        });
+        commands.closeOtherTabs.on((e) => {
+            const currentTabId = this.selectedTabInstance && this.selectedTabInstance.id;
+            const otherTabs = this.tabs.filter(t => t.id !== currentTabId);
+            otherTabs.forEach(t => this.tabHandle[t.id].triggerClose());
+        });
 
         /**
          * Find and Replace
          */
-         state.subscribeSub(state => state.findOptions, (findQuery) => {
-             let api = this.getSelectedTabApiIfAny();
-             const options = state.getState().findOptions;
-             if (options.isShown){
-                 api.search.doSearch.emit(options);
-             }
-             else {
-                 api.search.hideSearch.emit(options);
-             }
-         });
-         commands.findNext.on(() => {
-             let component = this.getSelectedTabApiIfAny();
-             let findOptions = state.getState().findOptions;
-             component.search.findNext.emit(findOptions);
-         });
-         commands.findPrevious.on(() => {
-             let component = this.getSelectedTabApiIfAny();
-             let findOptions = state.getState().findOptions;
-             component.search.findPrevious.emit(findOptions);
-         });
-         commands.replaceNext.on((e)=>{
-             let component = this.getSelectedTabApiIfAny();
-             component.search.replaceNext.emit(e);
-         });
-         commands.replacePrevious.on((e)=>{
-             let component = this.getSelectedTabApiIfAny();
-             component.search.replacePrevious.emit(e);
-         });
-         commands.replaceAll.on((e)=>{
-             let component = this.getSelectedTabApiIfAny();
-             component.search.replaceAll.emit(e);
-         });
+        state.subscribeSub(state => state.findOptions, (findQuery) => {
+            let api = this.getSelectedTabApiIfAny();
+            const options = state.getState().findOptions;
+            if (options.isShown) {
+                api.search.doSearch.emit(options);
+            }
+            else {
+                api.search.hideSearch.emit(options);
+            }
+        });
+        commands.findNext.on(() => {
+            let component = this.getSelectedTabApiIfAny();
+            let findOptions = state.getState().findOptions;
+            component.search.findNext.emit(findOptions);
+        });
+        commands.findPrevious.on(() => {
+            let component = this.getSelectedTabApiIfAny();
+            let findOptions = state.getState().findOptions;
+            component.search.findPrevious.emit(findOptions);
+        });
+        commands.replaceNext.on((e) => {
+            let component = this.getSelectedTabApiIfAny();
+            component.search.replaceNext.emit(e);
+        });
+        commands.replacePrevious.on((e) => {
+            let component = this.getSelectedTabApiIfAny();
+            component.search.replacePrevious.emit(e);
+        });
+        commands.replaceAll.on((e) => {
+            let component = this.getSelectedTabApiIfAny();
+            component.search.replaceAll.emit(e);
+        });
 
         /**
          * Other Types Of tabs
          */
-         commands.doOpenDependencyView.on((e) => {
-             let codeTab: TabInstance = {
-                 id: createId(),
-                 url: `dependency://Dependency View`,
-             }
+        commands.doOpenDependencyView.on((e) => {
+            let codeTab: TabInstance = {
+                id: createId(),
+                url: `dependency://Dependency View`,
+            }
 
-             // Add tab
-             this.addTabToLayout(codeTab);
+            // Add tab
+            this.addTabToLayout(codeTab);
 
-             // Focus
-             this.tabState.selectTab(codeTab.id);
-         });
-         commands.findAndReplaceMulti.on((e) =>{
-             // if open and active => focus
-             // if open and not active => active
-             // if not open and active
-             if (this.selectedTabInstance
-                 && utils.getFilePathAndProtocolFromUrl(this.selectedTabInstance && this.selectedTabInstance.url).protocol === 'farm'){
-                 this.tabState.focusSelectedTabIfAny();
-                 return;
-             }
+            // Focus
+            this.tabState.selectTab(codeTab.id);
+        });
+        commands.findAndReplaceMulti.on((e) => {
+            // if open and active => focus
+            // if open and not active => active
+            // if not open and active
+            if (this.selectedTabInstance
+                && utils.getFilePathAndProtocolFromUrl(this.selectedTabInstance && this.selectedTabInstance.url).protocol === 'farm') {
+                this.tabState.focusSelectedTabIfAny();
+                return;
+            }
 
-             let openTabIndex = this.tabs.findIndex(t=> utils.getFilePathAndProtocolFromUrl(t.url).protocol === 'farm');
-             if (openTabIndex != -1) {
-                 this.tabState.triggerFocusAndSetAsSelected(this.tabs[openTabIndex].id);
-                 return;
-             }
+            let openTabIndex = this.tabs.findIndex(t => utils.getFilePathAndProtocolFromUrl(t.url).protocol === 'farm');
+            if (openTabIndex != -1) {
+                this.tabState.triggerFocusAndSetAsSelected(this.tabs[openTabIndex].id);
+                return;
+            }
 
-             let farmTab: TabInstance = {
-                 id: createId(),
-                 url: `farm://Find And Replace`,
-             }
-             // Add tab
-             this.addTabToLayout(farmTab);
+            let newTab: TabInstance = {
+                id: createId(),
+                url: `farm://Find And Replace`,
+            }
+            // Add tab
+            this.addTabToLayout(newTab);
 
-             // Focus
-             this.tabState.selectTab(farmTab.id);
-         });
-         /** AST view */
-         let getCurrentFilePathOrWarn = () => {
-             let tab = this.tabState.getSelectedTab();
-             let notify = () => ui.notifyWarningNormalDisappear('Need a valid file path for this action. Make sure you have a *file* tab as active');
-             if (!tab) {
-                 notify();
-                 return;
-             }
-             let {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(tab.url);
-             if (protocol !== 'file'){
-                 notify();
-                 return;
-             }
-             return filePath;
-         }
-         let openAst = (mode: Types.ASTMode) => {
-             let filePath = getCurrentFilePathOrWarn();
-             if (!filePath) return;
+            // Focus
+            this.tabState.selectTab(newTab.id);
+        });
+        /** AST view */
+        let getCurrentFilePathOrWarn = () => {
+            let tab = this.tabState.getSelectedTab();
+            let notify = () => ui.notifyWarningNormalDisappear('Need a valid file path for this action. Make sure you have a *file* tab as active');
+            if (!tab) {
+                notify();
+                return;
+            }
+            let {protocol, filePath} = utils.getFilePathAndProtocolFromUrl(tab.url);
+            if (protocol !== 'file') {
+                notify();
+                return;
+            }
+            return filePath;
+        }
+        let openAst = (mode: Types.ASTMode) => {
+            let filePath = getCurrentFilePathOrWarn();
+            if (!filePath) return;
 
-             let codeTab: TabInstance = {
-                 id: createId(),
-                 url: `${mode == Types.ASTMode.visitor ? 'ast' : 'astfull'}://${filePath}`,
-             }
+            let codeTab: TabInstance = {
+                id: createId(),
+                url: `${mode == Types.ASTMode.visitor ? 'ast' : 'astfull'}://${filePath}`,
+            }
 
-             // Add tab
-             this.addTabToLayout(codeTab);
+            // Add tab
+            this.addTabToLayout(codeTab);
 
-             // Focus
-             this.tabState.selectTab(codeTab.id);
-         }
-         commands.doOpenASTView.on((e) => {
-             openAst(Types.ASTMode.visitor);
-         });
+            // Focus
+            this.tabState.selectTab(codeTab.id);
+        }
+        commands.doOpenASTView.on((e) => {
+            openAst(Types.ASTMode.visitor);
+        });
+        commands.doOpenASTFullView.on((e) => {
+            openAst(Types.ASTMode.children);
+        });
+        /** Documentation view */
+        commands.toggleDocumentationBrowser.on(()=>{
+            // if open and active => focus
+            // if open and not active => active
+            // if not open and active
+            if (this.selectedTabInstance
+                && utils.getFilePathAndProtocolFromUrl(this.selectedTabInstance && this.selectedTabInstance.url).protocol === 'documentation') {
+                this.tabState.focusSelectedTabIfAny();
+                return;
+            }
 
-         commands.doOpenASTFullView.on((e) => {
-             openAst(Types.ASTMode.children);
-         });
+            let openTabIndex = this.tabs.findIndex(t => utils.getFilePathAndProtocolFromUrl(t.url).protocol === 'documentation');
+            if (openTabIndex != -1) {
+                this.tabState.triggerFocusAndSetAsSelected(this.tabs[openTabIndex].id);
+                return;
+            }
+
+            let newTab: TabInstance = {
+                id: createId(),
+                url: `documentation://Documentation View`,
+            }
+            // Add tab
+            this.addTabToLayout(newTab);
+
+            // Focus
+            this.tabState.selectTab(newTab.id);
+        });
     }
 
     ctrls: {
