@@ -2,7 +2,7 @@ import * as ui from "../../ui";
 import * as csx from "csx";
 import * as React from "react";
 import * as tab from "./tab";
-import {server,cast} from "../../../socket/socketClient";
+import {server, cast} from "../../../socket/socketClient";
 import * as commands from "../../commands/commands";
 import * as utils from "../../../common/utils";
 import * as d3 from "d3";
@@ -27,31 +27,31 @@ import {CodeEditor} from "../../codemirror/codeEditor";
 export interface Props extends tab.TabProps {
 }
 export interface State {
-    cycles:string[][];
+    cycles: string[][];
 }
 
 let controlRootStyle = {
-    pointerEvents:'none',
+    pointerEvents: 'none',
 }
 let controlRightStyle = {
-    width:'200px',
+    width: '200px',
     padding: '10px',
 
     overflow: 'auto',
     wordBreak: 'break-all'
 }
 let controlItemStyle = {
-    pointerEvents:'auto',
+    pointerEvents: 'auto',
 
-    padding:'.4rem',
-    transition:'background .2s',
+    padding: '.4rem',
+    transition: 'background .2s',
     background: 'rgba(200,200,200,.05)',
-    ':hover':{
+    ':hover': {
         background: 'rgba(200,200,200,.25)',
     }
 }
 let cycleHeadingStyle = {
-    fontSize:'1.2rem',
+    fontSize: '1.2rem',
 }
 
 @ui.Radium
@@ -61,7 +61,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
         super(props);
         this.filePath = utils.getFilePathFromUrl(props.url);
         this.state = {
-            cycles:[]
+            cycles: []
         };
     }
 
@@ -77,7 +77,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
 
         this.loadData();
         this.disposible.add(
-            cast.activeProjectConfigDetailsUpdated.on(()=>{
+            cast.activeProjectConfigDetailsUpdated.on(() => {
                 this.loadData();
             })
         );
@@ -113,14 +113,14 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
         let hasCycles = !!this.state.cycles.length;
 
         let cyclesMessages = hasCycles
-            ? this.state.cycles.map((cycle,i)=>{
+            ? this.state.cycles.map((cycle, i) => {
                 let cycleText = cycle.join(' ⬅️ ');
                 return (
                     <div key={i} style={controlItemStyle}>
-                        <div style={cycleHeadingStyle}> {i+1}) Cycle <Clipboard text={cycleText} /></div>
+                        <div style={cycleHeadingStyle}> {i + 1}) Cycle <Clipboard text={cycleText} /></div>
                         <div>
                             {cycleText}
-                       </div>
+                        </div>
                     </div>
                 );
             })
@@ -130,7 +130,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
             <div
                 ref="root" tabIndex={0}
                 className="dependency-view"
-                style={csx.extend(csx.vertical,csx.flex, csx.newLayerParent, styles.someChildWillScroll)}
+                style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll) }
                 onKeyPress={this.handleKey}>
                 TODO: Do the rendering
 
@@ -138,15 +138,15 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
         );
     }
 
-    handleKey = (e:any)=>{
+    handleKey = (e: any) => {
         let unicode = e.charCode;
-        if (String.fromCharCode(unicode).toLowerCase() === "r"){
+        if (String.fromCharCode(unicode).toLowerCase() === "r") {
             this.loadData();
         }
     }
 
     loadData = () => {
-        server.getTopLevelModuleNames({}).then(res=>{
+        server.getTopLevelModuleNames({}).then(res => {
             console.log(res);
         })
     }
