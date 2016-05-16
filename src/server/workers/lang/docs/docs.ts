@@ -67,3 +67,31 @@ export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModu
     const result: types.GetTopLevelModuleNamesResponse = { locals, externals };
     return utils.resolve(result);
 }
+
+
+/**
+ * The documentation model
+ * We have
+ * - global
+ * - modules
+ *
+ * These are just "name" + containers for OtherThings
+ *
+ * OtherThings are just:
+ * - class
+ * - namespace
+ * - interface / type
+ * - enum
+ *
+ * Where Namespace is just a "name" container for OtherThings
+ */
+
+interface Container {
+    name: string;
+    type: 'global' | 'module' | 'namespace',
+    subItems: ContainedItem[];
+}
+interface ContainedItem {
+    name: string;
+    type: 'class' | 'namespace' | 'type' | 'enum'
+}
