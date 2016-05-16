@@ -392,15 +392,25 @@ export class FileTree extends BaseComponent<Props, State>{
                 return false;
             }
 
-            let files = selectedFilePathsDetails.filter(x => !x.isDir).map(x => x.filePath);
-            let dirs = selectedFilePathsDetails.filter(x => x.isDir).map(x => x.filePath);
-            server.deleteFromDisk({ files, dirs }).then(res => {
-                commands.closeFilesDirs.emit({ files, dirs });
+            inputDialog.open({
+                hideInput: true,
+                header:`Delete ${selectedFilePaths.length > 1 ? selectedFilePaths.length + ' items' : utils.getFileName(selectedFilePaths[0])}?`,
+                onOk:()=>{
+                    // TODO: delete
+                    let files = selectedFilePathsDetails.filter(x => !x.isDir).map(x => x.filePath);
+                    let dirs = selectedFilePathsDetails.filter(x => x.isDir).map(x => x.filePath);
+                    server.deleteFromDisk({ files, dirs }).then(res => {
+                        commands.closeFilesDirs.emit({ files, dirs });
 
-                // Leave selection in a useful state
-                let lastSelectedDetails = selectedFilePathsDetails[selectedFilePathsDetails.length - 1].filePath;
-                setAsOnlySelected(utils.getDirectory(lastSelectedDetails), true);
-            });
+                        // Leave selection in a useful state
+                        let lastSelectedDetails = selectedFilePathsDetails[selectedFilePathsDetails.length - 1].filePath;
+                        setAsOnlySelected(utils.getDirectory(lastSelectedDetails), true);
+                    });
+                },
+                onEsc: () => {
+                    setTimeout(handleFocusRequestBasic, 150);
+                }
+            })
 
             return false;
         });
@@ -592,7 +602,7 @@ export class FileTree extends BaseComponent<Props, State>{
 
         let hideStyle = !this.state.shown && { display: 'none' };
         return (
-            <div ref={'__treeroot'} style={[csx.flexRoot, csx.horizontal, { width: this.state.width }, hideStyle]}>
+            <div ref={'__treeroot'} style={[csx.flexRoot, csx.horizontal, { width: this.state.width, zIndex: 6 }, hideStyle]}>
 
                 <div style={[csx.flex, csx.vertical, treeListStyle, styles.someChildWillScroll, csx.newLayerParent]}>
                     <div ref={'__treeViewScroll'} style={[csx.flex,csx.scroll, treeScrollStyle]} tabIndex={0}>

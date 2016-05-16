@@ -14,6 +14,7 @@ import * as utils from "../../../common/utils";
 import {server} from "../../../socket/socketClient";
 import {Types} from "../../../socket/socketContract";
 import * as commands from "../../commands/commands";
+import * as cmUtils from "../cmUtils";
 
 type Editor = CodeMirror.EditorFromTextArea;
 
@@ -114,8 +115,8 @@ export class Doctor extends ui.BaseComponent<Props,State> {
     handleCursorActivity = () => {
         let cm = this.props.cm;
         let doc = cm.getDoc();
-        let many = doc.somethingSelected() || doc.listSelections().length > 1;
-        if (many) {
+        let isSingleCursor = cmUtils.isSingleCursor(this.props.cm);
+        if (!isSingleCursor) {
             if (this.state.singleCursor) {
                 this.setState({ singleCursor: false });
             }
@@ -125,16 +126,13 @@ export class Doctor extends ui.BaseComponent<Props,State> {
             this.setState({ singleCursor: true });
         }
 
-        let cursor = doc.getCursor();
-        let scrollInfo = cm.getScrollInfo();
-        let topLine = cm.coordsChar({top:scrollInfo.top,left: scrollInfo.left}, 'local').line;
-        let bottomLine = cm.coordsChar({ top: scrollInfo.top + scrollInfo.clientHeight, left: scrollInfo.left }, 'local').line + 1;
-
-        if (cursor.line - topLine < bottomLine - cursor.line){
+        const cursor = doc.getCursor();
+        const isCursorInTopHalf = cmUtils.isCursorInTopHalf(cm);
+        if (isCursorInTopHalf) {
             this.setState({ onBottom: true, cursor, doctorInfo: null, searching: true });
         }
         else {
-            this.setState({onBottom: false,cursor, doctorInfo: null, searching: true});
+            this.setState({ onBottom: false, cursor, doctorInfo: null, searching: true });
         }
         this.updateLazyInformation();
     }

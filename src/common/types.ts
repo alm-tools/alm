@@ -50,9 +50,6 @@ export interface SessionTabInUI {
  */
 export interface Refactoring extends ts.TextChange {
     filePath: string;
-
-    /** If you want to insert a snippet. Be careful that you shouldn't return more than one refatoring if you want to use this */
-    // isNewTextSnippet?: boolean;
 }
 
 /**

@@ -58,9 +58,11 @@ export var server = {
     getDoctorInfo: {} as QRFunction<Types.GetDoctorInfoQuery, Types.GetDoctorInfoResponse>,
     formatDocument: {} as QRFunction<Types.FormatDocumentQuery, Types.FormatDocumentResponse>,
     formatDocumentRange: {} as QRFunction<Types.FormatDocumentRangeQuery, Types.FormatDocumentRangeResponse>,
-    getNavigateToItems: {} as QRFunction<{},Types.GetNavigateToItemsResponse>,
-    getDependencies: {} as QRFunction<{},Types.GetDependenciesResponse>,
-    getAST: {} as QRFunction<Types.GetASTQuery,Types.GetASTResponse>,
+    getNavigateToItems: {} as QRFunction<{}, Types.GetNavigateToItemsResponse>,
+    getDependencies: {} as QRFunction<{}, Types.GetDependenciesResponse>,
+    getAST: {} as QRFunction<Types.GetASTQuery, Types.GetASTResponse>,
+    getQuickFixes: {} as QRFunction<Types.GetQuickFixesQuery, Types.GetQuickFixesResponse>,
+    applyQuickFix: {} as QRFunction<Types.ApplyQuickFixQuery, Types.ApplyQuickFixResponse>,
 
     /**
      * Output Status
@@ -341,5 +343,34 @@ export namespace Types {
          * We remove `parent`
          */
         rawJson: any;
+    }
+
+    /**
+     * Quick Fix
+     */
+    /** Query interfaces */
+    export interface GetQuickFixesQuery extends FilePathPositionQuery {
+        indentSize: number;
+    }
+    export interface QuickFixDisplay {
+        /** Uniquely identifies which function will be called to carry out the fix */
+        key: string;
+        /** What will be displayed in the UI */
+        display: string;
+        /** Does this quickfix provide a snippet */
+        isNewTextSnippet: boolean;
+    }
+    /** Apply interfaces */
+    export interface GetQuickFixesResponse {
+        fixes: QuickFixDisplay[];
+    }
+    export interface ApplyQuickFixQuery extends Types.GetQuickFixesQuery {
+        key: string;
+
+        // This will need to be special cased
+        additionalData?: any;
+    }
+    export interface ApplyQuickFixResponse {
+        refactorings: types.RefactoringsByFilePath;
     }
 }

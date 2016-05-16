@@ -15,7 +15,7 @@ let {resolve} = utils;
 import * as fsu from "../../utils/fsu";
 import fuzzaldrin = require('fuzzaldrin');
 import {errorsCache} from "./cache/tsErrorsCache";
-import {getPathCompletions} from "./modules/getPathCompletions";
+import {getPathCompletionsForAutocomplete} from "./modules/getPathCompletions";
 
 export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQuery): Promise<Types.GetCompletionsAtPositionResponse> {
     const {filePath, position, prefix} = query;
@@ -124,7 +124,7 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
     /**
      * Add file path completions
      */
-    const pathCompletions = getPathCompletions({
+    const pathCompletions = getPathCompletionsForAutocomplete({
         position,
         project,
         filePath,
@@ -440,4 +440,87 @@ export function getJSOutputStatus(query: Types.FilePathQuery, autoEmit = true): 
         inActiveProject: true,
         outputStatus
     };
+}
+
+/**
+ * Get Quick Fix
+ */
+import {QuickFix, QuickFixQueryInformation} from "./quickFix/quickFix";
+import * as qf from "./quickFix/quickFix";
+import {allQuickFixes} from "./quickFix/quickFixRegistry";
+function getDiagnositcsByFilePath(query: Types.FilePathQuery) {
+    let project = getProject(query.filePath);
+    var diagnostics = project.languageService.getSyntacticDiagnostics(query.filePath);
+    if (diagnostics.length === 0) {
+        diagnostics = project.languageService.getSemanticDiagnostics(query.filePath);
+    }
+    return diagnostics;
+}
+function getInfoForQuickFixAnalysis(query: Types.GetQuickFixesQuery): QuickFixQueryInformation {
+    let project = getProject(query.filePath);
+    let program = project.languageService.getProgram();
+    let sourceFile = program.getSourceFile(query.filePath);
+    let sourceFileText: string,
+        fileErrors: ts.Diagnostic[],
+        positionErrors: ts.Diagnostic[],
+        positionErrorMessages: string[],
+        positionNode: ts.Node;
+    if (project.includesSourceFile(query.filePath)) {
+        sourceFileText = sourceFile.getFullText();
+        fileErrors = getDiagnositcsByFilePath(query);
+        /** We want errors that are *touching* and thefore expand the query position by one */
+        positionErrors = fileErrors.filter(e => ((e.start - 1) < query.position) && (e.start + e.length + 1) > query.position);
+        positionErrorMessages = positionErrors.map(e => ts.flattenDiagnosticMessageText(e.messageText, '\n'));
+        positionNode = ts.getTokenAtPosition(sourceFile, query.position);
+    } else {
+        sourceFileText = "";
+        fileErrors = [];
+        positionErrors = [];
+        positionErrorMessages = [];
+        positionNode = undefined;
+    }
+
+    let service = project.languageService;
+    let typeChecker = program.getTypeChecker();
+
+    return {
+        project,
+        program,
+        sourceFile,
+        sourceFileText,
+        fileErrors,
+        positionErrors,
+        positionErrorMessages,
+        position: query.position,
+        positionNode,
+        service,
+        typeChecker,
+        filePath: query.filePath,
+        indentSize: query.indentSize
+    };
+}
+
+export function getQuickFixes(query: Types.GetQuickFixesQuery): Promise<Types.GetQuickFixesResponse> {
+    let project = getProject(query.filePath);
+    var info = getInfoForQuickFixAnalysis(query);
+
+    // We let the quickFix determine if it wants provide any fixes for this file
+    var fixes = allQuickFixes
+        .map(x => {
+            var canProvide = x.canProvideFix(info);
+            if (!canProvide)
+                return;
+            else
+                return { key: x.key, display: canProvide.display };
+        })
+        .filter(x => !!x);
+
+    return resolve({ fixes });
+}
+export function applyQuickFix(query: Types.ApplyQuickFixQuery): Promise<Types.ApplyQuickFixResponse> {
+    var fix = allQuickFixes.filter(x => x.key == query.key)[0];
+    var info = getInfoForQuickFixAnalysis(query);
+    var res = fix.provideFix(info);
+    var refactorings = qf.getRefactoringsByFilePath(res);
+    return resolve({ refactorings });
 }

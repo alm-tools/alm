@@ -453,6 +453,7 @@ export let additionalEditorCommands = {
     htmlToTsx: '',
     cssToTs: '',
     goToLine: '',
+    quickFix: '',
 }
 utils.stringEnum(additionalEditorCommands);
 
@@ -478,6 +479,7 @@ sublimeMap[`${mod}-Alt-L`] = additionalEditorCommands.format;
 sublimeMap[`${mod}-Alt-O`] = additionalEditorCommands.toggleBlaster;
 sublimeMap[`${mod}-Alt-Z`] = additionalEditorCommands.gitResetFile;
 sublimeMap[`${mod}-G`] = additionalEditorCommands.goToLine;
+sublimeMap[`Alt-Enter`] = additionalEditorCommands.quickFix;
 
 // we have our own cursor history
 delete defaultMap[`${mod}-U`];

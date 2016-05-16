@@ -1,0 +1,15 @@
+.CodeMirror-quick-fix {
+    width: .3em;
+}
+
+.CodeMirror-quick-fix-bulb {
+    display: block !important; /* overwrite data--hint hint css default */
+    margin-top: .1em;
+    font-size: .7em;
+    transition: opacity .2s;
+    opacity: .5;
+    cursor: pointer;
+}
+.CodeMirror-quick-fix-bulb:hover {
+    opacity: 1 !important;
+}

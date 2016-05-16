@@ -153,6 +153,8 @@ namespace Server {
     export var getNavigateToItems : typeof contract.server.getNavigateToItems = projectServiceMaster.worker.getNavigateToItems;
     export var getDependencies : typeof contract.server.getDependencies = projectServiceMaster.worker.getDependencies;
     export var getAST : typeof contract.server.getAST = projectServiceMaster.worker.getAST;
+    export var getQuickFixes : typeof contract.server.getQuickFixes = projectServiceMaster.worker.getQuickFixes;
+    export var applyQuickFix : typeof contract.server.applyQuickFix = projectServiceMaster.worker.applyQuickFix;
 
     /**
      * Output Status
