@@ -309,7 +309,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                     this.tabState.triggerFocusAndSetAsSelected(existingTab.id);
                 }
                 if (e.position) {
-                    this.tabApi[existingTab.id].gotoPosition.emit(e.position);
+                    this.tabState.gotoPosition(existingTab.id, e.position);
                 }
             }
             else {
@@ -336,7 +336,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                     this.tabState.triggerFocusAndSetAsSelected(existingTab.id);
                 }
                 if (e.position) {
-                    this.tabApi[existingTab.id].gotoPosition.emit(e.position);
+                    this.tabState.gotoPosition(existingTab.id, e.position);
                 }
             }
             else { // otherwise reopen
@@ -351,7 +351,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 // Focus
                 this.tabState.selectTab(codeTab.id);
                 if (e.position) {
-                    this.tabApi[codeTab.id].gotoPosition.emit(e.position);
+                    this.tabState.gotoPosition(codeTab.id, e.position);
                 }
             }
         });
@@ -1016,6 +1016,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             if (this.selectedTabInstance) {
                 this.tabHandle[this.selectedTabInstance.id].triggerFocus();
             }
+        },
+        gotoPosition: (id: string, position: EditorPosition) => {
+            setTimeout(()=>this.tabApi[id].gotoPosition.emit(position));
         },
 
         /**
