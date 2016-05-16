@@ -72,6 +72,12 @@ export var esc = new UICommand({
     context: CommandContext.Global,
 });
 
+export var toggleDocumentationBrowser = new UICommand({
+    keyboardShortcut: 'mod+shift+\'', // Same as doctor with Shift
+    description: "Documentation Browser: Open",
+    context: CommandContext.Global,
+});
+
 /**
  * Active list
  */

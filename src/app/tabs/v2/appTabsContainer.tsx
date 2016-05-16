@@ -272,6 +272,10 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 this.tabState.triggerFocusAndSetAsSelected(currentTabId)
             }
         });
+        commands.toggleDocumentationBrowser.on(()=>{
+            // TODO: toggle documentation browser
+            ui.comingSoon("Open the documentation browser");
+        });
         commands.openFileFromDisk.on(() => {
             ui.comingSoon("Open a file from the server disk");
         });
