@@ -77,7 +77,7 @@ export function getPathCompletions(query: GetPathCompletions): types.Completion[
 
     filePaths.forEach(p=> {
         files.push({
-            fileName: path.basename(p, '.ts'),
+            fileName: fsu.removeExt(utils.getFileName(p)),
             relativePath: fsu.removeExt(fsu.makeRelativePath(sourceDir, p)),
             fullPath: p
         });
@@ -131,7 +131,7 @@ export function getPathCompletionsForAutocomplete(query: GetPathCompletionsForAu
 
     filePaths.forEach(p=> {
         files.push({
-            fileName: path.basename(p, '.ts'),
+            fileName: fsu.removeExt(utils.getFileName(p)),
             relativePath: fsu.removeExt(fsu.makeRelativePath(sourceDir, p)),
             fullPath: p
         });
