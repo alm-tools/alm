@@ -20,6 +20,10 @@ let dom = <div>
 
 class Test {
   private foo = 123;
+  /** Some constructor comment */
+  constructor() {
+    
+  }
   test() {
     return 'asdf' + `${this.foo}`;
   }

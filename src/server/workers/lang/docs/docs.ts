@@ -41,12 +41,14 @@ export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModu
                 comment,
                 subItems,
             });
-            // TODO: there might still be global namespace contributions
+            /** TODO: there might still be global namespace contributions */
         }
         else {
             subItems.forEach(si => globals.subItems.push(si));
         }
     }
+
+    /** TODO: sort recursively */
 
     /** If we collected anything into the global namespace */
     if (globals.subItems.length) {

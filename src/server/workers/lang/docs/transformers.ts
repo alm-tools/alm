@@ -39,6 +39,9 @@ function transformClass(node: ts.ClassDeclaration): types.DocumentedType {
     }
 
     ts.forEachChild(node, (node) => {
+        if (node.kind == ts.SyntaxKind.Constructor) {
+            subItems.push(transformClassConstructor(node as ts.ConstructorDeclaration));
+        }
         if (node.kind == ts.SyntaxKind.PropertyDeclaration) {
             subItems.push(transformClassProperty(node as ts.PropertyDeclaration));
         }
@@ -46,6 +49,21 @@ function transformClass(node: ts.ClassDeclaration): types.DocumentedType {
             subItems.push(transformClassMethod(node as ts.MethodDeclaration));
         }
     });
+
+    return {
+        name,
+        icon,
+        comment,
+        subItems
+    };
+}
+
+/** Class Constructor */
+function transformClassConstructor(node: ts.ConstructorDeclaration): types.DocumentedType {
+    const name = "constructor";
+    const comment = getRawComment(node);
+    const subItems: types.DocumentedType[] = [];
+    let icon = types.IconType.ClassConstructor;
 
     return {
         name,
