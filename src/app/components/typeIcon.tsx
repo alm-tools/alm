@@ -33,6 +33,14 @@ export enum IconType {
     InterfaceMethod,
     InterfaceMethodGeneric,
     InterfaceIndexSignature,
+
+    Class,
+    ClassGeneric,
+    ClassConstructor,
+    ClassProperty,
+    ClassMethod,
+    ClassMethodGeneric,
+    ClassIndexSignature,
 }
 
 /**
@@ -60,6 +68,14 @@ const iconLocations = {
     [IconType.InterfaceMethod]: { x: 12, y: 4 },
     [IconType.InterfaceMethodGeneric]: { x: 12, y: 5 },
     [IconType.InterfaceIndexSignature]: { x: 12, y: 7 },
+
+    [IconType.Class]: { x: 0, y: 2 },
+    [IconType.ClassGeneric]: { x: 0, y: 3 },
+    [IconType.ClassConstructor]: { x: 3, y: 6 },
+    [IconType.ClassProperty]: { x: 3, y: 0 },
+    [IconType.ClassMethod]: { x: 3, y: 4 },
+    [IconType.ClassMethodGeneric]: { x: 3, y: 5 },
+    [IconType.ClassIndexSignature]: { x: 3, y: 7 },
 }
 const _typeIconLocations: { [key: number]: { x: number, y: number } } = iconLocations;
 
@@ -105,12 +121,12 @@ export class TypeIcon extends ui.BaseComponent<Props, State>{
 
 namespace TypeIconLegendStyles {
     export const root = csx.extend(
-        csx.horizontal,
         {
             fontWeight: 'bold',
             fontSize: '.6rem',
             color: styles.textColor,
         });
+    export const legendColumnContainer = csx.horizontal;
     export const legendColumn = csx.extend(
         csx.vertical,
         {
@@ -126,27 +142,41 @@ namespace TypeIconLegendStyles {
 }
 export class TypeIconLegend extends ui.BaseComponent<{}, {}>{
     render() {
-        return <div style={TypeIconLegendStyles.root}>
-            <div style={TypeIconLegendStyles.legendColumn}>
-                <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.Namespace}/> Namespace</div>
-                <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.Variable}/> Variable</div>
-                <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.Function}/> Function</div>
-                <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.FunctionGeneric}/> Function Generic</div>
+        return (
+            <div style={TypeIconLegendStyles.root}>
+                <div style={{ fontSize: '1rem', paddingLeft: '10px', paddingTop: '10px' }}>Legend</div>
+                <div style={TypeIconLegendStyles.legendColumnContainer}>
+                    <div style={TypeIconLegendStyles.legendColumn}>
+                        <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.Namespace}/> Namespace</div>
+                        <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.Variable}/> Variable</div>
+                        <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.Function}/> Function</div>
+                        <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.FunctionGeneric}/> Function Generic</div>
 
-                <div style={{ height: TypeIconStyles.spriteSize + 'px' }}/>
+                        <div style={{ height: TypeIconStyles.spriteSize + 'px' }}/>
 
-                <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.Enum}/> Enum</div>
-                <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.EnumMember}/> EnumMember</div>
+                        <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.Enum}/> Enum</div>
+                        <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.EnumMember}/> EnumMember</div>
+                    </div>
+                    <div style={TypeIconLegendStyles.legendColumn}>
+                        <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.Interface}/> Interface</div>
+                        <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.InterfaceGeneric}/> Interface Generic</div>
+                        <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.InterfaceConstructor}/> Interface Constructor</div>
+                        <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.InterfaceProperty}/> Interface Property</div>
+                        <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.InterfaceMethod}/> Interface Method</div>
+                        <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.InterfaceMethodGeneric}/> Interface Method Generic</div>
+                        <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.InterfaceIndexSignature}/> Interface Index Signature</div>
+                    </div>
+                    <div style={TypeIconLegendStyles.legendColumn}>
+                        <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.Class}/> Class</div>
+                        <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.ClassGeneric}/> Class Generic</div>
+                        <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.ClassConstructor}/> Class Constructor</div>
+                        <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.ClassProperty}/> Class Property</div>
+                        <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.ClassMethod}/> Class Method</div>
+                        <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.ClassMethodGeneric}/> Class Method Generic</div>
+                        <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.ClassIndexSignature}/> Class Index Signature</div>
+                    </div>
+                </div>
             </div>
-            <div style={TypeIconLegendStyles.legendColumn}>
-                <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.Interface}/> Interface</div>
-                <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.InterfaceGeneric}/> Interface Generic</div>
-                <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.InterfaceConstructor}/> Interface Constructor</div>
-                <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.InterfaceProperty}/> Interface Property</div>
-                <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.InterfaceMethod}/> Interface Method</div>
-                <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.InterfaceMethodGeneric}/> Interface Method Generic</div>
-                <div style={TypeIconLegendStyles.legendItemRoot}><TypeIcon iconType={IconType.InterfaceIndexSignature}/> Interface Index Signature</div>
-            </div>
-        </div>
+        );
     }
 }
