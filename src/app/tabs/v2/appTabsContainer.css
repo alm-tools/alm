@@ -78,6 +78,8 @@
  */
 .lm_content {
     display: flex;
+    /* also make the background like code mirror monokai */
+    background-color: #272822;
 }
 
 /**
