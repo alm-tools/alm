@@ -23,6 +23,7 @@ class Test {
   test() {
     return 'asdf' + `${this.foo}`;
   }
+  /** Some comment for the generic method */
   aGenericMethod<T>(a: T): T {
     return a;
   }
