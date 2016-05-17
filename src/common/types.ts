@@ -287,7 +287,13 @@ export interface GetNavigateToItemsResponse {
  * - the server responses
  */
 export enum IconType {
-    Namespace, // same for module / global
+    /**
+     * There can be only one global
+     * Any of the remaining things can be either in a module or global
+     */
+    Global,
+
+    Namespace, // same for module
     Variable,
     Function,
     FunctionGeneric,

@@ -20,17 +20,35 @@ export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModu
     let getNodeKind = ts.getNodeKind;
     const modules: types.DocumentedType[] = [];
 
+    /** Any file that is not a module adds to the global namespace */
+    const globals: types.DocumentedType = {
+        name: 'global',
+        icon: types.IconType.Global,
+        comment: 'The global namespace',
+        subItems: []
+    };
+
     for (let file of project.getProjectSourceFiles().filter(f=>!typescriptDir.isFileInTypeScriptDir(f.fileName))) {
-        const filePath = file.fileName;
-        const {comment, subItems} = getSourceFileTypes(file)
-        modules.push({
-            name: fsu.makeRelativePath(project.configFile.projectFileDirectory, filePath),
-            icon: types.IconType.Namespace,
-            comment,
-            subItems,
-        });
+        if (file.externalModuleIndicator) {
+            const filePath = file.fileName;
+            const {comment, subItems} = getSourceFileTypes(file)
+            modules.push({
+                name: fsu.makeRelativePath(project.configFile.projectFileDirectory, filePath),
+                icon: types.IconType.Namespace,
+                comment,
+                subItems,
+            });
+            // TODO: there might still be global namespace contributions
+        }
+        else {
+            getGlobalModuleContributions(file).forEach(dt => globals.subItems.push(dt));
+        }
     }
 
+    /** If we collected anything into the global namespace */
+    if (globals.subItems.length) {
+        modules.unshift(globals);
+    }
     const result: types.GetTopLevelModuleNamesResponse = { modules };
     return utils.resolve(result);
 }
@@ -44,4 +62,21 @@ export function getSourceFileTypes(file: ts.SourceFile): {comment: string, subIt
         comment,
         subItems: []
     };
+}
+
+/**
+ * Global module management
+ */
+export function getGlobalModuleContributions(file: ts.SourceFile): types.DocumentedType[] {
+    // TODO: get global module contributions
+
+    const result: types.DocumentedType[] = [];
+    ts.forEachChild(file, (node) => {
+        const kind = node.kind;
+        const Kind = ts.SyntaxKind;
+        if (kind == Kind.ClassDeclaration) {
+            // TODO: put some code here :)
+        }
+    });
+    return [];
 }

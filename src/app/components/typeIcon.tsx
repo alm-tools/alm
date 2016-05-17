@@ -10,6 +10,8 @@ import {IconType, DocumentedType} from "../../common/types";
  *
  */
 const iconLocations = {
+    [IconType.Global]: { x: 10, y: 0 },
+
     [IconType.Namespace]: { x: 0, y: 6 },
     [IconType.Variable]: { x: 0, y: 1 },
     [IconType.Function]: { x: 8, y: 4 },
@@ -133,6 +135,8 @@ export class TypeIconLegend extends ui.BaseComponent<{}, {}>{
                 <div style={{paddingLeft: '10px'}}><SectionHeader text="Legend"/></div>
                 <div style={TypeIconLegendStyles.legendColumnContainer}>
                     <div style={TypeIconLegendStyles.legendColumn}>
+                        <DocumentedTypeHeader type={{ name: "Global", icon: IconType.Global }}/>
+
                         <DocumentedTypeHeader type={{ name: "Namespace", icon: IconType.Namespace }}/>
                         <DocumentedTypeHeader type={{ name: "Variable", icon: IconType.Variable }}/>
                         <DocumentedTypeHeader type={{ name: "Function", icon: IconType.Function }}/>
