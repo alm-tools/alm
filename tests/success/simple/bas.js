@@ -15,6 +15,11 @@ var Test = (function () {
     };
     return Test;
 }());
+var GenericTest = (function () {
+    function GenericTest() {
+    }
+    return GenericTest;
+}());
 var Comp = function (props) {
     return React.createElement("div", null, props.text);
 };

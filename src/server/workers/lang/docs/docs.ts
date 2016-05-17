@@ -1,6 +1,7 @@
 /**
- * The docs module provides utilities documenation comments
+ * This file is the main entry for the for documentation view backend
  */
+/** Imports */
 import * as projectService from "../projectService";
 import * as types from "../../../../common/types";
 import {TypedEvent} from "../../../../common/events";
@@ -8,6 +9,7 @@ import * as utils from "../../../../common/utils";
 import * as typescriptDir from "../core/typeScriptDir";
 import * as fsu from "../../../utils/fsu";
 import {getRawComment} from "./getRawComment";
+import * as transformers from "./transformers";
 
 /** We just use the *active* project if any */
 import * as activeProject from "../activeProject";
@@ -31,7 +33,7 @@ export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModu
     for (let file of project.getProjectSourceFiles().filter(f=>!typescriptDir.isFileInTypeScriptDir(f.fileName))) {
         if (ts.isExternalModule(file)) {
             const filePath = file.fileName;
-            const {comment, subItems} = getSourceFileTypes(file)
+            const {comment, subItems} = transformers.transformSourceFile(file);
             modules.push({
                 name: fsu.removeExt(fsu.makeRelativePath(project.configFile.projectFileDirectory, filePath).substr(2)),
                 icon: types.IconType.Namespace,
@@ -53,16 +55,7 @@ export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModu
     return utils.resolve(result);
 }
 
-/**
- * Various converters
- */
-export function getSourceFileTypes(file: ts.SourceFile): {comment: string, subItems: types.DocumentedType[]} {
-    const comment = getRawComment(file);
-    return {
-        comment,
-        subItems: []
-    };
-}
+
 
 /**
  * Global module management

@@ -25,6 +25,10 @@ class Test {
   }
 }
 
+class GenericTest<T> {
+  someProperty: T;
+}
+
 const Comp = (props: { text: string }) => {
   return <div>{props.text}</div>
 }
