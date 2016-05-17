@@ -70,7 +70,8 @@ export function getSourceFileTypes(file: ts.SourceFile): {comment: string, subIt
 export function getGlobalModuleContributions(file: ts.SourceFile, languageService: ts.LanguageService): types.DocumentedType[] {
     const result: types.DocumentedType[] = [];
     /** We just leverage the languageService.getNavigationBarItems to filter out the global stuff */
-    const globalNavBarItem = languageService.getNavigationBarItems(file.fileName).find(i => i.text == '<global>');
+    const navBarItems = languageService.getNavigationBarItems(file.fileName);
+    const globalNavBarItem = navBarItems.find(i => i.text == '<global>');
     if (globalNavBarItem) {
         globalNavBarItem.childItems.forEach(item => {
             const addition: types.DocumentedType = {
@@ -80,5 +81,13 @@ export function getGlobalModuleContributions(file: ts.SourceFile, languageServic
             result.push(addition);
         });
     }
+    const nonGlobalNavBarItems = navBarItems.filter(i => i.text !== '<global>');
+    nonGlobalNavBarItems.forEach(item => {
+        const addition: types.DocumentedType = {
+            name: item.text,
+            icon: types.IconType.Global, // TODO: We need SyntaxKind to icon kind function
+        };
+        result.push(addition);
+    });
     return result;
 }
