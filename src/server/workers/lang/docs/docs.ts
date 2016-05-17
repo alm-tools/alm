@@ -33,7 +33,7 @@ export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModu
             const filePath = file.fileName;
             const {comment, subItems} = getSourceFileTypes(file)
             modules.push({
-                name: fsu.makeRelativePath(project.configFile.projectFileDirectory, filePath),
+                name: fsu.makeRelativePath(project.configFile.projectFileDirectory, filePath).substr(2),
                 icon: types.IconType.Namespace,
                 comment,
                 subItems,
@@ -41,7 +41,7 @@ export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModu
             // TODO: there might still be global namespace contributions
         }
         else {
-            getGlobalModuleContributions(file).forEach(dt => globals.subItems.push(dt));
+            getGlobalModuleContributions(file, languageService).forEach(dt => globals.subItems.push(dt));
         }
     }
 
@@ -67,16 +67,18 @@ export function getSourceFileTypes(file: ts.SourceFile): {comment: string, subIt
 /**
  * Global module management
  */
-export function getGlobalModuleContributions(file: ts.SourceFile): types.DocumentedType[] {
-    // TODO: get global module contributions
-
+export function getGlobalModuleContributions(file: ts.SourceFile, languageService: ts.LanguageService): types.DocumentedType[] {
     const result: types.DocumentedType[] = [];
-    ts.forEachChild(file, (node) => {
-        const kind = node.kind;
-        const Kind = ts.SyntaxKind;
-        if (kind == Kind.ClassDeclaration) {
-            // TODO: put some code here :)
-        }
-    });
-    return [];
+    /** We just leverage the languageService.getNavigationBarItems to filter out the global stuff */
+    const globalNavBarItem = languageService.getNavigationBarItems(file.fileName).find(i => i.text == '<global>');
+    if (globalNavBarItem) {
+        globalNavBarItem.childItems.forEach(item => {
+            const addition: types.DocumentedType = {
+                name: item.text,
+                icon: types.IconType.Global, // TODO: We need SyntaxKind to icon kind function
+            };
+            result.push(addition);
+        });
+    }
+    return result;
 }
