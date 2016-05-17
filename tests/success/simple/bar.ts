@@ -4,3 +4,11 @@ const bar = 123;
 function barFunc() {
 
 }
+
+interface BarInterface {
+  barInterfaceMember: string;
+}
+
+enum BarEnum {
+  BarEnumMember
+}
