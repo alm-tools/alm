@@ -31,9 +31,10 @@ export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModu
     };
 
     for (let file of project.getProjectSourceFiles().filter(f=>!typescriptDir.isFileInTypeScriptDir(f.fileName))) {
+        const {comment, subItems} = transformers.transformSourceFile(file);
+
         if (ts.isExternalModule(file)) {
             const filePath = file.fileName;
-            const {comment, subItems} = transformers.transformSourceFile(file);
             modules.push({
                 name: fsu.removeExt(fsu.makeRelativePath(project.configFile.projectFileDirectory, filePath).substr(2)),
                 icon: types.IconType.Namespace,
@@ -43,7 +44,7 @@ export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModu
             // TODO: there might still be global namespace contributions
         }
         else {
-            getGlobalModuleContributions(file, languageService).forEach(dt => globals.subItems.push(dt));
+            subItems.forEach(si => globals.subItems.push(si));
         }
     }
 
@@ -53,34 +54,4 @@ export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModu
     }
     const result: types.GetTopLevelModuleNamesResponse = { modules };
     return utils.resolve(result);
-}
-
-
-
-/**
- * Global module management
- */
-export function getGlobalModuleContributions(file: ts.SourceFile, languageService: ts.LanguageService): types.DocumentedType[] {
-    const result: types.DocumentedType[] = [];
-    /** We just leverage the languageService.getNavigationBarItems to filter out the global stuff */
-    const navBarItems = languageService.getNavigationBarItems(file.fileName);
-    const globalNavBarItem = navBarItems.find(i => i.text == '<global>');
-    if (globalNavBarItem) {
-        globalNavBarItem.childItems.forEach(item => {
-            const addition: types.DocumentedType = {
-                name: item.text,
-                icon: types.IconType.Global, // TODO: We need SyntaxKind to icon kind function
-            };
-            result.push(addition);
-        });
-    }
-    const nonGlobalNavBarItems = navBarItems.filter(i => i.text !== '<global>');
-    nonGlobalNavBarItems.forEach(item => {
-        const addition: types.DocumentedType = {
-            name: item.text,
-            icon: types.IconType.Global, // TODO: We need SyntaxKind to icon kind function
-        };
-        result.push(addition);
-    });
-    return result;
 }

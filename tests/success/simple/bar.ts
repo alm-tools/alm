@@ -12,3 +12,7 @@ interface BarInterface {
 enum BarEnum {
   BarEnumMember
 }
+
+class BarGlobalClass {
+  globalClassMember: string;
+}
