@@ -79,23 +79,23 @@ interface State {
 namespace TypeIconStyles {
     export const spriteSize = 17; // px
 
+    /** We want to eat a bit of the icon otherwise we get neighbours at certain scales */
+    export const iconClipWidth = 1;
+
     export const root = {
-        width: `${spriteSize}px`,
+        width: `${spriteSize - iconClipWidth}px`,
         height: `${spriteSize}px`,
         display: 'inline-block',
         overflow: 'hidden',
         position: 'relative'
     }
-
-    /** We want to eat a bit of the icon otherwise we get neighbours at certain scales */
-    export const iconClipSize = 1;
 }
 
 export class TypeIcon extends ui.BaseComponent<Props, State>{
     shouldComponentUpdate = pure.shouldComponentUpdate;
     render() {
         const imageLocation = iconLocations[this.props.iconType];
-        const left = imageLocation.x * -TypeIconStyles.spriteSize;
+        const left = imageLocation.x * -TypeIconStyles.spriteSize - TypeIconStyles.iconClipWidth;
         const top = imageLocation.y * -TypeIconStyles.spriteSize;
         return <div style={TypeIconStyles.root}>
             <img src="assets/typeIcons.svg" style={{ top, left, position: 'relative' }}/>
