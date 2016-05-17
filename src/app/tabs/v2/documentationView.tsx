@@ -134,7 +134,6 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                                 ? this.renderSelectedNode()
                                 : 'Select a module from the left to view its documentation 🌹'
                             }
-
                         </gls.FlexVertical>
                     </gls.FlexHorizontal>
                     <typeIcon.TypeIconLegend />
@@ -154,7 +153,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                 <typeIcon.DocumentedTypeHeader type={node} />
                 {node.comment ? node.comment : 'No Comments'}
                 {
-                    node.subItems && node.subItems.length && node.subItems.map((n, i) => this.renderNode(n, i))
+                    node.subItems && !!node.subItems.length && node.subItems.map((n, i) => this.renderNode(n, i))
                 }
             </div>
         );
