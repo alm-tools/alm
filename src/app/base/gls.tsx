@@ -21,6 +21,11 @@ declare global {
  *
  ********/
 
+export const SmallVerticalSpace = (props: {space?:number}) => {
+    return <div style={{ height: props.space || 10}}></div>;
+}
+SmallVerticalSpace.displayName = "SmallVerticalSpace";
+
 interface PrimitiveProps extends React.HTMLProps<HTMLDivElement>{};
 
 /**

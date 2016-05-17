@@ -13,7 +13,7 @@ import * as $ from "jquery";
 import * as styles from "../../styles/styles";
 import * as onresize from "onresize";
 import {Clipboard} from "../../components/clipboard";
-import {TypeIcon, TypeIconLegend} from "../../components/typeIcon";
+import * as typeIcon from "../../components/typeIcon";
 import * as gls from "../../base/gls";
 
 let {inputBlackStyle} = styles.Input;
@@ -22,7 +22,7 @@ import {CodeEditor} from "../../codemirror/codeEditor";
 export interface Props extends tab.TabProps {
 }
 export interface State {
-    locals: types.NavigateToItem[];
+    modules: types.DocumentedType[];
 }
 
 let controlRootStyle = {
@@ -56,7 +56,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
         super(props);
         this.filePath = utils.getFilePathFromUrl(props.url);
         this.state = {
-            locals: []
+            modules: []
         };
     }
 
@@ -114,23 +114,27 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                 <div style={{overflow: 'auto'}}>
                     <gls.FlexHorizontal style={{padding:'10px'}}>
                         <gls.Content style={{ width: '150px' }}>
+                            <typeIcon.SectionHeader text="Overview"/>
+                            <gls.SmallVerticalSpace/>
                             {
                                 // TODO: list the modules
-                                this.state.locals.map((l, i) => {
+                                this.state.modules.map((l, i) => {
                                     return (
-                                        <div key={i}>{l.name} {l.fileName}</div>
+                                        <div key={i}>
+                                            <typeIcon.DocumentedTypeHeader type={l} />
+                                        </div>
                                     )
                                 })
                             }
                         </gls.Content>
-                        <gls.FlexVertical>
+                        <gls.FlexVertical style={{padding: '10px', border: '1px solid grey'}}>
                             {
                                 // TODO : list the current module or global help about the documentation view
                             }
                             Docs for the current module or global help
                         </gls.FlexVertical>
                     </gls.FlexHorizontal>
-                    <TypeIconLegend />
+                    <typeIcon.TypeIconLegend />
                 </div>
             </div>
         );
@@ -145,7 +149,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
 
     loadData = () => {
         server.getTopLevelModuleNames({}).then(res => {
-            this.setState({locals:res.locals})
+            this.setState({modules:res.modules})
         })
     }
 

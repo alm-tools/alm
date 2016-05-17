@@ -6,6 +6,7 @@ import * as types from "../../../../common/types";
 import {TypedEvent} from "../../../../common/events";
 import * as utils from "../../../../common/utils";
 import * as typescriptDir from "../core/typeScriptDir";
+import * as fsu from "../../../utils/fsu";
 
 /** We just use the *active* project if any */
 import * as activeProject from "../activeProject";
@@ -16,82 +17,18 @@ export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModu
     var languageService = project.languageService;
 
     let getNodeKind = ts.getNodeKind;
-    function getDeclarationName(declaration: ts.Declaration): string {
-        let result = getTextOfIdentifierOrLiteral(declaration.name);
-        if (result !== undefined) {
-            return result;
-        }
+    const modules: types.DocumentedType[] = [];
 
-        if (declaration.name.kind === ts.SyntaxKind.ComputedPropertyName) {
-            let expr = (<ts.ComputedPropertyName>declaration.name).expression;
-            if (expr.kind === ts.SyntaxKind.PropertyAccessExpression) {
-                return (<ts.PropertyAccessExpression>expr).name.text;
-            }
-
-            return getTextOfIdentifierOrLiteral(expr);
-        }
-
-        return undefined;
-    }
-    function getTextOfIdentifierOrLiteral(node: ts.Node) {
-        if (node.kind === ts.SyntaxKind.Identifier ||
-            node.kind === ts.SyntaxKind.StringLiteral ||
-            node.kind === ts.SyntaxKind.NumericLiteral) {
-
-            return (<ts.Identifier | ts.LiteralExpression>node).text;
-        }
-
-        return undefined;
-    }
-
-    const locals: types.NavigateToItem[] = [];
-    const externals: types.NavigateToItem[] = [];
-    for (let file of project.getProjectSourceFiles()) {
+    for (let file of project.getProjectSourceFiles().filter(f=>!typescriptDir.isFileInTypeScriptDir(f.fileName))) {
         const filePath = file.fileName;
-        const addToList = typescriptDir.isFileInTypeScriptDir(filePath) ? externals : locals;
-        let declarations = file.getNamedDeclarations();
-        for (let index in declarations) {
-            for (let declaration of declarations[index]) {
-                let item: types.NavigateToItem = {
-                    name: getDeclarationName(declaration),
-                    kind: getNodeKind(declaration),
-                    filePath: file.fileName,
-                    fileName: utils.getFileName(file.fileName),
-                    position: project.languageServiceHost.getLineAndCharacterOfPosition(file.fileName, declaration.getStart())
-                }
-                addToList.push(item);
-            }
-        }
+        modules.push({
+            name: fsu.makeRelativePath(project.configFile.projectFileDirectory, filePath),
+            icon: types.IconType.Namespace,
+            comments: '',
+            subItems: []
+        });
     }
 
-    const result: types.GetTopLevelModuleNamesResponse = { locals, externals };
+    const result: types.GetTopLevelModuleNamesResponse = { modules };
     return utils.resolve(result);
-}
-
-
-/**
- * The documentation model
- * We have
- * - global
- * - modules
- *
- * These are just "name" + containers for OtherThings
- *
- * OtherThings are just:
- * - class
- * - namespace
- * - interface / type
- * - enum
- *
- * Where Namespace is just a "name" container for OtherThings
- */
-
-interface Container {
-    name: string;
-    type: 'global' | 'module' | 'namespace',
-    subItems: ContainedItem[];
-}
-interface ContainedItem {
-    name: string;
-    type: 'class' | 'namespace' | 'type' | 'enum'
 }
