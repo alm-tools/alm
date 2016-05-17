@@ -11,17 +11,9 @@ import * as $ from "jquery";
 import * as styles from "../../styles/styles";
 import * as onresize from "onresize";
 import {Clipboard} from "../../components/clipboard";
-
-type FileDependency = Types.FileDependency;
-let EOL = '\n';
+import {TypeIcon, IconType} from "../../components/typeIcon";
 
 let {inputBlackStyle} = styles.Input;
-
-/**
- * The styles
- */
-require('./dependencyView.less');
-
 import {CodeEditor} from "../../codemirror/codeEditor";
 
 export interface Props extends tab.TabProps {
@@ -110,30 +102,13 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
     }
 
     render() {
-        let hasCycles = !!this.state.cycles.length;
-
-        let cyclesMessages = hasCycles
-            ? this.state.cycles.map((cycle, i) => {
-                let cycleText = cycle.join(' ⬅️ ');
-                return (
-                    <div key={i} style={controlItemStyle}>
-                        <div style={cycleHeadingStyle}> {i + 1}) Cycle <Clipboard text={cycleText} /></div>
-                        <div>
-                            {cycleText}
-                        </div>
-                    </div>
-                );
-            })
-            : <div key={-1} style={controlItemStyle}>No cycles 🌹</div>;
-
         return (
             <div
-                ref="root" tabIndex={0}
-                className="dependency-view"
+                ref="root"
+                tabIndex={0}
                 style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll) }
                 onKeyPress={this.handleKey}>
-                TODO: Do the rendering
-
+                <TypeIcon iconType={IconType.Namespace}/>
             </div>
         );
     }
