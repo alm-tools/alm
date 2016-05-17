@@ -12,6 +12,7 @@ import * as styles from "../../styles/styles";
 import * as onresize from "onresize";
 import {Clipboard} from "../../components/clipboard";
 import {TypeIcon, IconType, TypeIconLegend} from "../../components/typeIcon";
+import * as gls from "../../base/gls";
 
 let {inputBlackStyle} = styles.Input;
 import {CodeEditor} from "../../codemirror/codeEditor";
@@ -106,9 +107,27 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
             <div
                 ref="root"
                 tabIndex={0}
-                style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll) }
+                style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll, {color: styles.textColor}) }
                 onKeyPress={this.handleKey}>
-                <TypeIconLegend />
+                <div style={{overflow: 'auto'}}>
+                    <gls.FlexHorizontal style={{padding:'10px'}}>
+                        <gls.Content style={{width:'150px'}}>
+                        {
+                            // TODO: list the modules
+                        }
+                            All
+                            The
+                            Modules
+                        </gls.Content>
+                        <gls.FlexVertical>
+                            {
+                                // TODO : list the current module or global help about the documentation view
+                            }
+                            Docs for the current module or global help
+                        </gls.FlexVertical>
+                    </gls.FlexHorizontal>
+                    <TypeIconLegend />
+                </div>
             </div>
         );
     }
