@@ -33,7 +33,7 @@ export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModu
             const filePath = file.fileName;
             const {comment, subItems} = getSourceFileTypes(file)
             modules.push({
-                name: fsu.makeRelativePath(project.configFile.projectFileDirectory, filePath).substr(2),
+                name: fsu.removeExt(fsu.makeRelativePath(project.configFile.projectFileDirectory, filePath).substr(2)),
                 icon: types.IconType.Namespace,
                 comment,
                 subItems,
@@ -54,7 +54,7 @@ export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModu
 }
 
 /**
- * Various visitors
+ * Various converters
  */
 export function getSourceFileTypes(file: ts.SourceFile): {comment: string, subItems: types.DocumentedType[]} {
     const comment = getRawComment(file);
