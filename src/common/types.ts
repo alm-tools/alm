@@ -283,3 +283,37 @@ export interface GetTopLevelModuleNamesResponse {
     /** Present external to our project e.g. lib.d.ts or node_modules */
     externals: NavigateToItem[];
 }
+/**
+ * The TypeDoc icons a pretty expansive 🌹 with a few ideas that I disagree with / or think are too difficult.
+ * E.g the type `event`. The "grey" coloring of the global functions. The following is a simpler subset.
+ *
+ * Places that need to be kept in sync:
+ * - typeIcon.tsx: the location in typeIcons.svg
+ * - the legend component
+ * - the server responses
+ */
+export enum IconType {
+    Namespace, // same for module / global
+    Variable,
+    Function,
+    FunctionGeneric,
+
+    Enum,
+    EnumMember,
+
+    Interface,
+    InterfaceGeneric,
+    InterfaceConstructor,
+    InterfaceProperty,
+    InterfaceMethod,
+    InterfaceMethodGeneric,
+    InterfaceIndexSignature,
+
+    Class,
+    ClassGeneric,
+    ClassConstructor,
+    ClassProperty,
+    ClassMethod,
+    ClassMethodGeneric,
+    ClassIndexSignature,
+}

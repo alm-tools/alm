@@ -1,47 +1,4 @@
-/**
- * Draws the icon for a type
- *
- * The TypeDoc icons a pretty expansive 🌹 with a few ideas that I disagree with / or think are too difficult.
- * E.g the type `event`. The "grey" coloring of the global functions.
- *
- * Here is the design language I am going for:
- *
- * We have Globals (same for Namespaces) and some stuff (variable, function, function with type) in global (all color purple)
- * Interfaces are Green (same for type aliases)
- * Enums + enum members have a custom stack icon
- * Class stuff is blue
- *
- *
- * Places that need to be kept in sync:
- * - the location in type icons.svg
- * - the legend component
- * - the server responses
- */
-export enum IconType {
-    Namespace, // same for module / global
-    Variable,
-    Function,
-    FunctionGeneric,
-
-    Enum,
-    EnumMember,
-
-    Interface,
-    InterfaceGeneric,
-    InterfaceConstructor,
-    InterfaceProperty,
-    InterfaceMethod,
-    InterfaceMethodGeneric,
-    InterfaceIndexSignature,
-
-    Class,
-    ClassGeneric,
-    ClassConstructor,
-    ClassProperty,
-    ClassMethod,
-    ClassMethodGeneric,
-    ClassIndexSignature,
-}
+import {IconType} from "../../common/types";
 
 /**
  * This maps into the iconTypes.svg [x,y]
@@ -107,6 +64,9 @@ namespace TypeIconStyles {
     }
 }
 
+/**
+ * Draws the icon for a type
+ */
 export class TypeIcon extends ui.BaseComponent<Props, State>{
     shouldComponentUpdate = pure.shouldComponentUpdate;
     render() {

@@ -8,11 +8,12 @@ import * as utils from "../../../common/utils";
 import * as d3 from "d3";
 import {Types} from "../../../socket/socketContract";
 import * as types from "../../../common/types";
+import {IconType} from "../../../common/types";
 import * as $ from "jquery";
 import * as styles from "../../styles/styles";
 import * as onresize from "onresize";
 import {Clipboard} from "../../components/clipboard";
-import {TypeIcon, IconType, TypeIconLegend} from "../../components/typeIcon";
+import {TypeIcon, TypeIconLegend} from "../../components/typeIcon";
 import * as gls from "../../base/gls";
 
 let {inputBlackStyle} = styles.Input;
