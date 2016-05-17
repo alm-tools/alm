@@ -29,7 +29,7 @@ export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModu
     };
 
     for (let file of project.getProjectSourceFiles().filter(f=>!typescriptDir.isFileInTypeScriptDir(f.fileName))) {
-        if (file.externalModuleIndicator) {
+        if (ts.isExternalModule(file)) {
             const filePath = file.fileName;
             const {comment, subItems} = getSourceFileTypes(file)
             modules.push({
