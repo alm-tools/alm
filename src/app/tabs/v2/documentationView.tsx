@@ -11,7 +11,7 @@ import * as $ from "jquery";
 import * as styles from "../../styles/styles";
 import * as onresize from "onresize";
 import {Clipboard} from "../../components/clipboard";
-import {TypeIcon, IconType} from "../../components/typeIcon";
+import {TypeIcon, IconType, TypeIconLegend} from "../../components/typeIcon";
 
 let {inputBlackStyle} = styles.Input;
 import {CodeEditor} from "../../codemirror/codeEditor";
@@ -108,7 +108,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                 tabIndex={0}
                 style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll) }
                 onKeyPress={this.handleKey}>
-                <TypeIcon iconType={IconType.Namespace}/>
+                <TypeIconLegend />
             </div>
         );
     }
