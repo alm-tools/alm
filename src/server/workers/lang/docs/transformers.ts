@@ -40,12 +40,27 @@ function transformClass(node: ts.ClassDeclaration): types.DocumentedType {
 
     ts.forEachChild(node, (node) => {
         if (node.kind == ts.SyntaxKind.PropertyDeclaration) {
-            // TODO
+            subItems.push(transformClassProperty(node as ts.PropertyDeclaration));
         }
         if (node.kind == ts.SyntaxKind.MethodDeclaration) {
             // TODO
         }
     });
+
+    return {
+        name,
+        icon,
+        comment,
+        subItems
+    };
+}
+
+/** Property */
+function transformClassProperty(node: ts.PropertyDeclaration): types.DocumentedType {
+    const name = ts.getPropertyNameForPropertyNameNode(node.name);
+    const comment = getRawComment(node);
+    const subItems: types.DocumentedType[] = [];
+    let icon = types.IconType.ClassProperty;
 
     return {
         name,
