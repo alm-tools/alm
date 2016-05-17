@@ -43,7 +43,7 @@ function transformClass(node: ts.ClassDeclaration): types.DocumentedType {
             subItems.push(transformClassProperty(node as ts.PropertyDeclaration));
         }
         if (node.kind == ts.SyntaxKind.MethodDeclaration) {
-            // TODO
+            subItems.push(transformClassMethod(node as ts.MethodDeclaration));
         }
     });
 
@@ -55,12 +55,30 @@ function transformClass(node: ts.ClassDeclaration): types.DocumentedType {
     };
 }
 
-/** Property */
+/** Class Property */
 function transformClassProperty(node: ts.PropertyDeclaration): types.DocumentedType {
     const name = ts.getPropertyNameForPropertyNameNode(node.name);
     const comment = getRawComment(node);
     const subItems: types.DocumentedType[] = [];
     let icon = types.IconType.ClassProperty;
+
+    return {
+        name,
+        icon,
+        comment,
+        subItems
+    };
+}
+
+/** Class Method */
+function transformClassMethod(node: ts.MethodDeclaration): types.DocumentedType {
+    const name = ts.getPropertyNameForPropertyNameNode(node.name);
+    const comment = getRawComment(node);
+    const subItems: types.DocumentedType[] = [];
+    let icon = types.IconType.ClassMethod;
+    if (node.typeParameters) {
+        icon = types.IconType.ClassMethodGeneric;
+    }
 
     return {
         name,

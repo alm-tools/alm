@@ -23,6 +23,9 @@ class Test {
   test() {
     return 'asdf' + `${this.foo}`;
   }
+  aGenericMethod<T>(a: T): T {
+    return a;
+  }
 }
 
 class GenericTest<T> {
