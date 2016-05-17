@@ -7,6 +7,7 @@ import * as commands from "../../commands/commands";
 import * as utils from "../../../common/utils";
 import * as d3 from "d3";
 import {Types} from "../../../socket/socketContract";
+import * as types from "../../../common/types";
 import * as $ from "jquery";
 import * as styles from "../../styles/styles";
 import * as onresize from "onresize";
@@ -20,7 +21,7 @@ import {CodeEditor} from "../../codemirror/codeEditor";
 export interface Props extends tab.TabProps {
 }
 export interface State {
-    cycles: string[][];
+    locals: types.NavigateToItem[];
 }
 
 let controlRootStyle = {
@@ -54,7 +55,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
         super(props);
         this.filePath = utils.getFilePathFromUrl(props.url);
         this.state = {
-            cycles: []
+            locals: []
         };
     }
 
@@ -111,13 +112,15 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                 onKeyPress={this.handleKey}>
                 <div style={{overflow: 'auto'}}>
                     <gls.FlexHorizontal style={{padding:'10px'}}>
-                        <gls.Content style={{width:'150px'}}>
-                        {
-                            // TODO: list the modules
-                        }
-                            All
-                            The
-                            Modules
+                        <gls.Content style={{ width: '150px' }}>
+                            {
+                                // TODO: list the modules
+                                this.state.locals.map((l, i) => {
+                                    return (
+                                        <div key={i}>{l.name} {l.fileName}</div>
+                                    )
+                                })
+                            }
                         </gls.Content>
                         <gls.FlexVertical>
                             {
@@ -141,7 +144,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
 
     loadData = () => {
         server.getTopLevelModuleNames({}).then(res => {
-            console.log(res);
+            this.setState({locals:res.locals})
         })
     }
 
