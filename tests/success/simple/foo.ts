@@ -4,4 +4,5 @@
 
 /** Some foo */
 export var foo = 123;
+/** Must not see this */
 foo;

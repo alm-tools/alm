@@ -22,7 +22,8 @@ import {CodeEditor} from "../../codemirror/codeEditor";
 export interface Props extends tab.TabProps {
 }
 export interface State {
-    modules: types.DocumentedType[];
+    modules?: types.DocumentedType[];
+    selected?: types.DocumentedType | null;
 }
 
 let controlRootStyle = {
@@ -56,7 +57,8 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
         super(props);
         this.filePath = utils.getFilePathFromUrl(props.url);
         this.state = {
-            modules: []
+            modules: [],
+            selected: null,
         };
     }
 
@@ -117,10 +119,9 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                             <typeIcon.SectionHeader text="Overview"/>
                             <gls.SmallVerticalSpace/>
                             {
-                                // TODO: list the modules
                                 this.state.modules.map((l, i) => {
                                     return (
-                                        <div key={i}>
+                                        <div key={i} style={{ cursor: 'pointer' }} onClick={() => this.setState({ selected: l }) }>
                                             <typeIcon.DocumentedTypeHeader type={l} />
                                         </div>
                                     )
@@ -129,9 +130,14 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                         </gls.Content>
                         <gls.FlexVertical style={{padding: '10px', border: '1px solid grey'}}>
                             {
-                                // TODO : list the current module or global help about the documentation view
+                                this.state.selected
+                                ? <div>
+                                    <typeIcon.DocumentedTypeHeader type={this.state.selected} />
+                                    {this.state.selected.comment ? this.state.selected.comment : 'No Comments'}
+                                </div>
+                                : 'Select a module from the left to view its documentation 🌹'
                             }
-                            Docs for the current module or global help
+
                         </gls.FlexVertical>
                     </gls.FlexHorizontal>
                     <typeIcon.TypeIconLegend />

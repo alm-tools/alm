@@ -331,7 +331,7 @@ export enum IconType {
 export interface DocumentedType {
     name: string;
     icon: IconType,
-    comments?: string,
+    comment?: string,
     subItems?: DocumentedType[];
 }
 
