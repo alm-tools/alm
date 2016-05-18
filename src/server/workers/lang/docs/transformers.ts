@@ -28,6 +28,9 @@ export function transformSourceFile(file: ts.SourceFile): { comment: string, sub
         if (node.kind == ts.SyntaxKind.VariableStatement) {
             transformVariableStatement(node as ts.VariableStatement).forEach(variable => subItems.push(variable));
         }
+        if (node.kind == ts.SyntaxKind.FunctionDeclaration) {
+            subItems.push(transformFunction(node as ts.FunctionDeclaration));
+        }
     });
 
     return {
@@ -276,7 +279,21 @@ function transformVariableStatement(node: ts.VariableStatement): types.Documente
     return result;
 }
 
+/** Function */
+function transformFunction(node: ts.FunctionDeclaration): types.DocumentedType {
+    const name = ts.getPropertyNameForPropertyNameNode(node.name);
+    const comment = getRawComment(node);
+    const subItems: types.DocumentedType[] = [];
+    let icon = types.IconType.Function;
+    if (node.typeParameters) {
+        icon = types.IconType.FunctionGeneric;
+    }
+
+    return {
+        name,icon,comment,subItems
+    };
+}
+
 // TODO: these
 /** Namespace */
-/** Function */
 /** Type */
