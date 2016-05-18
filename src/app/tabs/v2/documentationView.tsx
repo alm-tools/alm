@@ -15,6 +15,7 @@ import * as onresize from "onresize";
 import {Clipboard} from "../../components/clipboard";
 import * as typeIcon from "../../components/typeIcon";
 import * as gls from "../../base/gls";
+import * as fstyle from "../../base/fstyle";
 
 let {inputBlackStyle} = styles.Input;
 import {CodeEditor} from "../../codemirror/codeEditor";
@@ -26,31 +27,15 @@ export interface State {
     selected?: types.DocumentedType | null;
 }
 
-let controlRootStyle = {
-    pointerEvents: 'none',
-}
-let controlRightStyle = {
-    width: '200px',
-    padding: '10px',
-
-    overflow: 'auto',
-    wordBreak: 'break-all'
-}
-let controlItemStyle = {
-    pointerEvents: 'auto',
-
-    padding: '.4rem',
-    transition: 'background .2s',
-    background: 'rgba(200,200,200,.05)',
-    ':hover': {
-        background: 'rgba(200,200,200,.25)',
-    }
-}
-let cycleHeadingStyle = {
-    fontSize: '1.2rem',
+export namespace DocumentationViewStyles {
+    export const header = fstyle.style({
+        cursor: 'pointer',
+        '&:hover': {
+            textDecoration: 'underline'
+        }
+    })
 }
 
-@ui.Radium
 export class DocumentationView extends ui.BaseComponent<Props, State> {
 
     constructor(props: Props) {
@@ -155,7 +140,9 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
     renderNode(node: types.DocumentedType, i = 0) {
         return (
             <div key={i} style={{ padding: '5px' }}>
-                <typeIcon.DocumentedTypeHeader name={node.name} icon={node.icon} />
+                <gls.InlineBlock className={DocumentationViewStyles.header} onClick={()=>this.handleNodeClick(node)}>
+                    <typeIcon.DocumentedTypeHeader name={node.name} icon={node.icon} />
+                </gls.InlineBlock>
                 {
                     node.comment &&
                     <div style={{ marginTop: '5px' }}>
@@ -170,6 +157,13 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                 }
             </div>
         );
+    }
+
+    handleNodeClick = (node: types.DocumentedType) => {
+        commands.doOpenOrFocusFile.emit({
+            filePath: node.location.filePath,
+            position: node.location.position
+        });
     }
 
     handleKey = (e: any) => {

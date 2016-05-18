@@ -70,6 +70,7 @@
     "d3": "^3.5.12",
     "file-loader": "^0.8.4",
     "font-awesome": "^4.4.0",
+    "free-style": "^1.2.0",
     "golden-layout": "^1.5.1",
     "hint.css": "^2.0.0",
     "http-proxy": "^1.11.1",
