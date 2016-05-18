@@ -80,7 +80,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
          */
         this.loadData();
         this.disposible.add(
-            cast.activeProjectConfigDetailsUpdated.on(() => {
+            cast.activeProjectFilePathsUpdated.on(() => {
                 this.loadData();
             })
         );
