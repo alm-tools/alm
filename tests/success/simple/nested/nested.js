@@ -1,5 +1,5 @@
 "use strict";
-exports.nested = 123;
+exports.nestedVariable = 123;
 var Foo;
 (function (Foo) {
     var Bar;

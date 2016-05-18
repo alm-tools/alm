@@ -1,7 +1,8 @@
 /**
  * A nested module test
  */
-export const nested = 123;
+/** sample comment for nested varaible */
+export const nestedVariable = 123;
 
 namespace Foo.Bar {
   function fooBarFunction() {

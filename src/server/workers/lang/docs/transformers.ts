@@ -25,6 +25,9 @@ export function transformSourceFile(file: ts.SourceFile): { comment: string, sub
         if (node.kind == ts.SyntaxKind.EnumDeclaration) {
             subItems.push(transformEnum(node as ts.EnumDeclaration));
         }
+        if (node.kind == ts.SyntaxKind.VariableStatement) {
+            transformVariableStatement(node as ts.VariableStatement).forEach(variable => subItems.push(variable));
+        }
     });
 
     return {
@@ -254,9 +257,26 @@ function transformEnum(node: ts.EnumDeclaration): types.DocumentedType {
     };
 }
 
+/** Variable */
+function transformVariableStatement(node: ts.VariableStatement): types.DocumentedType[] {
+    const result: types.DocumentedType[] = [];
+    const declarations = node.declarationList.declarations;
+
+    declarations.forEach(d => {
+        const name = ts.getPropertyNameForPropertyNameNode(d.name);
+        const comment = getRawComment(d);
+        const subItems: types.DocumentedType[] = [];
+        let icon = types.IconType.Variable;
+
+        result.push({
+            name,icon,comment,subItems
+        });
+    });
+
+    return result;
+}
 
 // TODO: these
 /** Namespace */
 /** Function */
-/** Var */
 /** Type */
