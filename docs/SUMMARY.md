@@ -13,6 +13,7 @@
   * [Git](/features/git.md)
   * [File Tree View](/features/tree.md)
   * [Quick Fix](/features/quickfix.md)
+  * [Documentation View](/features/documentation-view.md)
 * [Configuration](/config/README.md)
   * [Editor Config](/config/editorconfig.md)
   * [tsconfig.json](/config/tsconfig.md)
