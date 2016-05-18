@@ -116,12 +116,13 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                             <gls.SmallVerticalSpace/>
                             {
                                 this.state.filtered.map((l, i) => {
-                                    const name = l.name.length > 20 ? utils.getFileName(l.name) : l.name;
+                                    const name = utils.getFileName(l.name);
                                     const backgroundColor = this.state.selected && this.state.selected.name === l.name
                                         ? blackHighlightColor
                                         : 'transparent';
                                     return (
                                         <div
+                                            title={l.name}
                                             key={i}
                                             style={{ cursor: 'pointer', backgroundColor, paddingTop: '2px', paddingBottom: '2px', paddingLeft: '2px' }}
                                             onClick={() => this.handleRootSelected(l)}>
