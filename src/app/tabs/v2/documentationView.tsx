@@ -26,6 +26,8 @@ export interface Props extends tab.TabProps {
 export interface State {
     files?: types.DocumentedType[];
     selected?: types.DocumentedType | null;
+    filtered?: types.DocumentedType[];
+    filter?: string;
 }
 
 export namespace DocumentationViewStyles {
@@ -43,6 +45,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
         super(props);
         this.filePath = utils.getFilePathFromUrl(props.url);
         this.state = {
+            filtered: [],
             files: [],
             selected: null,
         };
@@ -105,7 +108,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                             <typeIcon.SectionHeader text="Files"/>
                             <gls.SmallVerticalSpace/>
                             {
-                                this.state.files.map((l, i) => {
+                                this.state.filtered.map((l, i) => {
                                     const name = l.name.length > 20 ? utils.getFileName(l.name) : l.name;
                                     return (
                                         <div key={i} style={{ cursor: 'pointer' }} onClick={() => this.setState({ selected: l }) }>
@@ -140,7 +143,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
 
     renderNode(node: types.DocumentedType, i = 0) {
         return (
-            <div key={i} style={{ padding: '5px' }}>
+            <div key={i} style={{paddingTop: '5px'}}>
                 <gls.InlineBlock className={DocumentationViewStyles.header} onClick={()=>this.handleNodeClick(node)}>
                     <typeIcon.DocumentedTypeHeader name={node.name} icon={node.icon} />
                 </gls.InlineBlock>
@@ -177,7 +180,25 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
     loadData = () => {
         server.getTopLevelModuleNames({}).then(res => {
             this.setState({files:res.files, selected: null});
+            this.filter();
         })
+    }
+
+    filter = () => {
+        const filter = (this.state.filter || '').toLowerCase();
+        if (!filter) {
+            this.setState({ filtered: this.state.files });
+            return;
+        }
+
+        const doesNameMatchRecursive = (type: types.DocumentedType) => {
+            return type.name.toLowerCase().indexOf(filter) !== -1 || type.subItems.some(t => doesNameMatchRecursive(t));
+        }
+
+        const filtered = this.state.files.filter(f => {
+            return doesNameMatchRecursive(f);
+        });
+        this.setState({ filtered });
     }
 
     /**
@@ -202,9 +223,13 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
 
     search = {
         doSearch: (options: FindOptions) => {
+            this.setState({ filter: options.query });
+            this.filter();
         },
 
         hideSearch: () => {
+            this.setState({ filter: '' });
+            this.filter();
         },
 
         findNext: (options: FindOptions) => {
