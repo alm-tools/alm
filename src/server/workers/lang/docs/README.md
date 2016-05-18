@@ -11,3 +11,7 @@ There are different transformers: Stuff that takes a TypeScript AST `Node` and g
 
 ## Helper functions from ts
 There are quite a few helper functions in the TypeScript compiler. I have found exploring `getQuickInfo` and `getNavigateToItems` in `services.ts` to be amongst the best places to look for *that magic function*.
+
+
+## Getting line/ch
+We pass the SourceFile around to use `ts.getLineAndCharacterOfPosition` which takes a `ts.SourceFile` and a position to return 'line,ch'. Internally this function only computes line starts for a SourceFile *once* so its pretty fast.
