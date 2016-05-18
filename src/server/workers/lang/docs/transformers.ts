@@ -15,41 +15,42 @@ export function transformSourceFile(file: ts.SourceFile): types.DocumentedType {
     const name = file.fileName;
     const icon = ts.isExternalModule(file) ? types.IconType.Namespace : types.IconType.Global;
     const comment = getRawComment(file);
-    const subItems = getSignificantSubItems(file);
+    const subItems = getSignificantSubItems(file, file);
 
     return {
         name,
         icon,
         comment,
-        subItems
+        subItems,
+        location: getDocumentedTypeLocation(file, file.pos),
     };
 }
 
 /** There are a few root level things we care about. This only recurses on those 🌹  */
-function getSignificantSubItems(node: ts.SourceFile | ts.ModuleBlock): types.DocumentedType[] {
+function getSignificantSubItems(node: ts.SourceFile | ts.ModuleBlock, sourceFile: ts.SourceFile): types.DocumentedType[] {
     const subItems: types.DocumentedType[] = [];
 
     ts.forEachChild(node, (node) => {
         if (node.kind == ts.SyntaxKind.ClassDeclaration) {
-            subItems.push(transformClass(node as ts.ClassDeclaration));
+            subItems.push(transformClass(node as ts.ClassDeclaration, sourceFile));
         }
         if (node.kind == ts.SyntaxKind.InterfaceDeclaration) {
-            subItems.push(transformInterface(node as ts.InterfaceDeclaration));
+            subItems.push(transformInterface(node as ts.InterfaceDeclaration, sourceFile));
         }
         if (node.kind == ts.SyntaxKind.EnumDeclaration) {
-            subItems.push(transformEnum(node as ts.EnumDeclaration));
+            subItems.push(transformEnum(node as ts.EnumDeclaration, sourceFile));
         }
         if (node.kind == ts.SyntaxKind.VariableStatement) {
-            transformVariableStatement(node as ts.VariableStatement).forEach(variable => subItems.push(variable));
+            transformVariableStatement(node as ts.VariableStatement, sourceFile).forEach(variable => subItems.push(variable));
         }
         if (node.kind == ts.SyntaxKind.FunctionDeclaration) {
             const functionDeclaration = node as ts.FunctionDeclaration;
             /** If it doesn't have a `block` then its an overload. We don't want to visit it */
             if (!functionDeclaration.body) return;
-            subItems.push(transformFunction(functionDeclaration));
+            subItems.push(transformFunction(functionDeclaration, sourceFile));
         }
         if (node.kind == ts.SyntaxKind.ModuleDeclaration) {
-            subItems.push(transformModule(node as ts.ModuleDeclaration));
+            subItems.push(transformModule(node as ts.ModuleDeclaration, sourceFile));
         }
     });
 
@@ -57,7 +58,7 @@ function getSignificantSubItems(node: ts.SourceFile | ts.ModuleBlock): types.Doc
 }
 
 /** Class */
-function transformClass(node: ts.ClassDeclaration): types.DocumentedType {
+function transformClass(node: ts.ClassDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = node.name.text;
     const comment = getRawComment(node);
     const subItems: types.DocumentedType[] = [];
@@ -69,16 +70,16 @@ function transformClass(node: ts.ClassDeclaration): types.DocumentedType {
 
     ts.forEachChild(node, (node) => {
         if (node.kind == ts.SyntaxKind.Constructor) {
-            subItems.push(transformClassConstructor(node as ts.ConstructorDeclaration));
+            subItems.push(transformClassConstructor(node as ts.ConstructorDeclaration, sourceFile));
         }
         if (node.kind == ts.SyntaxKind.PropertyDeclaration) {
-            subItems.push(transformClassProperty(node as ts.PropertyDeclaration));
+            subItems.push(transformClassProperty(node as ts.PropertyDeclaration, sourceFile));
         }
         if (node.kind == ts.SyntaxKind.MethodDeclaration) {
-            subItems.push(transformClassMethod(node as ts.MethodDeclaration));
+            subItems.push(transformClassMethod(node as ts.MethodDeclaration, sourceFile));
         }
         if (node.kind == ts.SyntaxKind.IndexSignature) {
-            subItems.push(transformClassIndexSignature(node as ts.IndexSignatureDeclaration));
+            subItems.push(transformClassIndexSignature(node as ts.IndexSignatureDeclaration, sourceFile));
         }
     });
 
@@ -86,12 +87,13 @@ function transformClass(node: ts.ClassDeclaration): types.DocumentedType {
         name,
         icon,
         comment,
-        subItems
+        subItems,
+        location: getDocumentedTypeLocation(sourceFile, node.pos),
     };
 }
 
 /** Class Constructor */
-function transformClassConstructor(node: ts.ConstructorDeclaration): types.DocumentedType {
+function transformClassConstructor(node: ts.ConstructorDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = "constructor";
     const comment = getRawComment(node);
     const subItems: types.DocumentedType[] = [];
@@ -101,12 +103,13 @@ function transformClassConstructor(node: ts.ConstructorDeclaration): types.Docum
         name,
         icon,
         comment,
-        subItems
+        subItems,
+        location: getDocumentedTypeLocation(sourceFile, node.pos),
     };
 }
 
 /** Class Property */
-function transformClassProperty(node: ts.PropertyDeclaration): types.DocumentedType {
+function transformClassProperty(node: ts.PropertyDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = ts.getPropertyNameForPropertyNameNode(node.name);
     const comment = getRawComment(node);
     const subItems: types.DocumentedType[] = [];
@@ -116,12 +119,13 @@ function transformClassProperty(node: ts.PropertyDeclaration): types.DocumentedT
         name,
         icon,
         comment,
-        subItems
+        subItems,
+        location: getDocumentedTypeLocation(sourceFile, node.pos),
     };
 }
 
 /** Class Method */
-function transformClassMethod(node: ts.MethodDeclaration): types.DocumentedType {
+function transformClassMethod(node: ts.MethodDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = ts.getPropertyNameForPropertyNameNode(node.name);
     const comment = getRawComment(node);
     const subItems: types.DocumentedType[] = [];
@@ -134,12 +138,13 @@ function transformClassMethod(node: ts.MethodDeclaration): types.DocumentedType 
         name,
         icon,
         comment,
-        subItems
+        subItems,
+        location: getDocumentedTypeLocation(sourceFile, node.pos),
     };
 }
 
 /** Class Index Signature */
-function transformClassIndexSignature(node: ts.IndexSignatureDeclaration): types.DocumentedType {
+function transformClassIndexSignature(node: ts.IndexSignatureDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = "Index Signature";
     const comment = '`' + node.getText() + '`' + `\n` + (getRawComment(node) || '');
     const subItems: types.DocumentedType[] = [];
@@ -149,12 +154,13 @@ function transformClassIndexSignature(node: ts.IndexSignatureDeclaration): types
         name,
         icon,
         comment,
-        subItems
+        subItems,
+        location: getDocumentedTypeLocation(sourceFile, node.pos),
     };
 }
 
 /** Interface */
-function transformInterface(node: ts.InterfaceDeclaration): types.DocumentedType {
+function transformInterface(node: ts.InterfaceDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = node.name.text;
     const comment = getRawComment(node);
     const subItems: types.DocumentedType[] = [];
@@ -166,16 +172,16 @@ function transformInterface(node: ts.InterfaceDeclaration): types.DocumentedType
 
     ts.forEachChild(node, (node) => {
         if (node.kind == ts.SyntaxKind.ConstructSignature) {
-            subItems.push(transformInterfaceConstructor(node as ts.ConstructSignatureDeclaration));
+            subItems.push(transformInterfaceConstructor(node as ts.ConstructSignatureDeclaration, sourceFile));
         }
         if (node.kind == ts.SyntaxKind.PropertySignature) {
-            subItems.push(transformInterfaceProperty(node as ts.PropertySignature));
+            subItems.push(transformInterfaceProperty(node as ts.PropertySignature, sourceFile));
         }
         if (node.kind == ts.SyntaxKind.MethodSignature) {
-            subItems.push(transformInterfaceMethod(node as ts.MethodSignature));
+            subItems.push(transformInterfaceMethod(node as ts.MethodSignature, sourceFile));
         }
         if (node.kind == ts.SyntaxKind.IndexSignature) {
-            subItems.push(transformInterfaceIndexSignature(node as ts.IndexSignatureDeclaration));
+            subItems.push(transformInterfaceIndexSignature(node as ts.IndexSignatureDeclaration, sourceFile));
         }
     });
 
@@ -183,12 +189,13 @@ function transformInterface(node: ts.InterfaceDeclaration): types.DocumentedType
         name,
         icon,
         comment,
-        subItems
+        subItems,
+        location: getDocumentedTypeLocation(sourceFile, node.pos),
     };
 }
 
 /** Interface Property */
-function transformInterfaceProperty(node: ts.PropertySignature): types.DocumentedType {
+function transformInterfaceProperty(node: ts.PropertySignature, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = ts.getPropertyNameForPropertyNameNode(node.name);
     const comment = getRawComment(node);
     const subItems: types.DocumentedType[] = [];
@@ -198,12 +205,13 @@ function transformInterfaceProperty(node: ts.PropertySignature): types.Documente
         name,
         icon,
         comment,
-        subItems
+        subItems,
+        location: getDocumentedTypeLocation(sourceFile, node.pos),
     };
 }
 
 /** Interface Constructor */
-function transformInterfaceConstructor(node: ts.ConstructSignatureDeclaration): types.DocumentedType {
+function transformInterfaceConstructor(node: ts.ConstructSignatureDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = "constructor";
     const comment = getRawComment(node);
     const subItems: types.DocumentedType[] = [];
@@ -213,12 +221,13 @@ function transformInterfaceConstructor(node: ts.ConstructSignatureDeclaration): 
         name,
         icon,
         comment,
-        subItems
+        subItems,
+        location: getDocumentedTypeLocation(sourceFile, node.pos),
     };
 }
 
 /** Interface Method */
-function transformInterfaceMethod(node: ts.MethodSignature): types.DocumentedType {
+function transformInterfaceMethod(node: ts.MethodSignature, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = ts.getPropertyNameForPropertyNameNode(node.name);
     const comment = getRawComment(node);
     const subItems: types.DocumentedType[] = [];
@@ -231,12 +240,13 @@ function transformInterfaceMethod(node: ts.MethodSignature): types.DocumentedTyp
         name,
         icon,
         comment,
-        subItems
+        subItems,
+        location: getDocumentedTypeLocation(sourceFile, node.pos),
     };
 }
 
 /** Interface Index Signature */
-function transformInterfaceIndexSignature(node: ts.IndexSignatureDeclaration): types.DocumentedType {
+function transformInterfaceIndexSignature(node: ts.IndexSignatureDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = "Index Signature";
     const comment = '`' + node.getText() + '`' + `\n` + (getRawComment(node) || '');
     const subItems: types.DocumentedType[] = [];
@@ -246,12 +256,13 @@ function transformInterfaceIndexSignature(node: ts.IndexSignatureDeclaration): t
         name,
         icon,
         comment,
-        subItems
+        subItems,
+        location: getDocumentedTypeLocation(sourceFile, node.pos),
     };
 }
 
 /** Enum */
-function transformEnum(node: ts.EnumDeclaration): types.DocumentedType {
+function transformEnum(node: ts.EnumDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = node.name.text;
     const comment = getRawComment(node);
     const subItems: types.DocumentedType[] = [];
@@ -264,7 +275,8 @@ function transformEnum(node: ts.EnumDeclaration): types.DocumentedType {
                 name: member.name.getText(),
                 icon: types.IconType.EnumMember,
                 comment: getRawComment(node),
-                subItems: []
+                subItems: [],
+                location: getDocumentedTypeLocation(sourceFile, member.pos),
             });
         }
     });
@@ -273,12 +285,13 @@ function transformEnum(node: ts.EnumDeclaration): types.DocumentedType {
         name,
         icon,
         comment,
-        subItems
+        subItems,
+        location: getDocumentedTypeLocation(sourceFile, node.pos),
     };
 }
 
 /** Variable */
-function transformVariableStatement(node: ts.VariableStatement): types.DocumentedType[] {
+function transformVariableStatement(node: ts.VariableStatement, sourceFile: ts.SourceFile): types.DocumentedType[] {
     const result: types.DocumentedType[] = [];
     const declarations = node.declarationList.declarations;
 
@@ -292,7 +305,8 @@ function transformVariableStatement(node: ts.VariableStatement): types.Documente
             names.elements.forEach(bindingElement => {
                 const name = ts.getPropertyNameForPropertyNameNode(bindingElement.name);
                 result.push({
-                    name, icon, comment, subItems
+                    name, icon, comment, subItems,
+                    location: getDocumentedTypeLocation(sourceFile, bindingElement.pos),
                 });
             });
         }
@@ -300,7 +314,8 @@ function transformVariableStatement(node: ts.VariableStatement): types.Documente
             let name = ts.getPropertyNameForPropertyNameNode(d.name);
 
             result.push({
-                name, icon, comment, subItems
+                name, icon, comment, subItems,
+                location: getDocumentedTypeLocation(sourceFile, d.pos),
             });
         }
     });
@@ -309,7 +324,7 @@ function transformVariableStatement(node: ts.VariableStatement): types.Documente
 }
 
 /** Function */
-function transformFunction(node: ts.FunctionDeclaration): types.DocumentedType {
+function transformFunction(node: ts.FunctionDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = ts.getPropertyNameForPropertyNameNode(node.name);
     const comment = getRawComment(node);
     const subItems: types.DocumentedType[] = [];
@@ -319,12 +334,13 @@ function transformFunction(node: ts.FunctionDeclaration): types.DocumentedType {
     }
 
     return {
-        name, icon, comment, subItems
+        name, icon, comment, subItems,
+        location: getDocumentedTypeLocation(sourceFile, node.pos),
     };
 }
 
 /** Module | Namespace */
-function transformModule(node: ts.ModuleDeclaration): types.DocumentedType {
+function transformModule(node: ts.ModuleDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
     /**
      * Namespace chaining basics
      * a.b.c {}
@@ -340,22 +356,36 @@ function transformModule(node: ts.ModuleDeclaration): types.DocumentedType {
 
     if (node.body.kind === ts.SyntaxKind.ModuleDeclaration) {
         name = name + '.';
-        const recurse = transformModule(node.body as ts.ModuleDeclaration);
+        const recurse = transformModule(node.body as ts.ModuleDeclaration, sourceFile);
         return {
             name: name + recurse.name,
             icon,
             comment: recurse.comment,
-            subItems: recurse.subItems
+            subItems: recurse.subItems,
+            location: getDocumentedTypeLocation(sourceFile, node.pos),
         }
     }
     else {
         const comment = getRawComment(node);
-        const subItems: types.DocumentedType[] = getSignificantSubItems(node.body as ts.ModuleBlock);
+        const subItems: types.DocumentedType[] = getSignificantSubItems(node.body as ts.ModuleBlock, sourceFile);
         return {
-            name, icon, comment, subItems
+            name, icon, comment, subItems, location: getDocumentedTypeLocation(sourceFile, node.pos)
         };
     }
 }
+
+/** Utility */
+export function getDocumentedTypeLocation(sourceFile: ts.SourceFile, position: number): types.DocumentedTypeLocation {
+    const pos = ts.getLineAndCharacterOfPosition(sourceFile, position);
+    return {
+        filePath: sourceFile.fileName,
+        position: {
+            line: pos.line,
+            ch: pos.character
+        }
+    };
+}
+
 
 // TODO: these
 /** Type */

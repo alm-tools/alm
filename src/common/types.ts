@@ -339,6 +339,12 @@ export interface DocumentedType {
     icon: IconType,
     comment: string,
     subItems: DocumentedType[];
+    location: DocumentedTypeLocation;
+}
+
+export interface DocumentedTypeLocation {
+    filePath: string,
+    position: EditorPosition,
 }
 
 /** For top level module names */

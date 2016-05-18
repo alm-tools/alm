@@ -23,7 +23,7 @@ export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModu
     const files: types.DocumentedType[] = [];
 
     for (let file of project.getProjectSourceFiles().filter(f => !typescriptDir.isFileInTypeScriptDir(f.fileName))) {
-        const {comment, subItems, icon} = transformers.transformSourceFile(file);
+        const {comment, subItems, icon, location} = transformers.transformSourceFile(file);
         const filePath = file.fileName;
         const name = fsu.removeExt(fsu.makeRelativePath(project.configFile.projectFileDirectory, filePath).substr(2))
         files.push({
@@ -31,6 +31,7 @@ export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModu
             icon,
             comment,
             subItems,
+            location,
         });
     }
 
