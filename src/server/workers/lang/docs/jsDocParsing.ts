@@ -4,6 +4,17 @@
  */
 
 /**
+ * Returns the parsed comment for a given node.
+ */
+export function getParsedComment(node: ts.Node, sourceFile: ts.SourceFile): string | null {
+    const rawComment = getRawComment(node, sourceFile);
+    if (!rawComment) {
+        return rawComment;
+    }
+    return parseComment(rawComment);
+}
+
+/**
  * Return the raw comment string for the given node.
  *
  * @param node  The node whose comment should be resolved.
