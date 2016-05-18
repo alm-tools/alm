@@ -383,7 +383,7 @@ export function getDocumentedTypeLocation(sourceFile: ts.SourceFile, position: n
      * /** some comment
      * var someNode;
      *
-     * Call the `ts.skipTrivia` to get the true node location
+     * Call the `ts.skipTrivia` to get the true node location, but +1 is good enough
      */
     const pos = ts.getLineAndCharacterOfPosition(sourceFile, position + 1);
     return {
