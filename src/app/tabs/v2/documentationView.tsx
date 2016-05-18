@@ -187,18 +187,46 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
     filter = () => {
         const filter = (this.state.filter || '').toLowerCase();
         if (!filter) {
-            this.setState({ filtered: this.state.files });
+            const filtered = this.state.files;
+            const selected = this.state.selected && filtered.find(f => f.name == this.state.selected.name);
+            this.setState({ filtered, selected });
             return;
         }
 
+        /**
+         * Does the name match or does some subItem name match
+         */
         const doesNameMatchRecursive = (type: types.DocumentedType) => {
             return type.name.toLowerCase().indexOf(filter) !== -1 || type.subItems.some(t => doesNameMatchRecursive(t));
         }
 
-        const filtered = this.state.files.filter(f => {
-            return doesNameMatchRecursive(f);
-        });
-        this.setState({ filtered });
+        /**
+         * Only leaves in the subItems that match
+         */
+        const mapChildrenRecursive = (item: types.DocumentedType) => {
+            let subItems =
+                item.subItems
+                    .filter(doesNameMatchRecursive)
+                    .map(mapChildrenRecursive);
+            const result: types.DocumentedType = {
+                name: item.name,
+                icon: item.icon,
+                comment: item.comment,
+                location: item.location,
+                subItems,
+            }
+            return result;
+        }
+
+        const filtered =
+            this.state.files
+                .filter(f => {
+                    return doesNameMatchRecursive(f);
+                })
+                .map(mapChildrenRecursive);
+
+        const selected = this.state.selected && filtered.find(f => f.name == this.state.selected.name);
+        this.setState({ filtered, selected });
     }
 
     /**
