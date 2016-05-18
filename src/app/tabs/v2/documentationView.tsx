@@ -150,11 +150,19 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
 
     renderNode(node: types.DocumentedType, i = 0) {
         return (
-            <div key={i}>
+            <div key={i} style={{ padding: '5px' }}>
                 <typeIcon.DocumentedTypeHeader name={node.name} icon={node.icon} />
-                {node.comment ? node.comment : 'No Comments'}
                 {
-                    node.subItems && !!node.subItems.length && node.subItems.map((n, i) => this.renderNode(n, i))
+                    node.comment &&
+                    <div style={{ marginTop: '5px' }}>
+                        {node.comment}
+                    </div>
+                }
+                {
+                    node.subItems && !!node.subItems.length &&
+                    <div style={{ border: '1px solid grey', marginTop:'5px', padding: '5px' }}>
+                        {node.subItems.map((n, i) => this.renderNode(n, i)) }
+                    </div>
                 }
             </div>
         );
