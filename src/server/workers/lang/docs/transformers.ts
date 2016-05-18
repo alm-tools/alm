@@ -13,9 +13,19 @@ import {getRawComment} from "./getRawComment";
 /** Source File */
 export function transformSourceFile(file: ts.SourceFile): { comment: string, subItems: types.DocumentedType[] } {
     const comment = getRawComment(file);
+    const subItems = getSignificantSubItems(file);
+
+    return {
+        comment,
+        subItems
+    };
+}
+
+/** There are a few root level things we care about. This only recurses on those 🌹  */
+function getSignificantSubItems(node: ts.SourceFile | ts.ModuleDeclaration): types.DocumentedType[] {
     const subItems: types.DocumentedType[] = [];
 
-    ts.forEachChild(file, (node) => {
+    ts.forEachChild(node, (node) => {
         if (node.kind == ts.SyntaxKind.ClassDeclaration) {
             subItems.push(transformClass(node as ts.ClassDeclaration));
         }
@@ -34,12 +44,12 @@ export function transformSourceFile(file: ts.SourceFile): { comment: string, sub
             if (!functionDeclaration.body) return;
             subItems.push(transformFunction(functionDeclaration));
         }
+        if (node.kind == ts.SyntaxKind.ModuleDeclaration) {
+            subItems.push(transformModule(node as ts.ModuleDeclaration));
+        }
     });
 
-    return {
-        comment,
-        subItems
-    };
+    return subItems;
 }
 
 /** Class */
@@ -294,6 +304,29 @@ function transformFunction(node: ts.FunctionDeclaration): types.DocumentedType {
 
     return {
         name,icon,comment,subItems
+    };
+}
+
+/** Module | Namespace */
+function transformModule(node: ts.ModuleDeclaration): types.DocumentedType {
+    /**
+     * Namespace chaining basics
+     * a.b.c {}
+     * a > declaration
+     *   b > declaration
+     *     c > declaration + body
+     *
+     * So if no body then we have to go down to get the name.
+     * Also we the *body* is were we should recurse
+     */
+
+    const name = ts.getPropertyNameForPropertyNameNode(node.name);
+    const comment = getRawComment(node);
+    let icon = types.IconType.Namespace;
+    const subItems: types.DocumentedType[] = getSignificantSubItems(node);
+
+    return {
+        name, icon, comment, subItems
     };
 }
 
