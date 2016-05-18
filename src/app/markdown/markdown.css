@@ -14,3 +14,7 @@
 .alm-markdown-root a:hover {
     color: white;
 }
+
+.alm-markdown-root ul {
+    margin: 0px;
+}
