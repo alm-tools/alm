@@ -1,5 +1,5 @@
 src/server/devtime.txt
 cover.jpg
 book.json
-docs
+/docs/**
 /src/tests/**
