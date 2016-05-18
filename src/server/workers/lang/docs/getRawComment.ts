@@ -9,7 +9,7 @@
  * @param node  The node whose comment should be resolved.
  * @returns     The raw comment string or NULL if no comment could be found.
  */
-export function getRawComment(node: ts.Node): string | null {
+export function getRawComment(node: ts.Node, sourceFile: ts.SourceFile): string | null {
     if (node.parent && node.parent.kind === ts.SyntaxKind.VariableDeclarationList) {
         node = node.parent.parent;
     } else if (node.kind === ts.SyntaxKind.ModuleDeclaration) {
@@ -20,7 +20,6 @@ export function getRawComment(node: ts.Node): string | null {
         }
     }
 
-    var sourceFile = ts.getSourceFileOfNode(node);
     var comments = ts.getJsDocComments(node, sourceFile);
     if (comments && comments.length) {
         var comment: ts.CommentRange;
