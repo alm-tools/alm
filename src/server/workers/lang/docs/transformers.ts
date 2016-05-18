@@ -362,14 +362,14 @@ function transformModule(node: ts.ModuleDeclaration, sourceFile: ts.SourceFile):
             icon,
             comment: recurse.comment,
             subItems: recurse.subItems,
-            location: getDocumentedTypeLocation(sourceFile, node.pos),
+            location: getDocumentedTypeLocation(sourceFile, node.name.pos),
         }
     }
     else {
         const comment = getRawComment(node);
         const subItems: types.DocumentedType[] = getSignificantSubItems(node.body as ts.ModuleBlock, sourceFile);
         return {
-            name, icon, comment, subItems, location: getDocumentedTypeLocation(sourceFile, node.pos)
+            name, icon, comment, subItems, location: getDocumentedTypeLocation(sourceFile, node.name.pos)
         };
     }
 }
