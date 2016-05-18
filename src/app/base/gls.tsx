@@ -29,6 +29,14 @@ export const SmallVerticalSpace = (props: {space?:number}) => {
 }
 SmallVerticalSpace.displayName = "SmallVerticalSpace";
 
+/**
+ * For that time you just need a visual horizontal seperation
+ */
+export const SmallHorizontalSpace = (props: {space?:number}) => {
+    return <div style={{ width: props.space || 10, display: 'inline-block' }}></div>;
+}
+SmallVerticalSpace.displayName = "SmallHorizontalSpace";
+
 interface PrimitiveProps extends React.HTMLProps<HTMLDivElement>{};
 
 /**
