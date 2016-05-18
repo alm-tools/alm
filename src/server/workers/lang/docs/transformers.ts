@@ -19,6 +19,9 @@ export function transformSourceFile(file: ts.SourceFile): {comment: string, subI
         if (node.kind == ts.SyntaxKind.ClassDeclaration) {
             subItems.push(transformClass(node as ts.ClassDeclaration));
         }
+        if (node.kind == ts.SyntaxKind.InterfaceDeclaration) {
+            subItems.push(transformInterface(node as ts.InterfaceDeclaration));
+        }
     });
 
     return {
@@ -123,6 +126,104 @@ function transformClassIndexSignature(node: ts.IndexSignatureDeclaration): types
         subItems
     };
 }
+
+/** Interface */
+function transformInterface(node: ts.InterfaceDeclaration): types.DocumentedType {
+    const name = node.name.text;
+    const comment = getRawComment(node);
+    const subItems: types.DocumentedType[] = [];
+
+    let icon = types.IconType.Interface;
+    if (node.typeParameters) {
+        icon = types.IconType.InterfaceGeneric;
+    }
+
+    ts.forEachChild(node, (node) => {
+        if (node.kind == ts.SyntaxKind.ConstructSignature) {
+            subItems.push(transformInterfaceConstructor(node as ts.ConstructSignatureDeclaration));
+        }
+        if (node.kind == ts.SyntaxKind.PropertySignature) {
+            subItems.push(transformInterfaceProperty(node as ts.PropertySignature));
+        }
+        if (node.kind == ts.SyntaxKind.MethodSignature) {
+            subItems.push(transformInterfaceMethod(node as ts.MethodSignature));
+        }
+        if (node.kind == ts.SyntaxKind.IndexSignature) {
+            subItems.push(transformInterfaceIndexSignature(node as ts.IndexSignatureDeclaration));
+        }
+    });
+
+    return {
+        name,
+        icon,
+        comment,
+        subItems
+    };
+}
+
+/** Interface Property */
+function transformInterfaceProperty(node: ts.PropertySignature): types.DocumentedType {
+    const name = ts.getPropertyNameForPropertyNameNode(node.name);
+    const comment = getRawComment(node);
+    const subItems: types.DocumentedType[] = [];
+    let icon = types.IconType.InterfaceProperty;
+
+    return {
+        name,
+        icon,
+        comment,
+        subItems
+    };
+}
+
+/** Interface Constructor */
+function transformInterfaceConstructor(node: ts.ConstructSignatureDeclaration): types.DocumentedType {
+    const name = "constructor";
+    const comment = getRawComment(node);
+    const subItems: types.DocumentedType[] = [];
+    let icon = types.IconType.InterfaceConstructor;
+
+    return {
+        name,
+        icon,
+        comment,
+        subItems
+    };
+}
+
+/** Interface Method */
+function transformInterfaceMethod(node: ts.MethodSignature): types.DocumentedType {
+    const name = ts.getPropertyNameForPropertyNameNode(node.name);
+    const comment = getRawComment(node);
+    const subItems: types.DocumentedType[] = [];
+    let icon = types.IconType.InterfaceMethod;
+    if (node.typeParameters) {
+        icon = types.IconType.InterfaceMethodGeneric;
+    }
+
+    return {
+        name,
+        icon,
+        comment,
+        subItems
+    };
+}
+
+/** Interface Index Signature */
+function transformInterfaceIndexSignature(node: ts.IndexSignatureDeclaration): types.DocumentedType {
+    const name = "Index Signature";
+    const comment = '`' + node.getText() + '`' + `\n` + (getRawComment(node) || '');
+    const subItems: types.DocumentedType[] = [];
+    let icon = types.IconType.InterfaceIndexSignature;
+
+    return {
+        name,
+        icon,
+        comment,
+        subItems
+    };
+}
+
 
 // TODO: these
 /** Namespace */

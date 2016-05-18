@@ -6,7 +6,13 @@ function barFunc() {
 }
 
 interface BarInterface {
+  new (bar: string): BarInterface;
   barInterfaceMember: string;
+  barInterfaceMethod(): string;
+  barInterfaceMethodGeneric<T>(a: T): T;
+}
+interface BarInterFaceWithSignature<T> {
+  [key: string]: T;
 }
 
 enum BarEnum {
@@ -15,5 +21,5 @@ enum BarEnum {
 
 class BarGlobalClass {
   globalClassMember: string;
-  [key:string]: string;
+  [key: string]: string;
 }
