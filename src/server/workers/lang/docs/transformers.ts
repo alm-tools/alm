@@ -376,7 +376,16 @@ function transformModule(node: ts.ModuleDeclaration, sourceFile: ts.SourceFile):
 
 /** Utility */
 export function getDocumentedTypeLocation(sourceFile: ts.SourceFile, position: number): types.DocumentedTypeLocation {
-    const pos = ts.getLineAndCharacterOfPosition(sourceFile, position);
+    /**
+     * The actual position of the node will be like
+     *
+     * <here
+     * /** some comment
+     * var someNode;
+     *
+     * Call the `ts.skipTrivia` to get the true node location
+     */
+    const pos = ts.getLineAndCharacterOfPosition(sourceFile, position + 1);
     return {
         filePath: sourceFile.fileName,
         position: {
