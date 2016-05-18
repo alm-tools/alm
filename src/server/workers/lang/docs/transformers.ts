@@ -207,7 +207,7 @@ function transformInterfaceProperty(node: ts.PropertySignature, sourceFile: ts.S
         icon,
         comment,
         subItems,
-        location: getDocumentedTypeLocation(sourceFile, node.pos),
+        location: getDocumentedTypeLocation(sourceFile, node.name.pos),
     };
 }
 
@@ -242,7 +242,7 @@ function transformInterfaceMethod(node: ts.MethodSignature, sourceFile: ts.Sourc
         icon,
         comment,
         subItems,
-        location: getDocumentedTypeLocation(sourceFile, node.pos),
+        location: getDocumentedTypeLocation(sourceFile, node.name.pos),
     };
 }
 
