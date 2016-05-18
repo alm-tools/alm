@@ -29,7 +29,10 @@ export function transformSourceFile(file: ts.SourceFile): { comment: string, sub
             transformVariableStatement(node as ts.VariableStatement).forEach(variable => subItems.push(variable));
         }
         if (node.kind == ts.SyntaxKind.FunctionDeclaration) {
-            subItems.push(transformFunction(node as ts.FunctionDeclaration));
+            const functionDeclaration = node as ts.FunctionDeclaration;
+            /** If it doesn't have a `block` then its an overload. We don't want to visit it */
+            if (!functionDeclaration.body) return;
+            subItems.push(transformFunction(functionDeclaration));
         }
     });
 
