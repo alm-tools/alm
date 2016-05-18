@@ -11,7 +11,7 @@
 import * as types from "../../../../common/types";
 import {getRawComment} from "./getRawComment";
 /** Source File */
-export function transformSourceFile(file: ts.SourceFile): {comment: string, subItems: types.DocumentedType[]} {
+export function transformSourceFile(file: ts.SourceFile): { comment: string, subItems: types.DocumentedType[] } {
     const comment = getRawComment(file);
     const subItems: types.DocumentedType[] = [];
 
@@ -21,6 +21,9 @@ export function transformSourceFile(file: ts.SourceFile): {comment: string, subI
         }
         if (node.kind == ts.SyntaxKind.InterfaceDeclaration) {
             subItems.push(transformInterface(node as ts.InterfaceDeclaration));
+        }
+        if (node.kind == ts.SyntaxKind.EnumDeclaration) {
+            subItems.push(transformEnum(node as ts.EnumDeclaration));
         }
     });
 
@@ -224,11 +227,36 @@ function transformInterfaceIndexSignature(node: ts.IndexSignatureDeclaration): t
     };
 }
 
+/** Enum */
+function transformEnum(node: ts.EnumDeclaration): types.DocumentedType {
+    const name = node.name.text;
+    const comment = getRawComment(node);
+    const subItems: types.DocumentedType[] = [];
+
+    let icon = types.IconType.Enum;
+    ts.forEachChild(node, (node) => {
+        if (node.kind == ts.SyntaxKind.EnumMember) {
+            const member = node as ts.EnumMember;
+            subItems.push({
+                name: member.name.getText(),
+                icon: types.IconType.EnumMember,
+                comment: getRawComment(node),
+                subItems: []
+            });
+        }
+    });
+
+    return {
+        name,
+        icon,
+        comment,
+        subItems
+    };
+}
+
 
 // TODO: these
 /** Namespace */
 /** Function */
 /** Var */
-/** Interface */
 /** Type */
-/** Enum */
