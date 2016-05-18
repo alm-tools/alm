@@ -7,6 +7,7 @@
     "express": "github:DefinitelyTyped/DefinitelyTyped/express/express.d.ts#e95958ac847d9a343bdc8d7cbc796a5f6da29f71",
     "glob": "github:DefinitelyTyped/DefinitelyTyped/glob/glob.d.ts#eb835aa72f45eee4246b1de8beeffe2010c689e6",
     "jquery": "github:DefinitelyTyped/DefinitelyTyped/jquery/jquery.d.ts#62eedc3121a5e28c50473d2e4a9cefbcb9c3957f",
+    "marked": "registry:dt/marked#0.0.0+20160325085301",
     "mime": "github:DefinitelyTyped/DefinitelyTyped/mime/mime.d.ts#e95958ac847d9a343bdc8d7cbc796a5f6da29f71",
     "minimatch": "github:DefinitelyTyped/DefinitelyTyped/minimatch/minimatch.d.ts#eb835aa72f45eee4246b1de8beeffe2010c689e6",
     "minimist": "github:DefinitelyTyped/DefinitelyTyped/minimist/minimist.d.ts#35989a3ab4834b8e8b2b56788f1d4fc46a25dc8d",
