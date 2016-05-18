@@ -66,7 +66,6 @@ let resizerStyle = {
 }
 
 let treeListStyle = {
-    background: '#333',
     color: '#eee',
     fontSize:'.7rem',
     padding:'3px',
@@ -602,7 +601,7 @@ export class FileTree extends BaseComponent<Props, State>{
 
         let hideStyle = !this.state.shown && { display: 'none' };
         return (
-            <div ref={'__treeroot'} style={[csx.flexRoot, csx.horizontal, { width: this.state.width, zIndex: 6 }, hideStyle]}>
+            <div ref={'__treeroot'} className="alm-tree-root" style={[csx.flexRoot, csx.horizontal, { width: this.state.width, zIndex: 6 }, hideStyle]}>
 
                 <div style={[csx.flex, csx.vertical, treeListStyle, styles.someChildWillScroll, csx.newLayerParent]}>
                     <div ref={'__treeViewScroll'} style={[csx.flex,csx.scroll, treeScrollStyle]} tabIndex={0}>

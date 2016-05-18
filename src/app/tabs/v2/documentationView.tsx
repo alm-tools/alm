@@ -21,6 +21,11 @@ import {MarkDown} from "../../markdown/markdown";
 let {inputBlackStyle} = styles.Input;
 import {CodeEditor} from "../../codemirror/codeEditor";
 
+/**
+ * A color that looks nice over the "Codemirror" background black
+ */
+const blackHighlightColor = "#1C1D18"
+
 export interface Props extends tab.TabProps {
 }
 export interface State {
@@ -112,8 +117,14 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                             {
                                 this.state.filtered.map((l, i) => {
                                     const name = l.name.length > 20 ? utils.getFileName(l.name) : l.name;
+                                    const backgroundColor = this.state.selected && this.state.selected.name === l.name
+                                        ? blackHighlightColor
+                                        : 'transparent';
                                     return (
-                                        <div key={i} style={{ cursor: 'pointer' }} onClick={() => this.setState({ selected: l }) }>
+                                        <div
+                                            key={i}
+                                            style={{ cursor: 'pointer', backgroundColor, paddingTop: '2px', paddingBottom: '2px', paddingLeft: '2px' }}
+                                            onClick={() => this.setState({ selected: l }) }>
                                             <typeIcon.DocumentedTypeHeader name={name} icon={l.icon}/>
                                         </div>
                                     )
@@ -157,7 +168,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                 </gls.InlineBlock>
                 {
                     node.comment &&
-                    <div style={{ padding: '5px', backgroundColor: 'rgb(28, 29, 24)'}}>
+                    <div style={{ padding: '5px', backgroundColor: blackHighlightColor}}>
                         <MarkDown markdown={node.comment}/>
                     </div>
                 }

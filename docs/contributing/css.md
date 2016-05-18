@@ -10,3 +10,6 @@ Because we have this distributed between TS / CSS files we document these here:
 * Main Panel : 6 (`mainPanel.ts`)
 * Modal Overlay: 100 (in `index.html`)
 * File Tree View: 6 (`fileTree.tsx`)
+
+# Background color
+Whenever possible prefer the CodeMirror background color. You don't need it explicitly at the root components as we have it setup for `GoldenLayout` (`appTabsContainer.css`) as well as `#root`.
