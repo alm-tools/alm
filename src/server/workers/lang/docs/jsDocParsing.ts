@@ -82,3 +82,35 @@ function isTopmostModuleDeclaration(node: ts.ModuleDeclaration): boolean {
 
     return true;
 }
+
+/**
+ * Modified from original to return `string` instead of `Comment` class
+ * We lose `tag` information, but that is fine by me for now.
+ */
+export function parseComment(text: string): string {
+    let comment = '';
+
+    function consumeTypeData(line: string): string {
+        line = line.replace(/^\{[^\}]*\}+/, '');
+        line = line.replace(/^\[[^\[][^\]]*\]+/, '');
+        return line.trim();
+    }
+
+    function readBareLine(line: string) {
+        comment += (comment == '' ? '' : '\n') + line;
+    }
+
+    function readLine(line: string) {
+        line = line.replace(/^\s*\*? ?/, '');
+        line = line.replace(/\s*$/, '');
+        readBareLine(line);
+    }
+
+    // text = text.replace(/^\s*\/\*+\s*(\r\n?|\n)/, '');
+    // text = text.replace(/(\r\n?|\n)\s*\*+\/\s*$/, '');
+    text = text.replace(/^\s*\/\*+/, '');
+    text = text.replace(/\*+\/\s*$/, '');
+    text.split(/\r\n?|\n/).forEach(readLine);
+
+    return comment;
+}

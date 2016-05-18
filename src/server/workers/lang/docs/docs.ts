@@ -8,7 +8,6 @@ import {TypedEvent} from "../../../../common/events";
 import * as utils from "../../../../common/utils";
 import * as typescriptDir from "../core/typeScriptDir";
 import * as fsu from "../../../utils/fsu";
-import {getRawComment} from "./getRawComment";
 import * as transformers from "./transformers";
 
 /** We just use the *active* project if any */

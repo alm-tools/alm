@@ -9,7 +9,8 @@
  */
 /** Imports */
 import * as types from "../../../../common/types";
-import {getRawComment} from "./getRawComment";
+import {getRawComment} from "./jsDocParsing";
+
 /** Source File */
 export function transformSourceFile(sourceFile: ts.SourceFile): types.DocumentedType {
     const name = sourceFile.fileName;
