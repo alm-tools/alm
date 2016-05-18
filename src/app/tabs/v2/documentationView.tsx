@@ -28,6 +28,8 @@ export interface State {
     selected?: types.DocumentedType | null;
     filtered?: types.DocumentedType[];
     filter?: string;
+
+    selectedDoesNotMatchFilter?: boolean;
 }
 
 export namespace DocumentationViewStyles {
@@ -120,6 +122,12 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                         </gls.Content>
                         <gls.FlexVertical style={{marginLeft: '5px', overflow: 'auto'}}>
                             {
+                                this.state.selected && this.state.selectedDoesNotMatchFilter &&
+                                <gls.Content style={{backgroundColor: '#111', padding: '5px'}}>
+                                    Note: Nothing in the selected module matches the filter, so showing it all
+                                </gls.Content>
+                            }
+                            {
                                 this.state.selected
                                 ? this.renderSelectedNode()
                                 : 'Select a module from the left to view its documentation 🌹'
@@ -189,7 +197,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
         if (!filter) {
             const filtered = this.state.files;
             const selected = this.state.selected && filtered.find(f => f.name == this.state.selected.name);
-            this.setState({ filtered, selected });
+            this.setState({ filtered, selected, selectedDoesNotMatchFilter: false });
             return;
         }
 
@@ -224,9 +232,16 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                     return doesNameMatchRecursive(f);
                 })
                 .map(mapChildrenRecursive);
+        this.setState({filtered})
 
+        // Also filter inside the selected if possible
         const selected = this.state.selected && filtered.find(f => f.name == this.state.selected.name);
-        this.setState({ filtered, selected });
+        if (this.state.selected && !selected) {
+            this.setState({selectedDoesNotMatchFilter: true});
+        }
+        else {
+            this.setState({ selected, selectedDoesNotMatchFilter: false });
+        }
     }
 
     /**
