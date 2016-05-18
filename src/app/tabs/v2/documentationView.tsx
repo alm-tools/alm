@@ -124,7 +124,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                                         <div
                                             key={i}
                                             style={{ cursor: 'pointer', backgroundColor, paddingTop: '2px', paddingBottom: '2px', paddingLeft: '2px' }}
-                                            onClick={() => this.setState({ selected: l }) }>
+                                            onClick={() => this.handleRootSelected(l)}>
                                             <typeIcon.DocumentedTypeHeader name={name} icon={l.icon}/>
                                         </div>
                                     )
@@ -187,6 +187,11 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
             filePath: node.location.filePath,
             position: node.location.position
         });
+    }
+
+    handleRootSelected = (node: types.DocumentedType) => {
+        this.setState({ selected: node });
+        setTimeout(() => this.filter());
     }
 
     handleKey = (e: any) => {
