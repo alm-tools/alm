@@ -276,10 +276,79 @@ export interface NavigateToItem {
 export interface GetNavigateToItemsResponse {
    items: NavigateToItem[];
 }
+
+/**
+ * The TypeDoc icons a pretty expansive 🌹 with a few ideas that I disagree with / or think are too difficult.
+ * E.g the type `event`. The "grey" coloring of the global functions. The following is a simpler subset.
+ *
+ * Places that need to be kept in sync:
+ * - typeIcon.tsx: the location in typeIcons.svg
+ * - the legend component
+ * - the server responses
+ */
+export enum IconType {
+    /**
+     * There can be only one global
+     * Any of the remaining things can be either in a module or global
+     */
+    Global,
+
+    Namespace, // same for module
+    Variable,
+    Function,
+    FunctionGeneric,
+
+    Enum,
+    EnumMember,
+
+    Interface,
+    InterfaceGeneric,
+    InterfaceConstructor,
+    InterfaceProperty,
+    InterfaceMethod,
+    InterfaceMethodGeneric,
+    InterfaceIndexSignature,
+
+    Class,
+    ClassGeneric,
+    ClassConstructor,
+    ClassProperty,
+    ClassMethod,
+    ClassMethodGeneric,
+    ClassIndexSignature,
+}
+
+/**
+ * The documentation model
+ * We have
+ * - global
+ * - modules
+ *
+ * These are just "name" + containers for OtherThings
+ *
+ * OtherThings are just:
+ * - class
+ * - namespace
+ * - interface / type
+ * - enum
+ *
+ * Where Namespace is just a "name" container for OtherThings
+ */
+export interface DocumentedType {
+    name: string;
+    icon: IconType,
+    comment: string,
+    subItems: DocumentedType[];
+    location: DocumentedTypeLocation;
+}
+
+export interface DocumentedTypeLocation {
+    filePath: string,
+    position: EditorPosition,
+}
+
 /** For top level module names */
 export interface GetTopLevelModuleNamesResponse {
     /** Present in our project */
-    locals: NavigateToItem[];
-    /** Present external to our project e.g. lib.d.ts or node_modules */
-    externals: NavigateToItem[];
+    files: DocumentedType[];
 }

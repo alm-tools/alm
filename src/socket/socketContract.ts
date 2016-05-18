@@ -68,6 +68,7 @@ export var server = {
      * Documentation Browser
      */
     getTopLevelModuleNames: {} as QRFunction<{}, types.GetTopLevelModuleNamesResponse>,
+    getUpdatedModuleInformation: {} as QRFunction<{ filePath: string }, types.DocumentedType>,
 
     /**
      * Output Status
@@ -347,8 +348,6 @@ export namespace Types {
         key: string;
         /** What will be displayed in the UI */
         display: string;
-        /** Does this quickfix provide a snippet */
-        isNewTextSnippet: boolean;
     }
     /** Apply interfaces */
     export interface GetQuickFixesResponse {

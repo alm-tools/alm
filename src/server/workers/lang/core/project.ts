@@ -34,7 +34,9 @@ export class Project {
     }
 
     /**
-     * all files except lib.d.ts
+     * all files
+     * - except lib.d.ts
+     * - And files in `node_modules
      * Note: this function is exceedingly slow on cold boot (13s on vscode codebase) as it calls getProgram.getSourceFiles
      */
     public getProjectSourceFiles(): ts.SourceFile[] {

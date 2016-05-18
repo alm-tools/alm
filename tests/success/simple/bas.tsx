@@ -2,7 +2,9 @@
  * This file exists for initial testing
  * Basically I edit this file to see if it works 🌹
  */
+/** declare React */
 declare var React: any;
+/** Imports */
 import {foo} from "./foo";
 let bar = foo;
 // bar = '456';
@@ -20,9 +22,21 @@ let dom = <div>
 
 class Test {
   private foo = 123;
+  /** Some constructor comment */
+  constructor() {
+    
+  }
   test() {
     return 'asdf' + `${this.foo}`;
   }
+  /** Some comment for the generic method */
+  aGenericMethod<T>(a: T): T {
+    return a;
+  }
+}
+
+class GenericTest<T> {
+  someProperty: T;
 }
 
 const Comp = (props: { text: string }) => {

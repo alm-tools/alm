@@ -37,6 +37,7 @@ export var worker = {
 
     /** Documentation browser */
     getTopLevelModuleNames : {} as typeof socketContract.server.getTopLevelModuleNames, 
+    getUpdatedModuleInformation : {} as typeof socketContract.server.getUpdatedModuleInformation,
 
     // Used to tell the worker about what project it should work on
     // Note: The project validation / expansion happens locally. Only the hard stuff of *analysis* is done by the worker

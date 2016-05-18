@@ -1,11 +1,14 @@
 /**
- * The docs module provides utilities documenation comments
+ * This file is the main entry for the for documentation view backend
  */
+/** Imports */
 import * as projectService from "../projectService";
 import * as types from "../../../../common/types";
 import {TypedEvent} from "../../../../common/events";
 import * as utils from "../../../../common/utils";
 import * as typescriptDir from "../core/typeScriptDir";
+import * as fsu from "../../../utils/fsu";
+import * as transformers from "./transformers";
 
 /** We just use the *active* project if any */
 import * as activeProject from "../activeProject";
@@ -13,57 +16,46 @@ let getProject = activeProject.GetProject.getCurrentIfAny;
 
 export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModuleNamesResponse> {
     let project = getProject();
-    var languageService = project.languageService;
 
     let getNodeKind = ts.getNodeKind;
-    function getDeclarationName(declaration: ts.Declaration): string {
-        let result = getTextOfIdentifierOrLiteral(declaration.name);
-        if (result !== undefined) {
-            return result;
-        }
+    const files: types.DocumentedType[] = [];
 
-        if (declaration.name.kind === ts.SyntaxKind.ComputedPropertyName) {
-            let expr = (<ts.ComputedPropertyName>declaration.name).expression;
-            if (expr.kind === ts.SyntaxKind.PropertyAccessExpression) {
-                return (<ts.PropertyAccessExpression>expr).name.text;
-            }
-
-            return getTextOfIdentifierOrLiteral(expr);
-        }
-
-        return undefined;
-    }
-    function getTextOfIdentifierOrLiteral(node: ts.Node) {
-        if (node.kind === ts.SyntaxKind.Identifier ||
-            node.kind === ts.SyntaxKind.StringLiteral ||
-            node.kind === ts.SyntaxKind.NumericLiteral) {
-
-            return (<ts.Identifier | ts.LiteralExpression>node).text;
-        }
-
-        return undefined;
+    for (let sourceFile of project.getProjectSourceFiles().filter(f => !typescriptDir.isFileInTypeScriptDir(f.fileName))) {
+        const {comment, subItems, icon, location} = transformers.transformSourceFile(sourceFile);
+        const filePath = sourceFile.fileName;
+        const name = fsu.removeExt(fsu.makeRelativePath(project.configFile.projectFileDirectory, filePath).substr(2))
+        files.push({
+            name,
+            icon,
+            comment,
+            subItems,
+            location,
+        });
     }
 
-    const locals: types.NavigateToItem[] = [];
-    const externals: types.NavigateToItem[] = [];
-    for (let file of project.getProjectSourceFiles()) {
-        const filePath = file.fileName;
-        const addToList = typescriptDir.isFileInTypeScriptDir(filePath) ? externals : locals;
-        let declarations = file.getNamedDeclarations();
-        for (let index in declarations) {
-            for (let declaration of declarations[index]) {
-                let item: types.NavigateToItem = {
-                    name: getDeclarationName(declaration),
-                    kind: getNodeKind(declaration),
-                    filePath: file.fileName,
-                    fileName: utils.getFileName(file.fileName),
-                    position: project.languageServiceHost.getLineAndCharacterOfPosition(file.fileName, declaration.getStart())
-                }
-                addToList.push(item);
-            }
-        }
-    }
+    /** sort by filePath */
+    files.sort((a, b) => a.name.localeCompare(b.name));
 
-    const result: types.GetTopLevelModuleNamesResponse = { locals, externals };
+    const result: types.GetTopLevelModuleNamesResponse = { files };
+    return utils.resolve(result);
+}
+
+/**
+ * If a file is edited and you are showing the documentation for the file,
+ * Its not a bad idea to call this function for updated information
+ */
+export function getUpdatedModuleInformation(query: { filePath: string }): Promise<types.DocumentedType> {
+    let project = getProject();
+    const sourceFile = project.getProjectSourceFiles().find(sf => sf.fileName == query.filePath);
+    const {comment, subItems, icon, location} = transformers.transformSourceFile(sourceFile);
+    const filePath = sourceFile.fileName;
+    const name = fsu.removeExt(fsu.makeRelativePath(project.configFile.projectFileDirectory, filePath).substr(2))
+    const result: types.DocumentedType = {
+        name,
+        icon,
+        comment,
+        subItems,
+        location,
+    };
     return utils.resolve(result);
 }

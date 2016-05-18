@@ -6,6 +6,7 @@
  * So we disable it here.
  */
 
+/** Imports */
 import * as CodeMirror from "codemirror";
 // The following is a copy paste of
 // require('codemirror/addon/edit/closebrackets');

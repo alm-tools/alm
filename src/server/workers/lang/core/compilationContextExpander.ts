@@ -171,12 +171,15 @@ export function getDefinitionsForNodeModules(projectDir: string, files: string[]
 
                 let file = path.resolve(moduleDir, './', package_json.typescript.definition);
 
-                typings[path.basename(file)] = {
-                    filePath: file,
-                    version: Infinity
-                };
-                // Also add any files that this `.d.ts` references as long as they don't conflict with what we have
-                addAllReferencedFilesWithMaxVersion(file);
+                /** If the file configuration points to a valid file */
+                if (fsu.existsSync(file)) {
+                    typings[path.basename(file)] = {
+                        filePath: file,
+                        version: Infinity
+                    };
+                    // Also add any files that this `.d.ts` references as long as they don't conflict with what we have
+                    addAllReferencedFilesWithMaxVersion(file);
+                }
             }
         }
 

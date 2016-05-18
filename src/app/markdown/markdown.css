@@ -1,0 +1,20 @@
+.alm-markdown-root {
+    font-size: .7em;
+}
+
+.alm-markdown-root p {
+    margin-top: .5em;
+    margin-bottom: .5em;
+}
+
+.alm-markdown-root a {
+    color: grey;
+}
+
+.alm-markdown-root a:hover {
+    color: white;
+}
+
+.alm-markdown-root ul {
+    margin: 0px;
+}

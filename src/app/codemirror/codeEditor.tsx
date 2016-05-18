@@ -317,7 +317,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
     }
 
     private refresh = () => {
-        if (this.codeMirror) {
+        if (this.codeMirror && !this.codeMirror.hasFocus()) {
             this.codeMirror.refresh(); // Needed to resize gutters correctly
         }
     }

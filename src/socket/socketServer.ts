@@ -160,6 +160,7 @@ namespace Server {
      * Documentation browser
      */
     export var getTopLevelModuleNames : typeof contract.server.getTopLevelModuleNames = projectServiceMaster.worker.getTopLevelModuleNames;
+    export var getUpdatedModuleInformation : typeof contract.server.getUpdatedModuleInformation = projectServiceMaster.worker.getUpdatedModuleInformation;
 
     /**
      * Output Status

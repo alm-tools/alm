@@ -13,7 +13,15 @@ var Test = (function () {
     Test.prototype.test = function () {
         return 'asdf' + ("" + this.foo);
     };
+    Test.prototype.aGenericMethod = function (a) {
+        return a;
+    };
     return Test;
+}());
+var GenericTest = (function () {
+    function GenericTest() {
+    }
+    return GenericTest;
 }());
 var Comp = function (props) {
     return React.createElement("div", null, props.text);

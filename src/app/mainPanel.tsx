@@ -138,7 +138,7 @@ export class MainPanel extends BaseComponent<Props, State>{
         }
 
         return (
-            <div style={{zIndex:6 /* force over golden-layout */, backgroundColor:'rgb(39, 40, 34)'}}>
+            <div style={{zIndex:6 /* force over golden-layout */}}>
                 <ui.VelocityTransitionGroup
                     enter={{animation: "slideDown", duration: 150}}
                     leave={{animation: "slideUp", duration: 150}}>
