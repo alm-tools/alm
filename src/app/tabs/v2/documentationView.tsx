@@ -100,7 +100,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                 style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll, {color: styles.textColor}) }
                 onKeyPress={this.handleKey}>
                 <div style={{overflow: 'auto'}}>
-                    <gls.FlexHorizontal style={{padding:'10px'}}>
+                    <gls.FlexHorizontal style={{padding:'10px 0px 10px 10px'}}>
                         <gls.Content style={{ minWidth: '150px', maxWidth: '250px', overflow: 'hidden' }}>
                             <typeIcon.SectionHeader text="Files"/>
                             <gls.SmallVerticalSpace/>
@@ -115,13 +115,13 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                                 })
                             }
                         </gls.Content>
-                        <gls.FlexVertical style={{padding: '10px', border: '1px solid grey'}}>
+                        <gls.FlexVertical style={{marginLeft: '5px'}}>
                             {
                                 this.state.selected
                                 ? this.renderSelectedNode()
                                 : 'Select a module from the left to view its documentation 🌹'
                             }
-                            <div style={{marginTop: '10px'}}>
+                            <div style={{marginTop: '10px', marginRight: '10px'}}>
                                 <hr/>
                                 <typeIcon.TypeIconLegend />
                             </div>
@@ -146,8 +146,8 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                 </gls.InlineBlock>
                 {
                     node.comment &&
-                    <div style={{ marginTop: '5px' }}>
-                        {node.comment}
+                    <div style={{ padding: '5px', backgroundColor: 'rgb(28, 29, 24)'}}>
+                        <MarkDown markdown={node.comment}/>
                     </div>
                 }
                 {
@@ -176,7 +176,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
 
     loadData = () => {
         server.getTopLevelModuleNames({}).then(res => {
-            this.setState({files:res.files})
+            this.setState({files:res.files, selected: null});
         })
     }
 

@@ -21,6 +21,9 @@ declare global {
  *
  ********/
 
+/**
+ * For that time you just need a visual vertical seperation
+ */
 export const SmallVerticalSpace = (props: {space?:number}) => {
     return <div style={{ height: props.space || 10}}></div>;
 }
