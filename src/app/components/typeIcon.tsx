@@ -97,10 +97,10 @@ namespace DocumentedTypeHeaderStyles {
             whiteSpace: 'pre'
         });
 }
-export class DocumentedTypeHeader extends ui.BaseComponent<{ type: DocumentedType }, State>{
+export class DocumentedTypeHeader extends ui.BaseComponent<{ name: string, icon: IconType }, State>{
     shouldComponentUpdate = pure.shouldComponentUpdate;
     render() {
-        return <div style={DocumentedTypeHeaderStyles.root}><TypeIcon iconType={this.props.type.icon}/>{" " + this.props.type.name}</div>
+        return <div style={DocumentedTypeHeaderStyles.root}><TypeIcon iconType={this.props.icon}/>{" " + this.props.name}</div>
     }
 }
 
@@ -135,35 +135,35 @@ export class TypeIconLegend extends ui.BaseComponent<{}, {}>{
                 <div style={{paddingLeft: '10px'}}><SectionHeader text="Legend"/></div>
                 <div style={TypeIconLegendStyles.legendColumnContainer}>
                     <div style={TypeIconLegendStyles.legendColumn}>
-                        <DocumentedTypeHeader type={{ name: "Global", icon: IconType.Global }}/>
+                        <DocumentedTypeHeader name={"Global"} icon={IconType.Global}/>
 
-                        <DocumentedTypeHeader type={{ name: "Namespace", icon: IconType.Namespace }}/>
-                        <DocumentedTypeHeader type={{ name: "Variable", icon: IconType.Variable }}/>
-                        <DocumentedTypeHeader type={{ name: "Function", icon: IconType.Function }}/>
-                        <DocumentedTypeHeader type={{ name: "Function Generic", icon: IconType.FunctionGeneric }}/>
+                        <DocumentedTypeHeader name={"Namespace"} icon={IconType.Namespace}/>
+                        <DocumentedTypeHeader name="Variable" icon={IconType.Variable}/>
+                        <DocumentedTypeHeader name="Function" icon={IconType.Function}/>
+                        <DocumentedTypeHeader name="Function Generic" icon={IconType.FunctionGeneric}/>
 
                         <div style={{ height: TypeIconStyles.spriteSize + 'px' }}/>
 
-                        <DocumentedTypeHeader type={{ name: "Enum", icon: IconType.Enum }}/>
-                        <DocumentedTypeHeader type={{ name: "Enum Member", icon: IconType.EnumMember }}/>
+                        <DocumentedTypeHeader name="Enum" icon={IconType.Enum}/>
+                        <DocumentedTypeHeader name="Enum Member" icon={IconType.EnumMember}/>
                     </div>
                     <div style={TypeIconLegendStyles.legendColumn}>
-                        <DocumentedTypeHeader type={{ name: "Interface", icon: IconType.Interface }}/>
-                        <DocumentedTypeHeader type={{ name: "Interface Generic", icon: IconType.InterfaceGeneric }}/>
-                        <DocumentedTypeHeader type={{ name: "Interface Constructor", icon: IconType.InterfaceConstructor }}/>
-                        <DocumentedTypeHeader type={{ name: "Interface Property", icon: IconType.InterfaceProperty }}/>
-                        <DocumentedTypeHeader type={{ name: "Interface Method", icon: IconType.InterfaceMethod }}/>
-                        <DocumentedTypeHeader type={{ name: "Interface Method Generic", icon: IconType.InterfaceMethodGeneric }}/>
-                        <DocumentedTypeHeader type={{ name: "Interface Index Signature", icon: IconType.InterfaceIndexSignature }}/>
+                        <DocumentedTypeHeader name="Interface" icon={IconType.Interface}/>
+                        <DocumentedTypeHeader name="Interface Generic" icon={IconType.InterfaceGeneric}/>
+                        <DocumentedTypeHeader name="Interface Constructor" icon={IconType.InterfaceConstructor}/>
+                        <DocumentedTypeHeader name="Interface Property" icon={IconType.InterfaceProperty}/>
+                        <DocumentedTypeHeader name="Interface Method" icon={IconType.InterfaceMethod}/>
+                        <DocumentedTypeHeader name="Interface Method Generic" icon={IconType.InterfaceMethodGeneric}/>
+                        <DocumentedTypeHeader name="Interface Index Signature" icon={IconType.InterfaceIndexSignature}/>
                     </div>
                     <div style={TypeIconLegendStyles.legendColumn}>
-                        <DocumentedTypeHeader type={{ name: "Class", icon: IconType.Class }}/>
-                        <DocumentedTypeHeader type={{ name: "Class Generic", icon: IconType.ClassGeneric }}/>
-                        <DocumentedTypeHeader type={{ name: "Class Constructor", icon: IconType.ClassConstructor }}/>
-                        <DocumentedTypeHeader type={{ name: "Class Property", icon: IconType.ClassProperty }}/>
-                        <DocumentedTypeHeader type={{ name: "Class Method", icon: IconType.ClassMethod }}/>
-                        <DocumentedTypeHeader type={{ name: "Class Method Generic", icon: IconType.ClassMethodGeneric }}/>
-                        <DocumentedTypeHeader type={{ name: "Class Index Signature", icon: IconType.ClassIndexSignature }}/>
+                        <DocumentedTypeHeader name="Class" icon={IconType.Class}/>
+                        <DocumentedTypeHeader name="Class Generic" icon={IconType.ClassGeneric}/>
+                        <DocumentedTypeHeader name="Class Constructor" icon={IconType.ClassConstructor}/>
+                        <DocumentedTypeHeader name="Class Property" icon={IconType.ClassProperty}/>
+                        <DocumentedTypeHeader name="Class Method" icon={IconType.ClassMethod}/>
+                        <DocumentedTypeHeader name="Class Method Generic" icon={IconType.ClassMethodGeneric}/>
+                        <DocumentedTypeHeader name="Class Index Signature" icon={IconType.ClassIndexSignature}/>
                     </div>
                 </div>
             </div>

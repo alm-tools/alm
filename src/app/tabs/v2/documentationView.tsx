@@ -115,14 +115,15 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                 onKeyPress={this.handleKey}>
                 <div style={{overflow: 'auto'}}>
                     <gls.FlexHorizontal style={{padding:'10px'}}>
-                        <gls.Content style={{ width: '150px' }}>
+                        <gls.Content style={{ minWidth: '150px', maxWidth: '250px', overflow: 'hidden' }}>
                             <typeIcon.SectionHeader text="Overview"/>
                             <gls.SmallVerticalSpace/>
                             {
                                 this.state.modules.map((l, i) => {
+                                    const name = l.name.length > 20 ? utils.getFileName(l.name) : l.name;
                                     return (
                                         <div key={i} style={{ cursor: 'pointer' }} onClick={() => this.setState({ selected: l }) }>
-                                            <typeIcon.DocumentedTypeHeader type={l} />
+                                            <typeIcon.DocumentedTypeHeader name={name} icon={l.icon}/>
                                         </div>
                                     )
                                 })
@@ -150,7 +151,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
     renderNode(node: types.DocumentedType, i = 0) {
         return (
             <div key={i}>
-                <typeIcon.DocumentedTypeHeader type={node} />
+                <typeIcon.DocumentedTypeHeader name={node.name} icon={node.icon} />
                 {node.comment ? node.comment : 'No Comments'}
                 {
                     node.subItems && !!node.subItems.length && node.subItems.map((n, i) => this.renderNode(n, i))
