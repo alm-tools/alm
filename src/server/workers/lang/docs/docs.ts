@@ -20,40 +20,22 @@ export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModu
     var languageService = project.languageService;
 
     let getNodeKind = ts.getNodeKind;
-    const modules: types.DocumentedType[] = [];
+    const files: types.DocumentedType[] = [];
 
-    /** Any file that is not a module adds to the global namespace */
-    const globals: types.DocumentedType = {
-        name: 'Global',
-        icon: types.IconType.Global,
-        comment: 'The global namespace. All the files that are not modules contribute to this.',
-        subItems: []
-    };
-
-    for (let file of project.getProjectSourceFiles().filter(f=>!typescriptDir.isFileInTypeScriptDir(f.fileName))) {
-        const {comment, subItems} = transformers.transformSourceFile(file);
-
-        if (ts.isExternalModule(file)) {
-            const filePath = file.fileName;
-            modules.push({
-                name: fsu.removeExt(fsu.makeRelativePath(project.configFile.projectFileDirectory, filePath).substr(2)),
-                icon: types.IconType.Namespace,
-                comment,
-                subItems,
-            });
-            /** TODO: there might still be global namespace contributions */
-        }
-        else {
-            subItems.forEach(si => globals.subItems.push(si));
-        }
+    for (let file of project.getProjectSourceFiles().filter(f => !typescriptDir.isFileInTypeScriptDir(f.fileName))) {
+        const {comment, subItems, icon} = transformers.transformSourceFile(file);
+        const filePath = file.fileName;
+        const name = fsu.removeExt(fsu.makeRelativePath(project.configFile.projectFileDirectory, filePath).substr(2))
+        files.push({
+            name,
+            icon,
+            comment,
+            subItems,
+        });
     }
 
     /** TODO: sort recursively */
 
-    /** If we collected anything into the global namespace */
-    if (globals.subItems.length) {
-        modules.unshift(globals);
-    }
-    const result: types.GetTopLevelModuleNamesResponse = { modules };
+    const result: types.GetTopLevelModuleNamesResponse = { files };
     return utils.resolve(result);
 }

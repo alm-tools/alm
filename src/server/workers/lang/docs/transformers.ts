@@ -11,11 +11,15 @@
 import * as types from "../../../../common/types";
 import {getRawComment} from "./getRawComment";
 /** Source File */
-export function transformSourceFile(file: ts.SourceFile): { comment: string, subItems: types.DocumentedType[] } {
+export function transformSourceFile(file: ts.SourceFile): types.DocumentedType {
+    const name = file.fileName;
+    const icon = ts.isExternalModule(file) ? types.IconType.Namespace : types.IconType.Global;
     const comment = getRawComment(file);
     const subItems = getSignificantSubItems(file);
 
     return {
+        name,
+        icon,
         comment,
         subItems
     };

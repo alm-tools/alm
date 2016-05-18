@@ -22,7 +22,7 @@ import {CodeEditor} from "../../codemirror/codeEditor";
 export interface Props extends tab.TabProps {
 }
 export interface State {
-    modules?: types.DocumentedType[];
+    files?: types.DocumentedType[];
     selected?: types.DocumentedType | null;
 }
 
@@ -57,7 +57,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
         super(props);
         this.filePath = utils.getFilePathFromUrl(props.url);
         this.state = {
-            modules: [],
+            files: [],
             selected: null,
         };
     }
@@ -116,10 +116,10 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                 <div style={{overflow: 'auto'}}>
                     <gls.FlexHorizontal style={{padding:'10px'}}>
                         <gls.Content style={{ minWidth: '150px', maxWidth: '250px', overflow: 'hidden' }}>
-                            <typeIcon.SectionHeader text="Overview"/>
+                            <typeIcon.SectionHeader text="Files"/>
                             <gls.SmallVerticalSpace/>
                             {
-                                this.state.modules.map((l, i) => {
+                                this.state.files.map((l, i) => {
                                     const name = l.name.length > 20 ? utils.getFileName(l.name) : l.name;
                                     return (
                                         <div key={i} style={{ cursor: 'pointer' }} onClick={() => this.setState({ selected: l }) }>
@@ -177,7 +177,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
 
     loadData = () => {
         server.getTopLevelModuleNames({}).then(res => {
-            this.setState({modules:res.modules})
+            this.setState({files:res.files})
         })
     }
 

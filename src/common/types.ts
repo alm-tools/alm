@@ -344,5 +344,5 @@ export interface DocumentedType {
 /** For top level module names */
 export interface GetTopLevelModuleNamesResponse {
     /** Present in our project */
-    modules: DocumentedType[];
+    files: DocumentedType[];
 }
