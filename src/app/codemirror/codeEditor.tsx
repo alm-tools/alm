@@ -317,13 +317,9 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
     }
 
     private refresh = () => {
-        // This used to be needed in older versions
-        // Now it seems its not needed and instead results in jumping the scroll bar to the top.
-        // So just commented out.
-        //
-        // if (this.codeMirror) {
-        //     this.codeMirror.refresh(); // Needed to resize gutters correctly
-        // }
+        if (this.codeMirror && !this.codeMirror.hasFocus()) {
+            this.codeMirror.refresh(); // Needed to resize gutters correctly
+        }
     }
 
 	focusChanged = (focused) => {
