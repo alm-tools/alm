@@ -16,14 +16,13 @@ let getProject = activeProject.GetProject.getCurrentIfAny;
 
 export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModuleNamesResponse> {
     let project = getProject();
-    var languageService = project.languageService;
 
     let getNodeKind = ts.getNodeKind;
     const files: types.DocumentedType[] = [];
 
-    for (let file of project.getProjectSourceFiles().filter(f => !typescriptDir.isFileInTypeScriptDir(f.fileName))) {
-        const {comment, subItems, icon, location} = transformers.transformSourceFile(file);
-        const filePath = file.fileName;
+    for (let sourceFile of project.getProjectSourceFiles().filter(f => !typescriptDir.isFileInTypeScriptDir(f.fileName))) {
+        const {comment, subItems, icon, location} = transformers.transformSourceFile(sourceFile);
+        const filePath = sourceFile.fileName;
         const name = fsu.removeExt(fsu.makeRelativePath(project.configFile.projectFileDirectory, filePath).substr(2))
         files.push({
             name,
@@ -38,5 +37,25 @@ export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModu
     files.sort((a, b) => a.name.localeCompare(b.name));
 
     const result: types.GetTopLevelModuleNamesResponse = { files };
+    return utils.resolve(result);
+}
+
+/**
+ * If a file is edited and you are showing the documentation for the file,
+ * Its not a bad idea to call this function for updated information
+ */
+export function getUpdatedModuleInformation(query: { filePath: string }): Promise<types.DocumentedType> {
+    let project = getProject();
+    const sourceFile = project.getProjectSourceFiles().find(sf => sf.fileName == query.filePath);
+    const {comment, subItems, icon, location} = transformers.transformSourceFile(sourceFile);
+    const filePath = sourceFile.fileName;
+    const name = fsu.removeExt(fsu.makeRelativePath(project.configFile.projectFileDirectory, filePath).substr(2))
+    const result: types.DocumentedType = {
+        name,
+        icon,
+        comment,
+        subItems,
+        location,
+    };
     return utils.resolve(result);
 }
