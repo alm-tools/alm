@@ -135,9 +135,13 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                                 ? this.renderSelectedNode()
                                 : 'Select a module from the left to view its documentation 🌹'
                             }
+                            <div style={{marginTop: '10px'}}>
+                                <hr/>
+                                <typeIcon.TypeIconLegend />
+                            </div>
                         </gls.FlexVertical>
                     </gls.FlexHorizontal>
-                    <typeIcon.TypeIconLegend />
+
                 </div>
             </div>
         );
