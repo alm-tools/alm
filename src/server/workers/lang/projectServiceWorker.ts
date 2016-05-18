@@ -63,6 +63,7 @@ namespace Worker {
      * Documentation Browser
      */
     export var getTopLevelModuleNames : typeof contract.worker.getTopLevelModuleNames = docs.getTopLevelModuleNames;
+    export var getUpdatedModuleInformation : typeof contract.worker.getUpdatedModuleInformation = docs.getUpdatedModuleInformation;
 }
 
 // Ensure that the namespace follows the contract

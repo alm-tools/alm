@@ -75,6 +75,9 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
     filePath: string;
     componentDidMount() {
 
+        /**
+         * Initial load + load on project change
+         */
         this.loadData();
         this.disposible.add(
             cast.activeProjectConfigDetailsUpdated.on(() => {
@@ -82,6 +85,38 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
             })
         );
 
+        /**
+         * If a file is selected and it gets edited, reload the file module information
+         */
+        const isFilePathOfSignificance = (filePath:string) => !!this.state.selected && this.state.selected.location.filePath === filePath;
+        const reloadSelectedDebounced = utils.debounce((filePath) => {
+            if (!isFilePathOfSignificance(filePath)) return;
+            server.getUpdatedModuleInformation({
+                filePath
+            }).then((res)=>{
+                if (!isFilePathOfSignificance(filePath)) return;
+                const files = this.state.files.map(f => { return (f.location.filePath === filePath) ? res : f });
+                this.setState({ files, selected: res });
+                this.filter();
+            })
+        }, 3000);
+        this.disposible.add(
+            cast.didEdit.on((res) => {
+                if (!isFilePathOfSignificance(res.filePath)) return;
+                reloadSelectedDebounced(res.filePath);
+            })
+        );
+        this.disposible.add(
+            cast.savedFileChangedOnDisk.on((res) => {
+                if (!isFilePathOfSignificance(res.filePath)) return;
+                reloadSelectedDebounced(res.filePath);
+            })
+        );
+
+
+        /**
+         * Handle focus to inform tab container
+         */
         const focused = () => {
             this.props.onFocused();
         }

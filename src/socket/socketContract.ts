@@ -68,6 +68,7 @@ export var server = {
      * Documentation Browser
      */
     getTopLevelModuleNames: {} as QRFunction<{}, types.GetTopLevelModuleNamesResponse>,
+    getUpdatedModuleInformation: {} as QRFunction<{ filePath: string }, types.DocumentedType>,
 
     /**
      * Output Status
