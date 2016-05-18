@@ -35,7 +35,8 @@ export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModu
         });
     }
 
-    /** TODO: sort recursively */
+    /** sort by filePath */
+    files.sort((a, b) => a.name.localeCompare(b.name));
 
     const result: types.GetTopLevelModuleNamesResponse = { files };
     return utils.resolve(result);
