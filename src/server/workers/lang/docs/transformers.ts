@@ -48,6 +48,9 @@ function transformClass(node: ts.ClassDeclaration): types.DocumentedType {
         if (node.kind == ts.SyntaxKind.MethodDeclaration) {
             subItems.push(transformClassMethod(node as ts.MethodDeclaration));
         }
+        if (node.kind == ts.SyntaxKind.IndexSignature) {
+            subItems.push(transformClassIndexSignature(node as ts.IndexSignatureDeclaration));
+        }
     });
 
     return {
@@ -97,6 +100,21 @@ function transformClassMethod(node: ts.MethodDeclaration): types.DocumentedType 
     if (node.typeParameters) {
         icon = types.IconType.ClassMethodGeneric;
     }
+
+    return {
+        name,
+        icon,
+        comment,
+        subItems
+    };
+}
+
+/** Class Index Signature */
+function transformClassIndexSignature(node: ts.IndexSignatureDeclaration): types.DocumentedType {
+    const name = "Index Signature";
+    const comment = '`' + node.getText() + '`' + `\n` + (getRawComment(node) || '');
+    const subItems: types.DocumentedType[] = [];
+    let icon = types.IconType.ClassIndexSignature;
 
     return {
         name,

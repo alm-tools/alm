@@ -15,4 +15,5 @@ enum BarEnum {
 
 class BarGlobalClass {
   globalClassMember: string;
+  [key:string]: string;
 }
