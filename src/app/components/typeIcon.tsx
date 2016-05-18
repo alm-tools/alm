@@ -61,8 +61,6 @@ namespace TypeIconStyles {
         width: `${spriteSize - iconClipWidth}px`,
         height: `${spriteSize}px`,
         display: 'inline-block',
-        overflow: 'hidden',
-        position: 'relative'
     }
 }
 
@@ -75,9 +73,10 @@ export class TypeIcon extends ui.BaseComponent<Props, State>{
         const imageLocation = iconLocations[this.props.iconType];
         const left = imageLocation.x * -TypeIconStyles.spriteSize - TypeIconStyles.iconClipWidth;
         const top = imageLocation.y * -TypeIconStyles.spriteSize;
-        return <div style={TypeIconStyles.root}>
-            <img src="assets/typeIcons.svg" style={{ top, left, position: 'relative' }}/>
-        </div>
+        const backgroundImage = 'url(assets/typeIcons.svg)';
+        const backgroundPosition = `${left}px ${top}px`;
+        const style = csx.extend(TypeIconStyles.root, { backgroundImage, backgroundPosition });
+        return <div style={style}></div>;
     }
 }
 
