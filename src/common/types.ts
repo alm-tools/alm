@@ -337,8 +337,8 @@ export enum IconType {
 export interface DocumentedType {
     name: string;
     icon: IconType,
-    comment?: string,
-    subItems?: DocumentedType[];
+    comment: string,
+    subItems: DocumentedType[];
 }
 
 /** For top level module names */

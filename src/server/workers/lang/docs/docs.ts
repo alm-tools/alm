@@ -24,9 +24,9 @@ export function getTopLevelModuleNames(query: {}): Promise<types.GetTopLevelModu
 
     /** Any file that is not a module adds to the global namespace */
     const globals: types.DocumentedType = {
-        name: 'global',
+        name: 'Global',
         icon: types.IconType.Global,
-        comment: 'The global namespace',
+        comment: 'The global namespace. All the files that are not modules contribute to this.',
         subItems: []
     };
 
