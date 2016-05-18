@@ -102,9 +102,9 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                 tabIndex={0}
                 style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll, {color: styles.textColor}) }
                 onKeyPress={this.handleKey}>
-                <div style={{overflow: 'auto'}}>
-                    <gls.FlexHorizontal style={{padding:'10px 0px 10px 10px'}}>
-                        <gls.Content style={{ minWidth: '150px', maxWidth: '250px', overflow: 'hidden' }}>
+                <div style={{overflow: 'hidden', padding:'10px 0px 10px 10px', display: 'flex'}}>
+                    <gls.FlexHorizontal style={{}}>
+                        <gls.Content style={{ width: '200px', overflow: 'auto' }}>
                             <typeIcon.SectionHeader text="Files"/>
                             <gls.SmallVerticalSpace/>
                             {
@@ -118,7 +118,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                                 })
                             }
                         </gls.Content>
-                        <gls.FlexVertical style={{marginLeft: '5px'}}>
+                        <gls.FlexVertical style={{marginLeft: '5px', overflow: 'auto'}}>
                             {
                                 this.state.selected
                                 ? this.renderSelectedNode()
