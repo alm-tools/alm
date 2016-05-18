@@ -10,7 +10,7 @@ import {debounce, extend} from "../../common/utils";
 /** Just for autocomplete convinience */
 import * as React from "react";
 export interface CSSProperties extends React.CSSProperties {
-    '&:hover': React.CSSProperties;
+    '&:hover'?: React.CSSProperties;
 }
 
 const freeStyle = FreeStyle.create();

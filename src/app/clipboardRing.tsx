@@ -1,7 +1,8 @@
 /**
- * Maintains a ring of clipboard commands
+ * Maintains a ring of stuff that has been copy / cut so you can paste any of them 🌹
  */
 
+/** Imports */
 import CodeMirror = require('codemirror');
 import * as commands from "./commands/commands";
 import * as utils from "../common/utils";

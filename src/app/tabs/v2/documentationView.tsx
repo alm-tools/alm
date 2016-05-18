@@ -43,7 +43,14 @@ export namespace DocumentationViewStyles {
         '&:hover': {
             textDecoration: 'underline'
         }
-    })
+    });
+
+    export const folderName = fstyle.style({
+        padding: "2px",
+        fontSize: '.5em',
+        '-webkitUserSelect': 'none',
+        maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis'
+    });
 }
 
 export class DocumentationView extends ui.BaseComponent<Props, State> {
@@ -115,21 +122,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                             <typeIcon.SectionHeader text="Files"/>
                             <gls.SmallVerticalSpace/>
                             {
-                                this.state.filtered.map((l, i) => {
-                                    const name = utils.getFileName(l.name);
-                                    const backgroundColor = this.state.selected && this.state.selected.name === l.name
-                                        ? blackHighlightColor
-                                        : 'transparent';
-                                    return (
-                                        <div
-                                            title={l.name}
-                                            key={i}
-                                            style={{ cursor: 'pointer', backgroundColor, paddingTop: '2px', paddingBottom: '2px', paddingLeft: '2px' }}
-                                            onClick={() => this.handleRootSelected(l)}>
-                                            <typeIcon.DocumentedTypeHeader name={name} icon={l.icon}/>
-                                        </div>
-                                    )
-                                })
+                                this.renderFiles()
                             }
                         </gls.Content>
                         <gls.FlexVertical style={{marginLeft: '5px', overflow: 'auto'}}>
@@ -154,6 +147,58 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                 </div>
             </div>
         );
+    }
+
+    renderFiles(){
+        /** For two items in different file paths we render the folder name in between */
+        const toRender: {
+            folder?: string,
+            type?: types.DocumentedType,
+        }[] = [];
+
+        let lastKnownFolder = ''
+        this.state.filtered.forEach(type => {
+            const folder = utils.getDirectory(type.name);
+            if (folder !== lastKnownFolder){
+                toRender.push({
+                    folder
+                });
+                lastKnownFolder = folder;
+            }
+            toRender.push({
+                type
+            });
+        });
+
+        return toRender.map((item, i) => {
+            if (item.type){
+                const file = item.type;
+                const name = utils.getFileName(file.name);
+                const backgroundColor = this.state.selected && this.state.selected.name === file.name
+                    ? blackHighlightColor
+                    : 'transparent';
+                return (
+                    <div
+                        title={file.name}
+                        key={i}
+                        style={{ cursor: 'pointer', backgroundColor, paddingTop: '2px', paddingBottom: '2px', paddingLeft: '2px' }}
+                        onClick={() => this.handleRootSelected(file)}>
+                        <typeIcon.DocumentedTypeHeader name={name} icon={file.icon}/>
+                    </div>
+                )
+            }
+            else {
+                const folder = item.folder;
+                return (
+                    <div
+                        title={folder}
+                        key={i}
+                        className={DocumentationViewStyles.folderName}>
+                        {folder}
+                    </div>
+                )
+            }
+        });
     }
 
     renderSelectedNode() {
