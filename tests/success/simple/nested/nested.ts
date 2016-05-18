@@ -4,6 +4,7 @@
 /** sample comment for nested varaible */
 export const nestedVariable = 123;
 
+/** A comment for a module */
 namespace Foo.Bar {
   function fooBarFunction() {
 

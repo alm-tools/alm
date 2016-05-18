@@ -22,7 +22,7 @@ export function transformSourceFile(file: ts.SourceFile): { comment: string, sub
 }
 
 /** There are a few root level things we care about. This only recurses on those 🌹  */
-function getSignificantSubItems(node: ts.SourceFile | ts.ModuleDeclaration): types.DocumentedType[] {
+function getSignificantSubItems(node: ts.SourceFile | ts.ModuleBlock): types.DocumentedType[] {
     const subItems: types.DocumentedType[] = [];
 
     ts.forEachChild(node, (node) => {
@@ -285,7 +285,7 @@ function transformVariableStatement(node: ts.VariableStatement): types.Documente
         let icon = types.IconType.Variable;
 
         result.push({
-            name,icon,comment,subItems
+            name, icon, comment, subItems
         });
     });
 
@@ -303,7 +303,7 @@ function transformFunction(node: ts.FunctionDeclaration): types.DocumentedType {
     }
 
     return {
-        name,icon,comment,subItems
+        name, icon, comment, subItems
     };
 }
 
@@ -319,17 +319,27 @@ function transformModule(node: ts.ModuleDeclaration): types.DocumentedType {
      * So if no body then we have to go down to get the name.
      * Also we the *body* is were we should recurse
      */
-
-    const name = ts.getPropertyNameForPropertyNameNode(node.name);
-    const comment = getRawComment(node);
     let icon = types.IconType.Namespace;
-    const subItems: types.DocumentedType[] = getSignificantSubItems(node);
+    let name = ts.getPropertyNameForPropertyNameNode(node.name);
 
-    return {
-        name, icon, comment, subItems
-    };
+    if (node.body.kind === ts.SyntaxKind.ModuleDeclaration) {
+        name = name + '.';
+        const recurse = transformModule(node.body as ts.ModuleDeclaration);
+        return {
+            name: name + recurse.name,
+            icon,
+            comment: recurse.comment,
+            subItems: recurse.subItems
+        }
+    }
+    else {
+        const comment = getRawComment(node);
+        const subItems: types.DocumentedType[] = getSignificantSubItems(node.body as ts.ModuleBlock);
+        return {
+            name, icon, comment, subItems
+        };
+    }
 }
 
 // TODO: these
-/** Namespace */
 /** Type */
