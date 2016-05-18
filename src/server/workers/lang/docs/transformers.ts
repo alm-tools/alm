@@ -279,14 +279,26 @@ function transformVariableStatement(node: ts.VariableStatement): types.Documente
     const declarations = node.declarationList.declarations;
 
     declarations.forEach(d => {
-        const name = ts.getPropertyNameForPropertyNameNode(d.name);
         const comment = getRawComment(d);
         const subItems: types.DocumentedType[] = [];
         let icon = types.IconType.Variable;
+        if (d.name.kind === ts.SyntaxKind.ObjectBindingPattern) {
+            /** destructured variable declaration */
+            const names = d.name as ts.ObjectBindingPattern;
+            names.elements.forEach(bindingElement => {
+                const name = ts.getPropertyNameForPropertyNameNode(bindingElement.name);
+                result.push({
+                    name, icon, comment, subItems
+                });
+            });
+        }
+        else {
+            let name = ts.getPropertyNameForPropertyNameNode(d.name);
 
-        result.push({
-            name, icon, comment, subItems
-        });
+            result.push({
+                name, icon, comment, subItems
+            });
+        }
     });
 
     return result;
