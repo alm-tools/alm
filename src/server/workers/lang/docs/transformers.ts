@@ -88,7 +88,7 @@ function transformClass(node: ts.ClassDeclaration, sourceFile: ts.SourceFile): t
         icon,
         comment,
         subItems,
-        location: getDocumentedTypeLocation(sourceFile, node.pos),
+        location: getDocumentedTypeLocation(sourceFile, node.name.pos),
     };
 }
 
@@ -190,7 +190,7 @@ function transformInterface(node: ts.InterfaceDeclaration, sourceFile: ts.Source
         icon,
         comment,
         subItems,
-        location: getDocumentedTypeLocation(sourceFile, node.pos),
+        location: getDocumentedTypeLocation(sourceFile, node.name.pos),
     };
 }
 
@@ -276,7 +276,7 @@ function transformEnum(node: ts.EnumDeclaration, sourceFile: ts.SourceFile): typ
                 icon: types.IconType.EnumMember,
                 comment: getRawComment(node),
                 subItems: [],
-                location: getDocumentedTypeLocation(sourceFile, member.pos),
+                location: getDocumentedTypeLocation(sourceFile, member.name.pos),
             });
         }
     });
@@ -286,7 +286,7 @@ function transformEnum(node: ts.EnumDeclaration, sourceFile: ts.SourceFile): typ
         icon,
         comment,
         subItems,
-        location: getDocumentedTypeLocation(sourceFile, node.pos),
+        location: getDocumentedTypeLocation(sourceFile, node.name.pos),
     };
 }
 
@@ -335,7 +335,7 @@ function transformFunction(node: ts.FunctionDeclaration, sourceFile: ts.SourceFi
 
     return {
         name, icon, comment, subItems,
-        location: getDocumentedTypeLocation(sourceFile, node.pos),
+        location: getDocumentedTypeLocation(sourceFile, node.name.pos),
     };
 }
 
