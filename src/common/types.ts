@@ -358,3 +358,36 @@ export interface GetTopLevelModuleNamesResponse {
     /** Present in our project */
     files: DocumentedType[];
 }
+
+
+/**
+ *
+ *
+ *
+ * UML View
+ *
+ *
+ *
+ */
+/** Class */
+export interface UMLClass {
+    name: string;
+    members: UMLClassMember[];
+    extends: UMLClass[];
+    location: DocumentedTypeLocation;
+}
+export enum UMLClassMemberVisibility {
+    Public,
+    Private,
+    Protected
+}
+export enum UMLClassMemberLifeTime {
+    Instance,
+    Static
+}
+export interface UMLClassMember {
+    name: string
+    icon: IconType;
+    visibility: UMLClassMemberVisibility;
+    lifetime: UMLClassMemberLifeTime;
+}
