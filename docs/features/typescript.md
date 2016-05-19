@@ -8,7 +8,6 @@ As we mentioned the editor design revolves around giving you the best access to 
 * [Doctor](#doctor)
 * [Go to Definition](#goto-definition)
 * [Find References](#find-references)
-* [JavaScript emit](#javascript-emit)
 * [Sync](#sync)
 
 # Syntax Highlighting
@@ -55,26 +54,10 @@ Easy as `Ctrl|⌘ + Shift + B`
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/findReferences.gif)
 
-
-# JavaScript Emit
-
-As soon as you edit a TypeScript file we do an intelligent emit of the expected JavaScript.
-
-![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/emit.gif)
-
-We also to a full emit check whenever an active TypeScript project is set.
-
-![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/build.gif)
-
-`Ctrl|⌘ + Shift + M` toggles the output co**m**piled JS file for a give TypeScript file.
-
-![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/emitToggle.png)
-
 # Sync
 
-If anything goes bad with our error analysis / JavaScript emit knowledge (it shouldn't but edge cases happen!), you can do a `sync` command (`F6`).
+If anything goes bad with our error analysis (it shouldn't but edge cases happen!), you can do a `sync` command (`Shift + F6`).
 
 With `sync` we do:
 * Tsconfig re-evaluation
 * Complete refresh of Error analysis
-* Complete refresh of JavaScript output

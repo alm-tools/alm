@@ -143,8 +143,13 @@ export var duplicateWindow = new UICommand({
  * Build / output js
  */
 export var sync = new UICommand({
-    keyboardShortcut: 'f6', // vs
-    description: "TypeScript: Sync / ReBuild",
+    keyboardShortcut: 'shift+f6',
+    description: "TypeScript: Sync",
+    context: CommandContext.Global,
+});
+export var build = new UICommand({
+    keyboardShortcut: 'f6',
+    description: "TypeScript: Build",
     context: CommandContext.Global,
 });
 export var toggleOutputJS = new UICommand({
@@ -628,6 +633,12 @@ new UICommand({
     context: CommandContext.Editor,
     editorCommandName: additionalEditorCommands.cssToTs,
 })
+
+
+/**
+ * This is a consolidation of the `file edited` and `file changed on disk`
+ */
+export const fileContentsChanged = new events.TypedEvent<{ filePath: string }>();
 
 
 /* DEBUG

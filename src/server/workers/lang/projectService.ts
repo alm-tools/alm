@@ -401,8 +401,7 @@ export function getAST(query: Types.GetASTQuery): Promise<Types.GetASTResponse> 
  * JS Ouput
  */
 import {getRawOutput} from "./modules/building";
-export type GetJSOutputStatusResponse = { inActiveProject: boolean, outputStatus?: types.JSOutputStatus };
-export function getJSOutputStatus(query: Types.FilePathQuery, autoEmit = true): GetJSOutputStatusResponse {
+export function getJSOutputStatus(query: Types.FilePathQuery, autoEmit = true): types.GetJSOutputStatusResponse {
     const project = activeProject.GetProject.ifCurrent(query.filePath);
     if (!project) {
         return {

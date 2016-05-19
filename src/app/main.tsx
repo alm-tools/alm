@@ -104,6 +104,12 @@ document.addEventListener('DOMContentLoaded', () => {
     commands.sync.on(()=>{
         server.sync({});
     });
+    commands.build.on(()=>{
+        server.build({});
+    });
+    /** Consolidate the file edit stuff into a single command */
+    cast.didEdit.on((e)=>{commands.fileContentsChanged.emit({filePath:e.filePath})});
+    cast.savedFileChangedOnDisk.on((e)=>{commands.fileContentsChanged.emit({filePath:e.filePath})});
     commands.toggleDoctor.on(()=>{
         if (!state.inActiveProjectFilePath(tabState.getSelectedFilePath())){
             ui.notifyWarningNormalDisappear('Doctor is only available for files in active project');

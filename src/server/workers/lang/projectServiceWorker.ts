@@ -13,11 +13,18 @@ namespace Worker {
      */
     export const setActiveProjectConfigDetails: typeof contract.worker.setActiveProjectConfigDetails = (details) => {
         const proj = activeProject.setActiveProjectConfigDetails(details.projectData);
-        // Initial output status cache update
-        if (proj.configFile.project.compileOnSave) {
-            outputStatusCache.doCompleteProjectCacheUpdate(proj);
-        }
         return Promise.resolve({})
+    }
+
+    /** Build */
+    export const build: typeof contract.worker.build = (details) => {
+        const proj = activeProject.GetProject.getCurrentIfAny();
+        outputStatusCache.doCompleteProjectCacheUpdate(proj);
+        return Promise.resolve({})
+    }
+    export const getJSOutputStatus: typeof contract.worker.getJSOutputStatus = (details) => {
+        const result = projectService.getJSOutputStatus(details);
+        return Promise.resolve(result);
     }
 
     /**

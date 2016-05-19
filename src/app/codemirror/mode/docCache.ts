@@ -55,6 +55,14 @@ export function getLinkedDoc(filePath: string): Promise<GetLinkedDocResponse> {
     return getOrCreateDoc(filePath)
         .then(({doc, isTsFile, editorOptions}) => {
 
+            // Everytime a typescript file is opened we ask for its output status (server pull)
+            // On editing this happens automatically (server push)
+            server.getJSOutputStatus({ filePath }).then(res => {
+                if (res.inActiveProject) {
+                    state.fileOuputStatusUpdated(res.outputStatus);
+                }
+            });
+
             // Some housekeeping: clear previous links that no longer seem active
             // SetTimeout because we might have created the doc but not the CM instance yet
             setTimeout(() => {

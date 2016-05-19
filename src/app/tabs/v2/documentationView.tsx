@@ -101,18 +101,11 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
             })
         }, 3000);
         this.disposible.add(
-            cast.didEdit.on((res) => {
+            commands.fileContentsChanged.on((res) => {
                 if (!isFilePathOfSignificance(res.filePath)) return;
                 reloadSelectedDebounced(res.filePath);
             })
         );
-        this.disposible.add(
-            cast.savedFileChangedOnDisk.on((res) => {
-                if (!isFilePathOfSignificance(res.filePath)) return;
-                reloadSelectedDebounced(res.filePath);
-            })
-        );
-
 
         /**
          * Handle focus to inform tab container
