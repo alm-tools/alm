@@ -34,20 +34,27 @@ export interface State {
     selected?: types.UMLClass;
 }
 
-export namespace DocumentationViewStyles {
-    export const header = fstyle.style({
+export namespace UmlViewStyles {
+    /** A nice clickable look */
+    export const itemHeaderClass = fstyle.style({
         cursor: 'pointer',
         '&:hover': {
             textDecoration: 'underline'
         }
     });
 
-    export const folderName = fstyle.style({
-        padding: "2px",
-        fontSize: '.5em',
-        '-webkitUserSelect': 'none',
-        maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis'
-    });
+    export const classNameHeader = {
+        border: '1px solid grey',
+        padding: '5px',
+    }
+    export const classMember = {
+        // Common with header
+        border: '1px solid grey',
+        padding: '5px',
+
+        // To eat top border
+        marginTop: '-1px'
+    }
 }
 
 export class UmlView extends ui.BaseComponent<Props, State> {
@@ -183,12 +190,18 @@ export class UmlView extends ui.BaseComponent<Props, State> {
             </div>
         }
         return (
-            <gls.Content>
+            <gls.Content style={{textAlign: 'center'}}>
+                <code style={{fontWeight: 'bold'}}>{c.name}</code>
+                <gls.SmallVerticalSpace/>
                 <gls.InlineBlock style={{paddingTop:'1px'}}>
-                    {renderSection(<typeIcon.DocumentedTypeHeader name={c.name} icon={c.icon}/>,0)}
+                    <div style={UmlViewStyles.classNameHeader}>
+                        <typeIcon.DocumentedTypeHeader name={c.name} icon={c.icon}/>
+                    </div>
                     {
                         c.members.map((m,i)=>{
-                            return renderSection(<typeIcon.DocumentedTypeHeader name={m.name} icon={m.icon}/>, i)
+                            return <div key={i} style={UmlViewStyles.classMember}>
+                                <typeIcon.DocumentedTypeHeader name={m.name} icon={m.icon}/>
+                            </div>
                         })
                     }
                 </gls.InlineBlock>
