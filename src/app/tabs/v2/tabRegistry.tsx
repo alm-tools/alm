@@ -12,6 +12,7 @@ import {ASTView} from "./astView";
 import {DependencyView} from "./dependencyView";
 import {FindAndReplaceView} from "./findAndReplaceMulti";
 import {DocumentationView} from "./documentationView";
+import {UmlView} from "./umlView";
 
 type ComponentConstructor = { new (props: tab.TabProps): ui.BaseComponent<tab.TabProps,any> };
 
@@ -58,6 +59,12 @@ export const tabs = {
         advancedSearch: false,
         getTitle: (url)=> `Documentation`,
         component: DocumentationView,
+    },
+    uml: {
+        protocol: 'uml',
+        advancedSearch: false,
+        getTitle: (url) => `UML ${utils.getFileName(url)}`,
+        component: UmlView,
     }
 }
 let _ensuretabsType: {[protocol:string]:TabConfig} = tabs;

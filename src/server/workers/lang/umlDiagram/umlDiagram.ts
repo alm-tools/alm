@@ -1,5 +1,5 @@
 /**
- * This is the backend for the class diagram view
+ * This is the backend for the uml diagram view
  *
  * Based on the tsviz project https://github.com/joaompneves/tsviz 🌹
  */
