@@ -155,6 +155,7 @@ namespace Server {
     export var getAST : typeof contract.server.getAST = projectServiceMaster.worker.getAST;
     export var getQuickFixes : typeof contract.server.getQuickFixes = projectServiceMaster.worker.getQuickFixes;
     export var applyQuickFix : typeof contract.server.applyQuickFix = projectServiceMaster.worker.applyQuickFix;
+    export var build: typeof contract.server.build = projectServiceMaster.worker.build;
 
     /**
      * Documentation browser
@@ -227,6 +228,8 @@ export function register(app: http.Server | https.Server) {
     findAndReplaceMultiService.farmResultsUpdated.pipe(cast.farmResultsUpdated);
 
     /** JS Output Status */
+    cast.liveBuildResults.emit({builtCount:0,totalCount:0}); // for initial joiners
+    cast.completeOutputStatusCacheUpdated.emit({}); // for initial joiners
     projectServiceMaster.fileOutputStatusUpdated.pipe(cast.fileOutputStatusUpdated);
     projectServiceMaster.completeOutputStatusCacheUpdated.pipe(cast.completeOutputStatusCacheUpdated);
     projectServiceMaster.liveBuildResults.pipe(cast.liveBuildResults);

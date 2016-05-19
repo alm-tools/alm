@@ -11,9 +11,7 @@ import * as projectDataLoader from "../../disk/projectDataLoader";
 import {errorsCache} from "../../globalErrorCache";
 export const fileOutputStatusUpdated = new TypedEvent<types.JSOutputStatus>();
 export const completeOutputStatusCacheUpdated = new TypedEvent<types.JSOutputStatusCache>();
-completeOutputStatusCacheUpdated.emit(Object.create(null)); // So that we do not hold back any new joiners
 export const liveBuildResults = new TypedEvent<types.LiveBuildResults>();
-liveBuildResults.emit({builtCount:0,totalCount:0}); // So that we do not hold back any new joiners
 
 namespace Master {
     export const sync: typeof contract.master.sync

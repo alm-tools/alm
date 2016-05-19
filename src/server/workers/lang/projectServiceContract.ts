@@ -36,13 +36,16 @@ export var worker = {
     applyQuickFix : {} as typeof socketContract.server.applyQuickFix,
 
     /** Documentation browser */
-    getTopLevelModuleNames : {} as typeof socketContract.server.getTopLevelModuleNames, 
+    getTopLevelModuleNames : {} as typeof socketContract.server.getTopLevelModuleNames,
     getUpdatedModuleInformation : {} as typeof socketContract.server.getUpdatedModuleInformation,
 
     // Used to tell the worker about what project it should work on
     // Note: The project validation / expansion happens locally. Only the hard stuff of *analysis* is done by the worker
     // This makes the worker bit more host agnostic
     setActiveProjectConfigDetails: {} as sw.QRFunction<{ projectData: types.ProjectDataLoaded }, {}>,
+
+    /** Build */
+    build: {} as sw.QRFunction<{}, {}>,
 }
 
 // API provided by master (web server)

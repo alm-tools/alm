@@ -75,6 +75,7 @@ export var server = {
      */
     getCompleteOutputStatusCache: {} as QRFunction<{}, types.JSOutputStatusCache>,
     getLiveBuildResults: {} as QRFunction<{}, types.LiveBuildResults>,
+    build: {} as QRFunction<{}, {}>,
 
     /**
      * Git service
