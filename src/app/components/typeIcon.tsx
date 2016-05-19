@@ -1,4 +1,5 @@
-import {IconType, DocumentedType} from "../../common/types";
+import {IconType, DocumentedType, UMLClassMemberVisibility} from "../../common/types";
+import {Icon} from "./icon";
 
 /**
  * This maps into the iconTypes.svg [x,y]
@@ -81,6 +82,24 @@ export class TypeIcon extends ui.BaseComponent<Props, State>{
 }
 
 /**
+ * Draws an icon for `private` visibility indication
+ */
+class VisibilityIndicator extends ui.BaseComponent<{ visibility: UMLClassMemberVisibility }, State>{
+    shouldComponentUpdate = pure.shouldComponentUpdate;
+    render() {
+        // Maybe add others if needed. I doubt it though.
+        const classIconColorTheme = "#4DA6FF";
+
+        if (this.props.visibility === UMLClassMemberVisibility.Public)
+            return <span></span>;
+        if (this.props.visibility === UMLClassMemberVisibility.Private)
+            return <Icon name={"lock"} style={{ color: classIconColorTheme }}/>;
+        else
+            return <Icon name={"shield"} style={{ color: classIconColorTheme }}/>;
+    }
+}
+
+/**
  * Draws the icon followed by name
  */
 namespace DocumentedTypeHeaderStyles {
@@ -96,10 +115,11 @@ namespace DocumentedTypeHeaderStyles {
             whiteSpace: 'pre'
         });
 }
-export class DocumentedTypeHeader extends ui.BaseComponent<{ name: string, icon: IconType }, State>{
+export class DocumentedTypeHeader extends ui.BaseComponent<{ name: string, icon: IconType, visibility?: UMLClassMemberVisibility }, State>{
     shouldComponentUpdate = pure.shouldComponentUpdate;
     render() {
-        return <div style={DocumentedTypeHeaderStyles.root}><TypeIcon iconType={this.props.icon}/>{" " + this.props.name}</div>
+        const visibility = !!this.props.visibility && <VisibilityIndicator visibility={this.props.visibility}/>
+        return <div style={DocumentedTypeHeaderStyles.root}><TypeIcon iconType={this.props.icon}/>{visibility}{" " + this.props.name}</div>
     }
 }
 
@@ -186,6 +206,14 @@ export class TypeIconClassDiagramLegend extends ui.BaseComponent<{}, {}>{
                         <DocumentedTypeHeader name="Class Method" icon={IconType.ClassMethod}/>
                         <DocumentedTypeHeader name="Class Method Generic" icon={IconType.ClassMethodGeneric}/>
                         <DocumentedTypeHeader name="Class Index Signature" icon={IconType.ClassIndexSignature}/>
+                    </div>
+                    <div style={TypeIconLegendStyles.legendColumn}>
+                        <div>
+                            <VisibilityIndicator visibility={UMLClassMemberVisibility.Private}/> &nbsp; Private
+                        </div>
+                        <div style={{marginTop: '5px' }}>
+                            <VisibilityIndicator visibility={UMLClassMemberVisibility.Protected}/> &nbsp; Protected
+                        </div>
                     </div>
                 </div>
             </div>
