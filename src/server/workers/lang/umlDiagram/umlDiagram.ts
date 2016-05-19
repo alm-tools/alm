@@ -70,10 +70,10 @@ function transformClass(node: ts.ClassDeclaration, sourceFile: ts.SourceFile, pr
         if (node.kind == ts.SyntaxKind.Constructor) {
             result.members.push(transformClassConstructor(node as ts.ConstructorDeclaration, sourceFile));
         }
+        if (node.kind == ts.SyntaxKind.PropertyDeclaration) {
+            result.members.push(transformClassProperty(node as ts.PropertyDeclaration, sourceFile));
+        }
         // TODO:
-        // if (node.kind == ts.SyntaxKind.PropertyDeclaration) {
-        //     subItems.push(transformClassProperty(node as ts.PropertyDeclaration, sourceFile));
-        // }
         // if (node.kind == ts.SyntaxKind.MethodDeclaration) {
         //     subItems.push(transformClassMethod(node as ts.MethodDeclaration, sourceFile));
         // }
@@ -100,4 +100,68 @@ function transformClassConstructor(node: ts.ConstructorDeclaration, sourceFile: 
     }
 
     return result;
+}
+
+/** Class Property */
+function transformClassProperty(node: ts.PropertyDeclaration, sourceFile: ts.SourceFile): types.UMLClassMember {
+    const name = ts.getPropertyNameForPropertyNameNode(node.name);
+    let icon = types.IconType.ClassProperty;
+    const location = getDocumentedTypeLocation(sourceFile, node.pos);
+    const visibility = getVisibility(node);
+    const lifetime = getLifetime(node);
+
+    const result: types.UMLClassMember = {
+        name,
+        icon,
+        location,
+
+        visibility,
+        lifetime,
+    }
+
+    return result;
+}
+
+
+/**
+ *
+ * General Utilities
+ *
+ */
+
+/** Visibility */
+function getVisibility(node: ts.Node): types.UMLClassMemberVisibility {
+    if (node.modifiers) {
+        if (hasModifierSet(node.modifiers.flags, ts.NodeFlags.Protected)) {
+            return types.UMLClassMemberVisibility.Protected;
+        } else if (hasModifierSet(node.modifiers.flags, ts.NodeFlags.Private)) {
+            return types.UMLClassMemberVisibility.Private;
+        } else if (hasModifierSet(node.modifiers.flags, ts.NodeFlags.Public)) {
+            return types.UMLClassMemberVisibility.Public;
+        } else if (hasModifierSet(node.modifiers.flags, ts.NodeFlags.Export)) {
+            return types.UMLClassMemberVisibility.Public;
+        }
+    }
+    switch (node.parent.kind) {
+        case ts.SyntaxKind.ClassDeclaration:
+            return types.UMLClassMemberVisibility.Public;
+        case ts.SyntaxKind.ModuleDeclaration:
+            return types.UMLClassMemberVisibility.Private;
+    }
+    return types.UMLClassMemberVisibility.Private;
+}
+
+/** Lifetime */
+function getLifetime(node: ts.Node): types.UMLClassMemberLifeTime {
+    if (node.modifiers) {
+        if (hasModifierSet(node.modifiers.flags, ts.NodeFlags.Static)) {
+            return types.UMLClassMemberLifeTime.Static;
+        }
+    }
+    return types.UMLClassMemberLifeTime.Instance;
+}
+
+/** Just checks if a flag is set */
+function hasModifierSet(value: number, modifier: number) {
+    return (value & modifier) === modifier;
 }
