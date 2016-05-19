@@ -9,6 +9,7 @@
     * [HTML to TSX](/features/html-to-tsx.md)
     * [Dependency Analysis](/features/dependency.md)
     * [AST](/features/ast.md)
+    * [Build](/features/build.md)
   * [AutoComplete](/features/autocomplete.md)
   * [Git](/features/git.md)
   * [File Tree View](/features/tree.md)
