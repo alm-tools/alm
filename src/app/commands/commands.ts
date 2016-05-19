@@ -635,6 +635,12 @@ new UICommand({
 })
 
 
+/**
+ * This is a consolidation of the `file edited` and `file changed on disk`
+ */
+export const fileContentsChanged = new events.TypedEvent<{ filePath: string }>();
+
+
 /* DEBUG
 console.table(
     commandRegistry

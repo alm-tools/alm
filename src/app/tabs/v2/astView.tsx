@@ -87,7 +87,7 @@ export class ASTView extends ui.BaseComponent<Props, State> {
             })
         );
         this.disposible.add(
-            cast.didEdit.on((res) => {
+            commands.fileContentsChanged.on((res) => {
                 if (res.filePath === this.filePath) {
                     reloadDataDebounced();
                 }
