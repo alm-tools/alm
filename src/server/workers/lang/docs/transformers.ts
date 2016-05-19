@@ -9,13 +9,14 @@
  */
 /** Imports */
 import * as types from "../../../../common/types";
-import {getParsedComment as getRawComment} from "./jsDocParsing";
+import {getDocumentedTypeLocation} from "../modules/astUtils";
+import {getParsedComment} from "../modules/jsDoc";
 
 /** Source File */
 export function transformSourceFile(sourceFile: ts.SourceFile): types.DocumentedType {
     const name = sourceFile.fileName;
     const icon = ts.isExternalModule(sourceFile) ? types.IconType.Namespace : types.IconType.Global;
-    const comment = getRawComment(sourceFile, sourceFile);
+    const comment = getParsedComment(sourceFile, sourceFile);
     const subItems = getSignificantSubItems(sourceFile, sourceFile);
 
     return {
@@ -61,7 +62,7 @@ function getSignificantSubItems(node: ts.SourceFile | ts.ModuleBlock, sourceFile
 /** Class */
 function transformClass(node: ts.ClassDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = node.name.text;
-    const comment = getRawComment(node, sourceFile);
+    const comment = getParsedComment(node, sourceFile);
     const subItems: types.DocumentedType[] = [];
 
     let icon = types.IconType.Class;
@@ -96,7 +97,7 @@ function transformClass(node: ts.ClassDeclaration, sourceFile: ts.SourceFile): t
 /** Class Constructor */
 function transformClassConstructor(node: ts.ConstructorDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = "constructor";
-    const comment = getRawComment(node, sourceFile);
+    const comment = getParsedComment(node, sourceFile);
     const subItems: types.DocumentedType[] = [];
     let icon = types.IconType.ClassConstructor;
 
@@ -112,7 +113,7 @@ function transformClassConstructor(node: ts.ConstructorDeclaration, sourceFile: 
 /** Class Property */
 function transformClassProperty(node: ts.PropertyDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = ts.getPropertyNameForPropertyNameNode(node.name);
-    const comment = getRawComment(node, sourceFile);
+    const comment = getParsedComment(node, sourceFile);
     const subItems: types.DocumentedType[] = [];
     let icon = types.IconType.ClassProperty;
 
@@ -128,7 +129,7 @@ function transformClassProperty(node: ts.PropertyDeclaration, sourceFile: ts.Sou
 /** Class Method */
 function transformClassMethod(node: ts.MethodDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = ts.getPropertyNameForPropertyNameNode(node.name);
-    const comment = getRawComment(node, sourceFile);
+    const comment = getParsedComment(node, sourceFile);
     const subItems: types.DocumentedType[] = [];
     let icon = types.IconType.ClassMethod;
     if (node.typeParameters) {
@@ -147,7 +148,7 @@ function transformClassMethod(node: ts.MethodDeclaration, sourceFile: ts.SourceF
 /** Class Index Signature */
 function transformClassIndexSignature(node: ts.IndexSignatureDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = "Index Signature";
-    const comment = '`' + node.getText() + '`' + `\n` + (getRawComment(node, sourceFile) || '');
+    const comment = '`' + node.getText() + '`' + `\n` + (getParsedComment(node, sourceFile) || '');
     const subItems: types.DocumentedType[] = [];
     let icon = types.IconType.ClassIndexSignature;
 
@@ -163,7 +164,7 @@ function transformClassIndexSignature(node: ts.IndexSignatureDeclaration, source
 /** Interface */
 function transformInterface(node: ts.InterfaceDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = node.name.text;
-    const comment = getRawComment(node, sourceFile);
+    const comment = getParsedComment(node, sourceFile);
     const subItems: types.DocumentedType[] = [];
 
     let icon = types.IconType.Interface;
@@ -198,7 +199,7 @@ function transformInterface(node: ts.InterfaceDeclaration, sourceFile: ts.Source
 /** Interface Property */
 function transformInterfaceProperty(node: ts.PropertySignature, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = ts.getPropertyNameForPropertyNameNode(node.name);
-    const comment = getRawComment(node, sourceFile);
+    const comment = getParsedComment(node, sourceFile);
     const subItems: types.DocumentedType[] = [];
     let icon = types.IconType.InterfaceProperty;
 
@@ -214,7 +215,7 @@ function transformInterfaceProperty(node: ts.PropertySignature, sourceFile: ts.S
 /** Interface Constructor */
 function transformInterfaceConstructor(node: ts.ConstructSignatureDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = "constructor";
-    const comment = getRawComment(node, sourceFile);
+    const comment = getParsedComment(node, sourceFile);
     const subItems: types.DocumentedType[] = [];
     let icon = types.IconType.InterfaceConstructor;
 
@@ -230,7 +231,7 @@ function transformInterfaceConstructor(node: ts.ConstructSignatureDeclaration, s
 /** Interface Method */
 function transformInterfaceMethod(node: ts.MethodSignature, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = ts.getPropertyNameForPropertyNameNode(node.name);
-    const comment = getRawComment(node, sourceFile);
+    const comment = getParsedComment(node, sourceFile);
     const subItems: types.DocumentedType[] = [];
     let icon = types.IconType.InterfaceMethod;
     if (node.typeParameters) {
@@ -249,7 +250,7 @@ function transformInterfaceMethod(node: ts.MethodSignature, sourceFile: ts.Sourc
 /** Interface Index Signature */
 function transformInterfaceIndexSignature(node: ts.IndexSignatureDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = "Index Signature";
-    const comment = '`' + node.getText() + '`' + `\n` + (getRawComment(node, sourceFile) || '');
+    const comment = '`' + node.getText() + '`' + `\n` + (getParsedComment(node, sourceFile) || '');
     const subItems: types.DocumentedType[] = [];
     let icon = types.IconType.InterfaceIndexSignature;
 
@@ -265,7 +266,7 @@ function transformInterfaceIndexSignature(node: ts.IndexSignatureDeclaration, so
 /** Enum */
 function transformEnum(node: ts.EnumDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = node.name.text;
-    const comment = getRawComment(node, sourceFile);
+    const comment = getParsedComment(node, sourceFile);
     const subItems: types.DocumentedType[] = [];
 
     let icon = types.IconType.Enum;
@@ -275,7 +276,7 @@ function transformEnum(node: ts.EnumDeclaration, sourceFile: ts.SourceFile): typ
             subItems.push({
                 name: member.name.getText(),
                 icon: types.IconType.EnumMember,
-                comment: getRawComment(node, sourceFile),
+                comment: getParsedComment(node, sourceFile),
                 subItems: [],
                 location: getDocumentedTypeLocation(sourceFile, member.name.pos),
             });
@@ -297,7 +298,7 @@ function transformVariableStatement(node: ts.VariableStatement, sourceFile: ts.S
     const declarations = node.declarationList.declarations;
 
     declarations.forEach(d => {
-        const comment = getRawComment(d, sourceFile);
+        const comment = getParsedComment(d, sourceFile);
         const subItems: types.DocumentedType[] = [];
         let icon = types.IconType.Variable;
         if (d.name.kind === ts.SyntaxKind.ObjectBindingPattern) {
@@ -327,7 +328,7 @@ function transformVariableStatement(node: ts.VariableStatement, sourceFile: ts.S
 /** Function */
 function transformFunction(node: ts.FunctionDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
     const name = ts.getPropertyNameForPropertyNameNode(node.name);
-    const comment = getRawComment(node, sourceFile);
+    const comment = getParsedComment(node, sourceFile);
     const subItems: types.DocumentedType[] = [];
     let icon = types.IconType.Function;
     if (node.typeParameters) {
@@ -367,33 +368,12 @@ function transformModule(node: ts.ModuleDeclaration, sourceFile: ts.SourceFile):
         }
     }
     else {
-        const comment = getRawComment(node, sourceFile);
+        const comment = getParsedComment(node, sourceFile);
         const subItems: types.DocumentedType[] = getSignificantSubItems(node.body as ts.ModuleBlock, sourceFile);
         return {
             name, icon, comment, subItems, location: getDocumentedTypeLocation(sourceFile, node.name.pos)
         };
     }
-}
-
-/** Utility */
-export function getDocumentedTypeLocation(sourceFile: ts.SourceFile, position: number): types.DocumentedTypeLocation {
-    /**
-     * The actual position of the node will be like
-     *
-     * <here
-     * /** some comment
-     * var someNode;
-     *
-     * Call the `ts.skipTrivia` to get the true node location, but +1 is good enough
-     */
-    const pos = ts.getLineAndCharacterOfPosition(sourceFile, position + 1);
-    return {
-        filePath: sourceFile.fileName,
-        position: {
-            line: pos.line,
-            ch: pos.character
-        }
-    };
 }
 
 

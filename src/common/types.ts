@@ -371,10 +371,15 @@ export interface GetTopLevelModuleNamesResponse {
  */
 /** Class */
 export interface UMLClass {
+    // Similar to Documented type.
     name: string;
-    members: UMLClassMember[];
-    extends: UMLClass[];
+    icon: IconType
     location: DocumentedTypeLocation;
+
+    // Unlike DocumentedType.subItems we have `members`
+    members: UMLClassMember[];
+    // Also extends
+    extends: UMLClass[];
 }
 export enum UMLClassMemberVisibility {
     Public,
@@ -388,6 +393,8 @@ export enum UMLClassMemberLifeTime {
 export interface UMLClassMember {
     name: string
     icon: IconType;
+    location: DocumentedTypeLocation;
+
     visibility: UMLClassMemberVisibility;
     lifetime: UMLClassMemberLifeTime;
 }
