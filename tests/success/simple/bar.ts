@@ -20,6 +20,9 @@ enum BarEnum {
 }
 
 class BarGlobalClass {
+  constructor() {
+    
+  }
   globalClassMember: string;
   [key: string]: string;
 }

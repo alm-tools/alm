@@ -176,9 +176,18 @@ export class UmlView extends ui.BaseComponent<Props, State> {
     }
 
     renderSelectedClass() {
-        const umlClass = this.state.selected;
-        // TODO:
-        return <div></div>;
+        const c = this.state.selected;
+        return (
+            <gls.Content>
+                <typeIcon.DocumentedTypeHeader name={c.name} icon={c.icon}/>
+                <hr/>
+                {
+                    c.members.map((m,i)=>{
+                        return <typeIcon.DocumentedTypeHeader name={m.name} icon={m.icon}/>
+                    })
+                }
+            </gls.Content>
+        );
     }
 
     handleClassSelected(c: types.UMLClass) {
