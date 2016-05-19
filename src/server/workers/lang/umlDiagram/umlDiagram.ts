@@ -27,6 +27,8 @@ export function getUmlDiagramForFile(query: { filePath: string }) : Promise<{cla
 
     const classes = analyzeFile({ sourceFile, program });
 
+    // TODO: sort by base classes (i.e. the class that has the lowest length of extend)
+
     return utils.resolve({ classes });
 }
 

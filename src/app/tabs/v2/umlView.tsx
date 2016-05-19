@@ -130,11 +130,59 @@ export class UmlView extends ui.BaseComponent<Props, State> {
                 tabIndex={0}
                 style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll, {color: styles.textColor}) }
                 onKeyPress={this.handleKey}>
-                <div style={{overflow: 'hidden', padding:'10px', display: 'flex'}}>
-
+                <div style={{overflow: 'hidden', padding:'10px 0px 10px 10px', display: 'flex'}}>
+                    <gls.FlexHorizontal style={{}}>
+                        <gls.Content style={{ width: '200px', overflow: 'auto' }}>
+                            <typeIcon.SectionHeader text="Classes"/>
+                            <gls.SmallVerticalSpace/>
+                            {
+                                this.state.classes.length
+                                ? this.renderClasses()
+                                : "No classes in file"
+                            }
+                        </gls.Content>
+                        <gls.FlexVertical style={{marginLeft: '5px', overflow: 'auto'}}>
+                            {
+                                this.state.selected
+                                ? this.renderSelectedClass()
+                                : 'Select a class from the left to view its diagram 🌹 🎼'
+                            }
+                            <div style={{marginTop: '10px', marginRight: '10px'}}>
+                                <hr/>
+                                <typeIcon.TypeIconClassDiagramLegend />
+                            </div>
+                        </gls.FlexVertical>
+                    </gls.FlexHorizontal>
                 </div>
             </div>
         );
+    }
+
+    renderClasses()  {
+        return this.state.classes.map((c, i) => {
+            const backgroundColor = this.state.selected && this.state.selected.name === c.name
+                ? blackHighlightColor
+                : 'transparent';
+            return (
+                <div
+                    title={c.name + ' ' + c.location.position.line}
+                    key={i}
+                    style={{ cursor: 'pointer', backgroundColor, paddingTop: '2px', paddingBottom: '2px', paddingLeft: '2px' }}
+                    onClick={() => this.handleClassSelected(c) }>
+                    <typeIcon.DocumentedTypeHeader name={c.name} icon={c.icon}/>
+                </div>
+            );
+        });
+    }
+
+    renderSelectedClass() {
+        const umlClass = this.state.selected;
+        // TODO:
+        return <div></div>;
+    }
+
+    handleClassSelected(c: types.UMLClass) {
+        this.setState({ selected: c });
     }
 
     handleKey = (e: any) => {
@@ -151,7 +199,6 @@ export class UmlView extends ui.BaseComponent<Props, State> {
     loadData = () => {
         server.getUmlDiagramForFile({filePath: this.filePath}).then(res => {
             this.setState({classes:res.classes, selected: null});
-            console.log(res.classes);
             this.filter();
         })
     }

@@ -128,6 +128,7 @@ namespace TypeIconLegendStyles {
         });
 }
 export class TypeIconLegend extends ui.BaseComponent<{}, {}>{
+    shouldComponentUpdate = pure.shouldComponentUpdate;
     render() {
         return (
             <div style={TypeIconLegendStyles.root}>
@@ -155,6 +156,28 @@ export class TypeIconLegend extends ui.BaseComponent<{}, {}>{
                         <DocumentedTypeHeader name="Interface Method Generic" icon={IconType.InterfaceMethodGeneric}/>
                         <DocumentedTypeHeader name="Interface Index Signature" icon={IconType.InterfaceIndexSignature}/>
                     </div>
+                    <div style={TypeIconLegendStyles.legendColumn}>
+                        <DocumentedTypeHeader name="Class" icon={IconType.Class}/>
+                        <DocumentedTypeHeader name="Class Generic" icon={IconType.ClassGeneric}/>
+                        <DocumentedTypeHeader name="Class Constructor" icon={IconType.ClassConstructor}/>
+                        <DocumentedTypeHeader name="Class Property" icon={IconType.ClassProperty}/>
+                        <DocumentedTypeHeader name="Class Method" icon={IconType.ClassMethod}/>
+                        <DocumentedTypeHeader name="Class Method Generic" icon={IconType.ClassMethodGeneric}/>
+                        <DocumentedTypeHeader name="Class Index Signature" icon={IconType.ClassIndexSignature}/>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
+
+export class TypeIconClassDiagramLegend extends ui.BaseComponent<{}, {}>{
+    shouldComponentUpdate = pure.shouldComponentUpdate;
+    render() {
+        return (
+            <div style={TypeIconLegendStyles.root}>
+                <div style={{paddingLeft: '10px'}}><SectionHeader text="Class Diagram Legend"/></div>
+                <div style={TypeIconLegendStyles.legendColumnContainer}>
                     <div style={TypeIconLegendStyles.legendColumn}>
                         <DocumentedTypeHeader name="Class" icon={IconType.Class}/>
                         <DocumentedTypeHeader name="Class Generic" icon={IconType.ClassGeneric}/>
