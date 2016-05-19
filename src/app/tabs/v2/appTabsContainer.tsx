@@ -555,13 +555,13 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             }
             return filePath;
         }
-        let openAst = (mode: Types.ASTMode) => {
+        let openAnalysisViewForCurrentFilePath = (getUrl: (filePath: string) => string) => {
             let filePath = getCurrentFilePathOrWarn();
             if (!filePath) return;
 
             let codeTab: TabInstance = {
                 id: createId(),
-                url: `${mode == Types.ASTMode.visitor ? 'ast' : 'astfull'}://${filePath}`,
+                url: getUrl(filePath),
             }
 
             // Add tab
@@ -571,10 +571,14 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.tabState.selectTab(codeTab.id);
         }
         commands.doOpenASTView.on((e) => {
-            openAst(Types.ASTMode.visitor);
+            openAnalysisViewForCurrentFilePath((filePath)=>{
+                return `${tabRegistry.tabs.ast.protocol}://${filePath}`
+            });
         });
         commands.doOpenASTFullView.on((e) => {
-            openAst(Types.ASTMode.children);
+            openAnalysisViewForCurrentFilePath((filePath)=>{
+                return `${tabRegistry.tabs.astfull.protocol}://${filePath}`
+            });
         });
     }
 
