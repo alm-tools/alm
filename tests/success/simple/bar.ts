@@ -24,6 +24,7 @@ class BarGlobalClass {
     
   }
   globalClassMember: string;
+  private aPrivateClassMember: string;
   [key: string]: string;
 }
 

@@ -226,7 +226,8 @@ export class UmlView extends ui.BaseComponent<Props, State> {
 
     loadData = () => {
         server.getUmlDiagramForFile({filePath: this.filePath}).then(res => {
-            this.setState({classes:res.classes, selected: null});
+            const selected = this.state.selected && res.classes.find(c => c.name === this.state.selected.name);
+            this.setState({ classes: res.classes, selected });
             this.filter();
         })
     }
