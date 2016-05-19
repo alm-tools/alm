@@ -73,10 +73,9 @@ function transformClass(node: ts.ClassDeclaration, sourceFile: ts.SourceFile, pr
         if (node.kind == ts.SyntaxKind.PropertyDeclaration) {
             result.members.push(transformClassProperty(node as ts.PropertyDeclaration, sourceFile));
         }
-        // TODO:
-        // if (node.kind == ts.SyntaxKind.MethodDeclaration) {
-        //     subItems.push(transformClassMethod(node as ts.MethodDeclaration, sourceFile));
-        // }
+        if (node.kind == ts.SyntaxKind.MethodDeclaration) {
+            result.members.push(transformClassMethod(node as ts.MethodDeclaration, sourceFile));
+        }
         // if (node.kind == ts.SyntaxKind.IndexSignature) {
         //     subItems.push(transformClassIndexSignature(node as ts.IndexSignatureDeclaration, sourceFile));
         // }
@@ -122,6 +121,28 @@ function transformClassProperty(node: ts.PropertyDeclaration, sourceFile: ts.Sou
     return result;
 }
 
+/** Class Method */
+function transformClassMethod(node: ts.MethodDeclaration, sourceFile: ts.SourceFile): types.UMLClassMember {
+    const name = ts.getPropertyNameForPropertyNameNode(node.name);
+    let icon = types.IconType.ClassMethod;
+    if (node.typeParameters) {
+        icon = types.IconType.ClassMethodGeneric;
+    }
+    const location = getDocumentedTypeLocation(sourceFile, node.pos);
+    const visibility = getVisibility(node);
+    const lifetime = getLifetime(node);
+
+    const result: types.UMLClassMember = {
+        name,
+        icon,
+        location,
+
+        visibility,
+        lifetime,
+    }
+
+    return result;
+}
 
 /**
  *
