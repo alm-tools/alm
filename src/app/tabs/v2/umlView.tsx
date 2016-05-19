@@ -177,15 +177,21 @@ export class UmlView extends ui.BaseComponent<Props, State> {
 
     renderSelectedClass() {
         const c = this.state.selected;
+        const renderSection = (section,i) => {
+            return <div key={i} style={{border:'1px solid grey', padding: '5px', marginTop: '-1px'}}>
+                {section}
+            </div>
+        }
         return (
             <gls.Content>
-                <typeIcon.DocumentedTypeHeader name={c.name} icon={c.icon}/>
-                <hr/>
-                {
-                    c.members.map((m,i)=>{
-                        return <typeIcon.DocumentedTypeHeader name={m.name} icon={m.icon}/>
-                    })
-                }
+                <gls.InlineBlock style={{paddingTop:'1px'}}>
+                    {renderSection(<typeIcon.DocumentedTypeHeader name={c.name} icon={c.icon}/>,0)}
+                    {
+                        c.members.map((m,i)=>{
+                            return renderSection(<typeIcon.DocumentedTypeHeader name={m.name} icon={m.icon}/>, i)
+                        })
+                    }
+                </gls.InlineBlock>
             </gls.Content>
         );
     }
