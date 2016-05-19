@@ -23,3 +23,7 @@ class BarGlobalClass {
   globalClassMember: string;
   [key: string]: string;
 }
+
+class BarGlobalClassExtension extends BarGlobalClass {
+  anotherMember: string;
+}

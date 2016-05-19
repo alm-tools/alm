@@ -21,5 +21,7 @@ export function getUmlDiagramForFile(query: { filePath: string }) : Promise<{}> 
 
     const modules = tsAnalyzer.collectInformation(project.languageService.getProgram(), sourceFile);
 
+    console.log(modules);
+
     return utils.resolve({});
 }

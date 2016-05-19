@@ -4,6 +4,7 @@ import * as activeProject from "./activeProject"
 import * as outputStatusCache from "./cache/outputStatusCache"
 import * as projectService from "./projectService";
 import * as docs from "./docs/docs";
+import * as umlDiagram from "./umlDiagram/umlDiagram";
 
 namespace Worker {
     export const echo: typeof contract.worker.echo = (data) => Promise.resolve(data);
@@ -71,6 +72,11 @@ namespace Worker {
      */
     export var getTopLevelModuleNames : typeof contract.worker.getTopLevelModuleNames = docs.getTopLevelModuleNames;
     export var getUpdatedModuleInformation : typeof contract.worker.getUpdatedModuleInformation = docs.getUpdatedModuleInformation;
+
+    /**
+     * Uml diagram
+     */
+    export var getUmlDiagramForFile : typeof contract.worker.getUmlDiagramForFile = umlDiagram.getUmlDiagramForFile;
 }
 
 // Ensure that the namespace follows the contract

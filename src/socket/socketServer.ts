@@ -163,6 +163,9 @@ namespace Server {
     export var getTopLevelModuleNames : typeof contract.server.getTopLevelModuleNames = projectServiceMaster.worker.getTopLevelModuleNames;
     export var getUpdatedModuleInformation : typeof contract.server.getUpdatedModuleInformation = projectServiceMaster.worker.getUpdatedModuleInformation;
 
+    /** UML Diagram */
+    export var getUmlDiagramForFile : typeof contract.server.getUmlDiagramForFile = projectServiceMaster.worker.getUmlDiagramForFile;
+
     /**
      * Output Status
      */

@@ -81,14 +81,11 @@ export class UmlView extends ui.BaseComponent<Props, State> {
         /**
          * If a file is selected and it gets edited, reload the file module information
          */
-        const isFilePathOfSignificance = (filePath:string) => this.filePath === filePath;
-        const reloadSelectedDebounced = utils.debounce((filePath) => {
-            // TODO:
-        }, 3000);
+        const loadDataDebounced = utils.debounce(this.loadData, 3000);
         this.disposible.add(
             commands.fileContentsChanged.on((res) => {
-                if (!isFilePathOfSignificance(res.filePath)) return;
-                reloadSelectedDebounced(res.filePath);
+                if (this.filePath !== res.filePath) return;
+                loadDataDebounced();
             })
         );
 
@@ -148,11 +145,11 @@ export class UmlView extends ui.BaseComponent<Props, State> {
     }
 
     loadData = () => {
-        // TODO:
-        // server.getTopLevelModuleNames({}).then(res => {
-        //     this.setState({files:res.files, selected: null});
-        //     this.filter();
-        // })
+        server.getUmlDiagramForFile({filePath: this.filePath}).then(res => {
+            // TODO:
+            // this.setState({files:res.files, selected: null});
+            this.filter();
+        })
     }
 
     /**

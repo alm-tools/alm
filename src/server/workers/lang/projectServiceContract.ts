@@ -17,27 +17,30 @@ export var worker = {
 
     fileListingDelta: {} as sw.QRFunction<types.FileListingDelta, {}>,
     fileEdited: {} as sw.QRFunction<{ filePath: string; edit: CodeEdit }, {}>,
-    fileChangedOnDisk : {} as sw.QRFunction<{ filePath: string; contents: string }, {}>,
-    fileSaved : {} as sw.QRFunction<{ filePath: string }, {}>,
+    fileChangedOnDisk: {} as sw.QRFunction<{ filePath: string; contents: string }, {}>,
+    fileSaved: {} as sw.QRFunction<{ filePath: string }, {}>,
 
     // Project Service stuff
-    getCompletionsAtPosition : {} as typeof socketContract.server.getCompletionsAtPosition,
-    quickInfo : {} as typeof socketContract.server.quickInfo,
-    getRenameInfo : {} as typeof socketContract.server.getRenameInfo,
-    getDefinitionsAtPosition : {} as typeof socketContract.server.getDefinitionsAtPosition,
-    getDoctorInfo : {} as typeof socketContract.server.getDoctorInfo,
-    getReferences : {} as typeof socketContract.server.getReferences,
+    getCompletionsAtPosition: {} as typeof socketContract.server.getCompletionsAtPosition,
+    quickInfo: {} as typeof socketContract.server.quickInfo,
+    getRenameInfo: {} as typeof socketContract.server.getRenameInfo,
+    getDefinitionsAtPosition: {} as typeof socketContract.server.getDefinitionsAtPosition,
+    getDoctorInfo: {} as typeof socketContract.server.getDoctorInfo,
+    getReferences: {} as typeof socketContract.server.getReferences,
     formatDocument: {} as typeof socketContract.server.formatDocument,
     formatDocumentRange: {} as typeof socketContract.server.formatDocumentRange,
-    getNavigateToItems : {} as typeof socketContract.server.getNavigateToItems,
-    getDependencies : {} as typeof socketContract.server.getDependencies,
-    getAST : {} as typeof socketContract.server.getAST,
-    getQuickFixes : {} as typeof socketContract.server.getQuickFixes,
-    applyQuickFix : {} as typeof socketContract.server.applyQuickFix,
+    getNavigateToItems: {} as typeof socketContract.server.getNavigateToItems,
+    getDependencies: {} as typeof socketContract.server.getDependencies,
+    getAST: {} as typeof socketContract.server.getAST,
+    getQuickFixes: {} as typeof socketContract.server.getQuickFixes,
+    applyQuickFix: {} as typeof socketContract.server.applyQuickFix,
 
     /** Documentation browser */
-    getTopLevelModuleNames : {} as typeof socketContract.server.getTopLevelModuleNames,
-    getUpdatedModuleInformation : {} as typeof socketContract.server.getUpdatedModuleInformation,
+    getTopLevelModuleNames: {} as typeof socketContract.server.getTopLevelModuleNames,
+    getUpdatedModuleInformation: {} as typeof socketContract.server.getUpdatedModuleInformation,
+
+    /** Uml diagram */
+    getUmlDiagramForFile: {} as typeof socketContract.server.getUmlDiagramForFile,
 
     // Used to tell the worker about what project it should work on
     // Note: The project validation / expansion happens locally. Only the hard stuff of *analysis* is done by the worker
@@ -51,9 +54,9 @@ export var worker = {
 
 // API provided by master (web server)
 export var master = {
-    sync: {} as sw.QRFunction<{},{}>,
-    getFileContents: {} as sw.QRFunction<{filePath:string},{contents:string}>,
-    getOpenFilePaths: {} as sw.QRFunction<{},string[]>,
+    sync: {} as sw.QRFunction<{}, {}>,
+    getFileContents: {} as sw.QRFunction<{ filePath: string }, { contents: string }>,
+    getOpenFilePaths: {} as sw.QRFunction<{}, string[]>,
 
     // Sinks for important events
     receiveErrorCacheDelta: {} as sw.QRFunction<ErrorCacheDelta, {}>,
