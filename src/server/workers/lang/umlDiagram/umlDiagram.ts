@@ -48,6 +48,9 @@ function analyzeFile({sourceFile, program}: { sourceFile: ts.SourceFile, program
     return result;
 }
 
+/**
+ * Various Transformers
+ */
 
 function transformClass(node: ts.ClassDeclaration, sourceFile: ts.SourceFile, program: ts.Program): types.UMLClass {
     const result: types.UMLClass = {
@@ -61,23 +64,40 @@ function transformClass(node: ts.ClassDeclaration, sourceFile: ts.SourceFile, pr
     if (node.typeParameters) {
         result.icon = types.IconType.ClassGeneric;
     }
-    const subItems: types.DocumentedType[] = [];
 
-    // TODO:
-    // ts.forEachChild(node, (node) => {
-    //     if (node.kind == ts.SyntaxKind.Constructor) {
-    //         subItems.push(transformClassConstructor(node as ts.ConstructorDeclaration, sourceFile));
-    //     }
-    //     if (node.kind == ts.SyntaxKind.PropertyDeclaration) {
-    //         subItems.push(transformClassProperty(node as ts.PropertyDeclaration, sourceFile));
-    //     }
-    //     if (node.kind == ts.SyntaxKind.MethodDeclaration) {
-    //         subItems.push(transformClassMethod(node as ts.MethodDeclaration, sourceFile));
-    //     }
-    //     if (node.kind == ts.SyntaxKind.IndexSignature) {
-    //         subItems.push(transformClassIndexSignature(node as ts.IndexSignatureDeclaration, sourceFile));
-    //     }
-    // });
+    /** Collect members  */
+    ts.forEachChild(node, (node) => {
+        if (node.kind == ts.SyntaxKind.Constructor) {
+            result.members.push(transformClassConstructor(node as ts.ConstructorDeclaration, sourceFile));
+        }
+        // TODO:
+        // if (node.kind == ts.SyntaxKind.PropertyDeclaration) {
+        //     subItems.push(transformClassProperty(node as ts.PropertyDeclaration, sourceFile));
+        // }
+        // if (node.kind == ts.SyntaxKind.MethodDeclaration) {
+        //     subItems.push(transformClassMethod(node as ts.MethodDeclaration, sourceFile));
+        // }
+        // if (node.kind == ts.SyntaxKind.IndexSignature) {
+        //     subItems.push(transformClassIndexSignature(node as ts.IndexSignatureDeclaration, sourceFile));
+        // }
+    });
+
+    return result;
+}
+
+/** Class Constructor */
+function transformClassConstructor(node: ts.ConstructorDeclaration, sourceFile: ts.SourceFile): types.UMLClassMember {
+    const name = "constructor";
+    let icon = types.IconType.ClassConstructor;
+    const location = getDocumentedTypeLocation(sourceFile, node.pos);
+    const result: types.UMLClassMember = {
+        name,
+        icon,
+        location,
+
+        visibility: types.UMLClassMemberVisibility.Public,
+        lifetime: types.UMLClassMemberLifeTime.Instance,
+    }
 
     return result;
 }
