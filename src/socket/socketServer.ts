@@ -174,6 +174,7 @@ namespace Server {
         (data) => {
             return cast.liveBuildResults.current();
         }
+    export const getJSOutputStatus: typeof contract.server.getJSOutputStatus = projectServiceMaster.worker.getJSOutputStatus;
 
     /**
      * Git service

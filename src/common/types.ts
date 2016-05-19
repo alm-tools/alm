@@ -134,6 +134,12 @@ export type LiveBuildResults = {
     builtCount: number;
     totalCount: number;
 }
+/** Query response for individual file query */
+export type GetJSOutputStatusResponse = {
+    inActiveProject: boolean,
+    /** Only present if the file as in active project */
+    outputStatus?: JSOutputStatus
+};
 
 /**
  * Complete related stuff

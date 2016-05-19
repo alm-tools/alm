@@ -22,6 +22,10 @@ namespace Worker {
         outputStatusCache.doCompleteProjectCacheUpdate(proj);
         return Promise.resolve({})
     }
+    export const getJSOutputStatus: typeof contract.worker.getJSOutputStatus = (details) => {
+        const result = projectService.getJSOutputStatus(details);
+        return Promise.resolve(result);
+    }
 
     /**
      * File information updates sent by the master. We tell the modules that care.

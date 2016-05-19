@@ -46,6 +46,7 @@ export var worker = {
 
     /** Build */
     build: {} as sw.QRFunction<{}, {}>,
+    getJSOutputStatus: {} as typeof socketContract.server.getJSOutputStatus,
 }
 
 // API provided by master (web server)
