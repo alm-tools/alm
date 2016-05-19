@@ -17,7 +17,7 @@ let getProject = activeProject.GetProject.getCurrentIfAny;
 /**
  * Get a uml diagram structure for a file
  */
-export function getUmlDiagramForFile(query: { filePath: string }) : Promise<{}> {
+export function getUmlDiagramForFile(query: { filePath: string }) : Promise<{classes: types.UMLClass[]}> {
     let project = getProject();
     const sourceFile = project.getProjectSourceFiles().find(f => f.fileName === query.filePath);
     const program = project.languageService.getProgram();
@@ -25,9 +25,9 @@ export function getUmlDiagramForFile(query: { filePath: string }) : Promise<{}> 
     // const modules = tsAnalyzer.collectInformation(program, sourceFile);
     // console.log(modules);
 
-    analyzeFile({ sourceFile, program });
+    const classes = analyzeFile({ sourceFile, program });
 
-    return utils.resolve({});
+    return utils.resolve({ classes });
 }
 
 

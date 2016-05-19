@@ -71,7 +71,7 @@ export var server = {
     getUpdatedModuleInformation: {} as QRFunction<{ filePath: string }, types.DocumentedType>,
 
     /** UML Diagram */
-    getUmlDiagramForFile: {} as QRFunction<{ filePath: string }, {}>,
+    getUmlDiagramForFile: {} as QRFunction<{ filePath: string }, { classes: types.UMLClass[] }>,
 
     /**
      * Output Status

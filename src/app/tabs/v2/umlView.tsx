@@ -30,6 +30,8 @@ export interface Props extends tab.TabProps {
 }
 export interface State {
     filter?: string;
+    classes?: types.UMLClass[];
+    selected?: types.UMLClass;
 }
 
 export namespace DocumentationViewStyles {
@@ -54,7 +56,9 @@ export class UmlView extends ui.BaseComponent<Props, State> {
         super(props);
         this.filePath = utils.getFilePathFromUrl(props.url);
         this.state = {
-            filter: ''
+            filter: '',
+            classes: [],
+            selected: null,
         };
     }
 
@@ -146,8 +150,8 @@ export class UmlView extends ui.BaseComponent<Props, State> {
 
     loadData = () => {
         server.getUmlDiagramForFile({filePath: this.filePath}).then(res => {
-            // TODO:
-            // this.setState({files:res.files, selected: null});
+            this.setState({classes:res.classes, selected: null});
+            console.log(res.classes);
             this.filter();
         })
     }
