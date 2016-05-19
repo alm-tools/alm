@@ -76,9 +76,9 @@ function transformClass(node: ts.ClassDeclaration, sourceFile: ts.SourceFile, pr
         if (node.kind == ts.SyntaxKind.MethodDeclaration) {
             result.members.push(transformClassMethod(node as ts.MethodDeclaration, sourceFile));
         }
-        // if (node.kind == ts.SyntaxKind.IndexSignature) {
-        //     subItems.push(transformClassIndexSignature(node as ts.IndexSignatureDeclaration, sourceFile));
-        // }
+        if (node.kind == ts.SyntaxKind.IndexSignature) {
+            result.members.push(transformClassIndexSignature(node as ts.IndexSignatureDeclaration, sourceFile));
+        }
     });
 
     return result;
@@ -139,6 +139,24 @@ function transformClassMethod(node: ts.MethodDeclaration, sourceFile: ts.SourceF
 
         visibility,
         lifetime,
+    }
+
+    return result;
+}
+
+/** Class Index Signature */
+function transformClassIndexSignature(node: ts.IndexSignatureDeclaration, sourceFile: ts.SourceFile): types.UMLClassMember {
+    const name = "Index Signature";
+    let icon = types.IconType.ClassIndexSignature;
+    let location = getDocumentedTypeLocation(sourceFile, node.pos);
+
+    const result: types.UMLClassMember = {
+        name,
+        icon,
+        location,
+
+        visibility: types.UMLClassMemberVisibility.Public,
+        lifetime: types.UMLClassMemberLifeTime.Instance,
     }
 
     return result;
