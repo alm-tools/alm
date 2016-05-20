@@ -29,6 +29,7 @@ export interface Props {
     filePathsCompleted?: boolean;
     rootDir?: string;
     activeProjectFilePathTruthTable?: { [filePath: string]: boolean };
+    fileTreeShown?: boolean;
 }
 
 interface TreeDirItem {
@@ -49,7 +50,6 @@ let fileSelected = { isDir: false };
 export interface State {
     /** Width of the tree view in pixels */
     width?: number;
-    shown?: boolean;
     treeRoot?: TreeDirItem;
     expansionState?: { [filePath: string]: boolean };
     showHelp?: boolean;
@@ -120,6 +120,7 @@ let helpRowStyle = {
         filePathsCompleted: state.filePathsCompleted,
         rootDir: state.rootDir,
         activeProjectFilePathTruthTable: state.activeProjectFilePathTruthTable,
+        fileTreeShown: state.fileTreeShown,
     };
 })
 @ui.Radium
@@ -133,7 +134,6 @@ export class FileTree extends BaseComponent<Props, State>{
         super(props);
         this.state = {
             width: 200,
-            shown: false,
             expansionState: {},
             selectedPaths: {},
             treeRoot: { name: 'loading', filePath: 'loading', subDirs: [], files: [] },
@@ -150,9 +150,9 @@ export class FileTree extends BaseComponent<Props, State>{
 
     componentDidMount() {
 
-        let handleFocusRequestBasic = ()=>{
-            if (!this.state.shown) {
-                this.setState({ shown: true });
+        let handleFocusRequestBasic = (shown:boolean)=>{
+            if (!shown) {
+                state.expandFileTree({});
             }
             let selectedFilePaths = Object.keys(this.state.selectedPaths);
             let pathToFocus = selectedFilePaths.length > 0 && this.ref(selectedFilePaths[selectedFilePaths.length - 1])
@@ -171,9 +171,10 @@ export class FileTree extends BaseComponent<Props, State>{
         }));
 
         this.disposible.add(commands.treeViewToggle.on(()=>{
-            this.setState({ shown: !this.state.shown });
-            if (this.state.shown) {
-                handleFocusRequestBasic();
+            const shown = this.props.fileTreeShown;
+            shown ? state.collapseFileTree({}) : state.expandFileTree({});
+            if (!shown) {
+                handleFocusRequestBasic(true);
             }
             else {
                 commands.esc.emit({});
@@ -181,8 +182,8 @@ export class FileTree extends BaseComponent<Props, State>{
         }));
 
         this.disposible.add(commands.treeViewRevealActiveFile.on(()=>{
-            if (!this.state.shown) {
-                this.setState({ shown: true });
+            if (!this.props.fileTreeShown) {
+                state.expandFileTree({});
             }
             let selectedTab = tabState.getSelectedTab();
             if (selectedTab && selectedTab.url.startsWith('file://')){
@@ -210,13 +211,13 @@ export class FileTree extends BaseComponent<Props, State>{
                 this.focusOnPath(filePath);
             }
             else {
-                handleFocusRequestBasic();
+                handleFocusRequestBasic(true);
             }
             return false;
         }));
 
         this.disposible.add(commands.treeViewFocus.on(()=>{
-            handleFocusRequestBasic();
+            handleFocusRequestBasic(this.props.fileTreeShown);
         }));
 
         /**
@@ -607,7 +608,7 @@ export class FileTree extends BaseComponent<Props, State>{
             && Object.keys(this.state.selectedPaths)[0];
 
 
-        let hideStyle = !this.state.shown && { display: 'none' };
+        let hideStyle = !this.props.fileTreeShown && { display: 'none' };
         return (
             <div ref={'__treeroot'} className="alm-tree-root" style={[csx.flexRoot, csx.horizontal, { width: this.state.width, zIndex: 6 }, hideStyle]}>
 
@@ -836,7 +837,7 @@ export class FileTree extends BaseComponent<Props, State>{
 
     componentWillUpdate(nextProps: Props, nextState: State) {
         if (nextState.width !== this.state.width
-            || nextState.shown !== this.state.shown) {
+            || nextProps.fileTreeShown !== this.props.fileTreeShown) {
             tabState.debouncedResize();
         }
     }

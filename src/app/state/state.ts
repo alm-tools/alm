@@ -29,6 +29,7 @@ export interface StoreState {
     filePaths?: types.FilePath[];
     filePathsCompleted?: boolean;
     rootDir?: string;
+    fileTreeShown?: boolean;
 
     showDoctor?: boolean;
 }
@@ -61,6 +62,7 @@ let initialStoreState: StoreState = {
     socketConnected: false,
     filePaths: [],
     filePathsCompleted: false,
+    fileTreeShown: false,
     showDoctor: false,
 };
 
@@ -192,6 +194,18 @@ export let setFilePaths = redux.add('setFilePaths', (state, config:{filePaths: t
         filePaths: config.filePaths,
         rootDir: config.rootDir,
         filePathsCompleted: config.completed
+    };
+});
+
+export let expandFileTree = redux.add('expandFileTree', (state, payload: {}): StoreState => {
+    return {
+        fileTreeShown: true,
+    };
+});
+
+export let collapseFileTree = redux.add('collapseFileTree', (state, payload: {}): StoreState => {
+    return {
+        fileTreeShown: false,
     };
 });
 
