@@ -51,6 +51,7 @@ export interface Props {
     socketConnected?: boolean;
     outputStatusCache?: types.JSOutputStatusCache;
     liveBuildResults?: types.LiveBuildResults;
+    fileTreeShown?: boolean;
 }
 export interface State {
 }
@@ -71,6 +72,7 @@ export var statusBar: StatusBar;
         socketConnected: state.socketConnected,
         outputStatusCache: state.outputStatusCache,
         liveBuildResults: state.liveBuildResults,
+        fileTreeShown: state.fileTreeShown,
     };
 })
 export class StatusBar extends BaseComponent<Props, State>{
@@ -158,6 +160,15 @@ export class StatusBar extends BaseComponent<Props, State>{
                 </span>
             </span>;
 
+        const fileTreeToggleRendered = <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)}
+            onClick={this.toggleFileTree}
+            className="hint--top-right"
+            data-hint={`Click to toggle the file tree 🌲`}>
+            <span style={csx.extend(this.props.fileTreeShown?{color:'white'}:{color:'grey'},{transition: 'color .4s'})}>
+                <Icon name="tree"/>
+            </span>
+        </span>;
+
         const updateRendered =
             serverState.update
             && <span style={csx.extend(styles.statusBarSection) }>
@@ -180,6 +191,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                             {this.props.errorsUpdate.totalCount} <Icon name="times-circle"/>
                         </span>
                     </span>
+                    {fileTreeToggleRendered}
                     {hasActiveProject}
                     {inActiveProjectSection}
                     {filePath
@@ -230,6 +242,15 @@ export class StatusBar extends BaseComponent<Props, State>{
         }
         else{
             expandErrors({});
+        }
+    }
+
+    toggleFileTree = () => {
+        if (this.props.fileTreeShown) {
+            state.collapseFileTree({});
+        }
+        else {
+            state.expandFileTree({});
         }
     }
 
