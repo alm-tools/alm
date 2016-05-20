@@ -386,7 +386,7 @@ export enum UMLClassMemberVisibility {
     Private,
     Protected
 }
-export enum UMLClassMemberLifeTime {
+export enum UMLClassMemberLifetime {
     Instance,
     Static
 }
@@ -396,5 +396,5 @@ export interface UMLClassMember {
     location: DocumentedTypeLocation;
 
     visibility: UMLClassMemberVisibility;
-    lifetime: UMLClassMemberLifeTime;
+    lifetime: UMLClassMemberLifetime;
 }

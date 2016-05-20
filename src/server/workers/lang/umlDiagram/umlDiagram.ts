@@ -95,7 +95,7 @@ function transformClassConstructor(node: ts.ConstructorDeclaration, sourceFile: 
         location,
 
         visibility: types.UMLClassMemberVisibility.Public,
-        lifetime: types.UMLClassMemberLifeTime.Instance,
+        lifetime: types.UMLClassMemberLifetime.Instance,
     }
 
     return result;
@@ -156,7 +156,7 @@ function transformClassIndexSignature(node: ts.IndexSignatureDeclaration, source
         location,
 
         visibility: types.UMLClassMemberVisibility.Public,
-        lifetime: types.UMLClassMemberLifeTime.Instance,
+        lifetime: types.UMLClassMemberLifetime.Instance,
     }
 
     return result;
@@ -191,13 +191,13 @@ function getVisibility(node: ts.Node): types.UMLClassMemberVisibility {
 }
 
 /** Lifetime */
-function getLifetime(node: ts.Node): types.UMLClassMemberLifeTime {
+function getLifetime(node: ts.Node): types.UMLClassMemberLifetime {
     if (node.modifiers) {
         if (hasModifierSet(node.modifiers.flags, ts.NodeFlags.Static)) {
-            return types.UMLClassMemberLifeTime.Static;
+            return types.UMLClassMemberLifetime.Static;
         }
     }
-    return types.UMLClassMemberLifeTime.Instance;
+    return types.UMLClassMemberLifetime.Instance;
 }
 
 /** Just checks if a flag is set */

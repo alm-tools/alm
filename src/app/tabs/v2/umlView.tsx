@@ -200,7 +200,7 @@ export class UmlView extends ui.BaseComponent<Props, State> {
                     {
                         c.members.map((m,i)=>{
                             return <div key={i} style={UmlViewStyles.classMember}>
-                                <typeIcon.DocumentedTypeHeader name={m.name} icon={m.icon} visibility={m.visibility}/>
+                                <typeIcon.DocumentedTypeHeader name={m.name} icon={m.icon} visibility={m.visibility} lifetime={m.lifetime}/>
                             </div>
                         })
                     }

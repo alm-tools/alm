@@ -1,4 +1,4 @@
-import {IconType, DocumentedType, UMLClassMemberVisibility} from "../../common/types";
+import {IconType, DocumentedType, UMLClassMemberVisibility, UMLClassMemberLifetime} from "../../common/types";
 import {Icon} from "./icon";
 
 /**
@@ -100,6 +100,22 @@ class VisibilityIndicator extends ui.BaseComponent<{ visibility: UMLClassMemberV
 }
 
 /**
+ * Draws an icon for `static` indication
+ */
+class LifetimeIndicator extends ui.BaseComponent<{ lifetime: UMLClassMemberLifetime }, State>{
+    shouldComponentUpdate = pure.shouldComponentUpdate;
+    render() {
+        // Maybe add others if needed. I doubt it though.
+        const classIconColorTheme = "#4DA6FF";
+
+        if (this.props.lifetime === UMLClassMemberLifetime.Instance)
+            return <span></span>;
+        else
+            return <Icon name={"bullhorn"} style={{ color: classIconColorTheme }}/>;
+    }
+}
+
+/**
  * Draws the icon followed by name
  */
 namespace DocumentedTypeHeaderStyles {
@@ -115,11 +131,25 @@ namespace DocumentedTypeHeaderStyles {
             whiteSpace: 'pre'
         });
 }
-export class DocumentedTypeHeader extends ui.BaseComponent<{ name: string, icon: IconType, visibility?: UMLClassMemberVisibility }, State>{
+interface DocumentedTypeHeaderProps {
+    name: string, icon: IconType,
+    visibility?: UMLClassMemberVisibility,
+    lifetime?: UMLClassMemberLifetime,
+}
+export class DocumentedTypeHeader extends ui.BaseComponent<DocumentedTypeHeaderProps, State>{
     shouldComponentUpdate = pure.shouldComponentUpdate;
     render() {
-        const visibility = !!this.props.visibility && <VisibilityIndicator visibility={this.props.visibility}/>
-        return <div style={DocumentedTypeHeaderStyles.root}><TypeIcon iconType={this.props.icon}/>{visibility}{" " + this.props.name}</div>
+        const hasLifetime = !!this.props.lifetime && this.props.lifetime !== UMLClassMemberLifetime.Instance;
+        const hasVisibility = !!this.props.visibility && this.props.visibility !== UMLClassMemberVisibility.Public;
+
+        return <div style={DocumentedTypeHeaderStyles.root}>
+            <TypeIcon iconType={this.props.icon}/>
+            {hasLifetime && <LifetimeIndicator lifetime={this.props.lifetime}/>}
+            {hasLifetime && "\u00a0"}
+            {hasVisibility && <VisibilityIndicator visibility={this.props.visibility}/>}
+            {hasVisibility && "\u00a0"}
+            {" " + this.props.name}
+        </div>;
     }
 }
 
@@ -213,6 +243,9 @@ export class TypeIconClassDiagramLegend extends ui.BaseComponent<{}, {}>{
                         </div>
                         <div style={{marginTop: '5px' }}>
                             <VisibilityIndicator visibility={UMLClassMemberVisibility.Protected}/> &nbsp; Protected
+                        </div>
+                        <div style={{marginTop: '5px' }}>
+                            <LifetimeIndicator lifetime={UMLClassMemberLifetime.Static}/> &nbsp; Static
                         </div>
                     </div>
                 </div>

@@ -23,6 +23,7 @@ class BarGlobalClass {
   constructor() {
     
   }
+  private static aPrivateStaticMember: string;
   globalClassMember: string;
   private aPrivateClassMember: string;
   [key: string]: string;
