@@ -87,8 +87,8 @@ commands.esc.on(() => {
 export function notifyInfoQuickDisappear(message: string) {
     toastr.info(message, null, { timeOut: 600 });
 }
-export function notifyInfoNormalDisappear(message: string) {
-    toastr.info(message);
+export function notifyInfoNormalDisappear(message: string,  options?: { onClick: () => void }) {
+    toastr.info(message, null, options && { onclick: options.onClick });
 }
 export function notifyWarningNormalDisappear(message: string, options?: { onClick: () => void }) {
     toastr.warning(message, null, options && { onclick: options.onClick });
