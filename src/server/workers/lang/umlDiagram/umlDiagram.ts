@@ -84,7 +84,8 @@ function transformClass(node: ts.ClassDeclaration, sourceFile: ts.SourceFile, pr
         let extendsClause = classDeclaration.heritageClauses.find(c => c.token === ts.SyntaxKind.ExtendsKeyword);
         if (extendsClause && extendsClause.types.length > 0) {
             const expression = extendsClause.types[0];
-            let symbol = program.getTypeChecker().getSymbolAtLocation(expression.expression);
+            const typeChecker = program.getTypeChecker();
+            const symbol = typeChecker.getTypeAtLocation(expression.expression).symbol;
             if (symbol) {
                 const valueDeclaration = symbol.valueDeclaration;
                 if (valueDeclaration && valueDeclaration.kind === ts.SyntaxKind.ClassDeclaration) {
