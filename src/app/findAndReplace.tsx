@@ -92,10 +92,11 @@ export class FindAndReplace extends BaseComponent<Props, State>{
 
         /** Detect advanced find needed or not */
         let tab = tabState.getSelectedTab();
-        let advancedFind = tab && tabRegistry.getTabConfigByUrl(tab.url).advancedSearch;
+        let searchSupport = tab && tabRegistry.getTabConfigByUrl(tab.url).searchSupport;
+        let advancedFind = searchSupport && searchSupport == tabRegistry.TabSearchSupport.Advanced;
 
         /** For Find and Replace Multi ... completely bail out */
-        if (tab && tab.url.startsWith('farm')) {
+        if (!tab || !searchSupport) {
             return <noscript/>;
         }
 

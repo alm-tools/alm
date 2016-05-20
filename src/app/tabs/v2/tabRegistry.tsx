@@ -16,9 +16,18 @@ import {UmlView} from "./umlView";
 
 type ComponentConstructor = { new (props: tab.TabProps): ui.BaseComponent<tab.TabProps,any> };
 
+/**
+ * Tabs get to choose how much they want to integrate with search
+ */
+export enum TabSearchSupport {
+    None, // No search ui
+    Basic, // Just the `find` search ui
+    Advanced, // Find / Replace / Regex whole shebang
+}
+
 interface TabConfig {
     protocol: string;
-    advancedSearch: boolean;
+    searchSupport: TabSearchSupport;
     getTitle(url:string): string;
     component: ComponentConstructor;
 }
@@ -26,43 +35,43 @@ interface TabConfig {
 export const tabs = {
     file: {
         protocol: 'file',
-        advancedSearch: true,
+        searchSupport: TabSearchSupport.Advanced,
         getTitle: utils.getFileName,
         component: Code,
     },
     ast: {
         protocol: 'ast',
-        advancedSearch: false,
+        searchSupport: TabSearchSupport.None,
         getTitle: (url)=> `AST ${utils.getFileName(url)}`,
         component: ASTView,
     },
     astfull: {
         protocol: 'astfull',
-        advancedSearch: false,
+        searchSupport: TabSearchSupport.None,
         getTitle: (url)=> `AST Full ${utils.getFileName(url)}`,
         component: ASTView,
     },
     dependency: {
         protocol: 'dependency',
-        advancedSearch: false,
+        searchSupport: TabSearchSupport.Basic,
         getTitle: ()=> 'Dependency View',
         component: DependencyView,
     },
     farm: { // find and replace multi
         protocol: 'farm',
-        advancedSearch: false,
+        searchSupport: TabSearchSupport.None,
         getTitle: (url)=> `Find In Project`,
         component: FindAndReplaceView,
     },
     documentation: {
         protocol: 'documentation',
-        advancedSearch: false,
+        searchSupport: TabSearchSupport.Basic,
         getTitle: (url)=> `Documentation`,
         component: DocumentationView,
     },
     uml: {
         protocol: 'uml',
-        advancedSearch: false,
+        searchSupport: TabSearchSupport.None,
         getTitle: (url) => `UML ${utils.getFileName(url)}`,
         component: UmlView,
     }
