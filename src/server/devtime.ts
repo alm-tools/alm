@@ -27,7 +27,7 @@ const bundleDevTimeProxy = utils.once(() => {
         // For hot style updates
         require.resolve('webpack/hot/dev-server'),
         // The script refreshing the browser on hot updates
-        `${require.resolve('webpack-dev-server/client')}?http://localhost:${webpackDevServerPort}`,
+        `${require.resolve('webpack-dev-server/client')}?http://127.0.0.1:${webpackDevServerPort}`,
         // Also keep existing
     ].concat(config.entry);
 
@@ -64,7 +64,7 @@ const bundleDevTimeProxy = utils.once(() => {
             colors: true
         }
     });
-    bundler.listen(webpackDevServerPort, 'localhost', function() {
+    bundler.listen(webpackDevServerPort, '127.0.0.1', function() {
         console.log(`${notification} Server listening on port: ${webpackDevServerPort}`);
     });
 
@@ -75,7 +75,7 @@ const bundleDevTimeProxy = utils.once(() => {
     const proxyServer = httpProxy.createProxyServer();
     return function (req:express.Request,res:express.Response){
         proxyServer.web(req, res, {
-            target: `http://localhost:${webpackDevServerPort}`
+            target: `http://127.0.0.1:${webpackDevServerPort}`
         });
         proxyServer.on('error',(err)=>{
             console.log('[WDS] Proxy ERROR',err);

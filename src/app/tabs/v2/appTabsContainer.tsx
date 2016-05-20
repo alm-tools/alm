@@ -297,15 +297,17 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 (
                     this.selectedTabInstance
                     && utils.getFilePathFromUrl(this.selectedTabInstance.url) === e.filePath
+                    && utils.getFilePathAndProtocolFromUrl(this.selectedTabInstance.url).protocol === tabRegistry.tabs.file.protocol
                     && this.selectedTabInstance
                 )
                 // Open but not current
                 || this.tabs.find(t => {
-                    return utils.getFilePathFromUrl(t.url) == e.filePath;
+                    return utils.getFilePathFromUrl(t.url) == e.filePath
+                        && utils.getFilePathAndProtocolFromUrl(t.url).protocol === tabRegistry.tabs.file.protocol;
                 });
             if (existingTab) {
                 // Focus if not focused
-                if (!this.selectedTabInstance || this.selectedTabInstance.id !== existingTab.id){
+                if (!this.selectedTabInstance || this.selectedTabInstance.id !== existingTab.id) {
                     this.tabState.triggerFocusAndSetAsSelected(existingTab.id);
                 }
                 if (e.position) {
@@ -555,13 +557,13 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             }
             return filePath;
         }
-        let openAst = (mode: Types.ASTMode) => {
+        let openAnalysisViewForCurrentFilePath = (getUrl: (filePath: string) => string) => {
             let filePath = getCurrentFilePathOrWarn();
             if (!filePath) return;
 
             let codeTab: TabInstance = {
                 id: createId(),
-                url: `${mode == Types.ASTMode.visitor ? 'ast' : 'astfull'}://${filePath}`,
+                url: getUrl(filePath),
             }
 
             // Add tab
@@ -571,10 +573,19 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.tabState.selectTab(codeTab.id);
         }
         commands.doOpenASTView.on((e) => {
-            openAst(Types.ASTMode.visitor);
+            openAnalysisViewForCurrentFilePath((filePath)=>{
+                return `${tabRegistry.tabs.ast.protocol}://${filePath}`
+            });
         });
         commands.doOpenASTFullView.on((e) => {
-            openAst(Types.ASTMode.children);
+            openAnalysisViewForCurrentFilePath((filePath)=>{
+                return `${tabRegistry.tabs.astfull.protocol}://${filePath}`
+            });
+        });
+        commands.doOpenUmlDiagram.on((e) => {
+            openAnalysisViewForCurrentFilePath((filePath)=>{
+                return `${tabRegistry.tabs.uml.protocol}://${filePath}`
+            });
         });
     }
 

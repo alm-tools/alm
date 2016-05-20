@@ -1,3 +1,4 @@
+import * as types from "../../../../common/types";
 
 export var forEachChild = ts.forEachChild;
 
@@ -114,4 +115,27 @@ function getImportsWithTextRange(searchNode: ts.Node, importedModules: StringWit
             getImportsWithTextRange((<ts.ModuleDeclaration>node).body, importedModules);
         }
     });
+}
+
+/**
+ * Used by a few things like the documentation view
+ */
+export function getDocumentedTypeLocation(sourceFile: ts.SourceFile, position: number): types.DocumentedTypeLocation {
+    /**
+     * The actual position of the node will be like
+     *
+     * <here
+     * /** some comment
+     * var someNode;
+     *
+     * Call the `ts.skipTrivia` to get the true node location, but +1 is good enough
+     */
+    const pos = ts.getLineAndCharacterOfPosition(sourceFile, position + 1);
+    return {
+        filePath: sourceFile.fileName,
+        position: {
+            line: pos.line,
+            ch: pos.character
+        }
+    };
 }

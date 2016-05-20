@@ -1,4 +1,5 @@
-import {IconType, DocumentedType} from "../../common/types";
+import {IconType, DocumentedType, UMLClassMemberVisibility, UMLClassMemberLifetime} from "../../common/types";
+import {Icon} from "./icon";
 
 /**
  * This maps into the iconTypes.svg [x,y]
@@ -81,6 +82,52 @@ export class TypeIcon extends ui.BaseComponent<Props, State>{
 }
 
 /**
+ * Draws an icon for `private` visibility indication
+ */
+class VisibilityIndicator extends ui.BaseComponent<{ visibility: UMLClassMemberVisibility }, State>{
+    shouldComponentUpdate = pure.shouldComponentUpdate;
+    render() {
+        // Maybe add others if needed. I doubt it though.
+        const classIconColorTheme = "#4DA6FF";
+
+        if (this.props.visibility === UMLClassMemberVisibility.Public)
+            return <span></span>;
+        if (this.props.visibility === UMLClassMemberVisibility.Private)
+            return <Icon name={"lock"} style={{ color: classIconColorTheme }}/>;
+        else
+            return <Icon name={"shield"} style={{ color: classIconColorTheme }}/>;
+    }
+}
+
+/**
+ * Draws an icon for `override` visibility indication
+ */
+class OverrideIndicator extends ui.BaseComponent<{}, State>{
+    shouldComponentUpdate = pure.shouldComponentUpdate;
+    render() {
+        // Maybe add others if needed. I doubt it though.
+        const classIconColorTheme = "#4DA6FF";
+        return <Icon name={"arrow-circle-up"} style={{ color: classIconColorTheme }}/>;
+    }
+}
+
+/**
+ * Draws an icon for `static` indication
+ */
+class LifetimeIndicator extends ui.BaseComponent<{ lifetime: UMLClassMemberLifetime }, State>{
+    shouldComponentUpdate = pure.shouldComponentUpdate;
+    render() {
+        // Maybe add others if needed. I doubt it though.
+        const classIconColorTheme = "#4DA6FF";
+
+        if (this.props.lifetime === UMLClassMemberLifetime.Instance)
+            return <span></span>;
+        else
+            return <Icon name={"bullhorn"} style={{ color: classIconColorTheme }}/>;
+    }
+}
+
+/**
  * Draws the icon followed by name
  */
 namespace DocumentedTypeHeaderStyles {
@@ -96,10 +143,28 @@ namespace DocumentedTypeHeaderStyles {
             whiteSpace: 'pre'
         });
 }
-export class DocumentedTypeHeader extends ui.BaseComponent<{ name: string, icon: IconType }, State>{
+interface DocumentedTypeHeaderProps {
+    name: string, icon: IconType,
+    visibility?: UMLClassMemberVisibility,
+    lifetime?: UMLClassMemberLifetime,
+    override?: boolean,
+}
+export class DocumentedTypeHeader extends ui.BaseComponent<DocumentedTypeHeaderProps, State>{
     shouldComponentUpdate = pure.shouldComponentUpdate;
     render() {
-        return <div style={DocumentedTypeHeaderStyles.root}><TypeIcon iconType={this.props.icon}/>{" " + this.props.name}</div>
+        const hasLifetime = !!this.props.lifetime && this.props.lifetime !== UMLClassMemberLifetime.Instance;
+        const hasVisibility = !!this.props.visibility && this.props.visibility !== UMLClassMemberVisibility.Public;
+
+        return <div style={DocumentedTypeHeaderStyles.root}>
+            <TypeIcon iconType={this.props.icon}/>
+            {hasLifetime && <LifetimeIndicator lifetime={this.props.lifetime}/>}
+            {hasLifetime && "\u00a0"}
+            {hasVisibility && <VisibilityIndicator visibility={this.props.visibility}/>}
+            {hasVisibility && "\u00a0"}
+            {" " + this.props.name}
+            {this.props.override && "\u00a0"}
+            {this.props.override && <OverrideIndicator/>}
+        </div>;
     }
 }
 
@@ -128,6 +193,7 @@ namespace TypeIconLegendStyles {
         });
 }
 export class TypeIconLegend extends ui.BaseComponent<{}, {}>{
+    shouldComponentUpdate = pure.shouldComponentUpdate;
     render() {
         return (
             <div style={TypeIconLegendStyles.root}>
@@ -163,6 +229,42 @@ export class TypeIconLegend extends ui.BaseComponent<{}, {}>{
                         <DocumentedTypeHeader name="Class Method" icon={IconType.ClassMethod}/>
                         <DocumentedTypeHeader name="Class Method Generic" icon={IconType.ClassMethodGeneric}/>
                         <DocumentedTypeHeader name="Class Index Signature" icon={IconType.ClassIndexSignature}/>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+}
+
+export class TypeIconClassDiagramLegend extends ui.BaseComponent<{}, {}>{
+    shouldComponentUpdate = pure.shouldComponentUpdate;
+    render() {
+        return (
+            <div style={TypeIconLegendStyles.root}>
+                <div style={{paddingLeft: '10px'}}><SectionHeader text="Class Diagram Legend"/></div>
+                <div style={TypeIconLegendStyles.legendColumnContainer}>
+                    <div style={TypeIconLegendStyles.legendColumn}>
+                        <DocumentedTypeHeader name="Class" icon={IconType.Class}/>
+                        <DocumentedTypeHeader name="Class Generic" icon={IconType.ClassGeneric}/>
+                        <DocumentedTypeHeader name="Class Constructor" icon={IconType.ClassConstructor}/>
+                        <DocumentedTypeHeader name="Class Property" icon={IconType.ClassProperty}/>
+                        <DocumentedTypeHeader name="Class Method" icon={IconType.ClassMethod}/>
+                        <DocumentedTypeHeader name="Class Method Generic" icon={IconType.ClassMethodGeneric}/>
+                        <DocumentedTypeHeader name="Class Index Signature" icon={IconType.ClassIndexSignature}/>
+                    </div>
+                    <div style={TypeIconLegendStyles.legendColumn}>
+                        <div>
+                            <VisibilityIndicator visibility={UMLClassMemberVisibility.Private}/> &nbsp; Private
+                        </div>
+                        <div style={{marginTop: '5px' }}>
+                            <VisibilityIndicator visibility={UMLClassMemberVisibility.Protected}/> &nbsp; Protected
+                        </div>
+                        <div style={{marginTop: '5px' }}>
+                            <LifetimeIndicator lifetime={UMLClassMemberLifetime.Static}/> &nbsp; Static
+                        </div>
+                        <div style={{marginTop: '5px' }}>
+                            <OverrideIndicator/> &nbsp; Override
+                        </div>
                     </div>
                 </div>
             </div>

@@ -72,12 +72,6 @@ export var esc = new UICommand({
     context: CommandContext.Global,
 });
 
-export var toggleDocumentationBrowser = new UICommand({
-    keyboardShortcut: 'mod+shift+\'', // Same as doctor with Shift
-    description: "Documentation Browser: Open",
-    context: CommandContext.Global,
-});
-
 /**
  * Active list
  */
@@ -281,11 +275,20 @@ export let cycleMessagesPanel = new UICommand({
 });
 
 /**
- * Editor inline features
+ * Documentation features
  */
 export let toggleDoctor = new UICommand({
     keyboardShortcut: "mod+'", //
     description: "Editor: Toggle Doctor",
+    context: CommandContext.Global,
+});
+export var toggleDocumentationBrowser = new UICommand({
+    keyboardShortcut: 'mod+shift+\'', // Same as doctor with Shift
+    description: "Documentation Browser: Open",
+    context: CommandContext.Global,
+});
+export var doOpenUmlDiagram = new UICommand({
+    description: "UML Class diagram",
     context: CommandContext.Global,
 });
 

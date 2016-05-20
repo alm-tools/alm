@@ -70,6 +70,9 @@ export var server = {
     getTopLevelModuleNames: {} as QRFunction<{}, types.GetTopLevelModuleNamesResponse>,
     getUpdatedModuleInformation: {} as QRFunction<{ filePath: string }, types.DocumentedType>,
 
+    /** UML Diagram */
+    getUmlDiagramForFile: {} as QRFunction<{ filePath: string }, { classes: types.UMLClass[] }>,
+
     /**
      * Output Status
      */

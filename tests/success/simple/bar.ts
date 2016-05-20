@@ -20,6 +20,15 @@ enum BarEnum {
 }
 
 class BarGlobalClass {
+  constructor() {
+    
+  }
+  private static aPrivateStaticMember: string;
   globalClassMember: string;
+  private aPrivateClassMember: string;
   [key: string]: string;
+}
+
+class BarGlobalClassExtension extends BarGlobalClass {
+  anotherMember: string;
 }

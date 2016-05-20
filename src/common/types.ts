@@ -358,3 +358,45 @@ export interface GetTopLevelModuleNamesResponse {
     /** Present in our project */
     files: DocumentedType[];
 }
+
+
+/**
+ *
+ *
+ *
+ * UML View
+ *
+ *
+ *
+ */
+/** Class */
+export interface UMLClass {
+    // Similar to Documented type.
+    name: string;
+    icon: IconType
+    location: DocumentedTypeLocation;
+
+    // Unlike DocumentedType.subItems we have `members`
+    members: UMLClassMember[];
+    // Also extends if any
+    extends?: UMLClass;
+}
+export enum UMLClassMemberVisibility {
+    Public,
+    Private,
+    Protected
+}
+export enum UMLClassMemberLifetime {
+    Instance,
+    Static
+}
+export interface UMLClassMember {
+    name: string
+    icon: IconType;
+    location: DocumentedTypeLocation;
+
+    visibility: UMLClassMemberVisibility;
+    lifetime: UMLClassMemberLifetime;
+    /** Default is false */
+    override?: boolean;
+}
