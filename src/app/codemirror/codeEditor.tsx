@@ -67,6 +67,7 @@ import * as cursorLocation from "../cursorHistory";
 import * as events from "../../common/events";
 import * as cmUtils from "./cmUtils";
 import * as types from "../../common/types";
+import {toHtml} from "../markdown/markdown";
 
 interface Props {
 	onFocusChange?: (focused: boolean) => any;
@@ -279,7 +280,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 				if (resp.info){
 					message = message + `<b>${escape(resp.info.name)}</b>`;
 					if (resp.info.comment) {
-						message = message + `<br/><i>${escape(resp.info.comment).replace(/(?:\r\n|\r|\n)/g, '<br />')}</i>`;
+						message = message + `<br/>${toHtml(resp.info.comment)}`;
 					}
 				}
 
