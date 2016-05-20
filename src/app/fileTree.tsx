@@ -100,6 +100,10 @@ let treeItemInProjectStyle = {
     opacity: 1,
 }
 
+let treeItemIsGeneratedStyle = {
+    fontSize: '.6em'
+}
+
 let currentSelectedItemCopyStyle = {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -886,11 +890,25 @@ export namespace TreeNode {
             (this.refs['root'] as any).scrollIntoViewIfNeeded(false);
         }
         render() {
+            const filePath = this.props.item.filePath;
+
             let selectedStyle = this.props.selected ? treeItemSelectedStyle : {};
-            let inProjectStyle = this.props.activeProjectFilePathTruthTable[this.props.item.filePath] ? treeItemInProjectStyle : {};
+            let inProjectStyle = this.props.activeProjectFilePathTruthTable[filePath] ? treeItemInProjectStyle : {};
+
+            /** Determine if generated */
+            let isGenerated = false;
+            if (filePath.endsWith('.js'))
+            {
+                let noExtName = utils.removeExt(filePath);
+                if (filePath.endsWith('.js.map')) noExtName = utils.removeExt(noExtName);
+                const tsName = noExtName + '.ts';
+                const tsxName = noExtName + '.tsx';
+                isGenerated = !!this.props.activeProjectFilePathTruthTable[tsName] || !!this.props.activeProjectFilePathTruthTable[tsxName];
+            }
+            let isGeneratedStyle = isGenerated ? treeItemIsGeneratedStyle : {};
 
             return (
-                <div style={[treeItemStyle, selectedStyle, inProjectStyle]} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleSelectFile(evt, this.props.item) }>
+                <div style={[treeItemStyle, selectedStyle, inProjectStyle, isGeneratedStyle]} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleSelectFile(evt, this.props.item) }>
                     <div style={{ marginLeft: this.props.depth * 10 }}> <Icon name="file-text-o"/> {this.props.item.name}</div>
                 </div>
             );

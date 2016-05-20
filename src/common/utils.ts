@@ -190,6 +190,18 @@ export function getExt(filePath: string) {
 }
 
 /**
+ * `/asdf/bar/j.ts` => `/asdf/bar/j`
+ * `/asdf/bar/j.d.ts` => `/asdf/bar/j.d`
+ */
+export function removeExt(filePath: string) {
+    const dot = filePath.lastIndexOf('.');
+    if (dot === -1) {
+        return filePath;
+    }
+    return filePath.substring(0, dot);
+}
+
+/**
  * asdf/asdf:123 => asdf/asdf + 122
  * Note: returned line is 0 based
  */
