@@ -35,26 +35,29 @@ export interface State {
 }
 
 export namespace UmlViewStyles {
-    /** A nice clickable look */
-    export const itemHeaderClass = fstyle.style({
+    export const classNameHeaderSection = fstyle.style({
+        border: '1px solid grey',
+        padding: '5px',
+
+        /** A nice clickable look */
         cursor: 'pointer',
         '&:hover': {
             textDecoration: 'underline'
         }
     });
 
-    export const classNameHeader = {
-        border: '1px solid grey',
-        padding: '5px',
-    }
-    export const classMember = {
+    export const classMemberSection = fstyle.style({
         // Common with header
         border: '1px solid grey',
         padding: '5px',
+        cursor: 'pointer',
+        '&:hover': {
+            textDecoration: 'underline'
+        },
 
         // To eat top border
         marginTop: '-1px'
-    }
+    });
 }
 
 export class UmlView extends ui.BaseComponent<Props, State> {
@@ -194,12 +197,12 @@ export class UmlView extends ui.BaseComponent<Props, State> {
                 <code style={{fontWeight: 'bold'}}>{c.name}</code>
                 <gls.SmallVerticalSpace/>
                 <gls.InlineBlock style={{paddingTop:'1px'}}>
-                    <div style={UmlViewStyles.classNameHeader}>
+                    <div className={UmlViewStyles.classNameHeaderSection} onClick={()=>this.handleGotoTypeLocation(c.location)}>
                         <typeIcon.DocumentedTypeHeader name={c.name} icon={c.icon}/>
                     </div>
                     {
                         c.members.map((m,i)=>{
-                            return <div key={i} style={UmlViewStyles.classMember}>
+                            return <div key={i} className={UmlViewStyles.classMemberSection} onClick={()=>this.handleGotoTypeLocation(m.location)}>
                                 <typeIcon.DocumentedTypeHeader name={m.name} icon={m.icon} visibility={m.visibility} lifetime={m.lifetime}/>
                             </div>
                         })
@@ -211,6 +214,13 @@ export class UmlView extends ui.BaseComponent<Props, State> {
 
     handleClassSelected(c: types.UMLClass) {
         this.setState({ selected: c });
+    }
+
+    handleGotoTypeLocation(location: types.DocumentedTypeLocation) {
+        commands.doOpenOrFocusFile.emit({
+            filePath: location.filePath,
+            position: location.position
+        });
     }
 
     handleKey = (e: any) => {

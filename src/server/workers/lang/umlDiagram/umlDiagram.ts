@@ -65,7 +65,7 @@ function transformClass(node: ts.ClassDeclaration, sourceFile: ts.SourceFile, pr
         result.icon = types.IconType.ClassGeneric;
     }
 
-    /** Collect members  */
+    /** Collect members */
     ts.forEachChild(node, (node) => {
         if (node.kind == ts.SyntaxKind.Constructor) {
             result.members.push(transformClassConstructor(node as ts.ConstructorDeclaration, sourceFile));
@@ -80,6 +80,15 @@ function transformClass(node: ts.ClassDeclaration, sourceFile: ts.SourceFile, pr
             result.members.push(transformClassIndexSignature(node as ts.IndexSignatureDeclaration, sourceFile));
         }
     });
+
+    /** Collect parent classes */
+    const classDeclaration = node;
+    if (classDeclaration.heritageClauses) {
+        let extendsClause = classDeclaration.heritageClauses.find(c => c.token === ts.SyntaxKind.ExtendsKeyword);
+        if (extendsClause && extendsClause.types.length > 0) {
+            // classDef.extends = getFullyQualifiedName(extendsClause.types[0]);
+        }
+    }
 
     return result;
 }
