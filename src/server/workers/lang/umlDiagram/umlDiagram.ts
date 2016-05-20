@@ -1,11 +1,8 @@
 /**
  * This is the backend for the uml diagram view
- *
- * Based on the tsviz project https://github.com/joaompneves/tsviz 🌹
  */
 
 /** Imports */
-import * as tsAnalyzer from "./tsAnalyzer";
 import * as utils from "../../../../common/utils";
 import * as types from "../../../../common/types";
 import {getDocumentedTypeLocation} from "../modules/astUtils";
