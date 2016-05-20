@@ -20,22 +20,25 @@ export class MarkDown extends React.Component<Props, {}> {
 
     shouldComponentUpdate = pure.shouldComponentUpdate;
     render() {
-        const rendered = this.toHtml(this.props.markdown);
+        const rendered = toHtml(this.props.markdown);
 
         return (
-            <div className="alm-markdown-root" dangerouslySetInnerHTML={{ __html: rendered }} />
+            <div dangerouslySetInnerHTML={{ __html: rendered }} />
         );
     }
+}
 
-    toHtml(markdown: string) {
-        return (
-            marked(escapeHtml(markdown))
-                // Move hrefs to target blank
-                .replace(/a href=/g, "a target='_blank' href=")
-                // don't want a trailing newline
-                .trim()
-                // Make newlines `<br>`s
-                .replace(/\n/g, '<br/>')
-        );
-    }
+/** Converts an html string to markdown */
+export function toHtml(markdown: string) {
+    return (
+        `<div class="alm-markdown-root"> ${
+        marked(escapeHtml(markdown))
+            // Move hrefs to target blank
+            .replace(/a href=/g, "a target='_blank' href=")
+            // don't want a trailing newline
+            .trim()
+            // Make newlines `<br>`s
+            .replace(/\n/g, '<br/>')
+        }</div>`
+    );
 }
