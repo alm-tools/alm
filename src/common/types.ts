@@ -378,8 +378,8 @@ export interface UMLClass {
 
     // Unlike DocumentedType.subItems we have `members`
     members: UMLClassMember[];
-    // Also extends
-    extends: UMLClass[];
+    // Also extends if any
+    extends?: UMLClass;
 }
 export enum UMLClassMemberVisibility {
     Public,

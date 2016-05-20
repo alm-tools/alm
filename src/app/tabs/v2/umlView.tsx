@@ -187,6 +187,14 @@ export class UmlView extends ui.BaseComponent<Props, State> {
 
     renderSelectedClass() {
         const c = this.state.selected;
+        return <gls.Content style={{textAlign: 'center'}}>
+            <code style={{fontWeight: 'bold'}}>{c.name}</code>
+            <gls.SmallVerticalSpace/>
+            {this.renderClass(c)}
+        </gls.Content>
+    }
+
+    renderClass(c: types.UMLClass) {
         const renderSection = (section,i) => {
             return <div key={i} style={{border:'1px solid grey', padding: '5px', marginTop: '-1px'}}>
                 {section}
@@ -194,8 +202,6 @@ export class UmlView extends ui.BaseComponent<Props, State> {
         }
         return (
             <gls.Content style={{textAlign: 'center'}}>
-                <code style={{fontWeight: 'bold'}}>{c.name}</code>
-                <gls.SmallVerticalSpace/>
                 <gls.InlineBlock style={{paddingTop:'1px'}}>
                     <div className={UmlViewStyles.classNameHeaderSection} onClick={()=>this.handleGotoTypeLocation(c.location)}>
                         <typeIcon.DocumentedTypeHeader name={c.name} icon={c.icon}/>
@@ -206,6 +212,13 @@ export class UmlView extends ui.BaseComponent<Props, State> {
                                 <typeIcon.DocumentedTypeHeader name={m.name} icon={m.icon} visibility={m.visibility} lifetime={m.lifetime}/>
                             </div>
                         })
+                    }
+                    {
+                        !!c.extends &&
+                        <gls.Content>
+                            <code>extends</code>
+                            {this.renderClass(c.extends)}
+                        </gls.Content>
                     }
                 </gls.InlineBlock>
             </gls.Content>

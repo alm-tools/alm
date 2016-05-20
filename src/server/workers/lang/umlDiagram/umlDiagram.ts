@@ -59,7 +59,7 @@ function transformClass(node: ts.ClassDeclaration, sourceFile: ts.SourceFile, pr
         location: getDocumentedTypeLocation(sourceFile, node.name.pos),
 
         members: [],
-        extends: [],
+        extends: null,
     }
     if (node.typeParameters) {
         result.icon = types.IconType.ClassGeneric;
@@ -86,7 +86,16 @@ function transformClass(node: ts.ClassDeclaration, sourceFile: ts.SourceFile, pr
     if (classDeclaration.heritageClauses) {
         let extendsClause = classDeclaration.heritageClauses.find(c => c.token === ts.SyntaxKind.ExtendsKeyword);
         if (extendsClause && extendsClause.types.length > 0) {
-            // classDef.extends = getFullyQualifiedName(extendsClause.types[0]);
+            const expression = extendsClause.types[0];
+            let symbol = program.getTypeChecker().getSymbolAtLocation(expression.expression);
+            if (symbol) {
+                const valueDeclaration = symbol.valueDeclaration;
+                if (valueDeclaration && valueDeclaration.kind === ts.SyntaxKind.ClassDeclaration) {
+                    const node = valueDeclaration as ts.ClassDeclaration;
+                    const nodeSourceFile = node.getSourceFile();
+                    result.extends = transformClass(node, nodeSourceFile, program);
+                }
+            }
         }
     }
 
