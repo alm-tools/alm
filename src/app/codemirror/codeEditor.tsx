@@ -199,7 +199,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         // Make hint / autocomplete more aggresive
         autocomplete.setupCodeMirror(this.codeMirror);
 
-        this.disposible.add(onresize.on(() => this.refresh()));
+        this.disposible.add(onresize.on(() => this.refresh(true)));
 
         // cursor history
         if (!this.props.readOnly) {
@@ -316,9 +316,13 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 		});
     }
 
-    private refresh = () => {
-        if (this.codeMirror && !this.codeMirror.hasFocus()) {
-            this.codeMirror.refresh(); // Needed to resize gutters correctly
+    private refresh = (force = false) => {
+        // Needed to resize gutters correctly
+        if (this.codeMirror && force) {
+            this.codeMirror.refresh();
+        }
+        else if (this.codeMirror && !this.codeMirror.hasFocus()) {
+            this.codeMirror.refresh();
         }
     }
 
