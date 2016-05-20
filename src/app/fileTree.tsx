@@ -28,6 +28,7 @@ export interface Props {
     filePaths?: types.FilePath[];
     filePathsCompleted?: boolean;
     rootDir?: string;
+    activeProjectFilePathTruthTable?: { [filePath: string]: boolean };
 }
 
 interface TreeDirItem {
@@ -84,6 +85,7 @@ let treeItemStyle = {
     cursor:'pointer',
     padding: '3px',
     userSelect: 'none',
+    opacity: .8,
     ':focus': {
         outline: 'none',
     }
@@ -91,6 +93,11 @@ let treeItemStyle = {
 
 let treeItemSelectedStyle = {
     backgroundColor:styles.selectedBackgroundColor,
+}
+
+let treeItemInProjectStyle = {
+    color: 'rgb(0, 255, 183)',
+    opacity: 1,
 }
 
 let currentSelectedItemCopyStyle = {
@@ -112,6 +119,7 @@ let helpRowStyle = {
         filePaths: state.filePaths,
         filePathsCompleted: state.filePathsCompleted,
         rootDir: state.rootDir,
+        activeProjectFilePathTruthTable: state.activeProjectFilePathTruthTable,
     };
 })
 @ui.Radium
@@ -666,6 +674,7 @@ export class FileTree extends BaseComponent<Props, State>{
                 selected={selected}
                 expanded={expanded}
                 handleToggleDir={this.handleToggleDir}
+                activeProjectFilePathTruthTable={this.props.activeProjectFilePathTruthTable}
                 />].concat(sub)
         );
     }
@@ -680,7 +689,8 @@ export class FileTree extends BaseComponent<Props, State>{
             item={item}
             depth={depth}
             selected={selected}
-            handleSelectFile={this.handleSelectFile}/>
+            handleSelectFile={this.handleSelectFile}
+            activeProjectFilePathTruthTable={this.props.activeProjectFilePathTruthTable}/>
         );
     }
 
@@ -841,6 +851,7 @@ export namespace TreeNode {
             selected: boolean,
             expanded: boolean,
             handleToggleDir: (event: React.SyntheticEvent, item: TreeDirItem) => any;
+            activeProjectFilePathTruthTable: { [filePath: string]: boolean };
         }, {}>{
         shouldComponentUpdate = pure.shouldComponentUpdate;
         focus(filePath: string) {
@@ -851,9 +862,10 @@ export namespace TreeNode {
             let {item,depth,expanded} = this.props;
             let icon = expanded ? 'folder-open' : 'folder';
             let selectedStyle = this.props.selected ? treeItemSelectedStyle : {};
+            let inProjectStyle = this.props.activeProjectFilePathTruthTable[item.filePath] ? treeItemInProjectStyle : {};
 
             return (
-                <div style={[treeItemStyle, selectedStyle]} key={item.filePath} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleToggleDir(evt,item) }>
+                <div style={[treeItemStyle, selectedStyle, inProjectStyle]} key={item.filePath} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleToggleDir(evt,item) }>
                     {ui.indent(depth,2)} <Icon name={icon}/> {item.name}
                 </div>
             );
@@ -866,6 +878,7 @@ export namespace TreeNode {
         depth: number;
         selected: boolean;
         handleSelectFile: (event: React.SyntheticEvent, item: TreeFileItem) => any;
+        activeProjectFilePathTruthTable: { [filePath: string]: boolean };
     }, {}>{
         shouldComponentUpdate = pure.shouldComponentUpdate;
         focus() {
@@ -873,9 +886,10 @@ export namespace TreeNode {
         }
         render() {
             let selectedStyle = this.props.selected ? treeItemSelectedStyle : {};
+            let inProjectStyle = this.props.activeProjectFilePathTruthTable[this.props.item.filePath] ? treeItemInProjectStyle : {};
 
             return (
-                <div style={[treeItemStyle, selectedStyle]} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleSelectFile(evt, this.props.item) }>
+                <div style={[treeItemStyle, selectedStyle, inProjectStyle]} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleSelectFile(evt, this.props.item) }>
                     {ui.indent(this.props.depth,2)} <Icon name="file-text-o"/> {this.props.item.name}
                 </div>
             );

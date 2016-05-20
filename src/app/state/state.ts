@@ -95,9 +95,9 @@ export let setFilePathsInActiveProject = redux.add('setActiveProjectFiles', (sta
         // Basically we go up the file path
         // If at any point its already in the truth table it means that we've already added everything else that is needed.
         let folder = utils.getDirectory(fp);
-        while (folder && !truthTable[fp]) {
+        while (folder && !truthTable[folder]) {
             truthTable[folder] = true;
-            folder = utils.getDirectory(fp);
+            folder = utils.getDirectory(folder);
         }
     });
     return {
