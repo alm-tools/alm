@@ -142,7 +142,7 @@ export class UmlView extends ui.BaseComponent<Props, State> {
                 onKeyPress={this.handleKey}>
                 <div style={{overflow: 'hidden', padding:'10px 0px 10px 10px', display: 'flex'}}>
                     <gls.FlexHorizontal style={{}}>
-                        <gls.Content style={{ width: '200px', overflow: 'auto' }}>
+                        <gls.Content style={{ minWidth: '150px', maxWidth: '250px', overflow: 'auto' }}>
                             <typeIcon.SectionHeader text="Classes"/>
                             <gls.SmallVerticalSpace/>
                             {
@@ -249,7 +249,12 @@ export class UmlView extends ui.BaseComponent<Props, State> {
 
     loadData = () => {
         server.getUmlDiagramForFile({filePath: this.filePath}).then(res => {
-            const selected = this.state.selected && res.classes.find(c => c.name === this.state.selected.name);
+            // Preserve selected
+            let selected = this.state.selected && res.classes.find(c => c.name === this.state.selected.name);
+            // otherwise auto select first
+            if (!selected && res.classes.length) {
+                selected = res.classes[0];
+            }
             this.setState({ classes: res.classes, selected });
             this.filter();
         })
