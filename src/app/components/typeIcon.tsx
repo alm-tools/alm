@@ -100,6 +100,18 @@ class VisibilityIndicator extends ui.BaseComponent<{ visibility: UMLClassMemberV
 }
 
 /**
+ * Draws an icon for `override` visibility indication
+ */
+class OverrideIndicator extends ui.BaseComponent<{}, State>{
+    shouldComponentUpdate = pure.shouldComponentUpdate;
+    render() {
+        // Maybe add others if needed. I doubt it though.
+        const classIconColorTheme = "#4DA6FF";
+        return <Icon name={"arrow-circle-up"} style={{ color: classIconColorTheme }}/>;
+    }
+}
+
+/**
  * Draws an icon for `static` indication
  */
 class LifetimeIndicator extends ui.BaseComponent<{ lifetime: UMLClassMemberLifetime }, State>{
@@ -135,6 +147,7 @@ interface DocumentedTypeHeaderProps {
     name: string, icon: IconType,
     visibility?: UMLClassMemberVisibility,
     lifetime?: UMLClassMemberLifetime,
+    override?: boolean,
 }
 export class DocumentedTypeHeader extends ui.BaseComponent<DocumentedTypeHeaderProps, State>{
     shouldComponentUpdate = pure.shouldComponentUpdate;
@@ -149,6 +162,8 @@ export class DocumentedTypeHeader extends ui.BaseComponent<DocumentedTypeHeaderP
             {hasVisibility && <VisibilityIndicator visibility={this.props.visibility}/>}
             {hasVisibility && "\u00a0"}
             {" " + this.props.name}
+            {this.props.override && "\u00a0"}
+            {this.props.override && <OverrideIndicator/>}
         </div>;
     }
 }
@@ -246,6 +261,9 @@ export class TypeIconClassDiagramLegend extends ui.BaseComponent<{}, {}>{
                         </div>
                         <div style={{marginTop: '5px' }}>
                             <LifetimeIndicator lifetime={UMLClassMemberLifetime.Static}/> &nbsp; Static
+                        </div>
+                        <div style={{marginTop: '5px' }}>
+                            <OverrideIndicator/> &nbsp; Override
                         </div>
                     </div>
                 </div>

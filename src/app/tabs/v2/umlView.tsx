@@ -209,7 +209,7 @@ export class UmlView extends ui.BaseComponent<Props, State> {
                     {
                         c.members.map((m,i)=>{
                             return <div key={i} className={UmlViewStyles.classMemberSection} onClick={()=>this.handleGotoTypeLocation(m.location)}>
-                                <typeIcon.DocumentedTypeHeader name={m.name} icon={m.icon} visibility={m.visibility} lifetime={m.lifetime}/>
+                                <typeIcon.DocumentedTypeHeader name={m.name} icon={m.icon} visibility={m.visibility} lifetime={m.lifetime} override={m.override}/>
                             </div>
                         })
                     }

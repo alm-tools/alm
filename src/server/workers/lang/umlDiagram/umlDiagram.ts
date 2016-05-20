@@ -97,6 +97,24 @@ function transformClass(node: ts.ClassDeclaration, sourceFile: ts.SourceFile, pr
         }
     }
 
+    /** Figure out any override */
+    if (result.extends) {
+        /** Collect all parents */
+        const parents: types.UMLClass[] = [];
+        let parent = result.extends;
+        while (parent) {
+            parents.push(parent);
+            parent = parent.extends;
+        }
+        /** For each member check if a parent has a member with the same name */
+        result.members.forEach(m => {
+            if (m.name === "constructor") return; // (except for constructor)
+            if (parents.some(p => p.members.some(pm => pm.lifetime === types.UMLClassMemberLifetime.Instance && pm.name === m.name))) {
+                m.override = true;
+            }
+        });
+    }
+
     return result;
 }
 
