@@ -90,6 +90,16 @@ export let inActiveProjectUrl = (url:string) => {
 
 export let setFilePathsInActiveProject = redux.add('setActiveProjectFiles', (state, payload: string[]): StoreState => {
     let truthTable = utils.createMap(payload);
+    /** Also add all the *folders* in any of the files */
+    payload.forEach(fp => {
+        // Basically we go up the file path
+        // If at any point its already in the truth table it means that we've already added everything else that is needed.
+        let folder = utils.getDirectory(fp);
+        while (folder && !truthTable[fp]) {
+            truthTable[folder] = true;
+            folder = utils.getDirectory(fp);
+        }
+    });
     return {
         activeProjectFilePathTruthTable: truthTable
     };
