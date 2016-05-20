@@ -5,7 +5,7 @@
 /** declare React */
 declare var React: any;
 /** Imports */
-import {foo} from "./foo";
+import {foo, Foo} from "./foo";
 let bar = foo;
 // bar = '456';
 // \bar < useful for search testing
@@ -24,7 +24,7 @@ class Test {
   private foo = 123;
   /** Some constructor comment */
   constructor() {
-    
+
   }
   test() {
     return 'asdf' + `${this.foo}`;
@@ -43,3 +43,9 @@ const Comp = (props: { text: string }) => {
   return <div>{props.text}</div>
 }
 const comp = <Comp text="hello world"/>
+
+export class Bas extends Foo {
+  someMethod() {
+
+  }
+}
