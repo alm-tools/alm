@@ -867,7 +867,7 @@ export namespace TreeNode {
 
             return (
                 <div style={[treeItemStyle, selectedStyle, inProjectStyle]} key={item.filePath} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleToggleDir(evt,item) }>
-                    {ui.indent(depth,2)} <Icon name={icon}/> {item.name}
+                    <div style={{ marginLeft: depth * 10 }}> <Icon name={icon}/> {item.name}</div>
                 </div>
             );
         }
@@ -891,7 +891,7 @@ export namespace TreeNode {
 
             return (
                 <div style={[treeItemStyle, selectedStyle, inProjectStyle]} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleSelectFile(evt, this.props.item) }>
-                    {ui.indent(this.props.depth,2)} <Icon name="file-text-o"/> {this.props.item.name}
+                    <div style={{ marginLeft: this.props.depth * 10 }}> <Icon name="file-text-o"/> {this.props.item.name}</div>
                 </div>
             );
         }
