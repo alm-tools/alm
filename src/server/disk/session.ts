@@ -79,7 +79,23 @@ export function getDefaultOrNewSession(sessionId: string): types.SessionOnDisk {
      */
     let commandLineTabs = getCommandLineTabs();
     if (commandLineTabs.length) {
-        // session.tabLayout = session.openTabs.concat(commandLineTabs); // TODO: restore command line tab
+        // Utility to find first `stack` and just add to its tabs
+        let done = false;
+        const tryAddingToStack = (layout: types.TabLayoutOnDisk) => {
+            if (done) return;
+            if (layout.type === 'stack') {
+                layout.tabs = layout.tabs.concat(commandLineTabs);
+                done = true;
+            }
+            else {
+                layout.subItems.forEach(tryAddingToStack)
+            }
+        }
+
+        // Start at root
+        tryAddingToStack(session.tabLayout);
+
+        /** Write it out */
         writeDiskSession(session);
     }
 
