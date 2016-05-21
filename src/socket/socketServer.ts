@@ -131,6 +131,9 @@ namespace Server {
     export var getSetting: typeof contract.server.getSetting = (data) => {
         return resolve(session.getSetting(data));
     };
+    export var getValidSessionId: typeof contract.server.getValidSessionId = (data) => {
+        return resolve(session.getValidSessionId(data.sessionId));
+    };
 
     /**
      * Error handling

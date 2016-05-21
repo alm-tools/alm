@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /** Set the window session */
-    server.getOpenUITabs({ sessionId: clientSession.getSessionId() }).then((res) => {
+    server.getValidSessionId({ sessionId: clientSession.getSessionId() }).then((res) => {
         clientSession.setSessionId(res.sessionId);
         const sessionId = res.sessionId;
         // Now load all the other settings we want:

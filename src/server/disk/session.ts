@@ -187,6 +187,11 @@ export function getOpenUITabs(sessionId: string) {
     return { openTabs: session.openTabs.map(diskTabToUITab), sessionId: session.id }
 }
 
+export function getValidSessionId(sessionId: string) {
+    let session = getDefaultOrNewSession(sessionId);
+    return { sessionId: session.id }
+}
+
 /**
  * For various simple settings
  * setter
