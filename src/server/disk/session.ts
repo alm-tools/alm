@@ -1,8 +1,10 @@
 /**
- * The session manages the state associated with a user connection
+ * The session manages the state associated with a browser window connection.
  * This allows us to restore tabs + userconfiguration etc.
+ * We just drive the session id from the browser url
  */
 
+/** Imports */
 import * as flm from "../workers/fileListing/fileListingMaster";
 import * as types from "../../common/types";
 
@@ -14,7 +16,7 @@ import * as commandLine from "../commandLine";
 import * as constants from "../../common/constants";
 import * as tsconfig from "../workers/lang/core/tsconfig";
 
-const sessionFile = types.cacheDir + '/sessionsV1.json'
+const sessionFile = types.cacheDir + '/sessionsV2.json'
 
 /**
  * If there is no session then a default one will be created for you and sent over
@@ -32,8 +34,16 @@ export function getDefaultOrNewSession(sessionId: string): types.SessionOnDisk {
         if (!session){
             session = {
                 id: utils.createId(),
-                openTabs: [],
+                tabLayout: {
+                    type: 'stack',
+                    width: 100,
+                    height: 100,
+                    tabs: [],
+                    subItems: [],
+                    activeItemIndex: 0,
+                },
                 lastUsed: new Date().getTime(),
+                selectedTabId: null,
             }
             writeDiskSession(session);
             return session;
@@ -50,8 +60,9 @@ export function getDefaultOrNewSession(sessionId: string): types.SessionOnDisk {
         if (session) {
             session = {
                 id: utils.createId(),
-                openTabs: session.openTabs,
-                lastUsed: new Date().getTime()
+                tabLayout: session.tabLayout,
+                lastUsed: new Date().getTime(),
+                selectedTabId: session.selectedTabId,
             }
             writeDiskSession(session);
         }
@@ -68,7 +79,23 @@ export function getDefaultOrNewSession(sessionId: string): types.SessionOnDisk {
      */
     let commandLineTabs = getCommandLineTabs();
     if (commandLineTabs.length) {
-        session.openTabs = session.openTabs.concat(commandLineTabs);
+        // Utility to find first `stack` and just add to its tabs
+        let done = false;
+        const tryAddingToStack = (layout: types.TabLayoutOnDisk) => {
+            if (done) return;
+            if (layout.type === 'stack') {
+                layout.tabs = layout.tabs.concat(commandLineTabs);
+                done = true;
+            }
+            else {
+                layout.subItems.forEach(tryAddingToStack)
+            }
+        }
+
+        // Start at root
+        tryAddingToStack(session.tabLayout);
+
+        /** Write it out */
         writeDiskSession(session);
     }
 
@@ -79,33 +106,58 @@ export function getDefaultOrNewSession(sessionId: string): types.SessionOnDisk {
  * Only returns the command line tabs once
  * Means you can call it as many times as you like
  */
-function getCommandLineTabs(): types.SessionTabOnDisk[] {
+function getCommandLineTabs(): types.TabInstanceOnDisk[] {
     /** Add any command line files to the session */
     let files = commandLine.getOptions().filePaths;
     let tabs = files
         .map((file) => utils.getUrlFromFilePathAndProtocol({ protocol: 'file', filePath: file }))
         .map((url) => workingDir.makeRelativeUrl(url))
-        .map((relativeUrl) => ({ relativeUrl }));
+        .map((relativeUrl) => ({ id: utils.createId(), relativeUrl }));
     // clear for future
     // Doing it multiple times would mean that we would polute the user session on each new tab opening
     commandLine.getOptions().filePaths = [];
     return tabs;
 }
 
-function uiToDiskTab(uiTab: types.SessionTabInUI): types.SessionTabOnDisk {
+/**
+ * UI to disk and Disk to UI helpers
+ */
+function uiToDiskTab(uiTab: types.TabInstance): types.TabInstanceOnDisk {
     let relativeUrl = workingDir.makeRelativeUrl(uiTab.url);
 
     return {
+        id: uiTab.id,
         relativeUrl
     };
 }
-
-function diskTabToUITab(diskTab: types.SessionTabOnDisk): types.SessionTabInUI {
+function diskToUITab(diskTab: types.TabInstanceOnDisk): types.TabInstance {
     let url = workingDir.makeAbsoluteUrl(diskTab.relativeUrl);
     return {
+        id: diskTab.id,
         url
     };
 }
+function uiToDiskTabLayout(uiLayout: types.TabLayout): types.TabLayoutOnDisk {
+    return {
+        type: uiLayout.type,
+        width: uiLayout.width,
+        height: uiLayout.height,
+        tabs: uiLayout.tabs.map(uiToDiskTab),
+        subItems: uiLayout.subItems.map(uiToDiskTabLayout),
+        activeItemIndex: uiLayout.activeItemIndex,
+    }
+}
+function diskToUITabLayout(diskLayout: types.TabLayoutOnDisk): types.TabLayout {
+    return {
+        type: diskLayout.type,
+        width: diskLayout.width,
+        height: diskLayout.height,
+        tabs: diskLayout.tabs.map(diskToUITab),
+        subItems: diskLayout.subItems.map(diskToUITabLayout),
+        activeItemIndex: diskLayout.activeItemIndex,
+    }
+}
+
 
 export function readDiskSessionsFile() {
     let sessionFileContents: types.SessionsFileContents = {
@@ -177,14 +229,20 @@ export function setTsconfigPath(tsconfigFilePath: string) {
     sessionFileContents.relativePathToTsconfig = workingDir.makeRelative(tsconfigFilePath);
     writeDiskSessionFile(sessionFileContents);
 }
-export function setOpenUITabs(sessionId: string, tabs: types.SessionTabInUI[]) {
+export function setOpenUITabs(sessionId: string, layout: types.TabLayout, selectedTabId: string|null) {
     let session = getDefaultOrNewSession(sessionId);
-    session.openTabs = tabs.map(uiToDiskTab);
+    session.tabLayout = uiToDiskTabLayout(layout);
+    session.selectedTabId = selectedTabId;
     writeDiskSession(session);
 }
 export function getOpenUITabs(sessionId: string) {
     let session = getDefaultOrNewSession(sessionId);
-    return { openTabs: session.openTabs.map(diskTabToUITab), sessionId: session.id }
+    return { tabLayout: diskToUITabLayout(session.tabLayout), selectedTabId: session.selectedTabId }
+}
+
+export function getValidSessionId(sessionId: string) {
+    let session = getDefaultOrNewSession(sessionId);
+    return { sessionId: session.id }
 }
 
 /**

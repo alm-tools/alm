@@ -331,6 +331,8 @@ namespace GoldenLayout {
          * Default: componentName or ''
          */
         title?: string;
+
+        activeItemIndex?: number;
     }
 
     export interface ComponentConfig extends ItemConfig {

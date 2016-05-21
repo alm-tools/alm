@@ -37,12 +37,13 @@ export var server = {
     getActiveProjectConfigDetails: {} as QRFunction<{}, AvailableProjectConfig>,
     setActiveProjectConfigDetails: {} as QRFunction<AvailableProjectConfig, {}>,
     isFilePathInActiveProject: {} as QRFunction<{ filePath: string }, { inActiveProject: boolean }>,
-    setOpenUITabs: {} as QRFunction<{ sessionId: string, openTabs: types.SessionTabInUI[] }, {}>,
-    getOpenUITabs: {} as QRFunction<{ sessionId: id }, { sessionId: string; openTabs: types.SessionTabInUI[] }>,
+    setOpenUITabs: {} as QRFunction<{ sessionId: string, tabLayout: types.TabLayout, selectedTabId: string|null }, {}>,
+    getOpenUITabs: {} as QRFunction<{ sessionId: id }, { tabLayout: types.TabLayout, selectedTabId: string|null }>,
     activeProjectFilePaths: {} as QRFunction<{}, { filePaths: string[] }>,
     sync: {} as QRFunction<{}, {}>,
     setSetting: {} as QRFunction<{ sessionId: string, settingId: string, value: any }, {}>,
     getSetting: {} as QRFunction<{ sessionId: string, settingId: string }, any>,
+    getValidSessionId: {} as QRFunction<{ sessionId: id }, { sessionId: string; }>,
 
     /**
      * Error stuff

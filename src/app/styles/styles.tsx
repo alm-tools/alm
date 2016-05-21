@@ -242,7 +242,6 @@ export namespace Tip {
         border: '2px solid',
         borderRadius: '6px',
         padding: '2px',
-        fontSize: '.7rem',
         backgroundColor: 'black',
     }
 }

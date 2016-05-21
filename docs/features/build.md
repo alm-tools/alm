@@ -8,6 +8,8 @@ As soon as you open or edit a TypeScript file we do an intelligent emit of the e
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/emit.gif)
 
+> Note: You can disable this using `tsconfig.json` [`compileOnSave`][tsconfig-compile-on-save]
+
 ## Build
 
 **build** command `F6` to do a full emit + emit check.
@@ -19,3 +21,5 @@ As soon as you open or edit a TypeScript file we do an intelligent emit of the e
 `Ctrl|⌘ + Shift + M` toggles the output co**m**piled JS file for a give TypeScript file.
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/emitToggle.png)
+
+[tsconfig-compile-on-save]:/config/tsconfig.md#compileonsave

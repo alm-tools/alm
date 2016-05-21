@@ -28,19 +28,59 @@ export interface SessionOnDisk {
     /** unique to each session */
     id: string;
     /** the tabs the user has open */
-    openTabs: SessionTabOnDisk[];
+    tabLayout: TabLayoutOnDisk;
+    selectedTabId: string | null;
     /** Duration since epoch */
     lastUsed: number;
-}
-export interface SessionTabOnDisk {
-    relativeUrl: string;
+    /**
+     * NOTE: there can be any number of other settings that are type checked only at the client
+     */
 }
 /**
- * The UI version of session. Basically its all absolute paths and tab urls
- * also UI is not in control of active project so it doesn't sent that
+ * Same as a `TabInstance` but works with `relativeUrl`
  */
-export interface SessionTabInUI {
+export interface TabInstanceOnDisk {
+    id: string;
+    relativeUrl: string;
+}
+
+/**
+ * What the main application tab container knows about a tab
+ */
+export interface TabInstance {
+    id: string;
     url: string;
+}
+
+/**
+ * Just the layout information we serialize
+ * A recursive structure for re-storing tab information
+ */
+export type TabLayout = {
+    type: 'stack' | 'row' | 'column' | string;
+    /** out of 100 */
+    width: number;
+    /** out of 100 */
+    height: number;
+    /** Only exist on a `stack` */
+    tabs: TabInstance[];
+    activeItemIndex: number;
+    /** Only exists if type is not `stack` */
+    subItems: TabLayout[];
+}
+
+/** Same as above with `ui` stuff replaced with `disk` stuff */
+export type TabLayoutOnDisk = {
+    type: 'stack' | 'row' | 'column' | string;
+    /** out of 100 */
+    width: number;
+    /** out of 100 */
+    height: number;
+    /** Only exist on a `stack` */
+    tabs: TabInstanceOnDisk[];
+    activeItemIndex: number;
+    /** Only exists if type is not `stack` */
+    subItems: TabLayoutOnDisk[];
 }
 
 /**
