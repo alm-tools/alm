@@ -33,6 +33,7 @@ export interface SessionOnDisk {
     lastUsed: number;
 }
 export interface SessionTabOnDisk {
+    id: string;
     relativeUrl: string;
 }
 /**
@@ -40,6 +41,7 @@ export interface SessionTabOnDisk {
  * also UI is not in control of active project so it doesn't sent that
  */
 export interface SessionTabInUI {
+    id: string;
     url: string;
 }
 

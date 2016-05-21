@@ -39,10 +39,7 @@ declare var _helpMeGrabTheType: AppTabsContainer;
 export let tabState: typeof _helpMeGrabTheType.tabState;
 export const tabStateChanged = new TypedEvent<{}>();
 
-export interface TabInstance {
-    id: string;
-    url: string;
-}
+export type TabInstance = types.SessionTabInUI;
 
 /**
  *
@@ -798,6 +795,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         server.setOpenUITabs({
             sessionId: getSessionId(),
             openTabs: this.tabs.map(t=>({
+                id: t.id,
                 url: t.url
             }))
         });

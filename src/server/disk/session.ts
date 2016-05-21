@@ -87,7 +87,7 @@ function getCommandLineTabs(): types.SessionTabOnDisk[] {
     let tabs = files
         .map((file) => utils.getUrlFromFilePathAndProtocol({ protocol: 'file', filePath: file }))
         .map((url) => workingDir.makeRelativeUrl(url))
-        .map((relativeUrl) => ({ relativeUrl }));
+        .map((relativeUrl) => ({ id: utils.createId(), relativeUrl }));
     // clear for future
     // Doing it multiple times would mean that we would polute the user session on each new tab opening
     commandLine.getOptions().filePaths = [];
@@ -98,6 +98,7 @@ function uiToDiskTab(uiTab: types.SessionTabInUI): types.SessionTabOnDisk {
     let relativeUrl = workingDir.makeRelativeUrl(uiTab.url);
 
     return {
+        id: uiTab.id,
         relativeUrl
     };
 }
@@ -105,6 +106,7 @@ function uiToDiskTab(uiTab: types.SessionTabInUI): types.SessionTabOnDisk {
 function diskTabToUITab(diskTab: types.SessionTabOnDisk): types.SessionTabInUI {
     let url = workingDir.makeAbsoluteUrl(diskTab.relativeUrl);
     return {
+        id: diskTab.id,
         url
     };
 }
