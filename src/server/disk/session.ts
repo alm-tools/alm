@@ -39,7 +39,8 @@ export function getDefaultOrNewSession(sessionId: string): types.SessionOnDisk {
                     width: 100,
                     height: 100,
                     tabs: [],
-                    subItems: []
+                    subItems: [],
+                    activeItemIndex: 0,
                 },
                 lastUsed: new Date().getTime(),
             }
@@ -124,7 +125,8 @@ function uiToDiskTabLayout(uiLayout: types.TabLayout): types.TabLayoutOnDisk {
         width: uiLayout.width,
         height: uiLayout.height,
         tabs: uiLayout.tabs.map(uiToDiskTab),
-        subItems: uiLayout.subItems.map(uiToDiskTabLayout)
+        subItems: uiLayout.subItems.map(uiToDiskTabLayout),
+        activeItemIndex: uiLayout.activeItemIndex
     }
 }
 function diskToUITabLayout(diskLayout: types.TabLayoutOnDisk): types.TabLayout {
@@ -133,7 +135,8 @@ function diskToUITabLayout(diskLayout: types.TabLayoutOnDisk): types.TabLayout {
         width: diskLayout.width,
         height: diskLayout.height,
         tabs: diskLayout.tabs.map(diskToUITab),
-        subItems: diskLayout.subItems.map(diskToUITabLayout)
+        subItems: diskLayout.subItems.map(diskToUITabLayout),
+        activeItemIndex: diskLayout.activeItemIndex
     }
 }
 

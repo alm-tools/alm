@@ -60,6 +60,7 @@ export type TabLayout = {
     height: number;
     /** Only exist on a `stack` */
     tabs: TabInstance[];
+    activeItemIndex: number;
     /** Only exists if type is not `stack` */
     subItems: TabLayout[];
 }
@@ -73,6 +74,7 @@ export type TabLayoutOnDisk = {
     height: number;
     /** Only exist on a `stack` */
     tabs: TabInstanceOnDisk[];
+    activeItemIndex: number;
     /** Only exists if type is not `stack` */
     subItems: TabLayoutOnDisk[];
 }

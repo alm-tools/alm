@@ -1300,6 +1300,7 @@ namespace GLUtil {
             height: 100,
             tabs:[],
             subItems: [],
+            activeItemIndex: 0,
         }
 
         /** The root is actually just `root` with a single content item if any */
@@ -1319,6 +1320,7 @@ namespace GLUtil {
                 height: glStack.height || 100,
                 tabs: toTabStack(glStack as any).tabs,
                 subItems: [],
+                activeItemIndex: (glStack as any).activeItemIndex,
             }
             layout.subItems.push(stack);
         }
@@ -1329,6 +1331,7 @@ namespace GLUtil {
                 height: glRow.height || 100,
                 tabs: [],
                 subItems: [],
+                activeItemIndex: 0,
             }
             layout.subItems.push(row);
             (glRow.content || []).forEach(c => callRightFunctionForGlChild(row, c));
@@ -1340,6 +1343,7 @@ namespace GLUtil {
                 height: glColumn.height || 100,
                 tabs: [],
                 subItems: [],
+                activeItemIndex: 0,
             }
             layout.subItems.push(column);
             (glColumn.content || []).forEach(c => callRightFunctionForGlChild(column, c));
@@ -1382,6 +1386,7 @@ namespace GLUtil {
                 width: layout.width || 100,
                 height: layout.height || 100,
                 content: fromTabStack(layout.tabs, appTabsContainer),
+                activeItemIndex: layout.activeItemIndex,
             }
             return stack;
         }
