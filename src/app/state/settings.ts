@@ -37,3 +37,13 @@ export function setExpandErrors(value: boolean) {
 export function getExpandErrors(): Promise<boolean> {
     return getSetting('expandErrors');
 }
+
+/**
+ * File Tree expanded
+ */
+export function setFileTreeExpanded(value: boolean) {
+    setSetting('fileTreeExpanded', value);
+}
+export function getFileTreeExpanded(): Promise<boolean> {
+    return getSetting('fileTreeExpanded');
+}

@@ -149,5 +149,12 @@ document.addEventListener('DOMContentLoaded', () => {
         state.subscribeSub(s=>s.errorsExpanded,(errorsExpanded)=>{
             settings.setExpandErrors(errorsExpanded);
         });
+        settings.getFileTreeExpanded().then(res => {
+            if (res) state.expandFileTree({});
+            else state.collapseFileTree({});
+        });
+        state.subscribeSub(s => s.fileTreeShown, (fileTreeShown) => {
+            settings.setFileTreeExpanded(fileTreeShown);
+        });
     });
 });
