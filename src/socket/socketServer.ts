@@ -124,6 +124,13 @@ namespace Server {
         activeProjectConfig.sync();
         return resolve({});
     };
+    export var setSetting: typeof contract.server.setSetting = (data) => {
+        session.setSetting(data);
+        return resolve({});
+    };
+    export var getSetting: typeof contract.server.getSetting = (data) => {
+        return resolve(session.getSetting(data));
+    };
 
     /**
      * Error handling
