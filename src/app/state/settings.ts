@@ -54,3 +54,8 @@ export const fileTreeWidth = createSimpleSetting<number>('fileTreeWidth');
  * Main panel height
  */
 export const mainPanelHeight = createSimpleSetting<number>('mainPanelHeight');
+
+/**
+ * Debugging tabs
+ */
+export const tabs = createSimpleSetting<any>('weeeUITabs');

@@ -29,6 +29,7 @@ import {TypedEvent} from "../../../common/events";
 import {CodeEditor} from "../../codemirror/codeEditor";
 import * as state from "../../state/state";
 import * as pure from "../../../common/pure";
+import * as settings from "../../state/settings";
 
 /**
  * Singleton + tab state migrated from redux to the local component
@@ -85,124 +86,119 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     componentDidMount() {
-        /**
-         * Setup golden layout
-         * https://golden-layout.com/docs/Config.html
-         */
-        var config:GoldenLayout.Config = {
-            content: [{
-                type: 'stack',
-                content: []
-            }]
-        };
-        this.layout = new GoldenLayout(config, this.ctrls.root);
+        settings.tabs.get().then(res => {
+            const config = res ? GLUtil.unserializeConfig(res, this) : {
+                content: [{
+                    type: 'stack',
+                    content: []
+                }]
+            };
 
-        /**
-         * Register all the tab components with layout
-         */
-        tabRegistry.getTabConfigs().forEach(({protocol,config}) => {
-            this.layout.registerComponent(protocol, config.component);
-        });
+            /** This is needed as we use this ordered information in quite a few places */
+            this.tabs = GLUtil.orderedTabs(config);
 
-        // initialize the layout
-        this.layout.init();
+            // If there are no tabs then show the tip help
+            if (!this.tabs.length) this.tabState.refreshTipHelp();
 
-        /** Restore any open tabs from last session */
-        server.getOpenUITabs({ sessionId: getSessionId() }).then((res) => {
-            setSessionId(res.sessionId);
+            /**
+             * Setup golden layout
+             * https://golden-layout.com/docs/Config.html
+             */
+            this.layout = new GoldenLayout(config, this.ctrls.root);
 
-            // Create tab instances
-            let openTabs = res.openTabs;
-            let tabInstances: TabInstance[] = openTabs.map(t => {
-                return {
-                    id: createId(),
-                    url: t.url,
-                    saved: true
-                };
+            /**
+             * Register all the tab components with layout
+             */
+            tabRegistry.getTabConfigs().forEach(({protocol, config}) => {
+                this.layout.registerComponent(protocol, config.component);
             });
 
-            // Add the tabs to the layout
-            this.tabs = [];
-            tabInstances.forEach(t => this.addTabToLayout(t, false));
-            this.tabState.refreshTipHelp();
+            /** Setup window resize */
+            this.disposible.add(onresize.on(() => this.tabState.resize()));
 
-            // Select the last one
-            tabInstances.length && tabState.selectTab(tabInstances[tabInstances.length - 1].id);
-        });
-
-        /** Setup window resize */
-        this.disposible.add(onresize.on(()=>this.tabState.resize()));
-
-        /**
-         * Tab selection
-         * I tried to use the config to figure out the selected tab.
-         * That didn't work out so well
-         * So the plan is to intercept the tab clicks to focus
-         * and on state changes just focus on the last selected tab if any
-         */
-        (this.layout as any).on('tabCreated', (tabInfo) => {
-            this.createTabHandle(tabInfo);
-        });
-        (this.layout as any).on('itemDestroyed', (evt) => {
-            if (evt.config && evt.config.id){
-                this.tabState.tabClosedInLayout(evt.config.id);
-            }
-        });
-        let oldConfig = this.layout.toConfig();
-        (this.layout as any).on('stateChanged', (evt) => {
-            const newConfig = this.layout.toConfig();
             /**
-             * `golden-layout` plugs into the `componentWillUpdate` on our tab components
-             * If any tab component state changes it calls us with `stateChanged`
-             * These are not relevant for us so we use our super special diff to ignore these cases
-             *
-             * This diff can be improved (its too strict)
+             * Tab selection
+             * I tried to use the config to figure out the selected tab.
+             * That didn't work out so well
+             * So the plan is to intercept the tab clicks to focus
+             * and on state changes just focus on the last selected tab if any
              */
-            type SimpleContentItem = { type: string, dimension: any, content?: SimpleContentItem[], activeItemIndex?: number }
-            const contentEqual = (a: SimpleContentItem, b: SimpleContentItem) => {
-                if (a.type !== b.type) return false;
-                if (a.activeItemIndex !== b.activeItemIndex) return false;
-                if (!pure.shallowEqual(a.dimension, b.dimension)) return false;
-                if (a.content) {
-                    if (!b.content) return false;
-                    if (a.content.length !== b.content.length) return false;
-                    return a.content.every((c, i) => contentEqual(c, b.content[i]));
+            (this.layout as any).on('tabCreated', (tabInfo) => {
+                this.createTabHandle(tabInfo);
+            });
+            (this.layout as any).on('itemDestroyed', (evt) => {
+                if (evt.config && evt.config.id){
+                    this.tabState.tabClosedInLayout(evt.config.id);
                 }
-                return true;
-            }
-            const equal = contentEqual(oldConfig, newConfig);
-            oldConfig = newConfig;
-            if (equal) {
-                return;
-            }
+            });
+            let oldConfig = config;
+            let initialStateChange = true;
+            (this.layout as any).on('stateChanged', (evt) => {
+                if (initialStateChange) {
+                    // Select the last tab
+                    this.tabs.length && tabState.selectTab(this.tabs[this.tabs.length - 1].id);
+                    initialStateChange = false;
+                }
 
-            // Due to state changes layout needs to happen on *all tabs* (because it might expose some other tabs)
-            // PREF : you can go thorough all the `stack` in the layout and only call resize on the active ones.
-            this.tabState.resizeJustTheTabs();
+                const newConfig = this.layout.toConfig();
+                /**
+                 * `golden-layout` plugs into the `componentWillUpdate` on our tab components
+                 * If any tab component state changes it calls us with `stateChanged`
+                 * These are not relevant for us so we use our super special diff to ignore these cases
+                 *
+                 * This diff can be improved (its too strict)
+                 */
+                type SimpleContentItem = { type: string, dimension: any, content?: SimpleContentItem[], activeItemIndex?: number, width?: number; height?: number }
+                const contentEqual = (a: SimpleContentItem, b: SimpleContentItem) => {
+                    if (a.type !== b.type) return false;
+                    if (a.activeItemIndex !== b.activeItemIndex) return false;
+                    if (!pure.shallowEqual(a.dimension, b.dimension)) return false;
+                    if (a.height !== b.height) return false;
+                    if (a.width !== b.width) return false;
+                    if (a.content) {
+                        if (!b.content) return false;
+                        if (a.content.length !== b.content.length) return false;
+                        return a.content.every((c, i) => contentEqual(c, b.content[i]));
+                    }
+                    return true;
+                }
+                const equal = contentEqual(oldConfig, newConfig);
+                oldConfig = newConfig;
+                if (equal) {
+                    return;
+                }
 
-            // Ignore the events where the user is dragging stuff
-            // This is because at this time the `config` doesn't contain the *dragged* item.
-            const orderedtabs = GLUtil.orderedTabs(newConfig);
-            if (orderedtabs.length !== this.tabs.length) {
-                return;
-            }
+                // Due to state changes layout needs to happen on *all tabs* (because it might expose some other tabs)
+                // PREF : you can go thorough all the `stack` in the layout and only call resize on the active ones.
+                this.tabState.resizeJustTheTabs();
 
-            // Store the tabs in the right order
-            this.tabState.setTabs(orderedtabs);
+                // Ignore the events where the user is dragging stuff
+                // This is because at this time the `config` doesn't contain the *dragged* item.
+                const orderedtabs = GLUtil.orderedTabs(newConfig);
+                if (orderedtabs.length !== this.tabs.length) {
+                    return;
+                }
 
-            // If there was a selected tab focus on it again.
-            if (this.tabState._resizingDontReFocus) {
-                this.tabState._resizingDontReFocus = false;
-            }
-            else {
-                this.selectedTabInstance && this.tabState.selectTab(this.selectedTabInstance.id);
-            }
+                // Store the tabs in the right order
+                this.tabState.setTabs(orderedtabs);
+
+                // If there was a selected tab focus on it again.
+                if (this.tabState._resizingDontReFocus) {
+                    this.tabState._resizingDontReFocus = false;
+                }
+                else {
+                    this.selectedTabInstance && this.tabState.selectTab(this.selectedTabInstance.id);
+                }
+            });
+
+            // initialize the layout
+            this.layout.init();
+
+            /**
+             * General command handling
+             */
+            this.setupCommandHandling()
         });
-
-        /**
-         * General command handling
-         */
-        this.setupCommandHandling()
     }
 
     /** Used to undo close tab */
@@ -797,7 +793,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     private sendTabInfoToServer = () => {
-        GLUtil.serializeConfig(this.layout.toConfig(), this);
+        const serialized = GLUtil.serializeConfig(this.layout.toConfig(), this);
+        settings.tabs.set(serialized);
         server.setOpenUITabs({
             sessionId: getSessionId(),
             openTabs: this.tabs.map(t=>({
