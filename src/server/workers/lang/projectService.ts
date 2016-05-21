@@ -258,7 +258,7 @@ export function getDoctorInfo(query: Types.GetDoctorInfoQuery): Promise<Types.Ge
                     definitions: defRes.definitions,
                     quickInfo: infoRes.valid && infoRes.info.name ? {
                         name: infoRes.info.name,
-                        comment: infoRes.info.name
+                        comment: infoRes.info.comment
                     } : null,
                     langHelp,
                     references: refRes.references
