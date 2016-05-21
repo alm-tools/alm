@@ -182,8 +182,26 @@ export function setOpenUITabs(sessionId: string, tabs: types.SessionTabInUI[]) {
     session.openTabs = tabs.map(uiToDiskTab);
     writeDiskSession(session);
 }
-
 export function getOpenUITabs(sessionId: string) {
     let session = getDefaultOrNewSession(sessionId);
     return { openTabs: session.openTabs.map(diskTabToUITab), sessionId: session.id }
+}
+
+/**
+ * For various simple settings
+ * setter
+ */
+export function setSetting(config: { sessionId: string, settingId: string, value: any }) {
+    let session = getDefaultOrNewSession(config.sessionId);
+    session[config.settingId] = config.value;
+    writeDiskSession(session);
+}
+
+/**
+ * For various simple settings
+ * getter
+ */
+export function getSetting(config: { sessionId: string, settingId: string }): any {
+    let session = getDefaultOrNewSession(config.sessionId);
+    return session[config.settingId];
 }

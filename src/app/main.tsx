@@ -11,6 +11,8 @@ import {store} from "./state/state";
 import * as ui from "./ui";
 import * as constants from "../common/constants";
 import {tabState} from "./tabs/v2/appTabsContainer";
+import * as settings from "./state/settings";
+import * as clientSession from "./state/clientSession";
 
 import {server, cast, pendingRequestsChanged, connectionStatusChanged} from "../socket/socketClient";
 var Modal = require('react-modal');
@@ -123,10 +125,36 @@ document.addEventListener('DOMContentLoaded', () => {
         window.open(`${window.location.href.replace(location.href,'')}#${constants.urlHashNewSession}`, '',`innerWidth=${width}, innerHeight=${height}`);
     });
 
-    // http://stackoverflow.com/questions/12381563/how-to-stop-browser-back-button-using-javascript
-    const ____hash = window.location.hash || constants.urlHashNormal;
-    window.location.hash = ____hash;
-    window.location.hash = "Again-No-back-button"; // again because google chrome don't insert first hash into history
-    window.location.hash = ____hash; // again so that if there was a hash it can be used for routing
-    window.onhashchange = function() { window.location.hash = ____hash; }
+    /** Set the window session */
+    server.getOpenUITabs({ sessionId: clientSession.getSessionId() }).then((res) => {
+        clientSession.setSessionId(res.sessionId);
+        const sessionId = res.sessionId;
+        // Now load all the other settings we want:
+
+        /**
+         * Pattern:
+         * - Load the setting into redux
+         * - Then keep it updated as redux changes
+         */
+        settings.showDoctor.get().then(res => {
+            state.setShowDoctor(res);
+        });
+        state.subscribeSub(s => s.showDoctor, (showDoctor) => {
+            settings.showDoctor.set(showDoctor);
+        });
+        settings.errorsExpanded.get().then(res => {
+            if (res) state.expandErrors({});
+            else state.collapseErrors({});
+        });
+        state.subscribeSub(s => s.errorsExpanded, (errorsExpanded) => {
+            settings.errorsExpanded.set(errorsExpanded);
+        });
+        settings.fileTreeExpanded.get().then(res => {
+            if (res) state.expandFileTree({});
+            else state.collapseFileTree({});
+        });
+        state.subscribeSub(s => s.fileTreeShown, (fileTreeShown) => {
+            settings.fileTreeExpanded.set(fileTreeShown);
+        });
+    });
 });
