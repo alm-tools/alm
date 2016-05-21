@@ -1,8 +1,10 @@
 /**
- * The session manages the state associated with a user connection
+ * The session manages the state associated with a browser window connection.
  * This allows us to restore tabs + userconfiguration etc.
+ * We just drive the session id from the browser url
  */
 
+/** Imports */
 import * as flm from "../workers/fileListing/fileListingMaster";
 import * as types from "../../common/types";
 
