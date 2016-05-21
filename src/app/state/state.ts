@@ -214,6 +214,11 @@ export let toggleDoctor = redux.add('toggleDoctor', (state: StoreState, payload:
         showDoctor: !state.showDoctor
     };
 });
+export let setShowDoctor = redux.add('setShowDoctor', (state: StoreState, payload: boolean): StoreState => {
+    return {
+        showDoctor: payload
+    };
+});
 
 export const fileOuputStatusUpdated = redux.add('fileOuputStatusUpdated', (state: StoreState, payload: types.JSOutputStatus): StoreState => {
     const outputStatusCache = redux.updateFields({ [payload.inputFilePath]: payload })(state.outputStatusCache);

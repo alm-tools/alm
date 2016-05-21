@@ -23,7 +23,7 @@ import {Icon} from "../../components/icon";
 import {cast, server} from "../../../socket/socketClient";
 import {Types} from "../../../socket/socketContract";
 import * as alertOnLeave from "../../utils/alertOnLeave";
-import {getSessionId, setSessionId} from "../clientSession";
+import {getSessionId, setSessionId} from "../../state/clientSession";
 import * as onresize from "onresize";
 import {TypedEvent} from "../../../common/events";
 import {CodeEditor} from "../../codemirror/codeEditor";
