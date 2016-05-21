@@ -797,6 +797,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     private sendTabInfoToServer = () => {
+        GLUtil.serializeConfig(this.layout.toConfig());
         server.setOpenUITabs({
             sessionId: getSessionId(),
             openTabs: this.tabs.map(t=>({
@@ -1269,6 +1270,102 @@ namespace GLUtil {
         visitAllStacks(config.content, addFromStack);
 
         return result;
+    }
+
+    /**
+     * Serialize the tab layout
+     */
+    export function serializeConfig(config: GoldenLayout.Config) {
+        console.log(config.content);
+        /** TODO: convert this `trueTabInfo` to the following structure */
+        type Layout = {
+            type: 'stack' | 'row' | 'column' | string;
+            /** out of 100 */
+            width: number;
+            /** out of 100 */
+            height: number;
+            /** Only exist on a `stack` */
+            tabs: TabInstance[];
+            /** Only exists if type is not `stack` */
+            subItems: Layout[];
+        }
+
+        /** Assume its a stack to begin with */
+        let result: Layout = {
+            type: 'stack',
+            width: 100,
+            height: 100,
+            tabs:[],
+            subItems: [],
+        }
+
+        /** The root is actually just `root` */
+        const goldenLayoutRoot = config.content[0];
+        // and its empty so we good
+        if (!goldenLayoutRoot) {
+            return result;
+        }
+
+        // So the root is whatever it really is
+        result.type = goldenLayoutRoot.type;
+
+        /**
+         * Recursion helpers
+         */
+        function addStackItemsToLayout(layout: Layout, glStack: GoldenLayout.ItemConfig) {
+            const stack: Layout = {
+                type: 'stack',
+                width: glStack.width || 100,
+                height: glStack.height || 100,
+                tabs: toTabStack(glStack as any).tabs,
+                subItems: [],
+            }
+            layout.subItems.push(stack);
+        }
+        function addRowItemsToLayout(layout: Layout, glRow: GoldenLayout.ItemConfig) {
+            const row: Layout = {
+                type: 'row',
+                width: glRow.width || 100,
+                height: glRow.height || 100,
+                tabs: [],
+                subItems: [],
+            }
+            layout.subItems.push(row);
+            (glRow.content || []).forEach(c => callRightFunctionForGlChild(row, c));
+        }
+        function addColumnItemsToLayout(layout: Layout, glColumn: GoldenLayout.ItemConfig) {
+            const column: Layout = {
+                type: 'column',
+                width: glColumn.width || 100,
+                height: glColumn.height || 100,
+                tabs: [],
+                subItems: [],
+            }
+            layout.subItems.push(column);
+            (glColumn.content || []).forEach(c => callRightFunctionForGlChild(column, c));
+        }
+        function callRightFunctionForGlChild(layout: Layout, c: GoldenLayout.ItemConfigType) {
+            if (c.type === 'column') {
+                addColumnItemsToLayout(layout, c);
+            }
+            if (c.type === 'row') {
+                addRowItemsToLayout(layout, c);
+            }
+            if (c.type === 'stack') {
+                addStackItemsToLayout(layout, c);
+            }
+        }
+
+        /** If the root is a stack .. we done */
+        if (goldenLayoutRoot.type === 'stack') {
+            result.tabs = toTabStack(goldenLayoutRoot as any).tabs;
+        }
+        else {
+            /** Start at the root */
+            (goldenLayoutRoot.content || []).forEach(c => callRightFunctionForGlChild(result, c));
+        }
+
+        // console.log(result);
     }
 
     /**
