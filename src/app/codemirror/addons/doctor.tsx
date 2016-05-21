@@ -64,7 +64,8 @@ let docuOnBottomStyle = {
 let doctorRow = csx.extend({
     paddingTop: '3px',
     paddingBottom: '3px',
-    whiteSpace: 'pre'
+    whiteSpace: 'pre',
+    flexShrink: '0'
 }, csx.flexRoot, csx.center, csx.wrap)
 
 let fileLinkStyle = {
@@ -114,6 +115,7 @@ export class Doctor extends ui.BaseComponent<Props,State> {
 
     handleCursorActivity = () => {
         let cm = this.props.cm;
+        if (!cm) return; // Still loading
         let doc = cm.getDoc();
         let isSingleCursor = cmUtils.isSingleCursor(this.props.cm);
         if (!isSingleCursor) {
@@ -171,7 +173,8 @@ export class Doctor extends ui.BaseComponent<Props,State> {
         let definitions: JSX.Element;
         if (doctorInfo && doctorInfo.quickInfo){
              typeInfo = <div style={doctorRow}>
-                    <strong>SIG</strong> <strong style={{fontFamily:'monospace'} as any}>{doctorInfo.quickInfo.name}</strong>
+                    <strong>SIG</strong>&nbsp;
+                    <strong style={{fontFamily:'monospace'} as any}>{doctorInfo.quickInfo.name}</strong>
                 </div>;
              comment = doctorInfo.quickInfo.comment &&
                 <div style={doctorRow}>
