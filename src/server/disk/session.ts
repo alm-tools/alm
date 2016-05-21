@@ -43,6 +43,7 @@ export function getDefaultOrNewSession(sessionId: string): types.SessionOnDisk {
                     activeItemIndex: 0,
                 },
                 lastUsed: new Date().getTime(),
+                selectedTabId: null,
             }
             writeDiskSession(session);
             return session;
@@ -60,7 +61,8 @@ export function getDefaultOrNewSession(sessionId: string): types.SessionOnDisk {
             session = {
                 id: utils.createId(),
                 tabLayout: session.tabLayout,
-                lastUsed: new Date().getTime()
+                lastUsed: new Date().getTime(),
+                selectedTabId: session.selectedTabId,
             }
             writeDiskSession(session);
         }
@@ -126,7 +128,7 @@ function uiToDiskTabLayout(uiLayout: types.TabLayout): types.TabLayoutOnDisk {
         height: uiLayout.height,
         tabs: uiLayout.tabs.map(uiToDiskTab),
         subItems: uiLayout.subItems.map(uiToDiskTabLayout),
-        activeItemIndex: uiLayout.activeItemIndex
+        activeItemIndex: uiLayout.activeItemIndex,
     }
 }
 function diskToUITabLayout(diskLayout: types.TabLayoutOnDisk): types.TabLayout {
@@ -136,7 +138,7 @@ function diskToUITabLayout(diskLayout: types.TabLayoutOnDisk): types.TabLayout {
         height: diskLayout.height,
         tabs: diskLayout.tabs.map(diskToUITab),
         subItems: diskLayout.subItems.map(diskToUITabLayout),
-        activeItemIndex: diskLayout.activeItemIndex
+        activeItemIndex: diskLayout.activeItemIndex,
     }
 }
 
@@ -211,14 +213,15 @@ export function setTsconfigPath(tsconfigFilePath: string) {
     sessionFileContents.relativePathToTsconfig = workingDir.makeRelative(tsconfigFilePath);
     writeDiskSessionFile(sessionFileContents);
 }
-export function setOpenUITabs(sessionId: string, layout: types.TabLayout) {
+export function setOpenUITabs(sessionId: string, layout: types.TabLayout, selectedTabId: string|null) {
     let session = getDefaultOrNewSession(sessionId);
     session.tabLayout = uiToDiskTabLayout(layout);
+    session.selectedTabId = selectedTabId;
     writeDiskSession(session);
 }
 export function getOpenUITabs(sessionId: string) {
     let session = getDefaultOrNewSession(sessionId);
-    return { tabLayout: diskToUITabLayout(session.tabLayout) }
+    return { tabLayout: diskToUITabLayout(session.tabLayout), selectedTabId: session.selectedTabId }
 }
 
 export function getValidSessionId(sessionId: string) {

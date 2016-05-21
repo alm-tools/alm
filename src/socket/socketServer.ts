@@ -111,11 +111,12 @@ namespace Server {
         });
     };
     export var setOpenUITabs: typeof contract.server.setOpenUITabs = (data) => {
-        session.setOpenUITabs(data.sessionId, data.tabLayout);
+        session.setOpenUITabs(data.sessionId, data.tabLayout, data.selectedTabId);
         return resolve({});
     };
     export var getOpenUITabs: typeof contract.server.getOpenUITabs = (data) => {
-        return resolve(session.getOpenUITabs(data.sessionId));
+        const result = session.getOpenUITabs(data.sessionId);
+        return resolve(result);
     };
     export var activeProjectFilePaths: typeof contract.server.activeProjectFilePaths = (data) => {
         return activeProjectConfig.projectFilePathsUpdated.current();

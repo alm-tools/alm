@@ -127,7 +127,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             (this.layout as any).on('stateChanged', (evt) => {
                 if (initialStateChange) {
                     // Select the last tab
-                    this.tabs.length && tabState.selectTab(this.tabs[this.tabs.length - 1].id);
+                    this.tabs.length
+                        && res.selectedTabId
+                        && this.tabs.find(t=>t.id === res.selectedTabId)
+                        && tabState.selectTab(res.selectedTabId);
+
                     initialStateChange = false;
                 }
 
@@ -788,6 +792,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         server.setOpenUITabs({
             sessionId: getSessionId(),
             tabLayout: serialized,
+            selectedTabId: this.selectedTabInstance && this.selectedTabInstance.id
         });
     }
 
@@ -975,8 +980,12 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             this.tabState.refreshTipHelp();
         },
         selectTab: (id: string) => {
+            let lastSelectedTab = this.selectedTabInstance;
             this.selectedTabInstance = this.tabs.find(t => t.id == id);
             this.tabState.focusSelectedTabIfAny();
+            if (!lastSelectedTab || (lastSelectedTab && lastSelectedTab.id !== id)) {
+                this.sendTabInfoToServer();
+            }
         },
         focusSelectedTabIfAny: () => {
             this.selectedTabInstance && this.tabApi[this.selectedTabInstance.id].focus.emit({});

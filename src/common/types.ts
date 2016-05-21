@@ -29,8 +29,12 @@ export interface SessionOnDisk {
     id: string;
     /** the tabs the user has open */
     tabLayout: TabLayoutOnDisk;
+    selectedTabId: string | null;
     /** Duration since epoch */
     lastUsed: number;
+    /**
+     * NOTE: there can be any number of other settings that are type checked only at the client
+     */
 }
 /**
  * Same as a `TabInstance` but works with `relativeUrl`
