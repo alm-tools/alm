@@ -118,7 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         state.toggleDoctor({});
-        settings.setShowDoctor(state.getState().showDoctor);
     });
     commands.duplicateWindow.on(()=>{
         const width = window.innerWidth;
@@ -131,8 +130,24 @@ document.addEventListener('DOMContentLoaded', () => {
         clientSession.setSessionId(res.sessionId);
         const sessionId = res.sessionId;
         // Now load all the other settings we want:
+
+        /**
+         * Pattern:
+         * - Load the setting into redux
+         * - Then keep it updated as redux changes
+         */
         settings.getShowDoctor().then(res => {
             state.setShowDoctor(res);
+        });
+        state.subscribeSub(s=>s.showDoctor,(showDoctor)=>{
+            settings.setShowDoctor(showDoctor);
+        });
+        settings.getExpandErrors().then(res =>{
+            if (res) state.expandErrors({});
+            else state.collapseErrors({});
+        });
+        state.subscribeSub(s=>s.errorsExpanded,(errorsExpanded)=>{
+            settings.setExpandErrors(errorsExpanded);
         });
     });
 });

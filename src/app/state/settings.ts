@@ -18,10 +18,22 @@ function getSetting(key: string): Promise<any> {
     });
 }
 
+/**
+ * DOCTOR
+ */
 export function setShowDoctor(value: boolean) {
     setSetting('doctor', value);
 }
-
 export function getShowDoctor(): Promise<boolean> {
     return getSetting('doctor');
+}
+
+/**
+ * Errors expanded
+ */
+export function setExpandErrors(value: boolean) {
+    setSetting('expandErrors', value);
+}
+export function getExpandErrors(): Promise<boolean> {
+    return getSetting('expandErrors');
 }
