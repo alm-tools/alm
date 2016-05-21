@@ -136,25 +136,25 @@ document.addEventListener('DOMContentLoaded', () => {
          * - Load the setting into redux
          * - Then keep it updated as redux changes
          */
-        settings.getShowDoctor().then(res => {
+        settings.showDoctor.get().then(res => {
             state.setShowDoctor(res);
         });
-        state.subscribeSub(s=>s.showDoctor,(showDoctor)=>{
-            settings.setShowDoctor(showDoctor);
+        state.subscribeSub(s => s.showDoctor, (showDoctor) => {
+            settings.showDoctor.set(showDoctor);
         });
-        settings.getExpandErrors().then(res =>{
+        settings.errorsExpanded.get().then(res => {
             if (res) state.expandErrors({});
             else state.collapseErrors({});
         });
-        state.subscribeSub(s=>s.errorsExpanded,(errorsExpanded)=>{
-            settings.setExpandErrors(errorsExpanded);
+        state.subscribeSub(s => s.errorsExpanded, (errorsExpanded) => {
+            settings.errorsExpanded.set(errorsExpanded);
         });
-        settings.getFileTreeExpanded().then(res => {
+        settings.fileTreeExpanded.get().then(res => {
             if (res) state.expandFileTree({});
             else state.collapseFileTree({});
         });
         state.subscribeSub(s => s.fileTreeShown, (fileTreeShown) => {
-            settings.setFileTreeExpanded(fileTreeShown);
+            settings.fileTreeExpanded.set(fileTreeShown);
         });
     });
 });

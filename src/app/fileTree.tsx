@@ -154,7 +154,7 @@ export class FileTree extends BaseComponent<Props, State>{
     }
 
     componentDidMount() {
-        settings.getFileTreeWidth().then(res => {
+        settings.fileTreeWidth.get().then(res => {
             let width = res || this.state.width;
             width = Math.min(window.innerWidth - 100, width);
             this.setState({ width });
@@ -718,7 +718,7 @@ export class FileTree extends BaseComponent<Props, State>{
 
     handleDragStop = () => {
         const width = this.state.width;
-        settings.setFileTreeWidth(width);
+        settings.fileTreeWidth.set(width);
     }
 
     setupTree = (props:Props) => {

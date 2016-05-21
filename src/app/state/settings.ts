@@ -18,42 +18,33 @@ function getSetting(key: string): Promise<any> {
     });
 }
 
+function createSimpleSetting<T>(key: string) {
+    return {
+        set: (value: T): void => {
+            setSetting(key, value);
+        },
+        get: (): Promise<T | undefined> => {
+            return getSetting(key)
+        }
+    }
+}
+
 /**
  * DOCTOR
  */
-export function setShowDoctor(value: boolean) {
-    setSetting('doctor', value);
-}
-export function getShowDoctor(): Promise<boolean> {
-    return getSetting('doctor');
-}
+export const showDoctor = createSimpleSetting<boolean>('showDoctor');
 
 /**
  * Errors expanded
  */
-export function setExpandErrors(value: boolean) {
-    setSetting('expandErrors', value);
-}
-export function getExpandErrors(): Promise<boolean> {
-    return getSetting('expandErrors');
-}
+export const errorsExpanded = createSimpleSetting<boolean>('errorsExpanded');
 
 /**
  * File Tree expanded
  */
-export function setFileTreeExpanded(value: boolean) {
-    setSetting('fileTreeExpanded', value);
-}
-export function getFileTreeExpanded(): Promise<boolean> {
-    return getSetting('fileTreeExpanded');
-}
+export const fileTreeExpanded = createSimpleSetting<boolean>('fileTreeExpanded');
 
 /**
  * File Tree width
  */
-export function setFileTreeWidth(value: number) {
-    setSetting('fileTreeWidth', value);
-}
-export function getFileTreeWidth(): Promise<number> {
-    return getSetting('fileTreeWidth');
-}
+export const fileTreeWidth = createSimpleSetting<number>('fileTreeWidth');
