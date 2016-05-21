@@ -48,3 +48,9 @@ export const fileTreeExpanded = createSimpleSetting<boolean>('fileTreeExpanded')
  * File Tree width
  */
 export const fileTreeWidth = createSimpleSetting<number>('fileTreeWidth');
+
+
+/**
+ * Main panel height
+ */
+export const mainPanelHeight = createSimpleSetting<number>('mainPanelHeight');

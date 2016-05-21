@@ -22,6 +22,7 @@ import {StoreState,expandErrors,collapseErrors} from "./state/state";
 import * as state from "./state/state";
 import * as gotoHistory from "./gotoHistory";
 import {tabState,tabStateChanged} from "./tabs/v2/appTabsContainer";
+import * as settings from "./state/settings";
 
 let notificationKeyboardStyle = {
     border: '2px solid',
@@ -74,6 +75,11 @@ export class MainPanel extends BaseComponent<Props, State>{
     }
 
     componentDidMount() {
+        settings.mainPanelHeight.get().then(res => {
+            let height = res || this.state.height;
+            height = Math.min(window.innerHeight - 100, height);
+            this.setState({ height });
+        });
         this.disposible.add(commands.toggleMessagePanel.on(()=>{
             state.getState().errorsExpanded?state.collapseErrors({}):state.expandErrors({});
         }));
@@ -213,7 +219,8 @@ export class MainPanel extends BaseComponent<Props, State>{
     };
 
     handleStop = () => {
-        // TODO store as user setting
+        const height = this.state.height;
+        settings.mainPanelHeight.set(height);
     }
 
     componentWillUpdate(nextProps: Props, nextState: State) {
