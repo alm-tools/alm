@@ -111,7 +111,7 @@ namespace Server {
         });
     };
     export var setOpenUITabs: typeof contract.server.setOpenUITabs = (data) => {
-        session.setOpenUITabs(data.sessionId, data.openTabs);
+        session.setOpenUITabs(data.sessionId, data.tabLayout);
         return resolve({});
     };
     export var getOpenUITabs: typeof contract.server.getOpenUITabs = (data) => {

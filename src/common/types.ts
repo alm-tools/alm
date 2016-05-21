@@ -28,7 +28,7 @@ export interface SessionOnDisk {
     /** unique to each session */
     id: string;
     /** the tabs the user has open */
-    openTabs: SessionTabOnDisk[];
+    tabLayout: TabLayoutOnDisk;
     /** Duration since epoch */
     lastUsed: number;
 }
@@ -43,6 +43,35 @@ export interface SessionTabOnDisk {
 export interface SessionTabInUI {
     id: string;
     url: string;
+}
+
+/**
+ * Just the layout information we serialize
+ * A recursive structure for re-storing tab information
+ */
+export type TabLayout = {
+    type: 'stack' | 'row' | 'column' | string;
+    /** out of 100 */
+    width: number;
+    /** out of 100 */
+    height: number;
+    /** Only exist on a `stack` */
+    tabs: SessionTabInUI[];
+    /** Only exists if type is not `stack` */
+    subItems: TabLayout[];
+}
+
+/** Same as above with `ui` stuff replaced with `disk` stuff */
+export type TabLayoutOnDisk = {
+    type: 'stack' | 'row' | 'column' | string;
+    /** out of 100 */
+    width: number;
+    /** out of 100 */
+    height: number;
+    /** Only exist on a `stack` */
+    tabs: SessionTabOnDisk[];
+    /** Only exists if type is not `stack` */
+    subItems: TabLayoutOnDisk[];
 }
 
 /**

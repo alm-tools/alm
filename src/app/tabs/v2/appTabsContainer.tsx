@@ -37,7 +37,6 @@ import * as settings from "../../state/settings";
  */
 declare var _helpMeGrabTheType: AppTabsContainer;
 export let tabState: typeof _helpMeGrabTheType.tabState;
-export const tabStateChanged = new TypedEvent<{}>();
 
 export type TabInstance = types.SessionTabInUI;
 
@@ -83,13 +82,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     componentDidMount() {
-        settings.tabs.get().then(res => {
-            const config = res ? GLUtil.unserializeConfig(res, this) : {
-                content: [{
-                    type: 'stack',
-                    content: []
-                }]
-            };
+        server.getOpenUITabs({ sessionId: getSessionId() }).then(res => {
+            const config = GLUtil.unserializeConfig(res.tabLayout, this);
 
             /** This is needed as we use this ordered information in quite a few places */
             this.tabs = GLUtil.orderedTabs(config);
@@ -791,13 +785,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
     private sendTabInfoToServer = () => {
         const serialized = GLUtil.serializeConfig(this.layout.toConfig(), this);
-        settings.tabs.set(serialized);
         server.setOpenUITabs({
             sessionId: getSessionId(),
-            openTabs: this.tabs.map(t=>({
-                id: t.id,
-                url: t.url
-            }))
+            tabLayout: serialized,
         });
     }
 
@@ -1203,6 +1193,8 @@ const newTabApi = ()=>{
  * Golden layout helpers
  */
 namespace GLUtil {
+    /** The layout for serialization */
+    type Layout = types.TabLayout;
 
     /**
      * Specialize the `Stack` type in the golden-layout config
@@ -1295,19 +1287,6 @@ namespace GLUtil {
         visitAllStacks(config.content, addFromStack);
 
         return result;
-    }
-
-    /** A recursive structure for re-storing tab information */
-    type Layout = {
-        type: 'stack' | 'row' | 'column' | string;
-        /** out of 100 */
-        width: number;
-        /** out of 100 */
-        height: number;
-        /** Only exist on a `stack` */
-        tabs: TabInstance[];
-        /** Only exists if type is not `stack` */
-        subItems: Layout[];
     }
 
     /**
@@ -1537,3 +1516,9 @@ namespace TipRender {
         }
     }
 }
+
+/**
+ * Emitted whenever the state changes
+ * This bad boy is at the bottom because it broke syntax highlighting in atom :-/
+ */
+export const tabStateChanged = new TypedEvent<{}>();

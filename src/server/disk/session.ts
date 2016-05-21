@@ -16,7 +16,7 @@ import * as commandLine from "../commandLine";
 import * as constants from "../../common/constants";
 import * as tsconfig from "../workers/lang/core/tsconfig";
 
-const sessionFile = types.cacheDir + '/sessionsV1.json'
+const sessionFile = types.cacheDir + '/sessionsV2.json'
 
 /**
  * If there is no session then a default one will be created for you and sent over
@@ -34,7 +34,13 @@ export function getDefaultOrNewSession(sessionId: string): types.SessionOnDisk {
         if (!session){
             session = {
                 id: utils.createId(),
-                openTabs: [],
+                tabLayout: {
+                    type: 'stack',
+                    width: 100,
+                    height: 100,
+                    tabs: [],
+                    subItems: []
+                },
                 lastUsed: new Date().getTime(),
             }
             writeDiskSession(session);
@@ -52,7 +58,7 @@ export function getDefaultOrNewSession(sessionId: string): types.SessionOnDisk {
         if (session) {
             session = {
                 id: utils.createId(),
-                openTabs: session.openTabs,
+                tabLayout: session.tabLayout,
                 lastUsed: new Date().getTime()
             }
             writeDiskSession(session);
@@ -70,7 +76,7 @@ export function getDefaultOrNewSession(sessionId: string): types.SessionOnDisk {
      */
     let commandLineTabs = getCommandLineTabs();
     if (commandLineTabs.length) {
-        session.openTabs = session.openTabs.concat(commandLineTabs);
+        // session.tabLayout = session.openTabs.concat(commandLineTabs); // TODO: restore command line tab
         writeDiskSession(session);
     }
 
@@ -94,6 +100,9 @@ function getCommandLineTabs(): types.SessionTabOnDisk[] {
     return tabs;
 }
 
+/**
+ * UI to disk and Disk to UI helpers
+ */
 function uiToDiskTab(uiTab: types.SessionTabInUI): types.SessionTabOnDisk {
     let relativeUrl = workingDir.makeRelativeUrl(uiTab.url);
 
@@ -102,14 +111,32 @@ function uiToDiskTab(uiTab: types.SessionTabInUI): types.SessionTabOnDisk {
         relativeUrl
     };
 }
-
-function diskTabToUITab(diskTab: types.SessionTabOnDisk): types.SessionTabInUI {
+function diskToUITab(diskTab: types.SessionTabOnDisk): types.SessionTabInUI {
     let url = workingDir.makeAbsoluteUrl(diskTab.relativeUrl);
     return {
         id: diskTab.id,
         url
     };
 }
+function uiToDiskTabLayout(uiLayout: types.TabLayout): types.TabLayoutOnDisk {
+    return {
+        type: uiLayout.type,
+        width: uiLayout.width,
+        height: uiLayout.height,
+        tabs: uiLayout.tabs.map(uiToDiskTab),
+        subItems: uiLayout.subItems.map(uiToDiskTabLayout)
+    }
+}
+function diskToUITabLayout(diskLayout: types.TabLayoutOnDisk): types.TabLayout {
+    return {
+        type: diskLayout.type,
+        width: diskLayout.width,
+        height: diskLayout.height,
+        tabs: diskLayout.tabs.map(diskToUITab),
+        subItems: diskLayout.subItems.map(diskToUITabLayout)
+    }
+}
+
 
 export function readDiskSessionsFile() {
     let sessionFileContents: types.SessionsFileContents = {
@@ -181,14 +208,14 @@ export function setTsconfigPath(tsconfigFilePath: string) {
     sessionFileContents.relativePathToTsconfig = workingDir.makeRelative(tsconfigFilePath);
     writeDiskSessionFile(sessionFileContents);
 }
-export function setOpenUITabs(sessionId: string, tabs: types.SessionTabInUI[]) {
+export function setOpenUITabs(sessionId: string, layout: types.TabLayout) {
     let session = getDefaultOrNewSession(sessionId);
-    session.openTabs = tabs.map(uiToDiskTab);
+    session.tabLayout = uiToDiskTabLayout(layout);
     writeDiskSession(session);
 }
 export function getOpenUITabs(sessionId: string) {
     let session = getDefaultOrNewSession(sessionId);
-    return { openTabs: session.openTabs.map(diskTabToUITab), sessionId: session.id }
+    return { tabLayout: diskToUITabLayout(session.tabLayout) }
 }
 
 export function getValidSessionId(sessionId: string) {
