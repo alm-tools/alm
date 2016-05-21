@@ -797,7 +797,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
     }
 
     private sendTabInfoToServer = () => {
-        GLUtil.serializeConfig(this.layout.toConfig());
+        GLUtil.serializeConfig(this.layout.toConfig(), this);
         server.setOpenUITabs({
             sessionId: getSessionId(),
             openTabs: this.tabs.map(t=>({
@@ -1259,6 +1259,36 @@ namespace GLUtil {
     }
 
     /**
+     * Get the gl layout instances for a given tab
+     */
+    export function fromTabStack(tabs: TabInstance[], appTabsContainer: AppTabsContainer): GoldenLayout.ItemConfig[] {
+        return tabs.map(tab => {
+            const {url, id} = tab;
+            const {protocol, filePath} = utils.getFilePathAndProtocolFromUrl(tab.url);
+            const props: tab.TabProps = {
+                url,
+                onSavedChanged: (saved) => appTabsContainer.onSavedChanged(tab, saved),
+                onFocused: () => {
+                    if (appTabsContainer.selectedTabInstance && appTabsContainer.selectedTabInstance.id === id)
+                        return;
+                    appTabsContainer.tabState.selectTab(id)
+                },
+                api: appTabsContainer.createTabApi(id),
+                setCodeEditor: (codeEditor: CodeEditor) => appTabsContainer.codeEditorMap[id] = codeEditor
+            };
+            const title = tabRegistry.getTabConfigByUrl(url).getTitle(url);
+
+            return {
+                type: 'react-component',
+                component: protocol,
+                title,
+                props,
+                id
+            };
+        });
+    }
+
+    /**
      * Get the tabs in order
      */
     export function orderedTabs(config:GoldenLayout.Config): TabInstance[] {
@@ -1272,24 +1302,23 @@ namespace GLUtil {
         return result;
     }
 
+    /** A recursive structure for re-storing tab information */
+    type Layout = {
+        type: 'stack' | 'row' | 'column' | string;
+        /** out of 100 */
+        width: number;
+        /** out of 100 */
+        height: number;
+        /** Only exist on a `stack` */
+        tabs: TabInstance[];
+        /** Only exists if type is not `stack` */
+        subItems: Layout[];
+    }
+
     /**
      * Serialize the tab layout
      */
-    export function serializeConfig(config: GoldenLayout.Config) {
-        console.log(config.content);
-        /** TODO: convert this `trueTabInfo` to the following structure */
-        type Layout = {
-            type: 'stack' | 'row' | 'column' | string;
-            /** out of 100 */
-            width: number;
-            /** out of 100 */
-            height: number;
-            /** Only exist on a `stack` */
-            tabs: TabInstance[];
-            /** Only exists if type is not `stack` */
-            subItems: Layout[];
-        }
-
+    export function serializeConfig(config: GoldenLayout.Config, appTabsContainer: AppTabsContainer) {
         /** Assume its a stack to begin with */
         let result: Layout = {
             type: 'stack',
@@ -1299,15 +1328,12 @@ namespace GLUtil {
             subItems: [],
         }
 
-        /** The root is actually just `root` */
+        /** The root is actually just `root` with a single content item if any */
         const goldenLayoutRoot = config.content[0];
         // and its empty so we good
         if (!goldenLayoutRoot) {
             return result;
         }
-
-        // So the root is whatever it really is
-        result.type = goldenLayoutRoot.type;
 
         /**
          * Recursion helpers
@@ -1356,16 +1382,71 @@ namespace GLUtil {
             }
         }
 
+        // So the root `type` is whatever it really is
+        result.type = goldenLayoutRoot.type;
         /** If the root is a stack .. we done */
         if (goldenLayoutRoot.type === 'stack') {
             result.tabs = toTabStack(goldenLayoutRoot as any).tabs;
         }
         else {
-            /** Start at the root */
+            /** Start the recursion at the root */
             (goldenLayoutRoot.content || []).forEach(c => callRightFunctionForGlChild(result, c));
         }
 
         // console.log(result);
+        // unserializeConfig(result, appTabsContainer); // DEBUG : how it will unserilize later
+        return result;
+    }
+
+    export function unserializeConfig(layout: Layout, appTabsContainer: AppTabsContainer): any {
+        /**
+         * Recursion helpers
+         */
+        function stackLayout(layout: Layout): GoldenLayout.ItemConfig {
+            const stack: GoldenLayout.ItemConfig = {
+                type: 'stack',
+                width: layout.width || 100,
+                height: layout.height || 100,
+                content: fromTabStack(layout.tabs, appTabsContainer),
+            }
+            return stack;
+        }
+        function rowLayout(layout: Layout): GoldenLayout.ItemConfig {
+            const row: GoldenLayout.ItemConfig = {
+                type: 'row',
+                width: layout.width || 100,
+                height: layout.height || 100,
+                content: layout.subItems.map(c => callRightFunctionForLayoutChild(c)),
+            }
+            return row;
+        }
+        function columnLayout(layout: Layout): GoldenLayout.ItemConfig {
+            const column: GoldenLayout.ItemConfig = {
+                type: 'column',
+                width: layout.width || 100,
+                height: layout.height || 100,
+                content: layout.subItems.map(c => callRightFunctionForLayoutChild(c)),
+            }
+            return column;
+        }
+        function callRightFunctionForLayoutChild(layout: Layout): GoldenLayout.ItemConfigType {
+            if (layout.type === 'column') {
+                return columnLayout(layout);
+            }
+            if (layout.type === 'row') {
+                return rowLayout(layout);
+            }
+            if (layout.type === 'stack') {
+                return stackLayout(layout);
+            }
+        }
+
+        const result: GoldenLayout.Config = {
+            content: [callRightFunctionForLayoutChild(layout)]
+        };
+
+        // console.log(result); // DEBUG : the outcome of unserialization
+        return result;
     }
 
     /**
