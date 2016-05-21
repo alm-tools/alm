@@ -47,3 +47,13 @@ export function setFileTreeExpanded(value: boolean) {
 export function getFileTreeExpanded(): Promise<boolean> {
     return getSetting('fileTreeExpanded');
 }
+
+/**
+ * File Tree width
+ */
+export function setFileTreeWidth(value: number) {
+    setSetting('fileTreeWidth', value);
+}
+export function getFileTreeWidth(): Promise<number> {
+    return getSetting('fileTreeWidth');
+}

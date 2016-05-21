@@ -21,6 +21,7 @@ import * as Mousetrap from "mousetrap";
 import * as clipboard from "./components/clipboard";
 import * as pure from "../common/pure";
 import {tabState} from "./tabs/v2/appTabsContainer";
+import * as settings from "./state/settings";
 type TruthTable = utils.TruthTable;
 
 export interface Props {
@@ -153,6 +154,11 @@ export class FileTree extends BaseComponent<Props, State>{
     }
 
     componentDidMount() {
+        settings.getFileTreeWidth().then(res => {
+            let width = res || this.state.width;
+            width = Math.min(window.innerWidth - 100, width);
+            this.setState({ width });
+        });
 
         let handleFocusRequestBasic = (shown:boolean)=>{
             if (!shown) {
@@ -711,7 +717,8 @@ export class FileTree extends BaseComponent<Props, State>{
     };
 
     handleDragStop = () => {
-        // TODO store as user setting
+        const width = this.state.width;
+        settings.setFileTreeWidth(width);
     }
 
     setupTree = (props:Props) => {
