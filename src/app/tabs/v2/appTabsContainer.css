@@ -3,6 +3,15 @@
     display: none;
 }
 
+/*
+ * The vertical drag handle was too tall
+ * It was interfering with tab selection
+ */
+.lm_splitter.lm_vertical .lm_drag_handle {
+    top: 0px;
+    height: 5px;
+}
+
 /* Change the close tab icon */
 .lm_header .lm_tab .lm_close_tab {
     background-image: none;
