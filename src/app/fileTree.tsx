@@ -111,7 +111,10 @@ let currentSelectedItemCopyStyle = {
     height:'.8rem',
 
     cursor: 'pointer',
-    margin: '2px'
+    margin: '2px',
+    fontFamily: 'monospace',
+    fontSize: '.9rem',
+    fontWeight: 'bold',
 }
 
 let helpRowStyle = {
@@ -641,7 +644,7 @@ export class FileTree extends BaseComponent<Props, State>{
                             </span>
                         </div>
                     }
-                    <div style={[csx.content,csx.center]}>
+                    <div style={[csx.content,csx.centerCenter, {fontSize: '.7em', lineHeight: '2em'}]}>
                         <span>Tap <span style={styles.Tip.keyboardShortCutStyle}>H</span> to toggle tree view help</span>
                     </div>
                     {
