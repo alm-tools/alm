@@ -613,7 +613,10 @@ export class FileTree extends BaseComponent<Props, State>{
             (copypathDom as any).click();
         });
     }
-    refNames = {treeRootNode:'1'}
+    refNames = {
+        __treeroot:'__treeroot',
+        __treeViewScroll: '__treeViewScroll',
+    }
 
     render() {
 
@@ -622,11 +625,14 @@ export class FileTree extends BaseComponent<Props, State>{
 
 
         let hideStyle = !this.props.fileTreeShown && { display: 'none' };
+        const haveFocus = (Radium as any).getState(this.state,this.refNames.__treeViewScroll,':focus');
+        const helpOpacity = haveFocus ? 1 : 0;
+
         return (
-            <div ref={'__treeroot'} className="alm-tree-root" style={[csx.flexRoot, csx.horizontal, { width: this.state.width, zIndex: 6 }, hideStyle]}>
+            <div ref={this.refNames.__treeroot} className="alm-tree-root" style={[csx.flexRoot, csx.horizontal, { width: this.state.width, zIndex: 6 }, hideStyle]}>
 
                 <div style={[csx.flex, csx.vertical, treeListStyle, styles.someChildWillScroll, csx.newLayerParent]}>
-                    <div ref={'__treeViewScroll'} style={[csx.flex,csx.scroll, treeScrollStyle]} tabIndex={0}>
+                    <div ref={this.refNames.__treeViewScroll} style={[csx.flex, csx.scroll, treeScrollStyle]} tabIndex={0}>
                         {this.renderDir(this.state.treeRoot)}
                     </div>
                     {this.props.filePathsCompleted || <Robocop/>}
@@ -644,7 +650,7 @@ export class FileTree extends BaseComponent<Props, State>{
                             </span>
                         </div>
                     }
-                    <div style={[csx.content,csx.centerCenter, {fontSize: '.7em', lineHeight: '2em'}]}>
+                    <div style={[csx.content,csx.centerCenter, {fontSize: '.7em', lineHeight: '2em', opacity: helpOpacity, transition: 'opacity .2s'}]}>
                         <span>Tap <span style={styles.Tip.keyboardShortCutStyle}>H</span> to toggle tree view help</span>
                     </div>
                     {
