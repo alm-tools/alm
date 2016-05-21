@@ -38,7 +38,7 @@ import * as settings from "../../state/settings";
 declare var _helpMeGrabTheType: AppTabsContainer;
 export let tabState: typeof _helpMeGrabTheType.tabState;
 
-export type TabInstance = types.SessionTabInUI;
+export type TabInstance = types.TabInstance;
 
 /**
  *

@@ -32,15 +32,18 @@ export interface SessionOnDisk {
     /** Duration since epoch */
     lastUsed: number;
 }
-export interface SessionTabOnDisk {
+/**
+ * Same as a `TabInstance` but works with `relativeUrl`
+ */
+export interface TabInstanceOnDisk {
     id: string;
     relativeUrl: string;
 }
+
 /**
- * The UI version of session. Basically its all absolute paths and tab urls
- * also UI is not in control of active project so it doesn't sent that
+ * What the main application tab container knows about a tab
  */
-export interface SessionTabInUI {
+export interface TabInstance {
     id: string;
     url: string;
 }
@@ -56,7 +59,7 @@ export type TabLayout = {
     /** out of 100 */
     height: number;
     /** Only exist on a `stack` */
-    tabs: SessionTabInUI[];
+    tabs: TabInstance[];
     /** Only exists if type is not `stack` */
     subItems: TabLayout[];
 }
@@ -69,7 +72,7 @@ export type TabLayoutOnDisk = {
     /** out of 100 */
     height: number;
     /** Only exist on a `stack` */
-    tabs: SessionTabOnDisk[];
+    tabs: TabInstanceOnDisk[];
     /** Only exists if type is not `stack` */
     subItems: TabLayoutOnDisk[];
 }

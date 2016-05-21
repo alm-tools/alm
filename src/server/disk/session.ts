@@ -87,7 +87,7 @@ export function getDefaultOrNewSession(sessionId: string): types.SessionOnDisk {
  * Only returns the command line tabs once
  * Means you can call it as many times as you like
  */
-function getCommandLineTabs(): types.SessionTabOnDisk[] {
+function getCommandLineTabs(): types.TabInstanceOnDisk[] {
     /** Add any command line files to the session */
     let files = commandLine.getOptions().filePaths;
     let tabs = files
@@ -103,7 +103,7 @@ function getCommandLineTabs(): types.SessionTabOnDisk[] {
 /**
  * UI to disk and Disk to UI helpers
  */
-function uiToDiskTab(uiTab: types.SessionTabInUI): types.SessionTabOnDisk {
+function uiToDiskTab(uiTab: types.TabInstance): types.TabInstanceOnDisk {
     let relativeUrl = workingDir.makeRelativeUrl(uiTab.url);
 
     return {
@@ -111,7 +111,7 @@ function uiToDiskTab(uiTab: types.SessionTabInUI): types.SessionTabOnDisk {
         relativeUrl
     };
 }
-function diskToUITab(diskTab: types.SessionTabOnDisk): types.SessionTabInUI {
+function diskToUITab(diskTab: types.TabInstanceOnDisk): types.TabInstance {
     let url = workingDir.makeAbsoluteUrl(diskTab.relativeUrl);
     return {
         id: diskTab.id,
