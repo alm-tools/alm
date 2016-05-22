@@ -200,7 +200,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         // Make hint / autocomplete more aggresive
         autocomplete.setupCodeMirror(this.codeMirror);
 
-        this.disposible.add(onresize.on(() => this.refresh(true)));
+        this.disposible.add(onresize.on(() => this.refresh()));
 
         // cursor history
         if (!this.props.readOnly) {
@@ -298,7 +298,6 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 	focus = () => {
 		if (this.codeMirror) {
 			this.handleCursorActivity();
-            this.resize();
             this.codeMirror.focus();
             /**
              * For some reason code mirror fails to focus sometimes.
@@ -319,7 +318,6 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
     resize = () => {
         if (this.codeMirror) {
             this.refresh();
-            setTimeout(()=> !this.isUnmounted && this.refresh(),500);
 		}
     }
 
@@ -330,12 +328,9 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 		});
     }
 
-    private refresh = (force = false) => {
+    private refresh = () => {
         // Needed to resize gutters correctly
-        if (this.codeMirror && force) {
-            this.codeMirror.refresh();
-        }
-        else if (this.codeMirror && !this.codeMirror.hasFocus()) {
+        if (this.codeMirror) {
             this.codeMirror.refresh();
         }
     }
