@@ -332,13 +332,27 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         // Needed to resize gutters correctly
         if (this.codeMirror) {
             this.codeMirror.refresh();
+            /** Without this codemirror scrolls to top :-/ */
+            this.codeMirror.scrollTo(null, this.lastScrollPosition || 0);
         }
     }
 
-	focusChanged = (focused) => {
-		this.setState({
-			isFocused: focused
-		});
+    /**
+     * When the cm is hidden it loses its scroll info
+     * So we need to store it when focus is lost and restore it when focus comes back
+     * (NOTE: we are using focus of an indication of potential future "moved behind another tab" scenario)
+     */
+    lastScrollPosition = null;
+
+    focusChanged = (focused) => {
+        if (!focused) {
+            // NOTE: sometimes this can still be wrong answer (think its too late even after focus changed)
+            // but its better than nothing
+            this.lastScrollPosition = (this.codeMirror.getDoc() as any).scrollTop;
+        }
+        this.setState({
+            isFocused: focused
+        });
 		this.props.onFocusChange && this.props.onFocusChange(focused);
 	}
 
