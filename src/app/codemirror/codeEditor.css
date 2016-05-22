@@ -1,3 +1,10 @@
+/*
+ * The default CodeMirror.css has a height 300px
+ * Fix that!
+ */
+.CodeMirror {
+    height: auto;
+}
 /* Make code mirror flex boxy */
 .CodeMirror {
     display: flex;
