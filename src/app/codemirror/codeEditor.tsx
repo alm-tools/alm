@@ -300,6 +300,19 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 			this.handleCursorActivity();
             this.resize();
             this.codeMirror.focus();
+            /**
+             * For some reason code mirror fails to focus sometimes.
+             * for this we use an agressive version to ensure
+             * It reaches deep into the bowels of code mirror
+             */
+            const setFocusAgressive = () => {
+                if (!this.codeMirror.hasFocus()) {
+                    this.refs.textarea.focus();
+                    (this.codeMirror as any).display.input.focus();
+                    setTimeout(setFocusAgressive, 10);
+                }
+            }
+            setFocusAgressive();
 		}
 	}
 
