@@ -141,9 +141,10 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
         // TODO:
     }
 
-    getIconForKind = (kind: string) => {
+    getIconForKind(kind: string) {
+        // These are ts.ScriptElementKind;
         // TODO:
-        return `icon icon-${kind}`;
+        return `${kind}`;
     }
 
     isSelected = (node: Types.SemanticTreeNode) => {
