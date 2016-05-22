@@ -14,12 +14,13 @@ import {server} from "../../../socket/socketClient";
 import {Types} from "../../../socket/socketContract";
 import * as commands from "../../commands/commands";
 import * as cmUtils from "../cmUtils";
+import * as fstyle from "../../base/fstyle";
 
 type Editor = CodeMirror.EditorFromTextArea;
 
 
 namespace SemanticViewStyles {
-    export const root = csx.extend(csx.vertical, {
+    export const root = {
         color: '#DDD',
         padding: '5px',
         background: '#343333',
@@ -36,6 +37,11 @@ namespace SemanticViewStyles {
         ':hover': {
             opacity: '1'
         }
+    } as any;
+
+    export const selectedNodeClass = fstyle.style({
+        color: 'white',
+        backgroundColor: 'black', // TODO: do a better color
     });
 }
 
@@ -59,6 +65,12 @@ interface State {
 })
 @ui.Radium
 export class SemanticView extends ui.BaseComponent<Props, State> {
+    constructor(props) {
+        super(props);
+        this.state = {
+            tree: []
+        }
+    }
     componentWillUnmount() {
         super.componentWillUnmount();
         this.props.cm.off('cursorActivity', this.handleCursorActivity);
@@ -68,30 +80,24 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
             this.handleCursorActivity();
         }
         if (!this.props.cm && props.cm) {
+            /** Initial data load */
+            this.reloadData();
+
+            this.handleCursorActivity(props.cm);
             props.cm.on('cursorActivity', this.handleCursorActivity);
         }
     }
 
-    handleCursorActivity = () => {
-        let cm = this.props.cm;
-        if (!cm) return; // Still loading
-        let doc = cm.getDoc();
-        this.updateLazyInformation();
-    }
-
-    updateLazyInformation = utils.debounce(() => {
+    handleCursorActivity = utils.debounce((cm = this.props.cm) => {
+        if (!cm) return; // Still loading or maybe unloaded
+        if (!state.inActiveProjectFilePath(this.props.filePath)) return;
         if (this.isUnmounted) return;
         if (!this.props.showSemanticView) return;
-        if (!state.inActiveProjectFilePath(this.props.filePath)) return;
 
-        let cm = this.props.cm;
+
         let doc = cm.getDoc();
         const cursor = doc.getCursor();
         this.setState({cursor});
-        // server.getDoctorInfo({ filePath: this.props.filePath, editorPosition: cursor }).then(res => {
-        //     this.setState({ doctorInfo: res, searching: false });
-        // });
-
     }, 1000);
 
     render() {
@@ -104,12 +110,38 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
         }
 
         return <div style={SemanticViewStyles.root}>
-
+            {this.state.tree.map(node => this.renderNode(node, 0)) }
         </div>;
     }
 
-    gotoLocation = (editorPosition: EditorPosition) => {
+    renderNode(node: Types.SemanticTreeNode, indent: number) {
+        return <div
+            key={node.text}
+            className="node"
+            onClick={ (event) => { this.gotoNode(node); event.stopPropagation(); } }
+            data-start={node.start.line} data-end={node.end.line}>
+            {ui.indent(indent) }
+            <span className={this.getIconForKind(node.kind) + ' ' + this.isSelected(node) }>{node.text}</span>
+            {node.subNodes.map(sn => this.renderNode(sn, indent + 1)) }
+        </div>
+    }
+
+    gotoNode = (node: Types.SemanticTreeNode) => {
         // TODO:
+    }
+
+    getIconForKind = (kind: string) => {
+        // TODO:
+        return `icon icon-${kind}`;
+    }
+
+    isSelected = (node: Types.SemanticTreeNode) => {
+        if (this.state.cursor) return '';
+        const cursor = this.state.cursor;
+        if (node.start.line <= cursor.line && node.end.line >= cursor.line) {
+            return SemanticViewStyles.selectedNodeClass;
+        }
+        return '';
     }
 
     /** Loads the tree data */
