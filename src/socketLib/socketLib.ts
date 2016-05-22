@@ -98,15 +98,14 @@ export class RequesterResponder {
         [message: string]: { data: any; defer: PromiseDeferred<any>; }
     } = {};
 
-    private pendingRequests: string[] = [];
+    private pendingRequests: {
+        [id: string]: string; // The name of message
+    } = Object.create(null);
     public pendingRequestsChanged = (pending: string[]) => null;
 
     /** process a message from the server */
     protected processResponse(m: any) {
         var parsed: Message<any> = m;
-
-        this.pendingRequests.shift();
-        this.pendingRequestsChanged(this.pendingRequests.slice());
 
         if (!parsed.message || !parsed.id) {
             console.log('SERVER ERR: Invalid JSON data from server:', m);
@@ -115,6 +114,10 @@ export class RequesterResponder {
             console.log('SERVER ERR: No one was listening:', parsed.message, parsed.data);
         }
         else { // Alright nothing *weird* happened
+
+            delete this.pendingRequests[parsed.id]
+            this.pendingRequestsChanged(Object.keys(this.pendingRequests).map(k=>this.pendingRequests[k]));
+
             if (parsed.error) {
                 this.currentListeners[parsed.message][parsed.id].reject(parsed.error);
                 console.log(parsed.error);
@@ -153,8 +156,8 @@ export class RequesterResponder {
         });
 
         // Send data to worker
-        this.pendingRequests.push(message);
-        this.pendingRequestsChanged(this.pendingRequests);
+        this.pendingRequests[id] = message;
+        this.pendingRequestsChanged(Object.keys(this.pendingRequests).map(k=>this.pendingRequests[k]));
         this.getSocket().emit('message', { message: message, id: id, data: data, isRequest: true });
         return promise;
     }
