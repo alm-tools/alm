@@ -4,12 +4,16 @@
 }
 
 /*
- * The vertical drag handle was too tall
- * It was interfering with tab selection
+ * The vertical/horizontal drag handle was too tall/wide
+ * It was interfering with tab selection (vertical) and scrolling (horizontal)
  */
 .lm_splitter.lm_vertical .lm_drag_handle {
     top: 0px;
     height: 5px;
+}
+.lm_splitter.lm_horizontal .lm_drag_handle {
+    left: 0px;
+    width: 5px;
 }
 
 /* Change the close tab icon */
