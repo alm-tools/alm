@@ -158,10 +158,10 @@ export function fileListingDelta(delta: types.FileListingDelta) {
     // If we have a current project does it have a `filesGlob`
     // If so check if some files need to be *removed* or *added*
     if (!configFile) return;
-    if (!configFile.project.filesGlob) return;
+    if (!configFile.project.toExpand) return;
 
     const projectDir = configFile.projectFileDirectory;
-    const filesGlob = configFile.project.filesGlob;
+    let toExpand = configFile.project.toExpand;
 
     // HEURISTIC : if some delta file path is *under* the `tsconfig.json` path
     if (
@@ -177,13 +177,18 @@ export function fileListingDelta(delta: types.FileListingDelta) {
         //multimatch(['test/foo.ts.ts'],['**/*.ts']) OKAY
         //multimatch(['/test/foo.ts.ts'],['**/*.ts']) OKAY
         //multimatch(['./test/foo.ts.ts'],['**/*.ts']) NOT OKAY
-        // So remove .
+        //multimatch(['test/foo.ts.ts'],['./**/*.ts']) NOT OKAY
+        // So remove . and .. from both paths and toExpand
+
+        toExpand = toExpand.map(t => t.replace(/^\.|(\.\.)/, ''));
+
         const makeRelativeForMultiMatch =
             (path:string) =>
-                fsu.makeRelativePath(projectDir,path).replace(/^\.|(\.\.)/, '');
+                fsu.makeRelativePath(projectDir,path)
+                    .replace(/^\.|(\.\.)/, '');
 
         const relativePaths = fullPaths.map(makeRelativeForMultiMatch);
-        const matched = !!multimatch(relativePaths,filesGlob).length;
+        const matched = !!multimatch(relativePaths,toExpand).length;
 
         if (matched) {
             syncDebounced()

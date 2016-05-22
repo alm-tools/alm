@@ -270,6 +270,12 @@ export interface TsconfigJsonParsed {
     files: string[];
     typings: string[]; // These are considered externs for .d.ts. Note : duplicated in files
     filesGlob?: string[];
+    /**
+     * This is cached in the parsed result as the final thing we are expanding
+     * Takes into account `filesGlob` + `exclude` + `outDir` + anything else
+     * Helps us know if a file delta is significant for this project later
+     */
+    toExpand?: string[];
     formatCodeOptions: ts.FormatCodeOptions;
     compileOnSave: boolean;
     buildOnSave: boolean;

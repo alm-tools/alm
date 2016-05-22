@@ -314,6 +314,7 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
         compilerOptions: {},
         files: projectSpec.files.map(x => path.resolve(projectFileDirectory, x)),
         filesGlob: projectSpec.filesGlob,
+        toExpand: toExpand,
         formatCodeOptions: formatting.makeFormatCodeOptions(projectSpec.formatCodeOptions),
         compileOnSave: projectSpec.compileOnSave == undefined ? true : projectSpec.compileOnSave,
         package: pkg,
