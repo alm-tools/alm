@@ -6,6 +6,7 @@
 /// <reference path="browser/ambient/cookie-parser/cookie-parser.d.ts" />
 /// <reference path="browser/ambient/d3/d3.d.ts" />
 /// <reference path="browser/ambient/express/express.d.ts" />
+/// <reference path="browser/ambient/github-electron/index.d.ts" />
 /// <reference path="browser/ambient/glob/glob.d.ts" />
 /// <reference path="browser/ambient/jquery/jquery.d.ts" />
 /// <reference path="browser/ambient/marked/index.d.ts" />
