@@ -290,6 +290,7 @@ export class Parent extends RequesterResponder {
     /** start worker */
     startWorker(childJsPath: string, terminalError: (e: Error) => any, customArguments: string[] = []) {
         try {
+            const fileName = path.basename(childJsPath);
             this.child = cp.fork(
                 childJsPath,
                 customArguments,
@@ -331,7 +332,7 @@ export class Parent extends RequesterResponder {
                 }
                 // We haven't found a reson to not start worker yet
                 else {
-                    console.log("ts worker restarting. Don't know why it stopped with code:", code);
+                    console.log(`${fileName} worker restarting. Don't know why it stopped with code:`, code);
                     this.startWorker(childJsPath, terminalError, customArguments);
                 }
             });
