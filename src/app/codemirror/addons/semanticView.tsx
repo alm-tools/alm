@@ -15,16 +15,20 @@ import {Types} from "../../../socket/socketContract";
 import * as commands from "../../commands/commands";
 import * as cmUtils from "../cmUtils";
 import * as fstyle from "../../base/fstyle";
+import * as styles from "../../styles/styles";
 
 type Editor = CodeMirror.EditorFromTextArea;
 
 
 namespace SemanticViewStyles {
     export const root = {
-        color: '#DDD',
         padding: '5px',
         background: '#343333',
-        fontSize: '.8rem',
+
+        // Font
+        color: '#BBB',
+        fontSize: '.5rem',
+        fontWeight: 'bold',
 
         // Overflow
         overflow: 'auto',
@@ -39,9 +43,17 @@ namespace SemanticViewStyles {
         }
     } as any;
 
+    export const nodeClass = fstyle.style({
+        cursor: 'pointer',
+        '-webkit-user-select': 'none',
+        '&:hover': {
+            color: 'white'
+        }
+    });
+
     export const selectedNodeClass = fstyle.style({
         color: 'white',
-        backgroundColor: 'black', // TODO: do a better color
+        backgroundColor: styles.blackHighlightColor,
     });
 }
 
@@ -117,7 +129,7 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
     renderNode(node: Types.SemanticTreeNode, indent: number) {
         return <div
             key={node.text}
-            className="node"
+            className={SemanticViewStyles.nodeClass}
             onClick={ (event) => { this.gotoNode(node); event.stopPropagation(); } }
             data-start={node.start.line} data-end={node.end.line}>
             {ui.indent(indent) }
@@ -136,7 +148,7 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
     }
 
     isSelected = (node: Types.SemanticTreeNode) => {
-        if (this.state.cursor) return '';
+        if (!this.state.cursor) return '';
         const cursor = this.state.cursor;
         if (node.start.line <= cursor.line && node.end.line >= cursor.line) {
             return SemanticViewStyles.selectedNodeClass;
