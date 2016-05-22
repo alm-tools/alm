@@ -67,6 +67,7 @@ export var server = {
     getAST: {} as QRFunction<Types.GetASTQuery, Types.GetASTResponse>,
     getQuickFixes: {} as QRFunction<Types.GetQuickFixesQuery, Types.GetQuickFixesResponse>,
     applyQuickFix: {} as QRFunction<Types.ApplyQuickFixQuery, Types.ApplyQuickFixResponse>,
+    getSemanticTree: {} as QRFunction<Types.GetSemanticTreeQuery, Types.GetSemanticTreeReponse>,
 
     /**
      * Documentation Browser
@@ -370,5 +371,21 @@ export namespace Types {
     }
     export interface ApplyQuickFixResponse {
         refactorings: types.RefactoringsByFilePath;
+    }
+
+    /**
+     * Semantic view
+     */
+    export interface GetSemanticTreeQuery extends FilePathQuery { }
+    export interface SemanticTreeNode {
+        text: string;
+        kind: string;
+        kindModifiers: string;
+        start: EditorPosition;
+        end: EditorPosition;
+        subNodes: SemanticTreeNode[];
+    }
+    export interface GetSemanticTreeReponse {
+        nodes: SemanticTreeNode[];
     }
 }

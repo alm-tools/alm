@@ -33,6 +33,7 @@ export var worker = {
     getAST: {} as typeof socketContract.server.getAST,
     getQuickFixes: {} as typeof socketContract.server.getQuickFixes,
     applyQuickFix: {} as typeof socketContract.server.applyQuickFix,
+    getSemanticTree: {} as typeof socketContract.server.getSemanticTree,
 
     /** Documentation browser */
     getTopLevelModuleNames: {} as typeof socketContract.server.getTopLevelModuleNames,

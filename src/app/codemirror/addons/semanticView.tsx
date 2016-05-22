@@ -116,10 +116,14 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
         let cm = this.props.cm;
         let doc = cm.getDoc();
         const cursor = doc.getCursor();
-        server.getDoctorInfo({ filePath: this.props.filePath, editorPosition: this.state.cursor }).then(res => {
-            this.setState({ doctorInfo: res, searching: false });
+        this.setState({cursor});
+        // server.getDoctorInfo({ filePath: this.props.filePath, editorPosition: cursor }).then(res => {
+        //     this.setState({ doctorInfo: res, searching: false });
+        // });
+        server.getSemanticTree({ filePath: this.props.filePath }).then(res => {
+            console.log(res);
+            // TODO: render 
         });
-
     }, 1000);
 
     render() {
