@@ -88,9 +88,6 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             /** This is needed as we use this ordered information in quite a few places */
             this.tabs = GLUtil.orderedTabs(config);
 
-            // If there are no tabs then show the tip help
-            if (!this.tabs.length) this.tabState.refreshTipHelp();
-
             /**
              * Setup golden layout
              * https://golden-layout.com/docs/Config.html
@@ -188,6 +185,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
             // initialize the layout
             this.layout.init();
+
+            // If there are no tabs then show the tip help
+            if (!this.tabs.length) this.tabState.refreshTipHelp();
 
             /**
              * General command handling
@@ -604,6 +604,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         this.tabs.push(tab);
         if (sendToServer) {
             this.sendTabInfoToServer();
+            this.tabState.refreshTipHelp();
         }
 
         const {url, id} = tab;
@@ -1519,7 +1520,7 @@ namespace TipRender {
             const node = document.createElement('div');
             node.className="alm_tipRoot";
             tipDisplay = $(node);
-            $(document.body).append(node);
+            $('.lm_root').append(node);
             ReactDOM.render(<Tips/>,node);
         }
         tipDisplay.show();
