@@ -17,22 +17,27 @@ import * as cmUtils from "../cmUtils";
 
 type Editor = CodeMirror.EditorFromTextArea;
 
-let docuStyle = {
-    color: '#DDD',
-    padding: '5px',
-    background: '#343333',
-    fontSize: '.8rem',
 
-    // Overflow y
-    overflowY: 'auto',
+namespace SemanticViewStyles {
+    export const root = csx.extend(csx.vertical, {
+        color: '#DDD',
+        padding: '5px',
+        background: '#343333',
+        fontSize: '.8rem',
 
-    opacity: '0.7', // Light as this is not the user's focus
-    transition: 'opacity .2s',
-    ':hover': {
-        opacity: '1'
-    }
+        // Overflow
+        overflow: 'auto',
+
+        // Limit width
+        maxWidth: '200px',
+
+        opacity: '0.7', // Light as this is not the user's focus
+        transition: 'opacity .2s',
+        ':hover': {
+            opacity: '1'
+        }
+    });
 }
-
 
 let doctorRow = csx.extend({
     paddingTop: '3px',
@@ -189,7 +194,7 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
             </div>
         }
 
-        return <div style={csx.extend(docuStyle, csx.vertical) }>
+        return <div style={SemanticViewStyles.root}>
             <div style={csx.vertical}>
                 {
                     errors.map(e => {
