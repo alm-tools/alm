@@ -16,7 +16,6 @@ import {TypedEvent} from "../../../common/events";
 import equal = require('deep-equal');
 import * as chalk from "chalk";
 import {AvailableProjectConfig} from "../../../common/types";
-import multimatch = require("multimatch");
 import * as fsu from "../../utils/fsu";
 
 import {master as masterType} from "./projectServiceContract";
@@ -53,48 +52,9 @@ function sync() {
     master.sync({});
 }
 
-const syncDebounced = utils.debounce(sync, 1000);
-
 /**
  * File changing on disk
  */
-export function fileListingDelta(delta: types.FileListingDelta) {
-    // Check if we have a current project
-    // If we have a current project does it have a `filesGlob`
-    // If so check if some files need to be *removed* or *added*
-    if (!currentProject) return;
-    if (!currentProject.configFile.project.filesGlob) return;
-
-    const projectDir = currentProject.configFile.projectFileDirectory;
-    const filesGlob = currentProject.configFile.project.filesGlob;
-
-    // HEURISTIC : if some delta file path is *under* the `tsconfig.json` path
-    if (
-        delta.addedFilePaths.some(({filePath}) => filePath.startsWith(projectDir))
-        || delta.removedFilePaths.some(({filePath}) => filePath.startsWith(projectDir))
-    ) {
-        /**
-         * Does something match the glob
-         */
-        const fullPaths = delta.addedFilePaths.concat(delta.removedFilePaths).map(c=>c.filePath);
-
-        /** Mutlimatch eccentricity */
-        //multimatch(['test/foo.ts.ts'],['**/*.ts']) OKAY
-        //multimatch(['/test/foo.ts.ts'],['**/*.ts']) OKAY
-        //multimatch(['./test/foo.ts.ts'],['**/*.ts']) NOT OKAY
-        // So remove .
-        const makeRelativeForMultiMatch =
-            (path:string) =>
-                fsu.makeRelativePath(projectDir,path).replace(/^\.|(\.\.)/, '');
-
-        const relativePaths = fullPaths.map(makeRelativeForMultiMatch);
-        const matched = !!multimatch(relativePaths,filesGlob).length;
-
-        if (matched) {
-            syncDebounced()
-        }
-    }
-}
 export function fileEdited(evt: { filePath: string, edit: CodeEdit }) {
     let proj = GetProject.ifCurrent(evt.filePath)
     if (proj) {

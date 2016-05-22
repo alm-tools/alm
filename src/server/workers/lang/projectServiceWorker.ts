@@ -31,10 +31,6 @@ namespace Worker {
     /**
      * File information updates sent by the master. We tell the modules that care.
      */
-    export const fileListingDelta: typeof contract.worker.fileListingDelta = (delta) => {
-        activeProject.fileListingDelta(delta);
-        return Promise.resolve({});
-    }
     export const fileEdited: typeof contract.worker.fileEdited = (details) => {
         activeProject.fileEdited(details);
         outputStatusCache.fileEdited(details);
