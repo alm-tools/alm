@@ -64,7 +64,6 @@ interface Props {
 
 interface State {
     singleCursor?: boolean;
-    onBottom?: boolean; // or on bottom ... depending upon cursor
     cursor?: EditorPosition;
     doctorInfo?: Types.GetDoctorInfoResponse;
     searching?: boolean;
@@ -106,14 +105,6 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
             this.setState({ singleCursor: true });
         }
 
-        const cursor = doc.getCursor();
-        const isCursorInTopHalf = cmUtils.isCursorInTopHalf(cm);
-        if (isCursorInTopHalf) {
-            this.setState({ onBottom: true, cursor, doctorInfo: null, searching: true });
-        }
-        else {
-            this.setState({ onBottom: false, cursor, doctorInfo: null, searching: true });
-        }
         this.updateLazyInformation();
     }
 
@@ -124,6 +115,7 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
 
         let cm = this.props.cm;
         let doc = cm.getDoc();
+        const cursor = doc.getCursor();
         server.getDoctorInfo({ filePath: this.props.filePath, editorPosition: this.state.cursor }).then(res => {
             this.setState({ doctorInfo: res, searching: false });
         });
