@@ -8,6 +8,7 @@ import path = require('path');
 import fs = require("fs");
 import open = require('open');
 import serverStarted = require('./server/serverStarted');
+import {TypedEvent} from "./common/events";
 import cl = require('./server/commandLine');
 import workingDir = require('./server/disk/workingDir');
 import * as session from "./server/disk/session";
@@ -61,6 +62,11 @@ app.use(express.static(publicPath, {}));
 import {register} from "./socket/socketServer";
 register(server);
 
+/**
+ * Emitted once the server starts listening
+ */
+export const listeningAtUrl = new TypedEvent<{url:string}>();
+
 // Start listening
 const portfinder = require('portfinder');
 portfinder.basePort = clOptions.port;
@@ -79,11 +85,13 @@ portfinder.getPort(function (err, port) {
             console.error(err);
             exit(errorCodes.couldNotListen);
         }
-        const host = clOptions.host in {'localhost':true,'127.0.0.1':true,'0.0.0.0': true} ? 'localhost' : clOptions.host
-        console.log(`DASHBOARD:`, chalk.green(`http://${host}:${port}`));
+        const host = clOptions.host in {'localhost':true,'127.0.0.1':true,'0.0.0.0': true} ? 'localhost' : clOptions.host;
+        const url = `http://${host}:${port}`;
+        console.log(`DASHBOARD:`, chalk.green(url));
         if (clOptions.open) {
-            open(`http://${host}:${port}`);
+            open(url);
         }
+        listeningAtUrl.emit({ url });
         serverStarted.started();
     });
 });
