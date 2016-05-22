@@ -127,15 +127,14 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
     }
 
     renderNode(node: Types.SemanticTreeNode, indent: number) {
-        return <div
+        return [<div
             key={node.text}
             className={SemanticViewStyles.nodeClass}
             onClick={ (event) => { this.gotoNode(node); event.stopPropagation(); } }
             data-start={node.start.line} data-end={node.end.line}>
             {ui.indent(indent) }
             <span className={this.getIconForKind(node.kind) + ' ' + this.isSelected(node) }>{node.text}</span>
-            {node.subNodes.map(sn => this.renderNode(sn, indent + 1)) }
-        </div>
+        </div>].concat(node.subNodes.map(sn => this.renderNode(sn, indent + 1)));
     }
 
     gotoNode = (node: Types.SemanticTreeNode) => {
