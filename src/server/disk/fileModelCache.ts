@@ -88,7 +88,10 @@ export function watchedEditorConfigChanged() {
 /**
  * File Tree managment functions
  */
-
+import * as mkdirp from "mkdirp";
+export function addFolder(filePath: string) {
+    mkdirp.sync(filePath);
+}
 export function deleteFromDisk(data:{files: string[], dirs: string[]}) {
     data.files.forEach(filePath => {
         var file = getOpenFile(filePath);

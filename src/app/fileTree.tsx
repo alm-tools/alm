@@ -315,6 +315,25 @@ export class FileTree extends BaseComponent<Props, State>{
             });
             return false;
         });
+        handlers.bind(commands.treeAddFolder.config.keyboardShortcut,()=>{
+            if (this.loading) return;
+            let lastSelected = getLastSelected();
+            let dirPath = lastSelected.isDir ? lastSelected.filePath : utils.getDirectory(lastSelected.filePath);
+            inputDialog.open({
+                header: "Enter a folder name",
+                onOk: (value: string) => {
+                    let filePath = value;
+                    server.addFolder({ filePath }).then(res => {
+                        ui.notifyInfoQuickDisappear('Folder created');
+                    });
+                },
+                onEsc: () => {
+                    setTimeout(handleFocusRequestBasic, 150);
+                },
+                filterValue: dirPath + '/',
+            });
+            return false;
+        });
         handlers.bind(commands.treeDuplicateFile.config.keyboardShortcut,()=>{
             if (this.loading) return;
             let selection = goDownToSmallestSelection();
@@ -660,6 +679,11 @@ export class FileTree extends BaseComponent<Props, State>{
                             <div style={[csx.flexRoot, csx.vertical]}>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>ESC</span> to hide help</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>A</span> to add a file</div>
+                                {
+                                    /** Enable once we list empty folders
+                                    <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>Shift + A</span> to add a folder</div>
+                                    */
+                                }
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>D</span> to duplicate file / folder</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>M</span> to move file / folder</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>C</span> to copy path to clipboard</div>

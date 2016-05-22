@@ -351,6 +351,12 @@ export let treeAddFile = new UICommand({
     description: "Tree View: Add File",
     context: CommandContext.TreeView,
 });
+export let treeAddFolder = new UICommand({
+    keyboardShortcut: 'shift+a',    // atom
+    description: "Tree View: Add Folder",
+    context: CommandContext.TreeView,
+});
+
 export let treeDuplicateFile = new UICommand({
     keyboardShortcut: 'd',    // atom
     description: "Tree View: Duplicate File|Folder",
