@@ -23,6 +23,7 @@ import {MainPanel} from "./mainPanel";
 import sb = require('./statusBar');
 import {FindAndReplace} from "./findAndReplace";
 import * as state from "./state/state";
+import {SemanticView} from "./semanticView";
 
 /** Force require  */
 import {RenameVariable} from "./renameVariable";
@@ -85,6 +86,7 @@ export class Root extends ui.BaseComponent<{}, State>{
                 <div style={[csx.flex, csx.horizontal]}>
                     <FileTree/>
                     <AppTabsContainer/>
+                    <SemanticView/>
                 </div>
 
                 <FindAndReplace/>
