@@ -270,6 +270,11 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
         toExpand = toExpand.concat(projectSpec.exclude.map(x=>`!./${x}`)) // as it is (for files)
         toExpand = toExpand.concat(projectSpec.exclude.map(x=>`!./${x}/**`)) // any sub directories (for dirs)
     }
+    else { // Othewise we exclude a few defaults
+        const defaultExcludes =  ["node_modules", "bower_components", "jspm_packages"];
+        toExpand = toExpand.concat(defaultExcludes.map(dir=>`!./${dir}`)) // as it is (for files)
+        toExpand = toExpand.concat(defaultExcludes.map(dir=>`!./${dir}/**`)) // any sub directories (for dirs)
+    }
     if (projectSpec.compilerOptions && projectSpec.compilerOptions.outDir) { // If there is an outDir we will exclude that as well
         toExpand.push(`!./${projectSpec.compilerOptions.outDir}/**`);
     }
