@@ -19,12 +19,9 @@ import * as fstyle from "../../base/fstyle";
 import {MarkDown} from "../../markdown/markdown";
 
 let {inputBlackStyle} = styles.Input;
-import {CodeEditor} from "../../codemirror/codeEditor";
+const {blackHighlightColor} = styles;
 
-/**
- * A color that looks nice over the "Codemirror" background black
- */
-const blackHighlightColor = "#1C1D18"
+import {CodeEditor} from "../../codemirror/codeEditor";
 
 export interface Props extends tab.TabProps {
 }

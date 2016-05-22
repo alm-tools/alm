@@ -20,11 +20,7 @@ import {MarkDown} from "../../markdown/markdown";
 
 let {inputBlackStyle} = styles.Input;
 import {CodeEditor} from "../../codemirror/codeEditor";
-
-/**
- * A color that looks nice over the "Codemirror" background black
- */
-const blackHighlightColor = "#1C1D18"
+import {blackHighlightColor} from "../../styles/styles";
 
 export interface Props extends tab.TabProps {
 }

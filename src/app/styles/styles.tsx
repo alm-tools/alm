@@ -7,6 +7,11 @@ export let highlightColor = "#6edeef";
 export let selectedBackgroundColor = '#444';
 
 /**
+ * A background color that looks nice over the "Codemirror" background black
+ */
+export const blackHighlightColor = "#1C1D18"
+
+/**
  * If you expect a child to scroll you need to tell it that I will not give you a scroll bar
  */
 export var someChildWillScroll = {
