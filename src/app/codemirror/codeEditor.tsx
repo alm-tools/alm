@@ -60,6 +60,7 @@ import {cast,server} from "../../socket/socketClient";
 import {createId,getFilePathFromUrl} from "../../common/utils";
 import escape = require("escape-html");
 import * as doctor from "./addons/doctor";
+import * as semanticView from "./addons/semanticView";
 import * as state from "../state/state";
 import { Provider } from 'react-redux';
 import * as utils from "../../common/utils";
@@ -409,11 +410,12 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 			opacity: this.state.loading ? 1: 0
         };
 		return (
-			<div className={className} style={csx.extend(csx.vertical,csx.flex,{position:'relative', maxWidth:'100%'})}>
+			<div className={className} style={csx.extend(csx.horizontal,csx.flex,{position:'relative', maxWidth:'100%'})}>
 				{!this.props.readOnly && <doctor.Doctor cm={this.codeMirror} filePath={this.props.filePath}/>}
 				{!this.props.readOnly && <blaster.Blaster cm={this.codeMirror}/>}
 				<div style={loadingStyle}>LOADING</div>
 				<textarea ref="textarea" name={this.props.filePath} autoComplete="false" />
+                {!this.props.readOnly && <semanticView.SemanticView cm={this.codeMirror} filePath={this.props.filePath}/>}
 			</div>
 		);
 	}
