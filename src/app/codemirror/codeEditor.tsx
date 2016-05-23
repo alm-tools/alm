@@ -299,6 +299,8 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 	focus = () => {
 		if (this.codeMirror) {
 			this.handleCursorActivity();
+            this.refresh();
+
             this.codeMirror.focus();
             /**
              * For some reason code mirror fails to focus sometimes.
@@ -335,7 +337,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             this.codeMirror.refresh();
             /** Without this codemirror scrolls to top :-/ */
             if ((this.codeMirror.getDoc() as any).scrollTop == 0){
-                this.codeMirror.scrollTo(null, this.lastScrollPosition || 0);
+                setTimeout(()=>this.codeMirror.scrollTo(null, this.lastScrollPosition || 0),100);
             }
         }
     }
