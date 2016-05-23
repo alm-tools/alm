@@ -1183,7 +1183,6 @@ const newTabApi = ()=>{
     const api: tab.TabApi = {
         resize: new TypedEvent(),
         focus: new TypedEvent(),
-        hide: new TypedEvent(),
         save: new TypedEvent(),
         close: new TypedEvent() as any,
         gotoPosition: new TypedEvent() as any,

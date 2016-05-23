@@ -332,29 +332,27 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
     }
 
     private refresh = () => {
-        // Needed to resize gutters correctly
+        // http://stackoverflow.com/questions/8349571/codemirror-editor-is-not-loading-content-until-clickeds
+        // Without refresh code mirror will not show up untill clicked
         if (this.codeMirror) {
-            this.codeMirror.refresh();
-            /** Without this codemirror scrolls to top :-/ */
-            if ((this.codeMirror.getDoc() as any).scrollTop == 0){
-                setTimeout(()=>this.codeMirror.scrollTo(null, this.lastScrollPosition || 0),100);
-            }
+            /**
+             * Without the setTimeout code mirror will lose scroll position
+             */
+            setTimeout(() => {
+                if (this.codeMirror.hasFocus()) { // If out of focus then this refresh can lead to bad results
+                    this.codeMirror.refresh();
+                }
+                else {
+                    const wrapper = this.codeMirror.getWrapperElement();
+                    if (!wrapper) return;
+                    if (!wrapper.clientHeight) return;
+                    this.codeMirror.refresh();
+                }
+            }, 100);
         }
     }
 
-    /**
-     * When the cm is hidden it loses its scroll info
-     * So we need to store it when focus is lost and restore it when focus comes back
-     * (NOTE: we are using focus of an indication of potential future "moved behind another tab" scenario)
-     */
-    lastScrollPosition = null;
-
     focusChanged = (focused) => {
-        if (!focused) {
-            // NOTE: sometimes this can still be wrong answer (think its too late even after focus changed)
-            // but its better than nothing
-            this.lastScrollPosition = (this.codeMirror.getDoc() as any).scrollTop;
-        }
         this.setState({
             isFocused: focused
         });

@@ -16,8 +16,6 @@ import {CodeEditor} from "../../codemirror/codeEditor";
 export interface TabApi {
     resize: TypedEvent<{}>,
     focus: TypedEvent<{}>,
-    /** If the tab is about to be hidden. A good idea for the tab to store e.g. scroll position */
-    hide: TypedEvent<{}>,
     save: TypedEvent<{}>,
     close: TypedEvent<{}>,
     gotoPosition: TypedEvent<EditorPosition>;
