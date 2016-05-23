@@ -44,6 +44,14 @@ namespace SemanticViewStyles {
     } as any;
 
     export const nodeClass = fstyle.style({
+        paddingTop: '2px',
+        paddingBottom: '3px',
+        paddingLeft: '2px',
+
+        // Border which merges with the top
+        marginTop: '-1px',
+        border: '1px solid transparent',
+
         cursor: 'pointer',
         '-webkit-user-select': 'none',
 
@@ -54,6 +62,7 @@ namespace SemanticViewStyles {
     });
 
     export const selectedNodeClass = fstyle.style({
+        border: '1px solid grey',
         backgroundColor: styles.blackHighlightColor,
         '&:hover': {
             backgroundColor: styles.blackHighlightColor
@@ -98,6 +107,13 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
         if (!this.props.cm && props.cm) {
             /** Initial data load */
             this.reloadData();
+
+            const reloadDataDebounced = utils.debounce(this.reloadData, 3000);
+            this.disposible.add(commands.fileContentsChanged.on(e=>{
+                if (e.filePath === props.cm.filePath){
+                    reloadDataDebounced();
+                }
+            }));
 
             this.handleCursorActivity(props.cm);
             props.cm.on('cursorActivity', this.handleCursorActivity);
