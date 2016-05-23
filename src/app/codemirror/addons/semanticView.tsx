@@ -140,7 +140,11 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
     }
 
     gotoNode = (node: Types.SemanticTreeNode) => {
-        // TODO:
+        const cursor = { line: node.start.line, ch: node.start.ch }
+        const cm = this.props.cm;
+        cm.getDoc().setCursor(cursor);
+        cm.focus();
+        this.setState({cursor});
     }
 
     getIconForKind(kind: string) {
