@@ -46,13 +46,18 @@ namespace SemanticViewStyles {
     export const nodeClass = fstyle.style({
         cursor: 'pointer',
         '-webkit-user-select': 'none',
+
+        transition: 'background .2s',
         '&:hover': {
-            backgroundColor: styles.blackHighlightColor
+            backgroundColor: '#555'
         }
     });
 
     export const selectedNodeClass = fstyle.style({
         backgroundColor: styles.blackHighlightColor,
+        '&:hover': {
+            backgroundColor: styles.blackHighlightColor
+        }
     });
 }
 
