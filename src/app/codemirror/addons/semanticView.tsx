@@ -192,6 +192,7 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
     /** Loads the tree data */
     reloadData = () => {
         if (!this.props.filePath) return;
+        if (!state.inActiveProjectFilePath(this.props.filePath)) return;
 
         server.getSemanticTree({ filePath: this.props.filePath }).then(res => {
             this.setState({tree: res.nodes});
