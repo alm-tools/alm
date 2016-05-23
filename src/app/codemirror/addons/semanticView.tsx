@@ -47,12 +47,11 @@ namespace SemanticViewStyles {
         cursor: 'pointer',
         '-webkit-user-select': 'none',
         '&:hover': {
-            color: 'white'
+            backgroundColor: styles.blackHighlightColor
         }
     });
 
     export const selectedNodeClass = fstyle.style({
-        color: 'white',
         backgroundColor: styles.blackHighlightColor,
     });
 }
@@ -127,13 +126,16 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
     }
 
     renderNode(node: Types.SemanticTreeNode, indent: number) {
+        const isSelected = this.isSelected(node);
+        const color = ui.kindToColor(node.kind);
         return [<div
             key={node.text}
-            className={SemanticViewStyles.nodeClass}
+            className={SemanticViewStyles.nodeClass + ' ' + isSelected}
+            style={{color}}
             onClick={ (event) => { this.gotoNode(node); event.stopPropagation(); } }
             data-start={node.start.line} data-end={node.end.line}>
             {ui.indent(indent) }
-            <span className={this.getIconForKind(node.kind) + ' ' + this.isSelected(node) }>{node.text}</span>
+            <span className={this.getIconForKind(node.kind)}>{node.text}</span>
         </div>].concat(node.subNodes.map(sn => this.renderNode(sn, indent + 1)));
     }
 
