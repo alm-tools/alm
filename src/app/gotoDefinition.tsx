@@ -94,7 +94,7 @@ export class GotoDefinition extends BaseComponent<Props, State>{
                   isOpen={true}
                   onRequestClose={this.props.unmount}>
                   <div style={[csx.vertical, csx.flex]}>
-                      <div style={[csx.horizontal]}>
+                      <div style={[csx.horizontal, csx.content]}>
                           <h4>Multiple Definitions Found</h4>
                           <div style={[csx.flex]}></div>
                           <div style={{fontSize:'0.9rem', color:'grey'} as any}>
