@@ -679,11 +679,7 @@ export class FileTree extends BaseComponent<Props, State>{
                             <div style={[csx.flexRoot, csx.vertical]}>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>ESC</span> to hide help</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>A</span> to add a file</div>
-                                {
-                                    /** Enable once we list empty folders
-                                    <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>Shift + A</span> to add a folder</div>
-                                    */
-                                }
+                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>Shift + A</span> to add a folder</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>D</span> to duplicate file / folder</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>M</span> to move file / folder</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>C</span> to copy path to clipboard</div>
@@ -777,6 +773,27 @@ export class FileTree extends BaseComponent<Props, State>{
         this.dirLookup= {};
         this.dirLookup[rootDirPath] = rootDir;
 
+        // if not found creates a new dir and set its parent
+        // (recursively e.g. last was /foo and new is /foo/bar/baz/quz)
+        let createDirAndMakeSureAllParentExits = (dir: string): TreeDirItem => {
+            let dirTree: TreeDirItem = {
+                name: getFileName(dir),
+                filePath: dir,
+                subDirs: [],
+                files: []
+            }
+            this.dirLookup[dir] = dirTree;
+
+            let parentDir = getDirectory(dir);
+            let parentDirTree = this.dirLookup[parentDir]
+            if (!parentDirTree) {
+                parentDirTree = createDirAndMakeSureAllParentExits(parentDir);
+            }
+            parentDirTree.subDirs.push(dirTree);
+
+            return dirTree;
+        }
+
         for (let filePath of filePaths) {
             let dir = getDirectory(filePath);
             let fileName = getFileName(filePath);
@@ -784,27 +801,6 @@ export class FileTree extends BaseComponent<Props, State>{
                 name: fileName,
                 filePath: filePath,
             };
-
-            // if not found create a new dir and set its parent
-            // (recursively e.g. last was /foo and new is /foo/bar/baz/quz)
-            let createDirAndMakeSureAllParentExits = (dir: string): TreeDirItem => {
-                let dirTree: TreeDirItem = {
-                    name: getFileName(dir),
-                    filePath: dir,
-                    subDirs: [],
-                    files: []
-                }
-                this.dirLookup[dir] = dirTree;
-
-                let parentDir = getDirectory(dir);
-                let parentDirTree = this.dirLookup[parentDir]
-                if (!parentDirTree) {
-                    parentDirTree = createDirAndMakeSureAllParentExits(parentDir);
-                }
-                parentDirTree.subDirs.push(dirTree);
-
-                return dirTree;
-            }
 
             // lookup existing dir
             let treeDir = this.dirLookup[dir];
@@ -815,6 +811,15 @@ export class FileTree extends BaseComponent<Props, State>{
         }
 
         this.setState({ treeRoot: rootDir, expansionState: this.state.expansionState });
+
+        /** Also add the folders that may have no files */
+        let dirs = props.filePaths.filter(fp=> fp.type == types.FilePathType.Dir).map(fp=> fp.filePath);
+        dirs.forEach(dirPath => {
+            let treeDir = this.dirLookup[dirPath];
+            if (!treeDir) {
+                createDirAndMakeSureAllParentExits(dirPath);
+            }
+        });
 
         /**
          * keep the selected file paths in sync with all the items that are available
