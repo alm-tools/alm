@@ -557,7 +557,10 @@ function navigationBarItemToSemanticTreeNode(item: ts.NavigationBarItem, project
 export function getSemanticTree(query: Types.GetSemanticTreeQuery): Promise<Types.GetSemanticTreeReponse> {
     let project = getProject(query.filePath);
 
-    /** TODO: to get flattened results consider using `sourceFile.getNamedDeclarations()` + `ts.getNodeKind` instead */
+    /**
+     * TODO: You can flatten these by sorting by `depth`
+     * and only taking the items with same name + depth that have `children` (if any)
+     */
     var navBarItems = project.languageService.getNavigationBarItems(query.filePath);
 
     // Sort items by first spans:
