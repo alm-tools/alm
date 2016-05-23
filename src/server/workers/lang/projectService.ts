@@ -559,11 +559,6 @@ export function getSemanticTree(query: Types.GetSemanticTreeQuery): Promise<Type
 
     var navBarItems = project.languageService.getNavigationBarItems(query.filePath);
 
-    // remove the first global (whatever that is???)
-    if (navBarItems.length && navBarItems[0].text == "<global>") {
-        navBarItems.shift();
-    }
-
     // Sort items by first spans:
     sortNavbarItemsBySpan(navBarItems);
 
