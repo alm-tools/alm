@@ -47,6 +47,7 @@ namespace SemanticViewStyles {
         paddingTop: '2px',
         paddingBottom: '3px',
         paddingLeft: '2px',
+        paddingRight: '2px',
 
         // Border which merges with the top
         marginTop: '-1px',
