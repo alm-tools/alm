@@ -334,7 +334,9 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         if (this.codeMirror) {
             this.codeMirror.refresh();
             /** Without this codemirror scrolls to top :-/ */
-            this.codeMirror.scrollTo(null, this.lastScrollPosition || 0);
+            if ((this.codeMirror.getDoc() as any).scrollTop == 0){
+                this.codeMirror.scrollTo(null, this.lastScrollPosition || 0);
+            }
         }
     }
 
