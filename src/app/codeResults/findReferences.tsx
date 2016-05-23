@@ -2,25 +2,25 @@ import React = require("react");
 import ReactDOM = require("react-dom");
 import Radium = require('radium');
 import csx = require('csx');
-import {BaseComponent} from "./ui";
-import * as ui from "./ui";
-import * as utils from "../common/utils";
-import * as styles from "./styles/styles";
-import * as state from "./state/state";
-import * as uix from "./uix";
-import * as commands from "./commands/commands";
+import {BaseComponent} from "../ui";
+import * as ui from "../ui";
+import * as utils from "../../common/utils";
+import * as styles from "../styles/styles";
+import * as state from "../state/state";
+import * as uix from "../uix";
+import * as commands from "../commands/commands";
 import CodeMirror = require('codemirror');
 import Modal = require('react-modal');
-import {server} from "../socket/socketClient";
-import {Types} from "../socket/socketContract";
-import {modal} from "./styles/styles";
-import {Robocop} from "./components/robocop";
-import * as docCache from "./codemirror/mode/docCache";
-import {CodeEditor} from "./codemirror/codeEditor";
-import {RefactoringsByFilePath, Refactoring} from "../common/types";
+import {server} from "../../socket/socketClient";
+import {Types} from "../../socket/socketContract";
+import {modal} from "../styles/styles";
+import {Robocop} from "../components/robocop";
+import * as docCache from "../codemirror/mode/docCache";
+import {CodeEditor} from "../codemirror/codeEditor";
+import {RefactoringsByFilePath, Refactoring} from "../../common/types";
 
 export interface Props {
-    data: Types.GetDefinitionsAtPositionResponse;
+    data: Types.GetReferencesResponse;
     unmount: () => any;
 }
 export interface State {
@@ -29,7 +29,7 @@ export interface State {
 
 
 @ui.Radium
-export class GotoDefinition extends BaseComponent<Props, State>{
+export class FindReferences extends BaseComponent<Props, State>{
 
     constructor(props: Props) {
         super(props);
@@ -68,16 +68,16 @@ export class GotoDefinition extends BaseComponent<Props, State>{
     }
 
     render() {
-        let definitions = this.props.data.definitions;
-        let selectedPreview = this.props.data.definitions[this.state.selectedIndex];
+        let references = this.props.data.references;
+        let selectedPreview = this.props.data.references[this.state.selectedIndex];
 
-        let filePathsRendered = definitions.map((item,i)=>{
+        let filePathsRendered = references.map((item,i)=>{
             let selected = i == this.state.selectedIndex;
             let active = selected ? styles.tabHeaderActive : {};
             let ref = selected && "selectedTabTitle";
             return (
-                <div ref={ref} key={item.filePath + i} style={[styles.tabHeader,active,{overflow:'auto'}]} onClick={()=>this.selectAndRefocus(i)}>
-                    <div>{utils.getFileName(item.filePath)} (line: {item.position.line + 1})</div>
+                <div ref={ref} key={item.filePath + i} style={[styles.tabHeader,active,{overflow:'hidden'}]} onClick={()=>this.selectAndRefocus(i)}>
+                    <div title={item.filePath} style={{overflow:'hidden',textOverflow:'ellipsis'}}>{utils.getFileName(item.filePath)} (line: {item.position.line + 1})</div>
                 </div>
             );
         });
@@ -95,7 +95,7 @@ export class GotoDefinition extends BaseComponent<Props, State>{
                   onRequestClose={this.props.unmount}>
                   <div style={[csx.vertical, csx.flex]}>
                       <div style={[csx.horizontal, csx.content]}>
-                          <h4>Multiple Definitions Found</h4>
+                          <h4>References</h4>
                           <div style={[csx.flex]}></div>
                           <div style={{fontSize:'0.9rem', color:'grey'} as any}>
                             <code style={modal.keyStrokeStyle}>Esc</code> to exit <code style={modal.keyStrokeStyle}>Enter</code> to select
@@ -130,19 +130,19 @@ export class GotoDefinition extends BaseComponent<Props, State>{
 
         if (keyStates.up || keyStates.tabPrevious) {
             event.preventDefault();
-            let selectedIndex = utils.rangeLimited({ num: this.state.selectedIndex - 1, min: 0, max: this.props.data.definitions.length - 1, loopAround: true });
+            let selectedIndex = utils.rangeLimited({ num: this.state.selectedIndex - 1, min: 0, max: this.props.data.references.length - 1, loopAround: true });
             this.setState({selectedIndex});
         }
         if (keyStates.down || keyStates.tabNext) {
             event.preventDefault();
-            let selectedIndex = utils.rangeLimited({ num: this.state.selectedIndex + 1, min: 0, max: this.props.data.definitions.length - 1, loopAround: true });
+            let selectedIndex = utils.rangeLimited({ num: this.state.selectedIndex + 1, min: 0, max: this.props.data.references.length - 1, loopAround: true });
             this.setState({selectedIndex});
         }
         if (keyStates.enter) {
             event.preventDefault();
             let newText = (ReactDOM.findDOMNode(this.refs.mainInput) as HTMLInputElement).value.trim();
 
-            let def = this.props.data.definitions[this.state.selectedIndex];
+            let def = this.props.data.references[this.state.selectedIndex];
             commands.doOpenOrFocusFile.emit({
                 filePath: def.filePath,
                 position: def.position
@@ -164,17 +164,17 @@ export class GotoDefinition extends BaseComponent<Props, State>{
 }
 
 // Wire up the code mirror command to come here
-CodeMirror.commands[commands.additionalEditorCommands.gotoDefinition] = (editor: CodeMirror.EditorFromTextArea) => {
+CodeMirror.commands[commands.additionalEditorCommands.findReferences] = (editor: CodeMirror.EditorFromTextArea) => {
     let cursor = editor.getDoc().getCursor();
     let filePath = editor.filePath;
     let position = editor.getDoc().indexFromPos(cursor);
-    server.getDefinitionsAtPosition({filePath,position}).then((res)=>{
-        if (res.definitions.length == 0){
-            ui.notifyInfoNormalDisappear('No TypeScript definition at cursor location');
+    server.getReferences({filePath,position}).then((res)=>{
+        if (res.references.length == 0){
+            ui.notifyInfoNormalDisappear('No references for item at cursor location');
         }
-        else if (res.definitions.length == 1) {
+        else if (res.references.length == 1) {
             // Go directly 🌹
-            let def = res.definitions[0];
+            let def = res.references[0];
             commands.doOpenOrFocusFile.emit({
                 filePath: def.filePath,
                 position: def.position
@@ -182,7 +182,7 @@ CodeMirror.commands[commands.additionalEditorCommands.gotoDefinition] = (editor:
         }
         else {
             const {node,unmount} = ui.getUnmountableNode();
-            ReactDOM.render(<GotoDefinition data={res} unmount={unmount}/>, node);
+            ReactDOM.render(<FindReferences data={res} unmount={unmount}/>, node);
         }
     });
 }

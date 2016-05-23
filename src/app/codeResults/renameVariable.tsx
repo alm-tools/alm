@@ -2,22 +2,22 @@ import React = require("react");
 import ReactDOM = require("react-dom");
 import Radium = require('radium');
 import csx = require('csx');
-import {BaseComponent} from "./ui";
-import * as ui from "./ui";
-import * as utils from "../common/utils";
-import * as styles from "./styles/styles";
-import * as state from "./state/state";
-import * as uix from "./uix";
-import * as commands from "./commands/commands";
+import {BaseComponent} from "../ui";
+import * as ui from "../ui";
+import * as utils from "../../common/utils";
+import * as styles from "../styles/styles";
+import * as state from "../state/state";
+import * as uix from "../uix";
+import * as commands from "../commands/commands";
 import CodeMirror = require('codemirror');
 import Modal = require('react-modal');
-import {server} from "../socket/socketClient";
-import {Types} from "../socket/socketContract";
-import {modal} from "./styles/styles";
-import {Robocop} from "./components/robocop";
-import * as docCache from "./codemirror/mode/docCache";
-import {CodeEditor} from "./codemirror/codeEditor";
-import {RefactoringsByFilePath, Refactoring} from "../common/types";
+import {server} from "../../socket/socketClient";
+import {Types} from "../../socket/socketContract";
+import {modal} from "../styles/styles";
+import {Robocop} from "../components/robocop";
+import * as docCache from "../codemirror/mode/docCache";
+import {CodeEditor} from "../codemirror/codeEditor";
+import {RefactoringsByFilePath, Refactoring} from "../../common/types";
 
 export interface Props {
     info: Types.GetRenameInfoResponse;
@@ -106,8 +106,8 @@ export class RenameVariable extends BaseComponent<Props, State>{
             let active = selected ? styles.tabHeaderActive : {};
             let ref = selected && "selectedTabTitle";
             return (
-                <div ref={ref} key={item.filePath + i} style={[styles.tabHeader,active,{overflow:'auto'}]} onClick={()=>this.selectAndRefocus(i)}>
-                    <div>{utils.getFileName(item.filePath)} ({item.indexForFilePath} of {item.totalForFilePath})</div>
+                <div ref={ref} key={item.filePath + i} style={[styles.tabHeader,active,{overflow:'hidden'}]} onClick={()=>this.selectAndRefocus(i)}>
+                    <div title={item.filePath} style={{overflow:'hidden',textOverflow:'ellipsis'}}>{utils.getFileName(item.filePath)} ({item.indexForFilePath} of {item.totalForFilePath})</div>
                 </div>
             );
         });
@@ -124,7 +124,7 @@ export class RenameVariable extends BaseComponent<Props, State>{
                   isOpen={true}
                   onRequestClose={this.props.unmount}>
                   <div style={[csx.vertical, csx.flex]}>
-                      <div style={[csx.horizontal]}>
+                      <div style={[csx.horizontal, csx.content]}>
                           <h4>Rename</h4>
                           <div style={[csx.flex]}></div>
                           <div style={{fontSize:'0.9rem', color:'grey'} as any}>
@@ -133,7 +133,7 @@ export class RenameVariable extends BaseComponent<Props, State>{
                           </div>
                       </div>
 
-                      <div style={[styles.padded1TopBottom, csx.vertical]}>
+                      <div style={[styles.padded1TopBottom, csx.vertical, csx.content]}>
                           <input
                               defaultValue={this.props.info.displayName}
                               style={styles.modal.inputStyle}
@@ -147,10 +147,10 @@ export class RenameVariable extends BaseComponent<Props, State>{
 
                       {
                           this.state.invalidMessage &&
-                          <div style={validationErrorStyle}>{this.state.invalidMessage}</div>
+                          <div style={csx.extend(csx.content,validationErrorStyle)}>{this.state.invalidMessage}</div>
                       }
 
-                      <div style={summaryStyle}>
+                      <div style={csx.extend(csx.content,summaryStyle)}>
                         {this.state.flattened.length} usages, {this.props.alreadyOpenFilePaths.length} files open,  {this.props.currentlyClosedFilePaths.length} files closed
                       </div>
 
@@ -174,7 +174,7 @@ export class RenameVariable extends BaseComponent<Props, State>{
             this.setState({ invalidMessage: 'The new variable must not contain a space' });
         }
         else if (!newText.trim()) {
-            this.setState({ invalidMessage: 'Press esc to abort rename' });
+            this.setState({ invalidMessage: 'Please provide a new name or press esc to abort rename' });
         }
         else {
             this.setState({ invalidMessage: '' });

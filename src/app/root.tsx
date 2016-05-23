@@ -25,9 +25,9 @@ import {FindAndReplace} from "./findAndReplace";
 import * as state from "./state/state";
 
 /** Force require  */
-import {RenameVariable} from "./renameVariable";
-import {GotoDefinition} from "./gotoDefinition";
-import {FindReferences} from "./findReferences";
+import {RenameVariable} from "./codeResults/renameVariable";
+import {GotoDefinition} from "./codeResults/gotoDefinition";
+import {FindReferences} from "./codeResults/findReferences";
 import * as format_placeholder from "./format";
 import * as gotoHistory_placeholder from "./gotoHistory";
 import * as clipboardRing from "./clipboardRing";
