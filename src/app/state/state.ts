@@ -65,7 +65,7 @@ let initialStoreState: StoreState = {
     filePathsCompleted: false,
     fileTreeShown: false,
     showDoctor: false,
-    showSemanticView: true,
+    showSemanticView: false,
 };
 
 let redux = new SimpleRedux<StoreState>(initialStoreState);
@@ -222,6 +222,11 @@ export let setShowDoctor = redux.add('setShowDoctor', (state: StoreState, payloa
     };
 });
 
+export let toggleSemanticView = redux.add('toggleSemanticView', (state: StoreState, payload: {}): StoreState => {
+    return {
+        showSemanticView: !state.showSemanticView
+    };
+});
 export let setShowSemanticView = redux.add('setShowSemanticView', (state: StoreState, payload: boolean): StoreState => {
     return {
         showSemanticView: payload

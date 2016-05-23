@@ -113,7 +113,14 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
 
         let doc = cm.getDoc();
         const cursor = doc.getCursor();
-        this.setState({cursor});
+        /** If first call OR cursor moved */
+        if (!this.state.cursor || (this.state.cursor && this.state.cursor.line !== cursor.line)) {
+            this.setState({cursor});
+            this.afterComponentDidUpdate(()=>{
+                // Future idea : scroll to node in view
+                // Can't do right now as we show duplicates i.e. show stuff at module level and then at node level etc.
+            })
+        }
     }, 1000);
 
     render() {
@@ -140,7 +147,7 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
             onClick={ (event) => { this.gotoNode(node); event.stopPropagation(); } }
             data-start={node.start.line} data-end={node.end.line}>
             {ui.indent(indent) }
-            <span className={this.getIconForKind(node.kind)}>{node.text}</span>
+            <span style={{fontFamily:'FontAwesome'}}>{this.getIconForKind(node.kind)}</span> {node.text}
         </div>].concat(node.subNodes.map(sn => this.renderNode(sn, indent + 1)));
     }
 
@@ -153,9 +160,7 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
     }
 
     getIconForKind(kind: string) {
-        // These are ts.ScriptElementKind;
-        // TODO:
-        return `${kind}`;
+        return ui.kindToIcon(kind);
     }
 
     isSelected = (node: Types.SemanticTreeNode) => {

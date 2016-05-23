@@ -119,6 +119,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         state.toggleDoctor({});
     });
+    commands.toggleSemanticView.on(()=>{
+        if (!state.inActiveProjectFilePath(tabState.getSelectedFilePath())){
+            ui.notifyWarningNormalDisappear('Semantic view is only available for files in active project');
+            return;
+        }
+        state.toggleSemanticView({});
+    });
     commands.duplicateWindow.on(()=>{
         const width = window.innerWidth;
         const height = window.innerHeight;
@@ -140,6 +147,12 @@ document.addEventListener('DOMContentLoaded', () => {
             state.setShowDoctor(res);
             state.subscribeSub(s => s.showDoctor, (showDoctor) => {
                 settings.showDoctor.set(showDoctor);
+            });
+        });
+        settings.showSemanticView.get().then(res => {
+            state.setShowSemanticView(res);
+            state.subscribeSub(s => s.showSemanticView, (showSemanticView) => {
+                settings.showSemanticView.set(showSemanticView);
             });
         });
         settings.errorsExpanded.get().then(res => {
