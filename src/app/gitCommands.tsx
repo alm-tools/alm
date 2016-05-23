@@ -17,9 +17,10 @@ CodeMirror.commands[commands.additionalEditorCommands.gitResetFile] = function(c
         ui.notifyWarningNormalDisappear('File does not have a valid file path');
         return;
     }
-
+    const cursor = cm.getDoc().getCursor();
     server.gitReset({ filePath: cm.filePath }).then((res) => {
-        console.log(res);
+        // console.log(res); // DEBUG
+        cm.getDoc().setCursor(cursor);
         ui.notifySuccessNormalDisappear('Git reset successful');
     })
 }
