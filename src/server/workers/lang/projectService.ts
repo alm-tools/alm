@@ -4,6 +4,7 @@
  * Errors etc are pushed automatically from `activeProject` and do not belong here :)
  */
 
+import {Project} from "./core/project";
 import * as activeProject from "./activeProject";
 let getProject = activeProject.GetProject.ifCurrentOrErrorOut;
 
@@ -527,4 +528,46 @@ export function applyQuickFix(query: Types.ApplyQuickFixQuery): Promise<Types.Ap
     var res = fix.provideFix(info);
     var refactorings = qf.getRefactoringsByFilePath(res);
     return resolve({ refactorings });
+}
+
+/**
+ * Semantic Tree
+ */
+function sortNavbarItemsBySpan(items: ts.NavigationBarItem[]) {
+    items.sort((a, b) => a.spans[0].start - b.spans[0].start);
+
+    // sort children recursively
+    for (let item of items) {
+        if (item.childItems) {
+            sortNavbarItemsBySpan(item.childItems);
+        }
+    }
+}
+function navigationBarItemToSemanticTreeNode(item: ts.NavigationBarItem, project: Project, query: Types.FilePathQuery): Types.SemanticTreeNode {
+    var toReturn: Types.SemanticTreeNode = {
+        text: item.text,
+        kind: item.kind,
+        kindModifiers: item.kindModifiers,
+        start: project.languageServiceHost.getLineAndCharacterOfPosition(query.filePath, item.spans[0].start),
+        end: project.languageServiceHost.getLineAndCharacterOfPosition(query.filePath, item.spans[0].start + item.spans[0].length),
+        subNodes: item.childItems ? item.childItems.map(ci => navigationBarItemToSemanticTreeNode(ci, project, query)) : []
+    }
+    return toReturn;
+}
+export function getSemanticTree(query: Types.GetSemanticTreeQuery): Promise<Types.GetSemanticTreeReponse> {
+    let project = getProject(query.filePath);
+
+    var navBarItems = project.languageService.getNavigationBarItems(query.filePath);
+
+    // remove the first global (whatever that is???)
+    if (navBarItems.length && navBarItems[0].text == "<global>") {
+        navBarItems.shift();
+    }
+
+    // Sort items by first spans:
+    sortNavbarItemsBySpan(navBarItems);
+
+    // convert to SemanticTreeNodes
+    var nodes = navBarItems.map(nbi => navigationBarItemToSemanticTreeNode(nbi, project, query));
+    return resolve({ nodes });
 }

@@ -35,6 +35,11 @@ function createSimpleSetting<T>(key: string) {
 export const showDoctor = createSimpleSetting<boolean>('showDoctor');
 
 /**
+ * Semantic View
+ */
+export const showSemanticView = createSimpleSetting<boolean>('showSemanticView');
+
+/**
  * Errors expanded
  */
 export const errorsExpanded = createSimpleSetting<boolean>('errorsExpanded');
