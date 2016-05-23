@@ -371,6 +371,12 @@ export let treeMoveFile = new UICommand({
     description: "Tree View: Move File|Folder",
     context: CommandContext.TreeView,
 });
+/** Rename is same as `move` but people want to search for it */
+export let treeRenameFile = new UICommand({
+    keyboardShortcut: 'r',
+    description: "Tree View: Rename File|Folder",
+    context: CommandContext.TreeView,
+});
 export let treeDeleteFile = new UICommand({
     keyboardShortcut: 'del',    // atom
     description: "Tree View: Delete File|Folder",

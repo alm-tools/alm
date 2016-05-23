@@ -377,7 +377,7 @@ export class FileTree extends BaseComponent<Props, State>{
 
             return false;
         });
-        handlers.bind(commands.treeMoveFile.config.keyboardShortcut,()=>{
+        handlers.bind([commands.treeMoveFile.config.keyboardShortcut, commands.treeRenameFile.config.keyboardShortcut],()=>{
             if (this.loading) return;
             let selection = goDownToSmallestSelection();
             if (!selection){
@@ -682,6 +682,7 @@ export class FileTree extends BaseComponent<Props, State>{
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>Shift + A</span> to add a folder</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>D</span> to duplicate file / folder</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>M</span> to move file / folder</div>
+                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>R</span> to rename file / folder</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>C</span> to copy path to clipboard</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>arrow keys</span> to browse</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>del or backspace</span> to delete</div>
