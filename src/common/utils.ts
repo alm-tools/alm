@@ -449,8 +449,10 @@ export function timer() {
     }
 }
 
-
-const supportedConfigFileNames: { [fileName: string]: boolean } = {
+/**
+ * If you add a new schema make sure you download its schema as well
+ */
+export const supportedConfigFileNames: { [fileName: string]: boolean } = {
     'tsconfig.json': true,
     'package.json': true,
 }

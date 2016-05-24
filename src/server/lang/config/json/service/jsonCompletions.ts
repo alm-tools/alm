@@ -10,8 +10,7 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-'use strict';
-
+import * as utils from "../../../../../common/utils";
 import Parser = require('../jsonParser');
 import SchemaService = require('./jsonSchemaService');
 import JsonSchema = require('../jsonSchema');
@@ -24,29 +23,22 @@ type Thenable<T> = Promise<T>;
  *
  * New additions need to
  * - Download and put in schemas
- * - Update this variable
  * - Update utils.ts for "supportedConfigFileNames"
  */
-const schemas: { fileName: string, content: JsonSchema.IJSONSchema }[] = [
-    {
-        fileName: 'tsconfig.json',
-        content: require('./schemas/tsconfig.json')
-    },
-    {
-        fileName: 'package.json',
-        content: require('./schemas/package.json')
-    }
-];
-schemas.forEach(config => {
-    SchemaService.resolveSchemaContent(config.content);
+const schemas: { fileName: string, content: JsonSchema.IJSONSchema }[] = [];
+Object.keys(utils.supportedConfigFileNames).forEach(fileName => {
+    const rawContent = require(`./schemas/${fileName}`);
+    SchemaService.resolveSchemaContent(rawContent); // Mutates it in place
+    schemas.push({
+        fileName,
+        content: rawContent
+    });
 });
-
 
 /**
  * BAS: My functions
  */
 import {Types}  from "../../../../../socket/socketContract";
-import * as utils from "../../../../../common/utils";
 import * as fmc from "../../../../disk/fileModelCache";
 import fuzzaldrin = require('fuzzaldrin');
 export function getCompletionsAtPosition(this:{}, query: Types.GetCompletionsAtPositionQuery): Promise<Types.GetCompletionsAtPositionResponse> {
