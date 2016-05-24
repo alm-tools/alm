@@ -26,3 +26,4 @@
 /// <reference path="browser/ambient/socket.io-client/socket.io-client.d.ts" />
 /// <reference path="browser/ambient/socket.io/socket.io.d.ts" />
 /// <reference path="browser/ambient/toastr/toastr.d.ts" />
+/// <reference path="browser/ambient/whatwg-fetch/index.d.ts" />

@@ -24,6 +24,7 @@
     "serve-static": "github:DefinitelyTyped/DefinitelyTyped/serve-static/serve-static.d.ts#e95958ac847d9a343bdc8d7cbc796a5f6da29f71",
     "socket.io": "github:DefinitelyTyped/DefinitelyTyped/socket.io/socket.io.d.ts#eb835aa72f45eee4246b1de8beeffe2010c689e6",
     "socket.io-client": "github:DefinitelyTyped/DefinitelyTyped/socket.io-client/socket.io-client.d.ts#eb835aa72f45eee4246b1de8beeffe2010c689e6",
-    "toastr": "github:DefinitelyTyped/DefinitelyTyped/toastr/toastr.d.ts#62eedc3121a5e28c50473d2e4a9cefbcb9c3957f"
+    "toastr": "github:DefinitelyTyped/DefinitelyTyped/toastr/toastr.d.ts#62eedc3121a5e28c50473d2e4a9cefbcb9c3957f",
+    "whatwg-fetch": "registry:dt/whatwg-fetch#0.0.0+20160524142046"
   }
 }
