@@ -22,3 +22,26 @@ var BarGlobalClassExtension = (function (_super) {
     }
     return BarGlobalClassExtension;
 }(BarGlobalClass));
+var Foo;
+(function (Foo) {
+    var Bar;
+    (function (Bar) {
+        var Bas;
+        (function (Bas) {
+            var InNameSapce = (function () {
+                function InNameSapce() {
+                }
+                return InNameSapce;
+            }());
+            Bas.InNameSapce = InNameSapce;
+            var InNameSpaceInheritance = (function (_super) {
+                __extends(InNameSpaceInheritance, _super);
+                function InNameSpaceInheritance() {
+                    _super.apply(this, arguments);
+                }
+                return InNameSpaceInheritance;
+            }(BarGlobalClass));
+            Bas.InNameSpaceInheritance = InNameSpaceInheritance;
+        })(Bas = Bar.Bas || (Bar.Bas = {}));
+    })(Bar = Foo.Bar || (Foo.Bar = {}));
+})(Foo || (Foo = {}));

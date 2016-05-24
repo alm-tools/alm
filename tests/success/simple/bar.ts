@@ -32,3 +32,12 @@ class BarGlobalClass {
 class BarGlobalClassExtension extends BarGlobalClass {
   anotherMember: string;
 }
+
+namespace Foo.Bar.Bas {
+  export class InNameSapce{
+    public someMember;
+  }
+  export class InNameSpaceInheritance extends BarGlobalClass {
+    public someOtherMember: string; 
+  }
+}
