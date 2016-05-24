@@ -46,14 +46,22 @@ function analyzeFile({sourceFile, program}: { sourceFile: ts.SourceFile, program
     return result;
 }
 
-function getClasses(config: { node: ts.SourceFile | ts.ModuleBlock, sourceFile: ts.SourceFile, program: ts.Program, collect: (cls: types.UMLClass) => void }) {
+function getClasses(config: { node: ts.SourceFile | ts.ModuleBlock | ts.ModuleDeclaration, sourceFile: ts.SourceFile, program: ts.Program, collect: (cls: types.UMLClass) => void }) {
+
+    const {sourceFile, program, collect} = config;
 
     ts.forEachChild(config.node, node => {
         if (node.kind == ts.SyntaxKind.ClassDeclaration) {
-            config.collect(transformClass(node as ts.ClassDeclaration, config.sourceFile, config.program));
+            collect(transformClass(node as ts.ClassDeclaration, sourceFile, program));
         }
 
-        // TODO: potentially support looking into `a.b.c` style namespaces as well
+        // Support recursively looking into `a.b.c` style namespaces as well
+        if (node.kind === ts.SyntaxKind.ModuleDeclaration) {
+            getClasses({ node: node as ts.ModuleDeclaration, collect, program, sourceFile });
+        }
+        if (node.kind === ts.SyntaxKind.ModuleBlock) {
+            getClasses({ node: node as ts.ModuleBlock, collect, program, sourceFile });
+        }
     });
 }
 
