@@ -198,7 +198,7 @@ export class AutoCompleter {
         }
 
         // if in active project or a supported config file
-        if (state.inActiveProjectFilePath(editor.filePath) || utils.isSupportedConfigFile(editor.filePath)) {
+        if (state.inActiveProjectFilePath(editor.filePath) || utils.isSupportedConfigFileForAutocomplete(editor.filePath)) {
             server.getCompletionsAtPosition({ filePath: this.filePath, position, prefix }).then(res=> {
                 if (this.lastRequest !== position){
                     cb(null);

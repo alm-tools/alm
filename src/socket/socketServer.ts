@@ -151,7 +151,7 @@ namespace Server {
      * Project service
      */
     export var getCompletionsAtPosition: typeof contract.server.getCompletionsAtPosition = (query) => {
-        if (utils.isSupportedConfigFile(query.filePath)) {
+        if (utils.isSupportedConfigFileForAutocomplete(query.filePath)) {
             return jsonCompletions.getCompletionsAtPosition(query);
         }
         else {

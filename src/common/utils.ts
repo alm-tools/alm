@@ -452,15 +452,14 @@ export function timer() {
 /**
  * If you add a new schema make sure you download its schema as well
  */
-export const supportedConfigFileNames: { [fileName: string]: boolean } = {
+export const supportedAutocompleteConfigFileNames: { [fileName: string]: boolean } = {
     'tsconfig.json': true,
     'package.json': true,
 }
 /**
  * Files for which we have some intelligence
  */
-export function isSupportedConfigFile(filePath: string): boolean {
-
+export function isSupportedConfigFileForAutocomplete(filePath: string): boolean {
     const fileName = getFileName(filePath);
-    return !!supportedConfigFileNames[fileName];
+    return !!supportedAutocompleteConfigFileNames[fileName];
 }

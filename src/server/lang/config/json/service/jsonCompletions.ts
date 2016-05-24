@@ -26,7 +26,7 @@ type Thenable<T> = Promise<T>;
  * - Update utils.ts for "supportedConfigFileNames"
  */
 const schemas: { fileName: string, content: JsonSchema.IJSONSchema }[] = [];
-Object.keys(utils.supportedConfigFileNames).forEach(fileName => {
+Object.keys(utils.supportedAutocompleteConfigFileNames).forEach(fileName => {
     const rawContent = require(`./schemas/${fileName}`);
     SchemaService.resolveSchemaContent(rawContent); // Mutates it in place
     schemas.push({
