@@ -33,16 +33,28 @@ export function getUmlDiagramForFile(query: { filePath: string }) : Promise<{cla
 function analyzeFile({sourceFile, program}: { sourceFile: ts.SourceFile, program: ts.Program }): types.UMLClass[] {
     const result: types.UMLClass[] = [];
     const typeChecker = program.getTypeChecker();
+    const collect = (cls: types.UMLClass) => result.push(cls);
 
-    ts.forEachChild(sourceFile, node => {
+    getClasses({
+        node: sourceFile,
+        collect,
+
+        sourceFile,
+        program,
+    });
+
+    return result;
+}
+
+function getClasses(config: { node: ts.SourceFile | ts.ModuleBlock, sourceFile: ts.SourceFile, program: ts.Program, collect: (cls: types.UMLClass) => void }) {
+
+    ts.forEachChild(config.node, node => {
         if (node.kind == ts.SyntaxKind.ClassDeclaration) {
-            result.push(transformClass(node as ts.ClassDeclaration, sourceFile, program));
+            config.collect(transformClass(node as ts.ClassDeclaration, config.sourceFile, config.program));
         }
 
         // TODO: potentially support looking into `a.b.c` style namespaces as well
     });
-
-    return result;
 }
 
 /**
