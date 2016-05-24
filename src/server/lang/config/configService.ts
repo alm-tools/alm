@@ -1,10 +1,10 @@
 /**
+ * TODO: THIS ISNT USED YET.
  * This is used to provide autocomplete / error handling for config files like
  * alm.ts // Planned
  * gruntfile.ts // Planned
  * gulpfile.js // Planned
  * webpack.config.js // Planned
- * tsconfig.json
  */
 import * as utils from "../../../common/utils";
 import {Types} from "../../../socket/socketContract";

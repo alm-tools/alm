@@ -21,11 +21,20 @@ type Thenable<T> = Promise<T>;
 /**
  * Register our schemas
  * Mostly downloaded from http://json.schemastore.org/
+ *
+ * New additions need to
+ * - Download and put in schemas
+ * - Update this variable
+ * - Update utils.ts for "supportedConfigFileNames"
  */
 const schemas: { fileName: string, content: JsonSchema.IJSONSchema }[] = [
     {
         fileName: 'tsconfig.json',
         content: require('./schemas/tsconfig.json')
+    },
+    {
+        fileName: 'package.json',
+        content: require('./schemas/package.json')
     }
 ];
 schemas.forEach(config => {
@@ -42,10 +51,11 @@ import * as fmc from "../../../../disk/fileModelCache";
 import fuzzaldrin = require('fuzzaldrin');
 export function getCompletionsAtPosition(this:{}, query: Types.GetCompletionsAtPositionQuery): Promise<Types.GetCompletionsAtPositionResponse> {
     const {filePath, prefix} = query;
+    const fileName = utils.getFileName(filePath).toLowerCase();
     const offset = query.position;
     let completionsToReturn: Types.Completion[] = [];
     const endsInPunctuation = utils.prefixEndsInPunctuation(prefix);
-    const schema = schemas[0].content;
+    const schema = schemas.find(s=>s.fileName === fileName).content;
 
     const contents = fmc.getOrCreateOpenFile(filePath).getContents();
     const doc = Parser.parse(contents);

@@ -451,7 +451,8 @@ export function timer() {
 
 
 const supportedConfigFileNames: { [fileName: string]: boolean } = {
-    'tsconfig.json': true
+    'tsconfig.json': true,
+    'package.json': true,
 }
 /**
  * Files for which we have some intelligence
