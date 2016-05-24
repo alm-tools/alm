@@ -22,6 +22,7 @@ import * as projectServiceMaster from "../server/workers/lang/projectServiceMast
  * Support editing config files
  */
 import * as jsonCompletions from "../server/lang/config/json/service/jsonCompletions";
+import * as jsonHover from "../server/lang/config/jsonHover";
 
 namespace Server {
     export var echo: typeof contract.server.echo = (data, client) => {
@@ -158,7 +159,14 @@ namespace Server {
             return projectServiceMaster.worker.getCompletionsAtPosition(query);
         }
     }
-    export var quickInfo : typeof contract.server.quickInfo = projectServiceMaster.worker.quickInfo;
+    export var quickInfo : typeof contract.server.quickInfo = (query) => {
+        if (utils.isSupportedConfigFileForHover) {
+            return jsonHover.getQuickInfo(query);
+        }
+        else {
+            return projectServiceMaster.worker.quickInfo(query);
+        }
+    }
     export var getRenameInfo : typeof contract.server.getRenameInfo = projectServiceMaster.worker.getRenameInfo;
     export var getDefinitionsAtPosition : typeof contract.server.getDefinitionsAtPosition = projectServiceMaster.worker.getDefinitionsAtPosition;
     export var getDoctorInfo : typeof contract.server.getDoctorInfo = projectServiceMaster.worker.getDoctorInfo;

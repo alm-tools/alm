@@ -23,8 +23,16 @@ const packageJsonDependenciesSections = [
 
 import * as utils from "../../../common/utils";
 import * as fmc from "../../disk/fileModelCache";
-export function getQuickInfo(query: { filePath: string, position: number }): Promise<{ comment: string }> {
-    const comment = '';
+import {Types} from "../../../socket/socketContract";
+export function getQuickInfo(query: { filePath: string, position: number }): Promise<Types.QuickInfoResponse> {
+    const response: Types.QuickInfoResponse = {
+        valid: false,
+        info: {
+            name: null,
+            comment: null,
+        },
+        errors: null
+    }
 
     const {filePath} = query;
     const fileName = utils.getFileName(filePath).toLowerCase();
@@ -35,26 +43,30 @@ export function getQuickInfo(query: { filePath: string, position: number }): Pro
     let node = doc.getNodeFromOffsetEndInclusive(offset);
     const location = node.getNodeLocation();
 
-    /** Provide latest version hint for depencencies */
-    if (packageJsonDependenciesSections.some(section => location.matches([section, '*']))) {
-        // TODO: make the xhr query
-        // TODO: used to be location.path .. check if this is right
-        const path = location.getSegments();
-        let pack = path[path.length - 1];
-        if (typeof pack === 'string') {
-            return this.getInfo(pack).then(infos => {
-                const comments = [];
-                infos.forEach(info => {
+    /**
+     * Provide intelligence based on file name
+     */
+    if (fileName === "package.json") {
+        /** Provide latest version hint for depencencies */
+        if (packageJsonDependenciesSections.some(section => location.matches([section, '*']))) {
+            const path = location.getSegments(); // e.g. ["devDependencies", "mocha"]
+            let pack = path[path.length - 1];
+            if (typeof pack === 'string') {
+                /** TODO: return this promise */
+                getInfo(pack).then(infos => {
+                    const comments = [];
+                    infos.forEach(info => {
+                        /** TODO: Use this */
+                        comments.push(`Latest version ${info}`);
+                    });
                     /** TODO: Use this */
-                    comments.push(`Latest version ${info}`);
+                    return comments;
                 });
-                /** TODO: Use this */
-                return comments;
-            });
+            }
         }
     }
 
-    return utils.resolve({ comment })
+    return utils.resolve(response)
 }
 
 function getInfo(pack: string): Promise<string[]> {

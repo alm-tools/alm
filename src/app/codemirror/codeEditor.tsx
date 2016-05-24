@@ -268,22 +268,25 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 		}
 	}
 
-    getQuickInfo = (pos:CodeMirror.Position): Promise<string | HTMLElement> => {
-        if (state.inActiveProjectFilePath(this.props.filePath)) {
-            return server.quickInfo({ filePath: this.props.filePath, position: this.codeMirror.getDoc().indexFromPos(pos) }).then(resp=> {
+    getQuickInfo = (pos: CodeMirror.Position): Promise<string | HTMLElement> => {
+        if (
+            state.inActiveProjectFilePath(this.props.filePath)
+            || utils.isSupportedConfigFileForHover(this.props.filePath)
+        ) {
+            return server.quickInfo({ filePath: this.props.filePath, position: this.codeMirror.getDoc().indexFromPos(pos) }).then(resp => {
                 if (!resp.valid) return;
 
-				var message = '';
-				if (resp.errors.length){
-					message = message + `🐛 <i>${resp.errors.map(e=>escape(e.message)).join('<br/>')}</i><br/>`
-				}
+                var message = '';
+                if (resp.errors.length) {
+                    message = message + `🐛 <i>${resp.errors.map(e => escape(e.message)).join('<br/>')}</i><br/>`
+                }
 
-				if (resp.info){
-					message = message + `<b>${escape(resp.info.name)}</b>`;
-					if (resp.info.comment) {
-						message = message + `<br/>${toHtml(resp.info.comment)}`;
-					}
-				}
+                if (resp.info) {
+                    message = message + `<b>${escape(resp.info.name)}</b>`;
+                    if (resp.info.comment) {
+                        message = message + `<br/>${toHtml(resp.info.comment)}`;
+                    }
+                }
 
                 let div = document.createElement('div');
                 div.innerHTML = message;
