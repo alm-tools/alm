@@ -14,6 +14,12 @@
  */
 import Parser = require('./json/jsonParser');
 
+const packageJsonDependenciesSections = [
+    'dependencies',
+    'devDependencies',
+    'optionalDependencies',
+    'peerDependencies',
+]
 
 import * as utils from "../../../common/utils";
 import * as fmc from "../../disk/fileModelCache";
@@ -30,9 +36,53 @@ export function getQuickInfo(query: { filePath: string, position: number }): Pro
     const location = node.getNodeLocation();
 
     /** Provide latest version hint for depencencies */
-    if ((location.matches(['dependencies']) || location.matches(['devDependencies']) || location.matches(['optionalDependencies']) || location.matches(['peerDependencies']))) {
+    if (packageJsonDependenciesSections.some(section => location.matches([section, '*']))) {
         // TODO: make the xhr query
+        // TODO: used to be location.path .. check if this is right
+        const path = location.getSegments();
+        let pack = path[path.length - 1];
+        if (typeof pack === 'string') {
+            return this.getInfo(pack).then(infos => {
+                const comments = [];
+                infos.forEach(info => {
+                    /** TODO: Use this */
+                    comments.push(`Latest version ${info}`);
+                });
+                /** TODO: Use this */
+                return comments;
+            });
+        }
     }
 
     return utils.resolve({ comment })
+}
+
+function getInfo(pack: string): Promise<string[]> {
+        const result = [];
+        return utils.resolve(result);
+        /** TODO: make the XHR */
+		// let queryUrl = 'http://registry.npmjs.org/' + encodeURIComponent(pack) + '/latest';
+        //
+		// return this.xhr({
+		// 	url : queryUrl
+		// }).then((success) => {
+		// 	try {
+		// 		let obj = JSON.parse(success.responseText);
+		// 		if (obj) {
+		// 			let result = [];
+		// 			if (obj.description) {
+		// 				result.push(obj.description);
+		// 			}
+		// 			if (obj.version) {
+		// 				result.push(localize('json.npm.version.hover', 'Latest version: {0}', obj.version));
+		// 			}
+		// 			return result;
+		// 		}
+		// 	} catch (e) {
+		// 		// ignore
+		// 	}
+		// 	return [];
+		// }, (error) => {
+		// 	return [];
+		// });
 }
