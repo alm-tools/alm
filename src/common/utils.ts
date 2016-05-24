@@ -457,9 +457,20 @@ export const supportedAutocompleteConfigFileNames: { [fileName: string]: boolean
     'package.json': true,
 }
 /**
- * Files for which we have some intelligence
+ * Files for which we have autocomplete intelligence
  */
 export function isSupportedConfigFileForAutocomplete(filePath: string): boolean {
     const fileName = getFileName(filePath);
     return !!supportedAutocompleteConfigFileNames[fileName];
+}
+
+export const supportedHoverConfigFileNames: { [fileName: string]: boolean } = {
+    'package.json': true,
+}
+/**
+ * Files for which we have hover intelligence
+ */
+export function isSupportedConfigFileForHover(filePath: string): boolean {
+    const fileName = getFileName(filePath);
+    return !!supportedHoverConfigFileNames[fileName];
 }
