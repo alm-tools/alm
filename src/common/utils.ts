@@ -369,12 +369,24 @@ export const relative = function(from:string, to:string) {
 };
 
 export const imageUrl = '/images';
-let imageExtensions = ['png', 'gif', 'svg', 'jpg', 'jpeg', 'bmp'];
+const supportedImages = {
+    'svg': 'image/svg+xml',
+    'gif': 'image/gif',
+    'png': 'image/png',
+    'jpg': 'image/jpeg',
+    'jpeg': 'image/jpeg',
+    'bmp': 'image/bmp'
+}
+const imageExtensions = Object.keys(supportedImages);
 /**
  * Provides info on the image files we support
  */
 export function isImage(url: string) {
     return imageExtensions.some(ext => url.endsWith("." + ext));
+}
+export function getImageMimeType(filePath: string){
+    const ext = getExt(filePath);
+    return supportedImages[ext];
 }
 
 /**

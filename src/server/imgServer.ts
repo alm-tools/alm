@@ -21,7 +21,7 @@ export function getRawFile(req: http.IncomingMessage, res: http.ServerResponse) 
         res.end();
         return;
     }
-    res.writeHead(200, { 'content-type': 'text/html' });
+    res.writeHead(200, { 'content-type': utils.getImageMimeType(filePath) });
     fs.createReadStream(filePath).pipe(res);
 }
 
