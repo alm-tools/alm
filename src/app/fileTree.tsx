@@ -465,7 +465,7 @@ export class FileTree extends BaseComponent<Props, State>{
 
             let parentDir = utils.getDirectory(selection.selectedFilePath);
             if (!selection.isDir) {
-                ui.notifyInfoNormalDisappear('The selection must be a directory for external "open"');
+                ui.notifyWarningNormalDisappear('The selection must be a directory for external "open"');
                 return false;
             }
 
