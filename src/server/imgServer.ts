@@ -10,9 +10,17 @@ import * as utils from "../common/utils";
 
 /** Code */
 export function getRawFile(req: http.IncomingMessage, res: http.ServerResponse) {
-    /** The URL is just the filePath */
-    const filePath = req.url;
-    // const filePath = __dirname + "/../../resources/icon.png"; // DEBUG
+    /**
+     * The URL is just the filePath
+     * Client requests `/images/{filePath}`
+     * MAC : `/users/bas/foo` -> all good
+     * Windows : `/d:/users/bas/foo` -> don't want that leading `/` (I think express adds it?)
+     */
+    let filePath = req.url;
+    if (/^win/.test(process.platform)){
+        filePath = filePath.substring(1);
+    }
+    // filePath = __dirname + "/../../resources/icon.png"; // DEBUG
 
     /** For non image files error out */
     if (!utils.isImage(filePath)) {
