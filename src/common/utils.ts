@@ -368,6 +368,7 @@ export const relative = function(from:string, to:string) {
     return outputParts.join('/');
 };
 
+export const imageUrl = '/images';
 let imageExtensions = ['png', 'gif', 'svg', 'jpg', 'jpeg', 'bmp'];
 /**
  * Provides info on the image files we support

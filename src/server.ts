@@ -13,6 +13,7 @@ import cl = require('./server/commandLine');
 import workingDir = require('./server/disk/workingDir');
 import * as session from "./server/disk/session";
 import * as chalk from "chalk";
+import * as utils from "./common/utils";
 
 const publicPath = path.resolve(__dirname, 'public');
 
@@ -61,6 +62,10 @@ app.use(express.static(publicPath, {}));
 // Setup a socket server
 import {register} from "./socket/socketServer";
 register(server);
+
+/** Register an image server */
+import {registerImgServerWithExpress} from "./server/imgServer";
+registerImgServerWithExpress(app);
 
 /**
  * Emitted once the server starts listening

@@ -3,6 +3,8 @@
  */
 
 import * as http from "http";
+import * as https from "https";
+import * as express from "express";
 import * as fs from "fs";
 import * as utils from "../common/utils";
 
@@ -20,4 +22,9 @@ export function getRawFile(req: http.IncomingMessage, res: http.ServerResponse) 
     }
     res.writeHead(200, { 'content-type': 'text/html' });
     fs.createReadStream(filePath).pipe(res);
+}
+
+
+export function registerImgServerWithExpress(app: express.Express) {
+    app.use(utils.imageUrl, getRawFile);
 }
