@@ -50,8 +50,11 @@ export class Project {
         return (this.configFile.project.files.filter((f) => f === filePath).length === 1);
     }
 
+    /**
+     * Gets all the files in the project that are not `.json` files
+     */
     public getFilePaths(): string[]{
-        return (this.configFile.project.files);
+        return (this.configFile.project.files).filter(f=>!f.endsWith('.json'));
     }
 
     public getDiagnosticsForFile(filePath: string) {
