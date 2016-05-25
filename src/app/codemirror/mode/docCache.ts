@@ -197,6 +197,16 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                     // Keep the classifier in sync
                     if (isTsFile) { classifierCache.setContents(filePath, res.contents); }
 
+                    // preserve cursor for all linked docs
+                    doc.iterLinkedDocs((linked) => {
+                        if (linked.getEditor()) {
+                            const cursor = linked.getCursor();
+                            setTimeout(()=>{
+                                linked.setCursor(cursor);
+                            });
+                        }
+                    });
+
                     // preserve cursor
                     let cursor = doc.getCursor();
 
