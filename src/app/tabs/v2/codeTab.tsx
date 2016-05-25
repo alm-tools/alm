@@ -1,3 +1,11 @@
+/**
+ * This tab is really a general purpose `filePath` tab
+ * Currently supports
+ * - code
+ * - images
+ */
+
+/** Imports */
 import * as ui from "../../ui";
 import * as React from "react";
 import * as tab from "./tab";
@@ -83,7 +91,13 @@ export class Code extends ui.BaseComponent<Props, State> {
             <Provider store={store}>
                 {
                     this.isImage
-                        ? <ImageViewer filePath={this.filePath} />
+                        ? <ImageViewer
+                            filePath={this.filePath}
+                            onClick={
+                                () => {
+                                    this.props.onFocused();
+                                }
+                            } />
                         : <CodeEditor
                             ref='editor'
                             filePath={this.filePath}

@@ -10,8 +10,9 @@ import * as utils from "../common/utils";
 
 /** Code */
 export function getRawFile(req: http.IncomingMessage, res: http.ServerResponse) {
-    /** Just return icon for now */
-    const filePath = __dirname + "/../../resources/icon.png";
+    /** The URL is just the filePath */
+    const filePath = req.url;
+    // const filePath = __dirname + "/../../resources/icon.png"; // DEBUG
 
     /** For non image files error out */
     if (!utils.isImage(filePath)) {
