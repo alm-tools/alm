@@ -53,6 +53,7 @@ export interface Props {
     liveBuildResults?: types.LiveBuildResults;
     fileTreeShown?: boolean;
     errorsDisplayMode?: types.ErrorsDisplayMode;
+    errorsFilter?: string;
 }
 export interface State {
 }
@@ -75,6 +76,7 @@ export var statusBar: StatusBar;
         liveBuildResults: state.liveBuildResults,
         fileTreeShown: state.fileTreeShown,
         errorsDisplayMode: state.errorsDisplayMode,
+        errorsFilter: state.errorsFilter,
     };
 })
 export class StatusBar extends BaseComponent<Props, State>{
@@ -181,7 +183,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                 </span>
             </span>;
 
-        const errorFilteringActive = this.props.errorsDisplayMode !== types.ErrorsDisplayMode.all;
+        const errorFilteringActive = this.props.errorsDisplayMode !== types.ErrorsDisplayMode.all || this.props.errorsFilter.trim();
 
         return (
             <div>
