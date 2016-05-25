@@ -93,7 +93,7 @@ export class AutoCompleter {
         (this.hint as any).async = true;
     }
 
-    hint = (editor: CodeMirror.EditorFromTextArea, cb: (hints: CodeMirror.Hints) => void, options): void => {
+    hint = utils.throttle((editor: CodeMirror.EditorFromTextArea, cb: (hints: CodeMirror.Hints) => void, options): void => {
 
         // options is just a copy of the `hintOptions` with defaults added
         // So do something fancy with the Editor
@@ -104,8 +104,6 @@ export class AutoCompleter {
         let token = editor.getTokenAt(cur);
         let prefix = token.string;
         let position = editor.getDoc().indexFromPos(cur);
-
-        this.lastRequest = position;
 
         /** For various reasons if we don't want to return completions */
         let noCompletions: CodeMirror.Hints = null;
@@ -199,6 +197,7 @@ export class AutoCompleter {
 
         // if in active project or a supported config file
         if (state.inActiveProjectFilePath(editor.filePath) || utils.isSupportedConfigFileForAutocomplete(editor.filePath)) {
+            this.lastRequest = position;
             server.getCompletionsAtPosition({ filePath: this.filePath, position, prefix }).then(res=> {
                 if (this.lastRequest !== position){
                     cb(null);
@@ -257,6 +256,6 @@ export class AutoCompleter {
             cb(noCompletions);
             return;
         }
-    };
+    }, 500);
 
 }
