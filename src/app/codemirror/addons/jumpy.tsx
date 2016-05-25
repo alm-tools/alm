@@ -140,6 +140,15 @@ function handleBeforeChange(cm: Editor, changeObj: { from: CodeMirror.Position, 
     // Note:
     // setTimeout becuase from docs : you may not do anything changes the document or its visualization
 
+    /**
+     * Quite commonly user presses `shift`+`enter` in quick succession by mistake.
+     * And naturally press `enter` to exit. We should not block this `enter`
+     */
+    if (!(changeObj.text as any).join('').trim()){
+        clearAnyOverlay(cm);
+        return;
+    }
+
     changeObj.cancel(); // don't propogate further
 
     let state = getState(cm);

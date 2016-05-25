@@ -91,8 +91,9 @@ export function getLinkedDoc(filePath: string): Promise<GetLinkedDocResponse> {
 
                     // console.log(change); // DEBUG
 
-                    // Jumpy needs to use the same event
-                    if (doc._jumpyShown) return;
+                    // Jumpy needs to use the same event and it will cancel this change
+                    // But only uses it if `enter` is not pressed
+                    if (doc._jumpyShown && change.text.join('').trim()) return;
 
                     // This is just the user pressing backspace on an empty file.
                     // If we let it go through then the classifier cache will crash.
