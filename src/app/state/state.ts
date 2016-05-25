@@ -93,6 +93,9 @@ export let inActiveProjectUrl = (url:string) => {
 }
 
 export let setFilePathsInActiveProject = redux.add('setActiveProjectFiles', (state, payload: string[]): StoreState => {
+    // Filter out the `.json` files. These are good for `project data loader` but we don't need it in the UI
+    payload = payload.filter(p => !p.endsWith('.json'));
+
     let truthTable = utils.createMap(payload);
     /** Also add all the *folders* in any of the files */
     payload.forEach(fp => {
