@@ -215,7 +215,7 @@ export namespace Types {
             name?: string;
             comment?: string;
         }
-        errors?: CodeError[];
+        errors: CodeError[];
     }
 
     /**

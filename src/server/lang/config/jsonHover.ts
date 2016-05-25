@@ -31,7 +31,7 @@ export function getQuickInfo(query: { filePath: string, position: number }): Pro
             name: null,
             comment: null,
         },
-        errors: null
+        errors: []
     }
 
     const {filePath} = query;
@@ -52,15 +52,19 @@ export function getQuickInfo(query: { filePath: string, position: number }): Pro
             const path = location.getSegments(); // e.g. ["devDependencies", "mocha"]
             let pack = path[path.length - 1];
             if (typeof pack === 'string') {
-                /** TODO: return this promise */
-                getInfo(pack).then(infos => {
+                return getInfo(pack).then(res => {
+                    if (!res.description && !res.version) return response;
+
+                    response.valid = true;
                     const comments = [];
-                    infos.forEach(info => {
-                        /** TODO: Use this */
-                        comments.push(`Latest version ${info}`);
-                    });
-                    /** TODO: Use this */
-                    return comments;
+                    res.description && comments.push(res.description);
+                    res.version && comments.push(`Latest version: ${res.version}`);
+                    response.info = {
+                        name: pack,
+                        comment: comments.join('\n'),
+                    }
+
+                    return response;
                 });
             }
         }
@@ -69,32 +73,28 @@ export function getQuickInfo(query: { filePath: string, position: number }): Pro
     return utils.resolve(response)
 }
 
-function getInfo(pack: string): Promise<string[]> {
-        const result = [];
-        return utils.resolve(result);
-        /** TODO: make the XHR */
-		// let queryUrl = 'http://registry.npmjs.org/' + encodeURIComponent(pack) + '/latest';
-        //
-		// return this.xhr({
-		// 	url : queryUrl
-		// }).then((success) => {
-		// 	try {
-		// 		let obj = JSON.parse(success.responseText);
-		// 		if (obj) {
-		// 			let result = [];
-		// 			if (obj.description) {
-		// 				result.push(obj.description);
-		// 			}
-		// 			if (obj.version) {
-		// 				result.push(localize('json.npm.version.hover', 'Latest version: {0}', obj.version));
-		// 			}
-		// 			return result;
-		// 		}
-		// 	} catch (e) {
-		// 		// ignore
-		// 	}
-		// 	return [];
-		// }, (error) => {
-		// 	return [];
-		// });
+import * as fetch from "node-fetch";
+function getInfo(pack: string): Promise<{description?: string, version?: string}> {
+    const queryUrl = 'http://registry.npmjs.org/' + encodeURIComponent(pack) + '/latest';
+
+    return fetch(queryUrl)
+        .then(function(response) {
+            return response.json()
+        })
+        .then(function(obj) {
+            let result: {
+                description?: string,
+                version?: string
+            } = {};
+            if (obj.description) {
+                result.description = obj.description;
+            }
+            if (obj.version) {
+                result.version = obj.version;
+            }
+            return result;
+        })
+        .catch((error) => {
+            return {};
+        });
 }
