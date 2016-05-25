@@ -9,6 +9,7 @@ import {store} from "../../state/state";
 import { Provider } from 'react-redux';
 
 import {CodeEditor} from "../../codemirror/codeEditor";
+import {ImageViewer} from "../../imageViewer/imageViewer";
 
 export interface Props extends tab.TabProps {
 }
@@ -25,6 +26,7 @@ export class Code extends ui.BaseComponent<Props, State> {
     constructor(props: Props) {
         super(props);
         this.filePath = utils.getFilePathFromUrl(props.url);
+        this.isImage = utils.isImage(this.filePath);
         this.state = {
         };
     }
@@ -32,6 +34,7 @@ export class Code extends ui.BaseComponent<Props, State> {
     refs: { [string: string]: any; editor: CodeEditor; }
 
     filePath: string;
+    isImage: boolean;
     saved: boolean = true;
     componentDidMount() {
 
@@ -46,6 +49,12 @@ export class Code extends ui.BaseComponent<Props, State> {
                 this.props.onSavedChanged(res.saved);
             }
         }));
+
+        /**
+         * Warning if you allow it to fall through
+         * beware of `this.refs.editor` and `undefined`
+         */
+        if (this.isImage) return;
 
         this.props.setCodeEditor(this.refs.editor);
 
@@ -72,18 +81,22 @@ export class Code extends ui.BaseComponent<Props, State> {
     render() {
         return (
             <Provider store={store}>
-                <CodeEditor
-                ref='editor'
-                filePath={this.filePath}
-                onFocusChange={
-                    (focus) => {
-                        /* Auto save on focus loss */
-                        !focus && !this.saved && this.save();
-                        /** Tell tab container of activation */
-                        focus && this.props.onFocused();
-                    }
+                {
+                    this.isImage
+                        ? <ImageViewer filePath={this.filePath} />
+                        : <CodeEditor
+                            ref='editor'
+                            filePath={this.filePath}
+                            onFocusChange={
+                                (focus) => {
+                                    /* Auto save on focus loss */
+                                    !focus && !this.saved && this.save();
+                                    /** Tell tab container of activation */
+                                    focus && this.props.onFocused();
+                                }
+                            }
+                            />
                 }
-                />
             </Provider>
         );
     }

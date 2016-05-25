@@ -368,8 +368,11 @@ export const relative = function(from:string, to:string) {
     return outputParts.join('/');
 };
 
-let imageExtensions = ['png','gif','svg','jpg','jpeg','bmp'];
-export function isImage(url:string){
+let imageExtensions = ['png', 'gif', 'svg', 'jpg', 'jpeg', 'bmp'];
+/**
+ * Provides info on the image files we support
+ */
+export function isImage(url: string) {
     return imageExtensions.some(ext => url.endsWith("." + ext));
 }
 
