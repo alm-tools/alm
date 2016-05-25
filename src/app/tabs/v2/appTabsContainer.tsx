@@ -127,8 +127,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                     this.tabs.length
                         && res.selectedTabId
                         && this.tabs.find(t=>t.id === res.selectedTabId)
-                        && tabState.selectTab(res.selectedTabId);
-
+                        && tabState.triggerFocusAndSetAsSelected(res.selectedTabId);
+                        
                     initialStateChange = false;
                 }
 
