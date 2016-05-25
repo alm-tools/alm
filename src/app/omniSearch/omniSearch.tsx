@@ -28,7 +28,10 @@ export interface State {
 }
 
 enum SearchMode {
-    /** Use if the user does something like `👎>` i.e. invalid mode key */
+    /**
+     * Use if the user does something like `👎>` i.e. invalid mode key
+     * This is also used to search for a mode
+     */
     Unknown,
     File,
     Command,
@@ -416,14 +419,15 @@ class SearchState {
             });
         }
 
-        if (this.mode == SearchMode.Unknown){
+        if (this.mode == SearchMode.Unknown) {
             let filtered: SearchModeDescription[] = this.filteredValues;
             renderedResults = this.createRenderedForList(filtered,(modeDescription)=>{
                 // Create rendered
+                let matched = renderMatchedSegments(modeDescription.description, this.parsedFilterValue);
                 return (
                     <div>
                         <div>{modeDescription.shortcut}{'>'}</div>
-                        {modeDescription.description}
+                        {matched}
                     </div>
                 );
             });
