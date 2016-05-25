@@ -210,6 +210,7 @@ interface SearchModeDescription {
     description : string;
     searchingName: string;
     shortcut: string;
+    keyboardShortcut: string;
 }
 
 /**
@@ -301,31 +302,36 @@ class SearchState {
                 mode: SearchMode.File,
                 description: 'Search for a File in the working directory',
                 shortcut: 'f',
-                searchingName: "Files"
+                searchingName: "Files",
+                keyboardShortcut: commands.omniFindFile.config.keyboardShortcut
             },
             {
                 mode: SearchMode.Command,
                 description: 'Search for a Command',
                 shortcut: 'c',
-                searchingName: "Commands"
+                searchingName: "Commands",
+                keyboardShortcut: commands.omniFindCommand.config.keyboardShortcut
             },
             {
                 mode: SearchMode.Project,
                 description: 'Search for a TypeScript Project to work on',
                 shortcut: 'p',
-                searchingName: "Projects"
+                searchingName: "Projects",
+                keyboardShortcut: commands.omniSelectProject.config.keyboardShortcut
             },
             {
                 mode: SearchMode.Symbol,
                 description: 'Search for sYmbols in active project',
                 shortcut: 'y',
-                searchingName: "Symbols"
+                searchingName: "Symbols",
+                keyboardShortcut: commands.omniProjectSymbols.config.keyboardShortcut
             },
             {
                 mode: SearchMode.FilesInProject,
                 description: 'Search for TypeScript file in active project',
                 shortcut: 't',
-                searchingName: "Files In Project"
+                searchingName: "Files In Project",
+                keyboardShortcut: commands.omniProjectSourcefile.config.keyboardShortcut
             }
         ];
 
@@ -425,9 +431,13 @@ class SearchState {
                 // Create rendered
                 let matched = renderMatchedSegments(modeDescription.description, this.parsedFilterValue);
                 return (
-                    <div>
-                        <div>{modeDescription.shortcut}{'>'}</div>
-                        {matched}
+                    <div style={csx.extend(csx.horizontal)}>
+                        <div>
+                            {modeDescription.shortcut}{'>'} {matched}
+                        </div>
+
+                        <span style={csx.flex}></span>
+                        <div style={commandKeyStrokeStyle}>{commandShortcutToDisplayName(modeDescription.keyboardShortcut)}</div>
                     </div>
                 );
             });
