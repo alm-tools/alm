@@ -96,6 +96,7 @@
     "url-loader": "^0.5.6",
     "velocity-animate": "^1.2.3",
     "velocity-react": "1.1.5",
+    "viewerjs": "^0.4.0",
     "webpack": "^1.11.0",
     "webpack-dev-server": "^1.10.1"
   },

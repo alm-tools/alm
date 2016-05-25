@@ -1,0 +1,34 @@
+/*
+ * Hide the buttons in the image viewer that we don't want
+ */
+.viewer-toolbar .viewer-play {
+    display: none;
+}
+.viewer-toolbar .viewer-prev {
+    display: none;
+}
+.viewer-toolbar .viewer-next {
+    display: none;
+}
+/* compensate (decrease width) because of hidden buttons */
+.viewer-toolbar {
+    width: 200px; /* if you remove another button */
+}
+
+
+/* Make the viewer flex box friendly */
+.viewer-container {
+    height: auto !important;
+    width: auto !important;
+}
+.viewer-canvas {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.viewer-canvas img {
+    margin-left: 0px !important;
+    margin-top: 0px !important;
+    margin-right: 0px !important;
+    margin-bottom: 0px !important;
+}
