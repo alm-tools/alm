@@ -53,6 +53,21 @@ export const defaultSnippets: TemplatesForContext[] = [
             "description": "CommonJs Style Import",
             "template": "import ${1:name} = require('${2:path}');${cursor}"
         },
+        {
+            "name": "interface",
+            "description": "Create a new interface",
+            "template": "interface ${1:Name} {\n\t${cursor}\n}"
+        },
+        {
+            "name": "class",
+            "description": "Create a new class",
+            "template": "class ${1:Name} {\n\t${cursor}\n}"
+        },
+        {
+            "name": "namespace",
+            "description": "Create a new namespace",
+            "template": "namespace ${1:Name} {\n\t${cursor}\n}"
+        },
         { "name": "do", "description": "do while statement", "template": "do {\n\t${cursor}\n} while (${condition});" },
         { "name": "switch", "description": "switch case statement", "template": "switch (${key}) {\n\tcase ${value}:\n\t\t${cursor}\n\t\tbreak;\n\n\tdefault:\n\t\tbreak;\n}" },
         { "name": "if", "description": "if statement", "template": "if (${condition}) {\n\t${cursor}\n}" },
