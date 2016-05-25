@@ -633,16 +633,16 @@ class SearchState {
     }
 
     /** Mode */
-    refreshModeData():Promise<any>{
+    refreshModeData(): Promise<any> {
         // If the new mode requires a search we do that here
-        if (this.mode == SearchMode.Symbol){
-            return server.getNavigateToItems({}).then((res)=>{
+        if (this.mode == SearchMode.Symbol) {
+            return server.getNavigateToItems({}).then((res) => {
                 this.symbols = res.items;
             });
         }
 
-        if (this.mode == SearchMode.FilesInProject){
-            this.filesPathsInProject = Object.keys(state.getState().activeProjectFilePathTruthTable);
+        if (this.mode == SearchMode.FilesInProject) {
+            this.filesPathsInProject = state.getState().filePathsInActiveProject;
         }
 
         return Promise.resolve();

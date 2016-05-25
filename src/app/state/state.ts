@@ -13,6 +13,8 @@ export interface StoreState {
 
     /** Is the current file in the activeProject */
     activeProjectFilePathTruthTable?: { [filePath: string]: boolean };
+    /** Just the `file` paths. The above also contains folders */
+    filePathsInActiveProject?: string[];
 
     /** JS Ouput status */
     outputStatusCache?: types.JSOutputStatusCache,
@@ -47,6 +49,7 @@ let initialStoreState: StoreState = {
     errorsDisplayMode: types.ErrorsDisplayMode.all,
     errorsFilter: '',
     activeProjectFilePathTruthTable: {},
+    filePathsInActiveProject: [],
     outputStatusCache: {},
     liveBuildResults: {
         builtCount: 0,
@@ -108,7 +111,8 @@ export let setFilePathsInActiveProject = redux.add('setActiveProjectFiles', (sta
         }
     });
     return {
-        activeProjectFilePathTruthTable: truthTable
+        activeProjectFilePathTruthTable: truthTable,
+        filePathsInActiveProject: payload,
     };
 });
 
