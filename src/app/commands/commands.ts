@@ -382,6 +382,11 @@ export let treeDeleteFile = new UICommand({
     description: "Tree View: Delete File|Folder",
     context: CommandContext.TreeView,
 });
+export let treeOpenInExplorerFinder = new UICommand({
+    keyboardShortcut: 'o',    // natural
+    description: "Tree View: Open folder in explorer / finder",
+    context: CommandContext.TreeView,
+});
 
 /**
  * General purpose file opening

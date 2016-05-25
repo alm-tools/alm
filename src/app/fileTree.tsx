@@ -455,6 +455,26 @@ export class FileTree extends BaseComponent<Props, State>{
             return false;
         });
 
+        handlers.bind(commands.treeOpenInExplorerFinder.config.keyboardShortcut,()=>{
+            if (this.loading) return;
+            let selection = goDownToSmallestSelection();
+            if (!selection){
+                ui.notifyInfoNormalDisappear('Nothing selected');
+                return false;
+            }
+
+            let parentDir = utils.getDirectory(selection.selectedFilePath);
+            if (!selection.isDir) {
+                ui.notifyInfoNormalDisappear('The selection must be a directory for external "open"');
+                return false;
+            }
+
+            server.launchDirectory({filePath:selection.selectedFilePath});
+            ui.notifySuccessNormalDisappear('Command to open sent');
+
+            return false;
+        });
+
         /**
          * navigation handlers
          */
@@ -684,6 +704,7 @@ export class FileTree extends BaseComponent<Props, State>{
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>M</span> to move file / folder</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>R</span> to rename file / folder</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>C</span> to copy path to clipboard</div>
+                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>O</span> to open in explorer/finder</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>arrow keys</span> to browse</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>del or backspace</span> to delete</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>enter</span> to open file / expand dir</div>

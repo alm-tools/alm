@@ -140,3 +140,10 @@ export function movePath(data:{ src: string, dest: string }): Promise<string> {
         });
     });
 }
+import * as open from "open";
+export function launchDirectory(data:{ filePath: string }): Promise<string> {
+    return new Promise((resolve) => {
+        open(data.filePath);
+        resolve({ error: null })
+    });
+}

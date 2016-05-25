@@ -95,6 +95,11 @@ namespace Server {
             return {error};
         });
     }
+    export var launchDirectory: typeof contract.server.launchDirectory = (data) => {
+        return fmc.launchDirectory(data).then(error=>{
+            return {error};
+        });
+    }
 
     /**
      * Config stuff
