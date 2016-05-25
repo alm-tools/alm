@@ -52,6 +52,7 @@ export interface Props {
     outputStatusCache?: types.JSOutputStatusCache;
     liveBuildResults?: types.LiveBuildResults;
     fileTreeShown?: boolean;
+    errorsDisplayMode?: types.ErrorsDisplayMode;
 }
 export interface State {
 }
@@ -73,6 +74,7 @@ export var statusBar: StatusBar;
         outputStatusCache: state.outputStatusCache,
         liveBuildResults: state.liveBuildResults,
         fileTreeShown: state.fileTreeShown,
+        errorsDisplayMode: state.errorsDisplayMode,
     };
 })
 export class StatusBar extends BaseComponent<Props, State>{
@@ -179,6 +181,8 @@ export class StatusBar extends BaseComponent<Props, State>{
                 </span>
             </span>;
 
+        const errorFilteringActive = this.props.errorsDisplayMode !== types.ErrorsDisplayMode.all;
+
         return (
             <div>
                 <div style={csx.extend(styles.statusBar,csx.horizontal,csx.center, styles.noWrap)}>
@@ -189,6 +193,8 @@ export class StatusBar extends BaseComponent<Props, State>{
                         data-hint={`${this.props.errorsUpdate.totalCount} errors. Click to toggle message panel.`}>
                         <span style={csx.extend(this.props.errorsUpdate.totalCount?styles.statusBarError:styles.statusBarSuccess,{transition: 'color .4s'})}>
                             {this.props.errorsUpdate.totalCount} <Icon name="times-circle"/>
+                            {errorFilteringActive && ' '}
+                            {errorFilteringActive && <Icon name="filter"/>}
                         </span>
                     </span>
                     {fileTreeToggleRendered}
