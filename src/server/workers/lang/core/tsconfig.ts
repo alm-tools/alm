@@ -255,15 +255,16 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
     // Our customizations for "tsconfig.json"
     // Use grunt.file.expand type of logic
     var cwdPath = path.relative(process.cwd(), path.dirname(projectFile));
-    /** Determine the glob to expand */
+    let toExpand = [];
+    /** Determine the glob to expand (if any) */
     if (!projectSpec.files && !projectSpec.filesGlob && projectSpec.compilerOptions.allowJs) {
-        var toExpand = invisibleFilesGlobWithJS;
+        toExpand = invisibleFilesGlobWithJS;
     }
     else if (!projectSpec.files && !projectSpec.filesGlob) {
-        var toExpand = invisibleFilesGlob;
+        toExpand = invisibleFilesGlob;
     }
     else if (projectSpec.filesGlob) { // If there is a files glob we will use that
-        var toExpand = projectSpec.filesGlob;
+        toExpand = projectSpec.filesGlob;
     }
     /** Other things that need to go in the glob */
     if (projectSpec.exclude) { // If there is an exclude we will add that
@@ -279,9 +280,10 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
         toExpand.push(`!./${projectSpec.compilerOptions.outDir}/**`);
     }
     /** Finally expand whatever needs expanding */
-    if (toExpand) {
+    projectSpec.files = (projectSpec.files || []);
+    if (toExpand.length) {
         try {
-            projectSpec.files = expand({ filter: 'isFile', cwd: cwdPath }, toExpand);
+            projectSpec.files = projectSpec.files.concat(expand({ filter: 'isFile', cwd: cwdPath }, toExpand));
         }
         catch (ex) {
             return {

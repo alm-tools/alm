@@ -1,0 +1,17 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "newLine": "LF",
+        "declaration": false,
+        "noImplicitAny": true,
+        "noEmitOnError": false,
+        "removeComments": true,
+        "sourceMap": false,
+        "outDir": "./compiled/"
+    },
+    "files": [
+        "./index.ts"
+    ]
+}
