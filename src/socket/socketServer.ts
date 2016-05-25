@@ -160,7 +160,7 @@ namespace Server {
         }
     }
     export var quickInfo : typeof contract.server.quickInfo = (query) => {
-        if (utils.isSupportedConfigFileForHover) {
+        if (utils.isSupportedConfigFileForHover(query.filePath)) {
             return jsonHover.getQuickInfo(query);
         }
         else {
