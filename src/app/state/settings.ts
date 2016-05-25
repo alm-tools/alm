@@ -3,6 +3,7 @@
  */
 import {server} from "../../socket/socketClient";
 import {getSessionId} from "./clientSession";
+import * as types from "../../common/types";
 
 function setSetting(key: string, value: any) {
     server.setSetting({
@@ -43,6 +44,11 @@ export const showSemanticView = createSimpleSetting<boolean>('showSemanticView')
  * Errors expanded
  */
 export const errorsExpanded = createSimpleSetting<boolean>('errorsExpanded');
+
+/**
+ * Errors Display Mode
+ */
+export const errorsDisplayMode = createSimpleSetting<types.ErrorsDisplayMode>('errorsDisplayMode');
 
 /**
  * File Tree expanded

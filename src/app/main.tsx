@@ -13,6 +13,7 @@ import * as constants from "../common/constants";
 import {tabState} from "./tabs/v2/appTabsContainer";
 import * as settings from "./state/settings";
 import * as clientSession from "./state/clientSession";
+import * as types from "../common/types";
 
 import {server, cast, pendingRequestsChanged, connectionStatusChanged} from "../socket/socketClient";
 var Modal = require('react-modal');
@@ -160,6 +161,12 @@ document.addEventListener('DOMContentLoaded', () => {
             else state.collapseErrors({});
             state.subscribeSub(s => s.errorsExpanded, (errorsExpanded) => {
                 settings.errorsExpanded.set(errorsExpanded);
+            });
+        });
+        settings.errorsDisplayMode.get().then(res => {
+            state.setErrorsDisplayMode(res || types.ErrorsDisplayMode.all);
+            state.subscribeSub(s => s.errorsDisplayMode, (errorsDisplayMode) => {
+                settings.errorsDisplayMode.set(errorsDisplayMode);
             });
         });
         settings.fileTreeExpanded.get().then(res => {
