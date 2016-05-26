@@ -28,7 +28,7 @@ export function getLiveAnalysis(query: types.LiveAnalysisQuery): Promise<types.L
             if (m.override) {
                 const override = m.override;
                 overrides.push({
-                    line: override.location.position.line,
+                    line: m.location.position.line,
                     overrides: override
                 })
             }

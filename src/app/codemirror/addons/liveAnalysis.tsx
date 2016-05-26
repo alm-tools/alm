@@ -44,46 +44,67 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
     // if (cm) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
 
     const filePath = cm.filePath;
-    cm.lastQuickFixInformation = null;
 
-    function makeMarker() {
+    // Used in diffing markers
+    let gutterDiffMap: {
+        [line: number]: {
+            override: types.UMLClassMember,
+            handle: CodeMirror.LineHandle
+        }
+    } = Object.create(null);
+    // We need to update the current gitDiffStatusMap as
+    // because *CM markers move as lines get added / deleted*.
+    function updateGutterDiffMap() {
+        Object.keys(gutterDiffMap).forEach(_line => {
+            const line = +_line;
+            const {handle} = gutterDiffMap[line];
+            const newLine: number | null = (cm as any).getLineNumber(handle);
+            if (newLine == null) {
+                delete gutterDiffMap[line];
+            }
+            else if (newLine !== line) {
+                const old = gutterDiffMap[line];
+                delete gutterDiffMap[line];
+                gutterDiffMap[newLine] = old;
+            }
+            // else still good :)
+        });
+    }
+    function clearGutterDiffMap() {
+        updateGutterDiffMap();
+        Object.keys(gutterDiffMap).forEach(_line => {
+            const line = +_line;
+            delete gutterDiffMap[line];
+            cm.setGutterMarker(line, gutterId, null);
+        })
+    }
+
+    function makeMarker(override: types.UMLClassMember) {
         var marker = document.createElement("div");
         marker.className = gutterItemClassName + ' hint--right hint--info';
-        marker.setAttribute('data-hint', "Overrides a base class member");
+        marker.setAttribute('data-hint', `Overrides a base class member. Click to open`);
         marker.innerHTML = "⬆️";
-        marker.onclick = () => cm.execCommand(commands.additionalEditorCommands.quickFix);
+        marker.onclick = () => {
+            commands.doOpenOrFocusFile.emit({
+                filePath: override.location.filePath,
+                position: override.location.position
+            });
+        };
         return marker;
     }
-    /** Automatically clears any old marker */
-    function setMarker(line: number, config: {
-        fixes: Types.QuickFixDisplay[],
-        indentSize: number,
-        position: number
-    }) {
-        clearAnyPreviousMarkerLocation();
-        cm.lastQuickFixInformation = {
-            lineHandle: cm.setGutterMarker(line, gutterId, makeMarker()),
-            fixes: config.fixes,
-            indentSize: config.indentSize,
-            position: config.position
-        };
-    }
-    function clearAnyPreviousMarkerLocation() {
-        if (cm.lastQuickFixInformation) {
-            const newLine: number | null = (cm as any).getLineNumber(cm.lastQuickFixInformation.lineHandle);
-            if (newLine != null) {
-                cm.setGutterMarker(newLine, gutterId, null);
-            }
-            cm.lastQuickFixInformation = null;
+    function setMarker(line: number, override: types.UMLClassMember) {
+        const handle = cm.setGutterMarker(line, gutterId, makeMarker(override));
+        gutterDiffMap[line] = {
+            handle,
+            override
         }
     }
 
     // The key quick fix get logic
     const refreshLiveAnalysis = () => {
-        clearAnyPreviousMarkerLocation();
-
         // If not active project return
         if (!state.inActiveProjectFilePath(cm.filePath)) {
+            clearGutterDiffMap();
             return;
         }
         // query the server with live analysis
@@ -91,14 +112,29 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
             filePath: cm.filePath,
         }).then(res => {
             // console.log(res); // DEBUG
-            if (!res.overrides.length) {
-                return;
-            }
-            res.overrides.forEach(overide => {
 
+            // So we know the diff map has current line numbers
+            updateGutterDiffMap();
+
+            // Add the new ones
+            const newOnes: { [line: number]: boolean } = Object.create(null);
+            res.overrides.forEach(override => {
+                newOnes[override.line] = true;
+                // If already there, then its probably right as well
+                if (gutterDiffMap[override.line]) {
+                    return;
+                }
+                // Otherwise add
+                setMarker(override.line, override.overrides);
             });
-            // TODO: set markers
-            // setMarker(cur.line, { fixes: res.fixes, indentSize, position });
+            // Delete the invalid ones
+            Object.keys(gutterDiffMap).forEach(_line => {
+                const line = +_line;
+                if (!newOnes[line]){
+                    delete gutterDiffMap[line];
+                    cm.setGutterMarker(line, gutterId, null);
+                }
+            })
         });
     };
 
@@ -115,7 +151,7 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
             cm.off('focus', refreshLiveAnalysisDebounced);
             cm.off('change', refreshLiveAnalysisDebounced);
             disposeProjectWatch.dispose();
-            clearAnyPreviousMarkerLocation();
+            clearGutterDiffMap();
         }
     }
 }
