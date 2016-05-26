@@ -30,8 +30,8 @@ require('codemirror/addon/search/match-highlighter');
 // Our Addons
 import * as gitStatus from "./addons/gitStatus";
 import * as quickFix from "./addons/quickFix";
+import * as liveAnalysis from "./addons/liveAnalysis";
 import textHover = require('./addons/text-hover');
-require('./addons/text-hover.css');
 import jumpy = require('./addons/jumpy');
 import blaster = require('./addons/blaster');
 import insertMatchingPair = require('./addons/insertMatchingPair');
@@ -182,6 +182,9 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             quickFix.setupOptions(options);
         }
 
+        // live analysis
+        liveAnalysis.setupOptions(options);
+
         // Git status
         gitStatus.setupOptions(options);
 
@@ -209,13 +212,16 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             this.disposible.add({ dispose: () => this.codeMirror.off('cursorActivity', this.handleCursorActivity) });
         }
 
-        // Git status
-        this.disposible.add(gitStatus.setupCM(this.codeMirror));
-
         // quick fix
         if (!this.props.readOnly) {
             this.disposible.add(quickFix.setupCM(this.codeMirror));
         }
+
+        // live analysis
+        this.disposible.add(liveAnalysis.setupCM(this.codeMirror));
+
+        // Git status
+        this.disposible.add(gitStatus.setupCM(this.codeMirror));
 
         const loadEditorOptions = (editorOptions:types.EditorOptions) => {
             // Set editor options

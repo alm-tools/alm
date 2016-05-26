@@ -1,6 +1,7 @@
 // src : https://github.com/angelozerr/CodeMirror-XQuery/blob/master/codemirror-extension/addon/hover/text-hover.js
 // Changes prefixed with `BAS`
 
+require('./text-hover.css');
 // BAS
 /** We have single promise queue shared among *all code mirror instances* for all the queries sent */
 let PromiseQueue = [];

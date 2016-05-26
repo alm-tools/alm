@@ -10,7 +10,7 @@
  */
 import * as CodeMirror from "codemirror";
 import * as utils from "../../../common/utils";
-import {server} from "../../../socket/socketClient";
+import {server, cast} from "../../../socket/socketClient";
 import * as types from "../../../common/types";
 import * as state from "../../state/state";
 import cmUtils = require("../cmUtils");
@@ -79,53 +79,42 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
     }
 
     // The key quick fix get logic
-    const refreshQuickFixes = () => {
+    const refreshLiveAnalysis = () => {
         clearAnyPreviousMarkerLocation();
 
-        // If !singleCursor return
-        let singleCursor = cmUtils.isSingleCursor(cm);
-        if (!singleCursor) {
-            return;
-        }
         // If not active project return
         if (!state.inActiveProjectFilePath(cm.filePath)) {
             return;
         }
-        // query the server with quick fixes
-        const cur = cm.getDoc().getCursor();
-        const indentSize = cm.getOption('indentUnit');
-        const position = cm.getDoc().indexFromPos(cur);
-        server.getQuickFixes({
-            indentSize,
+        // query the server with live analysis
+        server.getLiveAnalysis({
             filePath: cm.filePath,
-            position
         }).then(res => {
             // console.log(res); // DEBUG
-            if (cm.getDoc().getCursor().line !== cur.line) {
+            if (!res.overrides.length) {
                 return;
             }
-            if (!res.fixes.length) {
-                return;
-            }
-            setMarker(cur.line, { fixes: res.fixes, indentSize, position });
+            res.overrides.forEach(overide => {
+
+            });
+            // TODO: set markers
+            // setMarker(cur.line, { fixes: res.fixes, indentSize, position });
         });
     };
 
-    const refreshQuickFixesDebounced = utils.debounce(refreshQuickFixes, 1000);
+    const refreshLiveAnalysisDebounced = utils.debounce(refreshLiveAnalysis, 3000);
 
-    const handleFocus = () => {
-        refreshQuickFixes();
-    }
-
-    cm.on('focus', handleFocus);
+    cm.on('focus', refreshLiveAnalysisDebounced);
     // Add a few other things to call refresh with debouncing
-    cm.on('change', refreshQuickFixesDebounced);
-    cm.on('cursorActivity', refreshQuickFixesDebounced);
+    cm.on('change', refreshLiveAnalysisDebounced);
+    const disposeProjectWatch = cast.activeProjectConfigDetailsUpdated.on(() => {
+        refreshLiveAnalysisDebounced();
+    })
     return {
         dispose: () => {
-            cm.off('focus', handleFocus);
-            cm.off('change', refreshQuickFixesDebounced);
-            cm.off('cursorActivity', refreshQuickFixesDebounced);
+            cm.off('focus', refreshLiveAnalysisDebounced);
+            cm.off('change', refreshLiveAnalysisDebounced);
+            disposeProjectWatch.dispose();
             clearAnyPreviousMarkerLocation();
         }
     }
