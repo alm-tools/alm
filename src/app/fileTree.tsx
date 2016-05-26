@@ -455,22 +455,21 @@ export class FileTree extends BaseComponent<Props, State>{
             return false;
         });
 
-        handlers.bind(commands.treeOpenInExplorerFinder.config.keyboardShortcut,()=>{
+        handlers.bind(commands.treeOpenInExplorerFinder.config.keyboardShortcut, () => {
             if (this.loading) return;
             let selection = goDownToSmallestSelection();
-            if (!selection){
+            if (!selection) {
                 ui.notifyInfoNormalDisappear('Nothing selected');
                 return false;
             }
 
-            let parentDir = utils.getDirectory(selection.selectedFilePath);
+            let dirFilePath = selection.selectedFilePath;
             if (!selection.isDir) {
-                ui.notifyWarningNormalDisappear('The selection must be a directory for external "open"');
-                return false;
+                dirFilePath = utils.getDirectory(dirFilePath);
             }
 
-            server.launchDirectory({filePath:selection.selectedFilePath});
-            ui.notifySuccessNormalDisappear('Command to open sent');
+            server.launchDirectory({ filePath: dirFilePath });
+            ui.notifySuccessNormalDisappear(`Command to open sent: ${dirFilePath}`);
 
             return false;
         });
