@@ -195,6 +195,9 @@ namespace Server {
     /** UML Diagram */
     export var getUmlDiagramForFile : typeof contract.server.getUmlDiagramForFile = projectServiceMaster.worker.getUmlDiagramForFile;
 
+    /** tsFlow */
+    export var getFlowRoots : typeof contract.server.getFlowRoots = projectServiceMaster.worker.getFlowRoots;
+
     /**
      * Output Status
      */

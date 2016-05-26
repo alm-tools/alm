@@ -79,6 +79,9 @@ export var server = {
     /** UML Diagram */
     getUmlDiagramForFile: {} as QRFunction<{ filePath: string }, { classes: types.UMLClass[] }>,
 
+    /** UML Diagram */
+    getFlowRoots: {} as QRFunction<types.TsFlowRootQuery, types.TsFlowRootResponse>,
+
     /**
      * Output Status
      */

@@ -42,6 +42,9 @@ export var worker = {
     /** Uml diagram */
     getUmlDiagramForFile: {} as typeof socketContract.server.getUmlDiagramForFile,
 
+    /** tsFlow */
+    getFlowRoots: {} as typeof socketContract.server.getFlowRoots,
+
     // Used to tell the worker about what project it should work on
     // Note: The project validation / expansion happens locally. Only the hard stuff of *analysis* is done by the worker
     // This makes the worker bit more host agnostic

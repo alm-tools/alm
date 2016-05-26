@@ -452,3 +452,22 @@ export interface UMLClassMember {
     /** Default is false */
     override?: boolean;
 }
+
+/**
+ * Ts Flow types
+ */
+/**
+ * Get the root ts flow points
+ */
+export interface TsFlowRootQuery {
+    filePath: string;
+}
+export interface TsFlowPoint {
+    filePath: string;
+    from: EditorPosition;
+    to: EditorPosition;
+    displayName: string;
+}
+export interface TsFlowRootResponse {
+    flowPoints: TsFlowPoint[];
+}
