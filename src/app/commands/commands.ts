@@ -295,6 +295,10 @@ export var toggleSemanticView = new UICommand({
     description: "Toggle Semantic View",
     context: CommandContext.Global,
 });
+export const launchTsFlow = new UICommand({
+    description: "Launch TypeScript flow based programming",
+    context: CommandContext.Global,
+})
 
 /**
  * Cursor history

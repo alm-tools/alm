@@ -128,7 +128,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                         && res.selectedTabId
                         && this.tabs.find(t=>t.id === res.selectedTabId)
                         && tabState.triggerFocusAndSetAsSelected(res.selectedTabId);
-                        
+
                     initialStateChange = false;
                 }
 
@@ -576,6 +576,11 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         commands.doOpenUmlDiagram.on((e) => {
             openAnalysisViewForCurrentFilePath((filePath)=>{
                 return `${tabRegistry.tabs.uml.protocol}://${filePath}`
+            });
+        });
+        commands.launchTsFlow.on((e) => {
+            openAnalysisViewForCurrentFilePath((filePath)=>{
+                return `${tabRegistry.tabs.tsflow.protocol}://${filePath}`
             });
         });
     }
