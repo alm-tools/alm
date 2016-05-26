@@ -23,6 +23,8 @@ root = true
 [*.{ts,tsx}]
 indent_style = space
 indent_size = 2
+trim_trailing_whitespace = true
+insert_final_newline = true
 ```
 
 > `root = true` stops editorconfig from search further up the directory for any other `.editorconfig` files that might match.
