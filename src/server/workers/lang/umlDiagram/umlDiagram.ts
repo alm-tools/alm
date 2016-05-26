@@ -16,7 +16,7 @@ let getProject = activeProject.GetProject.getCurrentIfAny;
  */
 export function getUmlDiagramForFile(query: { filePath: string }) : Promise<{classes: types.UMLClass[]}> {
     let project = getProject();
-    const sourceFile = project.getProjectSourceFiles().find(f => f.fileName === query.filePath);
+    const sourceFile = project.getSourceFile(query.filePath);
     const program = project.languageService.getProgram();
 
     // const modules = tsAnalyzer.collectInformation(program, sourceFile);
@@ -129,9 +129,12 @@ function transformClass(node: ts.ClassDeclaration, sourceFile: ts.SourceFile, pr
         /** For each member check if a parent has a member with the same name */
         result.members.forEach(m => {
             if (m.name === "constructor") return; // (except for constructor)
-            if (parents.some(p => p.members.some(pm => pm.lifetime === types.UMLClassMemberLifetime.Instance && pm.name === m.name))) {
-                m.override = true;
-            }
+            parents.forEach(p => {
+                const matchedParentMember = p.members.find(pm => pm.lifetime === types.UMLClassMemberLifetime.Instance && pm.name === m.name)
+                if (matchedParentMember) {
+                    m.override = matchedParentMember;
+                }
+            });
         });
     }
 

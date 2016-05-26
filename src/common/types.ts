@@ -452,7 +452,7 @@ export interface UMLClassMember {
     visibility: UMLClassMemberVisibility;
     lifetime: UMLClassMemberLifetime;
     /** Default is false */
-    override?: boolean;
+    override?: UMLClassMember;
 }
 
 /**

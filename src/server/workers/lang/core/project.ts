@@ -46,6 +46,10 @@ export class Project {
         return files;
     }
 
+    public getSourceFile(filePath: string): ts.SourceFile | undefined {
+        return this.getProjectSourceFiles().find(f => f.fileName === filePath);
+    }
+
     public includesSourceFile(filePath: string) {
         return (this.configFile.project.files.filter((f) => f === filePath).length === 1);
     }
