@@ -28,7 +28,7 @@ import * as state from "./state/state";
 import {RenameVariable} from "./codeResults/renameVariable";
 import {GotoDefinition} from "./codeResults/gotoDefinition";
 import {FindReferences} from "./codeResults/findReferences";
-import * as format_placeholder from "./format";
+import * as format_placeholder from "./editorCommands/format";
 import * as gotoHistory_placeholder from "./gotoHistory";
 import * as clipboardRing from "./clipboardRing";
 import * as gitCommands from "./gitCommands";
