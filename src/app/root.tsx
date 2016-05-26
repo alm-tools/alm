@@ -34,6 +34,7 @@ import * as clipboardRing from "./clipboardRing";
 import * as gitCommands from "./gitCommands";
 import * as htmlToTsx from "./htmlToTsx";
 import * as cssToTs from "./cssToTs";
+import * as jsonToDts from "./jsonToDts";
 import * as goToLine from "./goToLine";
 var ensureImport = RenameVariable
     || GotoDefinition
@@ -44,6 +45,7 @@ var ensureImport = RenameVariable
     || gitCommands
     || htmlToTsx
     || cssToTs
+    || jsonToDts
     || goToLine;
 
 export interface State {

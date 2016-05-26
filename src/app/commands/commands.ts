@@ -491,6 +491,7 @@ export let additionalEditorCommands = {
     gitResetFile: '',
     htmlToTsx: '',
     cssToTs: '',
+    jsonToDts: '',
     goToLine: '',
     quickFix: '',
 }
@@ -660,6 +661,11 @@ new UICommand({
     description: 'Editor: CSS to TS',
     context: CommandContext.Editor,
     editorCommandName: additionalEditorCommands.cssToTs,
+})
+new UICommand({
+    description: 'Editor: JSON to TS definition',
+    context: CommandContext.Editor,
+    editorCommandName: additionalEditorCommands.jsonToDts,
 })
 
 
