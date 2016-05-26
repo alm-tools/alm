@@ -198,6 +198,9 @@ namespace Server {
     /** tsFlow */
     export var getFlowRoots : typeof contract.server.getFlowRoots = projectServiceMaster.worker.getFlowRoots;
 
+    /** live analysis */
+    export var getLiveAnalysis : typeof contract.server.getLiveAnalysis = projectServiceMaster.worker.getLiveAnalysis;
+
     /**
      * Output Status
      */

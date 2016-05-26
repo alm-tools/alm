@@ -6,6 +6,7 @@ import * as projectService from "./projectService";
 import * as docs from "./docs/docs";
 import * as umlDiagram from "./umlDiagram/umlDiagram";
 import * as tsFlow from "./tsFlow/tsFlow";
+import * as liveAnalysis from "./liveAnalysis/liveAnalysis";
 
 namespace Worker {
     export const echo: typeof contract.worker.echo = (data) => Promise.resolve(data);
@@ -80,6 +81,9 @@ namespace Worker {
      * tsFlow
      */
     export var getFlowRoots : typeof contract.worker.getFlowRoots = tsFlow.getFlowRoots;
+
+    /** live analysis */
+    export var getLiveAnalysis : typeof contract.worker.getLiveAnalysis = liveAnalysis.getLiveAnalysis;
 }
 
 // Ensure that the namespace follows the contract

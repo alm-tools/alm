@@ -45,6 +45,9 @@ export var worker = {
     /** tsFlow */
     getFlowRoots: {} as typeof socketContract.server.getFlowRoots,
 
+    /** live analysis */
+    getLiveAnalysis: {} as typeof socketContract.server.getLiveAnalysis,
+
     // Used to tell the worker about what project it should work on
     // Note: The project validation / expansion happens locally. Only the hard stuff of *analysis* is done by the worker
     // This makes the worker bit more host agnostic

@@ -16,6 +16,11 @@ export const errors = {
     CALLED_WHEN_NO_ACTIVE_PROJECT_GLOBAL: "A query *that needs an active project* was made when there is no active project"
 }
 
+export interface FilePathPosition {
+    filePath: string;
+    position: EditorPosition;
+}
+
 /**
  * Session related types
  */
@@ -400,10 +405,7 @@ export interface DocumentedType {
     location: DocumentedTypeLocation;
 }
 
-export interface DocumentedTypeLocation {
-    filePath: string,
-    position: EditorPosition,
-}
+export type DocumentedTypeLocation = FilePathPosition;
 
 /** For top level module names */
 export interface GetTopLevelModuleNamesResponse {
@@ -470,4 +472,19 @@ export interface TsFlowPoint {
 }
 export interface TsFlowRootResponse {
     flowPoints: TsFlowPoint[];
+}
+
+/**
+ * Live Analysis
+ * e.g. when a member overrides a parent we show a hint.
+ */
+export interface LiveAnalysisQuery {
+    filePath: string;
+}
+export interface LiveAnalysisResponse {
+    overrides: LiveAnalysisOverrideInfo[]
+}
+export interface LiveAnalysisOverrideInfo {
+    line: number;
+    overrides: FilePathPosition;
 }
