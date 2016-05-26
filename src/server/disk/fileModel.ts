@@ -99,6 +99,10 @@ export class FileModel {
         // NOTE we can never easily mutate our local `text` otherwise we have to send the changes out and sync them which is going to be nightmare
         const textToWrite = this.editorOptions.trimTrailingWhitespace ? this.text.map(t => t.replace(/[ \f\t\v]*$/gm, '')) : this.text;
         let contents = textToWrite.join(this.newLine);
+        if (this.editorOptions.insertFinalNewline && !contents.endsWith(this.newLine)) {
+            contents = contents + this.newLine;
+        }
+
         fsu.writeFile(this.config.filePath, contents);
         this._justWroteFileToDisk = true;
         this.savedText = this.text.slice();

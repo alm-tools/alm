@@ -34,6 +34,7 @@ export function getEditorOptions(filePath: string): EditorOptions {
         indent_style === 'space' ? true : false;
 
     const trimTrailingWhitespace = config.trim_trailing_whitespace || false;
+    const insertFinalNewline = config.insert_final_newline == undefined ? false : config.insert_final_newline;
 
     return {
         indentSize,
@@ -41,5 +42,6 @@ export function getEditorOptions(filePath: string): EditorOptions {
         newLineCharacter,
         convertTabsToSpaces,
         trimTrailingWhitespace,
+        insertFinalNewline,
     }
 }

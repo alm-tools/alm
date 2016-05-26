@@ -220,6 +220,7 @@ export interface EditorOptions {
     newLineCharacter: string;
     convertTabsToSpaces: boolean;
     trimTrailingWhitespace: boolean;
+    insertFinalNewline: boolean;
 }
 
 

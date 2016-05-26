@@ -7,10 +7,11 @@ Because we want to provide a great editing experience that complements your othe
 We support the following key [editorconfig][editorconfig] properties out of the box. This means we are a good OSS citizen for more than just TypeScript.
 
 * `end_of_line`: `lf` | `crlf` | `os` (Default. This is recommended for git reasons 🌹)
-* `indent_size`: `:number` (Default: 2)
-* `indent_style`: `tab` | `space` (Default)
-* `tab_width`: `:number` (Default: 2)
-* `trim_trailing_whitespace`: `:boolean` (Default: false)
+* `indent_size`: `:number` (Default: `2`)
+* `indent_style`: `tab` | `space` (Default: `space`)
+* `tab_width`: `:number` (Default: `2`)
+* `trim_trailing_whitespace`: `:boolean` (Default: `false`)
+* `insert_final_newline`: `:boolean` (Default: `false`)
 
 > Note : `tab_width` is only relevant if you use `tab`s (which we don't recommend you use anyways).
 
