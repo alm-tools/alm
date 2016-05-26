@@ -10,6 +10,7 @@ We support the following key [editorconfig][editorconfig] properties out of the 
 * `indent_size`: `:number` (Default: 2)
 * `indent_style`: `tab` | `space` (Default)
 * `tab_width`: `:number` (Default: 2)
+* `trim_trailing_whitespace`: `:boolean` (Default: false)
 
 > Note : `tab_width` is only relevant if you use `tab`s (which we don't recommend you use anyways).
 

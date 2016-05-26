@@ -219,6 +219,7 @@ export interface EditorOptions {
     tabSize: number;
     newLineCharacter: string;
     convertTabsToSpaces: boolean;
+    trimTrailingWhitespace: boolean;
 }
 
 

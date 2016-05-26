@@ -6,6 +6,8 @@ import {EditorOptions} from "../../common/types";
 import * as os from "os";
 
 export function getEditorOptions(filePath: string): EditorOptions {
+
+    /** Note: any thing not defined comes back as `undefined` (which is good) */
     const config = editorconfig.parseSync(filePath);
 
     // console.log(filePath, config); // DEBUG
@@ -31,10 +33,13 @@ export function getEditorOptions(filePath: string): EditorOptions {
     const convertTabsToSpaces =
         indent_style === 'space' ? true : false;
 
+    const trimTrailingWhitespace = config.trim_trailing_whitespace || false;
+
     return {
         indentSize,
         tabSize,
         newLineCharacter,
         convertTabsToSpaces,
+        trimTrailingWhitespace,
     }
 }

@@ -31,7 +31,8 @@ CodeMirror.commands[commands.additionalEditorCommands.format] = (editor: CodeMir
         indentSize: indentUnit,
         tabSize: tabSize,
         newLineCharacter: '\n',
-        convertTabsToSpaces: !indentWithTabs
+        convertTabsToSpaces: !indentWithTabs,
+        trimTrailingWhitespace: false,
     }
 
     if (doc.somethingSelected()){
