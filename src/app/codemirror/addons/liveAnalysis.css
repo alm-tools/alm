@@ -1,14 +1,27 @@
 .CodeMirror-live-analysis {
-    width: .3em;
+    width: .5em;
 }
 .CodeMirror-live-analysis-override {
-    display: block !important; /* overwrite data--hint hint css default */
-    margin-top: .1em;
+    margin-top: .3em;
     font-size: .7em;
     transition: opacity .2s;
-    opacity: .5;
+    opacity: .6;
     cursor: pointer;
 }
+
+/* copy from font awesome */
+.CodeMirror-live-analysis-override:before, .CodeMirror-live-analysis-override:before{
+    content: "\F0AA"; /* circle-arrow-up */
+    font: normal normal normal 10px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    /* classIconColorTheme */
+    color: #4DA6FF;
+}
+
 .CodeMirror-live-analysis-override:hover {
     opacity: 1 !important;
 }

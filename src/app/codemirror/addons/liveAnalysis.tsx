@@ -81,9 +81,9 @@ export function setupCM(cm: CodeMirror.EditorFromTextArea): { dispose: () => voi
 
     function makeMarker(override: types.UMLClassMember) {
         var marker = document.createElement("div");
-        marker.className = gutterItemClassName + ' hint--right hint--info';
-        marker.setAttribute('data-hint', `Overrides a base class member. Click to open`);
-        marker.innerHTML = "⬆️";
+        marker.className = gutterItemClassName;
+        marker.setAttribute('title', `Overrides a base class member. Click to open`);
+        marker.innerHTML = " ";
         marker.onclick = () => {
             commands.doOpenOrFocusFile.emit({
                 filePath: override.location.filePath,
