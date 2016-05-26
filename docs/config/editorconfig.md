@@ -17,10 +17,14 @@ We support the following key [editorconfig][editorconfig] properties out of the 
 Just create an `.editorconfig` file in the root of your project. Here is a sample:
 
 ```ini
+root = true
+
 [*.{ts,tsx}]
 indent_style = space
 indent_size = 2
 ```
+
+> `root = true` stops editorconfig from search further up the directory for any other `.editorconfig` files that might match.
 
 ## TypeScript Formatting Configuration
 
