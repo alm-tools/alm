@@ -19,6 +19,7 @@
   * [Semantic View](/features/semantic-view.md)
   * [Image Viewer](/features/image-viewer.md)
   * [NPM Support](/features/npm.md)
+  * [Live Analysis](/features/live-analysis.md)
 * [Configuration](/config/README.md)
   * [Editor Config](/config/editorconfig.md)
   * [tsconfig.json](/config/tsconfig.md)
