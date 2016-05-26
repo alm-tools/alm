@@ -22,20 +22,19 @@ export function getUmlDiagramForFile(query: { filePath: string }) : Promise<{cla
     // const modules = tsAnalyzer.collectInformation(program, sourceFile);
     // console.log(modules);
 
-    const classes = analyzeFile({ sourceFile, program });
+    const classes = getClasses({ sourceFile, program });
 
     // TODO: sort by base classes (i.e. the class that has the lowest length of extend)
 
     return utils.resolve({ classes });
 }
 
-
-function analyzeFile({sourceFile, program}: { sourceFile: ts.SourceFile, program: ts.Program }): types.UMLClass[] {
+export function getClasses({sourceFile, program}: { sourceFile: ts.SourceFile, program: ts.Program }): types.UMLClass[] {
     const result: types.UMLClass[] = [];
     const typeChecker = program.getTypeChecker();
     const collect = (cls: types.UMLClass) => result.push(cls);
 
-    getClasses({
+    collectClasses({
         node: sourceFile,
         collect,
 
@@ -46,7 +45,7 @@ function analyzeFile({sourceFile, program}: { sourceFile: ts.SourceFile, program
     return result;
 }
 
-function getClasses(config: { node: ts.SourceFile | ts.ModuleBlock | ts.ModuleDeclaration, sourceFile: ts.SourceFile, program: ts.Program, collect: (cls: types.UMLClass) => void }) {
+function collectClasses(config: { node: ts.SourceFile | ts.ModuleBlock | ts.ModuleDeclaration, sourceFile: ts.SourceFile, program: ts.Program, collect: (cls: types.UMLClass) => void }) {
 
     const {sourceFile, program, collect} = config;
 
@@ -57,10 +56,10 @@ function getClasses(config: { node: ts.SourceFile | ts.ModuleBlock | ts.ModuleDe
 
         // Support recursively looking into `a.b.c` style namespaces as well
         if (node.kind === ts.SyntaxKind.ModuleDeclaration) {
-            getClasses({ node: node as ts.ModuleDeclaration, collect, program, sourceFile });
+            collectClasses({ node: node as ts.ModuleDeclaration, collect, program, sourceFile });
         }
         if (node.kind === ts.SyntaxKind.ModuleBlock) {
-            getClasses({ node: node as ts.ModuleBlock, collect, program, sourceFile });
+            collectClasses({ node: node as ts.ModuleBlock, collect, program, sourceFile });
         }
     });
 }

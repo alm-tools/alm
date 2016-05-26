@@ -486,5 +486,5 @@ export interface LiveAnalysisResponse {
 }
 export interface LiveAnalysisOverrideInfo {
     line: number;
-    overrides: FilePathPosition;
+    overrides: UMLClassMember;
 }
