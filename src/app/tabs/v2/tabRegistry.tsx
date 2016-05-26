@@ -80,7 +80,7 @@ export const tabs = {
         protocol: 'tsflow',
         searchSupport: TabSearchSupport.None,
         getTitle: (url) => `TSFlow ${utils.getFileName(url)}`,
-        component: TsFlowView,
+        component: TsFlowView,        
     },
 }
 let _ensuretabsType: {[protocol:string]:TabConfig} = tabs;

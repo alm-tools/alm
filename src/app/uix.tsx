@@ -53,6 +53,7 @@ export namespace API {
             let codeTab: TabInstance = {
                 id: utils.createId(),
                 url: `file://${fp}`,
+                additionalData: null
             }
             return codeTab;
         });

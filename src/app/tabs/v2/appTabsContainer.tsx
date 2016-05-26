@@ -269,7 +269,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         commands.doOpenFile.on((e) => {
             let codeTab: TabInstance = {
                 id: createId(),
-                url: `file://${e.filePath}`
+                url: `file://${e.filePath}`,
+                additionalData: null,
             }
 
             // Add tab
@@ -335,7 +336,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             else { // otherwise reopen
                 let codeTab: TabInstance = {
                     id: e.tabId,
-                    url: e.tabUrl
+                    url: e.tabUrl,
+                    additionalData: null
                 }
 
                 // Add tab
@@ -376,7 +378,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
 
             let codeTab: TabInstance = {
                 id: createId(),
-                url: this.selectedTabInstance.url
+                url: this.selectedTabInstance.url,
+                additionalData: this.selectedTabInstance.additionalData
             }
 
             // Add tab
@@ -486,6 +489,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             let codeTab: TabInstance = {
                 id: createId(),
                 url: `dependency://Dependency View`,
+                additionalData: null,
             }
 
             // Add tab
@@ -514,6 +518,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             let newTab: TabInstance = {
                 id: createId(),
                 url,
+                additionalData: null,
             }
             // Add tab
             this.addTabToLayout(newTab);
@@ -555,6 +560,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             let codeTab: TabInstance = {
                 id: createId(),
                 url: getUrl(filePath),
+                additionalData: null
             }
 
             // Add tab
@@ -579,9 +585,22 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             });
         });
         commands.launchTsFlow.on((e) => {
-            openAnalysisViewForCurrentFilePath((filePath)=>{
-                return `${tabRegistry.tabs.tsflow.protocol}://${filePath}`
-            });
+            let filePath = getCurrentFilePathOrWarn();
+            if (!filePath) return;
+
+            let tsFlowTab: TabInstance = {
+                id: createId(),
+                url: `${tabRegistry.tabs.tsflow.protocol}://${filePath}`,
+                additionalData: {
+                    position: 0 /**  TODO: tsflow load from actual file path current cursor */
+                }
+            }
+
+            // Add tab
+            this.addTabToLayout(tsFlowTab);
+
+            // Focus
+            this.tabState.selectTab(tsFlowTab.id);
         });
     }
 
@@ -616,6 +635,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         const {protocol,filePath} = utils.getFilePathAndProtocolFromUrl(tab.url);
         const props: tab.TabProps = {
             url,
+            additionalData: tab.additionalData,
             onSavedChanged: (saved)=>this.onSavedChanged(tab,saved),
             onFocused: () => {
                 if (this.selectedTabInstance && this.selectedTabInstance.id === id)
@@ -1252,7 +1272,7 @@ namespace GLUtil {
         const tabs: TabInstance[] = (stack.content || []).map(c => {
             const props: tab.TabProps = c.props;
             const id = c.id;
-            return { id: id, url: props.url };
+            return { id: id, url: props.url, additionalData: props.additionalData };
         });
         return {
             selectedIndex: stack.activeItemIndex,
@@ -1265,10 +1285,11 @@ namespace GLUtil {
      */
     export function fromTabStack(tabs: TabInstance[], appTabsContainer: AppTabsContainer): GoldenLayout.ItemConfig[] {
         return tabs.map(tab => {
-            const {url, id} = tab;
+            const {url, id, additionalData} = tab;
             const {protocol, filePath} = utils.getFilePathAndProtocolFromUrl(tab.url);
             const props: tab.TabProps = {
                 url,
+                additionalData,
                 onSavedChanged: (saved) => appTabsContainer.onSavedChanged(tab, saved),
                 onFocused: () => {
                     if (appTabsContainer.selectedTabInstance && appTabsContainer.selectedTabInstance.id === id)

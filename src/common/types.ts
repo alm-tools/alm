@@ -42,6 +42,8 @@ export interface SessionOnDisk {
 export interface TabInstanceOnDisk {
     id: string;
     relativeUrl: string;
+    /** Any additional data that the tab wants to serialize */
+    additionalData: any;
 }
 
 /**
@@ -50,6 +52,8 @@ export interface TabInstanceOnDisk {
 export interface TabInstance {
     id: string;
     url: string;
+    /** Any additional data that the tab wants to serialize */
+    additionalData: any;
 }
 
 /**

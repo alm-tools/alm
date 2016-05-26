@@ -43,8 +43,10 @@ export interface TabApi {
  * So instead props *never change after the tab is created*.
  */
 export interface TabProps {
-    // what you get
+    /** what we give to tabs */
     url: string;
+    /** any additional info the tab needs to do its jobs */
+    additionalData: any;
 
     /**
      * What the tab gets to tell the container
