@@ -111,7 +111,12 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
 
             const reloadDataDebounced = utils.debounce(this.reloadData, 3000);
             this.disposible.add(commands.fileContentsChanged.on(e=>{
-                if (e.filePath === props.cm.filePath){
+                if (e.filePath === props.cm.filePath && this.props.showSemanticView){
+                    reloadDataDebounced();
+                }
+            }));
+            this.disposible.add(state.subscribeSub((s => s.showSemanticView), (showSemanticView) => {
+                if (showSemanticView) {
                     reloadDataDebounced();
                 }
             }));
