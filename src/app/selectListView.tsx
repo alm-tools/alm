@@ -104,6 +104,7 @@ export class SelectListView extends BaseComponent<Props, State>{
         [string: string]: any;
         omniSearch: any;
         omniSearchInput: any;
+        selected: Element;
     }
 
     componentDidMount() {
@@ -111,6 +112,17 @@ export class SelectListView extends BaseComponent<Props, State>{
 
         commands.esc.on(()=>{
             this.closeOmniSearch();
+        });
+    }
+
+    componentDidUpdate() {
+        // get the dom node that is selected
+        // make sure its parent scrolls to make this visible
+        setTimeout(()=>{
+            if (this.refs.selected) {
+                let selected = this.refs.selected as HTMLDivElement;
+                selected.scrollIntoViewIfNeeded(false);
+            }
         });
     }
 
@@ -124,8 +136,9 @@ export class SelectListView extends BaseComponent<Props, State>{
                 background: '#545454',
                 color: 'white'
             } : {};
+            let ref = selected && "selected";
             return (
-                <div key={i} style={[selectedStyle, styles.padded2, styles.hand, csx.content]} onClick={()=>this.selectIndex(i)}>
+                <div key={i} style={[selectedStyle, styles.padded2, styles.hand, csx.content]} onClick={()=>this.selectIndex(i)} ref={ref}>
                         {this.state.render(item, renderMatchedSegments(this.state.textify(item), this.state.filterValue)) }
                 </div>
             );

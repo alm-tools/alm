@@ -24,8 +24,22 @@ CodeMirror.commands[commands.additionalEditorCommands.gotoTypeScriptSymbol] = (e
         selectListView.selectListView.show({
             header:`TypeScript symbols in ${utils.getFileName(filePath)}`,
             data: res.items,
-            render: (item, highlighted) => {
-                return <div style={{fontFamily:'monospace'}}>{highlighted}</div>;
+            render: (symbol, matched) => {
+                // NOTE: Code duplicated in `omniSearch.tsx` (except this needs to set font explicitly)
+                const color = ui.kindToColor(symbol.kind);
+                const icon = ui.kindToIcon(symbol.kind);
+                return (
+                    <div style={{fontFamily: 'monospace'}}>
+                        <div style={csx.horizontal}>
+                            <span>{matched}</span>
+                            <span style={csx.flex}></span>
+                            <strong style={{color}}>{symbol.kind}</strong>
+                            &nbsp;
+                            <span style={csx.extend({color, fontFamily:'FontAwesome'})}>{icon}</span>
+                        </div>
+                        <div>{symbol.fileName}:{symbol.position.line+1}</div>
+                    </div>
+                );
             },
             textify: (item) => item.name,
             onSelect: (item) => {

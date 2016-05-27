@@ -114,7 +114,6 @@ export class OmniSearch extends BaseComponent<Props, State>{
         setTimeout(()=>{
             if (this.refs.selected) {
                 let selected = this.refs.selected as HTMLDivElement;
-                let searchScroll = this.refs.selected as HTMLDivElement;
                 selected.scrollIntoViewIfNeeded(false);
             }
             // also keep the input in focus
@@ -407,6 +406,7 @@ class SearchState {
             let filtered: types.NavigateToItem[] = this.filteredValues;
             renderedResults = this.createRenderedForList(filtered,(symbol)=>{
                 // Create rendered
+                // NOTE: Code duplicated in `gotoTypeScriptSymbol.tsx`
                 let matched = renderMatchedSegments(symbol.name,this.parsedFilterValue);
                 const color = ui.kindToColor(symbol.kind);
                 const icon = ui.kindToIcon(symbol.kind);
