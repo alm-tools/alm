@@ -61,18 +61,10 @@ export function getUnmountableNode() {
     return { node, unmount };
 }
 
-// Setup VelocityReact
-// Need to load it to get UIPack working
-require('velocity-animate');
-require('velocity-animate/velocity.ui');
-let VelocityReact = require('velocity-react');
-export let {VelocityTransitionGroup, VelocityComponent} = VelocityReact;
-
 /**
  * Toggle component
  * http://instructure-react.github.io/react-toggle/
  */
-
 export let Toggle = require('react-toggle')
 require('react-toggle/style.css')
 

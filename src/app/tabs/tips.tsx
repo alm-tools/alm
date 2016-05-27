@@ -55,12 +55,8 @@ export class Tips extends BaseComponent<Props, State>{
             keyboard: 'Alt+W'
         },
         {
-            message: 'Previous tab',
-            keyboard: 'Alt+J'
-        },
-        {
-            message: 'Next tab',
-            keyboard: 'Alt+K'
+            message: 'Undo close tab',
+            keyboard: 'Alt+Shift+W'
         },
         {
             message: 'Editor keybindings:',
@@ -94,20 +90,15 @@ export class Tips extends BaseComponent<Props, State>{
              */
         }
         return (
-            <ui.VelocityTransitionGroup
-                runOnMount={true}
-                enter={{animation: "transition.swoopIn"}} leave={{animation: "transition.whirlOut"}}
-                style={csx.extend(csx.flex,{position:'relative'}, { background: 'radial-gradient(#444,transparent)' })}>
-                <div key={this.state.selected} style={csx.extend(csx.newLayer)}>
+            <div key={this.state.selected} style={csx.extend(csx.newLayer)}>
 
-                    <span style={csx.extend(csx.newLayer, csx.flexRoot) }>
-                        <span style={csx.extend(csx.flex, csx.centerCenter, tipStyle)}>
-                            {tip.message}&nbsp;<span style={tipKeyboardStyle}> {tip.keyboard} </span>
-                        </span>
+                <span style={csx.extend(csx.newLayer, csx.flexRoot) }>
+                    <span style={csx.extend(csx.flex, csx.centerCenter, tipStyle)}>
+                        {tip.message}&nbsp;<span style={tipKeyboardStyle}> {tip.keyboard} </span>
                     </span>
+                </span>
 
-                </div>
-            </ui.VelocityTransitionGroup>
+            </div>
         );
     }
 }
