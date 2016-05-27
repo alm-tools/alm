@@ -548,31 +548,45 @@ function flattenNavBarItems(items: ts.NavigationBarItem[]): ts.NavigationBarItem
     const root = items[0];
 
     /**
-     * You can flatten these by sorting by `name + startpos` (tried indent but its unreliable)
-     * and only taking the items with same name + depth that have `children` (if any)
+     * Where we store the final good ones
      */
-    const resultMap: { [key: string]: ts.NavigationBarItem } = {};
-    const getKey = (item: ts.NavigationBarItem) => {
-        /** We pick the last span because for overloading the first spans are different but last span is consistent */
-        const span = item.spans[item.spans.length - 1];
-        return `${span.start}-${item.text}`
+    const results: ts.NavigationBarItem[] = [];
+
+
+    /** Just to remove the dupes for different keys */
+    const resultMap: { [key: string]: boolean } = {};
+    /**
+     * The same items apprear with differnt indent, and different `spans`
+     * But at least one span seems to match, hence this key(s) function
+     */
+    const getKeys = (item: ts.NavigationBarItem): string[] => {
+        return item.spans.map(span => {
+            return `${span.start}-${item.text}`
+        });
     };
+
+
     /** This is used to unflatten the resulting map */
+    const getParentMapKey = (item: ts.NavigationBarItem): string => {
+        return `${item.spans[0].start}-${item.text}`
+    };
     const parentMap: { [key: string]: ts.NavigationBarItem } = {};
 
     /**
      * First create a map of everything
      */
     const addToMap = (item: ts.NavigationBarItem, parent: ts.NavigationBarItem) => {
-        const key = getKey(item);
+        const keys = getKeys(item);
 
-        const previous = resultMap[key];
+        const previous = keys.some(key => resultMap[key]);
         // If we already have it no need to add it.
         // This is because the first time it gets added the parent then is the best one
         if (!previous) {
-            resultMap[key] = item;
+            keys.forEach(key => resultMap[key] = true);
+            results.push(item);
             if (item !== root) {
-                parentMap[key] = parent;
+                const parentMapKey = getParentMapKey(item)
+                parentMap[parentMapKey] = parent;
             }
         }
 
@@ -587,18 +601,18 @@ function flattenNavBarItems(items: ts.NavigationBarItem[]): ts.NavigationBarItem
     items.forEach(item => addToMap(item,root));
 
     // Now restore based on child pointers
-    items = utils.values(resultMap);
-    items.forEach(item => {
+    results.forEach(item => {
         if (item == root) return;
 
-        const key = getKey(item);
+        const key = getParentMapKey(item);
         const parent = parentMap[key];
+
         if (!parent.childItems) parent.childItems = [];
         parent.childItems.push(item);
     });
 
     // Now we only need the children of the root :)
-    return items[0].childItems;
+    return results[0].childItems;
 }
 function navigationBarItemToSemanticTreeNode(item: ts.NavigationBarItem, project: Project, query: Types.FilePathQuery): Types.SemanticTreeNode {
     let toReturn: Types.SemanticTreeNode = {
