@@ -28,19 +28,19 @@ import * as state from "./state/state";
 import {RenameVariable} from "./codeResults/renameVariable";
 import {GotoDefinition} from "./codeResults/gotoDefinition";
 import {FindReferences} from "./codeResults/findReferences";
-import * as format_placeholder from "./editorCommands/format";
-import * as gotoHistory_placeholder from "./gotoHistory";
+import * as format from "./editorCommands/format";
+import * as gotoHistory from "./gotoHistory";
 import * as clipboardRing from "./clipboardRing";
 import * as gitCommands from "./gitCommands";
 import * as htmlToTsx from "./htmlToTsx";
 import * as cssToTs from "./cssToTs";
-import * as jsonToDts from "./jsonToDts";
+import * as jsonToDts from "./editorCommands/jsonToDts";
 import * as goToLine from "./goToLine";
 var ensureImport = RenameVariable
     || GotoDefinition
     || FindReferences
-    || format_placeholder
-    || gotoHistory_placeholder
+    || format
+    || gotoHistory
     || clipboardRing
     || gitCommands
     || htmlToTsx
