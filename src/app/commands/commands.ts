@@ -226,7 +226,7 @@ export var omniProjectSymbols = new UICommand({
     context: CommandContext.Global,
 });
 export var omniProjectSourcefile = new UICommand({
-    keyboardShortcut: 'mod+alt+p', //
+    keyboardShortcut: 'mod+alt+y', //
     description: "Find Source File in active project",
     context: CommandContext.Global,
 });

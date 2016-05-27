@@ -36,6 +36,6 @@ There is also a *faster* + *filtered by filePath* version (`Ctrl|⌘ + Y`)
 
 ## Project FilePath Search
 
-The Project FilePath search mode (`Ctrl|⌘ + Alt + P`) lets navigate just your project files.
+The Project FilePath search mode (`Ctrl|⌘ + Alt + Y`) lets navigate just your project files.
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/filesPathsInProject.png)
