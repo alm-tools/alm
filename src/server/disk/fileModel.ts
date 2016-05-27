@@ -125,7 +125,7 @@ export class FileModel {
         }
 
         // If new text same as current text nothing to do.
-        if (utils.arraysEqual(text, this.savedText)) {
+        if (arraysEqualWithWhitespace(text, this.savedText)) {
             return;
         }
 
@@ -182,4 +182,19 @@ export class FileModel {
 
         return crlf > lf ? '\r\n' : '\n';
     }
+}
+
+
+/**
+ * shallow equality of sorted string arrays that considers whitespace to be insignificant
+ */
+function arraysEqualWithWhitespace(a: string[], b: string[]): boolean {
+    if (a === b) return true;
+    if (a == null || b == null) return false;
+    if (a.length !== b.length) return false;
+
+    for (var i = 0; i < a.length; ++i) {
+        if (a[i].trim() !== b[i].trim()) return false;
+    }
+    return true;
 }
