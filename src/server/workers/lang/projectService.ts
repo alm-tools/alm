@@ -543,8 +543,65 @@ function sortNavbarItemsBySpan(items: ts.NavigationBarItem[]) {
         }
     }
 }
+function flattenNavBarItems(items: ts.NavigationBarItem[]): ts.NavigationBarItem[] {
+    if (!items.length) return [];
+    const root = items[0];
+
+    /**
+     * You can flatten these by sorting by `name + startpos` (tried indent but its unreliable)
+     * and only taking the items with same name + depth that have `children` (if any)
+     */
+    const resultMap: { [key: string]: ts.NavigationBarItem } = {};
+    const getKey = (item: ts.NavigationBarItem) => {
+        /** We pick the last span because for overloading the first spans are different but last span is consistent */
+        const span = item.spans[item.spans.length - 1];
+        return `${span.start}-${item.text}`
+    };
+    /** This is used to unflatten the resulting map */
+    const parentMap: { [key: string]: ts.NavigationBarItem } = {};
+
+    /**
+     * First create a map of everything
+     */
+    const addToMap = (item: ts.NavigationBarItem, parent: ts.NavigationBarItem) => {
+        const key = getKey(item);
+
+        const previous = resultMap[key];
+        // If we already have it no need to add it.
+        // This is because the first time it gets added the parent then is the best one
+        if (!previous) {
+            resultMap[key] = item;
+            if (item !== root) {
+                parentMap[key] = parent;
+            }
+        }
+
+        // Also visit all children
+        item.childItems && item.childItems.forEach((child) => addToMap(child, item));
+
+        // Now delete the childItems as they are supposed to be restored by `parentMap`
+        delete item.childItems;
+    }
+
+    // Flatten into the map
+    items.forEach(item => addToMap(item,root));
+
+    // Now restore based on child pointers
+    items = utils.values(resultMap);
+    items.forEach(item => {
+        if (item == root) return;
+
+        const key = getKey(item);
+        const parent = parentMap[key];
+        if (!parent.childItems) parent.childItems = [];
+        parent.childItems.push(item);
+    });
+
+    // Now we only need the children of the root :)
+    return items[0].childItems;
+}
 function navigationBarItemToSemanticTreeNode(item: ts.NavigationBarItem, project: Project, query: Types.FilePathQuery): Types.SemanticTreeNode {
-    var toReturn: Types.SemanticTreeNode = {
+    let toReturn: Types.SemanticTreeNode = {
         text: item.text,
         kind: item.kind,
         kindModifiers: item.kindModifiers,
@@ -557,16 +614,16 @@ function navigationBarItemToSemanticTreeNode(item: ts.NavigationBarItem, project
 export function getSemanticTree(query: Types.GetSemanticTreeQuery): Promise<Types.GetSemanticTreeReponse> {
     let project = getProject(query.filePath);
 
-    /**
-     * TODO: You can flatten these by sorting by `depth`
-     * and only taking the items with same name + depth that have `children` (if any)
-     */
-    var navBarItems = project.languageService.getNavigationBarItems(query.filePath);
+    let navBarItems = project.languageService.getNavigationBarItems(query.filePath);
+
+    // The nav bar from the language service has nodes at various levels (with duplication)
+    // We want a flat version
+    navBarItems = flattenNavBarItems(navBarItems);
 
     // Sort items by first spans:
     sortNavbarItemsBySpan(navBarItems);
 
     // convert to SemanticTreeNodes
-    var nodes = navBarItems.map(nbi => navigationBarItemToSemanticTreeNode(nbi, project, query));
+    let nodes = navBarItems.map(nbi => navigationBarItemToSemanticTreeNode(nbi, project, query));
     return resolve({ nodes });
 }

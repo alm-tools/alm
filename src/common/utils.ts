@@ -46,6 +46,13 @@ export function distinct(arr: string[]): string[] {
 export const uniq = distinct;
 
 /**
+ * Values for dictionary
+ */
+export function values<V>(dict: { [key: string]: V;[key: number]: V }): V[] {
+    return Object.keys(dict).map(key => dict[key]);
+}
+
+/**
  * Debounce
  */
 var now = () => new Date().getTime();
