@@ -28,6 +28,10 @@ Search for and set the **active** TypeScript project (`tsconfig.json`) using pro
 
 The s**Y**mbol search mode (`Ctrl|⌘ + Shift + Y`) lets navigate your projects with meaning.
 
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/symbolSearchProject.gif)
+
+There is also a *faster* + *filtered by filePath* version (`Ctrl|⌘ + Y`)
+
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/symbolSearch.gif)
 
 ## Project FilePath Search

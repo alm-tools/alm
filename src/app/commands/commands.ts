@@ -669,12 +669,6 @@ new UICommand({
     context: CommandContext.Editor,
     editorCommandName: additionalEditorCommands.jsonToDts,
 })
-new UICommand({
-    description: 'Editor: Goto TypeScript Symbol',
-    context: CommandContext.Editor,
-    editorCommandName: additionalEditorCommands.gotoTypeScriptSymbol,
-})
-
 
 /**
  * This is a consolidation of the `file edited` and `file changed on disk`
