@@ -221,7 +221,7 @@ export var omniSelectProject = new UICommand({
     context: CommandContext.Global,
 });
 export var omniProjectSymbols = new UICommand({
-    keyboardShortcut: 'mod+alt+y', //
+    keyboardShortcut: 'mod+shift+y', //
     description: "Find sYmbols in active project",
     context: CommandContext.Global,
 });
