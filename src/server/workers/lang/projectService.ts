@@ -373,6 +373,16 @@ export function getNavigateToItems(query: {}): Promise<types.GetNavigateToItemsR
     return utils.resolve({ items });
 }
 
+export function getNavigateToItemsForFilePath(query: { filePath: string }): Promise<types.GetNavigateToItemsResponse> {
+    let project = activeProject.GetProject.getCurrentIfAny();
+    var languageService = project.languageService;
+
+    const file = project.getSourceFile(query.filePath)
+    const items = getSymbolsForFile(project, file);
+
+    return utils.resolve({ items });
+}
+
 /**
  * Dependency View
  */

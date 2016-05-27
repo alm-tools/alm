@@ -29,6 +29,7 @@ export var worker = {
     formatDocument: {} as typeof socketContract.server.formatDocument,
     formatDocumentRange: {} as typeof socketContract.server.formatDocumentRange,
     getNavigateToItems: {} as typeof socketContract.server.getNavigateToItems,
+    getNavigateToItemsForFilePath: {} as typeof socketContract.server.getNavigateToItemsForFilePath,
     getDependencies: {} as typeof socketContract.server.getDependencies,
     getAST: {} as typeof socketContract.server.getAST,
     getQuickFixes: {} as typeof socketContract.server.getQuickFixes,

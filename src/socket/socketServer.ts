@@ -179,6 +179,7 @@ namespace Server {
     export var formatDocument : typeof contract.server.formatDocument = projectServiceMaster.worker.formatDocument;
     export var formatDocumentRange : typeof contract.server.formatDocumentRange = projectServiceMaster.worker.formatDocumentRange;
     export var getNavigateToItems : typeof contract.server.getNavigateToItems = projectServiceMaster.worker.getNavigateToItems;
+    export var getNavigateToItemsForFilePath : typeof contract.server.getNavigateToItemsForFilePath = projectServiceMaster.worker.getNavigateToItemsForFilePath;
     export var getDependencies : typeof contract.server.getDependencies = projectServiceMaster.worker.getDependencies;
     export var getAST : typeof contract.server.getAST = projectServiceMaster.worker.getAST;
     export var getQuickFixes : typeof contract.server.getQuickFixes = projectServiceMaster.worker.getQuickFixes;

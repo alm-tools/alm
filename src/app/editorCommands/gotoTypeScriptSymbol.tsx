@@ -3,6 +3,7 @@ import ReactDOM = require("react-dom");
 import Radium = require('radium');
 import csx = require('csx');
 import * as commands from "../commands/commands";
+import {server} from "../../socket/socketClient";
 import {inputDialog} from "../dialogs/inputDialog";
 import {jumpToLine} from "../codemirror/cmUtils";
 
@@ -12,15 +13,7 @@ CodeMirror.commands[commands.additionalEditorCommands.gotoTypeScriptSymbol] = (e
     let doc = editor.getDoc();
     let filePath = editor.filePath;
 
-    inputDialog.open({
-        header: "Line Number",
-        onOk: (value: string) => {
-            const line = +value - 1;
-            jumpToLine({line,editor});
-        },
-        onEsc: () => {
-
-        },
-        filterValue: '',
+    server.getNavigateToItemsForFilePath({filePath}).then((res)=>{
+        console.log(res);
     });
 }

@@ -64,6 +64,7 @@ export var server = {
     formatDocument: {} as QRFunction<Types.FormatDocumentQuery, Types.FormatDocumentResponse>,
     formatDocumentRange: {} as QRFunction<Types.FormatDocumentRangeQuery, Types.FormatDocumentRangeResponse>,
     getNavigateToItems: {} as QRFunction<{}, types.GetNavigateToItemsResponse>,
+    getNavigateToItemsForFilePath: {} as QRFunction<{ filePath: string }, types.GetNavigateToItemsResponse>,
     getDependencies: {} as QRFunction<{}, Types.GetDependenciesResponse>,
     getAST: {} as QRFunction<Types.GetASTQuery, Types.GetASTResponse>,
     getQuickFixes: {} as QRFunction<Types.GetQuickFixesQuery, Types.GetQuickFixesResponse>,

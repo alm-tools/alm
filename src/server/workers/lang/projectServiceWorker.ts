@@ -60,6 +60,7 @@ namespace Worker {
     export var formatDocument : typeof contract.worker.formatDocument = projectService.formatDocument;
     export var formatDocumentRange : typeof contract.worker.formatDocumentRange = projectService.formatDocumentRange;
     export var getNavigateToItems : typeof contract.worker.getNavigateToItems = projectService.getNavigateToItems;
+    export var getNavigateToItemsForFilePath : typeof contract.worker.getNavigateToItemsForFilePath = projectService.getNavigateToItemsForFilePath;
     export var getDependencies : typeof contract.worker.getDependencies = projectService.getDependencies;
     export var getAST : typeof contract.worker.getAST = projectService.getAST;
     export var getQuickFixes : typeof contract.worker.getQuickFixes = projectService.getQuickFixes;
