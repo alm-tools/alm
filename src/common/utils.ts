@@ -93,7 +93,8 @@ export function triggeredDebounce<Arg>(config:{
     /** Only called after there is at least one `oldArg` */
     mustcall: (newArg:Arg,oldArg:Arg)=>boolean,
     milliseconds: number}): (arg:Arg) => void {
-    let lastArg, lastCallTimeStamp, hasALastArg = false;
+    let lastArg, lastCallTimeStamp;
+    let hasALastArg = false; // true if we are `holding back` any previous arg
     let pendingTimeout = null;
 
     const later = function() {
@@ -107,6 +108,7 @@ export function triggeredDebounce<Arg>(config:{
             pendingTimeout = setTimeout(later, config.milliseconds - timeSinceLast);
         } else {
             config.func(lastArg);
+            hasALastArg = false;
         }
     };
 
