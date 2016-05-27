@@ -16,6 +16,7 @@ import * as commands from "../../commands/commands";
 import * as cmUtils from "../cmUtils";
 import * as fstyle from "../../base/fstyle";
 import * as styles from "../../styles/styles";
+import {shouldComponentUpdate} from "../../../common/pure";
 
 type Editor = CodeMirror.EditorFromTextArea;
 
@@ -91,6 +92,7 @@ interface State {
 })
 @ui.Radium
 export class SemanticView extends ui.BaseComponent<Props, State> {
+    shouldComponentUpdate = shouldComponentUpdate;
     constructor(props) {
         super(props);
         this.state = {
