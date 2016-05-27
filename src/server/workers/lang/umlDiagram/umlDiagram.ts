@@ -161,7 +161,7 @@ function transformClassConstructor(node: ts.ConstructorDeclaration, sourceFile: 
 function transformClassProperty(node: ts.PropertyDeclaration, sourceFile: ts.SourceFile): types.UMLClassMember {
     const name = ts.getPropertyNameForPropertyNameNode(node.name);
     let icon = types.IconType.ClassProperty;
-    const location = getDocumentedTypeLocation(sourceFile, node.pos);
+    const location = getDocumentedTypeLocation(sourceFile, node.name.getEnd() - 1);
     const visibility = getVisibility(node);
     const lifetime = getLifetime(node);
 
@@ -184,7 +184,7 @@ function transformClassMethod(node: ts.MethodDeclaration, sourceFile: ts.SourceF
     if (node.typeParameters) {
         icon = types.IconType.ClassMethodGeneric;
     }
-    const location = getDocumentedTypeLocation(sourceFile, node.pos);
+    const location = getDocumentedTypeLocation(sourceFile, node.name.getEnd() - 1);
     const visibility = getVisibility(node);
     const lifetime = getLifetime(node);
 
