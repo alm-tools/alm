@@ -125,7 +125,7 @@ export class SelectListView extends BaseComponent<Props, State>{
                 color: 'white'
             } : {};
             return (
-                <div key={i} style={[selectedStyle, styles.padded2, styles.hand]} onClick={()=>this.selectIndex(i)}>
+                <div key={i} style={[selectedStyle, styles.padded2, styles.hand, csx.content]} onClick={()=>this.selectIndex(i)}>
                         {this.state.render(item, renderMatchedSegments(this.state.textify(item), this.state.filterValue)) }
                 </div>
             );
@@ -135,13 +135,13 @@ export class SelectListView extends BaseComponent<Props, State>{
             isOpen={this.state.isOpen}
             onRequestClose={this.closeOmniSearch}>
                 <div style={[csx.vertical, csx.flex]}>
-                    <div style={[csx.horizontal]}>
+                    <div style={[csx.horizontal, csx.content]}>
                         <h4>{this.state.header}</h4>
                         <div style={[csx.flex]}></div>
                         <div style={{fontSize:'0.9rem', color:'grey'} as any}><code style={styles.modal.keyStrokeStyle}>Esc</code> to exit <code style={styles.modal.keyStrokeStyle}>Enter</code> to select</div>
-                        </div>
+                    </div>
 
-                    <div style={[styles.padded1TopBottom, csx.vertical]}>
+                    <div style={[styles.padded1TopBottom, csx.vertical, csx.content]}>
                         <input
                             type="text"
                             ref="omniSearchInput"
@@ -155,9 +155,9 @@ export class SelectListView extends BaseComponent<Props, State>{
                     <div style={[csx.vertical, csx.flex, { overflow: 'auto' }]}>
                         <div style={[csx.vertical]}>
                             {fileListRendered}
-                            </div>
                         </div>
                     </div>
+                </div>
             </Modal>
     }
 
