@@ -49,3 +49,15 @@ export class Bas extends Foo {
 
   }
 }
+
+let jsonToDtsTesting = `
+{
+  foo: 123,
+  bar: {
+    bas: "Hello",
+    baz: {
+      qux: "World"
+    }
+  }
+}
+`;

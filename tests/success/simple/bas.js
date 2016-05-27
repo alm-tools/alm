@@ -42,3 +42,4 @@ var Bas = (function (_super) {
     return Bas;
 }(foo_1.Foo));
 exports.Bas = Bas;
+var jsonToDtsTesting = "\n{\n  foo: 123,\n  bar: {\n    bas: \"Hello\",\n    baz: {\n      qux: \"World\"\n    }\n  }\n}\n";

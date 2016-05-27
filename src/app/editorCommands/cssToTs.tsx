@@ -5,6 +5,7 @@ import csx = require('csx');
 import * as ui from "../ui";
 import * as utils from "../../common/utils";
 import * as commands from "../commands/commands";
+import CodeMirror = require('codemirror');
 
 /* Test:
 const styles = {

@@ -27,7 +27,8 @@ CodeMirror.commands[commands.additionalEditorCommands.jsonToDts] = (editor: Code
     let doc = editor.getDoc();
     let filePath = editor.filePath;
     if (doc.somethingSelected()){
-        doc.replaceSelection(convert(doc.getSelection()));
+        const indentSize = editor.getOption("indentUnit");
+        doc.replaceSelection(convert(doc.getSelection(), indentSize));
     }
     else {
         ui.notifyWarningNormalDisappear('Please select the JavaScript object literal (or json) you want converted to a TypeScript definition and try again 🌹');
@@ -38,13 +39,16 @@ CodeMirror.commands[commands.additionalEditorCommands.jsonToDts] = (editor: Code
  * The beating heart
  */
 import {toValidJSON, Json2dts} from "../json2dts/json2dts";
-export function convert(content: string): string {
+export function convert(content: string, indent: number): string {
     try {
         var converter = new Json2dts();
         var text2Obj = JSON.parse(toValidJSON(content));
         if (typeof text2Obj != "string") {
             converter.parse(text2Obj, 'RootJson');
             content = converter.getCode();
+            /** Fix spaces to match the desierd indent */
+            /** Fix styling in `foo:Bar` to be `foo: Bar` */
+            console.log(content);
         }
         else {
             ui.notifyWarningNormalDisappear('Json2dts Invalid JSON');
