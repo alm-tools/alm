@@ -314,10 +314,7 @@ export function formatDocumentRange(query: Types.FormatDocumentRangeQuery): Prom
 //  gave results from lib.d.ts
 //  I wanted the practice
 
-export function getNavigateToItems(query: {}): Promise<types.GetNavigateToItemsResponse> {
-    let project = activeProject.GetProject.getCurrentIfAny();
-    var languageService = project.languageService;
-
+function getSymbolsForFile(project: Project, sourceFile: ts.SourceFile): types.NavigateToItem[] {
     let getNodeKind = ts.getNodeKind;
     function getDeclarationName(declaration: ts.Declaration): string {
         let result = getTextOfIdentifierOrLiteral(declaration.name);
@@ -348,20 +345,29 @@ export function getNavigateToItems(query: {}): Promise<types.GetNavigateToItemsR
     }
 
     var items: types.NavigateToItem[] = [];
-    for (let file of project.getProjectSourceFiles()) {
-        let declarations = file.getNamedDeclarations();
-        for (let index in declarations) {
-            for (let declaration of declarations[index]) {
-                let item: types.NavigateToItem = {
-                    name: getDeclarationName(declaration),
-                    kind: getNodeKind(declaration),
-                    filePath: file.fileName,
-                    fileName: utils.getFileName(file.fileName),
-                    position: project.languageServiceHost.getLineAndCharacterOfPosition(file.fileName, declaration.getStart())
-                }
-                items.push(item);
+    let declarations = sourceFile.getNamedDeclarations();
+    for (let index in declarations) {
+        for (let declaration of declarations[index]) {
+            let item: types.NavigateToItem = {
+                name: getDeclarationName(declaration),
+                kind: getNodeKind(declaration),
+                filePath: sourceFile.fileName,
+                fileName: utils.getFileName(sourceFile.fileName),
+                position: project.languageServiceHost.getLineAndCharacterOfPosition(sourceFile.fileName, declaration.getStart())
             }
+            items.push(item);
         }
+    }
+    return items;
+}
+
+export function getNavigateToItems(query: {}): Promise<types.GetNavigateToItemsResponse> {
+    let project = activeProject.GetProject.getCurrentIfAny();
+    var languageService = project.languageService;
+
+    let items: types.NavigateToItem[] = [];
+    for (let file of project.getProjectSourceFiles()) {
+        getSymbolsForFile(project, file).forEach(i => items.push(i));
     }
 
     return utils.resolve({ items });
