@@ -85,9 +85,12 @@ export function debounce<T extends Function>(func: T, milliseconds: number, imme
 
 /**
  * Like debounce but will also call if a state change is significant enough to not ignore silently
+ * Note:
+ *  - Significant changes : the function is called *immediately* without debouncing (but still marked for future debouncing).
  */
 export function triggeredDebounce<Arg>(config:{
     func: (arg:Arg)=>void,
+    /** Only called after there is at least one `oldArg` */
     mustcall: (newArg:Arg,oldArg:Arg)=>boolean,
     milliseconds: number}): (arg:Arg) => void {
     let lastArg, lastCallTimeStamp, hasALastArg = false;
