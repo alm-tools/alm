@@ -12,7 +12,7 @@ commands.gitStatus.on(()=>{
     server.gitStatus({}).then(res=>console.log(res));
 });
 
-CodeMirror.commands[commands.additionalEditorCommands.gitResetFile] = function(cm: CodeMirror.EditorFromTextArea) {
+CodeMirror.commands[commands.additionalEditorCommands.gitSoftResetFile] = function(cm: CodeMirror.EditorFromTextArea) {
     if (!cm.filePath){
         ui.notifyWarningNormalDisappear('File does not have a valid file path');
         return;
@@ -21,6 +21,6 @@ CodeMirror.commands[commands.additionalEditorCommands.gitResetFile] = function(c
     server.gitReset({ filePath: cm.filePath }).then((res) => {
         // console.log(res); // DEBUG
         cm.getDoc().setCursor(cursor);
-        ui.notifySuccessNormalDisappear('Git reset successful');
+        ui.notifySuccessNormalDisappear('Git soft reset successful');
     })
 }

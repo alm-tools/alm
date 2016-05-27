@@ -22,6 +22,7 @@ export function gitStatus(args:{}): Promise<string> {
     return gitCmd('status');
 }
 
+/** This is a soft reset. i.e. it keeps your staged changes */
 export function gitReset(args:{filePath:string}): Promise<string> {
     fmc.saveOpenFile(args.filePath);
     // Delay because if we reset the file immediately the ^ save
@@ -45,6 +46,9 @@ export function gitDiff(args: { filePath: string }): Promise<types.GitDiff> {
         fmc.saveOpenFile(args.filePath);
     }
 
+    /**
+     * We diff with `HEAD` to still show staged changes (as there are still in your headspace as *area you are working on*)
+     */
     return gitCmd('diff', '-U0', '--no-color', 'HEAD', args.filePath).then(res => {
         const added: types.GitDiffSpan[] = [];
         const removed: number[] = [];

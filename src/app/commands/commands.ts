@@ -488,7 +488,7 @@ export let additionalEditorCommands = {
     jumpy: '',
     format: '',
     toggleBlaster: '',
-    gitResetFile: '',
+    gitSoftResetFile: '',
     htmlToTsx: '',
     cssToTs: '',
     jsonToDts: '',
@@ -517,7 +517,7 @@ sublimeMap[`Shift-Enter`] = additionalEditorCommands.jumpy;
 sublimeMap[`Shift-${mod}-B`] = additionalEditorCommands.findReferences;
 sublimeMap[`${mod}-Alt-L`] = additionalEditorCommands.format;
 sublimeMap[`${mod}-Alt-O`] = additionalEditorCommands.toggleBlaster;
-sublimeMap[`${mod}-Alt-Z`] = additionalEditorCommands.gitResetFile;
+sublimeMap[`${mod}-Alt-Z`] = additionalEditorCommands.gitSoftResetFile;
 sublimeMap[`${mod}-G`] = additionalEditorCommands.goToLine;
 sublimeMap[`Alt-Enter`] = additionalEditorCommands.quickFix;
 
