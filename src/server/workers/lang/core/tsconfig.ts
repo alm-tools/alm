@@ -12,7 +12,7 @@ import {validate} from "./tsconfigValidation";
  * The CompilerOptions as read from a `tsconfig.json` file.
  * Most members copy pasted from ts.CompilerOptions
  * - With few (e.g. `module`) replaced with `string`
- * NOTE: see the changes in `commandLineParser.ts` in the TypeScript sources to see what needs updating
+ * NOTE: see the changes in `types.ts` in the TypeScript sources to see what needs updating
  *
  * When adding you need to
  *  0 Add in this interface
