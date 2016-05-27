@@ -32,8 +32,8 @@ import * as format from "./editorCommands/format";
 import * as gotoHistory from "./gotoHistory";
 import * as clipboardRing from "./clipboardRing";
 import * as gitCommands from "./gitCommands";
-import * as htmlToTsx from "./htmlToTsx";
-import * as cssToTs from "./cssToTs";
+import * as htmlToTsx from "./editorCommands/htmlToTsx";
+import * as cssToTs from "./editorCommands/cssToTs";
 import * as jsonToDts from "./editorCommands/jsonToDts";
 import * as goToLine from "./goToLine";
 var ensureImport = RenameVariable
