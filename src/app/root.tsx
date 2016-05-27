@@ -36,6 +36,7 @@ import * as htmlToTsx from "./editorCommands/htmlToTsx";
 import * as cssToTs from "./editorCommands/cssToTs";
 import * as jsonToDts from "./editorCommands/jsonToDts";
 import * as goToLine from "./editorCommands/goToLine";
+import * as gotoTypeScriptSymbol from "./editorCommands/gotoTypeScriptSymbol";
 var ensureImport = RenameVariable
     || GotoDefinition
     || FindReferences
@@ -46,7 +47,8 @@ var ensureImport = RenameVariable
     || htmlToTsx
     || cssToTs
     || jsonToDts
-    || goToLine;
+    || goToLine
+    || gotoTypeScriptSymbol;
 
 export interface State {
     isOmniSearchOpen?: boolean;

@@ -231,12 +231,6 @@ export var omniProjectSourcefile = new UICommand({
     context: CommandContext.Global,
 });
 
-export var findFileSymbols = new UICommand({
-    keyboardShortcut: 'mod+y', //
-    description: "Find sYmbols in file",
-    context: CommandContext.Global,
-});
-
 
 /**
  * FAR find and replace
@@ -500,6 +494,7 @@ export let additionalEditorCommands = {
     jsonToDts: '',
     goToLine: '',
     quickFix: '',
+    gotoTypeScriptSymbol: '',
 }
 utils.stringEnum(additionalEditorCommands);
 
@@ -525,6 +520,7 @@ sublimeMap[`${mod}-Alt-L`] = additionalEditorCommands.format;
 sublimeMap[`${mod}-Alt-O`] = additionalEditorCommands.toggleBlaster;
 sublimeMap[`${mod}-Alt-Z`] = additionalEditorCommands.gitSoftResetFile;
 sublimeMap[`${mod}-G`] = additionalEditorCommands.goToLine;
+sublimeMap[`${mod}-Y`] = additionalEditorCommands.gotoTypeScriptSymbol;
 sublimeMap[`Alt-Enter`] = additionalEditorCommands.quickFix;
 
 // we have our own cursor history
@@ -672,6 +668,11 @@ new UICommand({
     description: 'Editor: JSON to TS definition',
     context: CommandContext.Editor,
     editorCommandName: additionalEditorCommands.jsonToDts,
+})
+new UICommand({
+    description: 'Editor: Goto TypeScript Symbol',
+    context: CommandContext.Editor,
+    editorCommandName: additionalEditorCommands.gotoTypeScriptSymbol,
 })
 
 
