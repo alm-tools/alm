@@ -45,7 +45,7 @@ export function gitDiff(args: { filePath: string }): Promise<types.GitDiff> {
         fmc.saveOpenFile(args.filePath);
     }
 
-    return gitCmd('diff', '-U0', '--no-color', args.filePath).then(res => {
+    return gitCmd('diff', '-U0', '--no-color', 'HEAD', args.filePath).then(res => {
         const added: types.GitDiffSpan[] = [];
         const removed: number[] = [];
         const modified: types.GitDiffSpan[] = [];
