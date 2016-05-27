@@ -35,7 +35,7 @@ import * as gitCommands from "./gitCommands";
 import * as htmlToTsx from "./editorCommands/htmlToTsx";
 import * as cssToTs from "./editorCommands/cssToTs";
 import * as jsonToDts from "./editorCommands/jsonToDts";
-import * as goToLine from "./goToLine";
+import * as goToLine from "./editorCommands/goToLine";
 var ensureImport = RenameVariable
     || GotoDefinition
     || FindReferences

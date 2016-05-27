@@ -231,6 +231,12 @@ export var omniProjectSourcefile = new UICommand({
     context: CommandContext.Global,
 });
 
+export var findFileSymbols = new UICommand({
+    keyboardShortcut: 'mod+y', //
+    description: "Find sYmbols in file",
+    context: CommandContext.Global,
+});
+
 
 /**
  * FAR find and replace
