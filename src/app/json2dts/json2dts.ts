@@ -2,6 +2,7 @@
  * json2tsd.ts
  * Created by xperiments on 19/04/14.
  * From https://github.com/xperiments/json2dts/blob/master/src/json2dts.ts
+ * BAS: 1 minor modification
  */
 namespace is {
     // Local references to global functions (better minification)
@@ -322,7 +323,8 @@ export class Json2dts {
 
             output = interfaceTab + "interface " + clsName + '\n' + interfaceTab + '{\n';
             Object.keys(this.classes[clsName]).map((key: string) => {
-                output += propertyTab + key + ':' + this.classes[clsName][key] + ';\n';
+                /** BAS: added a space `:` => `: ` */
+                output += propertyTab + key + ': ' + this.classes[clsName][key] + ';\n';
             })
             output += interfaceTab + '}\n\n';
             classes[clsName] = output;
