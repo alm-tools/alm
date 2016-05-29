@@ -4,6 +4,7 @@
 import {TypedEvent} from "../../../common/events";
 import * as CodeMirror from "codemirror";
 import {cast, server} from "../../../socket/socketClient";
+import * as editBatcher from "./editBatcher";
 import * as utils from "../../../common/utils";
 import * as classifierCache from "./classifierCache";
 import {RefactoringsByFilePath, Refactoring} from "../../../common/types";
@@ -169,26 +170,28 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                 };
 
                 // Send the edit
-                server.editFile({ filePath: filePath, edit: codeEdit });
+                editBatcher.addToQueue(filePath, codeEdit);
 
                 // Keep the ouput status cache informed
                 state.ifJSStatusWasCurrentThenMoveToOutOfDate({inputFilePath: filePath});
             });
 
             // setup to get doc changes from server
-            cast.didEdit.on(res=> {
+            cast.didEdits.on(res=> {
 
                 // console.log('got server edit', res.edit.sourceId,'our', sourceId)
 
-                let codeEdit = res.edit;
+                let codeEdits = res.edits;
 
-                if (res.filePath == filePath && codeEdit.sourceId !== localSourceId) {
-                    // Keep the classifier in sync
-                    if (isTsFile) { classifierCache.editFile(filePath, codeEdit); }
+                codeEdits.forEach(codeEdit => {
+                    if (res.filePath == filePath && codeEdit.sourceId !== localSourceId) {
+                        // Keep the classifier in sync
+                        if (isTsFile) { classifierCache.editFile(filePath, codeEdit); }
 
-                    // Note that we use *mark as coming from server* so we don't go into doc.change handler later on :)
-                    doc.replaceRange(codeEdit.newText, codeEdit.from, codeEdit.to, cameFromNetworkSourceId);
-                }
+                        // Note that we use *mark as coming from server* so we don't go into doc.change handler later on :)
+                        doc.replaceRange(codeEdit.newText, codeEdit.from, codeEdit.to, cameFromNetworkSourceId);
+                    }
+                });
             });
 
             // setup loading saved files changing on disk

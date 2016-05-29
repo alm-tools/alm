@@ -7,7 +7,7 @@ import * as fsu from "../utils/fsu";
 import * as types from "../../common/types";
 
 export var savedFileChangedOnDisk = new TypedEvent<{ filePath: string; contents: string }>();
-export var didEdit = new TypedEvent<{ filePath: string; edit: CodeEdit }>();
+export var didEdits = new TypedEvent<{ filePath: string; edits: CodeEdit[] }>();
 export var didStatusChange = new TypedEvent<types.FileStatus>();
 export var editorOptionsChanged = new TypedEvent<{filePath: string; editorOptions: types.EditorOptions}>();
 export var didOpenFile = new TypedEvent<{filePath: string, contents: string}>();
@@ -37,8 +37,8 @@ export function getOrCreateOpenFile(filePath: string, autoCreate = false) {
         file.onSavedFileChangedOnDisk.on((evt) => {
             savedFileChangedOnDisk.emit({ filePath, contents: evt.contents });
         });
-        file.didEdit.on((evt) => {
-            didEdit.emit({ filePath, edit: evt.codeEdit });
+        file.didEdits.on((evt) => {
+            didEdits.emit({ filePath, edits: evt.codeEdits });
         });
         file.didStatusChange.on((evt) => {
             didStatusChange.emit({ filePath, saved: evt.saved, eol: evt.eol });

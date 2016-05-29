@@ -31,7 +31,7 @@ export class FileModel {
     /**
      * Always emit
      */
-    public didEdit = new TypedEvent<{codeEdit: CodeEdit;}>();
+    public didEdits = new TypedEvent<{codeEdits: CodeEdit[];}>();
 
     /**
      * Always emit
@@ -66,7 +66,20 @@ export class FileModel {
     }
 
     /** Returns true if the file is same as what was on disk */
-    edit(codeEdit: CodeEdit): { saved: boolean } {
+    edits(codeEdits: CodeEdit[]): { saved: boolean } {
+        /** PREF: This batching can probably be made more efficient */
+        codeEdits.forEach(edit => {
+            this.edit(edit);
+        });
+
+        let saved = this.saved();
+        this.didEdits.emit({ codeEdits });
+        this.didStatusChange.emit({ saved, eol: this.newLine });
+
+        return { saved };
+    }
+
+    private edit(codeEdit: CodeEdit) {
         let lastLine = this.text.length - 1;
 
         let beforeLines = this.text.slice(0, codeEdit.from.line);
@@ -81,12 +94,6 @@ export class FileModel {
         lines = content.split('\n');
 
         this.text = beforeLines.concat(lines).concat(afterLines);
-
-        let saved = this.saved();
-        this.didEdit.emit({ codeEdit });
-        this.didStatusChange.emit({ saved, eol: this.newLine });
-
-        return { saved };
     }
 
     delete() {

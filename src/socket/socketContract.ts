@@ -20,7 +20,7 @@ export var server = {
      */
     openFile: {} as QRFunction<{ filePath: string }, { contents: string, saved: boolean, editorOptions: types.EditorOptions }>,
     closeFile: {} as QRFunction<{ filePath: string }, {}>,
-    editFile: {} as QRFunction<{ filePath: string, edit: CodeEdit }, { saved: boolean }>,
+    editFile: {} as QRFunction<{ filePath: string, edits: CodeEdit[] }, { saved: boolean }>,
     saveFile: {} as QRFunction<{ filePath: string }, {}>,
     getFileStatus: {} as QRFunction<{ filePath: string }, { saved: boolean }>,
     /** File Tree */
@@ -124,7 +124,7 @@ export var cast = {
     savedFileChangedOnDisk: new TypedEvent<{ filePath: string; contents: string }>(),
 
     /** If a user does a code edit */
-    didEdit: new TypedEvent<{ filePath: string, edit: CodeEdit }>(),
+    didEdits: new TypedEvent<{ filePath: string, edits: CodeEdit[] }>(),
 
     /** If any of the file status changes */
     didStatusChange: new TypedEvent<{ filePath: string, saved: boolean, eol: string}>(),
