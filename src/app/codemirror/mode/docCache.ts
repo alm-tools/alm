@@ -4,6 +4,7 @@
 import {TypedEvent} from "../../../common/events";
 import * as CodeMirror from "codemirror";
 import {cast, server} from "../../../socket/socketClient";
+import * as editBatcher from "./editBatcher";
 import * as utils from "../../../common/utils";
 import * as classifierCache from "./classifierCache";
 import {RefactoringsByFilePath, Refactoring} from "../../../common/types";
@@ -169,8 +170,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                 };
 
                 // Send the edit
-                // TODO: batch by trottling (by filepath) and send these to the server
-                server.editFile({ filePath: filePath, edits: [codeEdit] });
+                editBatcher.addToQueue(filePath, codeEdit);
 
                 // Keep the ouput status cache informed
                 state.ifJSStatusWasCurrentThenMoveToOutOfDate({inputFilePath: filePath});
