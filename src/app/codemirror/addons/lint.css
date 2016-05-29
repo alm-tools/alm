@@ -40,3 +40,8 @@
 .CodeMirror-lint-marker-multiple:before{
     content: "\f05a";
 }
+
+/* Change the underlines for error */
+.CodeMirror-lint-mark-error {
+    background-image: url(/assets/error.svg);
+}
