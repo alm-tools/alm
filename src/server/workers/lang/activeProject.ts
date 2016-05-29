@@ -55,20 +55,22 @@ function sync() {
 /**
  * File changing on disk
  */
-export function fileEdited(evt: { filePath: string, edit: CodeEdit }) {
+export function fileEdited(evt: { filePath: string, edits: CodeEdit[] }) {
     let proj = GetProject.ifCurrent(evt.filePath)
     if (proj) {
-        proj.languageServiceHost.applyCodeEdit(evt.filePath, evt.edit.from, evt.edit.to, evt.edit.newText);
-        // For debugging
-        // console.log(proj.languageService.getSourceFile(evt.filePath).text);
+        evt.edits.forEach(edit=>{
+            proj.languageServiceHost.applyCodeEdit(evt.filePath, edit.from, edit.to, edit.newText);
+            // For debugging
+            // console.log(proj.languageService.getSourceFile(evt.filePath).text);
 
-        // update errors for this file if its *heuristically* small
-        if (evt.edit.from.line < 1000) {
-            refreshFileDiagnostics(evt.filePath);
-        }
+            // update errors for this file if its *heuristically* small
+            if (edit.from.line < 1000) {
+                refreshFileDiagnostics(evt.filePath);
+            }
 
-        // After a while update all project diagnostics as well
-        refreshAllProjectDiagnosticsDebounced();
+            // After a while update all project diagnostics as well
+            refreshAllProjectDiagnosticsDebounced();
+        });
     }
 }
 export function fileChangedOnDisk(evt: { filePath: string; contents: string }) {

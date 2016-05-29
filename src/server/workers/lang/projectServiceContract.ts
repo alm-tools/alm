@@ -15,7 +15,7 @@ import * as socketContract from "../../../socket/socketContract";
 export var worker = {
     echo: {} as sw.QRFunction<{ data: string }, { data: string }>,
 
-    fileEdited: {} as sw.QRFunction<{ filePath: string; edit: CodeEdit }, {}>,
+    fileEdited: {} as sw.QRFunction<{ filePath: string; edits: CodeEdit[] }, {}>,
     fileChangedOnDisk: {} as sw.QRFunction<{ filePath: string; contents: string }, {}>,
     fileSaved: {} as sw.QRFunction<{ filePath: string }, {}>,
 

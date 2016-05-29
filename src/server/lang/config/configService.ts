@@ -55,15 +55,17 @@ fmc.didOpenFile.on(e => {
         project.languageServiceHost.addScript(e.filePath, prelude + e.contents);
     }
 });
-fmc.didEdit.on(e => {
+fmc.didEdits.on(e => {
     const config = project.isSupportedFile(e.filePath);
     if (config) {
         const prelude = config.prelude;
-        const {filePath, edit: codeEdit} = e;
-        const from = { line: codeEdit.from.line + 1, ch: codeEdit.from.ch };
-        const to = { line: codeEdit.to.line + 1, ch: codeEdit.to.ch };
-        project.languageServiceHost.applyCodeEdit(filePath, from, to, codeEdit.newText);
-        debouncedErrorUpdate(filePath);
+        const {filePath, edits: codeEdits} = e;
+        codeEdits.forEach(codeEdit => {
+            const from = { line: codeEdit.from.line + 1, ch: codeEdit.from.ch };
+            const to = { line: codeEdit.to.line + 1, ch: codeEdit.to.ch };
+            project.languageServiceHost.applyCodeEdit(filePath, from, to, codeEdit.newText);
+            debouncedErrorUpdate(filePath);
+        });
     }
 });
 fmc.savedFileChangedOnDisk.on(e => {

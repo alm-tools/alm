@@ -256,5 +256,5 @@ function checkProjectFileChanges(evt: { filePath: string }) {
     }
 }
 const checkProjectFileChangesDebounced = utils.debounce(checkProjectFileChanges, 1000);
-fmc.didEdit.on(checkProjectFileChangesDebounced);
+fmc.didEdits.on(checkProjectFileChangesDebounced);
 fmc.savedFileChangedOnDisk.on(checkProjectFileChangesDebounced);

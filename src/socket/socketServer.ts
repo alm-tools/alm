@@ -56,7 +56,7 @@ namespace Server {
     }
     export var editFile: typeof contract.server.editFile = (data) => {
         let file = fmc.getOrCreateOpenFile(data.filePath);
-        let {saved} = file.edit(data.edit);
+        let {saved} = file.edits(data.edits);
         // console.log('-------------------------');
         // console.log(file.getContents());
         return resolve({ saved });
@@ -248,7 +248,7 @@ export function register(app: http.Server | https.Server) {
 
     /** File model */
     fmc.savedFileChangedOnDisk.pipe(cast.savedFileChangedOnDisk);
-    fmc.didEdit.pipe(cast.didEdit);
+    fmc.didEdits.pipe(cast.didEdits);
     fmc.didStatusChange.pipe(cast.didStatusChange);
     fmc.editorOptionsChanged.pipe(cast.editorOptionsChanged);
 
