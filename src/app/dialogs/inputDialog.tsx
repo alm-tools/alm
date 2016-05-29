@@ -103,9 +103,9 @@ export class InputDialog extends BaseComponent<Props, State>{
     }
 
     handleClose = () => {
-        this.setState({isOpen:false});
         this.onEsc();
-        this.onEsc = () => null;
+        this.setState({isOpen:false});
+        this.clearHandlers();
     }
 
     onChangeFilter = debounce((e) => {
@@ -117,6 +117,12 @@ export class InputDialog extends BaseComponent<Props, State>{
             e.preventDefault();
             this.onOk(this.refs.mainInput.value);
             this.setState({isOpen:false});
+            this.clearHandlers();
         }
     };
+
+    clearHandlers = () => {
+        this.onEsc = () => null;
+        this.onOk = () => null;
+    }
 }
