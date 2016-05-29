@@ -541,6 +541,13 @@ delete sublimeMap['Shift-Ctrl-Enter'];
 // was selectBetweenBrackets
 sublimeMap['Shift-Cmd-M'] = "...";
 sublimeMap['Shift-Ctrl-M'] = "...";
+// sort lines : is too close to `f8`, but still list
+delete sublimeMap['F9'];
+new UICommand({
+    description: 'Editor: Sort Lines',
+    context: CommandContext.Editor,
+    editorCommandName: 'sortLines',
+})
 
 // Swap line should also come with indent
 // + use VSCode shortcuts as they are consistent across win/mac
