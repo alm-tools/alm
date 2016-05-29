@@ -169,6 +169,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                 };
 
                 // Send the edit
+                // TODO: batch by trottling (by filepath) and send these to the server
                 server.editFile({ filePath: filePath, edits: [codeEdit] });
 
                 // Keep the ouput status cache informed
