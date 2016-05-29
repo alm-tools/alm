@@ -541,7 +541,7 @@ delete sublimeMap['Shift-Ctrl-Enter'];
 // was selectBetweenBrackets
 sublimeMap['Shift-Cmd-M'] = "...";
 sublimeMap['Shift-Ctrl-M'] = "...";
-// sort lines : is too close to `f8`, but still list
+// sort lines : is too close to `f8`. Delete from keymap but still list.
 delete sublimeMap['F9'];
 new UICommand({
     description: 'Editor: Sort Lines',
