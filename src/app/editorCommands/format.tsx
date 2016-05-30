@@ -41,6 +41,10 @@ CodeMirror.commands[commands.additionalEditorCommands.format] = (editor: CodeMir
         let from = selection.anchor;
         let to = selection.head;
 
+        if (CodeMirror.cmpPos(from, to) >= 0) {
+            [from, to] = [to, from];
+        }
+
         server.formatDocumentRange({
             from, to, filePath, editorOptions
         }).then(res => {
