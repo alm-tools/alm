@@ -116,8 +116,8 @@ namespace Utils {
 /** convert project name to current project */
 export function sync() {
     availableProjects.current().then((projectConfigs) => {
-        let activeProjectName = (activeProjectConfigDetails && activeProjectConfigDetails.name);
-        let projectConfig = projectConfigs.filter(x=>x.name == activeProjectName)[0];
+        let activeProjectName = (activeProjectConfigDetails && activeProjectConfigDetails.tsconfigFilePath);
+        let projectConfig = projectConfigs.find(x=>x.tsconfigFilePath == activeProjectName);
         if (!projectConfig) {
             console.log('[TSCONFIG]: No active project')
             return;
