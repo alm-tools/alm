@@ -24,8 +24,6 @@ require('codemirror/addon/selection/active-line');
 require('codemirror/addon/edit/matchbrackets');
 // Auto match tags (great for TSX!)
 require('codemirror/addon/edit/matchtags');
-// Auto highlight same words selected
-require('codemirror/addon/search/match-highlighter');
 
 // Our Addons
 import * as gitStatus from "./addons/gitStatus";
@@ -142,9 +140,6 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
             // Match bracket addon
             matchBrackets: true,
-
-			// match-highlighter
-			highlightSelectionMatches: {showToken: /\w/},
 
             // Auto close brackets and strings
             autoCloseBrackets: true,
