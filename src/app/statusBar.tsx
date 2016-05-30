@@ -154,7 +154,7 @@ export class StatusBar extends BaseComponent<Props, State>{
         }
 
         const fileOutputStateRendered =
-            fileOutputState
+            !!fileOutputState
             && <span style={styles.statusBarSection}>
                 <span style={csx.extend(ouputStatusStyle)}>
                 {
