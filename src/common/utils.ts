@@ -502,3 +502,14 @@ export function isSupportedConfigFileForHover(filePath: string): boolean {
     const fileName = getFileName(filePath);
     return !!supportedHoverConfigFileNames[fileName];
 }
+
+/**
+ * Is TypeSript or is JavaScript file checks
+ */
+export const isTs = (filePath: string) => {
+    return filePath.endsWith('.ts') || filePath.endsWith('.tsx');
+}
+export const isJs = (filePath: string) => {
+    return filePath.endsWith('.js') || filePath.endsWith('.jsx');
+}
+export const isJsOrTs = (filePath: string) => isJs(filePath) || isTs(filePath);

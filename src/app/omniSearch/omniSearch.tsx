@@ -594,7 +594,8 @@ class SearchState {
                 const availableProjects = this.availableProjects.slice();
                 let tab = tabState.getSelectedTab();
                 let filePath = tab && utils.getFilePathFromUrl(tab.url);
-                if (filePath && (filePath.endsWith('.js') || filePath.endsWith('.ts'))
+                if (filePath
+                    && utils.isJsOrTs(filePath)
                     && !state.inActiveProjectUrl(tab.url)) {
                     availableProjects.unshift({
                         name: "Virtual: " + utils.getFileName(filePath),
