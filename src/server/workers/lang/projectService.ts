@@ -568,9 +568,8 @@ function flattenNavBarItems(items: ts.NavigationBarItem[]): ts.NavigationBarItem
      */
     const results: ts.NavigationBarItem[] = [];
 
-
     /** Just to remove the dupes for different keys */
-    const resultMap: { [key: string]: boolean } = {};
+    const resultMapBig: { [key: string]: ts.NavigationBarItem } = Object.create(null);
     /**
      * The same items apprear with differnt indent, and different `spans`
      * But at least one span seems to match, hence this key(s) function
@@ -594,11 +593,11 @@ function flattenNavBarItems(items: ts.NavigationBarItem[]): ts.NavigationBarItem
     const addToMap = (item: ts.NavigationBarItem, parent: ts.NavigationBarItem) => {
         const keys = getKeys(item);
 
-        const previous = keys.some(key => resultMap[key]);
+        const previous = keys.some(key => !!resultMapBig[key]);
         // If we already have it no need to add it.
         // This is because the first time it gets added the parent then is the best one
         if (!previous) {
-            keys.forEach(key => resultMap[key] = true);
+            keys.forEach(key => resultMapBig[key] = item);
             results.push(item);
             if (item !== root) {
                 const parentMapKey = getParentMapKey(item)
@@ -606,8 +605,10 @@ function flattenNavBarItems(items: ts.NavigationBarItem[]): ts.NavigationBarItem
             }
         }
 
+        // Whatever is in the final map is the version we want to use for parent pointers
+        const itemToUseAsParent = resultMapBig[getParentMapKey(item)];
         // Also visit all children
-        item.childItems && item.childItems.forEach((child) => addToMap(child, item));
+        item.childItems && item.childItems.forEach((child) => addToMap(child, itemToUseAsParent));
 
         // Now delete the childItems as they are supposed to be restored by `parentMap`
         delete item.childItems;
