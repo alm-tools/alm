@@ -49,9 +49,6 @@ function clearErrorsInTsconfig(filePath:string){
     errorsInTsconfig.clearErrors();
 }
 
-/** The name used if we don't find a project */
-const implicitProjectName = "__auto__";
-
 /**
  * on server start
  */
@@ -97,14 +94,6 @@ function refreshAvailableProjects() {
 
         let projectConfigs: AvailableProjectConfig[] = tsconfigs.map(Utils.tsconfigToActiveProjectConfigDetails);
 
-        // If no tsconfigs add an implicit one!
-        if (projectConfigs.length == 0) {
-            projectConfigs.push({
-                name: implicitProjectName,
-                isImplicit: true,
-            });
-        };
-
         availableProjects.emit(projectConfigs);
     });
 }
@@ -126,8 +115,11 @@ namespace Utils {
 export function sync() {
     availableProjects.current().then((projectConfigs) => {
         let activeProjectName = (activeProjectConfigDetails && activeProjectConfigDetails.name);
-        // we are guaranteed as least one project config (which just might be the implicit one)
-        let projectConfig = projectConfigs.filter(x=>x.name == activeProjectName)[0] || projectConfigs[0];
+        let projectConfig = projectConfigs.filter(x=>x.name == activeProjectName)[0];
+        if (!projectConfig) {
+            console.log('[TSCONFIG]: No active project')
+            return;
+        }
         syncCore(projectConfig);
     });
 }
