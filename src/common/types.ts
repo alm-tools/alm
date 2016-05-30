@@ -243,6 +243,7 @@ export interface EditorOptions {
  */
 export interface AvailableProjectConfig {
     name: string;
+    /** Virtual projects are projects rooted at some `.ts`/`.js` file */
     isVirtual: boolean;
     /** If the project is virtual than this will point to a `.ts`/`.js` file */
     tsconfigFilePath: string;
