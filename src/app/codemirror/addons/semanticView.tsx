@@ -90,7 +90,6 @@ interface State {
         showSemanticView: state.showSemanticView,
     };
 })
-@ui.Radium
 export class SemanticView extends ui.BaseComponent<Props, State> {
     shouldComponentUpdate = shouldComponentUpdate;
     constructor(props) {
