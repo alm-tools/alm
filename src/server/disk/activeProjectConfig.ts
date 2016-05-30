@@ -100,13 +100,15 @@ function refreshAvailableProjects() {
 
 /** General purpose utility functions specific to this file */
 namespace Utils {
-    export function tsconfigToActiveProjectConfigDetails(tsconfig: string): AvailableProjectConfig {
-        let relative = workingDir.makeRelative(tsconfig);
+    export function tsconfigToActiveProjectConfigDetails(filePath: string): AvailableProjectConfig {
+        let relative = workingDir.makeRelative(filePath);
         let isNodeModule = relative.includes('node_modules');
+        /** Potentially support `dir` style virtual projects as well */
+        const isVirtual = filePath.endsWith('.json') ? false : true;
         return {
-            name: isNodeModule ? relative : utils.getDirectoryAndFileName(tsconfig),
-            isVirtual: false,
-            tsconfigFilePath: tsconfig
+            name: isNodeModule ? relative : utils.getDirectoryAndFileName(filePath),
+            isVirtual,
+            tsconfigFilePath: filePath
         };
     }
 }

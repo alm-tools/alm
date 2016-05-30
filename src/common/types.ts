@@ -496,5 +496,3 @@ export interface LiveAnalysisOverrideInfo {
  */
 export const urlHashNormal = "root";
 export const urlHashNewSession = "new-session";
-/** This is the virtual project name */
-export const virtualProjectName = '_virtual_';

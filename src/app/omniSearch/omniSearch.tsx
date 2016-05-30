@@ -597,7 +597,7 @@ class SearchState {
                 if (filePath && (filePath.endsWith('.js') || filePath.endsWith('.ts'))
                     && !state.inActiveProjectUrl(tab.url)) {
                     availableProjects.unshift({
-                        name: types.virtualProjectName,
+                        name: "Virtual: " + utils.getFileName(filePath),
                         isVirtual: true,
                         tsconfigFilePath: filePath
                     });
