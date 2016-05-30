@@ -21,6 +21,7 @@
   * [CSS to TS](/features/css-to-ts.md)
   * [HTML to TSX](/features/html-to-tsx.md)
   * [JSON to TypeScript](/features/json-to-dts.md)
+  * [JavaScript Support](/features/javascript.md)
 * [Configuration](/config/README.md)
   * [Editor Config](/config/editorconfig.md)
   * [tsconfig.json](/config/tsconfig.md)
