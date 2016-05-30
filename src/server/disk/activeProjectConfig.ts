@@ -100,11 +100,15 @@ function refreshAvailableProjects() {
 
 /** General purpose utility functions specific to this file */
 namespace Utils {
+    /**
+     * Used to
+     * - convert a filePath found in directory indexing into a project that is selectable
+     * - thaw last session active project filePath
+     */
     export function tsconfigToActiveProjectConfigDetails(filePath: string): AvailableProjectConfig {
         let relative = workingDir.makeRelative(filePath);
         let isNodeModule = relative.includes('node_modules');
-        /** Potentially support `dir` style virtual projects as well */
-        const isVirtual = filePath.endsWith('.json') ? false : true;
+        const isVirtual = utils.isJsOrTs(filePath) ? true : false;
         return {
             name: isNodeModule ? relative : utils.getDirectoryAndFileName(filePath),
             isVirtual,
