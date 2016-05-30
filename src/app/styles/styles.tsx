@@ -259,3 +259,14 @@ export const noFocusOutline = {
         outline: 'none'
     }
 }
+
+/**
+ * When you want text ellipsis
+ * Note: whitespace no wrap is significant
+ * Note: you probably want a limited width on the parent
+ */
+export const ellipsis = {
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap'
+}

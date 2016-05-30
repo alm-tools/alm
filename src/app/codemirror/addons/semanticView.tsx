@@ -44,7 +44,7 @@ namespace SemanticViewStyles {
         }
     } as any;
 
-    export const nodeClass = fstyle.style({
+    export const nodeClass = fstyle.style(csx.extend(styles.ellipsis, {
         paddingTop: '2px',
         paddingBottom: '3px',
         paddingLeft: '2px',
@@ -61,7 +61,7 @@ namespace SemanticViewStyles {
         '&:hover': {
             backgroundColor: '#555'
         }
-    });
+    }));
 
     export const selectedNodeClass = fstyle.style({
         border: '1px solid grey',
