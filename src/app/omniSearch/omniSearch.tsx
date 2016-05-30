@@ -598,7 +598,7 @@ class SearchState {
                     && !state.inActiveProjectUrl(tab.url)) {
                     availableProjects.unshift({
                         name: types.virtualProjectName,
-                        isImplicit: true,
+                        isVirtual: true,
                         tsconfigFilePath: filePath
                     });
                 }

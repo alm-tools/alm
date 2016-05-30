@@ -243,8 +243,9 @@ export interface EditorOptions {
  */
 export interface AvailableProjectConfig {
     name: string;
-    isImplicit: boolean;
-    tsconfigFilePath?: string;
+    isVirtual: boolean;
+    /** If the project is virtual than this will point to a `.ts`/`.js` file */
+    tsconfigFilePath: string;
 }
 
 /**

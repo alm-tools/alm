@@ -105,7 +105,7 @@ namespace Utils {
         let isNodeModule = relative.includes('node_modules');
         return {
             name: isNodeModule ? relative : utils.getDirectoryAndFileName(tsconfig),
-            isImplicit: false,
+            isVirtual: false,
             tsconfigFilePath: tsconfig
         };
     }
