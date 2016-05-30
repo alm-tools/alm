@@ -15,7 +15,10 @@ import {AvailableProjectConfig} from "../../common/types";
 /** Only call this if the file has been validated 🌹 */
 export function getProjectDataLoaded(activeProjectConfigDetails: AvailableProjectConfig): ProjectDataLoaded {
 
-    const {result: configFile} = tsconfig.getProjectSync(activeProjectConfigDetails.tsconfigFilePath);
+    const configFile = activeProjectConfigDetails.isVirtual
+        ? tsconfig.getDefaultInMemoryProject(activeProjectConfigDetails.tsconfigFilePath)
+        /** We assume the file has been validated */
+        : tsconfig.getProjectSync(activeProjectConfigDetails.tsconfigFilePath).result;
 
     const response: ProjectDataLoaded = {
         configFile,

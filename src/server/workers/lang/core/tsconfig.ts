@@ -167,7 +167,7 @@ export function getDefaultInMemoryProject(srcFile: string): TypeScriptConfigFile
     files = uniq(files.map(fsu.consistentPath));
 
     let project: TsconfigJsonParsed = {
-        compilerOptions: defaultCompilerOptions,
+        compilerOptions: extend(defaultCompilerOptions, srcFile.endsWith('.js') ? { allowJs: true } : {}),
         files,
         typings: typings.ours.concat(typings.implicit),
         formatCodeOptions: formatting.defaultFormatCodeOptions(),
