@@ -488,3 +488,9 @@ export interface LiveAnalysisOverrideInfo {
     line: number;
     overrides: UMLClassMember;
 }
+
+/**
+ * Some constants
+ */
+export const urlHashNormal = "root";
+export const urlHashNewSession = "new-session";
