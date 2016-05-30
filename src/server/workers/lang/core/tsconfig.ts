@@ -3,7 +3,7 @@ import * as fsu from "../../../utils/fsu";
 import fs = require('fs');
 import ts = require('ntypescript');
 import * as json from "../../../../common/json";
-import {makeBlandError,reverseKeysAndValues, uniq, extend} from "../../../../common/utils";
+import {makeBlandError,reverseKeysAndValues, uniq, extend, isJs} from "../../../../common/utils";
 import {PackageJsonParsed, TsconfigJsonParsed, TypeScriptConfigFileDetails} from "../../../../common/types";
 import {increaseCompilationContext, getDefinitionsForNodeModules} from "./compilationContextExpander";
 import {validate} from "./tsconfigValidation";
@@ -160,7 +160,7 @@ const defaultCompilerOptions: ts.CompilerOptions = {
  */
 export function getDefaultInMemoryProject(srcFile: string): TypeScriptConfigFileDetails {
     var dir = path.dirname(srcFile);
-    const allowJs = srcFile.endsWith('.js');
+    const allowJs = isJs(srcFile);
 
     var files = [srcFile];
     var typings = getDefinitionsForNodeModules(dir, files);
