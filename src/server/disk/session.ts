@@ -13,7 +13,6 @@ import * as fsu from "../utils/fsu";
 import * as utils from "../../common/utils";
 import * as workingDir from "./workingDir";
 import * as commandLine from "../commandLine";
-import * as constants from "../../common/constants";
 import * as tsconfig from "../workers/lang/core/tsconfig";
 
 const sessionFile = types.cacheDir + '/sessionsV2.json'
@@ -52,10 +51,10 @@ export function getDefaultOrNewSession(sessionId: string): types.SessionOnDisk {
         }
     }
     let session: types.SessionOnDisk;
-    if (!sessionId || sessionId === constants.urlHashNormal) {
+    if (!sessionId || sessionId === types.urlHashNormal) {
         session = ifNoneCreate(sessions[0]);
     }
-    else if (sessionId === constants.urlHashNewSession) {
+    else if (sessionId === types.urlHashNewSession) {
         session = sessions[0]; // last used is always on top
         if (session) {
             session = {

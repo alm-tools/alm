@@ -90,11 +90,12 @@ let initialSync = false;
 const refreshAllProjectDiagnostics = () => {
     if (currentProject) {
         const timer = utils.timer();
+        const projectFilePath = currentProject.configFile.projectFilePath;
         if (initialSync) {
-            console.error(`[TSC] Started Initial Error Analysis: ${currentProject.configFile.projectFilePath}`);
+            console.error(`[TSC] Started Initial Error Analysis: ${projectFilePath}`);
         }
         else {
-            console.log(`[TSC] Incremental Error Analysis ${currentProject.configFile.projectFilePath}`);
+            console.log(`[TSC] Incremental Error Analysis ${projectFilePath}`);
             console.time('[TSC] Incremental Error Analysis');
         }
 

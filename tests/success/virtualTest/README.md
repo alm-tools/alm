@@ -1,0 +1,1 @@
+This folder exists to test the virtual project support.

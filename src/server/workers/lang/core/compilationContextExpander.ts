@@ -35,7 +35,10 @@ export function increaseCompilationContext(files: string[], allowJs: boolean): s
                 dir = path.dirname(file);
 
             let extensions = ['.ts', '.d.ts', '.tsx'];
-            if (allowJs) extensions.push('.js')
+            if (allowJs) {
+                extensions.push('.js');
+                extensions.push('.jsx');
+            }
             function getIfExists(filePathNoExt: string) {
                 for (let ext of extensions) {
                     if (fsu.existsSync(filePathNoExt + ext)) {

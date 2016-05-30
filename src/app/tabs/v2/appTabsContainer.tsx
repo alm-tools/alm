@@ -13,7 +13,6 @@ import * as commands from "../../commands/commands";
 import * as utils from "../../../common/utils";
 import csx = require('csx');
 import {createId} from "../../../common/utils";
-import * as constants from "../../../common/constants";
 
 import * as types from "../../../common/types";
 import {connect} from "react-redux";
