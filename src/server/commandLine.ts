@@ -109,11 +109,7 @@ export let getOptions = utils.once((): CommandLineOptions => {
 
     if (options.project) {
         options.project = workingDir.makeAbsoluteIfNeeded(options.project);
-        if (
-            !options.project.endsWith('.json')
-            && !options.project.endsWith('.ts')
-            && !options.project.endsWith('.js')
-        ) {
+        if (fsu.isDir(options.project) && fsu.existsSync(options.project + '/tsconfig.json')) {
             options.project = options.project + '/' + 'tsconfig.json';
         }
         console.log('TSCONFIG: ', options.project);
