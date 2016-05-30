@@ -298,7 +298,7 @@ export interface TsconfigJsonParsed {
 export interface TypeScriptConfigFileDetails {
     /** The path to the project file. This acts as the baseDIR */
     projectFileDirectory: string;
-    /** The actual path of the project file (including tsconfig.json) */
+    /** The actual path of the project file (including tsconfig.json) or srcFile if `inMemory` is true */
     projectFilePath: string;
     project: TsconfigJsonParsed;
     inMemory: boolean;

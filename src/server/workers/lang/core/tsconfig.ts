@@ -177,7 +177,7 @@ export function getDefaultInMemoryProject(srcFile: string): TypeScriptConfigFile
 
     return {
         projectFileDirectory: dir,
-        projectFilePath: dir + '/' + projectFileName,
+        projectFilePath: srcFile,
         project: project,
         inMemory: true
     };
