@@ -159,15 +159,16 @@ const defaultCompilerOptions: ts.CompilerOptions = {
  * If you want to create a project on the fly
  */
 export function getDefaultInMemoryProject(srcFile: string): TypeScriptConfigFileDetails {
-    var dir = fs.lstatSync(srcFile).isDirectory() ? srcFile : path.dirname(srcFile);
+    var dir = path.dirname(srcFile);
+    const allowJs = srcFile.endsWith('.js');
 
     var files = [srcFile];
     var typings = getDefinitionsForNodeModules(dir, files);
-    files = increaseCompilationContext(files, false);
+    files = increaseCompilationContext(files, allowJs);
     files = uniq(files.map(fsu.consistentPath));
 
     let project: TsconfigJsonParsed = {
-        compilerOptions: extend(defaultCompilerOptions, srcFile.endsWith('.js') ? { allowJs: true } : {}),
+        compilerOptions: extend(defaultCompilerOptions,{ allowJs }),
         files,
         typings: typings.ours.concat(typings.implicit),
         formatCodeOptions: formatting.defaultFormatCodeOptions(),
