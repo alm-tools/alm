@@ -74,6 +74,7 @@ interface CompilerOptions {
     rootDir?: string;
     rootDirs?: string[];
     skipDefaultLibCheck?: boolean;
+    skipLibCheck?: boolean;
     sourceMap?: boolean;
     sourceRoot?: string;
     strictNullChecks?: boolean;

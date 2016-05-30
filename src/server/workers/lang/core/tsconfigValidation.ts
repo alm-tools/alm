@@ -55,6 +55,7 @@ const compilerOptionsValidation: simpleValidator.ValidationInfo = {
     rootDir: { type: types.string },
     rootDirs: { type: types.array, sub: { type: types.string } },
     skipDefaultLibCheck: { type: types.boolean },
+    skipLibCheck: { type: types.boolean },
     sourceMap: { type: types.boolean },
     sourceRoot: { type: types.string },
     strictNullChecks: { type: types.boolean },
