@@ -87,6 +87,7 @@ export function fileChangedOnDisk(evt: { filePath: string; contents: string }) {
  * As its a bit slow to get *all* the errors
  */
 let initialSync = false;
+let cancellationToken: utils.CancellationToken | null = null;
 const refreshAllProjectDiagnostics = () => {
     if (currentProject) {
         const timer = utils.timer();
@@ -99,16 +100,22 @@ const refreshAllProjectDiagnostics = () => {
         }
 
         // Get all the errors from the project files:
-        let diagnostics = currentProject.getDiagnostics();
-        let errors = diagnostics.map(diagnosticToCodeError);
-        let filePaths = currentProject.getFilePaths();
+        cancellationToken = utils.cancellationToken();
+        currentProject.getDiagnostics(cancellationToken).then((diagnostics)=>{
+            console.error('[TSC] Error Analysis Duration:', timer.seconds);
 
-        setErrorsByFilePaths(filePaths, errors);
+            let errors = diagnostics.map(diagnosticToCodeError);
+            let filePaths = currentProject.getFilePaths();
+            setErrorsByFilePaths(filePaths, errors);
 
-
-        console.error('[TSC] Error Analysis Duration:', timer.seconds);
-        console.log(`[TSC] FileCount: ${filePaths.length} `, errors.length? chalk.red(`Errors: ${errors.length}`): chalk.green(`Errors: ${errors.length}`));
-        initialSync = false;
+            console.log(`[TSC] FileCount: ${filePaths.length} `, errors.length? chalk.red(`Errors: ${errors.length}`): chalk.green(`Errors: ${errors.length}`));
+        })
+        .catch(()=>{
+            console.log('[TSC] Cancelled error analysis');
+        })
+        .then(()=>{
+            initialSync = false;
+        })
     }
 };
 const refreshAllProjectDiagnosticsDebounced = utils.debounce(refreshAllProjectDiagnostics, 5000);
