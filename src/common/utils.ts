@@ -517,17 +517,13 @@ export const isJsOrTs = (filePath: string) => isJs(filePath) || isTs(filePath);
 /**
  * Cancellation token
  */
-export type CancellationToken = ts.CancellationToken & { cancel: () => void };
+export type CancellationToken = { cancel(): void, isCancelled(): boolean };
 export const cancellationToken = (): CancellationToken => {
     let cancelled = false;
     return {
-        isCancellationRequested(): boolean {
+        isCancelled(): boolean {
             return cancelled;
         },
-        cancel: () => cancelled = true,
-        /** @throws OperationCanceledException if isCancellationRequested is true */
-        throwIfCancellationRequested() {
-            if (cancelled) throw new ts.OperationCanceledException();
-        }
+        cancel: () => cancelled = true
     }
 }
