@@ -17,6 +17,7 @@ import * as cmUtils from "../cmUtils";
 import * as fstyle from "../../base/fstyle";
 import * as styles from "../../styles/styles";
 import {shouldComponentUpdate} from "../../../common/pure";
+import * as CodeMirror from "codemirror";
 
 type Editor = CodeMirror.EditorFromTextArea;
 
@@ -127,6 +128,7 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
         }
     }
 
+    selectedRef: number = 0; // Only the last selected gets this :)
     handleCursorActivity = utils.debounce((cm = this.props.cm) => {
         if (!cm) return; // Still loading or maybe unloaded
         if (!state.inActiveProjectFilePath(this.props.filePath)) return;
@@ -140,8 +142,11 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
         if (!this.state.cursor || (this.state.cursor && this.state.cursor.line !== cursor.line)) {
             this.setState({cursor});
             this.afterComponentDidUpdate(()=>{
-                // Future idea : scroll to node in view
-                // Can't do right now as we show duplicates i.e. show stuff at module level and then at node level etc.
+                // Scroll to select node in view if any
+                const ref = this.refs[this.selectedRef] as HTMLDivElement;
+                if (ref) {
+                    ref.scrollIntoViewIfNeeded(true);
+                }
             })
         }
     }, 1000);
@@ -163,7 +168,9 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
     renderNode(node: Types.SemanticTreeNode, indent: number) {
         const isSelected = this.isSelected(node);
         const color = ui.kindToColor(node.kind);
+        const ref = isSelected ? this.selectedRef.toString() : null;
         return [<div
+            ref={ref}
             key={node.text}
             className={SemanticViewStyles.nodeClass + ' ' + isSelected}
             style={{color}}
@@ -190,6 +197,7 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
         if (!this.state.cursor) return '';
         const cursor = this.state.cursor;
         if (node.start.line <= cursor.line && node.end.line >= cursor.line) {
+            this.selectedRef++;
             return SemanticViewStyles.selectedNodeClass;
         }
         return '';
