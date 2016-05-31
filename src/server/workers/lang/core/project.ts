@@ -3,6 +3,7 @@ import tsconfig = require('./tsconfig');
 import {selectMany,createMap}  from "../../../../common/utils";
 import * as types from "../../../../common/types";
 import * as typescriptDir from "./typeScriptDir";
+import * as utils from "../../../../common/utils";
 
 import {master as masterType} from "../projectServiceContract";
 let master: typeof masterType;
@@ -69,12 +70,41 @@ export class Project {
         return diagnostics;
     }
 
-    public getDiagnostics() {
+    public getDiagnostics(cancellationToken: utils.CancellationToken): Promise<ts.Diagnostic[]> {
         const program = this.languageService.getProgram();
+        return new Promise<ts.Diagnostic[]>((resolve, reject) => {
+            let allDiagnostics: ts.Diagnostic[] = [];
+            allDiagnostics = program.getGlobalDiagnostics();
 
-        return program.getGlobalDiagnostics()
-            .concat(program.getSemanticDiagnostics())
-            .concat(program.getSyntacticDiagnostics());
+            const sourceFiles = program.getSourceFiles();
+
+            utils
+                .cancellableForEach({
+                    delay: 10,
+                    cancellationToken,
+                    items: sourceFiles,
+                    cb: (sourceFile) => {
+                        ts.addRange(allDiagnostics, program.getSyntacticDiagnostics(sourceFile));
+                    },
+                })
+                .then(() => {
+                    return utils.cancellableForEach({
+                        delay: 10,
+                        cancellationToken,
+                        items: sourceFiles,
+                        cb: (sourceFile) => {
+                            ts.addRange(allDiagnostics, program.getSemanticDiagnostics(sourceFile));
+                        },
+                    });
+                })
+                .then(() => {
+                    allDiagnostics = ts.sortAndDeduplicateDiagnostics(allDiagnostics);
+                    resolve(allDiagnostics);
+                })
+                .catch((res) => {
+                    reject(res);
+                });
+        });
     }
 }
 

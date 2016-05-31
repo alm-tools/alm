@@ -69,7 +69,7 @@ export function fileEdited(evt: { filePath: string, edits: CodeEdit[] }) {
             }
 
             // After a while update all project diagnostics as well
-            refreshAllProjectDiagnosticsDebounced();
+            cancelAnyPendingAnalysisAndMarkforRefreshingAllProjectDiagnostics();
         });
     }
 }
@@ -78,7 +78,7 @@ export function fileChangedOnDisk(evt: { filePath: string; contents: string }) {
     let proj = GetProject.ifCurrent(evt.filePath)
     if (proj) {
         proj.languageServiceHost.setContents(evt.filePath, evt.contents);
-        refreshAllProjectDiagnosticsDebounced();
+        cancelAnyPendingAnalysisAndMarkforRefreshingAllProjectDiagnostics();
     }
 }
 
@@ -87,6 +87,7 @@ export function fileChangedOnDisk(evt: { filePath: string; contents: string }) {
  * As its a bit slow to get *all* the errors
  */
 let initialSync = false;
+let cancellationToken: utils.CancellationToken | null = null;
 const refreshAllProjectDiagnostics = () => {
     if (currentProject) {
         const timer = utils.timer();
@@ -96,22 +97,34 @@ const refreshAllProjectDiagnostics = () => {
         }
         else {
             console.log(`[TSC] Incremental Error Analysis ${projectFilePath}`);
-            console.time('[TSC] Incremental Error Analysis');
         }
 
         // Get all the errors from the project files:
-        let diagnostics = currentProject.getDiagnostics();
-        let errors = diagnostics.map(diagnosticToCodeError);
-        let filePaths = currentProject.getFilePaths();
+        cancellationToken = utils.cancellationToken();
+        currentProject.getDiagnostics(cancellationToken).then((diagnostics)=>{
+            console.error('[TSC] Error Analysis Duration:', timer.seconds);
 
-        setErrorsByFilePaths(filePaths, errors);
+            let errors = diagnostics.map(diagnosticToCodeError);
+            let filePaths = currentProject.getFilePaths();
+            setErrorsByFilePaths(filePaths, errors);
 
-
-        console.error('[TSC] Error Analysis Duration:', timer.seconds);
-        console.log(`[TSC] FileCount: ${filePaths.length} `, errors.length? chalk.red(`Errors: ${errors.length}`): chalk.green(`Errors: ${errors.length}`));
-        initialSync = false;
+            console.log(`[TSC] FileCount: ${filePaths.length} `, errors.length? chalk.red(`Errors: ${errors.length}`): chalk.green(`Errors: ${errors.length}`));
+        })
+        .catch((res)=>{
+            console.log('[TSC] Cancelled error analysis');
+        })
+        .then(()=>{
+            initialSync = false;
+        })
     }
 };
+const cancelAnyPendingAnalysisAndMarkforRefreshingAllProjectDiagnostics = () => {
+    if (cancellationToken) {
+        cancellationToken.cancel();
+        cancellationToken = null;
+    }
+    refreshAllProjectDiagnosticsDebounced();
+}
 const refreshAllProjectDiagnosticsDebounced = utils.debounce(refreshAllProjectDiagnostics, 5000);
 
 /**
