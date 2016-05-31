@@ -527,3 +527,20 @@ export const cancellationToken = (): CancellationToken => {
         cancel: () => cancelled = true
     }
 }
+
+/**
+ * Cancellable For Each
+ */
+export function cancellableForEach<T>(config:{
+    items: T[],
+    cb: (item:T)=>void,
+    cancellationToken: CancellationToken,
+    delay: number
+}) {
+    // loop:
+    // if (cancelled) abort
+    // else
+    //  look at item
+    //  delay
+    // repeat loop
+}

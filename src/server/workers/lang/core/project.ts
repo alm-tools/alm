@@ -74,7 +74,7 @@ export class Project {
         const program = this.languageService.getProgram();
         return new Promise<ts.Diagnostic[]>((resolve,reject) => {
             let allDiagnostics: ts.Diagnostic[] = [];
-            allDiagnostics = program.getGlobalDiagnostics()
+            allDiagnostics = program.getGlobalDiagnostics();
 
             ts.forEach(program.getSourceFiles(), sourceFile => {
                 if (cancellationToken.isCancelled()) {
