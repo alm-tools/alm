@@ -25,9 +25,15 @@ export function getProjectDataLoaded(activeProjectConfigDetails: AvailableProjec
         filePathWithContents:[]
     };
 
-    const addFile = (filePath:string) => {
-        const contents = fmc.getOrCreateOpenFile(filePath).getContents();
-        response.filePathWithContents.push({filePath,contents});
+    const addFile = (filePath: string) => {
+        try {
+            const contents = fmc.getOrCreateOpenFile(filePath).getContents();
+            response.filePathWithContents.push({ filePath, contents });
+        }
+        catch (e) {
+            console.log(`Project Data Loader: Failed to load data for file: ${filePath}`);
+            console.log(e);
+        }
     };
 
     // Add the `lib` files
