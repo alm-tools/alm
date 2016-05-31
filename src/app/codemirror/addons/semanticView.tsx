@@ -128,7 +128,6 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
         }
     }
 
-    selectedRef: number = 0; // Only the last selected gets this :)
     handleCursorActivity = utils.debounce((cm = this.props.cm) => {
         if (!cm) return; // Still loading or maybe unloaded
         if (!state.inActiveProjectFilePath(this.props.filePath)) return;
@@ -192,6 +191,9 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
     getIconForKind(kind: string) {
         return ui.kindToIcon(kind);
     }
+
+    /** Constantly incrementing so that this points to the last (deepest) selected node :) */
+    selectedRef: number = 0;
 
     isSelected = (node: Types.SemanticTreeNode) => {
         if (!this.state.cursor) return '';
