@@ -513,3 +513,21 @@ export const isJs = (filePath: string) => {
     return filePath.endsWith('.js') || filePath.endsWith('.jsx');
 }
 export const isJsOrTs = (filePath: string) => isJs(filePath) || isTs(filePath);
+
+/**
+ * Cancellation token
+ */
+export type CancellationToken = ts.CancellationToken & { cancel: () => void };
+export const cancellationToken = (): CancellationToken => {
+    let cancelled = false;
+    return {
+        isCancellationRequested(): boolean {
+            return cancelled;
+        },
+        cancel: () => cancelled = true,
+        /** @throws OperationCanceledException if isCancellationRequested is true */
+        throwIfCancellationRequested() {
+            // Aint throwing nothin
+        }
+    }
+}
