@@ -96,7 +96,6 @@ const refreshAllProjectDiagnostics = () => {
         }
         else {
             console.log(`[TSC] Incremental Error Analysis ${projectFilePath}`);
-            console.time('[TSC] Incremental Error Analysis');
         }
 
         // Get all the errors from the project files:
