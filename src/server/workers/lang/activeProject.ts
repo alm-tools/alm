@@ -69,7 +69,7 @@ export function fileEdited(evt: { filePath: string, edits: CodeEdit[] }) {
             }
 
             // After a while update all project diagnostics as well
-            refreshAllProjectDiagnosticsDebounced();
+            cancelAnyPendingAnalysisAndMarkforRefreshingAllProjectDiagnostics();
         });
     }
 }
@@ -78,7 +78,7 @@ export function fileChangedOnDisk(evt: { filePath: string; contents: string }) {
     let proj = GetProject.ifCurrent(evt.filePath)
     if (proj) {
         proj.languageServiceHost.setContents(evt.filePath, evt.contents);
-        refreshAllProjectDiagnosticsDebounced();
+        cancelAnyPendingAnalysisAndMarkforRefreshingAllProjectDiagnostics();
     }
 }
 
@@ -118,6 +118,13 @@ const refreshAllProjectDiagnostics = () => {
         })
     }
 };
+const cancelAnyPendingAnalysisAndMarkforRefreshingAllProjectDiagnostics = () => {
+    if (cancellationToken) {
+        cancellationToken.cancel();
+        cancellationToken = null;
+    }
+    refreshAllProjectDiagnosticsDebounced();
+}
 const refreshAllProjectDiagnosticsDebounced = utils.debounce(refreshAllProjectDiagnostics, 5000);
 
 /**
