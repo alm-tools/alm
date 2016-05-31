@@ -72,28 +72,38 @@ export class Project {
 
     public getDiagnostics(cancellationToken: utils.CancellationToken): Promise<ts.Diagnostic[]> {
         const program = this.languageService.getProgram();
-        return new Promise<ts.Diagnostic[]>((resolve,reject) => {
+        return new Promise<ts.Diagnostic[]>((resolve, reject) => {
             let allDiagnostics: ts.Diagnostic[] = [];
             allDiagnostics = program.getGlobalDiagnostics();
 
-            ts.forEach(program.getSourceFiles(), sourceFile => {
-                if (cancellationToken.isCancelled()) {
-                    // TODO: we should `reject` otherwise we will unduly clear some errors
-                    return true;
-                }
-                ts.addRange(allDiagnostics, program.getSyntacticDiagnostics(sourceFile));
-            });
+            const sourceFiles = program.getSourceFiles();
 
-            ts.forEach(program.getSourceFiles(), sourceFile => {
-                if (cancellationToken.isCancelled()) {
-                    // TODO: we should `reject` otherwise we will unduly clear some errors
-                    return true;
-                }
-                ts.addRange(allDiagnostics, program.getSemanticDiagnostics(sourceFile));
-            });
-
-            allDiagnostics = ts.sortAndDeduplicateDiagnostics(allDiagnostics);
-            resolve(allDiagnostics);
+            utils
+                .cancellableForEach({
+                    delay: 10,
+                    cancellationToken,
+                    items: sourceFiles,
+                    cb: (sourceFile) => {
+                        ts.addRange(allDiagnostics, program.getSyntacticDiagnostics(sourceFile));
+                    },
+                })
+                .then(() => {
+                    return utils.cancellableForEach({
+                        delay: 10,
+                        cancellationToken,
+                        items: sourceFiles,
+                        cb: (sourceFile) => {
+                            ts.addRange(allDiagnostics, program.getSemanticDiagnostics(sourceFile));
+                        },
+                    });
+                })
+                .then(() => {
+                    allDiagnostics = ts.sortAndDeduplicateDiagnostics(allDiagnostics);
+                    resolve(allDiagnostics);
+                })
+                .catch((res) => {
+                    reject(res);
+                });
         });
     }
 }

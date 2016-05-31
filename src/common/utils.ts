@@ -517,30 +517,45 @@ export const isJsOrTs = (filePath: string) => isJs(filePath) || isTs(filePath);
 /**
  * Cancellation token
  */
-export type CancellationToken = { cancel(): void, isCancelled(): boolean };
+export type CancellationToken = { cancel(): void, isCancelled: boolean };
 export const cancellationToken = (): CancellationToken => {
     let cancelled = false;
     return {
-        isCancelled(): boolean {
+        get isCancelled(): boolean {
             return cancelled;
         },
         cancel: () => cancelled = true
     }
 }
+export const cancelled = "cancelled";
 
 /**
  * Cancellable For Each
  */
-export function cancellableForEach<T>(config:{
+export function cancellableForEach<T>(config: {
     items: T[],
-    cb: (item:T)=>void,
+    cb: (item: T) => void,
     cancellationToken: CancellationToken,
     delay: number
-}) {
-    // loop:
-    // if (cancelled) abort
-    // else
-    //  look at item
-    //  delay
-    // repeat loop
+}): Promise<any> {
+    return new Promise((resolve,reject) => {
+        let index = 0;
+        const lookAtNext = () => {
+            // Completed?
+            if (index === config.items.length) {
+                resolve({});
+            }
+            // Aborted?
+            else if (config.cancellationToken.isCancelled) {
+                reject(cancelled);
+            }
+            // Next and schedule
+            else {
+                const nextItem = config.items[index++];
+                config.cb(nextItem);
+                setTimeout(lookAtNext, config.delay);
+            }
+        }
+        lookAtNext();
+    });
 }

@@ -110,7 +110,7 @@ const refreshAllProjectDiagnostics = () => {
 
             console.log(`[TSC] FileCount: ${filePaths.length} `, errors.length? chalk.red(`Errors: ${errors.length}`): chalk.green(`Errors: ${errors.length}`));
         })
-        .catch(()=>{
+        .catch((res)=>{
             console.log('[TSC] Cancelled error analysis');
         })
         .then(()=>{
