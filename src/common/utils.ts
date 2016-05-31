@@ -527,7 +527,7 @@ export const cancellationToken = (): CancellationToken => {
         cancel: () => cancelled = true,
         /** @throws OperationCanceledException if isCancellationRequested is true */
         throwIfCancellationRequested() {
-            // Aint throwing nothin
+            if (cancelled) throw new ts.OperationCanceledException();
         }
     }
 }
