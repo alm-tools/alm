@@ -80,7 +80,6 @@ export class Project {
 
             utils
                 .cancellableForEach({
-                    delay: 10,
                     cancellationToken,
                     items: sourceFiles,
                     cb: (sourceFile) => {
@@ -89,7 +88,6 @@ export class Project {
                 })
                 .then(() => {
                     return utils.cancellableForEach({
-                        delay: 10,
                         cancellationToken,
                         items: sourceFiles,
                         cb: (sourceFile) => {

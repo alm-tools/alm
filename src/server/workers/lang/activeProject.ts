@@ -109,12 +109,10 @@ const refreshAllProjectDiagnostics = () => {
             setErrorsByFilePaths(filePaths, errors);
 
             console.log(`[TSC] FileCount: ${filePaths.length} `, errors.length? chalk.red(`Errors: ${errors.length}`): chalk.green(`Errors: ${errors.length}`));
+            initialSync = false;
         })
         .catch((res)=>{
             console.log('[TSC] Cancelled error analysis');
-        })
-        .then(()=>{
-            initialSync = false;
         })
     }
 };

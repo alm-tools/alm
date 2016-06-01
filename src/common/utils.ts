@@ -536,7 +536,6 @@ export function cancellableForEach<T>(config: {
     items: T[],
     cb: (item: T) => void,
     cancellationToken: CancellationToken,
-    delay: number
 }): Promise<any> {
     return new Promise((resolve,reject) => {
         let index = 0;
@@ -553,7 +552,8 @@ export function cancellableForEach<T>(config: {
             else {
                 const nextItem = config.items[index++];
                 config.cb(nextItem);
-                setTimeout(lookAtNext, config.delay);
+                // Yield the thread for a bit
+                setTimeout(lookAtNext);
             }
         }
         lookAtNext();
