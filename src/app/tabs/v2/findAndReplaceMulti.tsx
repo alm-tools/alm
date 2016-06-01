@@ -296,14 +296,14 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
     replaceWith = () => this.replaceInput().value;
 
     render() {
-        let hasResults = !!Object.keys(this.state.farmResultByFilePath).length;
+        let hasSearch = !!this.state.config;
 
         let rendered = (
             <div
                 style={csx.extend(csx.vertical, csx.flex, styles.noFocusOutline, styles.someChildWillScroll) }>
                 <div ref="results" tabIndex={0} style={ResultsStyles.root}>
                     {
-                        hasResults
+                        hasSearch
                             ? this.renderSearchResults()
                             : <div style={ResultsStyles.header}>No Search</div>
                     }
@@ -537,17 +537,23 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
      * debounced as state needs to be set before this execs
      */
     startSearch = utils.debounce(() => {
-        server.startFarming({
+        const config: Types.FarmConfig = {
             query: this.state.findQuery,
             isRegex: this.state.isRegex,
             isFullWord: this.state.isFullWord,
             isCaseSensitive: this.state.isCaseSensitive,
             globs: []
-        });
+        };
 
+        server.startFarming(config);
+
+        // Set the state preemptively
         this.setState({
             collapsedState:{},
             selected:{},
+            results: [],
+            completed: false,
+            config
         });
     },100);
 
@@ -558,19 +564,17 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
     /** Parses results as they come and puts them into the state */
     parseResults(response:Types.FarmNotification){
         // Convert as needed
-        // console.log(response.results);
+        // console.log(response); // DEBUG
         let results = response.results;
         let loaded: Types.FarmResultsByFilePath
             = utils.createMapByKey(results, result => result.filePath);
 
-        let queryRegex = response.results.length
-        ? utils.findOptionsToQueryRegex({
+        let queryRegex = response.config ? utils.findOptionsToQueryRegex({
             query: response.config.query,
             isRegex: response.config.isRegex,
             isFullWord: response.config.isFullWord,
             isCaseSensitive: response.config.isCaseSensitive,
-        })
-        : null; // If there are no results the regex doesn't matter anyway
+        }) : null;
 
         // Finally rerender
         this.setState({
