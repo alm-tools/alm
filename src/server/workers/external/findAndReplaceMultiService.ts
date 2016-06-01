@@ -11,7 +11,7 @@ import {TypedEvent} from "../../../common/events";
 /**
  * Don't want to crash by running out of memory.
  */
-const maxCount = 10000;
+const maxCount = 2000;
 
 /**
  * Maintains current farm state
@@ -52,12 +52,18 @@ class FarmState {
             // console.log(`Grep stdout: ${data}`);
 
             /** If no one cares anymore */
-            if (farmState.disposed) return;
+            if (farmState.disposed) {
+                grep.kill();
+                return;
+            }
 
             /**
              * Don't want to run out of memory
              */
-            if (this.results.length > maxCount) return;
+            if (this.results.length > maxCount) {
+                grep.kill();
+                return;
+            }
 
             // Sample :
             // src/typings/express/express.d.ts:907:                app.enable('foo')

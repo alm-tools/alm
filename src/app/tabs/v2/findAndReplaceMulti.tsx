@@ -547,13 +547,21 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
 
         server.startFarming(config);
 
-        // Set the state preemptively
         this.setState({
+            // Clear previous search
             collapsedState:{},
             selected:{},
+            // Set new results preemptively
             results: [],
+            config,
+            queryRegex: utils.findOptionsToQueryRegex({
+                query: config.query,
+                isRegex: config.isRegex,
+                isFullWord: config.isFullWord,
+                isCaseSensitive: config.isCaseSensitive,
+            }),
             completed: false,
-            config
+            farmResultByFilePath: {},
         });
     },100);
 
