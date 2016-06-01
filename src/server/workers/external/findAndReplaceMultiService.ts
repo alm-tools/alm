@@ -7,11 +7,7 @@ import * as cp from "child_process";
 import {Types} from "../../../socket/socketContract";
 import * as utils from "../../../common/utils";
 import {TypedEvent} from "../../../common/events";
-
-/**
- * Don't want to crash by running out of memory.
- */
-const maxCount = 2000;
+import * as types from "../../../common/types";
 
 /**
  * Maintains current farm state
@@ -60,7 +56,7 @@ class FarmState {
             /**
              * Don't want to run out of memory
              */
-            if (this.results.length > maxCount) {
+            if (this.results.length > types.maxCountFindAndReplaceMultiResults) {
                 grep.kill();
                 return;
             }

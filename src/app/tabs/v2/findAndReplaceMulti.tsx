@@ -18,6 +18,7 @@ import * as Mousetrap from "mousetrap";
 import {Robocop} from "../../components/robocop";
 import * as pure from "../../../common/pure";
 import * as buttons from "../../components/buttons";
+import * as types from "../../../common/types";
 
 type NodeDisplay = Types.NodeDisplay;
 let EOL = '\n';
@@ -409,6 +410,11 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
             <div style={csx.extend(csx.flex, styles.errorsPanel.main, {userSelect:'none'}) }>
                 <div style={[ResultsStyles.header, csx.horizontal]}>
                     Total Results ({this.state.results.length})
+                    {
+                        (this.state.results.length >= types.maxCountFindAndReplaceMultiResults)
+                        && <span className="hint--info hint--bottom" data-hint={`(search limited to ${types.maxCountFindAndReplaceMultiResults})`}>(+)</span>
+                    }
+
                     <span style={csx.flex}/>
                     {queryRegexStr}
                     {
