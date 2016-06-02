@@ -502,3 +502,32 @@ export function isSupportedConfigFileForHover(filePath: string): boolean {
     const fileName = getFileName(filePath);
     return !!supportedHoverConfigFileNames[fileName];
 }
+
+/**
+ * Is TypeSript or is JavaScript file checks
+ */
+export const isTs = (filePath: string) => {
+    return filePath.endsWith('.ts') || filePath.endsWith('.tsx');
+}
+export const isJs = (filePath: string) => {
+    return filePath.endsWith('.js') || filePath.endsWith('.jsx');
+}
+export const isJsOrTs = (filePath: string) => isJs(filePath) || isTs(filePath);
+
+/**
+ * Cancellation token
+ */
+export type CancellationToken = ts.CancellationToken & { cancel: () => void };
+export const cancellationToken = (): CancellationToken => {
+    let cancelled = false;
+    return {
+        isCancellationRequested(): boolean {
+            return cancelled;
+        },
+        cancel: () => cancelled = true,
+        /** @throws OperationCanceledException if isCancellationRequested is true */
+        throwIfCancellationRequested() {
+            if (cancelled) throw new ts.OperationCanceledException();
+        }
+    }
+}

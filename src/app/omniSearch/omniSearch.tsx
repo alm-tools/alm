@@ -18,6 +18,7 @@ import {AvailableProjectConfig} from "../../common/types";
 import * as CodeMirror from "codemirror";
 import {Robocop} from "../components/robocop";
 import * as utils from "../../common/utils";
+import {tabState} from "../tabs/v2/appTabsContainer";
 
 /** Stuff shared by the select list view */
 import {renderMatchedSegments, getFilteredItems} from ".././selectListView";
@@ -589,9 +590,23 @@ class SearchState {
             }
 
             if (this.mode == SearchMode.Project) {
+                // only add a virtual project if the active file path is a .ts or .js file that isn't in active project
+                const availableProjects = this.availableProjects.slice();
+                let tab = tabState.getSelectedTab();
+                let filePath = tab && utils.getFilePathFromUrl(tab.url);
+                if (filePath
+                    && utils.isJsOrTs(filePath)
+                    && !state.inActiveProjectUrl(tab.url)) {
+                    availableProjects.unshift({
+                        name: "Virtual: " + utils.getFileName(filePath),
+                        isVirtual: true,
+                        tsconfigFilePath: filePath
+                    });
+                }
+
                 this.filteredValues = this.parsedFilterValue
-                    ? getFilteredItems<AvailableProjectConfig>({ items: this.availableProjects, textify: (p) => p.name, filterValue: this.parsedFilterValue })
-                    : this.availableProjects;
+                    ? getFilteredItems<AvailableProjectConfig>({ items: availableProjects, textify: (p) => p.name, filterValue: this.parsedFilterValue })
+                    : availableProjects;
             }
 
             if (this.mode == SearchMode.Symbol) {

@@ -9,7 +9,6 @@ import { Provider } from 'react-redux';
 import * as state from "./state/state";
 import {store} from "./state/state";
 import * as ui from "./ui";
-import * as constants from "../common/constants";
 import {tabState} from "./tabs/v2/appTabsContainer";
 import * as settings from "./state/settings";
 import * as clientSession from "./state/clientSession";
@@ -130,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
     commands.duplicateWindow.on(()=>{
         const width = window.innerWidth;
         const height = window.innerHeight;
-        window.open(`${window.location.href.replace(location.href,'')}#${constants.urlHashNewSession}`, '',`innerWidth=${width}, innerHeight=${height}`);
+        window.open(`${window.location.href.replace(location.href,'')}#${types.urlHashNewSession}`, '',`innerWidth=${width}, innerHeight=${height}`);
     });
 
     /** Set the window session */

@@ -90,11 +90,12 @@ let initialSync = false;
 const refreshAllProjectDiagnostics = () => {
     if (currentProject) {
         const timer = utils.timer();
+        const projectFilePath = currentProject.configFile.projectFilePath;
         if (initialSync) {
-            console.error(`[TSC] Started Initial Error Analysis: ${currentProject.configFile.projectFilePath}`);
+            console.error(`[TSC] Started Initial Error Analysis: ${projectFilePath}`);
         }
         else {
-            console.log(`[TSC] Incremental Error Analysis ${currentProject.configFile.projectFilePath}`);
+            console.log(`[TSC] Incremental Error Analysis ${projectFilePath}`);
             console.time('[TSC] Incremental Error Analysis');
         }
 
@@ -111,7 +112,7 @@ const refreshAllProjectDiagnostics = () => {
         initialSync = false;
     }
 };
-const refreshAllProjectDiagnosticsDebounced = utils.debounce(refreshAllProjectDiagnostics, 3000);
+const refreshAllProjectDiagnosticsDebounced = utils.debounce(refreshAllProjectDiagnostics, 5000);
 
 /**
  * Constantly streaming this is slow for large files so this is debounced as well
@@ -123,7 +124,7 @@ const refreshFileDiagnostics = utils.debounce((filePath:string) => {
         let errors = diagnostics.map(diagnosticToCodeError);
         setErrorsByFilePaths([filePath], errors);
     }
-}, 1000);
+}, 2000);
 
 /**
  * Utility functions to convert a `configFile` to a `project`

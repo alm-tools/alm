@@ -49,9 +49,6 @@ function clearErrorsInTsconfig(filePath:string){
     errorsInTsconfig.clearErrors();
 }
 
-/** The name used if we don't find a project */
-const implicitProjectName = "__auto__";
-
 /**
  * on server start
  */
@@ -97,27 +94,25 @@ function refreshAvailableProjects() {
 
         let projectConfigs: AvailableProjectConfig[] = tsconfigs.map(Utils.tsconfigToActiveProjectConfigDetails);
 
-        // If no tsconfigs add an implicit one!
-        if (projectConfigs.length == 0) {
-            projectConfigs.push({
-                name: implicitProjectName,
-                isImplicit: true,
-            });
-        };
-
         availableProjects.emit(projectConfigs);
     });
 }
 
 /** General purpose utility functions specific to this file */
 namespace Utils {
-    export function tsconfigToActiveProjectConfigDetails(tsconfig: string): AvailableProjectConfig {
-        let relative = workingDir.makeRelative(tsconfig);
+    /**
+     * Used to
+     * - convert a filePath found in directory indexing into a project that is selectable
+     * - thaw last session active project filePath
+     */
+    export function tsconfigToActiveProjectConfigDetails(filePath: string): AvailableProjectConfig {
+        let relative = workingDir.makeRelative(filePath);
         let isNodeModule = relative.includes('node_modules');
+        const isVirtual = utils.isJsOrTs(filePath) ? true : false;
         return {
-            name: isNodeModule ? relative : utils.getDirectoryAndFileName(tsconfig),
-            isImplicit: false,
-            tsconfigFilePath: tsconfig
+            name: isNodeModule ? relative : utils.getDirectoryAndFileName(filePath),
+            isVirtual,
+            tsconfigFilePath: filePath
         };
     }
 }
@@ -125,9 +120,12 @@ namespace Utils {
 /** convert project name to current project */
 export function sync() {
     availableProjects.current().then((projectConfigs) => {
-        let activeProjectName = (activeProjectConfigDetails && activeProjectConfigDetails.name);
-        // we are guaranteed as least one project config (which just might be the implicit one)
-        let projectConfig = projectConfigs.filter(x=>x.name == activeProjectName)[0] || projectConfigs[0];
+        let activeProjectName = (activeProjectConfigDetails && activeProjectConfigDetails.tsconfigFilePath);
+        let projectConfig = projectConfigs.find(x=>x.tsconfigFilePath == activeProjectName);
+        if (!projectConfig) {
+            console.log('[TSCONFIG]: No active project')
+            return;
+        }
         syncCore(projectConfig);
     });
 }
@@ -205,23 +203,15 @@ namespace ConfigFile {
     const typescriptDirectory = path.dirname(require.resolve('ntypescript')).split('\\').join('/');
 
     /**
-     * This explicilty loads the project from the filesystem
-     * For (lib.d.ts) and other (.d.ts files where project is not found) creation is done in memory
+     * This explicilty loads the project from the filesystem to check it for errors
+     * For Virtual projects it just returns the in memory project
      */
     export function getConfigFileFromDiskOrInMemory(config: AvailableProjectConfig): types.TypeScriptConfigFileDetails {
-        if (!config.tsconfigFilePath) {
-            // TODO: THIS isn't RIGHT ...
-            // as this function is designed to work *from a single source file*.
-            // we need one thats designed to work from *all source files*.
-            return tsconfig.getDefaultInMemoryProject(process.cwd());
+        if (config.isVirtual) {
+            return tsconfig.getDefaultInMemoryProject(config.tsconfigFilePath);
         }
 
         const filePath = config.tsconfigFilePath;
-
-        // If we are asked to look at stuff in lib.d.ts create its own project
-        if (path.dirname(filePath) == typescriptDirectory) {
-            return tsconfig.getDefaultInMemoryProject(filePath);
-        }
 
         const {result:projectFile, error} = tsconfig.getProjectSync(filePath);
         if (!error){
@@ -229,13 +219,9 @@ namespace ConfigFile {
             return projectFile;
         }
         else {
-            // If we have a .d.ts file then it is its own project and return
-            if (filePath.toLowerCase().endsWith('.d.ts')) {
-                return tsconfig.getDefaultInMemoryProject(filePath);
-            }
             setErrorsInTsconfig(filePath, [error]);
+            return undefined;
         }
-        return undefined;
     }
 }
 

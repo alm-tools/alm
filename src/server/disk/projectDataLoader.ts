@@ -15,16 +15,25 @@ import {AvailableProjectConfig} from "../../common/types";
 /** Only call this if the file has been validated 🌹 */
 export function getProjectDataLoaded(activeProjectConfigDetails: AvailableProjectConfig): ProjectDataLoaded {
 
-    const {result: configFile} = tsconfig.getProjectSync(activeProjectConfigDetails.tsconfigFilePath);
+    const configFile = activeProjectConfigDetails.isVirtual
+        ? tsconfig.getDefaultInMemoryProject(activeProjectConfigDetails.tsconfigFilePath)
+        /** We assume the file has been validated */
+        : tsconfig.getProjectSync(activeProjectConfigDetails.tsconfigFilePath).result;
 
     const response: ProjectDataLoaded = {
         configFile,
         filePathWithContents:[]
     };
 
-    const addFile = (filePath:string) => {
-        const contents = fmc.getOrCreateOpenFile(filePath).getContents();
-        response.filePathWithContents.push({filePath,contents});
+    const addFile = (filePath: string) => {
+        try {
+            const contents = fmc.getOrCreateOpenFile(filePath).getContents();
+            response.filePathWithContents.push({ filePath, contents });
+        }
+        catch (e) {
+            console.log(`Project Data Loader: Failed to load data for file: ${filePath}`);
+            console.log(e);
+        }
     };
 
     // Add the `lib` files

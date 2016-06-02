@@ -38,11 +38,6 @@
     border-left:2px solid red !important;
 }
 
-/* match-highlight from demo : https://codemirror.net/demo/matchhighlighter.html */
-.cm-matchhighlight {
-    text-decoration: underline;
-}
-
 /* tag matching is a bit too bold. Dull it down a bit */
 .CodeMirror-matchingtag {
     background: rgba(150, 118, 0, 0.2);

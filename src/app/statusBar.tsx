@@ -106,11 +106,13 @@ export class StatusBar extends BaseComponent<Props, State>{
                     ui.notifyInfoNormalDisappear(`TIP : You can change the active project using project search <br/> <br/> ${projectTipKeboard}`, { onClick: () => commands.omniSelectProject.emit({}) });
                 }}>
                 <span
-                    className="hint--top-right"
-                    style={csx.extend(styles.noSelect,styles.statusBarSuccess,styles.hand,{marginRight: '5px'})}
-                    data-hint="Active TypeScript Project">
+                    style={csx.extend(styles.noSelect,styles.statusBarSuccess,styles.hand,{marginRight: '5px'})}>
                         <Icon name="heartbeat"/>
                  </span>
+                {this.props.activeProject.isVirtual && <span
+                    style={csx.extend(styles.noSelect,styles.statusBarSuccess,styles.hand,{marginRight: '5px'})}>
+                        <Icon name="blind"/>
+                 </span>}
                 {this.props.activeProject.name}
             </span>
             :<span
@@ -152,7 +154,7 @@ export class StatusBar extends BaseComponent<Props, State>{
         }
 
         const fileOutputStateRendered =
-            fileOutputState
+            !!fileOutputState
             && <span style={styles.statusBarSection}>
                 <span style={csx.extend(ouputStatusStyle)}>
                 {

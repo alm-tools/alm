@@ -3,7 +3,7 @@ import * as fsu from "../../../utils/fsu";
 import fs = require('fs');
 import ts = require('ntypescript');
 import * as json from "../../../../common/json";
-import {makeBlandError,reverseKeysAndValues, uniq, extend} from "../../../../common/utils";
+import {makeBlandError,reverseKeysAndValues, uniq, extend, isJs} from "../../../../common/utils";
 import {PackageJsonParsed, TsconfigJsonParsed, TypeScriptConfigFileDetails} from "../../../../common/types";
 import {increaseCompilationContext, getDefinitionsForNodeModules} from "./compilationContextExpander";
 import {validate} from "./tsconfigValidation";
@@ -74,6 +74,7 @@ interface CompilerOptions {
     rootDir?: string;
     rootDirs?: string[];
     skipDefaultLibCheck?: boolean;
+    skipLibCheck?: boolean;
     sourceMap?: boolean;
     sourceRoot?: string;
     strictNullChecks?: boolean;
@@ -158,15 +159,16 @@ const defaultCompilerOptions: ts.CompilerOptions = {
  * If you want to create a project on the fly
  */
 export function getDefaultInMemoryProject(srcFile: string): TypeScriptConfigFileDetails {
-    var dir = fs.lstatSync(srcFile).isDirectory() ? srcFile : path.dirname(srcFile);
+    var dir = path.dirname(srcFile);
+    const allowJs = isJs(srcFile);
 
     var files = [srcFile];
     var typings = getDefinitionsForNodeModules(dir, files);
-    files = increaseCompilationContext(files, false);
+    files = increaseCompilationContext(files, allowJs);
     files = uniq(files.map(fsu.consistentPath));
 
     let project: TsconfigJsonParsed = {
-        compilerOptions: defaultCompilerOptions,
+        compilerOptions: extend(defaultCompilerOptions,{ allowJs }),
         files,
         typings: typings.ours.concat(typings.implicit),
         formatCodeOptions: formatting.defaultFormatCodeOptions(),
@@ -176,7 +178,7 @@ export function getDefaultInMemoryProject(srcFile: string): TypeScriptConfigFile
 
     return {
         projectFileDirectory: dir,
-        projectFilePath: dir + '/' + projectFileName,
+        projectFilePath: srcFile,
         project: project,
         inMemory: true
     };

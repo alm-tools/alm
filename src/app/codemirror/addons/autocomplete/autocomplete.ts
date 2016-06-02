@@ -199,7 +199,7 @@ export class AutoCompleter {
         if (state.inActiveProjectFilePath(editor.filePath) || utils.isSupportedConfigFileForAutocomplete(editor.filePath)) {
             this.lastRequest = position;
             server.getCompletionsAtPosition({ filePath: this.filePath, position, prefix }).then(res=> {
-                if (this.lastRequest !== position){
+                if (this.lastRequest !== position || !editor.hasFocus()) {
                     cb(null);
                     return;
                 }

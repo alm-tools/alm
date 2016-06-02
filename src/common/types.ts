@@ -243,8 +243,10 @@ export interface EditorOptions {
  */
 export interface AvailableProjectConfig {
     name: string;
-    isImplicit: boolean;
-    tsconfigFilePath?: string;
+    /** Virtual projects are projects rooted at some `.ts`/`.js` file */
+    isVirtual: boolean;
+    /** If the project is virtual than this will point to a `.ts`/`.js` file */
+    tsconfigFilePath: string;
 }
 
 /**
@@ -296,7 +298,7 @@ export interface TsconfigJsonParsed {
 export interface TypeScriptConfigFileDetails {
     /** The path to the project file. This acts as the baseDIR */
     projectFileDirectory: string;
-    /** The actual path of the project file (including tsconfig.json) */
+    /** The actual path of the project file (including tsconfig.json) or srcFile if `inMemory` is true */
     projectFilePath: string;
     project: TsconfigJsonParsed;
     inMemory: boolean;
@@ -488,3 +490,9 @@ export interface LiveAnalysisOverrideInfo {
     line: number;
     overrides: UMLClassMember;
 }
+
+/**
+ * Some constants
+ */
+export const urlHashNormal = "root";
+export const urlHashNewSession = "new-session";

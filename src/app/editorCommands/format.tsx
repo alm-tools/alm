@@ -36,21 +36,25 @@ CodeMirror.commands[commands.additionalEditorCommands.format] = (editor: CodeMir
         insertFinalNewline: false,
     }
 
-    if (doc.somethingSelected()){
+    if (doc.somethingSelected()) {
         var selection = doc.listSelections()[0]; // only the first is formatted at the moment
         let from = selection.anchor;
         let to = selection.head;
 
+        if (CodeMirror.cmpPos(from, to) >= 0) {
+            [from, to] = [to, from];
+        }
+
         server.formatDocumentRange({
-            from,to,filePath,editorOptions
-        }).then(res=> {
+            from, to, filePath, editorOptions
+        }).then(res => {
             uix.API.applyRefactorings(res.refactorings);
         });
     }
     else {
         server.formatDocument({
-            filePath,editorOptions
-        }).then(res=> {
+            filePath, editorOptions
+        }).then(res => {
             uix.API.applyRefactorings(res.refactorings);
         });
     }
