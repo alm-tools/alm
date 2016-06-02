@@ -72,7 +72,7 @@ You can specify exclude directories using `exclude` property. E.g.
 
 ### compileOnSave
 
-By default true. If set to true we will emit JavaScript for TypeScript files on initial boot as well as *super fast incrementally* if you edit any TypeScript file.
+By default true. If set to true we will emit JavaScript (*super fast incrementally*) for any TypeScript files you edit.
 
 ```json
 "compileOnSave": true
