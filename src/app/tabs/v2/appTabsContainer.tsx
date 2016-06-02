@@ -445,7 +445,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             otherTabs.forEach(t => this.tabHandle[t.id].triggerClose());
         });
         commands.closeAllTabs.on((e) => {
-            this.tabs.forEach(t => this.tabHandle[t.id].triggerClose());
+            commands.closeOtherTabs.emit({});
+            commands.closeTab.emit({});
         });
 
         /**
