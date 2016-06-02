@@ -444,6 +444,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             const otherTabs = this.tabs.filter(t => t.id !== currentTabId);
             otherTabs.forEach(t => this.tabHandle[t.id].triggerClose());
         });
+        commands.closeAllTabs.on((e) => {
+            this.tabs.forEach(t => this.tabHandle[t.id].triggerClose());
+        });
 
         /**
          * Find and Replace
