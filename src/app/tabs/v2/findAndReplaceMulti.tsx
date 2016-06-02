@@ -19,6 +19,7 @@ import {Robocop} from "../../components/robocop";
 import * as pure from "../../../common/pure";
 import * as buttons from "../../components/buttons";
 import * as types from "../../../common/types";
+import * as gls from "../../base/gls";
 
 type NodeDisplay = Types.NodeDisplay;
 let EOL = '\n';
@@ -414,16 +415,19 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
                         (this.state.results.length >= types.maxCountFindAndReplaceMultiResults)
                         && <span className="hint--info hint--bottom" data-hint={`(search limited to ${types.maxCountFindAndReplaceMultiResults})`}>(+)</span>
                     }
+                    {
+                        !this.state.completed &&
+                            <span>
+                                <gls.SmallHorizontalSpace/>
+                                <buttons.ButtonBlack
+                                    key="button"
+                                    onClick={this.cancelAnyRunningSearch}
+                                    text={"Cancel"}/>
+                            </span>
+                    }
 
                     <span style={csx.flex}/>
                     {queryRegexStr}
-                    {
-                        !this.state.completed &&
-                            <buttons.ButtonBlack
-                                key="button"
-                                onClick={this.cancelAnyRunningSearch}
-                                text={"Cancel"}/>
-                    }
                 </div>
                 {
                     filePaths.map((filePath, i) => {
