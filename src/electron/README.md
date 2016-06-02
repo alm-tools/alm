@@ -14,3 +14,7 @@ And from this folder
 ```
 electron .
 ```
+
+## Can you publish the executable?
+
+Shipping binary `nodejs` + `chrome` to a user system which already has these things feels bad especially if we don't use it in any special way. `npm install alm -g` is actually an easier / quicker install :rose:
