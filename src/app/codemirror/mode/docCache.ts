@@ -134,8 +134,31 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
             const doc = monaco.editor.createModel(res.contents, language);
             doc.filePath = filePath;
 
+            // setup to push doc changes to server
+            doc.onDidChangeContent(evt => {
+                // TODO: mon
+                // if this edit is happening
+                // because *we edited it due to a server request*
+                // we should exit
+                // if (evt.origin == cameFromNetworkSourceId) {
+                //     return;
+                // }
+
+                let codeEdit: CodeEdit = {
+                    from: { line: evt.range.startLineNumber - 1, ch: evt.range.startColumn - 1 },
+                    to: { line: evt.range.endLineNumber - 1, ch: evt.range.endColumn - 1 },
+                    newText: evt.text,
+                    sourceId: localSourceId
+                };
+
+                // Send the edit
+                editBatcher.addToQueue(filePath, codeEdit);
+
+                // Keep the ouput status cache informed
+                state.ifJSStatusWasCurrentThenMoveToOutOfDate({inputFilePath: filePath});
+            });
+
             // TODO: mon
-            // TODO: mon : keep the server in sync
             // // create the doc
             // let doc = new CodeMirror.Doc(res.contents, mode);
             // doc.filePath = filePath;
