@@ -12,6 +12,19 @@ import * as state from "../../state/state";
 import {EditorOptions} from "../../../common/types";
 
 /**
+ * We extend the monaco editor model to keep `filePath`
+ */
+declare global {
+    module monaco {
+        module editor {
+            interface IModel {
+                filePath?: string;
+            }
+        }
+    }
+}
+
+/**
  * Ext lookup
  */
 const extLookup: { [ext: string]: monaco.languages.ILanguageExtensionPoint } = {};
@@ -124,13 +137,9 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
     else {
         return docByFilePathPromised[filePath] = server.openFile({ filePath: filePath }).then((res) => {
             let ext = utils.getExt(filePath);
-            let isTsFile = utils.isTsFile(filePath);
+            let isTsFile = utils.isTs(filePath);
 
-            let mode = isTsFile
-                        ? 'typescript'
-                        : supportedModesMap[ext]
-                        ? supportedModesMap[ext]
-                        : 'text';
+            let language = getLanguage(filePath);
 
             // console.log(res.editorOptions); // DEBUG
             // console.log(mode,supportedModesMap[ext]); // Debug mode
@@ -139,81 +148,87 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
             if (isTsFile) { classifierCache.addFile(filePath, res.contents); }
 
             // create the doc
-            let doc = new CodeMirror.Doc(res.contents, mode);
+            const doc = monaco.editor.createModel(res.contents, language);
             doc.filePath = filePath;
-            doc.rootDoc = true;
 
-            // setup to push doc changes to server
-            (doc as any).on('change', (doc: CodeMirror.Doc, change: CodeMirror.EditorChange) => {
-                // console.log('sending server edit', sourceId)
-
-                if (change.origin == cameFromNetworkSourceId) {
-                    return;
-                }
-
-                let codeEdit: CodeEdit = {
-                    from: { line: change.from.line, ch: change.from.ch },
-                    to: { line: change.to.line, ch: change.to.ch },
-                    newText: change.text.join('\n'),
-                    sourceId: localSourceId
-                };
-
-                // Send the edit
-                editBatcher.addToQueue(filePath, codeEdit);
-
-                // Keep the ouput status cache informed
-                state.ifJSStatusWasCurrentThenMoveToOutOfDate({inputFilePath: filePath});
-            });
-
-            // setup to get doc changes from server
-            cast.didEdits.on(res=> {
-
-                // console.log('got server edit', res.edit.sourceId,'our', sourceId)
-
-                let codeEdits = res.edits;
-
-                codeEdits.forEach(codeEdit => {
-                    if (res.filePath == filePath && codeEdit.sourceId !== localSourceId) {
-                        // Keep the classifier in sync
-                        if (isTsFile) { classifierCache.editFile(filePath, codeEdit); }
-
-                        // Note that we use *mark as coming from server* so we don't go into doc.change handler later on :)
-                        doc.replaceRange(codeEdit.newText, codeEdit.from, codeEdit.to, cameFromNetworkSourceId);
-                    }
-                });
-            });
-
-            // setup loading saved files changing on disk
-            cast.savedFileChangedOnDisk.on((res) => {
-                if (res.filePath == filePath
-                    && doc.getValue() !== res.contents) {
-
-                    // Keep the classifier in sync
-                    if (isTsFile) { classifierCache.setContents(filePath, res.contents); }
-
-                    // preserve cursor for all linked docs
-                    doc.iterLinkedDocs((linked) => {
-                        if (linked.getEditor()) {
-                            const cursor = linked.getCursor();
-                            setTimeout(()=>{
-                                linked.setCursor(cursor);
-                            });
-                        }
-                    });
-
-                    // preserve cursor
-                    let cursor = doc.getCursor();
-
-                    // Note that we use *mark as coming from server* so we don't go into doc.change handler later on :)
-                    // Not using setValue as it doesn't take sourceId
-                    let lastLine = doc.lastLine();
-                    let lastCh = doc.getLine(lastLine).length;
-                    doc.replaceRange(res.contents, { line: 0, ch: 0 }, { line: lastLine, ch: lastCh }, cameFromNetworkSourceId);
-
-                    // restore cursor
-                    doc.setCursor(cursor);
-                }
-            })
+            // TODO: mon
+            // TODO: mon : keep the server in sync
+            // // create the doc
+            // let doc = new CodeMirror.Doc(res.contents, mode);
+            // doc.filePath = filePath;
+            // doc.rootDoc = true;
+            //
+            // // setup to push doc changes to server
+            // (doc as any).on('change', (doc: CodeMirror.Doc, change: CodeMirror.EditorChange) => {
+            //     // console.log('sending server edit', sourceId)
+            //
+            //     if (change.origin == cameFromNetworkSourceId) {
+            //         return;
+            //     }
+            //
+            //     let codeEdit: CodeEdit = {
+            //         from: { line: change.from.line, ch: change.from.ch },
+            //         to: { line: change.to.line, ch: change.to.ch },
+            //         newText: change.text.join('\n'),
+            //         sourceId: localSourceId
+            //     };
+            //
+            //     // Send the edit
+            //     editBatcher.addToQueue(filePath, codeEdit);
+            //
+            //     // Keep the ouput status cache informed
+            //     state.ifJSStatusWasCurrentThenMoveToOutOfDate({inputFilePath: filePath});
+            // });
+            //
+            // // setup to get doc changes from server
+            // cast.didEdits.on(res=> {
+            //
+            //     // console.log('got server edit', res.edit.sourceId,'our', sourceId)
+            //
+            //     let codeEdits = res.edits;
+            //
+            //     codeEdits.forEach(codeEdit => {
+            //         if (res.filePath == filePath && codeEdit.sourceId !== localSourceId) {
+            //             // Keep the classifier in sync
+            //             if (isTsFile) { classifierCache.editFile(filePath, codeEdit); }
+            //
+            //             // Note that we use *mark as coming from server* so we don't go into doc.change handler later on :)
+            //             doc.replaceRange(codeEdit.newText, codeEdit.from, codeEdit.to, cameFromNetworkSourceId);
+            //         }
+            //     });
+            // });
+            //
+            // // setup loading saved files changing on disk
+            // cast.savedFileChangedOnDisk.on((res) => {
+            //     if (res.filePath == filePath
+            //         && doc.getValue() !== res.contents) {
+            //
+            //         // Keep the classifier in sync
+            //         if (isTsFile) { classifierCache.setContents(filePath, res.contents); }
+            //
+            //         // preserve cursor for all linked docs
+            //         doc.iterLinkedDocs((linked) => {
+            //             if (linked.getEditor()) {
+            //                 const cursor = linked.getCursor();
+            //                 setTimeout(()=>{
+            //                     linked.setCursor(cursor);
+            //                 });
+            //             }
+            //         });
+            //
+            //         // preserve cursor
+            //         let cursor = doc.getCursor();
+            //
+            //         // Note that we use *mark as coming from server* so we don't go into doc.change handler later on :)
+            //         // Not using setValue as it doesn't take sourceId
+            //         let lastLine = doc.lastLine();
+            //         let lastCh = doc.getLine(lastLine).length;
+            //         doc.replaceRange(res.contents, { line: 0, ch: 0 }, { line: lastLine, ch: lastCh }, cameFromNetworkSourceId);
+            //
+            //         // restore cursor
+            //         doc.setCursor(cursor);
+            //     }
+            // })
 
             // Finally return the doc
             return { doc, isTsFile, editorOptions: res.editorOptions };

@@ -2,6 +2,7 @@ import * as ui from "../ui";
 import * as csx from "csx";
 import * as React from "react";
 import {cast, server} from "../../socket/socketClient";
+import * as docCache from "./mode/docCache";
 
 // The monokai theme
 require('./monokai.css');
@@ -151,12 +152,13 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
         // TODO: mon
         // move a doc cache v2
-        server.openFile({ filePath: this.props.filePath }).then((res) => {
-            this.ready = true;
-            this.setState({loading:false});
+        docCache.getLinkedDoc(this.props.filePath).then(({doc, editorOptions}) => {
+			this.afterReadyQueue.forEach(cb=>cb());
+			this.ready = true;
+			this.setState({loading:false});
 
-            this.editor.setValue(res.contents);
-        });
+			this.editor.setModel(doc);
+		})
 
         // TODO: mon
 		// this.codeMirror = CodeMirror.fromTextArea(textareaNode as any, options);
