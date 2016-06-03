@@ -47,7 +47,6 @@ const getLanguage = (filePath: string): string => {
 
 // to track the source of changes, local vs. network
 const localSourceId: string = utils.createId();
-const cameFromNetworkSourceId: string = 'came-from-network';
 
 export type GetLinkedDocResponse = {
     doc: monaco.editor.IModel;
@@ -134,28 +133,67 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
             const doc = monaco.editor.createModel(res.contents, language);
             doc.filePath = filePath;
 
+            let editToIgnoreCount = 0;
+
+            /** This is used for monaco edit operation counting purposes */
+            let editorOperationCounter = 0;
+
             // setup to push doc changes to server
             doc.onDidChangeContent(evt => {
-                // TODO: mon
+                // Keep the ouput status cache informed
+                state.ifJSStatusWasCurrentThenMoveToOutOfDate({inputFilePath: filePath});
+
                 // if this edit is happening
                 // because *we edited it due to a server request*
                 // we should exit
-                // if (evt.origin == cameFromNetworkSourceId) {
-                //     return;
-                // }
-
+                if (editToIgnoreCount) {
+                    editToIgnoreCount--;
+                    return;
+                }
                 let codeEdit: CodeEdit = {
                     from: { line: evt.range.startLineNumber - 1, ch: evt.range.startColumn - 1 },
                     to: { line: evt.range.endLineNumber - 1, ch: evt.range.endColumn - 1 },
                     newText: evt.text,
                     sourceId: localSourceId
                 };
-
                 // Send the edit
                 editBatcher.addToQueue(filePath, codeEdit);
+            });
 
-                // Keep the ouput status cache informed
-                state.ifJSStatusWasCurrentThenMoveToOutOfDate({inputFilePath: filePath});
+            // setup to get doc changes from server
+            cast.didEdits.on(res=> {
+
+                // console.log('got server edit', res.edit.sourceId,'our', sourceId)
+
+                let codeEdits = res.edits;
+                codeEdits.forEach(codeEdit => {
+                    // Easy exit for local edits getting echoed back
+                    if (res.filePath == filePath && codeEdit.sourceId !== localSourceId) {
+                        // Keep the classifier in sync
+                        if (isTsFile) { classifierCache.editFile(filePath, codeEdit); }
+
+                        // make the edits
+                        const editOperation: monaco.editor.IIdentifiedSingleEditOperation = {
+                            identifier: {
+                                major: editorOperationCounter++,
+                                minor: 0
+                            },
+                            text: codeEdit.newText,
+                            range: new monaco.Range(
+                                codeEdit.from.line + 1,
+                                codeEdit.from.ch + 1,
+                                codeEdit.to.line + 1,
+                                codeEdit.to.ch + 1
+                            ),
+                            forceMoveMarkers: false,
+                            isAutoWhitespaceEdit: false,
+                        }
+
+                        /** Mark as ignoring before applying the edit */
+                        editToIgnoreCount++;
+                        doc.pushEditOperations([], [editOperation], null);
+                    }
+                });
             });
 
             // TODO: mon
