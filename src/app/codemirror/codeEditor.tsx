@@ -140,6 +140,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
                 '}'
             ].join('\n'),
             language: 'javascript',
+            theme: 'vs-dark',
         }, []);
 
         // TODO: mon
