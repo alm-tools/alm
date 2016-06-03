@@ -5,7 +5,7 @@ import {cast, server} from "../../socket/socketClient";
 
 interface Props {
 	onFocusChange?: (focused: boolean) => any;
-	readOnly?: boolean | "nocursor";
+	readOnly?: boolean;
 	preview?: ts.TextSpan;
 	filePath: string;
 }
@@ -149,6 +149,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 			folding: true,
 			autoClosingBrackets: true,
 			wrappingColumn: 0,
+			readOnly: this.props.readOnly
         }, []);
 
         // TODO: mon
