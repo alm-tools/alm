@@ -40,6 +40,13 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
 	componentDidMount () {
 
+		// TODO: mon
+		// Use this in the doc cache
+		// monaco.languages.getLanguages().forEach(function(language) {
+		// 	console.log(language);
+		// });
+
+
         var options: CodeMirror.EditorConfiguration = {
             // our extension
             filePath: this.props.filePath,
