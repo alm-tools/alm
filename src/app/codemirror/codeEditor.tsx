@@ -6,6 +6,12 @@ import {cast, server} from "../../socket/socketClient";
 // The monokai theme
 require('./monokai.css');
 
+// TODO: mon
+// Use this in the doc cache
+// monaco.languages.getLanguages().forEach(function(language) {
+// 	console.log(language);
+// });
+
 interface Props {
 	onFocusChange?: (focused: boolean) => any;
 	readOnly?: boolean;
@@ -43,14 +49,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
 	componentDidMount () {
 
-		// TODO: mon
-		// Use this in the doc cache
-		// monaco.languages.getLanguages().forEach(function(language) {
-		// 	console.log(language);
-		// });
-
-
-        var options: CodeMirror.EditorConfiguration = {
+		var options: CodeMirror.EditorConfiguration = {
             // our extension
             filePath: this.props.filePath,
             readOnly: this.props.readOnly,
