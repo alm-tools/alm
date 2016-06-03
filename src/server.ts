@@ -14,8 +14,10 @@ import workingDir = require('./server/disk/workingDir');
 import * as session from "./server/disk/session";
 import * as chalk from "chalk";
 import * as utils from "./common/utils";
+import * as fsu from "./server/utils/fsu";
 
 const publicPath = path.resolve(__dirname, 'public');
+const monacoSourceDir = fsu.travelUpTheDirectoryTreeTillYouFind(__dirname, 'node_modules') + '/monaco-editor-core/dev/vs';
 
 const clOptions = cl.getOptions();
 /** If the cl options favor early exit (e.g. -i) do that */
@@ -58,6 +60,10 @@ setup(app);
 
 // After dev setup forward to static server
 app.use(express.static(publicPath, {}));
+
+// Monaco works best with its own loader,
+// Serve it up from node_modules
+app.use('/vs', express.static(monacoSourceDir, {}));
 
 // Setup a socket server
 import {register} from "./socket/socketServer";
