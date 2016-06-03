@@ -67,23 +67,6 @@ export function getLinkedDoc(filePath: string): Promise<GetLinkedDocResponse> {
             });
 
             // TODO: mon
-            //
-            // // Some housekeeping: clear previous links that no longer seem active
-            // // SetTimeout because we might have created the doc but not the CM instance yet
-            // setTimeout(() => {
-            //     let markForRemove: CodeMirror.Doc[] = [];
-            //     doc.iterLinkedDocs((linked) => {
-            //         if (!linked.getEditor()) {
-            //             markForRemove.push(linked)
-            //         }
-            //     });
-            //     markForRemove.forEach(linked=> { doc.unlinkDoc(linked); });
-            // }, 2000);
-            //
-            // // Create a linked doc
-            // const linkedDoc = doc.linkedDoc({ sharedHist: true });
-
-            // TODO: mon
             // Keep the classifier cache in sync
             // Has to be done on each doc (sadly) because:
             // `beforeChange` on parent doc is not called by Code mirror if changes originate in this doc :-/
