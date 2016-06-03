@@ -1,7 +1,7 @@
 import * as ui from "../ui";
 import * as csx from "csx";
 import * as React from "react";
-
+import {cast, server} from "../../socket/socketClient";
 
 interface Props {
 	onFocusChange?: (focused: boolean) => any;
@@ -142,6 +142,15 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             language: 'javascript',
             theme: 'vs-dark',
         }, []);
+
+        // TODO: mon
+        // move a doc cache v2
+        server.openFile({ filePath: this.props.filePath }).then((res) => {
+            this.ready = true;
+            this.setState({loading:false});
+            
+            this.editor.setValue(res.contents);
+        });
 
         // TODO: mon
 		// this.codeMirror = CodeMirror.fromTextArea(textareaNode as any, options);
@@ -357,6 +366,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         };
 		return (
 			<div className={className} style={csx.extend(csx.horizontal,csx.flex,{position:'relative', maxWidth:'100%'})}>
+                <div style={loadingStyle}>LOADING</div>
                 <div ref="codeEditor" style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }} />
 			</div>
 		);
