@@ -3,6 +3,9 @@ import * as csx from "csx";
 import * as React from "react";
 import {cast, server} from "../../socket/socketClient";
 
+// The monokai theme
+require('./monokai.css');
+
 interface Props {
 	onFocusChange?: (focused: boolean) => any;
 	readOnly?: boolean;
@@ -144,8 +147,8 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             value: '...',
 			// TODO: mon
 			// The language mode should come from the doc cache
-            language: 'javascript',
-            theme: 'vs-dark',
+            language: 'java',
+            theme: 'vs-dark vscode-theme-monokai-themes-Monokai-tmTheme',
 			folding: true,
 			autoClosingBrackets: true,
 			wrappingColumn: 0,
