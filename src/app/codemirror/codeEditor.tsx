@@ -147,6 +147,8 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             language: 'javascript',
             theme: 'vs-dark',
 			folding: true,
+			autoClosingBrackets: true,
+			wrappingColumn: 0,
         }, []);
 
         // TODO: mon
