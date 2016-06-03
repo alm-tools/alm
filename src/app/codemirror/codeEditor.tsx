@@ -1,72 +1,6 @@
-// Code
-import CodeMirror = require('codemirror');
-
-// CSS
-require('codemirror/lib/codemirror.css')
-require('codemirror/theme/monokai.css')
-
-/**
- *  addons
- */
-// comments (single / multiline)
-require('codemirror/addon/comment/comment');
-// code folding
-require('codemirror/addon/fold/foldcode');
-require('codemirror/addon/fold/foldgutter');
-require('codemirror/addon/fold/brace-fold');
-require('codemirror/addon/fold/xml-fold');
-require('codemirror/addon/fold/markdown-fold');
-require('codemirror/addon/fold/comment-fold');
-require('codemirror/addon/fold/foldgutter.css');
-// Highlight active line
-require('codemirror/addon/selection/active-line');
-// Highlight matching brackets
-require('codemirror/addon/edit/matchbrackets');
-// Auto match tags (great for TSX!)
-require('codemirror/addon/edit/matchtags');
-
-// Our Addons
-import * as gitStatus from "./addons/gitStatus";
-import * as quickFix from "./addons/quickFix";
-import * as liveAnalysis from "./addons/liveAnalysis";
-import textHover = require('./addons/text-hover');
-import jumpy = require('./addons/jumpy');
-import blaster = require('./addons/blaster');
-import insertMatchingPair = require('./addons/insertMatchingPair');
-const ensureImport = textHover
-    || jumpy
-    || blaster
-	|| insertMatchingPair;
-
-// Css overrides
-require('./codeEditor.css')
-
-import autocomplete = require('./addons/autocomplete/autocomplete');
-import linter = require('./addons/linter');
-import search = require("./addons/search");
-import typescriptMode = require("./mode/typescriptMode");
-typescriptMode.register();
-import * as docCache from "./mode/docCache";
-
-import React = require('react');
-import ReactDOM = require('react-dom');
-import onresize = require('onresize');
-import * as styles from "../styles/styles";
-import * as csx from "csx";
 import * as ui from "../ui";
-import {cast,server} from "../../socket/socketClient";
-import {createId,getFilePathFromUrl} from "../../common/utils";
-import escape = require("escape-html");
-import * as doctor from "./addons/doctor";
-import * as semanticView from "./addons/semanticView";
-import * as state from "../state/state";
-import { Provider } from 'react-redux';
-import * as utils from "../../common/utils";
-import * as cursorLocation from "../cursorHistory";
-import * as events from "../../common/events";
-import * as cmUtils from "./cmUtils";
-import * as types from "../../common/types";
-import {toHtml} from "../markdown/markdown";
+import * as csx from "csx";
+import * as React from "react";
 
 interface Props {
 	onFocusChange?: (focused: boolean) => any;
@@ -85,7 +19,8 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 		};
 	}
 
-	codeMirror: CodeMirror.EditorFromTextArea;
+    // TODO: mon
+	// codeMirror: CodeMirror.EditorFromTextArea;
 	refs: {
 		[string: string]: any;
 		textarea: any;
@@ -151,11 +86,12 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             // Text hover
             textHover: {
 				delay: 50,
-				getTextHover: (cm, data, e: MouseEvent) => {
-	                if (data && data.pos) {
-	                    return this.getQuickInfo(data.pos);
-	                }
-	            },
+                // TODO: mon
+				// getTextHover: (cm, data, e: MouseEvent) => {
+	            //     if (data && data.pos) {
+	            //         return this.getQuickInfo(data.pos);
+	            //     }
+	            // },
 			},
 
 			// Blaster
@@ -166,194 +102,215 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         } as any;
 
         // setup hint / autocomplete options
-        autocomplete.setupOptions(options, this.props.filePath);
+        // TODO: mon
+        // autocomplete.setupOptions(options, this.props.filePath);
 
         // fold
         (options as any).foldGutter = true;
         options.gutters.push("CodeMirror-foldgutter");
 
+        // TODO: mon
         // live analysis
-        liveAnalysis.setupOptions(options);
+        // liveAnalysis.setupOptions(options);
 
         // quickfix
         if (!this.props.readOnly) {
-            quickFix.setupOptions(options);
+            // TODO: mon
+            // quickFix.setupOptions(options);
         }
 
+        // TODO: mon
         // Git status
-        gitStatus.setupOptions(options);
+        // gitStatus.setupOptions(options);
 
+        // TODO: mon
         // lint
-        linter.setupOptions(options, this.props.filePath);
+        // linter.setupOptions(options, this.props.filePath);
         // also lint on errors changing
-        this.disposible.add(cast.errorsUpdated.on(()=> this.codeMirror && this.codeMirror.performLint()));
+        // this.disposible.add(cast.errorsUpdated.on(()=> this.codeMirror && this.codeMirror.performLint()));
 		// and initially
-		setTimeout(()=> this.codeMirror && this.codeMirror.performLint(),1000);
+		// setTimeout(()=> this.codeMirror && this.codeMirror.performLint(),1000);
 
-		var textareaNode = ReactDOM.findDOMNode(this.refs.textarea);
-		this.codeMirror = CodeMirror.fromTextArea(textareaNode as any, options);
-		this.codeMirror.filePath = this.props.filePath;
-		this.codeMirror.on('focus', this.focusChanged.bind(this, true));
-		this.codeMirror.on('blur', this.focusChanged.bind(this, false));
+        // TODO: mon
+		// var textareaNode = ReactDOM.findDOMNode(this.refs.textarea);
+		// this.codeMirror = CodeMirror.fromTextArea(textareaNode as any, options);
+		// this.codeMirror.filePath = this.props.filePath;
+		// this.codeMirror.on('focus', this.focusChanged.bind(this, true));
+		// this.codeMirror.on('blur', this.focusChanged.bind(this, false));
 
+        // TODO: mon
         // Make hint / autocomplete more aggresive
-        autocomplete.setupCodeMirror(this.codeMirror);
+        // autocomplete.setupCodeMirror(this.codeMirror);
 
-        this.disposible.add(onresize.on(() => this.refresh()));
+        // TODO: mon
+        // this.disposible.add(onresize.on(() => this.refresh()));
 
+        // TODO: mon
         // cursor history
-        if (!this.props.readOnly) {
-            this.codeMirror.on('cursorActivity', this.handleCursorActivity);
-            this.disposible.add({ dispose: () => this.codeMirror.off('cursorActivity', this.handleCursorActivity) });
-        }
+        // if (!this.props.readOnly) {
+        //     this.codeMirror.on('cursorActivity', this.handleCursorActivity);
+        //     this.disposible.add({ dispose: () => this.codeMirror.off('cursorActivity', this.handleCursorActivity) });
+        // }
 
+        // TODO: mon
         // live analysis
-        this.disposible.add(liveAnalysis.setupCM(this.codeMirror));
+        // this.disposible.add(liveAnalysis.setupCM(this.codeMirror));
 
+        // TODO: mon
         // quick fix
-        if (!this.props.readOnly) {
-            this.disposible.add(quickFix.setupCM(this.codeMirror));
-        }
+        // if (!this.props.readOnly) {
+        //     this.disposible.add(quickFix.setupCM(this.codeMirror));
+        // }
 
+        // TODO: mon
         // Git status
-        this.disposible.add(gitStatus.setupCM(this.codeMirror));
+        // this.disposible.add(gitStatus.setupCM(this.codeMirror));
 
-        const loadEditorOptions = (editorOptions:types.EditorOptions) => {
-            // Set editor options
-            this.codeMirror.setOption('indentUnit', editorOptions.indentSize);
-            this.codeMirror.setOption('tabSize', editorOptions.tabSize);
-            this.codeMirror.setOption('indentWithTabs', !editorOptions.convertTabsToSpaces);
-        }
+        // TODO: mon
+        // const loadEditorOptions = (editorOptions:types.EditorOptions) => {
+        //     // Set editor options
+        //     this.codeMirror.setOption('indentUnit', editorOptions.indentSize);
+        //     this.codeMirror.setOption('tabSize', editorOptions.tabSize);
+        //     this.codeMirror.setOption('indentWithTabs', !editorOptions.convertTabsToSpaces);
+        // }
 
+        // TODO: mon
         // Subscribe to changing editor options
-        this.disposible.add(cast.editorOptionsChanged.on((res) => {
-            if (res.filePath === this.props.filePath){
-                loadEditorOptions(res.editorOptions);
-            }
-        }));
+        // this.disposible.add(cast.editorOptionsChanged.on((res) => {
+        //     if (res.filePath === this.props.filePath){
+        //         loadEditorOptions(res.editorOptions);
+        //     }
+        // }));
 
+        // TODO: mon
 		// Load the document
-        docCache.getLinkedDoc(this.props.filePath).then(({doc, editorOptions})=>{
-            this.codeMirror.swapDoc(doc);
-
-            // Load editor options
-			loadEditorOptions(editorOptions);
-
-            if (this.props.preview) {
-                let preview = this.props.preview;
-                let from = doc.posFromIndex(preview.start);
-                let to = doc.posFromIndex(preview.start + preview.length);
-                cmUtils.jumpToLine({
-                    line: from.line,
-                    ch: from.ch,
-                    editor: this.codeMirror
-                });
-            }
-
-			this.afterReadyQueue.forEach(cb=>cb());
-			this.ready = true;
-			this.setState({loading:false});
-        });
+        // docCache.getLinkedDoc(this.props.filePath).then(({doc, editorOptions})=>{
+        //     this.codeMirror.swapDoc(doc);
+        //
+        //     // Load editor options
+		// 	loadEditorOptions(editorOptions);
+        //
+        //     if (this.props.preview) {
+        //         let preview = this.props.preview;
+        //         let from = doc.posFromIndex(preview.start);
+        //         let to = doc.posFromIndex(preview.start + preview.length);
+        //         cmUtils.jumpToLine({
+        //             line: from.line,
+        //             ch: from.ch,
+        //             editor: this.codeMirror
+        //         });
+        //     }
+        //
+		// 	this.afterReadyQueue.forEach(cb=>cb());
+		// 	this.ready = true;
+		// 	this.setState({loading:false});
+        // });
 	}
 
 	componentWillUnmount () {
 		super.componentWillUnmount();
 		// todo: is there a lighter-weight way to remove the cm instance?
-		if (this.codeMirror) {
-			this.codeMirror.toTextArea();
-			/**
-			 * Very hacky way to unlink docs from CM
-			 * If we don't do this then the doc stays in memory and so does cm :-/
-			 */
-			(this.codeMirror.getDoc() as any).cm = null;
-		}
+		// if (this.codeMirror) {
+		// 	this.codeMirror.toTextArea();
+		// 	/**
+		// 	 * Very hacky way to unlink docs from CM
+		// 	 * If we don't do this then the doc stays in memory and so does cm :-/
+		// 	 */
+		// 	(this.codeMirror.getDoc() as any).cm = null;
+		// }
 	}
 
-    getQuickInfo = (pos: CodeMirror.Position): Promise<string | HTMLElement> => {
-        if (
-            state.inActiveProjectFilePath(this.props.filePath)
-            || utils.isSupportedConfigFileForHover(this.props.filePath)
-        ) {
-            return server.quickInfo({ filePath: this.props.filePath, position: this.codeMirror.getDoc().indexFromPos(pos) }).then(resp => {
-                if (!resp.valid) return;
+    // TODO: mon
+    // getQuickInfo = (pos: CodeMirror.Position): Promise<string | HTMLElement> => {
+    //     if (
+    //         state.inActiveProjectFilePath(this.props.filePath)
+    //         || utils.isSupportedConfigFileForHover(this.props.filePath)
+    //     ) {
+    //         return server.quickInfo({ filePath: this.props.filePath, position: this.codeMirror.getDoc().indexFromPos(pos) }).then(resp => {
+    //             if (!resp.valid) return;
+    //
+    //             var message = '';
+    //             if (resp.errors.length) {
+    //                 message = message + `🐛 <i>${resp.errors.map(e => escape(e.message)).join('<br/>')}</i><br/>`
+    //             }
+    //
+    //             if (resp.info) {
+    //                 message = message + `<b>${escape(resp.info.name)}</b>`;
+    //                 if (resp.info.comment) {
+    //                     message = message + `<br/>${toHtml(resp.info.comment)}`;
+    //                 }
+    //             }
+    //
+    //             let div = document.createElement('div');
+    //             div.innerHTML = message;
+    //             return div;
+    //         });
+    //     }
+    // };
 
-                var message = '';
-                if (resp.errors.length) {
-                    message = message + `🐛 <i>${resp.errors.map(e => escape(e.message)).join('<br/>')}</i><br/>`
-                }
-
-                if (resp.info) {
-                    message = message + `<b>${escape(resp.info.name)}</b>`;
-                    if (resp.info.comment) {
-                        message = message + `<br/>${toHtml(resp.info.comment)}`;
-                    }
-                }
-
-                let div = document.createElement('div');
-                div.innerHTML = message;
-                return div;
-            });
-        }
-    };
-
-	getCodeMirror () {
-		return this.codeMirror;
-	}
+    // TODO: mon
+	// getCodeMirror () {
+	// 	return this.codeMirror;
+	// }
 
 	focus = () => {
-		if (this.codeMirror) {
-			this.handleCursorActivity();
-            this.refresh();
-
-            this.codeMirror.focus();
-            /**
-             * For some reason code mirror fails to focus sometimes.
-             * for this we use an agressive version to ensure
-             * It reaches deep into the bowels of code mirror
-             */
-            const setFocusAgressive = () => {
-                if (!this.codeMirror.hasFocus()) {
-                    this.refs.textarea.focus();
-                    (this.codeMirror as any).display.input.focus();
-                    setTimeout(setFocusAgressive, 10);
-                }
-            }
-            setFocusAgressive();
-		}
+        // TODO: mon
+		// if (this.codeMirror) {
+		// 	this.handleCursorActivity();
+        //     this.refresh();
+        //
+        //     this.codeMirror.focus();
+        //     /**
+        //      * For some reason code mirror fails to focus sometimes.
+        //      * for this we use an agressive version to ensure
+        //      * It reaches deep into the bowels of code mirror
+        //      */
+        //     const setFocusAgressive = () => {
+        //         if (!this.codeMirror.hasFocus()) {
+        //             this.refs.textarea.focus();
+        //             (this.codeMirror as any).display.input.focus();
+        //             setTimeout(setFocusAgressive, 10);
+        //         }
+        //     }
+        //     setFocusAgressive();
+		// }
 	}
 
     resize = () => {
-        if (this.codeMirror) {
-            this.refresh();
-		}
+        // TODO: mon
+        // if (this.codeMirror) {
+        //     this.refresh();
+		// }
     }
 
     gotoPosition = (position: EditorPosition) => {
-        this.afterReady(()=>{
-            cmUtils.jumpToLine({ line: position.line, ch: position.ch, editor: this.codeMirror });
-            this.codeMirror.focus();
-		});
+        // TODO: mon
+        // this.afterReady(()=>{
+        //     cmUtils.jumpToLine({ line: position.line, ch: position.ch, editor: this.codeMirror });
+        //     this.codeMirror.focus();
+		// });
     }
 
     private refresh = () => {
-        // http://stackoverflow.com/questions/8349571/codemirror-editor-is-not-loading-content-until-clickeds
-        // Without refresh code mirror will not show up untill clicked
-        if (this.codeMirror) {
-            /**
-             * Without the setTimeout code mirror will lose scroll position
-             */
-            setTimeout(() => {
-                if (this.codeMirror.hasFocus()) { // If out of focus then this refresh can lead to bad results
-                    this.codeMirror.refresh();
-                }
-                else {
-                    const wrapper = this.codeMirror.getWrapperElement();
-                    if (!wrapper) return;
-                    if (!wrapper.clientHeight) return;
-                    this.codeMirror.refresh();
-                }
-            }, 100);
-        }
+        // TODO: mon
+        // // http://stackoverflow.com/questions/8349571/codemirror-editor-is-not-loading-content-until-clickeds
+        // // Without refresh code mirror will not show up untill clicked
+        // if (this.codeMirror) {
+        //     /**
+        //      * Without the setTimeout code mirror will lose scroll position
+        //      */
+        //     setTimeout(() => {
+        //         if (this.codeMirror.hasFocus()) { // If out of focus then this refresh can lead to bad results
+        //             this.codeMirror.refresh();
+        //         }
+        //         else {
+        //             const wrapper = this.codeMirror.getWrapperElement();
+        //             if (!wrapper) return;
+        //             if (!wrapper.clientHeight) return;
+        //             this.codeMirror.refresh();
+        //         }
+        //     }, 100);
+        // }
     }
 
     focusChanged = (focused) => {
@@ -364,40 +321,50 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 	}
 
     getValue(){
-        return this.codeMirror.getDoc().getValue();
+        return '';
+        // TODO: mon
+        // return this.codeMirror.getDoc().getValue();
     }
 
     search = (options: FindOptions) => {
-        search.commands.search(this.codeMirror, utils.findOptionsToQueryRegex(options));
+        // TODO: mon
+        // search.commands.search(this.codeMirror, utils.findOptionsToQueryRegex(options));
     }
 
     hideSearch = () => {
-        search.commands.hideSearch(this.codeMirror);
+        // TODO: mon
+        // search.commands.hideSearch(this.codeMirror);
     }
 
     findNext = (options: FindOptions) => {
-        search.commands.findNext(this.codeMirror, utils.findOptionsToQueryRegex(options));
+        // TODO: mon
+        // search.commands.findNext(this.codeMirror, utils.findOptionsToQueryRegex(options));
     }
 
     findPrevious = (options: FindOptions) => {
-        search.commands.findPrevious(this.codeMirror, utils.findOptionsToQueryRegex(options));
+        // TODO: mon
+        // search.commands.findPrevious(this.codeMirror, utils.findOptionsToQueryRegex(options));
     }
 
     replaceNext = (newText: string) => {
-        search.commands.replaceNext(this.codeMirror, newText);
+        // TODO: mon
+        // search.commands.replaceNext(this.codeMirror, newText);
     }
 
 	replacePrevious = (newText: string) => {
-		search.commands.replacePrevious(this.codeMirror, newText);
+        // TODO: mon
+		// search.commands.replacePrevious(this.codeMirror, newText);
 	}
 
     replaceAll = (newText: string) => {
-        search.commands.replaceAll(this.codeMirror, newText);
+        // TODO: mon
+        // search.commands.replaceAll(this.codeMirror, newText);
     }
 
     handleCursorActivity = () => {
-        let cursor = this.codeMirror.getDoc().getCursor();
-        cursorLocation.addEntry(cursor);
+        // TODO: mon
+        // let cursor = this.codeMirror.getDoc().getCursor();
+        // cursorLocation.addEntry(cursor);
     };
 
 	render () {
@@ -417,38 +384,8 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         };
 		return (
 			<div className={className} style={csx.extend(csx.horizontal,csx.flex,{position:'relative', maxWidth:'100%'})}>
-				{!this.props.readOnly && <doctor.Doctor cm={this.codeMirror} filePath={this.props.filePath}/>}
-				{!this.props.readOnly && <blaster.Blaster cm={this.codeMirror}/>}
 				<div style={loadingStyle}>LOADING</div>
-				<textarea ref="textarea" name={this.props.filePath} autoComplete="false" />
-                {!this.props.readOnly && <semanticView.SemanticView cm={this.codeMirror} filePath={this.props.filePath}/>}
 			</div>
 		);
 	}
-
 }
-
-// marker demo : https://codemirror.net/demo/marker.html
-`
-<style type="text/css">
-      .breakpoints {width: .8em;}
-      .breakpoint { color: #822; }
-      .CodeMirror {border: 1px solid #aaa;}
-    </style>
-`;
-`
-var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-  lineNumbers: true,
-  gutters: ["CodeMirror-linenumbers", "breakpoints"]
-});
-editor.on("gutterClick", function(cm, n) {
-  var info = cm.lineInfo(n);
-  cm.setGutterMarker(n, "breakpoints", info.gutterMarkers ? null : makeMarker());
-});
-function makeMarker() {
-  var marker = document.createElement("div");
-  marker.style.color = "#822";
-  marker.innerHTML = "●";
-  return marker;
-}
-`;
