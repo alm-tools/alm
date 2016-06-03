@@ -130,4 +130,5 @@
     left:0;
     display: flex;
     pointer-events: none;
+    background-color: #272822;
 }
