@@ -285,8 +285,6 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
     }
 
     private refresh = () => {
-        // TODO: mon
-        console.log('here');
         this.editor.layout();
     }
 
@@ -361,7 +359,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         };
 		return (
 			<div className={className} style={csx.extend(csx.horizontal,csx.flex,{position:'relative', maxWidth:'100%'})}>
-                <div ref="codeEditor" style={{ display: 'flex', flexDirection: 'column', flex: 1 }} />
+                <div ref="codeEditor" style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }} />
 			</div>
 		);
 	}
