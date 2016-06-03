@@ -134,11 +134,9 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
         var mountNode = this.refs.codeEditor;
         this.editor = monaco.editor.create(mountNode, {
-            value: [
-                'function x() {',
-                '\tconsole.log("Hello world!");',
-                '}'
-            ].join('\n'),
+            value: '...',
+			// TODO: mon
+			// The language mode should come from the doc cache
             language: 'javascript',
             theme: 'vs-dark',
         }, []);
@@ -148,7 +146,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         server.openFile({ filePath: this.props.filePath }).then((res) => {
             this.ready = true;
             this.setState({loading:false});
-            
+
             this.editor.setValue(res.contents);
         });
 
