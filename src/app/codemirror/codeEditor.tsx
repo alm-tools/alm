@@ -228,15 +228,10 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
 	componentWillUnmount () {
 		super.componentWillUnmount();
-		// todo: is there a lighter-weight way to remove the cm instance?
-		// if (this.codeMirror) {
-		// 	this.codeMirror.toTextArea();
-		// 	/**
-		// 	 * Very hacky way to unlink docs from CM
-		// 	 * If we don't do this then the doc stays in memory and so does cm :-/
-		// 	 */
-		// 	(this.codeMirror.getDoc() as any).cm = null;
-		// }
+		// TODO: mon
+		// figure out a way to remove the model from the doc cache
+		this.editor.dispose();
+		this.editor = null;
 	}
 
     // TODO: mon
