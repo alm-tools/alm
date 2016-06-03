@@ -222,10 +222,10 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
 /**
  * Don't plan to export as giving others our true docs can have horrible consequences if they mess them up
  */
-function getOrCreateDocs(filePaths: string[]): Promise<{ [filePath: string]: CodeMirror.Doc }> {
+function getOrCreateDocs(filePaths: string[]): Promise<{ [filePath: string]: monaco.editor.IModel }> {
     let promises = filePaths.map(fp => getOrCreateDoc(fp));
     return Promise.all(promises).then(docs => {
-        let res: { [filePath: string]: CodeMirror.Doc } = {};
+        let res: { [filePath: string]: monaco.editor.IModel } = {};
         docs.forEach(({doc}) => res[doc.filePath] = doc);
         return res;
     });
