@@ -139,6 +139,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 			// The language mode should come from the doc cache
             language: 'javascript',
             theme: 'vs-dark',
+			folding: true,
         }, []);
 
         // TODO: mon
