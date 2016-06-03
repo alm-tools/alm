@@ -3,6 +3,7 @@ import * as csx from "csx";
 import * as React from "react";
 import {cast, server} from "../../socket/socketClient";
 import * as docCache from "./mode/docCache";
+import * as types from "../../common/types";
 
 // The monokai theme
 require('./monokai.css');
@@ -147,17 +148,38 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 			folding: true,
 			autoClosingBrackets: true,
 			wrappingColumn: 0,
-			readOnly: this.props.readOnly
+			readOnly: this.props.readOnly,
         }, []);
 
-        // TODO: mon
-        // move a doc cache v2
+		// Utility to load editor options
+		const loadEditorOptions = (editorOptions:types.EditorOptions) => {
+			// TODO: mon
+		    // Set editor options
+		    editorOptions.indentSize;
+			editorOptions.tabSize;
+			editorOptions.convertTabsToSpaces;
+			// TODO: mon
+		    // this.editor.updateOptions({key:'value'});
+		}
+
+		this.disposible.add(cast.editorOptionsChanged.on((res) => {
+		    if (res.filePath === this.props.filePath){
+		        loadEditorOptions(res.editorOptions);
+		    }
+		}));
+
+        // load up the doc
         docCache.getLinkedDoc(this.props.filePath).then(({doc, editorOptions}) => {
+			// Wire up the doc
+			this.editor.setModel(doc);
+
+			// Load editor options
+			loadEditorOptions(editorOptions);
+
+			// Mark as ready and do anything that was waiting for ready to occur 🌹
 			this.afterReadyQueue.forEach(cb=>cb());
 			this.ready = true;
 			this.setState({loading:false});
-
-			this.editor.setModel(doc);
 		})
 
         // TODO: mon
