@@ -295,10 +295,8 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 		this.props.onFocusChange && this.props.onFocusChange(focused);
 	}
 
-    getValue(){
-        return '';
-        // TODO: mon
-        // return this.codeMirror.getDoc().getValue();
+    getValue() {
+        this.editor.getValue();
     }
 
     search = (options: FindOptions) => {
