@@ -141,7 +141,10 @@ let CodeMirror = imp; // This is to overcome an unreported bug in the compiler
     if (options.async || getAnnotations.async) {
       lintAsync(cm, getAnnotations, passOptions)
     } else {
-      updateLinting(cm, getAnnotations(cm.getValue(), passOptions, cm));
+        /** BAS: wrapped in a request animation frame */
+        requestAnimationFrame(()=>{
+            updateLinting(cm, getAnnotations(cm.getValue(), passOptions, cm));
+        });
     }
   }
 

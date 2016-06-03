@@ -15,6 +15,7 @@ import {PendingRequestsIndicator} from "./pendingRequestsIndicator";
 import {Icon} from "./components/icon";
 import {ButtonBlack} from "./components/buttons";
 import {InputBlack} from "./components/inputs";
+import * as pure from "../common/pure";
 let {DraggableCore} = ui;
 
 import {connect} from "react-redux";
@@ -157,30 +158,9 @@ export class MainPanel extends BaseComponent<Props, State>{
             Object.keys(errorsToRender)
                 .filter(filePath => !!errorsToRender[filePath].length)
                 .map((filePath, i) => {
+                    const errors = errorsToRender[filePath];
 
-                    let errors =
-                        errorsToRender[filePath]
-                            .map((e, j) => (
-                                <div key={`${i}:${j}`} style={csx.extend(styles.hand, styles.errorsPanel.errorDetailsContainer) } onClick={() => this.openErrorLocation(e) }>
-                                    <div style={styles.errorsPanel.errorDetailsContent}>
-                                        <div style={styles.errorsPanel.errorMessage}>
-                                            🐛({e.from.line + 1}: {e.from.ch + 1}) {e.message}
-                                            {' '}<Clipboard text={`${e.filePath}:${e.from.line + 1} ${e.message}`}/>
-                                        </div>
-                                        {e.preview ? <div style={styles.errorsPanel.errorPreview}>{e.preview}</div> : ''}
-                                    </div>
-                                </div>
-                            ));
-
-                    return <div key={i}>
-                        <div style={styles.errorsPanel.filePath} onClick={() => this.openErrorLocation(errorsToRender[filePath][0]) }>
-                            <Icon name="file-code-o" style={{ fontSize: '.8rem' }}/> {filePath} ({errors.length})
-                        </div>
-
-                        <div style={styles.errorsPanel.perFileList}>
-                            {errors}
-                        </div>
-                    </div>
+                    return <ErrorRenders.ErrorsForFilePath key={i} errors={errors} filePath={filePath} />;
                 })
             }</div>
         );
@@ -223,6 +203,61 @@ export class MainPanel extends BaseComponent<Props, State>{
         if (nextState.height !== this.state.height
             || nextProps.errorsExpanded !== this.props.errorsExpanded) {
             tabState.debouncedResize();
+        }
+    }
+}
+
+/**
+ * Pure components for rendering errors
+ */
+namespace ErrorRenders {
+
+    const openErrorLocation = (error: CodeError) => {
+        gotoHistory.gotoError(error);
+    }
+
+    interface ErrorsForFilePathProps {
+        filePath: string,
+        errors: CodeError[]
+    }
+
+    export class ErrorsForFilePath extends React.Component<ErrorsForFilePathProps, {}> {
+        shouldComponentUpdate = pure.shouldComponentUpdate;
+
+        render() {
+            let errors =
+                this.props.errors
+                    .map((e, j) => (
+                        <SingleError key={`${j}`} error={e}/>
+                    ));
+
+            return <div>
+                <div style={styles.errorsPanel.filePath} onClick={() => openErrorLocation(this.props.errors[0]) }>
+                    <Icon name="file-code-o" style={{ fontSize: '.8rem' }}/> {this.props.filePath} ({errors.length})
+                </div>
+
+                <div style={styles.errorsPanel.perFileList}>
+                    {errors}
+                </div>
+            </div>;
+        }
+    }
+
+    export class SingleError extends React.Component<{error:CodeError},{}>{
+        shouldComponentUpdate = pure.shouldComponentUpdate;
+
+        render(){
+            const e = this.props.error;
+
+            return (<div style={csx.extend(styles.hand, styles.errorsPanel.errorDetailsContainer) } onClick={() => openErrorLocation(e) }>
+                <div style={styles.errorsPanel.errorDetailsContent}>
+                    <div style={styles.errorsPanel.errorMessage}>
+                        🐛({e.from.line + 1}: {e.from.ch + 1}) {e.message}
+                        {' '}<Clipboard text={`${e.filePath}:${e.from.line + 1} ${e.message}`}/>
+                    </div>
+                    {e.preview ? <div style={styles.errorsPanel.errorPreview}>{e.preview}</div> : ''}
+                </div>
+            </div>);
         }
     }
 }

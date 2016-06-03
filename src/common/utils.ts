@@ -517,17 +517,45 @@ export const isJsOrTs = (filePath: string) => isJs(filePath) || isTs(filePath);
 /**
  * Cancellation token
  */
-export type CancellationToken = ts.CancellationToken & { cancel: () => void };
+export type CancellationToken = { cancel(): void, isCancelled: boolean };
 export const cancellationToken = (): CancellationToken => {
     let cancelled = false;
     return {
-        isCancellationRequested(): boolean {
+        get isCancelled(): boolean {
             return cancelled;
         },
-        cancel: () => cancelled = true,
-        /** @throws OperationCanceledException if isCancellationRequested is true */
-        throwIfCancellationRequested() {
-            if (cancelled) throw new ts.OperationCanceledException();
-        }
+        cancel: () => cancelled = true
     }
+}
+export const cancelled = "cancelled";
+
+/**
+ * Cancellable For Each
+ */
+export function cancellableForEach<T>(config: {
+    items: T[],
+    cb: (item: T) => void,
+    cancellationToken: CancellationToken,
+}): Promise<any> {
+    return new Promise((resolve,reject) => {
+        let index = 0;
+        const lookAtNext = () => {
+            // Completed?
+            if (index === config.items.length) {
+                resolve({});
+            }
+            // Aborted?
+            else if (config.cancellationToken.isCancelled) {
+                reject(cancelled);
+            }
+            // Next and schedule
+            else {
+                const nextItem = config.items[index++];
+                config.cb(nextItem);
+                // Yield the thread for a bit
+                setTimeout(lookAtNext);
+            }
+        }
+        lookAtNext();
+    });
 }

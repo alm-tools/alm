@@ -133,6 +133,7 @@ let helpRowStyle = {
 })
 @ui.Radium
 export class FileTree extends BaseComponent<Props, State>{
+    shouldComponentUpdate = pure.shouldComponentUpdate;
 
     /** makes it easier to lookup directories */
     dirLookup:{[dirPath:string]:TreeDirItem} = {};

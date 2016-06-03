@@ -16,6 +16,17 @@ export const errors = {
     CALLED_WHEN_NO_ACTIVE_PROJECT_GLOBAL: "A query *that needs an active project* was made when there is no active project"
 }
 
+/**
+ * Some session constants
+ */
+export const urlHashNormal = "root";
+export const urlHashNewSession = "new-session";
+
+/**
+ * FARM : Don't want to crash by running out of memory / ui preference
+ */
+export const maxCountFindAndReplaceMultiResults = 1000;
+
 export interface FilePathPosition {
     filePath: string;
     position: EditorPosition;
@@ -490,9 +501,3 @@ export interface LiveAnalysisOverrideInfo {
     line: number;
     overrides: UMLClassMember;
 }
-
-/**
- * Some constants
- */
-export const urlHashNormal = "root";
-export const urlHashNewSession = "new-session";

@@ -197,7 +197,7 @@ export namespace Types {
         completed: boolean;
         results: Types.FarmResultDetails[];
         /** Might be null if no query */
-        config: Types.FarmConfig;
+        config: Types.FarmConfig | null;
     }
 
     /**

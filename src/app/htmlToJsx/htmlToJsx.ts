@@ -506,16 +506,14 @@ export class HTMLtoJSX {
 
 /**
  * Handles parsing of inline styles
- *
- * @param {string} rawStyle Raw style attribute
- * @constructor
  */
 export class StyleParser {
-    styles = {};
+  styles = {};
 
-    constructor (rawStyle) {
-      this.parse(rawStyle);
-    };
+  /** @param {string} rawStyle Raw style attribute */
+  constructor(rawStyle) {
+    this.parse(rawStyle);
+  };
 
   /**
    * Parse the specified inline style attribute value
