@@ -12,6 +12,27 @@ import * as state from "../../state/state";
 import {EditorOptions} from "../../../common/types";
 
 /**
+ * Ext lookup
+ */
+const extLookup: { [ext: string]: monaco.languages.ILanguageExtensionPoint } = {};
+monaco.languages.getLanguages().forEach(function(language) {
+    // console.log(language); // DEBUG
+    language.extensions.forEach(ext => {
+        // ext is like `.foo`. We really want `foo`
+        ext = ext.substr(1);
+        extLookup[ext] = language;
+    })
+});
+
+/**
+ * Gets the mode for a give filePath (based on its ext)
+ */
+const getLanguage = (filePath: string): string => {
+    const mode = extLookup[utils.getExt(filePath)];
+    return mode ? mode.id : 'plaintext';
+}
+
+/**
  * http://codemirror.net/mode/
  * Modes. New modes need to be added
  * - to the require call

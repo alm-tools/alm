@@ -6,11 +6,6 @@ import {cast, server} from "../../socket/socketClient";
 // The monokai theme
 require('./monokai.css');
 
-// TODO: mon
-// Use this in the doc cache
-// monaco.languages.getLanguages().forEach(function(language) {
-// 	console.log(language);
-// });
 
 interface Props {
 	onFocusChange?: (focused: boolean) => any;
