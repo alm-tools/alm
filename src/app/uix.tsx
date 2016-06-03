@@ -25,8 +25,9 @@ export function setup() {
         .forEach(cmd=> {
             cmd.on(() => {
                 let editor = API.getFocusedCodeEditorIfAny();
-                if (editor && editor.codeMirror) {
-                    editor.codeMirror.execCommand(cmd.config.editorCommandName);
+                if (editor && editor.editor) {
+                    // TODO: mon
+                    // editor.editor.executeCommand(cmd.config.editorCommandName);
                 }
             });
         });
