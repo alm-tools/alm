@@ -2,6 +2,7 @@ import * as ui from "../ui";
 import * as csx from "csx";
 import * as React from "react";
 
+
 interface Props {
 	onFocusChange?: (focused: boolean) => any;
 	readOnly?: boolean | "nocursor";
@@ -20,10 +21,10 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 	}
 
     // TODO: mon
-	// codeMirror: CodeMirror.EditorFromTextArea;
+	editor: monaco.editor.ICodeEditor;
 	refs: {
 		[string: string]: any;
-		textarea: any;
+		codeEditor: HTMLDivElement;
 	}
 
 	/** Ready after the doc is loaded */
@@ -131,8 +132,17 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 		// and initially
 		// setTimeout(()=> this.codeMirror && this.codeMirror.performLint(),1000);
 
+        var mountNode = this.refs.codeEditor;
+        this.editor = monaco.editor.create(mountNode, {
+            value: [
+                'function x() {',
+                '\tconsole.log("Hello world!");',
+                '}'
+            ].join('\n'),
+            language: 'javascript',
+        }, []);
+
         // TODO: mon
-		// var textareaNode = ReactDOM.findDOMNode(this.refs.textarea);
 		// this.codeMirror = CodeMirror.fromTextArea(textareaNode as any, options);
 		// this.codeMirror.filePath = this.props.filePath;
 		// this.codeMirror.on('focus', this.focusChanged.bind(this, true));
@@ -254,33 +264,15 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 	// }
 
 	focus = () => {
-        // TODO: mon
-		// if (this.codeMirror) {
-		// 	this.handleCursorActivity();
-        //     this.refresh();
-        //
-        //     this.codeMirror.focus();
-        //     /**
-        //      * For some reason code mirror fails to focus sometimes.
-        //      * for this we use an agressive version to ensure
-        //      * It reaches deep into the bowels of code mirror
-        //      */
-        //     const setFocusAgressive = () => {
-        //         if (!this.codeMirror.hasFocus()) {
-        //             this.refs.textarea.focus();
-        //             (this.codeMirror as any).display.input.focus();
-        //             setTimeout(setFocusAgressive, 10);
-        //         }
-        //     }
-        //     setFocusAgressive();
-		// }
+        if (this.editor) {
+            this.editor.focus();
+        }
 	}
 
     resize = () => {
-        // TODO: mon
-        // if (this.codeMirror) {
-        //     this.refresh();
-		// }
+        if (this.editor) {
+            this.refresh();
+		}
     }
 
     gotoPosition = (position: EditorPosition) => {
@@ -293,24 +285,8 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
     private refresh = () => {
         // TODO: mon
-        // // http://stackoverflow.com/questions/8349571/codemirror-editor-is-not-loading-content-until-clickeds
-        // // Without refresh code mirror will not show up untill clicked
-        // if (this.codeMirror) {
-        //     /**
-        //      * Without the setTimeout code mirror will lose scroll position
-        //      */
-        //     setTimeout(() => {
-        //         if (this.codeMirror.hasFocus()) { // If out of focus then this refresh can lead to bad results
-        //             this.codeMirror.refresh();
-        //         }
-        //         else {
-        //             const wrapper = this.codeMirror.getWrapperElement();
-        //             if (!wrapper) return;
-        //             if (!wrapper.clientHeight) return;
-        //             this.codeMirror.refresh();
-        //         }
-        //     }, 100);
-        // }
+        console.log('here');
+        this.editor.layout();
     }
 
     focusChanged = (focused) => {
@@ -384,7 +360,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         };
 		return (
 			<div className={className} style={csx.extend(csx.horizontal,csx.flex,{position:'relative', maxWidth:'100%'})}>
-				<div style={loadingStyle}>LOADING</div>
+                <div ref="codeEditor" style={{ display: 'flex', flexDirection: 'column', flex: 1 }} />
 			</div>
 		);
 	}

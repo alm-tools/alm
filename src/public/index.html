@@ -9,11 +9,20 @@
     <!-- socketio -->
     <script src="/socket.io/socket.io.js"></script>
 
+    <!-- Our serverState -->
+    <script src="/serverState.js"></script>
+
     <!-- Our main javascript -->
     <script src="/build/bundle.js"></script>
 
-    <!-- Our serverState -->
-    <script src="/serverState.js"></script>
+    <!-- Load Monaco -->
+    <script src="vs/loader.js"></script>
+    <script>
+    require(['vs/editor/editor.main'], function() {
+    		// At this point we've loaded the monaco-editor-core
+    		// It has exposed itself as the `monaco` global
+	});
+    </script>
 
     <style>
 

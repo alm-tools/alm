@@ -41,7 +41,7 @@ require('font-awesome/css/font-awesome.css');
 // Setup ntypescript
 require('ntypescript');
 
-document.addEventListener('DOMContentLoaded', () => {
+const afterLoaded = () => {
     // The main app element
     var appElement = document.getElementById('app');
 
@@ -176,4 +176,15 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     });
-});
+};
+
+const waitForMonaco = () => {
+    if (typeof monaco === 'undefined') {
+        requestAnimationFrame(waitForMonaco);
+    }
+    else {
+        afterLoaded();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', waitForMonaco);
