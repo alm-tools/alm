@@ -235,7 +235,6 @@ export interface Completion {
  * Editor Config stuff
  */
 export interface EditorOptions {
-    indentSize: number;
     tabSize: number;
     newLineCharacter: string;
     convertTabsToSpaces: boolean;
