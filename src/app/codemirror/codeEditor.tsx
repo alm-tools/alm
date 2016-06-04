@@ -141,9 +141,6 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         var mountNode = this.refs.codeEditor;
         this.editor = monaco.editor.create(mountNode, {
             value: '...',
-			// TODO: mon
-			// The language mode should come from the doc cache
-            language: 'java',
             theme: 'vs-dark vscode-theme-monokai-themes-Monokai-tmTheme',
 			folding: true,
 			autoClosingBrackets: true,
