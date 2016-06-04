@@ -297,12 +297,15 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
 	firstFocus = true;
 	focus = () => {
-        if (this.editor) {
-            this.editor.focus();
-            if (this.firstFocus) {
-                this.firstFocus = false;
-                this.resize();
-            }
+		if (!this.ready && this.firstFocus) {
+			this.firstFocus = false;
+			this.afterReadyQueue.push(()=>{
+				this.resize();
+				this.focus();
+			});
+		}
+        else if (this.editor) {
+			this.editor.focus();
         }
 	}
 
