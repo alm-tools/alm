@@ -150,13 +150,12 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
 		// Utility to load editor options
 		const loadEditorOptions = (editorOptions:types.EditorOptions) => {
-			// TODO: mon
-		    // Set editor options
-		    editorOptions.indentSize;
-			editorOptions.tabSize;
-			editorOptions.convertTabsToSpaces;
-			// TODO: mon
-		    // this.editor.updateOptions({key:'value'});
+		    // I figured this out from
+		    // Feels consistent with https://code.visualstudio.com/Docs/customization/userandworkspace
+		    this.editor.getModel().updateOptions({
+				insertSpaces: editorOptions.convertTabsToSpaces,
+				tabSize: editorOptions.indentSize
+			});
 		}
 
 		this.disposible.add(cast.editorOptionsChanged.on((res) => {
