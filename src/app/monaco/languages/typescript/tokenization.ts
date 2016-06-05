@@ -217,11 +217,11 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan): string {
     var ClassificationType = ts.ClassificationType;
     switch (token.classificationType) {
         case ClassificationType.numericLiteral:
-            return 'number';
+            return 'constant.numeric';
         case ClassificationType.stringLiteral:
             return 'string';
         case ClassificationType.regularExpressionLiteral:
-            return 'string-2';
+            return 'constant.character';
         case ClassificationType.operator:
             return 'keyword.operator'; // The atom grammar does keyword+operator and I actually like that
         case ClassificationType.comment:
@@ -280,7 +280,7 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan): string {
                 return 'variable';
             }
         case ClassificationType.parameterName:
-            return 'def';
+            return 'variable.parameter';
         case ClassificationType.punctuation:
             // Only get punctuation for JSX. Otherwise these would be operator
             // if (lineHasJSX && (token.string == '>' || token.string == '<' || token.string == '/>')) {
