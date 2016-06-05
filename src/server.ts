@@ -64,6 +64,8 @@ app.use(express.static(publicPath, {}));
 // Monaco works best with its own loader,
 // Serve it up from node_modules
 app.use('/vs', express.static(monacoSourceDir, {}));
+// Also server up our monaco addons
+app.use('/monaco', express.static(__dirname + '/monaco', {}));
 
 // Setup a socket server
 import {register} from "./socket/socketServer";
