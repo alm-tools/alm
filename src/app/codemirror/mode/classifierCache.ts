@@ -34,6 +34,16 @@ export function getLineAndCharacterOfPosition(filePath: string, pos: number): Ed
 }
 
 export function getClassificationsForLine(filePath: string, lineStart: number, string: string): ClassifiedSpan[] {
+    const cantDoIt = [{
+        textSpan: {
+            start:0,
+            length: string.length
+        },
+        startInLine: 0,
+        string,
+        classificationType: ts.ClassificationType.whiteSpace,
+        classificationTypeName: ClassificationTypeNames.whiteSpace,
+    }];
 
     /**
      * Protect against code mirror optimized rendering.
@@ -41,19 +51,7 @@ export function getClassificationsForLine(filePath: string, lineStart: number, s
      */
     const trueLineContents = languageService.getNonBoundSourceFile(filePath).text.substr(lineStart);
     if (!trueLineContents.startsWith(string)){
-
-        const fullLineTextSpan = {
-            start:0,
-            length: string.length
-        };
-
-        return [{
-            textSpan: fullLineTextSpan,
-            startInLine: 0,
-            string,
-            classificationType: ts.ClassificationType.whiteSpace,
-            classificationTypeName: ClassificationTypeNames.whiteSpace,
-        }];
+        return cantDoIt;
     }
 
     let lineLength = string.length;
