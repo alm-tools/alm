@@ -26,7 +26,8 @@ export function createTokenizationSupport(language:Language): monaco.languages.T
                 eolState: ts.EndOfLineState.None,
                 inJsDocComment: false,
                 filePath: window.creatingModelFilePath,
-                lineNumber: 0
+                lineNumber: 0,
+                lineStartIndex: 0,
             });
         },
 		tokenize: (line, state) => tokenize(bracketTypeTable, tokenTypeTable, classifier, <State> state, line)
@@ -35,18 +36,26 @@ export function createTokenizationSupport(language:Language): monaco.languages.T
 
 class State implements monaco.languages.IState {
 
+    /**
+     * Adding a new thing here?
+     * - add to ctor
+     * - add to equals
+     * - Fix other compile errors :)
+     */
 	public language: Language;
 	public eolState: ts.EndOfLineState;
 	public inJsDocComment: boolean;
     public filePath: string;
     public lineNumber: number;
+    public lineStartIndex: number;
 
-    constructor(config: { language: Language, eolState: ts.EndOfLineState, inJsDocComment: boolean, filePath: string, lineNumber: number }) {
+    constructor(config: { language: Language, eolState: ts.EndOfLineState, inJsDocComment: boolean, filePath: string, lineNumber: number, lineStartIndex: number }) {
         this.language = config.language;
         this.eolState = config.eolState;
         this.inJsDocComment = config.inJsDocComment;
         this.filePath = config.filePath;
         this.lineNumber = config.lineNumber;
+        this.lineStartIndex = config.lineStartIndex;
 	}
 
 	public clone(): State {
@@ -63,7 +72,9 @@ class State implements monaco.languages.IState {
         return this.eolState === other.eolState
             && this.inJsDocComment === other.inJsDocComment
             && this.filePath === other.filePath
-            && this.lineNumber === other.lineNumber;
+            && this.lineNumber === other.lineNumber
+            && this.lineStartIndex === other.lineStartIndex
+            ;
     }
 }
 
@@ -78,7 +89,8 @@ function tokenize(bracketTypeTable: { [i: number]: string }, tokenTypeTable: { [
             eolState: ts.EndOfLineState.None,
             inJsDocComment: false,
             filePath: state.filePath,
-            lineNumber: state.lineNumber + 1
+            lineNumber: state.lineNumber + 1,
+            lineStartIndex: state.lineStartIndex + text.length + 1,
         })
 	};
 
