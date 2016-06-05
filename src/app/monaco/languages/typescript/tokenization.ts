@@ -7,6 +7,7 @@
  * - Changed to use `ntypescript`.
  */
 import ts = require('ntypescript');
+import * as classifierCache from "../../../codemirror/mode/classifierCache";
 
 export enum Language {
 	TypeScript,
@@ -93,6 +94,11 @@ function tokenize(bracketTypeTable: { [i: number]: string }, tokenTypeTable: { [
             lineStartIndex: state.lineStartIndex + text.length + 1,
         })
 	};
+
+	// const classifications = classifierCache.getClassificationsForLine(state.filePath, state.lineStartIndex, text);
+	// DEBUG classifications
+	// console.log('%c'+text,"font-size: 20px");
+	// console.table(classifications.map(c=> ({ str: c.string, cls: c.classificationTypeName,startInLine:c.startInLine })));
 
 	function appendFn(startIndex:number, type:string):void {
 		if(ret.tokens.length === 0 || ret.tokens[ret.tokens.length - 1].scopes !== type) {
