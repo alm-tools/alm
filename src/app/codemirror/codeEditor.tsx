@@ -314,11 +314,12 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
     }
 
     gotoPosition = (position: EditorPosition) => {
-        // TODO: mon
-        // this.afterReady(()=>{
-        //     cmUtils.jumpToLine({ line: position.line, ch: position.ch, editor: this.codeMirror });
-        //     this.codeMirror.focus();
-		// });
+        this.afterReady(() => {
+            this.editor.setPosition({
+                lineNumber: position.line + 1,
+                column: position.ch + 1,
+            })
+        });
     }
 
     private refresh = () => {
