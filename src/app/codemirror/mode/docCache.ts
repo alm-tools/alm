@@ -79,7 +79,7 @@ export type GetLinkedDocResponse = {
 
 export function getLinkedDoc(filePath: string): Promise<GetLinkedDocResponse> {
     return getOrCreateDoc(filePath)
-        .then(({doc, isTsFile, editorOptions}) => {
+        .then(({doc, isJsOrTsFile, editorOptions}) => {
 
             // Everytime a typescript file is opened we ask for its output status (server pull)
             // On editing this happens automatically (server push)
@@ -131,7 +131,7 @@ export function getLinkedDoc(filePath: string): Promise<GetLinkedDocResponse> {
 
 type DocPromiseResult = {
     doc: monaco.editor.IModel,
-    isTsFile: boolean,
+    isJsOrTsFile: boolean,
     editorOptions: EditorOptions,
 }
 let docByFilePathPromised: { [filePath: string]: Promise<DocPromiseResult> } = Object.create(null);
@@ -143,7 +143,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
     else {
         return docByFilePathPromised[filePath] = server.openFile({ filePath: filePath }).then((res) => {
             let ext = utils.getExt(filePath);
-            let isTsFile = utils.isTs(filePath);
+            let isJsOrTsFile = utils.isJsOrTs(filePath);
 
             let language = getLanguage(filePath);
 
@@ -151,7 +151,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
             // console.log(mode,supportedModesMap[ext]); // Debug mode
 
             // Add to classifier cache
-            if (isTsFile) { classifierCache.addFile(filePath, res.contents); }
+            if (isJsOrTsFile) { classifierCache.addFile(filePath, res.contents); }
 
             // create the doc
             window.creatingModelFilePath = filePath;
@@ -197,7 +197,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                     // Easy exit for local edits getting echoed back
                     if (res.filePath == filePath && codeEdit.sourceId !== localSourceId) {
                         // Keep the classifier in sync
-                        if (isTsFile) { classifierCache.editFile(filePath, codeEdit); }
+                        if (isJsOrTsFile) { classifierCache.editFile(filePath, codeEdit); }
 
                         // make the edits
                         const editOperation: monaco.editor.IIdentifiedSingleEditOperation = {
@@ -229,7 +229,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                     && doc.getValue() !== res.contents) {
 
                     // Keep the classifier in sync
-                    if (isTsFile) { classifierCache.setContents(filePath, res.contents); }
+                    if (isJsOrTsFile) { classifierCache.setContents(filePath, res.contents); }
 
                     // preserve cursor
                     doc._editors.forEach(e=>{
@@ -247,7 +247,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
             });
 
             // Finally return the doc
-            return { doc, isTsFile, editorOptions: res.editorOptions };
+            return { doc, isJsOrTsFile, editorOptions: res.editorOptions };
         });
     }
 }

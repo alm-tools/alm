@@ -95,7 +95,7 @@ function tokenize(bracketTypeTable: { [i: number]: string }, tokenTypeTable: { [
         })
 	};
 
-	// const classifications = classifierCache.getClassificationsForLine(state.filePath, state.lineStartIndex, text);
+	const classifications = classifierCache.getClassificationsForLine(state.filePath, state.lineStartIndex, text);
 	// DEBUG classifications
 	// console.log('%c'+text,"font-size: 20px");
 	// console.table(classifications.map(c=> ({ str: c.string, cls: c.classificationTypeName,startInLine:c.startInLine })));
