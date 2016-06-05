@@ -24,7 +24,12 @@ export function getActions(): types.MonacoActionInformation[] {
         // We don't actually need to use these bindings other than the display as trigger is done by `id`.
         let kbd = null;
         if (keyboard) {
-            kbd = keyboard;
+            kbd = keyboard
+                .replace('UpArrow','Up')
+                .replace('DownArrow','Down')
+                .replace('LeftArrow','Left')
+                .replace('RightArrow','Right')
+                ;
         }
 
         return {
