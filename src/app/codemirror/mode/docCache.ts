@@ -185,6 +185,9 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                 };
                 // Send the edit
                 editBatcher.addToQueue(filePath, codeEdit);
+
+                // Keep the classifier in sync
+                classifierCache.editFile(filePath, codeEdit);
             });
 
             // setup to get doc changes from server
