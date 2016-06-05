@@ -26,6 +26,7 @@ export function getActions(): types.MonacoActionInformation[] {
         if (keyboard) {
             kbd = keyboard;
         }
+
         return {
             label: a.label,
             id: a.id,

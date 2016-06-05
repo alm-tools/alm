@@ -24,10 +24,16 @@ export function setup() {
         .filter(x=> x.config.context == commands.CommandContext.Editor)
         .forEach(cmd=> {
             cmd.on(() => {
-                let editor = API.getFocusedCodeEditorIfAny();
-                if (editor && editor.editor) {
-                    // TODO: mon
-                    // editor.editor.executeCommand(cmd.config.editorCommandName);
+                let editorTab = API.getFocusedCodeEditorIfAny();
+                if (editorTab && editorTab.editor) {
+                    const editor = editorTab.editor;
+                    const action = editor.getAction(cmd.config.editorCommandName);
+                    if (!action) {
+                        console.error('Failed to find editor action:', cmd.config);
+                    }
+                    else {
+                        action.run();
+                    }
                 }
             });
         });

@@ -11,13 +11,13 @@
 // code: VScode
 //---------------------------------------------
 //
-// This file also sets up CodeMirror keybindings
+// This file also sets up Monaco keybindings
 
 import * as Mousetrap from "mousetrap";
 require("mousetrap/plugins/global-bind/mousetrap-global-bind");
 import * as events from "../../common/events";
 import * as utils from "../../common/utils";
-import * as csx from "csx";
+import * as types from "../../common/types";
 
 export enum CommandContext {
     Global,
@@ -502,184 +502,55 @@ export let additionalEditorCommands = {
 }
 utils.stringEnum(additionalEditorCommands);
 
-/** Load CM and keymaps */
-import CodeMirror = require('codemirror');
-require('codemirror/keymap/sublime')
+/** Load editor actions + keymaps */
+import {getActions}  from "./monacoActionLoader";
+const actions = getActions();
+// console.log(actions); // DEBUG
 
-// The key is like sublime -> default -> basic
-let keyMap = (CodeMirror as any).keyMap;
-let basicMap = keyMap.basic;
-let defaultMap = keyMap.default;
-let sublimeMap = keyMap.sublime;
-
-/** Extensions : We just add to highest priority, here sublimeMap */
-// Additional key bindings for existing commands
-sublimeMap[`Ctrl-Space`] = "autocomplete";
+// TODO: mon
 // Our additionalEditorCommands
-sublimeMap[`F2`] = additionalEditorCommands.renameVariable;
-sublimeMap[`${mod}-B`] = additionalEditorCommands.gotoDefinition;
-sublimeMap[`Shift-Enter`] = additionalEditorCommands.jumpy;
-sublimeMap[`Shift-${mod}-B`] = additionalEditorCommands.findReferences;
-sublimeMap[`${mod}-Alt-L`] = additionalEditorCommands.format;
-sublimeMap[`${mod}-Alt-O`] = additionalEditorCommands.toggleBlaster;
-sublimeMap[`${mod}-Alt-Z`] = additionalEditorCommands.gitSoftResetFile;
-sublimeMap[`${mod}-G`] = additionalEditorCommands.goToLine;
-sublimeMap[`${mod}-Y`] = additionalEditorCommands.gotoTypeScriptSymbol;
-sublimeMap[`Alt-Enter`] = additionalEditorCommands.quickFix;
+// sublimeMap[`F2`] = additionalEditorCommands.renameVariable;
+// sublimeMap[`${mod}-B`] = additionalEditorCommands.gotoDefinition;
+// sublimeMap[`Shift-Enter`] = additionalEditorCommands.jumpy;
+// sublimeMap[`Shift-${mod}-B`] = additionalEditorCommands.findReferences;
+// sublimeMap[`${mod}-Alt-L`] = additionalEditorCommands.format;
+// sublimeMap[`${mod}-Alt-O`] = additionalEditorCommands.toggleBlaster;
+// sublimeMap[`${mod}-Alt-Z`] = additionalEditorCommands.gitSoftResetFile;
+// sublimeMap[`${mod}-G`] = additionalEditorCommands.goToLine;
+// sublimeMap[`${mod}-Y`] = additionalEditorCommands.gotoTypeScriptSymbol;
+// sublimeMap[`Alt-Enter`] = additionalEditorCommands.quickFix;
 
-// we have our own cursor history
-delete defaultMap[`${mod}-U`];
-delete defaultMap[`Shift-${mod}-U`];
-// Fallback to default `singleSelection` as sublime `singleSelectionTop` is bad e.g. when we do inline rename
-delete sublimeMap['Esc'];
-// Cmd + U conflicted with our cursor history
-delete sublimeMap[`${mod}-K ${mod}-U`];
-delete sublimeMap[`${mod}-K ${mod}-L`];
-// Because alt+u didn't work on mac
-sublimeMap['Alt-='] = "upcaseAtCursor";
-sublimeMap['Alt--'] = "downcaseAtCursor";
-// Conflicts with jump to tab
-delete sublimeMap['Shift-Cmd-Enter'];
-delete sublimeMap['Shift-Ctrl-Enter'];
-// Conflicts with our js output toggle
-// was selectBetweenBrackets
-sublimeMap['Shift-Cmd-M'] = "...";
-sublimeMap['Shift-Ctrl-M'] = "...";
-// sort lines : is too close to `f8`. Delete from keymap but still list.
-delete sublimeMap['F9'];
-new UICommand({
-    description: 'Editor: Sort Lines',
-    context: CommandContext.Editor,
-    editorCommandName: 'sortLines',
-})
-
-// Swap line should also come with indent
-// + use VSCode shortcuts as they are consistent across win/mac
-const origSwapLineUp = CodeMirror.commands['swapLineUp'];
-const origSwapLineDown = CodeMirror.commands['swapLineDown'];
-const indentCurrentLine = (cm) => {
-    if (cm.isReadOnly()) return CodeMirror.Pass;
-    const line = cm.getCursor().line;
-    cm.indentLine(line);
-}
-CodeMirror.commands['swapLineUp'] = function(cm){
-    origSwapLineUp.apply(this,arguments);
-    indentCurrentLine(cm);
-}
-CodeMirror.commands['swapLineDown'] = function(cm){
-    origSwapLineDown.apply(this,arguments);
-    indentCurrentLine(cm);
-}
-sublimeMap['Alt-Up'] = 'swapLineUp';
-sublimeMap['Alt-Down'] = 'swapLineDown';
-
-// console.log(csx.extend(basicMap,defaultMap,sublimeMap)); // DEBUG
-
-/** Comamnds we don't support as an editor command */
-let unsupportedNames = utils.createMap([
-    '...', // General command to ignore some input
-    'replace',
-    'find', // already list this elsewhere
-    'findPrev',
-    'findNext',
-    'findUnder',
-    'findUnderPrevious',
-    'indentAuto',
-    'replaceAll',
-
-    'transposeChars', // Ctrl + T doesn't work
-
-    // These have been deprecated by using cursor history, from defaultMap
-    "undoSelection", // Mod + U
-    "redoSelection", // Shift + Mod + U
-
-    "nextBookmark",
-    "prevBookmark",
-    "toggleBookmark",
-    "clearBookmarks",
-    "selectBookmarks",
-
-    "delLineLeft", // didn't work
-
-    "setSublimeMark", // don't care
-    "setSublimeMark",
-    "selectToSublimeMark",
-    "deleteToSublimeMark",
-    "swapWithSublimeMark",
-    "sublimeYank",
-
-    "unfoldAll", // Didn't work
-    "findIncremental",
-    "findIncrementalReverse",
-
-    "save", // already elsewhere
-]);
-
-/** Some commands are duplicated with different keys(e.g redo ctrl y and ctrl + shift + z)*/
-let alreadyAddedCommand: utils.TruthTable = {};
 /** Keys already added do not fall throught */
 let alreadyAddedShortcut: utils.TruthTable = {};
 
-function addEditorMapToCommands(map: { [shortcut: string]: string }) {
-    let listed = Object.keys(map).map((k) => ({ shortcut: k, commandName: map[k] }));
-
-    for (let item of listed) {
-        // fall through
-        if (item.shortcut == 'fallthrough') {
-            continue;
-        }
-        // commands we don't support
-        if (unsupportedNames[item.commandName]){
-            continue;
-        }
-        // dupes
-        if (alreadyAddedCommand[item.commandName]){
-            continue;
-        }
-        alreadyAddedCommand[item.commandName] = true;
-        if (alreadyAddedShortcut[item.shortcut]){
-            continue;
-        }
-        alreadyAddedShortcut[item.shortcut] = true;
-
-        let shortcut = item.shortcut
-            .replace(/-/g, '+');
-
-        let commandDisplayName = item.commandName
-            .split(/(?=[A-Z])/) // split on uppercase
-            .map(x => x[0].toUpperCase() + x.substr(1)) // uppercase first character
-            .join(' ');
-
-        new UICommand({
-            keyboardShortcut: shortcut,
-            description: `Editor: ${commandDisplayName}`,
-            context: CommandContext.Editor,
-            editorCommandName: item.commandName,
-        });
-    }
+function addEditorMapToCommands(command: types.MonacoActionInformation) {
+    new UICommand({
+        keyboardShortcut: command.kbd,
+        description: `Editor: ${command.label}`,
+        context: CommandContext.Editor,
+        editorCommandName: command.id,
+    });
 }
+actions.forEach(addEditorMapToCommands)
 
-// Add in order of priority
-addEditorMapToCommands(sublimeMap);
-addEditorMapToCommands(defaultMap);
-addEditorMapToCommands(basicMap);
+/** TODO: mon */
 // For our custom *editor* commands that don't have a keymap entry
 // We add them manually
-new UICommand({
-    description: 'Editor: HTML to TSX',
-    context: CommandContext.Editor,
-    editorCommandName: additionalEditorCommands.htmlToTsx,
-})
-new UICommand({
-    description: 'Editor: CSS to TS',
-    context: CommandContext.Editor,
-    editorCommandName: additionalEditorCommands.cssToTs,
-})
-new UICommand({
-    description: 'Editor: JSON to TS definition',
-    context: CommandContext.Editor,
-    editorCommandName: additionalEditorCommands.jsonToDts,
-})
+// new UICommand({
+//     description: 'Editor: HTML to TSX',
+//     context: CommandContext.Editor,
+//     editorCommandName: additionalEditorCommands.htmlToTsx,
+// })
+// new UICommand({
+//     description: 'Editor: CSS to TS',
+//     context: CommandContext.Editor,
+//     editorCommandName: additionalEditorCommands.cssToTs,
+// })
+// new UICommand({
+//     description: 'Editor: JSON to TS definition',
+//     context: CommandContext.Editor,
+//     editorCommandName: additionalEditorCommands.jsonToDts,
+// })
 
 /**
  * This is a consolidation of the `file edited` and `file changed on disk`
