@@ -7,7 +7,7 @@ export function setupMonacoTypecript() {
     });
     monaco.languages.onLanguage('typescript', () => {
         // Perform any one time setup
-        console.log('setup typescript');
+        setupMode('typescript');
     });
 
     monaco.languages.register({
@@ -20,6 +20,13 @@ export function setupMonacoTypecript() {
     });
     monaco.languages.onLanguage('javascript', () => {
         // Perform any one time setup
-        console.log('setup javascript');
+        setupMode('javascript');
     });
+}
+
+import * as tokenization from "./tokenization";
+function setupMode(modeId: 'typescript' | 'javascript') {
+    /** Setup tokenization */
+    const language = modeId === 'typescript' ? tokenization.Language.TypeScript : tokenization.Language.EcmaScript5;
+    monaco.languages.setTokensProvider(modeId, tokenization.createTokenizationSupport(language));
 }
