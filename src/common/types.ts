@@ -500,3 +500,13 @@ export interface LiveAnalysisOverrideInfo {
     line: number;
     overrides: UMLClassMember;
 }
+
+
+/**
+ * Monaco command pallete support
+ */
+export interface MonacoActionInformation {
+    label: string,
+    id: string;
+    kbd: string | null;
+}
