@@ -1,7 +1,7 @@
 export function setupMonacoTypecript() {
     monaco.languages.register({
         id: 'typescript',
-        extensions: ['.ts'],
+        extensions: ['.ts', '.tsx'],
         aliases: ['TypeScript', 'ts', 'typescript'],
         mimetypes: ['text/typescript']
     });
@@ -12,7 +12,7 @@ export function setupMonacoTypecript() {
 
     monaco.languages.register({
         id: 'javascript',
-        extensions: ['.js', '.es6'],
+        extensions: ['.js', '.es6', '.jsx'],
         firstLine: '^#!.*\\bnode',
         filenames: ['jakefile'],
         aliases: ['JavaScript', 'javascript', 'js'],
