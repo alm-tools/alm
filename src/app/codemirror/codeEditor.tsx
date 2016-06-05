@@ -4,6 +4,7 @@ import * as React from "react";
 import {cast, server} from "../../socket/socketClient";
 import * as docCache from "./mode/docCache";
 import * as types from "../../common/types";
+import * as cursorHistory from "../cursorHistory";
 
 // The monokai theme
 require('./monokai.css');
@@ -191,12 +192,10 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         // TODO: mon
         // this.disposible.add(onresize.on(() => this.refresh()));
 
-        // TODO: mon
         // cursor history
-        // if (!this.props.readOnly) {
-        //     this.codeMirror.on('cursorActivity', this.handleCursorActivity);
-        //     this.disposible.add({ dispose: () => this.codeMirror.off('cursorActivity', this.handleCursorActivity) });
-        // }
+        if (!this.props.readOnly) {
+            this.disposible.add(this.editor.onDidChangeCursorPosition(this.handleCursorActivity));
+        }
 
         // TODO: mon
         // live analysis
@@ -374,9 +373,11 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
     }
 
     handleCursorActivity = () => {
-        // TODO: mon
-        // let cursor = this.codeMirror.getDoc().getCursor();
-        // cursorLocation.addEntry(cursor);
+        let cursor = this.editor.getSelection();
+        cursorHistory.addEntry({
+			line: cursor.startLineNumber - 1,
+			ch: cursor.startColumn - 1,
+		});
     };
 
 	render () {
