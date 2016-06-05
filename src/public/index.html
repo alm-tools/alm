@@ -18,7 +18,10 @@
     <!-- Load Monaco -->
     <script src="vs/loader.js"></script>
     <script>
-    require(['vs/editor/editor.main'], function() {
+    // Calling it monaco require as we don't want webpack figuring it out! so in our code base we call it monaco require
+    // Still leaving the `require` function available as its probably used internally by monaco still!
+    var monacoRequire = require;
+    monacoRequire(['vs/editor/editor.main'], function() {
     		// At this point we've loaded the monaco-editor-core
     		// It has exposed itself as the `monaco` global
 	});
