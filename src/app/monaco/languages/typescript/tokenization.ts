@@ -95,11 +95,6 @@ function tokenize(bracketTypeTable: { [i: number]: string }, tokenTypeTable: { [
         })
 	};
 
-	const classifications = classifierCache.getClassificationsForLine(state.filePath, state.lineStartIndex, text);
-	// DEBUG classifications
-	// console.log('%c'+text,"font-size: 20px");
-	// console.table(classifications.map(c=> ({ str: c.string, cls: c.classificationTypeName,startInLine:c.startInLine })));
-
 	function appendFn(startIndex:number, type:string):void {
 		if(ret.tokens.length === 0 || ret.tokens[ret.tokens.length - 1].scopes !== type) {
 			ret.tokens.push({
@@ -111,7 +106,10 @@ function tokenize(bracketTypeTable: { [i: number]: string }, tokenTypeTable: { [
 
 	var isTypeScript = state.language === Language.TypeScript;
 
-	// shebang statement, #! /bin/node
+	if (isTypeScript) {
+		return tokenizeTs(state, ret, text);
+	}
+
 	if (!isTypeScript && checkSheBang(0, text, appendFn)) {
 		return ret;
 	}
@@ -195,4 +193,110 @@ function checkSheBang(deltaOffset: number, line: string, appendFn: (startIndex: 
 		appendFn(deltaOffset, 'comment.shebang');
 		return true;
 	}
+}
+
+
+function tokenizeTs(state: State, ret: {tokens: monaco.languages.IToken[], endState: State}, text: string) : monaco.languages.ILineTokens {
+	const classifications = classifierCache.getClassificationsForLine(state.filePath, state.lineStartIndex, text);
+	// DEBUG classifications
+	// console.log('%c'+text,"font-size: 20px");
+	// console.table(classifications.map(c=> ({ str: c.string, cls: c.classificationTypeName,startInLine:c.startInLine })));
+
+	let startIndex = 0;
+	classifications.forEach((classifiedSpan) => {
+		ret.tokens.push({
+			startIndex,
+			scopes: getStyleForToken(classifiedSpan) + '.ts'
+		})
+		startIndex = startIndex + classifiedSpan.string.length
+	});
+	return ret;
+}
+
+function getStyleForToken(token: classifierCache.ClassifiedSpan): string {
+    var ClassificationType = ts.ClassificationType;
+    switch (token.classificationType) {
+        case ClassificationType.numericLiteral:
+            return 'number';
+        case ClassificationType.stringLiteral:
+            return 'string';
+        case ClassificationType.regularExpressionLiteral:
+            return 'string-2';
+        case ClassificationType.operator:
+            return 'keyword.operator'; // The atom grammar does keyword+operator and I actually like that
+        case ClassificationType.comment:
+            return 'comment';
+        case ClassificationType.className:
+        case ClassificationType.enumName:
+        case ClassificationType.interfaceName:
+        case ClassificationType.moduleName:
+        case ClassificationType.typeParameterName:
+        case ClassificationType.typeAliasName:
+            return 'variable-2';
+        case ClassificationType.keyword:
+            switch (token.string) {
+                case 'string':
+                case 'number':
+                case 'void':
+                case 'bool':
+                case 'boolean':
+                    return 'variable-2';
+                case 'static':
+                case 'public':
+                case 'private':
+                case 'get':
+                case 'set':
+                    return 'qualifier';
+                case 'function':
+                case 'var':
+                case 'let':
+                case 'const':
+                    return 'qualifier';
+                case 'this':
+                    return 'number'; // Atom does this `constant`
+                default:
+                    return 'keyword';
+            }
+
+        case ClassificationType.identifier:
+            // let lastToken = textBefore.trim();
+            // let nextStr: string; // setup only if needed
+			//
+            // if (lastToken.endsWith('let') || lastToken.endsWith('const') || lastToken.endsWith('var')) {
+            //     return 'def';
+            // }
+            // else if ((nextStr = nextTenChars.replace(/\s+/g, '')).startsWith('(')
+            //     || nextStr.startsWith('=(')
+            //     || nextStr.startsWith('=function')) {
+            //     return 'property'; // Atom does this called "method"/"function". I'm just lazy
+            // }
+            // // Show types (indentifiers in PascalCase) as variable-2, other types (camelCase) as variable
+            // else if (token.string.charAt(0).toLowerCase() !== token.string.charAt(0)
+            //     && (lastToken.endsWith(':') || lastToken.endsWith('.')) /* :foo.Bar or :Foo */) {
+            //     return 'variable-2';
+            // }
+            // else
+			{
+                return 'variable';
+            }
+        case ClassificationType.parameterName:
+            return 'def';
+        case ClassificationType.punctuation:
+            // Only get punctuation for JSX. Otherwise these would be operator
+            // if (lineHasJSX && (token.string == '>' || token.string == '<' || token.string == '/>')) {
+            //     return 'tag.bracket'; // we need tag + bracket for CM's tag matching
+            // }
+            return 'bracket';
+        case ClassificationType.jsxOpenTagName:
+        case ClassificationType.jsxCloseTagName:
+        case ClassificationType.jsxSelfClosingTagName:
+            return 'tag';
+        case ClassificationType.jsxAttribute:
+            return 'property';
+        case ClassificationType.jsxAttributeStringLiteralValue:
+            return 'string';
+        case ClassificationType.whiteSpace:
+        default:
+            return null;
+    }
 }

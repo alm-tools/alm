@@ -45,3 +45,10 @@
 .monaco-editor.vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .current-line { background-color: rgba(62, 61, 50, 1); }
 .monaco-editor.vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .cursor { background-color: rgba(248, 248, 240, 1); }
 .monaco-editor.vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.whitespace { color: rgba(59, 58, 50, 1) !important; }
+
+
+/**
+ * These are our extensions to the monocai theme
+ */
+ /* the default has nothing for qualifier */
+.monaco-editor.vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .qualifier { color: rgb(0, 208, 255); }
