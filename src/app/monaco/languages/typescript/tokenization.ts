@@ -286,7 +286,11 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan): string {
             // if (lineHasJSX && (token.string == '>' || token.string == '<' || token.string == '/>')) {
             //     return 'tag.bracket'; // we need tag + bracket for CM's tag matching
             // }
-            return 'bracket';
+            if (token.string === '{' || token.string === '}')
+            	return 'delimiter.bracket';
+			if (token.string === '(' || token.string === ')')
+            	return 'delimiter.parenthesis';
+			return 'bracket';
         case ClassificationType.jsxOpenTagName:
         case ClassificationType.jsxCloseTagName:
         case ClassificationType.jsxSelfClosingTagName:
