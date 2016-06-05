@@ -65,7 +65,7 @@ app.use(express.static(publicPath, {}));
 // Serve it up from node_modules
 app.use('/vs', express.static(monacoSourceDir, {}));
 // Also server up our monaco addons
-app.use('/monaco', express.static(__dirname + '/monaco', {}));
+app.use('/monaco', express.static(__dirname + '/app/monaco', {}));
 
 // Setup a socket server
 import {register} from "./socket/socketServer";

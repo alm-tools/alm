@@ -33,6 +33,12 @@ declare global {
 }
 
 /**
+ * Setup any additional languages
+ */
+import {setupMonacoTypecript} from "../../monaco/languages/typescript/monacoTypeScript";
+setupMonacoTypecript();
+
+/**
  * Ext lookup
  */
 const extLookup: { [ext: string]: monaco.languages.ILanguageExtensionPoint } = {};
