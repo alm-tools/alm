@@ -12,13 +12,21 @@ import * as state from "../../state/state";
 import {EditorOptions} from "../../../common/types";
 
 /**
- * We extend the monaco editor model to keep `filePath`
+ * We extend the monaco editor model
  */
 declare global {
     module monaco {
         module editor {
             interface IModel {
+                /** keep `filePath` */
                 filePath?: string;
+                /**
+                 * add a list of editors
+                 * - useful for restoring cursors if we edit the model
+                 */
+                _editors: monaco.editor.ICodeEditor[];
+            }
+            interface ICodeEditor {
             }
         }
     }
@@ -132,6 +140,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
             // create the doc
             const doc = monaco.editor.createModel(res.contents, language);
             doc.filePath = filePath;
+            doc._editors = [];
 
             let editCameFromServerCount = 0;
 
@@ -204,8 +213,13 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                     // Keep the classifier in sync
                     if (isTsFile) { classifierCache.setContents(filePath, res.contents); }
 
-                    // TODO: mon
                     // preserve cursor
+                    doc._editors.forEach(e=>{
+                        const cursors = e.getSelections();
+                        setTimeout(()=>{
+                            e.setSelections(cursors);
+                        })
+                    })
 
                     // Note that we use *mark as coming from server* so we don't go into doc.change handler later on :)
                     editCameFromServerCount++;
