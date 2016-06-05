@@ -206,14 +206,19 @@ function tokenizeTs(state: State, ret: {tokens: monaco.languages.IToken[], endSt
 	classifications.forEach((classifiedSpan) => {
 		ret.tokens.push({
 			startIndex,
-			scopes: getStyleForToken(classifiedSpan) + '.ts'
+			scopes: getStyleForToken(classifiedSpan, text, startIndex) + '.ts'
 		})
 		startIndex = startIndex + classifiedSpan.string.length
 	});
 	return ret;
 }
 
-function getStyleForToken(token: classifierCache.ClassifiedSpan): string {
+function getStyleForToken(
+	token: classifierCache.ClassifiedSpan,
+	/** Full contents of the line */
+	line: string,
+	/** Start position for this token in the line */
+	startIndex: number): string {
     var ClassificationType = ts.ClassificationType;
     switch (token.classificationType) {
         case ClassificationType.numericLiteral:
@@ -259,12 +264,12 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan): string {
             }
 
         case ClassificationType.identifier:
-            // let lastToken = textBefore.trim();
-            // let nextStr: string; // setup only if needed
-			//
-            // if (lastToken.endsWith('let') || lastToken.endsWith('const') || lastToken.endsWith('var')) {
-            //     return 'def';
-            // }
+            let lastToken = line.substr(0, startIndex).trim();
+            let nextStr: string; // setup only if needed
+
+            if (lastToken.endsWith('let') || lastToken.endsWith('const') || lastToken.endsWith('var')) {
+                return 'def';
+            }
             // else if ((nextStr = nextTenChars.replace(/\s+/g, '')).startsWith('(')
             //     || nextStr.startsWith('=(')
             //     || nextStr.startsWith('=function')) {
@@ -275,7 +280,7 @@ function getStyleForToken(token: classifierCache.ClassifiedSpan): string {
             //     && (lastToken.endsWith(':') || lastToken.endsWith('.')) /* :foo.Bar or :Foo */) {
             //     return 'variable-2';
             // }
-            // else
+            else
 			{
                 return 'variable';
             }

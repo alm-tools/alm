@@ -52,3 +52,5 @@
  */
  /* the default has nothing for qualifier */
 .monaco-editor.vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .qualifier { color: rgb(0, 208, 255); }
+/* `def` does not exist. We like to use it for variable definitions */
+.monaco-editor.vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .def { color: rgb(253, 151, 31); }
