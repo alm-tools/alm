@@ -33,6 +33,16 @@ declare global {
 }
 
 /**
+ * I haven't found a way to send the `tokenizer` the filePath
+ * But `getInitialState` is reliably called immediately after `creatModel` so we can path this info through global
+ */
+declare global {
+    interface Window {
+        creatingModelFilePath?: string;
+    }
+}
+
+/**
  * Setup any additional languages
  */
 import {setupMonacoTypecript} from "../../monaco/languages/typescript/monacoTypeScript";
@@ -144,7 +154,9 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
             if (isTsFile) { classifierCache.addFile(filePath, res.contents); }
 
             // create the doc
+            window.creatingModelFilePath = filePath;
             const doc = monaco.editor.createModel(res.contents, language);
+
             doc.filePath = filePath;
             doc._editors = [];
 

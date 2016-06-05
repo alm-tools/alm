@@ -1,8 +1,10 @@
 /**
- * Copied from
+ * Orginal from
  * https://github.com/alexandrudima/monaco-typescript/blob/1af97f4c0bc7514ea1f1ba62d9098aa883595918/src/tokenization.ts
  *
- * Just changed to use `ntypescript` for now.
+ * Modified to be more powerful
+ * - (filePath aware)
+ * - Changed to use `ntypescript`.
  */
 import ts = require('ntypescript');
 
@@ -18,7 +20,15 @@ export function createTokenizationSupport(language:Language): monaco.languages.T
 		tokenTypeTable = language === Language.TypeScript ? tsTokenTypeTable : jsTokenTypeTable;
 
 	return {
-		getInitialState: () => new State(language, ts.EndOfLineState.None, false),
+		getInitialState: function() {
+            return new State({
+                language,
+                eolState: ts.EndOfLineState.None,
+                inJsDocComment: false,
+                filePath: window.creatingModelFilePath,
+                lineNumber: 0
+            });
+        },
 		tokenize: (line, state) => tokenize(bracketTypeTable, tokenTypeTable, classifier, <State> state, line)
 	};
 }
@@ -28,32 +38,33 @@ class State implements monaco.languages.IState {
 	public language: Language;
 	public eolState: ts.EndOfLineState;
 	public inJsDocComment: boolean;
+    public filePath: string;
+    public lineNumber: number;
 
-	constructor(language:Language, eolState: ts.EndOfLineState, inJsDocComment: boolean) {
-		this.language = language;
-		this.eolState = eolState;
-		this.inJsDocComment = inJsDocComment;
+    constructor(config: { language: Language, eolState: ts.EndOfLineState, inJsDocComment: boolean, filePath: string, lineNumber: number }) {
+        this.language = config.language;
+        this.eolState = config.eolState;
+        this.inJsDocComment = config.inJsDocComment;
+        this.filePath = config.filePath;
+        this.lineNumber = config.lineNumber;
 	}
 
 	public clone(): State {
-		return new State(this.language, this.eolState, this.inJsDocComment);
+		return new State(this);
 	}
 
-	public equals(other:monaco.languages.IState):boolean {
-		if(other === this) {
-			return true;
-		}
-		if(!other || !(other instanceof State)) {
-			return false;
-		}
-		if (this.eolState !== (<State> other).eolState) {
-			return false;
-		}
-		if(this.inJsDocComment !== (<State> other).inJsDocComment) {
-			return false;
-		}
-		return true;
-	}
+    public equals(other: monaco.languages.IState): boolean {
+        if (other === this) {
+            return true;
+        }
+        if (!other || !(other instanceof State)) {
+            return false;
+        }
+        return this.eolState === other.eolState
+            && this.inJsDocComment === other.inJsDocComment
+            && this.filePath === other.filePath
+            && this.lineNumber === other.lineNumber;
+    }
 }
 
 function tokenize(bracketTypeTable: { [i: number]: string }, tokenTypeTable: { [i: number]: string },
@@ -62,7 +73,13 @@ function tokenize(bracketTypeTable: { [i: number]: string }, tokenTypeTable: { [
 	// Create result early and fill in tokens
 	var ret = {
 		tokens: <monaco.languages.IToken[]>[],
-		endState: new State(state.language, ts.EndOfLineState.None, false)
+		endState: new State({
+            language: state.language,
+            eolState: ts.EndOfLineState.None,
+            inJsDocComment: false,
+            filePath: state.filePath,
+            lineNumber: state.lineNumber + 1
+        })
 	};
 
 	function appendFn(startIndex:number, type:string):void {
