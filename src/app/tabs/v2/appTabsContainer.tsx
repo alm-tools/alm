@@ -1010,6 +1010,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         },
         selectTab: (id: string) => {
             let lastSelectedTab = this.selectedTabInstance;
+            if (lastSelectedTab && id !== lastSelectedTab.id) {
+                this.tabApi[lastSelectedTab.id].willBlur.emit({});
+            }
             this.selectedTabInstance = this.tabs.find(t => t.id == id);
             this.tabState.focusSelectedTabIfAny();
             if (!lastSelectedTab || (lastSelectedTab && lastSelectedTab.id !== id)) {
@@ -1214,6 +1217,7 @@ const newTabApi = ()=>{
         save: new TypedEvent(),
         close: new TypedEvent() as any,
         gotoPosition: new TypedEvent() as any,
+        willBlur: new TypedEvent() as any,
         search: {
             doSearch: new TypedEvent() as any,
             hideSearch: new TypedEvent() as any,

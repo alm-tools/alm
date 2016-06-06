@@ -73,6 +73,7 @@ export class Code extends ui.BaseComponent<Props, State> {
         this.disposible.add(api.save.on(this.save));
         this.disposible.add(api.close.on(this.close));
         this.disposible.add(api.gotoPosition.on(this.gotoPosition));
+        this.disposible.add(api.willBlur.on(this.willBlur));
         // Listen to search tab events
         this.disposible.add(api.search.doSearch.on(this.search.doSearch));
         this.disposible.add(api.search.hideSearch.on(this.search.hideSearch));
@@ -136,6 +137,10 @@ export class Code extends ui.BaseComponent<Props, State> {
 
     gotoPosition = (position: EditorPosition) => {
         this.refs.editor.gotoPosition(position);
+    }
+
+    willBlur = () => {
+        this.refs.editor.willBlur();
     }
 
     search = {
