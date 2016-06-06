@@ -5,7 +5,7 @@ import {cast, server} from "../../socket/socketClient";
 import * as docCache from "./mode/docCache";
 import * as types from "../../common/types";
 import * as cursorHistory from "../cursorHistory";
-import * as search from "../monaco/monacoSearch";
+import * as search from "../monaco/search/monacoSearch";
 
 // The monokai theme
 require('./monokai.css');
