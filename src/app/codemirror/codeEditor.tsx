@@ -5,6 +5,7 @@ import {cast, server} from "../../socket/socketClient";
 import * as docCache from "./mode/docCache";
 import * as types from "../../common/types";
 import * as cursorHistory from "../cursorHistory";
+import * as search from "../monaco/monacoSearch";
 
 // The monokai theme
 require('./monokai.css');
@@ -340,38 +341,31 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
     }
 
     search = (options: FindOptions) => {
-        // TODO: mon
-        // search.commands.search(this.codeMirror, utils.findOptionsToQueryRegex(options));
+        search.commands.search(this.editor, options);
     }
 
     hideSearch = () => {
-        // TODO: mon
-        // search.commands.hideSearch(this.codeMirror);
+        search.commands.hideSearch(this.editor);
     }
 
     findNext = (options: FindOptions) => {
-        // TODO: mon
-        // search.commands.findNext(this.codeMirror, utils.findOptionsToQueryRegex(options));
+        search.commands.findNext(this.editor, options);
     }
 
     findPrevious = (options: FindOptions) => {
-        // TODO: mon
-        // search.commands.findPrevious(this.codeMirror, utils.findOptionsToQueryRegex(options));
+        search.commands.findPrevious(this.editor, options);
     }
 
     replaceNext = (newText: string) => {
-        // TODO: mon
-        // search.commands.replaceNext(this.codeMirror, newText);
+        search.commands.replaceNext(this.editor, newText);
     }
 
 	replacePrevious = (newText: string) => {
-        // TODO: mon
-		// search.commands.replacePrevious(this.codeMirror, newText);
+		search.commands.replacePrevious(this.editor, newText);
 	}
 
     replaceAll = (newText: string) => {
-        // TODO: mon
-        // search.commands.replaceAll(this.codeMirror, newText);
+        search.commands.replaceAll(this.editor, newText);
     }
 
     handleCursorActivity = () => {
