@@ -268,7 +268,7 @@ function getStyleForToken(
                 case 'const':
                     return 'qualifier';
                 case 'this':
-                    return 'number'; // Atom does this `constant`
+                    return 'constant.language';
                 default:
                     return 'keyword';
             }
