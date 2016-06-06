@@ -308,6 +308,12 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 		}
         else if (this.editor) {
 			this.editor.focus();
+			/** Restore last scroll position on focus after a blur */
+            setTimeout(() => {
+                if (this.lastScrollPosition != undefined) {
+                    this.editor.setScrollTop(this.lastScrollPosition);
+                }
+            });
         }
 	}
 
@@ -316,6 +322,11 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             this.refresh();
 		}
     }
+
+	lastScrollPosition: number | undefined = undefined;
+	willBlur() {
+		this.lastScrollPosition = this.editor.getScrollTop();
+	}
 
     gotoPosition = (position: EditorPosition) => {
         this.afterReady(() => {
