@@ -65,3 +65,10 @@ export function regExpLeadsToEndlessLoop(regexp: RegExp): boolean {
 	let match = regexp.exec('');
 	return (match && <any>regexp.lastIndex === 0);
 }
+
+/**
+ * Escapes regular expression characters in a given string
+ */
+export function escapeRegExpCharacters(value: string): string {
+	return value.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
+}
