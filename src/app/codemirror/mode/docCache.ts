@@ -187,7 +187,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                 editBatcher.addToQueue(filePath, codeEdit);
 
                 // Keep the classifier in sync
-                classifierCache.editFile(filePath, codeEdit);
+                if (isJsOrTsFile) { classifierCache.editFile(filePath, codeEdit) }
             });
 
             // setup to get doc changes from server
