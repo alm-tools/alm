@@ -520,6 +520,11 @@ const actions = getActions();
 // sublimeMap[`${mod}-Y`] = additionalEditorCommands.gotoTypeScriptSymbol;
 // sublimeMap[`Alt-Enter`] = additionalEditorCommands.quickFix;
 
+if (mac) {
+    // TODO: mon
+    // Prevent the browser from handling the CMD + SHIFT + [ (or ]) which monaco uses for fold / unfold
+}
+
 function addEditorMapToCommands(command: types.MonacoActionInformation) {
     new UICommand({
         keyboardShortcut: command.kbd,
