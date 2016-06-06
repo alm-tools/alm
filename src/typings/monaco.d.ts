@@ -17,5 +17,11 @@ declare module monaco {
         interface IModelDecorationsChangeAccessor {
             changeDecorationOptions;
         }
+        interface ITextModel {
+            /**
+             * Get a range covering the editable range
+             */
+            getEditableRange(): Range;
+        }
     }
 }
