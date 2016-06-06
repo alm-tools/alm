@@ -25,8 +25,12 @@ export function setupMonacoTypecript() {
 }
 
 import * as tokenization from "./tokenization";
+import {richLanguageConfiguration} from "./richLanguageConfiguration";
 function setupMode(modeId: 'typescript' | 'javascript') {
     /** Setup tokenization */
     const language = modeId === 'typescript' ? tokenization.Language.TypeScript : tokenization.Language.EcmaScript5;
     monaco.languages.setTokensProvider(modeId, tokenization.createTokenizationSupport(language));
+
+    /** Setup bracket matching etc. */
+    monaco.languages.setLanguageConfiguration(modeId, richLanguageConfiguration);
 }
