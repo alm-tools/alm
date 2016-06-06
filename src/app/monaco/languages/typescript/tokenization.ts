@@ -203,10 +203,17 @@ function tokenizeTs(state: State, ret: {tokens: monaco.languages.IToken[], endSt
 	// console.table(classifications.map(c=> ({ str: c.string, cls: c.classificationTypeName,startInLine:c.startInLine })));
 
 	let startIndex = 0;
+    const lineHasJSX = state.filePath.endsWith('x') && classifications.some(classification => {
+		return classification.classificationType === ts.ClassificationType.jsxOpenTagName
+        || classification.classificationType === ts.ClassificationType.jsxCloseTagName
+        || classification.classificationType === ts.ClassificationType.jsxSelfClosingTagName
+        || classification.classificationType === ts.ClassificationType.jsxText
+        || classification.classificationType === ts.ClassificationType.jsxAttribute
+	});
 	classifications.forEach((classifiedSpan) => {
 		ret.tokens.push({
 			startIndex,
-			scopes: getStyleForToken(classifiedSpan, text, startIndex) + '.ts'
+			scopes: getStyleForToken(classifiedSpan, text, startIndex, lineHasJSX) + '.ts'
 		})
 		startIndex = startIndex + classifiedSpan.string.length
 	});
@@ -218,7 +225,10 @@ function getStyleForToken(
 	/** Full contents of the line */
 	line: string,
 	/** Start position for this token in the line */
-	startIndex: number): string {
+	startIndex: number,
+	/** Only relevant for a `.tsx` file */
+	lineHasJSX: boolean
+): string {
     var ClassificationType = ts.ClassificationType;
     switch (token.classificationType) {
         case ClassificationType.numericLiteral:
@@ -288,9 +298,9 @@ function getStyleForToken(
             return 'variable.parameter';
         case ClassificationType.punctuation:
             // Only get punctuation for JSX. Otherwise these would be operator
-            // if (lineHasJSX && (token.string == '>' || token.string == '<' || token.string == '/>')) {
-            //     return 'tag.bracket'; // we need tag + bracket for CM's tag matching
-            // }
+            if (lineHasJSX && (token.string == '>' || token.string == '<' || token.string == '>' || token.string == '/')) {
+                return 'punctuation.definition.meta.tag'; // A nice blue color
+            }
             if (token.string === '{' || token.string === '}')
             	return 'delimiter.bracket';
 			if (token.string === '(' || token.string === ')')
@@ -301,7 +311,7 @@ function getStyleForToken(
         case ClassificationType.jsxSelfClosingTagName:
             return 'entity.name.tag';
         case ClassificationType.jsxAttribute:
-            return 'property';
+            return 'entity.other.attribute-name';
         case ClassificationType.jsxAttributeStringLiteralValue:
             return 'string';
         case ClassificationType.whiteSpace:
