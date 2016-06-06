@@ -280,11 +280,18 @@ function getStyleForToken(
             if (lastToken.endsWith('let') || lastToken.endsWith('const') || lastToken.endsWith('var')) {
                 return 'def';
             }
-            // else if ((nextStr = nextTenChars.replace(/\s+/g, '')).startsWith('(')
-            //     || nextStr.startsWith('=(')
-            //     || nextStr.startsWith('=function')) {
-            //     return 'property'; // Atom does this called "method"/"function". I'm just lazy
-            // }
+            else if (
+                (
+                    (nextStr = line.substr(startIndex + token.string.length).replace(/\s+/g, '')).startsWith('(')
+                    || nextStr.startsWith('=(')
+                    || nextStr.startsWith('=function')
+                )
+                && (
+                    !lastToken.endsWith('.')
+                )
+            ) {
+                return 'entity.name.function';
+            }
             // // Show types (indentifiers in PascalCase) as variable-2, other types (camelCase) as variable
             // else if (token.string.charAt(0).toLowerCase() !== token.string.charAt(0)
             //     && (lastToken.endsWith(':') || lastToken.endsWith('.')) /* :foo.Bar or :Foo */) {
