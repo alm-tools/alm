@@ -299,7 +299,7 @@ function getStyleForToken(
         case ClassificationType.jsxOpenTagName:
         case ClassificationType.jsxCloseTagName:
         case ClassificationType.jsxSelfClosingTagName:
-            return 'tag';
+            return 'entity.name.tag';
         case ClassificationType.jsxAttribute:
             return 'property';
         case ClassificationType.jsxAttributeStringLiteralValue:
