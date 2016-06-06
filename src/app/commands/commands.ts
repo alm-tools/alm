@@ -520,9 +520,6 @@ const actions = getActions();
 // sublimeMap[`${mod}-Y`] = additionalEditorCommands.gotoTypeScriptSymbol;
 // sublimeMap[`Alt-Enter`] = additionalEditorCommands.quickFix;
 
-/** Keys already added do not fall throught */
-let alreadyAddedShortcut: utils.TruthTable = {};
-
 function addEditorMapToCommands(command: types.MonacoActionInformation) {
     new UICommand({
         keyboardShortcut: command.kbd,
