@@ -1,0 +1,4 @@
+/* Make the bracket match pop out more */
+.monaco-editor.vs-dark .bracket-match {
+    background-color: #2BA100;
+}

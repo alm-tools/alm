@@ -8,7 +8,8 @@ import * as cursorHistory from "../cursorHistory";
 
 // The monokai theme
 require('./monokai.css');
-
+// Any other style modifications
+require('./codeEditor.css');
 
 interface Props {
 	onFocusChange?: (focused: boolean) => any;
