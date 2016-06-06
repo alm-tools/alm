@@ -180,11 +180,12 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 			this.setState({loading:false});
 		})
 
+		this.disposible.add(this.editor.onDidFocusEditor(this.focusChanged.bind(this, true)));
+		this.disposible.add(this.editor.onDidBlurEditor(this.focusChanged.bind(this, false)));
+
         // TODO: mon
 		// this.codeMirror = CodeMirror.fromTextArea(textareaNode as any, options);
 		// this.codeMirror.filePath = this.props.filePath;
-		// this.codeMirror.on('focus', this.focusChanged.bind(this, true));
-		// this.codeMirror.on('blur', this.focusChanged.bind(this, false));
 
         // TODO: mon
         // Make hint / autocomplete more aggresive
