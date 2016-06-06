@@ -3,7 +3,7 @@
  * https://github.com/Microsoft/vscode/tree/385412e89f610aaa5dc7d6a3727f45e048e37c7e/src/vs/editor/contrib/find
  */
 /** Some types */
-type Editor = monaco.editor.IEditor;
+type Editor = monaco.editor.ICommonCodeEditor;
 
 /**
  * Mostly providing a typed API on top of `search`
