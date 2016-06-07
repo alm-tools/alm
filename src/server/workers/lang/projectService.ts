@@ -305,9 +305,17 @@ export function getFormattingEditsAfterKeystroke(query: Types.FormattingEditsAft
     const position = languageServiceHost.getPositionOfLineAndCharacter(query.filePath, query.editorPosition.line, query.editorPosition.ch);
     const options = formatting.completeFormatCodeOptions(query.editorOptions, project.configFile.project.formatCodeOptions);
 
-    const result = languageService.getFormattingEditsAfterKeystroke(query.filePath, position, query.key, options);
+    const tsresult = languageService.getFormattingEditsAfterKeystroke(query.filePath, position, query.key, options) || [];
+    const edits = tsresult.map(res => {
+        const result: Types.FormattingEdit = {
+            from: languageServiceHost.getLineAndCharacterOfPosition(query.filePath, res.span.start),
+            to: languageServiceHost.getLineAndCharacterOfPosition(query.filePath, res.span.start + res.span.length),
+            newText: res.newText
+        };
+        return result;
+    });
 
-    return resolve({});
+    return resolve({edits});
 }
 
 /**

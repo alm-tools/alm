@@ -311,8 +311,13 @@ export namespace Types {
         key: string
         editorOptions: types.EditorOptions;
     }
+    export interface FormattingEdit {
+        from: EditorPosition,
+        to: EditorPosition,
+        newText: string
+    }
     export interface FormattingEditsAfterKeystrokeResponse {
-
+        edits: FormattingEdit[]
     }
 
     /**

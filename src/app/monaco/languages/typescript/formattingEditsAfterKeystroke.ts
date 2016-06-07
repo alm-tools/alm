@@ -18,16 +18,7 @@ export class FormatOnTypeAdapter implements monaco.languages.OnTypeFormattingEdi
             return Promise.resolve([]);
         }
 
-        // // TODO: query the classifierCache
-        // let indentOptions: ts.EditorOptions = {
-        //     IndentSize: options.tabSize,
-        //     TabSize: options.tabSize,
-        //     NewLineCharacter: '\n',
-        //     IndentStyle: ts.IndentStyle.Smart,
-        //     ConvertTabsToSpaces: options.insertSpaces
-        // }
-        //
-        server.getFormattingEditsAfterKeystroke({
+        return server.getFormattingEditsAfterKeystroke({
             filePath,
             editorPosition: {
                 line: position.lineNumber - 1,
@@ -36,25 +27,18 @@ export class FormatOnTypeAdapter implements monaco.languages.OnTypeFormattingEdi
             key: ch,
             editorOptions: model._editorOptions
         }).then((res) => {
-            console.log(res);
-        });
-        // classifierCache.getFormattingEditsAfterKeystroke({
-        //     fileName: filePath, position , key: ch, options: FormatCodeOptions
-        // })
-
-        return Promise.resolve([])
-            .then(res => {
-                return []
+            return res.edits.map(e=>{
+                const result: monaco.editor.ISingleEditOperation = {
+                    range: {
+                        startLineNumber: e.from.line + 1,
+                        startColumn: e.from.ch + 1,
+                        endLineNumber: e.to.line + 1,
+                        endColumn: e.to.ch + 1
+                    },
+                    text: e.newText
+                };
+                return result;
             })
-
-        // return wireCancellationToken(token, this._worker(resource).then(worker => {
-        // 	return worker.getFormattingEditsAfterKeystroke(resource.toString(),
-        // 		this._positionToOffset(resource, position),
-        // 		ch, FormatHelper._convertOptions(options));
-        // }).then(edits => {
-        // 	if (edits) {
-        // 		return edits.map(edit => this._convertTextChanges(resource, edit));
-        // 	}
-        // }));
+        });
     }
 }
