@@ -25,13 +25,9 @@ export let commands = {
     findPrevious: (cm: Editor, query: FindOptions) => findPreviousIfNotAlreadyDoing(cm, query),
     replaceNext: (cm: Editor, newText: string) => simpleReplaceNext(cm, newText),
     replacePrevious: (cm: Editor, newText: string) => simpleReplacePrevious(cm, newText),
-    replaceAll: (cm: Editor, newText: string) => simpleReplaceAll(cm, newText, true),
+    replaceAll: (cm: Editor, newText: string) => simpleReplaceAll(cm, newText),
 }
 
-/** TODO: mon */
-const getSearchCtrl = (editor: Editor) => {
-    return CommonFindController.getFindController(editor);
-};
 const startSearch = (editor: Editor, query: FindOptions) => {
     const ctrl = getSearchCtrl(editor);
     if (!ctrl.getState().isRevealed) {
@@ -69,8 +65,38 @@ const findPreviousIfNotAlreadyDoing = (editor: Editor, query: FindOptions) => {
         ctrl.moveToPrevMatch();
     }
 };
-const simpleReplaceNext: any = () => null;
+const simpleReplaceNext = (editor: Editor, newText:string) => {
+    const ctrl = getSearchCtrl(editor);
+
+    // Set new text
+    hackySetReplaceText(ctrl, newText);
+
+    // trigger the replace action
+    ctrl.replace();
+};
+/** TODO: mon */
 const simpleReplacePrevious: any = () => null;
-const simpleReplaceAll: any = () => null;
+
+const simpleReplaceAll = (editor: Editor, newText: string) => {
+    const ctrl = getSearchCtrl(editor);
+
+    // Set new text
+    hackySetReplaceText(ctrl,newText);
+
+    // trigger the replace all
+    ctrl.replaceAll();
+};
+
+
+/**
+ * Our interactions with monaco
+ */
+const getSearchCtrl = (editor: Editor) => {
+    return CommonFindController.getFindController(editor);
+};
+const hackySetReplaceText = (ctrl: CommonFindController, newText: string) => {
+    // HACK to inject at new text:
+    (ctrl.getState() as any)._replaceString = newText;
+}
 
 import {CommonFindController, FindStartFocusAction} from "./findController";
