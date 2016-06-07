@@ -7,3 +7,11 @@
 .editor-widget.find-widget {
     display: none !important;
 }
+
+/* Make the current find result pop out more */
+.cdr.currentFindMatch {
+    /* The current needs to pop out more so add a border */
+    border: 1px solid white;
+    /* The current should have the same color as the rest */
+    background-color: #6D4F3A;
+}
