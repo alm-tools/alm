@@ -32,6 +32,9 @@ export function setContents(filePath:string, contents:string){
 export function getLineAndCharacterOfPosition(filePath: string, pos: number): EditorPosition {
     return languageServiceHost.getLineAndCharacterOfPosition(filePath, pos);
 }
+export function getPositionOfLineAndCharacter(filePath: string, line: number, ch: number): number {
+    return languageServiceHost.getPositionOfLineAndCharacter(filePath, line, ch);
+}
 
 export function getClassificationsForLine(filePath: string, lineStart: number, string: string): ClassifiedSpan[] {
     const cantDoIt = [{
@@ -112,6 +115,10 @@ export function getClassificationsForLine(filePath: string, lineStart: number, s
 
 export function getIndentationAtPosition(filePath: string, lineStart: number, options: ts.EditorOptions) {
     return languageService.getIndentationAtPosition(filePath, lineStart, options);
+}
+
+export function getFormattingEditsAfterKeystroke(filePath: string, position: number, key: string, options: ts.FormatCodeOptions) {
+    return languageService.getFormattingEditsAfterKeystroke(filePath, position, key, options);
 }
 
 /**

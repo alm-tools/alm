@@ -25,6 +25,10 @@ declare global {
                  * - useful for restoring cursors if we edit the model
                  */
                 _editors: monaco.editor.ICodeEditor[];
+                /**
+                 * store the format code options so we can use them later
+                 */
+                _editorOptions: EditorOptions;
             }
             interface ICodeEditor {
             }
@@ -159,6 +163,14 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
 
             doc.filePath = filePath;
             doc._editors = [];
+            doc._editorOptions = res.editorOptions;
+
+            /** Susbcribe to editor options changing */
+            cast.editorOptionsChanged.on((res) => {
+    		    if (res.filePath === this.props.filePath) {
+    		        doc._editorOptions = res.editorOptions;
+    		    }
+    		});
 
             let editCameFromServerCount = 0;
 
