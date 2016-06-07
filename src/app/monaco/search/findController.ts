@@ -1,19 +1,12 @@
+/**
+ * Modifications
+ * - removed keybinding service dependency
+ */
 import {Disposable} from "../common/lifecycle";
 import {FindReplaceState,FindReplaceStateChangedEvent, INewFindReplaceState} from "./findState";
 import {FindModelBoundToEditorModel} from "./findModel";
 import * as strings from "../common/strings";
 import editorCommon = monaco.editor;
-
-// TODO: mon
-interface IKeybindingContextKey<T> {
-    set: any;
-    reset: any;
-}
-
-// TODO: mon
-interface IKeybindingService {
-    createKey: any;
-}
 
 export enum FindStartFocusAction {
 	NoFocusChange,
@@ -36,7 +29,6 @@ export class CommonFindController extends Disposable implements editorCommon.IEd
 	static ID = 'editor.contrib.findController';
 
 	private _editor: editorCommon.ICommonCodeEditor;
-	private _findWidgetVisible: IKeybindingContextKey<boolean>;
 	protected _state: FindReplaceState;
 	private _model: FindModelBoundToEditorModel;
 
@@ -44,10 +36,9 @@ export class CommonFindController extends Disposable implements editorCommon.IEd
 		return <CommonFindController>editor.getContribution(CommonFindController.ID);
 	}
 
-	constructor(editor:editorCommon.ICommonCodeEditor, keybindingService: IKeybindingService) {
+	constructor(editor:editorCommon.ICommonCodeEditor) {
 		super();
 		this._editor = editor;
-		this._findWidgetVisible = keybindingService.createKey(CONTEXT_FIND_WIDGET_VISIBLE, false);
 
 		this._state = this._register(new FindReplaceState());
 		this._register(this._state.addChangeListener((e) => this._onStateChanged(e)));
@@ -90,9 +81,7 @@ export class CommonFindController extends Disposable implements editorCommon.IEd
 	private _onStateChanged(e:FindReplaceStateChangedEvent): void {
 		if (e.isRevealed) {
 			if (this._state.isRevealed) {
-				this._findWidgetVisible.set(true);
 			} else {
-				this._findWidgetVisible.reset();
 				this.disposeModel();
 			}
 		}
