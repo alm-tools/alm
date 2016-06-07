@@ -424,7 +424,8 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 			fontSize:'2rem',
 			padding: '5px',
 			transition: '.2s opacity',
-			opacity: this.state.loading ? 1: 0
+			opacity: this.state.loading ? 1: 0,
+			pointerEvents: 'none',
         };
 		return (
 			<div className={className} style={csx.extend(csx.horizontal,csx.flex,{position:'relative', maxWidth:'100%'})}>
