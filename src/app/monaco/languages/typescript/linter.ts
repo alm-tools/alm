@@ -39,7 +39,6 @@ export class DiagnostcsAdapter {
 			this._listener[model.filePath] = disposible;
 
             // subscribe for future updates
-            disposible.add(model.onDidChangeContent(performLint));
             disposible.add(cast.errorsUpdated.on(performLint));
 
             // also validate initially
