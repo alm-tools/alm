@@ -310,24 +310,31 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 		}
         else if (this.editor) {
 			this.editor.focus();
-			/** Restore last scroll position on focus after a blur */
-            setTimeout(() => {
-                if (this.lastScrollPosition != undefined) {
-                    this.editor.setScrollTop(this.lastScrollPosition);
-                }
-            });
         }
 	}
 
     resize = () => {
         if (this.editor) {
+			const before = this.editor.getDomNode().scrollHeight;
             this.refresh();
+			const after = this.editor.getDomNode().scrollHeight;
+			const worthRestoringScrollPosition = (after !== before) && (after != 0);
+
+			/** Restore last scroll position on refresh after a blur */
+			if (this.lastScrollPosition != undefined && worthRestoringScrollPosition) {
+				setTimeout(()=>{
+					this.editor.setScrollTop(this.lastScrollPosition);
+					this.lastScrollPosition = undefined;
+					// console.log(this.props.filePath, before, after, worthRestoringScrollPosition, this.lastScrollPosition); // DEBUG
+				})
+			}
 		}
     }
 
 	lastScrollPosition: number | undefined = undefined;
 	willBlur() {
 		this.lastScrollPosition = this.editor.getScrollTop();
+		// console.log('Storing:', this.props.filePath, this.lastScrollPosition); // DEBUG
 	}
 
     gotoPosition = (position: EditorPosition) => {
