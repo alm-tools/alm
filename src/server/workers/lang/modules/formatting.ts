@@ -7,7 +7,7 @@ import {extend} from "../../../../common/utils";
  */
 function completeFormatCodeOptions(options: types.EditorOptions, formatCodeOptions: ts.FormatCodeOptions): ts.FormatCodeOptions {
     const copy = extend(formatCodeOptions);
-    copy.IndentSize = options.indentSize;
+    copy.IndentSize = options.tabSize;
     copy.TabSize = options.tabSize;
     copy.NewLineCharacter = options.newLineCharacter;
     copy.ConvertTabsToSpaces = options.convertTabsToSpaces;
