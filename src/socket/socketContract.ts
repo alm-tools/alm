@@ -71,6 +71,7 @@ export var server = {
     applyQuickFix: {} as QRFunction<Types.ApplyQuickFixQuery, Types.ApplyQuickFixResponse>,
     getSemanticTree: {} as QRFunction<Types.GetSemanticTreeQuery, Types.GetSemanticTreeReponse>,
     getOccurrencesAtPosition: {} as QRFunction<Types.GetOccurancesAtPositionQuery, Types.GetOccurancesAtPositionResponse>,
+    getFormattingEditsAfterKeystroke: {} as QRFunction<Types.FormattingEditsAfterKeystrokeQuery, Types.FormattingEditsAfterKeystrokeResponse>,
 
     /**
      * Documentation Browser
@@ -305,6 +306,13 @@ export namespace Types {
     }
     export interface FormatDocumentRangeResponse {
         refactorings: types.RefactoringsByFilePath
+    }
+    export interface FormattingEditsAfterKeystrokeQuery extends FilePathEditorPositionQuery {
+        key: string
+        editorOptions: types.EditorOptions;
+    }
+    export interface FormattingEditsAfterKeystrokeResponse {
+
     }
 
     /**

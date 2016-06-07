@@ -14,6 +14,10 @@ export class FormatOnTypeAdapter implements monaco.languages.OnTypeFormattingEdi
     provideOnTypeFormattingEdits(model: monaco.editor.IReadOnlyModel, position: Position, ch: string, options: monaco.languages.IFormattingOptions, token: CancellationToken): Thenable<monaco.editor.ISingleEditOperation[]> {
         const filePath = model.filePath;
 
+        if (!state.inActiveProjectFilePath(model.filePath)) {
+            return Promise.resolve([]);
+        }
+
         // // TODO: query the classifierCache
         // let indentOptions: ts.EditorOptions = {
         //     IndentSize: options.tabSize,
@@ -23,9 +27,19 @@ export class FormatOnTypeAdapter implements monaco.languages.OnTypeFormattingEdi
         //     ConvertTabsToSpaces: options.insertSpaces
         // }
         //
-        // const post = classifierCache.getPositionOfLineAndCharacter(filePath, position.lineNumber - 1, position.column - 1);
+        server.getFormattingEditsAfterKeystroke({
+            filePath,
+            editorPosition: {
+                line: position.lineNumber - 1,
+                ch: position.column - 1
+            },
+            key: ch,
+            editorOptions: model._editorOptions
+        }).then((res) => {
+            console.log(res);
+        });
         // classifierCache.getFormattingEditsAfterKeystroke({
-        //     fileName: query.filePath, position , key: query.key, options: FormatCodeOptions
+        //     fileName: filePath, position , key: ch, options: FormatCodeOptions
         // })
 
         return Promise.resolve([])

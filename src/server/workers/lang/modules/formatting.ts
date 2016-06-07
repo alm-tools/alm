@@ -5,7 +5,7 @@ import {extend} from "../../../../common/utils";
 /**
  * Merges editorconfig style options with TypeScript's formatCodeOptions
  */
-function completeFormatCodeOptions(options: types.EditorOptions, formatCodeOptions: ts.FormatCodeOptions): ts.FormatCodeOptions {
+export function completeFormatCodeOptions(options: types.EditorOptions, formatCodeOptions: ts.FormatCodeOptions): ts.FormatCodeOptions {
     const copy = extend(formatCodeOptions);
     copy.IndentSize = options.tabSize;
     copy.TabSize = options.tabSize;

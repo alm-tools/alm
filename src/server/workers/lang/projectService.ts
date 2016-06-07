@@ -299,6 +299,17 @@ export function formatDocumentRange(query: Types.FormatDocumentRangeQuery): Prom
     return resolve({ refactorings: formatting.formatDocumentRange(project, query.filePath, query.from, query.to, query.editorOptions) });
 }
 
+export function getFormattingEditsAfterKeystroke(query: Types.FormattingEditsAfterKeystrokeQuery): Promise<Types.FormattingEditsAfterKeystrokeResponse> {
+    let project = getProject(query.filePath);
+    const {languageServiceHost, languageService} = project;
+    const position = languageServiceHost.getPositionOfLineAndCharacter(query.filePath, query.editorPosition.line, query.editorPosition.ch);
+    const options = formatting.completeFormatCodeOptions(query.editorOptions, project.configFile.project.formatCodeOptions);
+
+    const result = languageService.getFormattingEditsAfterKeystroke(query.filePath, position, query.key, options);
+
+    return resolve({});
+}
+
 /**
  * Symbol search
  */
