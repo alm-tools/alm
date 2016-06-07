@@ -23,9 +23,9 @@ export let commands = {
     hideSearch: (cm: Editor) => hideSearch(cm),
     findNext: (cm: Editor, query: FindOptions) => findNextIfNotAlreadyDoing(cm, query),
     findPrevious: (cm: Editor, query: FindOptions) => findPreviousIfNotAlreadyDoing(cm, query),
-    replaceNext: (cm: Editor, newText: string) => simpleReplace(cm, newText, false),
+    replaceNext: (cm: Editor, newText: string) => simpleReplaceNext(cm, newText),
     replacePrevious: (cm: Editor, newText: string) => simpleReplacePrevious(cm, newText),
-    replaceAll: (cm: Editor, newText: string) => simpleReplace(cm, newText, true),
+    replaceAll: (cm: Editor, newText: string) => simpleReplaceAll(cm, newText, true),
 }
 
 /** TODO: mon */
@@ -69,7 +69,8 @@ const findPreviousIfNotAlreadyDoing = (editor: Editor, query: FindOptions) => {
         ctrl.moveToPrevMatch();
     }
 };
-const simpleReplace: any = () => null;
+const simpleReplaceNext: any = () => null;
 const simpleReplacePrevious: any = () => null;
+const simpleReplaceAll: any = () => null;
 
 import {CommonFindController, FindStartFocusAction} from "./findController";
