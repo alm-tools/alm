@@ -39,7 +39,7 @@ const startSearch = (editor: Editor, query: FindOptions) => {
             forceRevealReplace: true,
             seedSearchStringFromSelection: false,
             seedSearchScopeFromSelection: false,
-            shouldFocus: false,
+            shouldFocus: FindStartFocusAction.NoFocusChange,
             shouldAnimate: false,
         });
     }
@@ -72,4 +72,4 @@ const findPreviousIfNotAlreadyDoing = (editor: Editor, query: FindOptions) => {
 const simpleReplace: any = () => null;
 const simpleReplacePrevious: any = () => null;
 
-import {CommonFindController} from "./findController";
+import {CommonFindController, FindStartFocusAction} from "./findController";
