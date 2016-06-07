@@ -17,7 +17,7 @@ import {EditorOptions} from "../../../common/types";
 declare global {
     module monaco {
         module editor {
-            interface IModel {
+            interface IReadOnlyModel {
                 /** keep `filePath` */
                 filePath?: string;
                 /**

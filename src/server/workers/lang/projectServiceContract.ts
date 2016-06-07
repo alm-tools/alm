@@ -35,6 +35,7 @@ export var worker = {
     getQuickFixes: {} as typeof socketContract.server.getQuickFixes,
     applyQuickFix: {} as typeof socketContract.server.applyQuickFix,
     getSemanticTree: {} as typeof socketContract.server.getSemanticTree,
+    getOccurrencesAtPosition: {} as typeof socketContract.server.getOccurrencesAtPosition,
 
     /** Documentation browser */
     getTopLevelModuleNames: {} as typeof socketContract.server.getTopLevelModuleNames,

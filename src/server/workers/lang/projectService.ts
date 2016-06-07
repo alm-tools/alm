@@ -658,3 +658,23 @@ export function getSemanticTree(query: Types.GetSemanticTreeQuery): Promise<Type
     let nodes = navBarItems.map(nbi => navigationBarItemToSemanticTreeNode(nbi, project, query));
     return resolve({ nodes });
 }
+
+/**
+ * Document highlights
+ */
+export function getOccurrencesAtPosition(query: Types.GetOccurancesAtPositionQuery) : Promise<Types.GetOccurancesAtPositionResponse> {
+    let project = getProject(query.filePath);
+    const {languageServiceHost} = project;
+    const position = languageServiceHost.getPositionOfLineAndCharacter(query.filePath, query.editorPosition.line, query.editorPosition.ch);
+    const tsresults = project.languageService.getOccurrencesAtPosition(query.filePath, position) || [];
+    const results: Types.GetOccurancesAtPositionResult[] = tsresults.map(res=>{
+        const result: Types.GetOccurancesAtPositionResult = {
+            filePath: res.fileName,
+            isWriteAccess: res.isWriteAccess,
+            start: project.languageServiceHost.getLineAndCharacterOfPosition(res.fileName, res.textSpan.start),
+            end: project.languageServiceHost.getLineAndCharacterOfPosition(res.fileName, res.textSpan.start + res.textSpan.length),
+        }
+        return result;
+    });
+    return resolve({results});
+}

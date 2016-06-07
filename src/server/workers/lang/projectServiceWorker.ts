@@ -66,6 +66,7 @@ namespace Worker {
     export var getQuickFixes : typeof contract.worker.getQuickFixes = projectService.getQuickFixes;
     export var applyQuickFix : typeof contract.worker.applyQuickFix = projectService.applyQuickFix;
     export var getSemanticTree : typeof contract.worker.getSemanticTree = projectService.getSemanticTree;
+    export var getOccurrencesAtPosition : typeof contract.worker.getOccurrencesAtPosition = projectService.getOccurrencesAtPosition;
 
     /**
      * Documentation Browser

@@ -27,6 +27,7 @@ export function setupMonacoTypecript() {
 import * as tokenization from "./tokenization";
 import {richLanguageConfiguration} from "./richLanguageConfiguration";
 import * as linter from "./linter";
+import * as provideDocumentHighlights from "./provideDocumentHighlights";
 function setupMode(modeId: 'typescript' | 'javascript') {
     /** Setup tokenization */
     const language = modeId === 'typescript' ? tokenization.Language.TypeScript : tokenization.Language.EcmaScript5;
@@ -37,4 +38,7 @@ function setupMode(modeId: 'typescript' | 'javascript') {
 
     /** Setup inline errors */
     new linter.DiagnostcsAdapter(modeId);
+
+    /** Setup highlight occurances */
+    monaco.languages.registerDocumentHighlightProvider(modeId, provideDocumentHighlights);
 }

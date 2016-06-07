@@ -186,6 +186,7 @@ namespace Server {
     export var applyQuickFix : typeof contract.server.applyQuickFix = projectServiceMaster.worker.applyQuickFix;
     export var build: typeof contract.server.build = projectServiceMaster.worker.build;
     export var getSemanticTree: typeof contract.server.getSemanticTree = projectServiceMaster.worker.getSemanticTree;
+    export var getOccurrencesAtPosition: typeof contract.server.getOccurrencesAtPosition = projectServiceMaster.worker.getOccurrencesAtPosition;
 
     /**
      * Documentation browser

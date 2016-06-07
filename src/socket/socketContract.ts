@@ -70,6 +70,7 @@ export var server = {
     getQuickFixes: {} as QRFunction<Types.GetQuickFixesQuery, Types.GetQuickFixesResponse>,
     applyQuickFix: {} as QRFunction<Types.ApplyQuickFixQuery, Types.ApplyQuickFixResponse>,
     getSemanticTree: {} as QRFunction<Types.GetSemanticTreeQuery, Types.GetSemanticTreeReponse>,
+    getOccurrencesAtPosition: {} as QRFunction<Types.GetOccurancesAtPositionQuery, Types.GetOccurancesAtPositionResponse>,
 
     /**
      * Documentation Browser
@@ -395,5 +396,18 @@ export namespace Types {
     }
     export interface GetSemanticTreeReponse {
         nodes: SemanticTreeNode[];
+    }
+    /**
+     * Get occurances
+     */
+    export interface GetOccurancesAtPositionQuery extends FilePathEditorPositionQuery {}
+    export interface GetOccurancesAtPositionResult {
+        filePath: string;
+        start: EditorPosition;
+        end: EditorPosition;
+        isWriteAccess: boolean;
+    }
+    export interface GetOccurancesAtPositionResponse {
+        results: GetOccurancesAtPositionResult[];
     }
 }
