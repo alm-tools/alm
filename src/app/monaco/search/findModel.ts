@@ -131,7 +131,7 @@ export class FindModelBoundToEditorModel {
 		}
 	}
 
-	private _hasMatches(): boolean {
+	_hasMatches(): boolean {
 		return (this._state.matchesCount > 0);
 	}
 
@@ -292,7 +292,7 @@ export class FindModelBoundToEditorModel {
 		return matchedString.replace(regexp, parsedReplaceString);
 	}
 
-	private _rangeIsMatch(range:Range): boolean {
+	_rangeIsMatch(range:Range): boolean {
 		let selection = this._editor.getSelection();
 		let selectionText = this._editor.getModel().getValueInRange(selection);
 		let regexp = strings.createSafeRegExp(this._state.searchString, this._state.isRegex, this._state.matchCase, this._state.wholeWord);

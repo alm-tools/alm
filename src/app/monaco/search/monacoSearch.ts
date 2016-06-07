@@ -74,9 +74,15 @@ const simpleReplaceNext = (editor: Editor, newText:string) => {
     // trigger the replace action
     ctrl.replace();
 };
-/** TODO: mon */
-const simpleReplacePrevious: any = () => null;
+const simpleReplacePrevious = (editor: Editor, newText: string) => {
+    const ctrl = getSearchCtrl(editor);
 
+    // Set new text
+    hackySetReplaceText(ctrl,newText);
+
+    // trigger the replace all
+    hackyReplacePrevious(editor, ctrl, newText);
+};
 const simpleReplaceAll = (editor: Editor, newText: string) => {
     const ctrl = getSearchCtrl(editor);
 
@@ -98,5 +104,27 @@ const hackySetReplaceText = (ctrl: CommonFindController, newText: string) => {
     // HACK to inject at new text:
     (ctrl.getState() as any)._replaceString = newText;
 }
+const hackyReplacePrevious = (editor: Editor, ctrl: CommonFindController, newText: string) => {
+    // If it is on a match it should just replace. Othewise it should go the the previous match
+
+    // HACK: get the model
+    const model: FindModelBoundToEditorModel = (ctrl as any)._model;
+    // HACK: the following is pretty much a duplicate of `replace` from model
+    // HACK: we made public a few `model` functions 
+    // But for actions we delegate to `ctrl` ;)
+    if (!model._hasMatches()) {
+        return;
+    }
+    let selection = editor.getSelection();
+    let selectionText = editor.getModel().getValueInRange(selection);
+    if (model._rangeIsMatch(selection)) {
+        // selection sits on a find match => replace it!
+        ctrl.replace();
+        ctrl.moveToPrevMatch();
+    } else {
+        ctrl.moveToPrevMatch();
+    }
+}
 
 import {CommonFindController, FindStartFocusAction} from "./findController";
+import {FindModelBoundToEditorModel} from "./findModel";
