@@ -150,6 +150,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 			wrappingColumn: 0,
 			readOnly: this.props.readOnly,
 			scrollBeyondLastLine: false, // Don't scroll by mouse where you can't scroll by keyboard :)
+			formatOnType: true,
         }, []);
 
 		// Utility to load editor options
