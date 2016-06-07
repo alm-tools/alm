@@ -34,6 +34,15 @@ const getSearchCtrl = (editor: Editor) => {
 };
 const startSearch = (editor: Editor, query: FindOptions) => {
     const ctrl = getSearchCtrl(editor);
+    if (!ctrl.getState().isRevealed) {
+        ctrl.start({
+            forceRevealReplace: true,
+            seedSearchStringFromSelection: false,
+            seedSearchScopeFromSelection: false,
+            shouldFocus: false,
+            shouldAnimate: false,
+        });
+    }
     ctrl.setSearchString(query.query);
     // TODO: mon
     // set other options as well
@@ -42,8 +51,24 @@ const hideSearch = (editor: Editor) => {
     const ctrl = getSearchCtrl(editor);
     ctrl.closeFindWidget();
 };
-const findNextIfNotAlreadyDoing = (editor: Editor, query: FindOptions) => null;
-const findPreviousIfNotAlreadyDoing = (editor: Editor, query: FindOptions) => null;
+const findNextIfNotAlreadyDoing = (editor: Editor, query: FindOptions) => {
+    const ctrl = getSearchCtrl(editor);
+    if (!ctrl.getState().isRevealed) {
+        startSearch(editor,query);
+    }
+    else {
+        ctrl.moveToNextMatch();
+    }
+}
+const findPreviousIfNotAlreadyDoing = (editor: Editor, query: FindOptions) => {
+    const ctrl = getSearchCtrl(editor);
+    if (!ctrl.getState().isRevealed) {
+        startSearch(editor,query);
+    }
+    else {
+        ctrl.moveToPrevMatch();
+    }
+};
 const simpleReplace: any = () => null;
 const simpleReplacePrevious: any = () => null;
 
