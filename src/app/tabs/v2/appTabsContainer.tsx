@@ -1011,7 +1011,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         selectTab: (id: string) => {
             let lastSelectedTab = this.selectedTabInstance;
             if (lastSelectedTab && id !== lastSelectedTab.id) {
-                this.tabApi[lastSelectedTab.id].willBlur.emit({});
+                this.tabApi[lastSelectedTab.id] && this.tabApi[lastSelectedTab.id].willBlur.emit({});
             }
             this.selectedTabInstance = this.tabs.find(t => t.id == id);
             this.tabState.focusSelectedTabIfAny();
