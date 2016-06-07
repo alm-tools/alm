@@ -28,6 +28,9 @@ preventBackspaceNav();
 // Normalize css
 require('normalize.css');
 
+// Lost connection indicator
+require('./lostConnection.css')
+
 // Load clipboard and enable for all things clipboard
 let Clipboard = require('clipboard/dist/clipboard.min');
 new Clipboard('[data-clipboard-text]');
@@ -67,8 +70,15 @@ const afterLoaded = () => {
     pendingRequestsChanged.on((r)=>{
         state.setPendingRequests(r.pending);
     });
+    let firstConnectionState = true;
     connectionStatusChanged.on(r=> {
         state.setSocketConnected(r.connected);
+        if (firstConnectionState) {
+            $('.alm-connection-status').css('display', 'block');
+            firstConnectionState = false;
+            return;
+        }
+        $('.alm-connection-status').toggleClass('alm-connection-status-active', !r.connected);
     });
     server.getActiveProjectConfigDetails({}).then(res=>{
         state.setActiveProject(res);
