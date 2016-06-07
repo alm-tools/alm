@@ -354,6 +354,27 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         this.editor.getValue();
     }
 
+	/**
+	 * TODO: mon
+	 * use this to see the initial search if coming out of hidden
+	 */
+	getSelectionSearchString(): string {
+		let selection = this.editor.getSelection();
+
+		if (selection.startLineNumber === selection.endLineNumber) {
+			if (selection.isEmpty()) {
+				let wordAtPosition = this.editor.getModel().getWordAtPosition(selection.getStartPosition());
+				if (wordAtPosition) {
+					return wordAtPosition.word;
+				}
+			} else {
+				return this.editor.getModel().getValueInRange(selection);
+			}
+		}
+
+		return "";
+	}
+
     search = (options: FindOptions) => {
         search.commands.search(this.editor, options);
     }
