@@ -2,3 +2,8 @@
 .monaco-editor.vs-dark .bracket-match {
     background-color: #2BA100;
 }
+
+/* Hide the find and replace widget as we have our own UI */
+.editor-widget.find-widget {
+    display: none !important;
+}
