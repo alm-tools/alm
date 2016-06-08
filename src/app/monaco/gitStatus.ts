@@ -93,6 +93,6 @@ export function setup(editor: Editor): { dispose: () => void } {
 
     const disposible = new CompositeDisposible();
     disposible.add(editor.onDidFocusEditor(handleFocus));
-    disposible.add(editor.onDidChangeModel(refreshGitStatusDebounced));
+    disposible.add(editor.onDidChangeModelContent(refreshGitStatusDebounced));
     return disposible;
 }
