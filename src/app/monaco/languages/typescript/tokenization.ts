@@ -312,6 +312,8 @@ function getStyleForToken(
             	return 'delimiter.bracket';
 			if (token.string === '(' || token.string === ')')
             	return 'delimiter.parenthesis';
+			if (token.string === '=>')
+				return 'operator.keyword';
 			return 'bracket';
         case ClassificationType.jsxOpenTagName:
         case ClassificationType.jsxCloseTagName:
