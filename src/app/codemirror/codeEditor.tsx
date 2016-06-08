@@ -6,11 +6,26 @@ import * as docCache from "./mode/docCache";
 import * as types from "../../common/types";
 import * as cursorHistory from "../cursorHistory";
 import * as search from "../monaco/search/monacoSearch";
+import * as gitStatus from "../monaco/gitStatus";
 
 // The monokai theme
 require('./monokai.css');
 // Any other style modifications
 require('./codeEditor.css');
+
+/**
+ * We extend the monaco editor
+ */
+declare global {
+    module monaco {
+        module editor {
+            interface ICommonCodeEditor {
+                /** keep `filePath` */
+                filePath?: string;
+			}
+		}
+	}
+}
 
 interface Props {
 	onFocusChange?: (focused: boolean) => any;
@@ -155,6 +170,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 			/** Since everything else in our UI is Square */
 			roundedSelection: false,
         }, []);
+		this.editor.filePath = this.props.filePath;
 
 		// Utility to load editor options
 		const loadEditorOptions = (editorOptions:types.EditorOptions) => {
@@ -215,9 +231,8 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         //     this.disposible.add(quickFix.setupCM(this.codeMirror));
         // }
 
-        // TODO: mon
         // Git status
-        // this.disposible.add(gitStatus.setupCM(this.codeMirror));
+        this.disposible.add(gitStatus.setup(this.editor));
 
         // TODO: mon
         // const loadEditorOptions = (editorOptions:types.EditorOptions) => {

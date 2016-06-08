@@ -8,3 +8,10 @@
 //         position: common.OverviewRulerLane.Left
 //     }
 // };
+
+type Editor = monaco.editor.ICommonCodeEditor;
+
+export function setup(cm: Editor): { dispose: () => void } {
+    if (cm) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
+    
+}
