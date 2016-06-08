@@ -27,6 +27,20 @@ const addedDecorationOptions: monaco.editor.IModelDecorationOptions = {
         position: monaco.editor.OverviewRulerLane.Left
     }
 };
+const modifiedColor = 'yellow';
+const modifiedClassName = fstyle.style({
+    borderLeft: `3px solid ${modifiedColor}`,
+    marginLeft: `5px`
+});
+const modifiedDecorationOptions: monaco.editor.IModelDecorationOptions = {
+    linesDecorationsClassName: modifiedClassName,
+    isWholeLine: true,
+    overviewRuler: {
+        color: modifiedColor,
+        darkColor: modifiedColor,
+        position: monaco.editor.OverviewRulerLane.Left
+    }
+};
 
 type Editor = monaco.editor.ICommonCodeEditor;
 import {CompositeDisposible} from "../../common/events";
@@ -78,9 +92,20 @@ export function setup(editor: Editor): { dispose: () => void } {
                 };
                 return result;
             });
+            const modifiedDecorations = res.modified.map(modified => {
+                const result: monaco.editor.IModelDeltaDecoration = {
+                    range: {
+                        startLineNumber: modified.from + 1,
+                        endLineNumber: modified.to + 1,
+                    } as monaco.Range,
+                    options: modifiedDecorationOptions
+                };
+                return result;
+            });
+
 
             // Collect all the decorations and apply them
-            const deltaDecorations = addedDecorations;
+            const deltaDecorations = addedDecorations.concat(modifiedDecorations);
             lastDecorations = editor.deltaDecorations(lastDecorations, deltaDecorations);
         });
     }
