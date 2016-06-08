@@ -9,15 +9,34 @@
 //     }
 // };
 
+import * as fstyle from "../base/fstyle";
+/**
+ * Some styles
+ */
+const addedColor = '#008A00';
+const addedClassName = fstyle.style({
+    borderLeft: `3px solid ${addedColor}`,
+    marginLeft: `5px`
+});
+const addedDecorationOptions: monaco.editor.IModelDecorationOptions = {
+    linesDecorationsClassName: addedClassName,
+    isWholeLine: true,
+    overviewRuler: {
+        color: addedColor,
+        darkColor: addedColor,
+        position: monaco.editor.OverviewRulerLane.Left
+    }
+};
+
 type Editor = monaco.editor.ICommonCodeEditor;
 import {CompositeDisposible} from "../../common/events";
 import * as utils from "../../common/utils";
 import {server} from "../../socket/socketClient";
 
-export function setup(cm: Editor): { dispose: () => void } {
-    if (cm) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
+export function setup(editor: Editor): { dispose: () => void } {
+    // if (editor) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
 
-    const filePath = cm.filePath;
+    const filePath = editor.filePath;
 
     // this._editor.changeDecorations((changeAccessor: editorCommon.IModelDecorationsChangeAccessor) => {
     //     if (this._highlightedDecorationId !== null) {
@@ -30,9 +49,33 @@ export function setup(cm: Editor): { dispose: () => void } {
     //     }
     // });
 
+    let lastDecorations: string[] = [];
     const refreshGitStatus = () => {
         server.gitDiff({ filePath }).then((res) => {
             // TODO: do the rest
+
+            // const decorationId = "something-for-addition"; // TODO: mon : this is probably wrong
+            //
+            // editor.changeDecorations((changeAccessor: monaco.editor.IModelDecorationsChangeAccessor) => {
+			// 	if (this._highlightedDecorationId !== null) {
+			// 		changeAccessor.changeDecorationOptions(this._highlightedDecorationId, FindDecorations.createFindMatchDecorationOptions(false));
+			// 		this._highlightedDecorationId = null;
+			// 	}
+			// 	if (newCurrentDecorationId !== null) {
+			// 		this._highlightedDecorationId = newCurrentDecorationId;
+			// 		changeAccessor.changeDecorationOptions(this._highlightedDecorationId, FindDecorations.createFindMatchDecorationOptions(true));
+			// 	}
+			// });
+
+            const deltaDecorations: monaco.editor.IModelDeltaDecoration[] = [{
+                range: {
+                    startLineNumber: 1,
+                    endLineNumber: 5,
+                } as monaco.Range,
+                options: addedDecorationOptions
+            }];
+
+            lastDecorations = editor.deltaDecorations(lastDecorations, deltaDecorations);
         });
     }
 
@@ -42,9 +85,8 @@ export function setup(cm: Editor): { dispose: () => void } {
         refreshGitStatus();
     }
 
-
     const disposible = new CompositeDisposible();
-    disposible.add(cm.onDidFocusEditor(handleFocus));
-    disposible.add(cm.onDidChangeModel(refreshGitStatusDebounced));
+    disposible.add(editor.onDidFocusEditor(handleFocus));
+    disposible.add(editor.onDidChangeModel(refreshGitStatusDebounced));
     return disposible;
 }
