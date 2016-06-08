@@ -13,6 +13,10 @@ import * as fstyle from "../base/fstyle";
 /**
  * Some styles
  */
+
+/** We have a unified color in overview as having three colors there is mentally overloading */
+const colorInOverView = 'rgba(0, 122, 204, 0.6)';
+
 const addedColor = '#008A00';
 const addedClassName = fstyle.style({
     borderLeft: `3px solid ${addedColor}`,
@@ -22,8 +26,8 @@ const addedDecorationOptions: monaco.editor.IModelDecorationOptions = {
     linesDecorationsClassName: addedClassName,
     isWholeLine: true,
     overviewRuler: {
-        color: addedColor,
-        darkColor: addedColor,
+        color: colorInOverView,
+        darkColor: colorInOverView,
         position: monaco.editor.OverviewRulerLane.Left
     }
 };
@@ -36,8 +40,8 @@ const modifiedDecorationOptions: monaco.editor.IModelDecorationOptions = {
     linesDecorationsClassName: modifiedClassName,
     isWholeLine: true,
     overviewRuler: {
-        color: modifiedColor,
-        darkColor: modifiedColor,
+        color: colorInOverView,
+        darkColor: colorInOverView,
         position: monaco.editor.OverviewRulerLane.Left
     }
 };
