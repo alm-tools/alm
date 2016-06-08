@@ -3,7 +3,7 @@
  */
 
 /** Imports */
-import CodeMirror = require('codemirror');
+import {replaceSelection} from "./monaco/monacoUtils";
 import * as commands from "./commands/commands";
 import * as utils from "../common/utils";
 import * as ui from "./ui";
@@ -15,16 +15,16 @@ let index = 0;
 export function addToClipboardRing(mode: 'cut' | 'copy') {
     let codeEditor = uix.API.getFocusedCodeEditorIfAny();
     if (!codeEditor) return;
-    let hasSelection = codeEditor.codeMirror.getDoc().somethingSelected();
+    const selection = codeEditor.editor.getSelection();
+    let hasSelection = !selection.isEmpty();
 
     if (hasSelection) {
-        let selected = codeEditor.codeMirror.getDoc().getSelection();
+        let selected = codeEditor.editor.getModel().getValueInRange(selection);
         index = 0; // Reset seek index
         addSelected(selected);
     }
     else {
-        let ranges = copyableRanges(codeEditor.codeMirror);
-        let selected = ranges.text.join('\n');
+        let selected = codeEditor.editor.getModel().getLineContent(selection.startLineNumber);
         index = 0; // Reset seek index
         addSelected(selected);
     }
@@ -52,7 +52,8 @@ function addSelected(selected: string): boolean {
 export function pasteFromClipboardRing() {
     let codeEditor = uix.API.getFocusedCodeEditorIfAny();
     if (!codeEditor) return;
-    let hasSelection = codeEditor.codeMirror.getDoc().somethingSelected();
+    const selection = codeEditor.editor.getSelection();
+    let hasSelection = !selection.isEmpty();
 
     if (!clipboardRing.length) {
         ui.notifyInfoQuickDisappear('Clipboard Ring Empty');
@@ -63,21 +64,20 @@ export function pasteFromClipboardRing() {
     let item = clipboardRing[index];
     let lines = item.split('\n');
     let lastLineLength = lines[lines.length - 1].length;
-    let doc = codeEditor.codeMirror.getDoc();
+    let doc = codeEditor.editor.getModel();
 
     /** Find the start */
-    let from: EditorPosition;
-    if (hasSelection) {
-        let selection = doc.listSelections()[0];
-        from = CodeMirror.cmpPos(selection.anchor, selection.head) >= 0 ? selection.head : selection.anchor;
+    let from: EditorPosition = {
+        line: selection.startLineNumber - 1,
+        ch: selection.startColumn - 1
+    };
 
-        let added = addSelected(doc.getSelection()); // Add current selection to the ring
+    /** Also add any current selection to the clipboard ring */
+    if (hasSelection) {
+        let added = addSelected(codeEditor.editor.getModel().getValueInRange(selection)); // Add current selection to the ring
         if (added){
             index++;
         }
-    }
-    else {
-        from = doc.getCursor();
     }
 
     // replace selection (if any) with a new one
@@ -85,8 +85,13 @@ export function pasteFromClipboardRing() {
     let line = lines.length > 1 ? from.line + (lines.length - 1) : from.line;
     let ch = lines.length > 1 ? lastLineLength : from.ch + item.length;
     let to = { line, ch };
-    doc.replaceSelection(item);
-    doc.setSelection(from, to);
+    replaceSelection({editor:codeEditor.editor,newText:item});
+    codeEditor.editor.setSelection({
+        startLineNumber: from.line + 1,
+        startColumn: from.ch + 1,
+        endLineNumber: to.line + 1,
+        endColumn: to.ch + 1
+    });
 
     // update the index (and loop around)
     index = utils.rangeLimited({ num: index + 1, min: 0, max: clipboardRing.length - 1, loopAround: true });
@@ -103,17 +108,3 @@ commands.cut.on(() => {
 commands.pasteFromRing.on(() => {
     pasteFromClipboardRing();
 })
-
-/**
- * Straight out of codemirror source code
- */
-function copyableRanges(cm): { text: string[], ranges: any } {
-    var text = [], ranges = [];
-    for (var i = 0; i < cm.doc.sel.ranges.length; i++) {
-        var line = cm.doc.sel.ranges[i].head.line;
-        var lineRange = { anchor: CodeMirror.Pos(line, 0), head: CodeMirror.Pos(line + 1, 0) };
-        ranges.push(lineRange);
-        text.push(cm.getRange(lineRange.anchor, lineRange.head));
-    }
-    return { text: text, ranges: ranges };
-};
