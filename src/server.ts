@@ -115,6 +115,9 @@ portfinder.getPort(function (err, port) {
 import * as serverState from "./serverState";
 serverState.addRoute(app);
 const pkg = require('../package.json');
+const version = pkg.version;
+console.log(`Version: ${version}`)
+serverState.setServerState({ version });
 const notifier = require('update-notifier')({
   pkg,
   // updateCheckInterval: 0 // DEBUG
@@ -129,5 +132,5 @@ if (notifier.update) {
         type: 'latest' | 'major' | 'minor' | 'patch' | 'prerelease' | 'build';
         name: string;
     } = notifier.update;
-    serverState.setServerState({ update });
+    serverState.setServerState({ update, version });
 }
