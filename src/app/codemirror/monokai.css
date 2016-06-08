@@ -50,7 +50,9 @@
 /**
  * These are our extensions to the monocai theme
  */
- /* the default has nothing for qualifier */
+/* the default has nothing for qualifier */
 .monaco-editor.vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .qualifier { color: rgb(0, 208, 255); }
 /* `def` does not exist. We like to use it for variable definitions */
 .monaco-editor.vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .def { color: rgb(253, 151, 31); }
+/* want a brighter selected text (especially as monaco doesn't keep the line highlighted once you have some text selected) */
+.monaco-editor.vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .focused .selected-text { background-color: rgba(152, 139, 3, 0.4); }
