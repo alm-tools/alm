@@ -152,6 +152,8 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 			scrollBeyondLastLine: false, // Don't scroll by mouse where you can't scroll by keyboard :)
 			formatOnType: true,
 			contextmenu: false, // Disable context menu till we have it actually useful
+			/** Since everything else in our UI is Square */
+			roundedSelection: false,
         }, []);
 
 		// Utility to load editor options
