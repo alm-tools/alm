@@ -67,14 +67,20 @@ export function setup(editor: Editor): { dispose: () => void } {
 			// 	}
 			// });
 
-            const deltaDecorations: monaco.editor.IModelDeltaDecoration[] = [{
-                range: {
-                    startLineNumber: 1,
-                    endLineNumber: 5,
-                } as monaco.Range,
-                options: addedDecorationOptions
-            }];
+			// Add to new
+            const addedDecorations = res.added.map(added => {
+                const result: monaco.editor.IModelDeltaDecoration = {
+                    range: {
+                        startLineNumber: added.from + 1,
+                        endLineNumber: added.to + 1,
+                    } as monaco.Range,
+                    options: addedDecorationOptions
+                };
+                return result;
+            });
 
+            // Collect all the decorations and apply them
+            const deltaDecorations = addedDecorations;
             lastDecorations = editor.deltaDecorations(lastDecorations, deltaDecorations);
         });
     }
