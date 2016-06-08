@@ -339,10 +339,12 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
     gotoPosition = (position: EditorPosition) => {
         this.afterReady(() => {
-            this.editor.setPosition({
+			const pos = {
                 lineNumber: position.line + 1,
                 column: position.ch + 1,
-            })
+            };
+            this.editor.setPosition(pos);
+			this.editor.revealPosition(pos);
         });
     }
 
