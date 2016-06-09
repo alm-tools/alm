@@ -252,13 +252,13 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                         })
                     })
 
+                    // Keep the classifier in sync
+                    if (isJsOrTsFile) { classifierCache.setContents(filePath, res.contents); }
+
                     // Note that we use *mark as coming from server* so we don't go into doc.change handler later on :)
                     editCameFromServerCount++;
 
                     doc.setValue(res.contents);
-
-                    // Keep the classifier in sync. I know it sounds wierd but it has to be after the doc.setValue call ^ 
-                    if (isJsOrTsFile) { classifierCache.setContents(filePath, res.contents); }
                 }
             });
 
