@@ -251,7 +251,7 @@ export function getDoctorInfo(query: Types.GetDoctorInfoQuery): Promise<Types.Ge
 
     // Just collect other responses
     let defPromised = getDefinitionsAtPosition({ filePath, position });
-    let quickInfoPromised = quickInfo({ filePath, position });
+    let quickInfoPromised = quickInfo({ filePath, editorPosition: query.editorPosition });
 
     return defPromised.then((defRes) => {
         return quickInfoPromised.then((infoRes) => {
