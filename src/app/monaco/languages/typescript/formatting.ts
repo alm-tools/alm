@@ -1,4 +1,5 @@
 import {cast, server} from "../../../../socket/socketClient";
+import {Types} from "../../../../socket/socketContract";
 import * as state from "../../../state/state";
 import * as classifierCache from "../../../codemirror/mode/classifierCache";
 import CancellationToken = monaco.CancellationToken;
@@ -13,9 +14,13 @@ export class DocumentFormatter implements monaco.languages.DocumentFormattingEdi
             return Promise.resolve([]);
         }
 
-        // TODO: mon
-        console.log('TODO: whole document format')
-        return null;
+        return server.formatDocument({
+            filePath, editorOptions: model._editorOptions
+        }).then(res => {
+            // TODO: mon
+            console.log('TODO: whole document format', res); // DEBUG
+            return [];
+        });
     }
 }
 
@@ -27,7 +32,7 @@ export class DocumentRangeFormatter implements monaco.languages.DocumentRangeFor
         if (!state.inActiveProjectFilePath(model.filePath)) {
             return Promise.resolve([]);
         }
-        
+
         // TODO: mon
         console.log('TODO: range format')
         return null;
@@ -59,18 +64,21 @@ export class FormatOnTypeAdapter implements monaco.languages.OnTypeFormattingEdi
             editorOptions: model._editorOptions
         }).then((res) => {
             if (token.isCancellationRequested) return [];
-            return res.edits.map(e=>{
-                const result: monaco.editor.ISingleEditOperation = {
-                    range: {
-                        startLineNumber: e.from.line + 1,
-                        startColumn: e.from.ch + 1,
-                        endLineNumber: e.to.line + 1,
-                        endColumn: e.to.ch + 1
-                    },
-                    text: e.newText
-                };
-                return result;
-            })
+            return res.edits.map(formattingEditToSingleEditOperation);
         });
     }
+}
+
+/** Utility */
+function formattingEditToSingleEditOperation(edit: Types.FormattingEdit): monaco.editor.ISingleEditOperation {
+    const result: monaco.editor.ISingleEditOperation = {
+        range: {
+            startLineNumber: edit.from.line + 1,
+            startColumn: edit.from.ch + 1,
+            endLineNumber: edit.to.line + 1,
+            endColumn: edit.to.ch + 1
+        },
+        text: edit.newText
+    };
+    return result;
 }

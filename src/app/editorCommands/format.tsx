@@ -28,7 +28,6 @@ CodeMirror.commands[commands.additionalEditorCommands.format] = (editor: CodeMir
     const tabSize = editor.getOption('tabSize');
     const indentWithTabs = editor.getOption('indentWithTabs');
     let editorOptions: EditorOptions = {
-        indentSize: indentUnit,
         tabSize: tabSize,
         newLineCharacter: '\n',
         convertTabsToSpaces: !indentWithTabs,
