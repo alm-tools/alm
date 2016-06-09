@@ -27,6 +27,7 @@ export class FormatOnTypeAdapter implements monaco.languages.OnTypeFormattingEdi
             key: ch,
             editorOptions: model._editorOptions
         }).then((res) => {
+            if (token.isCancellationRequested) return [];
             return res.edits.map(e=>{
                 const result: monaco.editor.ISingleEditOperation = {
                     range: {

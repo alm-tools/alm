@@ -34,5 +34,6 @@ export function flushQueue() {
 /**
  * Note: this delay must be less than any other delays
  * (e.g. autocomplete throttling should be more than this).
+ * WARNING: making it big breaks `formattingEditsAfterKeystroke`
  */
-export const delayedFlushQueue = utils.throttle(flushQueue, 200);
+export const delayedFlushQueue = utils.throttle(flushQueue, 1);

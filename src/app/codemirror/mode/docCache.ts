@@ -160,6 +160,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
             // create the doc
             window.creatingModelFilePath = filePath;
             const doc = monaco.editor.createModel(res.contents, language);
+            doc.setEOL(monaco.editor.EndOfLineSequence.LF); // The true eol is only with the file model at the backend. The frontend doesn't care 🌹
 
             doc.filePath = filePath;
             doc._editors = [];
@@ -243,9 +244,6 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                 if (res.filePath == filePath
                     && doc.getValue() !== res.contents) {
 
-                    // Keep the classifier in sync
-                    if (isJsOrTsFile) { classifierCache.setContents(filePath, res.contents); }
-
                     // preserve cursor
                     doc._editors.forEach(e=>{
                         const cursors = e.getSelections();
@@ -258,6 +256,9 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                     editCameFromServerCount++;
 
                     doc.setValue(res.contents);
+
+                    // Keep the classifier in sync. I know it sounds wierd but it has to be after the doc.setValue call ^ 
+                    if (isJsOrTsFile) { classifierCache.setContents(filePath, res.contents); }
                 }
             });
 
