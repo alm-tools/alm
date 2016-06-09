@@ -30,6 +30,7 @@ import * as linter from "./linter";
 import * as provideDocumentHighlights from "./provideDocumentHighlights";
 import {ProvideHover} from "./provideHover";
 import {DocumentFormatter, DocumentRangeFormatter, FormatOnTypeAdapter} from "./formatting";
+import * as autocomplete from "./autocomplete";
 function setupMode(modeId: 'typescript' | 'javascript') {
     /** Setup tokenization */
     const language = modeId === 'typescript' ? tokenization.Language.TypeScript : tokenization.Language.EcmaScript5;
@@ -52,4 +53,6 @@ function setupMode(modeId: 'typescript' | 'javascript') {
     monaco.languages.registerDocumentRangeFormattingEditProvider(modeId, new DocumentRangeFormatter());
     monaco.languages.registerOnTypeFormattingEditProvider(modeId, new FormatOnTypeAdapter())
 
+    /** Setup autocomplete */
+    monaco.languages.registerCompletionItemProvider(modeId, new autocomplete.SuggestAdapter());
 }

@@ -21,6 +21,7 @@ export var worker = {
 
     // Project Service stuff
     getCompletionsAtPosition: {} as typeof socketContract.server.getCompletionsAtPosition,
+    getCompletionEntryDetails: {} as typeof socketContract.server.getCompletionEntryDetails,
     quickInfo: {} as typeof socketContract.server.quickInfo,
     getRenameInfo: {} as typeof socketContract.server.getRenameInfo,
     getDefinitionsAtPosition: {} as typeof socketContract.server.getDefinitionsAtPosition,

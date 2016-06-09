@@ -52,6 +52,7 @@ namespace Worker {
      * Project Service
      */
     export var getCompletionsAtPosition : typeof contract.worker.getCompletionsAtPosition = projectService.getCompletionsAtPosition;
+    export var getCompletionEntryDetails : typeof contract.worker.getCompletionEntryDetails = projectService.getCompletionEntryDetails;
     export var quickInfo : typeof contract.worker.quickInfo = projectService.quickInfo;
     export var getRenameInfo : typeof contract.worker.getRenameInfo = projectService.getRenameInfo;
     export var getDefinitionsAtPosition : typeof contract.worker.getDefinitionsAtPosition = projectService.getDefinitionsAtPosition;

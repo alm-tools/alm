@@ -172,6 +172,7 @@ namespace Server {
             return projectServiceMaster.worker.quickInfo(query);
         }
     }
+    export var getCompletionEntryDetails : typeof contract.server.getCompletionEntryDetails = projectServiceMaster.worker.getCompletionEntryDetails;
     export var getRenameInfo : typeof contract.server.getRenameInfo = projectServiceMaster.worker.getRenameInfo;
     export var getDefinitionsAtPosition : typeof contract.server.getDefinitionsAtPosition = projectServiceMaster.worker.getDefinitionsAtPosition;
     export var getDoctorInfo : typeof contract.server.getDoctorInfo = projectServiceMaster.worker.getDoctorInfo;

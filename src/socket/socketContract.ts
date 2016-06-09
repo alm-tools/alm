@@ -56,6 +56,7 @@ export var server = {
      * Project Service
      */
     getCompletionsAtPosition: {} as QRFunction<Types.GetCompletionsAtPositionQuery, Types.GetCompletionsAtPositionResponse>,
+    getCompletionEntryDetails: {} as QRFunction<Types.GetCompletionEntryDetailsQuery, Types.GetCompletionEntryDetailsResponse>,
     quickInfo: {} as QRFunction<Types.QuickInfoQuery, Types.QuickInfoResponse>,
     getRenameInfo: {} as QRFunction<Types.GetRenameInfoQuery, Types.GetRenameInfoResponse>,
     getDefinitionsAtPosition: {} as QRFunction<Types.GetDefinitionsAtPositionQuery, Types.GetDefinitionsAtPositionResponse>,
@@ -213,6 +214,13 @@ export namespace Types {
     export interface GetCompletionsAtPositionResponse {
         completions: Completion[];
         endsInPunctuation: boolean;
+    }
+
+    export interface GetCompletionEntryDetailsQuery {
+        filePath:string, position: number, label: string
+    }
+    export interface GetCompletionEntryDetailsResponse {
+        display: string, comment: string
     }
 
     /**

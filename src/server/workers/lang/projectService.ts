@@ -143,6 +143,19 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
     });
 }
 
+export function getCompletionEntryDetails(query: Types.GetCompletionEntryDetailsQuery): Promise<Types.GetCompletionEntryDetailsResponse> {
+    const project = getProject(query.filePath);
+    const service = project.languageService;
+    const {filePath,position,label} = query;
+
+    const completionDetails = project.languageService.getCompletionEntryDetails(filePath, position, label);
+    const comment = ts.displayPartsToString(completionDetails.documentation || []);
+    const display = ts.displayPartsToString(completionDetails.displayParts || []);
+
+    const result = { display: display, comment: comment };
+    return resolve(result);
+}
+
 export function quickInfo(query: Types.QuickInfoQuery): Promise<Types.QuickInfoResponse> {
     let project = getProject(query.filePath);
     const {languageServiceHost} = project;
