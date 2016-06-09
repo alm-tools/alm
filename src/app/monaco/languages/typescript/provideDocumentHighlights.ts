@@ -1,5 +1,6 @@
 import {cast, server} from "../../../../socket/socketClient";
 import * as state from "../../../state/state";
+import {onlyLastCallWithDelay} from "../../monacoUtils";
 import CancellationToken = monaco.CancellationToken;
 import Position = monaco.Position;
 
@@ -10,13 +11,13 @@ export function provideDocumentHighlights(model: monaco.editor.IReadOnlyModel, p
         return Promise.resolve([]);
     }
 
-    return server.getOccurrencesAtPosition({
+    return onlyLastCallWithDelay(()=>server.getOccurrencesAtPosition({
         filePath: model.filePath,
         editorPosition: {
             line: position.lineNumber - 1,
             ch: position.column - 1,
         }
-    }).then(res => {
+    }), token).then(res => {
         // console.log(res.results); DEBUG
         return res.results.map(entry => {
             return <monaco.languages.DocumentHighlight>{
