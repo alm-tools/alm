@@ -224,7 +224,7 @@ export namespace Types {
         info?: {
             name: string;
             comment: string;
-            range: {
+            range?: {
                 from: EditorPosition,
                 to: EditorPosition
             }
