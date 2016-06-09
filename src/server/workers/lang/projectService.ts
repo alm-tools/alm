@@ -145,11 +145,10 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
 
 export function quickInfo(query: Types.QuickInfoQuery): Promise<Types.QuickInfoResponse> {
     let project = getProject(query.filePath);
-    if (!project.includesSourceFile(query.filePath)) {
-        return Promise.resolve({ valid: false });
-    }
-    var info = project.languageService.getQuickInfoAtPosition(query.filePath, query.position);
-    var errors = positionErrors(query);
+    const {languageServiceHost} = project;
+    const position = languageServiceHost.getPositionOfLineAndCharacter(query.filePath, query.editorPosition.line, query.editorPosition.ch);
+    const errors = positionErrors({filePath: query.filePath, position});
+    var info = project.languageService.getQuickInfoAtPosition(query.filePath, position);
     if (!info && !errors.length) {
         return Promise.resolve({ valid: false });
     } else {
@@ -157,7 +156,11 @@ export function quickInfo(query: Types.QuickInfoQuery): Promise<Types.QuickInfoR
             valid: true,
             info: info && {
                 name: ts.displayPartsToString(info.displayParts || []),
-                comment: ts.displayPartsToString(info.documentation || [])
+                comment: ts.displayPartsToString(info.documentation || []),
+                range: {
+                    from: project.languageServiceHost.getLineAndCharacterOfPosition(query.filePath, info.textSpan.start),
+                    to: project.languageServiceHost.getLineAndCharacterOfPosition(query.filePath, info.textSpan.start + info.textSpan.length),
+                }
             },
             errors: errors
         });

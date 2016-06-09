@@ -218,14 +218,18 @@ export namespace Types {
     /**
      * Mouse hover
      */
-    export interface QuickInfoQuery extends FilePathPositionQuery { }
+    export interface QuickInfoQuery extends FilePathEditorPositionQuery { }
     export interface QuickInfoResponse {
         valid: boolean; // Do we have a valid response for this query
         info?: {
-            name?: string;
-            comment?: string;
-        }
-        errors: CodeError[];
+            name: string;
+            comment: string;
+            range: {
+                from: EditorPosition,
+                to: EditorPosition
+            }
+        },
+        errors?: CodeError[]
     }
 
     /**
