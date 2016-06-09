@@ -301,7 +301,7 @@ export namespace Types {
         editorOptions: types.EditorOptions;
     }
     export interface FormatDocumentResponse {
-        refactorings: types.RefactoringsByFilePath
+        edits: FormattingEdit[];
     }
     export interface FormatDocumentRangeQuery extends FilePathQuery {
         editorOptions: types.EditorOptions;
@@ -309,7 +309,7 @@ export namespace Types {
         to: EditorPosition;
     }
     export interface FormatDocumentRangeResponse {
-        refactorings: types.RefactoringsByFilePath
+        edits: FormattingEdit[];
     }
     export interface FormattingEditsAfterKeystrokeQuery extends FilePathEditorPositionQuery {
         key: string

@@ -17,9 +17,8 @@ export class DocumentFormatter implements monaco.languages.DocumentFormattingEdi
         return server.formatDocument({
             filePath, editorOptions: model._editorOptions
         }).then(res => {
-            // TODO: mon
-            console.log('TODO: whole document format', res); // DEBUG
-            return [];
+            if (token.isCancellationRequested) return [];
+            return res.edits.map(formattingEditToSingleEditOperation);
         });
     }
 }
@@ -33,9 +32,21 @@ export class DocumentRangeFormatter implements monaco.languages.DocumentRangeFor
             return Promise.resolve([]);
         }
 
-        // TODO: mon
-        console.log('TODO: range format')
-        return null;
+        return server.formatDocumentRange({
+            filePath,
+            editorOptions: model._editorOptions,
+            from: {
+                line: range.startLineNumber - 1,
+                ch: range.startColumn - 1,
+            },
+            to: {
+                line: range.endLineNumber - 1,
+                ch: range.endColumn - 1,
+            }
+        }).then(res => {
+            if (token.isCancellationRequested) return [];
+            return res.edits.map(formattingEditToSingleEditOperation);
+        });
     }
 }
 

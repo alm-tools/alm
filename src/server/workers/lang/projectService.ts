@@ -295,11 +295,35 @@ export function getReferences(query: Types.GetReferencesQuery): Promise<Types.Ge
 import * as formatting from "./modules/formatting";
 export function formatDocument(query: Types.FormatDocumentQuery): Promise<Types.FormatDocumentResponse> {
     let project = getProject(query.filePath);
-    return resolve({ refactorings: formatting.formatDocument(project, query.filePath, query.editorOptions) });
+    const {languageServiceHost, languageService} = project;
+
+    let tsresult = formatting.formatDocument(project, query.filePath, query.editorOptions);
+    const edits = tsresult.map(res => {
+        const result: Types.FormattingEdit = {
+            from: languageServiceHost.getLineAndCharacterOfPosition(query.filePath, res.span.start),
+            to: languageServiceHost.getLineAndCharacterOfPosition(query.filePath, res.span.start + res.span.length),
+            newText: res.newText
+        };
+        return result;
+    });
+
+    return resolve({edits});
 }
 export function formatDocumentRange(query: Types.FormatDocumentRangeQuery): Promise<Types.FormatDocumentRangeResponse> {
     let project = getProject(query.filePath);
-    return resolve({ refactorings: formatting.formatDocumentRange(project, query.filePath, query.from, query.to, query.editorOptions) });
+    const {languageServiceHost, languageService} = project;
+
+    let tsresult = formatting.formatDocumentRange(project, query.filePath, query.from, query.to, query.editorOptions);
+    const edits = tsresult.map(res => {
+        const result: Types.FormattingEdit = {
+            from: languageServiceHost.getLineAndCharacterOfPosition(query.filePath, res.span.start),
+            to: languageServiceHost.getLineAndCharacterOfPosition(query.filePath, res.span.start + res.span.length),
+            newText: res.newText
+        };
+        return result;
+    });
+
+    return resolve({edits});
 }
 
 export function getFormattingEditsAfterKeystroke(query: Types.FormattingEditsAfterKeystrokeQuery): Promise<Types.FormattingEditsAfterKeystrokeResponse> {
