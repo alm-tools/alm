@@ -29,6 +29,7 @@ import {richLanguageConfiguration} from "./richLanguageConfiguration";
 import * as linter from "./linter";
 import * as provideDocumentHighlights from "./provideDocumentHighlights";
 import * as formattingEditsAfterKeystroke from "./formattingEditsAfterKeystroke";
+import {ProvideHover} from "./provideHover";
 function setupMode(modeId: 'typescript' | 'javascript') {
     /** Setup tokenization */
     const language = modeId === 'typescript' ? tokenization.Language.TypeScript : tokenization.Language.EcmaScript5;
@@ -45,4 +46,7 @@ function setupMode(modeId: 'typescript' | 'javascript') {
 
     /** Setup formatting on keystroke */
     monaco.languages.registerOnTypeFormattingEditProvider(modeId, new formattingEditsAfterKeystroke.FormatOnTypeAdapter())
+
+    /** Setup hover information provider */
+    monaco.languages.registerHoverProvider(modeId, new ProvideHover());
 }
