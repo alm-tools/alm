@@ -37,25 +37,27 @@ export function getPositionOfLineAndCharacter(filePath: string, line: number, ch
 }
 
 export function getClassificationsForLine(filePath: string, lineStart: number, string: string): ClassifiedSpan[] {
-    const cantDoIt = [{
-        textSpan: {
-            start:0,
-            length: string.length
-        },
-        startInLine: 0,
-        string,
-        classificationType: ts.ClassificationType.whiteSpace,
-        classificationTypeName: ClassificationTypeNames.whiteSpace,
-    }];
 
+    // don't need this for monaco!
     /**
      * Protect against code mirror optimized rendering.
      * If string does not match expected line contents tokenize as whitespace till the precise call is made.
      */
-    const trueLineContents = languageService.getNonBoundSourceFile(filePath).text.substr(lineStart);
-    if (!trueLineContents.startsWith(string)){
-        return cantDoIt;
-    }
+    // const trueLineContents = languageService.getNonBoundSourceFile(filePath).text.substr(lineStart);
+    // if (!trueLineContents.startsWith(string)){
+    //     // console.log({ trueLineContents, string, filePath }); // DEBUG
+    //     const cantDoIt = [{
+    //         textSpan: {
+    //             start:0,
+    //             length: string.length
+    //         },
+    //         startInLine: 0,
+    //         string,
+    //         classificationType: ts.ClassificationType.whiteSpace,
+    //         classificationTypeName: ClassificationTypeNames.whiteSpace,
+    //     }];
+    //     return cantDoIt;
+    // }
 
     let lineLength = string.length;
     let encodedClassifications = languageService.getEncodedSyntacticClassifications(filePath, { start: lineStart, length: lineLength });

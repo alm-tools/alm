@@ -258,6 +258,8 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                     // Note that we use *mark as coming from server* so we don't go into doc.change handler later on :)
                     editCameFromServerCount++;
 
+                    // Need to set the filepath as calling `setValue` calls `getInitialState` on the tokenizer 🌹
+                    window.creatingModelFilePath = filePath;                    
                     doc.setValue(res.contents);
                 }
             });
