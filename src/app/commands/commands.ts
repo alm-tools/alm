@@ -433,14 +433,6 @@ export var doOpenASTFullView = new UICommand({
 });
 
 /**
- * Git commands
- */
-export var gitStatus = new UICommand({
-    description: 'Git Status',
-    context: CommandContext.Global,
-});
-
-/**
  * Registration
  */
 export function register() {

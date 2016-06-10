@@ -7,11 +7,6 @@ export import commands = require("./commands/commands");
 import {server} from "../socket/socketClient";
 import * as CodeMirror from "codemirror";
 
-commands.gitStatus.on(()=>{
-    ui.notifyInfoNormalDisappear('Git status coming soon');
-    server.gitStatus({}).then(res=>console.log(res));
-});
-
 CodeMirror.commands[commands.additionalEditorCommands.gitSoftResetFile] = function(cm: CodeMirror.EditorFromTextArea) {
     if (!cm.filePath){
         ui.notifyWarningNormalDisappear('File does not have a valid file path');
