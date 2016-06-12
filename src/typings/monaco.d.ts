@@ -5,7 +5,7 @@
  * Named differently so it doesn't crash and burn our webpack workflow.
  * You can use it to load modules in sync because they are all already loaded internally when `editor.main` is loaded
  */
-declare var monacoRequire: <T>(moduleId: [string]) => T;
+declare var monacoRequire: (moduleId: string) => any;
 
 /** Makes bringing monaco code in easier */
 interface IDisposable {
