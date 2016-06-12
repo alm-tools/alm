@@ -17,7 +17,12 @@ import * as utils from "./common/utils";
 import * as fsu from "./server/utils/fsu";
 
 const publicPath = path.resolve(__dirname, 'public');
-const monacoSourceDir = fsu.travelUpTheDirectoryTreeTillYouFind(__dirname, 'node_modules') + '/monaco-editor-core/dev/vs';
+let monacoSourceDir = fsu.travelUpTheDirectoryTreeTillYouFind(__dirname, 'node_modules') + '/nmonaco/build/vs';
+/**
+ * To use official monaco:
+ * npm install monaco-editor-core --save-dev
+ */
+// monacoSourceDir = fsu.travelUpTheDirectoryTreeTillYouFind(__dirname, 'node_modules') + '/monaco-editor-core/dev/vs'; // DEBUG
 
 const clOptions = cl.getOptions();
 /** If the cl options favor early exit (e.g. -i) do that */
