@@ -15,3 +15,11 @@
     /* The current should have the same color as the rest */
     background-color: #6D4F3A;
 }
+
+/*
+ * fix the line number cursors (the svg is horrible)
+ * https://github.com/Microsoft/vscode/issues/7569
+ */
+.monaco-editor .margin-view-overlays .line-numbers {
+    cursor: default;
+}
