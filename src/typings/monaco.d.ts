@@ -1,4 +1,4 @@
-/// <reference path="../../node_modules/nmonaco/build/vs/monaco.d.ts"/>
+/// <reference path="../../node_modules/nmonaco/build/monaco.d.ts"/>
 
 /**
  * This is setup in our `index.html`. This just points to `require` function in monaco's loader
