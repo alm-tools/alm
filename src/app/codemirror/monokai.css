@@ -56,5 +56,6 @@
 .monaco-editor.vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .def { color: rgb(253, 151, 31); }
 /* want a brighter selected text (especially as monaco doesn't keep the line highlighted once you have some text selected) */
 .monaco-editor.vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .focused .selected-text { background-color: rgba(152, 139, 3, 0.4); }
-/** Don't want italic */
+/** Don't want italic or underline */
 .monaco-editor.vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.support.type { font-style: normal; }
+.monaco-editor.vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.entity.name.class { text-decoration: none; }
