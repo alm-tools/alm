@@ -143,20 +143,12 @@ function createOverlays(editor: Editor) {
     */
 }
 
-import CommonEditorRegistry = monaco.internal.CommonEditorRegistry;
-import EditorActionDescriptor = monaco.internal.EditorActionDescriptor;
-import IEditorActionDescriptorData = monaco.editor.IEditorActionDescriptorData;
-import ICommonCodeEditor = monaco.editor.ICommonCodeEditor;
+import CommonEditorRegistry = monaco.CommonEditorRegistry;
+import EditorActionDescriptor = monaco.EditorActionDescriptor;
+import IEditorActionDescriptorData = monaco.IEditorActionDescriptorData;
+import ICommonCodeEditor = monaco.ICommonCodeEditor;
 import TPromise = monaco.Promise;
-
-/**
- * TODO: mon
- * this needs to come from monaco
- */
-class EditorAction{
-    constructor(descriptor:IEditorActionDescriptorData, editor:ICommonCodeEditor) {
-	}
-}
+import EditorAction = monaco.EditorAction;
 
 class JumpyAction extends EditorAction {
 
