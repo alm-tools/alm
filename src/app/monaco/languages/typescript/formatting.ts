@@ -7,7 +7,7 @@ import Thenable = monaco.Thenable;
 import Position = monaco.Position;
 
 export class DocumentFormatter implements monaco.languages.DocumentFormattingEditProvider {
-    provideDocumentFormattingEdits(model: monaco.editor.IReadOnlyModel, options: monaco.languages.IFormattingOptions, token: monaco.CancellationToken): monaco.editor.ISingleEditOperation[] | Promise<monaco.editor.ISingleEditOperation[]> {
+    provideDocumentFormattingEdits(model: monaco.editor.IReadOnlyModel, options: monaco.languages.FormattingOptions, token: monaco.CancellationToken): monaco.editor.ISingleEditOperation[] | Promise<monaco.editor.ISingleEditOperation[]> {
 
         const filePath = model.filePath;
         if (!state.inActiveProjectFilePath(model.filePath)) {
@@ -25,7 +25,7 @@ export class DocumentFormatter implements monaco.languages.DocumentFormattingEdi
 
 
 export class DocumentRangeFormatter implements monaco.languages.DocumentRangeFormattingEditProvider {
-    provideDocumentRangeFormattingEdits(model: monaco.editor.IReadOnlyModel, range: monaco.Range, options: monaco.languages.IFormattingOptions, token: monaco.CancellationToken): monaco.editor.ISingleEditOperation[] | Promise<monaco.editor.ISingleEditOperation[]> {
+    provideDocumentRangeFormattingEdits(model: monaco.editor.IReadOnlyModel, range: monaco.Range, options: monaco.languages.FormattingOptions, token: monaco.CancellationToken): monaco.editor.ISingleEditOperation[] | Promise<monaco.editor.ISingleEditOperation[]> {
 
         const filePath = model.filePath;
         if (!state.inActiveProjectFilePath(model.filePath)) {
@@ -58,7 +58,7 @@ export class FormatOnTypeAdapter implements monaco.languages.OnTypeFormattingEdi
         return [';', '}', '\n'];
     }
 
-    provideOnTypeFormattingEdits(model: monaco.editor.IReadOnlyModel, position: Position, ch: string, options: monaco.languages.IFormattingOptions, token: CancellationToken): Thenable<monaco.editor.ISingleEditOperation[]> {
+    provideOnTypeFormattingEdits(model: monaco.editor.IReadOnlyModel, position: Position, ch: string, options: monaco.languages.FormattingOptions, token: CancellationToken): Thenable<monaco.editor.ISingleEditOperation[]> {
         const filePath = model.filePath;
 
         if (!state.inActiveProjectFilePath(model.filePath)) {
