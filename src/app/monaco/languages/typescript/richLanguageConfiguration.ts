@@ -1,4 +1,4 @@
-export const richLanguageConfiguration:monaco.languages.IRichLanguageConfiguration = {
+export const richLanguageConfiguration:monaco.languages.LanguageConfiguration = {
 	wordPattern: /(-?\d*\.\d\w*)|([^\`\~\!\@\#\%\^\&\*\(\)\-\=\+\[\{\]\}\\\|\;\:\'\"\,\.\<\>\/\?\s]+)/g,
 
 	comments: {
