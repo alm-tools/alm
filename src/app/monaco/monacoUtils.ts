@@ -53,3 +53,12 @@ export function onlyLastCallWithDelay<T>(call: () => Promise<T>, token: monaco.C
     })
     return p;
 }
+
+export function gotoPosition(cfg:{editor: Editor, position: EditorPosition}) {
+    const pos = {
+        lineNumber: cfg.position.line + 1,
+        column: cfg.position.ch + 1,
+    };
+    cfg.editor.setPosition(pos);
+    cfg.editor.revealPosition(pos);
+}

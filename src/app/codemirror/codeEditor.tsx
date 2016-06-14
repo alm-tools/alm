@@ -7,6 +7,8 @@ import * as types from "../../common/types";
 import * as cursorHistory from "../cursorHistory";
 import * as search from "../monaco/search/monacoSearch";
 import * as gitStatus from "../monaco/gitStatus";
+import * as semanticView from "./addons/semanticView";
+import * as monacoUtils from "../monaco/monacoUtils";
 
 // The monokai theme
 require('./monokai.css');
@@ -356,12 +358,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
     gotoPosition = (position: EditorPosition) => {
         this.afterReady(() => {
-			const pos = {
-                lineNumber: position.line + 1,
-                column: position.ch + 1,
-            };
-            this.editor.setPosition(pos);
-			this.editor.revealPosition(pos);
+			monacoUtils.gotoPosition({editor:this.editor,position});
         });
     }
 
@@ -457,6 +454,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 			<div className={className} style={csx.extend(csx.horizontal,csx.flex,{position:'relative', maxWidth:'100%'})}>
                 <div style={loadingStyle}>LOADING</div>
                 <div ref="codeEditor" style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }} />
+                {!this.props.readOnly && <semanticView.SemanticView editor={this.editor} filePath={this.props.filePath}/>}
 			</div>
 		);
 	}
