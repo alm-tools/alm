@@ -478,19 +478,22 @@ let mod = mac ? 'Cmd' : 'Ctrl';
  * - Otherwise they are registered manually at the bottom of the file
  */
 export let additionalEditorCommands = {
-    renameVariable: '',
-    gotoDefinition: '',
-    findReferences: '',
+    // TODO: mon
+    // renameVariable: '',
+    // gotoDefinition: '',
+    // findReferences: '',
+    // format: '',
+    // toggleBlaster: '',
+    // gitSoftResetFile: '',
+    // htmlToTsx: '',
+    // cssToTs: '',
+    // jsonToDts: '',
+    // goToLine: '',
+    // quickFix: '',
+    // gotoTypeScriptSymbol: '',
+
     jumpy: '',
-    format: '',
-    toggleBlaster: '',
-    gitSoftResetFile: '',
-    htmlToTsx: '',
-    cssToTs: '',
-    jsonToDts: '',
-    goToLine: '',
-    quickFix: '',
-    gotoTypeScriptSymbol: '',
+
 }
 utils.stringEnum(additionalEditorCommands);
 
