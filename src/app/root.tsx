@@ -28,7 +28,6 @@ import * as state from "./state/state";
 import {RenameVariable} from "./codeResults/renameVariable";
 import {GotoDefinition} from "./codeResults/gotoDefinition";
 import {FindReferences} from "./codeResults/findReferences";
-import * as format from "./editorCommands/format";
 import * as gotoHistory from "./gotoHistory";
 import * as clipboardRing from "./clipboardRing";
 import * as gitCommands from "./gitCommands";
@@ -40,7 +39,6 @@ import * as gotoTypeScriptSymbol from "./editorCommands/gotoTypeScriptSymbol";
 var ensureImport = RenameVariable
     || GotoDefinition
     || FindReferences
-    || format
     || gotoHistory
     || clipboardRing
     || gitCommands
