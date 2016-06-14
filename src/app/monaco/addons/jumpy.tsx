@@ -142,3 +142,48 @@ function createOverlays(editor: Editor) {
     state.shown = true;
     */
 }
+
+import CommonEditorRegistry = monaco.internal.CommonEditorRegistry;
+import EditorActionDescriptor = monaco.internal.EditorActionDescriptor;
+import IEditorActionDescriptorData = monaco.editor.IEditorActionDescriptorData;
+import ICommonCodeEditor = monaco.editor.ICommonCodeEditor;
+import TPromise = monaco.Promise;
+
+/**
+ * TODO: mon
+ * this needs to come from monaco
+ */
+class EditorAction{
+    constructor(descriptor:IEditorActionDescriptorData, editor:ICommonCodeEditor) {
+	}
+}
+
+class JumpyAction extends EditorAction {
+
+    static ID = 'editor.action.jumpy';
+
+	constructor(descriptor:IEditorActionDescriptorData, editor:ICommonCodeEditor) {
+		super(descriptor, editor);
+	}
+
+	public run():TPromise<boolean> {
+        // TODO: mon
+		// var commands:ICommand[] = [];
+		// var selections = this.editor.getSelections();
+        //
+		// for (var i = 0; i < selections.length; i++) {
+		// 	commands.push(new CopyLinesCommand(selections[i], this.down));
+		// }
+        //
+		// this.editor.executeCommands(this.id, commands);
+
+		return TPromise.as(true);
+	}
+}
+
+// TODO: mon
+// export this overload
+// CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(JumpyAction, JumpyAction.ID, 'Jumpy'), {
+// 	context: ContextKey.EditorTextFocus,
+// 	primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_D
+// }, 'Jumpy');
