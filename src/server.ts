@@ -17,7 +17,7 @@ import * as utils from "./common/utils";
 import * as fsu from "./server/utils/fsu";
 
 const publicPath = path.resolve(__dirname, 'public');
-let monacoSourceDir = fsu.travelUpTheDirectoryTreeTillYouFind(__dirname, 'node_modules') + '/nmonaco/build/vs';
+let monacoSourceDir = fsu.travelUpTheDirectoryTreeTillYouFind(__dirname, 'node_modules') + '/monaco/build/vs';
 /**
  * To use official monaco:
  * npm install monaco-editor-core --save-dev
