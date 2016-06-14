@@ -1,3 +1,8 @@
+/** Imports */
+import * as commands from "../../commands/commands";
+/** Load jumpy css */
+require('./jumpy.css');
+
 /** Editor type */
 type Editor = monaco.editor.ICommonCodeEditor;
 
@@ -14,9 +19,6 @@ declare global {
         }
     }
 }
-
-/** Load jumpy css */
-require('./jumpy.css');
 
 /**
  * Setup key characters used for jumpy points
@@ -49,6 +51,26 @@ interface JumpyState {
 }
 
 /** Gets or creates a state */
-export function getState(editor:Editor): JumpyState{
+export function getState(editor: Editor): JumpyState {
     return editor._jumpyState || (editor._jumpyState = { widgets: [], shown: false });
+}
+
+/**
+ *
+ * The bulk of the logic
+ *
+ */
+function addOverlay(editor: Editor) {
+    // TODO:
+    // clearAnyOverlay(editor);
+    // createOverlays(cm);
+
+    // Subscribe to esc *once* to clear
+    commands.esc.once(() => {
+        // TODO:
+        // clearAnyOverlay(cm);
+    });
+    // TODO:
+    // (cm as any).on('beforeChange', handleBeforeChange);
+    // (cm as any).on('scroll', clearAnyOverlay);
 }
