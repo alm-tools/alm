@@ -63,7 +63,7 @@ export function getState(editor: Editor): JumpyState {
 function addOverlay(editor: Editor) {
     // TODO:
     // clearAnyOverlay(editor);
-    // createOverlays(cm);
+    createOverlays(editor);
 
     // Subscribe to esc *once* to clear
     commands.esc.once(() => {
@@ -73,4 +73,72 @@ function addOverlay(editor: Editor) {
     // TODO:
     // (cm as any).on('beforeChange', handleBeforeChange);
     // (cm as any).on('scroll', clearAnyOverlay);
+}
+
+/**
+ * Renders the overlays on the editor
+ */
+function createOverlays(editor: Editor) {
+    // Set as showing
+    getState(editor).shown = true;
+
+    // The model
+    let doc = editor.getModel();
+
+    /* TODO
+    // The text in viewport
+    let {from, to} = editor;
+    let text = editor.getDoc().getRange({ line: from, ch: 0 }, { line: to, ch: 0 });
+
+
+    let splitRegex = /^[A-Z]?[0-9a-z]+|^[\{\};]+/;
+
+    let scrollInfo = editor.getScrollInfo();
+    let topLine = editor.coordsChar({ top: scrollInfo.top, left: scrollInfo.left }, 'local').line;
+    let bottomLine = editor.coordsChar({ top: scrollInfo.top + scrollInfo.clientHeight, left: scrollInfo.left }, 'local').line + 1;
+    // console.log(scrollInfo,bottomLine-topLine);
+    let lines = [];
+    for (let i = 0; i < bottomLine - topLine; i++) {
+        lines.push(i);
+    }
+
+    let keysIndex = 0;
+
+    let overlayByLines = utils.selectMany(lines.map((x) => {
+        let trueLine = x + topLine;
+        let string = doc.getLine(trueLine);
+
+        let pos = 0;
+        let lineOverlays: JumpyWidget[] = [];
+        while (pos !== string.length) {
+            var matches = /^[A-Z]?[0-9a-z]+|^[\{\};]+/.exec(string.substr(pos));
+            if (matches && matches.length) {
+                let matched = matches[0];
+                let name = keys[keysIndex++];
+                let nodeRendered = <div key={x + ':' + pos} className="cm-jumpy" style={{ top: '-1rem' } as any}>{name}</div>;
+                let node = document.createElement('div'); ReactDOM.render(nodeRendered, node);
+
+                let widget: JumpyWidget = {
+                    node,
+                    line: trueLine,
+                    ch: pos,
+                    keys: name,
+                }
+
+                lineOverlays.push(widget);
+                pos += matched.length;
+            } else {
+                pos++;
+            }
+        }
+
+        return lineOverlays;
+    }));
+
+    // Add to CM + State
+    overlayByLines.forEach(wg => editor.addWidget({ line: wg.line, ch: wg.ch }, wg.node, false));
+    let state = getState(editor);
+    state.widgets = overlayByLines;
+    state.shown = true;
+    */
 }
