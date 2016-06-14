@@ -1,0 +1,10 @@
+.monaco-jumpy {
+    position: absolute;
+    font-size: 9.4px;
+    background: white;
+    color: black;
+    border-radius: 3px;
+    padding: 1px;
+    box-shadow: 1px 1px 1px 1px black;
+    z-index: 1000;
+}

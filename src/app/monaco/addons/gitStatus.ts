@@ -9,7 +9,7 @@
 //     }
 // };
 
-import * as fstyle from "../base/fstyle";
+import * as fstyle from "../../base/fstyle";
 /**
  * Some styles
  */
@@ -61,9 +61,9 @@ const removedDecorationOptions: monaco.editor.IModelDecorationOptions = {
 };
 
 type Editor = monaco.editor.ICommonCodeEditor;
-import {CompositeDisposible} from "../../common/events";
-import * as utils from "../../common/utils";
-import {server} from "../../socket/socketClient";
+import {CompositeDisposible} from "../../../common/events";
+import * as utils from "../../../common/utils";
+import {server} from "../../../socket/socketClient";
 
 export function setup(editor: Editor): { dispose: () => void } {
     // if (editor) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
