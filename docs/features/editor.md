@@ -33,7 +33,7 @@ No matter where you are, `esc` will always take you to the currently focused edi
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/esc.gif)
 
 ## Jumpy
-Just press `shift+enter` and you can jump anywhere in the current editor.
+Just press `Ctrl|⌘ + enter` and you can jump anywhere in the current editor.
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/jumpy.gif)
 
