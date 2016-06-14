@@ -21,7 +21,7 @@ export function getActions(): types.MonacoActionInformation[] {
 
         // if there was any keyboard
         // map to it look nice for us
-        // We don't actually need to use these bindings other than the display as trigger is done by `id`.
+        // We don't actually need to use these bindings other than the display it (as trigger is done by `id`).
         let kbd = null;
         if (keyboard) {
             kbd = keyboard
