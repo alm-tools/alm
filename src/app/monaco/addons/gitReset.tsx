@@ -29,7 +29,7 @@ class GitResetAction extends EditorAction {
 	}
 }
 
-CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(GitResetAction, GitResetAction.ID, 'Git Reset', {
+CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(GitResetAction, GitResetAction.ID, 'Git Soft Reset', {
 	context: ContextKey.EditorTextFocus,
 	primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KEY_Z
-}, 'Git Reset'));
+}));

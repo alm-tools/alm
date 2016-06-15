@@ -1,4 +1,17 @@
 import * as types from "../../common/types";
+
+/** Addons. These must be loaded before the function below is ever called so loaded here 🌹 */
+import * as gitStatus from "../monaco/addons/gitStatus";
+import * as jumpy from "../monaco/addons/jumpy";
+import * as gitReset from "../monaco/addons/gitReset";
+import * as htmlToTsx from "../monaco/addons/htmlToTsx";
+const ensureImport =
+    gitStatus
+    || jumpy
+    || gitReset
+    || htmlToTsx
+    ;
+
 /**
  * This creates a dummy monaco editor just to get its actions
  */
