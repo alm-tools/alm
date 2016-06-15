@@ -12,8 +12,12 @@ import * as monacoUtils from "../monaco/monacoUtils";
 /** Addons */
 import * as gitStatus from "../monaco/addons/gitStatus";
 import * as jumpy from "../monaco/addons/jumpy";
-const ensureImport = gitStatus
-    || jumpy;
+import * as gitReset from "../monaco/addons/gitReset";
+const ensureImport =
+    gitStatus
+    || jumpy
+    || gitReset
+    ;
 
 // The monokai theme
 require('./monokai.css');
