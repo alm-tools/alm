@@ -5,11 +5,13 @@ import * as gitStatus from "../monaco/addons/gitStatus";
 import * as jumpy from "../monaco/addons/jumpy";
 import * as gitReset from "../monaco/addons/gitReset";
 import * as htmlToTsx from "../monaco/addons/htmlToTsx";
+import * as cssToTs from "../monaco/addons/cssToTs";
 const ensureImport =
     gitStatus
     || jumpy
     || gitReset
     || htmlToTsx
+    || cssToTs
     ;
 
 /**
