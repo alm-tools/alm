@@ -149,6 +149,9 @@ import IEditorActionDescriptorData = monaco.IEditorActionDescriptorData;
 import ICommonCodeEditor = monaco.ICommonCodeEditor;
 import TPromise = monaco.Promise;
 import EditorAction = monaco.EditorAction;
+import ContextKey = monaco.ContextKey;
+import KeyMod = monaco.KeyMod;
+import KeyCode = monaco.KeyCode;
 
 class JumpyAction extends EditorAction {
 
@@ -159,6 +162,7 @@ class JumpyAction extends EditorAction {
 	}
 
 	public run():TPromise<boolean> {
+        console.log('here')
         // TODO: mon
 		// var commands:ICommand[] = [];
 		// var selections = this.editor.getSelections();
@@ -173,11 +177,7 @@ class JumpyAction extends EditorAction {
 	}
 }
 
-// TODO: mon
-// EditorActionDescriptor
-// ContextKey
-// KeyMod
-// CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(JumpyAction, JumpyAction.ID, 'Jumpy', {
-// 	context: ContextKey.EditorTextFocus,
-// 	primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_D
-// }, 'Jumpy'));
+CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(JumpyAction, JumpyAction.ID, 'Jumpy', {
+	context: ContextKey.EditorTextFocus,
+	primary: KeyMod.CtrlCmd | KeyCode.Enter
+}, 'Jumpy'));
