@@ -3,6 +3,7 @@ import * as commands from "../../commands/commands";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as utils from "../../../common/utils";
+import * as events from "../../../common/events";
 
 /** Load jumpy css */
 require('./jumpy.css');
@@ -56,6 +57,7 @@ function getWidgetId(wg: JumpyWidget) {
 /** needs no comment */
 interface JumpyState {
     shown: boolean;
+    disposible: events.CompositeDisposible;
     widgets?: JumpyWidget[];
     key1?: string;
     key2?: string;
@@ -63,7 +65,7 @@ interface JumpyState {
 
 /** Gets or creates a state */
 export function getState(editor: Editor): JumpyState {
-    return editor._jumpyState || (editor._jumpyState = { widgets: [], shown: false });
+    return editor._jumpyState || (editor._jumpyState = { widgets: [], shown: false, disposible: new events.CompositeDisposible() });
 }
 
 /**
@@ -73,27 +75,31 @@ export function getState(editor: Editor): JumpyState {
  */
 function addOverlay(editor: Editor) {
     clearAnyOverlay(editor);
-    createOverlays(editor);
+    const state = createOverlays(editor);
 
-    // Subscribe to esc *once* to clear
-    commands.esc.once(() => {
+    // Subscribe to esc to clear
+    state.disposible.add(commands.esc.on(() => {
         clearAnyOverlay(editor);
-    });
+    }));
 
-    // editor.onKeyDown((e:monaco.IKeyboardEvent)=>{
-    //     console.log(e);
-    //     if (alphanumeric and in range){
-    //      e.preventDefault();
-    //      e.stopPropagation();
-    //     }
-    //     else {
-    //       clearAnyOverlay(editor);
-    //     }
-    // })
+    state.disposible.add(editor.onKeyDown((e: monaco.IKeyboardEvent) => {
+        console.log(e,lowerCharacters);
+        if (true /* alphanumeric and in range */) {
+            e.preventDefault();
+            e.stopPropagation();
 
-    // TODO: mon
-    // (cm as any).on('beforeChange', handleBeforeChange);
-    // (cm as any).on('scroll', clearAnyOverlay);
+            // TODO: mon
+            // handle before change style of logic
+        }
+        else {
+            // TODO: mon
+            // clearAnyOverlay(editor);
+        }
+    }));
+
+    state.disposible.add(editor.onDidScrollChange(() => clearAnyOverlay(editor)));
+    state.disposible.add(editor.onDidChangeCursorSelection(() => clearAnyOverlay(editor)));
+    state.disposible.add(editor.onDidBlurEditor(() => clearAnyOverlay(editor)));
 }
 
 /**
@@ -107,9 +113,7 @@ function clearAnyOverlay(editor: Editor) {
         state.key1 = null;
         state.key2 = null;
         state.shown = false;
-        // TODO: mon
-        // (cm as any).off('beforeChange', handleBeforeChange);
-        // (cm as any).off('scroll', clearAnyOverlay);
+        state.disposible.dispose();
     }
 }
 
@@ -117,9 +121,6 @@ function clearAnyOverlay(editor: Editor) {
  * Renders the overlays on the editor
  */
 function createOverlays(editor: Editor) {
-    // Set as showing
-    getState(editor).shown = true;
-
     // The model
     let doc = editor.getModel();
 
@@ -193,9 +194,13 @@ function createOverlays(editor: Editor) {
         }
         editor.addContentWidget(wg.monacoWiget);
     });
+
+    // Setup state and return
     let state = getState(editor);
     state.widgets = overlayByLines;
     state.shown = true;
+    state.disposible = new events.CompositeDisposible();
+    return state;
 }
 
 import CommonEditorRegistry = monaco.CommonEditorRegistry;
