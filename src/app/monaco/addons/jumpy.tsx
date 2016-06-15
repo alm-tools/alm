@@ -174,8 +174,10 @@ class JumpyAction extends EditorAction {
 }
 
 // TODO: mon
-// export this overload
-// CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(JumpyAction, JumpyAction.ID, 'Jumpy'), {
+// EditorActionDescriptor
+// ContextKey
+// KeyMod
+// CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(JumpyAction, JumpyAction.ID, 'Jumpy', {
 // 	context: ContextKey.EditorTextFocus,
 // 	primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_D
-// }, 'Jumpy');
+// }, 'Jumpy'));
