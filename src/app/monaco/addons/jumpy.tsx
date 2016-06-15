@@ -1,10 +1,15 @@
 /** Imports */
 import * as commands from "../../commands/commands";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import * as utils from "../../../common/utils";
+
 /** Load jumpy css */
 require('./jumpy.css');
 
 /** Editor type */
-type Editor = monaco.editor.ICommonCodeEditor;
+type Editor = monaco.editor.ICodeEditor;
+import Range = monaco.Range;
 
 /**
  * Where we store out state. Stuff like this is conventional CodeMirror code
@@ -40,6 +45,12 @@ interface JumpyWidget {
     line: number;
     ch: number;
     keys: string;
+
+    monacoWiget: monaco.editor.IContentWidget | null;
+}
+
+function getWidgetId(wg: JumpyWidget) {
+    return `jumpy:${wg.line}:${wg.ch}`;
 }
 
 /** needs no comment */
@@ -61,18 +72,45 @@ export function getState(editor: Editor): JumpyState {
  *
  */
 function addOverlay(editor: Editor) {
-    // TODO:
-    // clearAnyOverlay(editor);
+    clearAnyOverlay(editor);
     createOverlays(editor);
 
     // Subscribe to esc *once* to clear
     commands.esc.once(() => {
-        // TODO:
-        // clearAnyOverlay(cm);
+        clearAnyOverlay(editor);
     });
-    // TODO:
+
+    // editor.onKeyDown((e:monaco.IKeyboardEvent)=>{
+    //     console.log(e);
+    //     if (alphanumeric and in range){
+    //      e.preventDefault();
+    //      e.stopPropagation();
+    //     }
+    //     else {
+    //       clearAnyOverlay(editor);
+    //     }
+    // })
+
+    // TODO: mon
     // (cm as any).on('beforeChange', handleBeforeChange);
     // (cm as any).on('scroll', clearAnyOverlay);
+}
+
+/**
+ * Clears previous overlays if any
+ */
+function clearAnyOverlay(editor: Editor) {
+    let state = getState(editor);
+    if (state.shown) {
+        state.widgets.forEach(wg => editor.removeContentWidget(wg.monacoWiget));
+        state.widgets = [];
+        state.key1 = null;
+        state.key2 = null;
+        state.shown = false;
+        // TODO: mon
+        // (cm as any).off('beforeChange', handleBeforeChange);
+        // (cm as any).off('scroll', clearAnyOverlay);
+    }
 }
 
 /**
@@ -85,28 +123,28 @@ function createOverlays(editor: Editor) {
     // The model
     let doc = editor.getModel();
 
-    /* TODO
+    // DEBUG
+    // console.log(editor);
+    // window.foo = editor;
+
     // The text in viewport
-    let {from, to} = editor;
-    let text = editor.getDoc().getRange({ line: from, ch: 0 }, { line: to, ch: 0 });
+    // HACK: The current lines visible api
+    const range: Range = (editor as any)._view.layoutProvider.getLinesViewportData().visibleRange;
+    let text = doc.getValueInRange(range);
 
-
+    /** What we use to split the text */
     let splitRegex = /^[A-Z]?[0-9a-z]+|^[\{\};]+/;
 
-    let scrollInfo = editor.getScrollInfo();
-    let topLine = editor.coordsChar({ top: scrollInfo.top, left: scrollInfo.left }, 'local').line;
-    let bottomLine = editor.coordsChar({ top: scrollInfo.top + scrollInfo.clientHeight, left: scrollInfo.left }, 'local').line + 1;
-    // console.log(scrollInfo,bottomLine-topLine);
-    let lines = [];
-    for (let i = 0; i < bottomLine - topLine; i++) {
-        lines.push(i);
+    let lineNumbers:number[] = [];
+    for (let i = range.startLineNumber; i <= range.endLineNumber; i++) {
+        lineNumbers.push(i);
     }
 
+    // keeps track of the next jump point key we can use
     let keysIndex = 0;
 
-    let overlayByLines = utils.selectMany(lines.map((x) => {
-        let trueLine = x + topLine;
-        let string = doc.getLine(trueLine);
+    let overlayByLines = utils.selectMany(lineNumbers.map((lineNumber, i) => {
+        const string = doc.getLineContent(lineNumber);
 
         let pos = 0;
         let lineOverlays: JumpyWidget[] = [];
@@ -115,14 +153,16 @@ function createOverlays(editor: Editor) {
             if (matches && matches.length) {
                 let matched = matches[0];
                 let name = keys[keysIndex++];
-                let nodeRendered = <div key={x + ':' + pos} className="cm-jumpy" style={{ top: '-1rem' } as any}>{name}</div>;
+                let nodeRendered = <div key={i + ':' + pos} className="monaco-jumpy" style={{ }}>{name}</div>;
                 let node = document.createElement('div'); ReactDOM.render(nodeRendered, node);
 
                 let widget: JumpyWidget = {
                     node,
-                    line: trueLine,
+                    line: lineNumber - 1,
                     ch: pos,
                     keys: name,
+                    // This is setup later
+                    monacoWiget: null,
                 }
 
                 lineOverlays.push(widget);
@@ -135,12 +175,27 @@ function createOverlays(editor: Editor) {
         return lineOverlays;
     }));
 
-    // Add to CM + State
-    overlayByLines.forEach(wg => editor.addWidget({ line: wg.line, ch: wg.ch }, wg.node, false));
+    // Add to dom + State
+    overlayByLines.forEach(wg => {
+        wg.monacoWiget = {
+            allowEditorOverflow: true,
+            getId: () => getWidgetId(wg),
+            getDomNode: () => wg.node,
+            getPosition: () => {
+                return {
+                    position: { lineNumber: wg.line + 1, column: wg.ch + 1 },
+                    preference: [
+                        monaco.editor.ContentWidgetPositionPreference.ABOVE,
+                        monaco.editor.ContentWidgetPositionPreference.BELOW,
+                    ]
+                }
+            }
+        }
+        editor.addContentWidget(wg.monacoWiget);
+    });
     let state = getState(editor);
     state.widgets = overlayByLines;
     state.shown = true;
-    */
 }
 
 import CommonEditorRegistry = monaco.CommonEditorRegistry;
@@ -162,17 +217,7 @@ class JumpyAction extends EditorAction {
 	}
 
 	public run():TPromise<boolean> {
-        console.log('here')
-        // TODO: mon
-		// var commands:ICommand[] = [];
-		// var selections = this.editor.getSelections();
-        //
-		// for (var i = 0; i < selections.length; i++) {
-		// 	commands.push(new CopyLinesCommand(selections[i], this.down));
-		// }
-        //
-		// this.editor.executeCommands(this.id, commands);
-
+        addOverlay(this.editor as any);
 		return TPromise.as(true);
 	}
 }

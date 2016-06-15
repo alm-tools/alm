@@ -1,6 +1,6 @@
 /* Make the bracket match pop out more */
 .monaco-editor.vs-dark .bracket-match {
-    background-color: #2BA100;
+    background-color: rgba(100, 100, 100, 0.3);
 }
 
 /* Hide the find and replace widget as we have our own UI */
