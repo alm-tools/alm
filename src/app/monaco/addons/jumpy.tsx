@@ -75,31 +75,64 @@ export function getState(editor: Editor): JumpyState {
  */
 function addOverlay(editor: Editor) {
     clearAnyOverlay(editor);
+
+    /** Create the overlays */
     const state = createOverlays(editor);
 
-    // Subscribe to esc to clear
-    state.disposible.add(commands.esc.on(() => {
-        clearAnyOverlay(editor);
-    }));
+    /** A clear overlay function just for this editor 🌹 */
+    const clearOverlay = () => clearAnyOverlay(editor);
 
+    // Subscribe to esc to clear
+    state.disposible.add(commands.esc.on(clearOverlay));
+
+    /** Subscribe to jump */
     state.disposible.add(editor.onKeyDown((e: monaco.IKeyboardEvent) => {
-        console.log(e,lowerCharacters);
-        if (true /* alphanumeric and in range */) {
+
+        if (e.keyCode >= monaco.KeyCode.KEY_A && e.keyCode <= monaco.KeyCode.KEY_Z) {
+            // We always prevent ascii chars as the user might have mistyped some keystroke
             e.preventDefault();
             e.stopPropagation();
 
-            // TODO: mon
-            // handle before change style of logic
+            // The character representation
+            const char = lowerCharacters[e.keyCode - monaco.KeyCode.KEY_A];
+
+            let state = getState(editor);
+            if (!state.key1) {
+                state.key1 = char;
+
+                // remove not matched
+                state.widgets.filter(wg=>!wg.keys.startsWith(state.key1)).forEach(wg => editor.removeContentWidget(wg.monacoWiget));
+
+                // only keep matched
+                state.widgets = state.widgets.filter(wg=>wg.keys.startsWith(state.key1));
+
+                // remove all if nothing matched
+                if (state.widgets.length == 0){
+                    clearOverlay();
+                }
+            }
+            else {
+                let total = state.key1 + char;
+                let matched = state.widgets.find(wg=>wg.keys == total);
+                if (matched) {
+                    const position = {lineNumber: matched.line + 1, column: matched.ch + 1};
+                    editor.setPosition(position);
+                    // We actually allow them to jump one line before / one line after
+                    // So calling this isn't a bad idea. No-op if the line is in view ;)
+                    editor.revealLine(position.lineNumber);
+                }
+                clearOverlay();
+            }
         }
         else {
-            // TODO: mon
-            // clearAnyOverlay(editor);
+            clearOverlay();
         }
     }));
 
-    state.disposible.add(editor.onDidScrollChange(() => clearAnyOverlay(editor)));
-    state.disposible.add(editor.onDidChangeCursorSelection(() => clearAnyOverlay(editor)));
-    state.disposible.add(editor.onDidBlurEditor(() => clearAnyOverlay(editor)));
+    /** Best to exit on these conditions too */
+    state.disposible.add(editor.onDidScrollChange(clearOverlay));
+    state.disposible.add(editor.onDidChangeCursorSelection(clearOverlay));
+    state.disposible.add(editor.onDidBlurEditor(clearOverlay));
 }
 
 /**
