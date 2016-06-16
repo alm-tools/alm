@@ -6,12 +6,14 @@ import * as jumpy from "../monaco/addons/jumpy";
 import * as gitReset from "../monaco/addons/gitReset";
 import * as htmlToTsx from "../monaco/addons/htmlToTsx";
 import * as cssToTs from "../monaco/addons/cssToTs";
+import * as jsonToDts from "../monaco/addons/jsonToDts";
 const ensureImport =
     gitStatus
     || jumpy
     || gitReset
     || htmlToTsx
     || cssToTs
+    || jsonToDts
     ;
 
 /**
