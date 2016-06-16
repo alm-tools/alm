@@ -2,9 +2,11 @@ import {CompositeDisposible} from "../../../common/events";
 import {cast, server} from "../../../socket/socketClient";
 import * as utils from "../../../common/utils";
 import * as state from "../../state/state";
+import {LiveAnalysisResponse} from "../../../common/types";
+import * as commands from "../../commands/commands";
 
 require('./liveAnalysis.css');
-type Editor = monaco.editor.ICommonCodeEditor;
+type Editor = monaco.editor.ICodeEditor;
 
 const overrideClassName = 'monaco-live-analysis-override';
 const overrideDecorationOptions: monaco.editor.IModelDecorationOptions = {
@@ -18,6 +20,7 @@ export function setup(cm: Editor): { dispose: () => void } {
     // if (cm) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
 
     let lastDecorations: string[] = [];
+    let lastServerRes: LiveAnalysisResponse | null = null;
     // The key quick fix get logic
     const refreshLiveAnalysis = () => {
         // If not active project return
@@ -32,6 +35,7 @@ export function setup(cm: Editor): { dispose: () => void } {
         server.getLiveAnalysis({
             filePath: cm.filePath,
         }).then(res => {
+            lastServerRes = res;
             const newDecorations = res.overrides.map(override => {
                 const result: monaco.editor.IModelDeltaDecoration = {
                     range: {
@@ -58,11 +62,22 @@ export function setup(cm: Editor): { dispose: () => void } {
 
     /**
      * Also subscribe to the user clicking the margin
-     * For demo see `debugEditorContribution` in vscode source
      */
-    // cm.onEditorMouseDown(()=>{
-    //     console.log('here');
-    // })
+    cm.onMouseUp((mouseEvent) => {
+        if (mouseEvent.target.type === monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN
+            && mouseEvent.target.element.className.includes(overrideClassName)) {
+            const position = mouseEvent.target.position;
+            if (position && lastServerRes) {
+                const override = lastServerRes.overrides.find(x=>x.line === (position.lineNumber - 1));
+                if (override) {
+                    commands.doOpenOrFocusFile.emit({
+                        filePath: override.overrides.location.filePath,
+                        position: override.overrides.location.position
+                    });
+                }
+            }
+        }
+    });
 
     return disposible;
 }
