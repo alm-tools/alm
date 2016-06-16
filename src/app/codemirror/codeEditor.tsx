@@ -175,6 +175,10 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 			roundedSelection: false,
             /** For git status, find results, errors */
             overviewRulerLanes: 3,
+            /** Don't reserve too much space for line numbers */
+            lineNumbersMinChars: 4,
+            /** We need the glyph margin to show live analysis stuff */
+            glyphMargin: true,
         }, []);
 		this.editor.filePath = this.props.filePath;
 
