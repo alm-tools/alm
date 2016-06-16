@@ -26,9 +26,7 @@ require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/matchtags');
 
 // Our Addons
-import * as gitStatus from "./addons/gitStatus";
 import * as quickFix from "./addons/quickFix";
-import * as liveAnalysis from "./addons/liveAnalysis";
 import textHover = require('./addons/text-hover');
 import jumpy = require('./addons/jumpy');
 import blaster = require('./addons/blaster');
@@ -46,7 +44,7 @@ import linter = require('./addons/linter');
 import search = require("./addons/search");
 import typescriptMode = require("./mode/typescriptMode");
 typescriptMode.register();
-import * as docCache from "./mode/docCache";
+import * as docCache from "./mode/docCacheOld";
 
 import React = require('react');
 import ReactDOM = require('react-dom');
@@ -153,7 +151,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 				delay: 50,
 				getTextHover: (cm, data, e: MouseEvent) => {
 	                if (data && data.pos) {
-	                    return this.getQuickInfo(data.pos);
+	                    // return this.getQuickInfo(data.pos);
 	                }
 	            },
 			},
@@ -172,16 +170,10 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         (options as any).foldGutter = true;
         options.gutters.push("CodeMirror-foldgutter");
 
-        // live analysis
-        liveAnalysis.setupOptions(options);
-
         // quickfix
         if (!this.props.readOnly) {
             quickFix.setupOptions(options);
         }
-
-        // Git status
-        gitStatus.setupOptions(options);
 
         // lint
         linter.setupOptions(options, this.props.filePath);
@@ -207,20 +199,13 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             this.disposible.add({ dispose: () => this.codeMirror.off('cursorActivity', this.handleCursorActivity) });
         }
 
-        // live analysis
-        this.disposible.add(liveAnalysis.setupCM(this.codeMirror));
-
         // quick fix
         if (!this.props.readOnly) {
             this.disposible.add(quickFix.setupCM(this.codeMirror));
         }
 
-        // Git status
-        this.disposible.add(gitStatus.setupCM(this.codeMirror));
-
         const loadEditorOptions = (editorOptions:types.EditorOptions) => {
             // Set editor options
-            this.codeMirror.setOption('indentUnit', editorOptions.indentSize);
             this.codeMirror.setOption('tabSize', editorOptions.tabSize);
             this.codeMirror.setOption('indentWithTabs', !editorOptions.convertTabsToSpaces);
         }
@@ -269,32 +254,32 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 		}
 	}
 
-    getQuickInfo = (pos: CodeMirror.Position): Promise<string | HTMLElement> => {
-        if (
-            state.inActiveProjectFilePath(this.props.filePath)
-            || utils.isSupportedConfigFileForHover(this.props.filePath)
-        ) {
-            return server.quickInfo({ filePath: this.props.filePath, position: this.codeMirror.getDoc().indexFromPos(pos) }).then(resp => {
-                if (!resp.valid) return;
-
-                var message = '';
-                if (resp.errors.length) {
-                    message = message + `🐛 <i>${resp.errors.map(e => escape(e.message)).join('<br/>')}</i><br/>`
-                }
-
-                if (resp.info) {
-                    message = message + `<b>${escape(resp.info.name)}</b>`;
-                    if (resp.info.comment) {
-                        message = message + `<br/>${toHtml(resp.info.comment)}`;
-                    }
-                }
-
-                let div = document.createElement('div');
-                div.innerHTML = message;
-                return div;
-            });
-        }
-    };
+    // getQuickInfo = (pos: CodeMirror.Position): Promise<string | HTMLElement> => {
+    //     if (
+    //         state.inActiveProjectFilePath(this.props.filePath)
+    //         || utils.isSupportedConfigFileForHover(this.props.filePath)
+    //     ) {
+    //         return server.quickInfo({ filePath: this.props.filePath, position: this.codeMirror.getDoc().indexFromPos(pos) }).then(resp => {
+    //             if (!resp.valid) return;
+    //
+    //             var message = '';
+    //             if (resp.errors.length) {
+    //                 message = message + `🐛 <i>${resp.errors.map(e => escape(e.message)).join('<br/>')}</i><br/>`
+    //             }
+    //
+    //             if (resp.info) {
+    //                 message = message + `<b>${escape(resp.info.name)}</b>`;
+    //                 if (resp.info.comment) {
+    //                     message = message + `<br/>${toHtml(resp.info.comment)}`;
+    //                 }
+    //             }
+    //
+    //             let div = document.createElement('div');
+    //             div.innerHTML = message;
+    //             return div;
+    //         });
+    //     }
+    // };
 
 	getCodeMirror () {
 		return this.codeMirror;
@@ -421,7 +406,6 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 				{!this.props.readOnly && <blaster.Blaster cm={this.codeMirror}/>}
 				<div style={loadingStyle}>LOADING</div>
 				<textarea ref="textarea" name={this.props.filePath} autoComplete="false" />
-                {!this.props.readOnly && <semanticView.SemanticView cm={this.codeMirror} filePath={this.props.filePath}/>}
 			</div>
 		);
 	}
