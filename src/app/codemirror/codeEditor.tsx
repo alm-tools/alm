@@ -378,10 +378,9 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
     }
 
 	/**
-	 * TODO: mon
-	 * use this to see the initial search if coming out of hidden
+	 * used to seed the initial search if coming out of hidden
 	 */
-	getSelectionSearchString(): string {
+	getSelectionSearchString(): string | undefined {
 		let selection = this.editor.getSelection();
 
 		if (selection.startLineNumber === selection.endLineNumber) {
@@ -395,7 +394,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 			}
 		}
 
-		return "";
+		return undefined;
 	}
 
     search = (options: FindOptions) => {
