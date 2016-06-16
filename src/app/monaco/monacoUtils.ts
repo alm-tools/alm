@@ -11,7 +11,6 @@ export function replaceSelection(config: {
     newText: string
 }) {
     const selection = config.editor.getSelection();
-
     const editOperation: monaco.editor.IIdentifiedSingleEditOperation = {
         identifier: {
             major: 0,
@@ -24,6 +23,30 @@ export function replaceSelection(config: {
     }
 
     config.editor.getModel().pushEditOperations([], [editOperation], null);
+}
+
+export function replaceRange(config: {
+    model: monaco.IModel,
+    range: {
+        startLineNumber: number,
+        startColumn: number,
+        endLineNumber: number,
+        endColumn: number
+    },
+    newText: string
+}) {
+    const editOperation: monaco.editor.IIdentifiedSingleEditOperation = {
+        identifier: {
+            major: 0,
+            minor: ++editorOperationCounter,
+        },
+        text: config.newText,
+        range: new monaco.Range(config.range.startLineNumber, config.range.startColumn, config.range.endLineNumber, config.range.endColumn),
+        forceMoveMarkers: false,
+        isAutoWhitespaceEdit: false,
+    }
+
+    config.model.pushEditOperations([], [editOperation], null);
 }
 
 /** Runs format or format selection (if any) */

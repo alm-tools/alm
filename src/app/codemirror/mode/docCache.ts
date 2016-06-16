@@ -10,6 +10,7 @@ import * as classifierCache from "./classifierCache";
 import {RefactoringsByFilePath, Refactoring} from "../../../common/types";
 import * as state from "../../state/state";
 import {EditorOptions} from "../../../common/types";
+import * as monacoUtils from "../../monaco/monacoUtils";
 
 /**
  * We extend the monaco editor model
@@ -259,7 +260,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                     editCameFromServerCount++;
 
                     // Need to set the filepath as calling `setValue` calls `getInitialState` on the tokenizer 🌹
-                    window.creatingModelFilePath = filePath;                    
+                    window.creatingModelFilePath = filePath;
                     doc.setValue(res.contents);
                 }
             });
@@ -292,17 +293,17 @@ export function applyRefactoringsToTsDocs(refactorings: RefactoringsByFilePath) 
 
                 const from = classifierCache.getLineAndCharacterOfPosition(fp, change.span.start);
                 const to = classifierCache.getLineAndCharacterOfPosition(fp, change.span.start + change.span.length);
-                const sourceId = 'refactor';
 
-                // Keep the classifier cache in sync
-                classifierCache.editFile(change.filePath, {
-                    from: from,
-                    to: to,
-                    sourceId,
+                monacoUtils.replaceRange({
+                    model: doc,
+                    range: {
+                        startLineNumber: from.line + 1,
+                        startColumn: from.ch + 1,
+                        endLineNumber: to.line + 1,
+                        endColumn: to.ch + 1
+                    },
                     newText: change.newText
                 });
-
-                doc.replaceRange(change.newText, from, to, `*${sourceId}`);
             }
         });
     });

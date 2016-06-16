@@ -11,6 +11,7 @@ import * as jsonToDts from "../monaco/addons/jsonToDts";
 import * as gotoTypeScriptSymbol from "../monaco/addons/gotoTypeScriptSymbol";
 import * as findReferences from "../monaco/codeResults/findReferences";
 import * as gotoDefinition from "../monaco/codeResults/gotoDefinition";
+import * as renameVariable from "../monaco/codeResults/renameVariable";
 const ensureImport =
     gitStatus
     || jumpy
@@ -21,6 +22,7 @@ const ensureImport =
     || gotoTypeScriptSymbol
     || findReferences
     || gotoDefinition
+    || renameVariable
     ;
 
 /**

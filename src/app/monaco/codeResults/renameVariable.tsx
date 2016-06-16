@@ -2,22 +2,22 @@ import React = require("react");
 import ReactDOM = require("react-dom");
 import Radium = require('radium');
 import csx = require('csx');
-import {BaseComponent} from "../ui";
-import * as ui from "../ui";
-import * as utils from "../../common/utils";
-import * as styles from "../styles/styles";
-import * as state from "../state/state";
-import * as uix from "../uix";
-import * as commands from "../commands/commands";
+import {BaseComponent} from "../../ui";
+import * as ui from "../../ui";
+import * as utils from "../../../common/utils";
+import * as styles from "../../styles/styles";
+import * as state from "../../state/state";
+import * as uix from "../../uix";
+import * as commands from "../../commands/commands";
 import CodeMirror = require('codemirror');
 import Modal = require('react-modal');
-import {server} from "../../socket/socketClient";
-import {Types} from "../../socket/socketContract";
-import {modal} from "../styles/styles";
-import {Robocop} from "../components/robocop";
-import * as docCache from "../codemirror/mode/docCache";
-import {CodeEditor} from "../codemirror/codeEditor";
-import {RefactoringsByFilePath, Refactoring} from "../../common/types";
+import {server} from "../../../socket/socketClient";
+import {Types} from "../../../socket/socketContract";
+import {modal} from "../../styles/styles";
+import {Robocop} from "../../components/robocop";
+import * as docCache from "../../codemirror/mode/docCache";
+import {CodeEditor} from "../../codemirror/codeEditor";
+import {RefactoringsByFilePath, Refactoring} from "../../../common/types";
 
 export interface Props {
     info: Types.GetRenameInfoResponse;
@@ -115,7 +115,7 @@ export class RenameVariable extends BaseComponent<Props, State>{
         let previewRendered = <CodeEditor
                 key={this.state.selectedIndex}
                 filePath={selectedPreview.filePath}
-                readOnly={"nocursor"}
+                readOnly={true}
                 preview={selectedPreview.preview}
                 />;
 
@@ -228,47 +228,68 @@ export class RenameVariable extends BaseComponent<Props, State>{
     }
 }
 
-// Wire up the code mirror command to come here
-CodeMirror.commands[commands.additionalEditorCommands.renameVariable] = (editor: CodeMirror.EditorFromTextArea) => {
-    let cursor = editor.getDoc().getCursor();
-    let filePath = editor.filePath;
-    let position = editor.getDoc().indexFromPos(cursor);
-    server.getRenameInfo({filePath,position}).then((res)=>{
-        if (!res.canRename){
-            ui.notifyInfoNormalDisappear("Rename not available at cursor location");
+import * as monacoUtils from "../monacoUtils";
+
+import CommonEditorRegistry = monaco.CommonEditorRegistry;
+import EditorActionDescriptor = monaco.EditorActionDescriptor;
+import IEditorActionDescriptorData = monaco.IEditorActionDescriptorData;
+import ICommonCodeEditor = monaco.ICommonCodeEditor;
+import TPromise = monaco.Promise;
+import EditorAction = monaco.EditorAction;
+import ContextKey = monaco.ContextKey;
+import KeyMod = monaco.KeyMod;
+import KeyCode = monaco.KeyCode;
+
+class RenameVariableAction extends EditorAction {
+
+    static ID = 'editor.action.renameVariable';
+
+	constructor(descriptor:IEditorActionDescriptorData, editor:ICommonCodeEditor) {
+		super(descriptor, editor);
+	}
+
+	public run():TPromise<boolean> {
+        let editor = this.editor;
+        const filePath = editor.filePath;
+
+        if (!state.inActiveProjectFilePath(filePath)) {
+            ui.notifyInfoNormalDisappear('The current file is no in the active project');
+            return TPromise.as(true);
         }
-        else {
-            let filePaths = Object.keys(res.locations);
 
-            // if there is only a single file path and that is the current and there aren't that many usages
-            // we do the rename inline
-            if (filePaths.length == 1
-                && filePaths[0] == filePath
-                && res.locations[filePath].length < 5) {
-                selectName(editor, res.locations[filePath]);
+        let position = monacoUtils.getCurrentPosition(editor);
+
+        server.getRenameInfo({filePath,position}).then((res)=>{
+            if (!res.canRename){
+                ui.notifyInfoNormalDisappear("Rename not available at cursor location");
             }
-
             else {
-                let {alreadyOpenFilePaths, currentlyClosedFilePaths} = uix.API.getClosedVsOpenFilePaths(filePaths);
-                const {node,unmount} = ui.getUnmountableNode();
-                ReactDOM.render(<RenameVariable info={res} alreadyOpenFilePaths={alreadyOpenFilePaths} currentlyClosedFilePaths={currentlyClosedFilePaths} unmount={unmount} />, node);
+                let filePaths = Object.keys(res.locations);
+
+                // if there is only a single file path and that is the current and there aren't that many usages
+                // we do the rename inline
+                if (filePaths.length == 1
+                    && filePaths[0] == filePath
+                    && res.locations[filePath].length < 5) {
+                    // selectName(editor, res.locations[filePath]);
+                    // TODO: mon
+                    // select all the names in the current file
+                    // Can be done by invoking ctrl + d
+                }
+
+                else {
+                    let {alreadyOpenFilePaths, currentlyClosedFilePaths} = uix.API.getClosedVsOpenFilePaths(filePaths);
+                    const {node,unmount} = ui.getUnmountableNode();
+                    ReactDOM.render(<RenameVariable info={res} alreadyOpenFilePaths={alreadyOpenFilePaths} currentlyClosedFilePaths={currentlyClosedFilePaths} unmount={unmount} />, node);
+                }
             }
-        }
-    });
+        });
+
+		return TPromise.as(true);
+	}
 }
 
-/** Based out of tern http://codemirror.net/addon/tern/tern.js selectName */
-function selectName(cm: CodeMirror.EditorFromTextArea, locations: ts.TextSpan[]) {
-    var ranges = [], cur = 0;
-    let doc = cm.getDoc();
-    var curPos = doc.getCursor();
-    for (var i = 0; i < locations.length; i++) {
-        var ref = locations[i];
-        let from = doc.posFromIndex(ref.start);
-        let to = doc.posFromIndex(ref.start + ref.length);
-        ranges.push({ anchor: from, head: to });
-        if (CodeMirror.cmpPos(curPos, from) >= 0 && CodeMirror.cmpPos(curPos, to) <= 0)
-            cur = ranges.length - 1;
-    }
-    (cm as any).setSelections(ranges, cur);
-}
+CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(RenameVariableAction, RenameVariableAction.ID, 'TypeScript: Rename Variable', {
+	context: ContextKey.EditorTextFocus,
+	primary: KeyCode.F2
+}));
