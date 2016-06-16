@@ -68,98 +68,12 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 	}
 
 	componentDidMount () {
-
-		var options: CodeMirror.EditorConfiguration = {
-            // our extension
-            filePath: this.props.filePath,
-            readOnly: this.props.readOnly,
-
-            keyMap: 'sublime',
-            theme: 'monokai',
-            indentUnit: 4,
-			indentWithTabs: false,
-
-			// Soft tabs (tabs to spaces):
-			// https://github.com/codemirror/CodeMirror/issues/988#issuecomment-37692827
-            extraKeys: {
-                Tab: function(cm) {
-                    if (cm.doc.somethingSelected()) {
-                        return CodeMirror.Pass;
-                    }
-					if (cm.getOption("indentWithTabs")) {
-						return CodeMirror.Pass;
-					}
-                    var spacesPerTab = cm.getOption("indentUnit");
-                    var spacesToInsert = spacesPerTab - (cm.doc.getCursor("start").ch % spacesPerTab);
-                    var spaces = Array(spacesToInsert + 1).join(" ");
-                    cm.replaceSelection(spaces, "end", "+input");
-                }
-            },
-
-			lineNumbers: true,
-			foldGutter: true,
-            gutters: ["CodeMirror-linenumbers"],
-
-            // Active line addon
-            styleActiveLine: true,
-
-            // Match bracket addon
-            matchBrackets: true,
-
-            // Auto close brackets and strings
-            autoCloseBrackets: true,
-
-            // Match tags (great for tsx!)
-            // It needs `tag` token to work (see code in `xml-fold.js` i.e. `/\btag\b/``)
-            matchTags: {bothTags: true},
-
-            // Text hover
-            textHover: {
-				delay: 50,
-                // TODO: mon
-				// getTextHover: (cm, data, e: MouseEvent) => {
-	            //     if (data && data.pos) {
-	            //         return this.getQuickInfo(data.pos);
-	            //     }
-	            // },
-			},
-
-			// Blaster
-			// blastCode: { effect: 2 }, // `effect` can be 1 or 2
-
-            /** Overcomes horizontal scrolling for now */
-            lineWrapping: true,
-        } as any;
-
-        // setup hint / autocomplete options
         // TODO: mon
-        // autocomplete.setupOptions(options, this.props.filePath);
-
-        // fold
-        (options as any).foldGutter = true;
-        options.gutters.push("CodeMirror-foldgutter");
-
-        // TODO: mon
-        // live analysis
-        // liveAnalysis.setupOptions(options);
-
         // quickfix
         if (!this.props.readOnly) {
             // TODO: mon
             // quickFix.setupOptions(options);
         }
-
-        // TODO: mon
-        // Git status
-        // gitStatus.setupOptions(options);
-
-        // TODO: mon
-        // lint
-        // linter.setupOptions(options, this.props.filePath);
-        // also lint on errors changing
-        // this.disposible.add(cast.errorsUpdated.on(()=> this.codeMirror && this.codeMirror.performLint()));
-		// and initially
-		// setTimeout(()=> this.codeMirror && this.codeMirror.performLint(),1000);
 
         var mountNode = this.refs.codeEditor;
         this.editor = monaco.editor.create(mountNode, {
@@ -220,17 +134,6 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 		this.disposible.add(this.editor.onDidFocusEditor(this.focusChanged.bind(this, true)));
 		this.disposible.add(this.editor.onDidBlurEditor(this.focusChanged.bind(this, false)));
 
-        // TODO: mon
-		// this.codeMirror = CodeMirror.fromTextArea(textareaNode as any, options);
-		// this.codeMirror.filePath = this.props.filePath;
-
-        // TODO: mon
-        // Make hint / autocomplete more aggresive
-        // autocomplete.setupCodeMirror(this.codeMirror);
-
-        // TODO: mon
-        // this.disposible.add(onresize.on(() => this.refresh()));
-
         // cursor history
         if (!this.props.readOnly) {
             this.disposible.add(this.editor.onDidChangeCursorPosition(this.handleCursorActivity));
@@ -247,46 +150,6 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
         // Git status
         this.disposible.add(gitStatus.setup(this.editor));
-
-        // TODO: mon
-        // const loadEditorOptions = (editorOptions:types.EditorOptions) => {
-        //     // Set editor options
-        //     this.codeMirror.setOption('indentUnit', editorOptions.indentSize);
-        //     this.codeMirror.setOption('tabSize', editorOptions.tabSize);
-        //     this.codeMirror.setOption('indentWithTabs', !editorOptions.convertTabsToSpaces);
-        // }
-
-        // TODO: mon
-        // Subscribe to changing editor options
-        // this.disposible.add(cast.editorOptionsChanged.on((res) => {
-        //     if (res.filePath === this.props.filePath){
-        //         loadEditorOptions(res.editorOptions);
-        //     }
-        // }));
-
-        // TODO: mon
-		// Load the document
-        // docCache.getLinkedDoc(this.props.filePath).then(({doc, editorOptions})=>{
-        //     this.codeMirror.swapDoc(doc);
-        //
-        //     // Load editor options
-		// 	loadEditorOptions(editorOptions);
-        //
-        //     if (this.props.preview) {
-        //         let preview = this.props.preview;
-        //         let from = doc.posFromIndex(preview.start);
-        //         let to = doc.posFromIndex(preview.start + preview.length);
-        //         cmUtils.jumpToLine({
-        //             line: from.line,
-        //             ch: from.ch,
-        //             editor: this.codeMirror
-        //         });
-        //     }
-        //
-		// 	this.afterReadyQueue.forEach(cb=>cb());
-		// 	this.ready = true;
-		// 	this.setState({loading:false});
-        // });
 	}
 
 	componentWillUnmount () {
@@ -325,12 +188,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
     //     }
     // };
 
-    // TODO: mon
-	// getCodeMirror () {
-	// 	return this.codeMirror;
-	// }
-
-	firstFocus = true;
+    firstFocus = true;
 	focus = () => {
 		if (!this.ready && this.firstFocus) {
 			this.firstFocus = false;
