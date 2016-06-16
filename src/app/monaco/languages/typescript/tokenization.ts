@@ -277,7 +277,10 @@ function getStyleForToken(
             let lastToken = line.substr(0, startIndex).trim();
             let nextStr: string; // setup only if needed
 
-            if (lastToken.endsWith('let') || lastToken.endsWith('const') || lastToken.endsWith('var')) {
+            if (
+				lastToken.endsWith('let')
+				|| lastToken.endsWith('const')
+				|| lastToken.endsWith('var')) {
                 return 'def';
             }
             else if (
