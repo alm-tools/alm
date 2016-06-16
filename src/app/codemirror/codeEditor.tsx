@@ -171,6 +171,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 			contextmenu: false, // Disable context menu till we have it actually useful
 			/** Since everything else in our UI is Square */
 			roundedSelection: false,
+            overviewRulerLanes: 3,
         }, []);
 		this.editor.filePath = this.props.filePath;
 
