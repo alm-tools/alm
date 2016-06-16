@@ -554,6 +554,14 @@ actions.forEach(addEditorMapToCommands)
  */
 export const fileContentsChanged = new events.TypedEvent<{ filePath: string }>();
 
+/**
+ * Setup toasts to hide on esc
+ * Note: this is done here instead of `ui` as some commands depend on `ui` and having depend on commands causes a circular dependency
+ */
+import * as toastr from "toastr";
+esc.on(() => {
+    toastr.clear();
+});
 
 /* DEBUG
 console.table(

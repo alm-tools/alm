@@ -62,6 +62,18 @@ export function onlyLastCallWithDelay<T>(call: () => Promise<T>, token: monaco.C
     return p;
 }
 
+export function setSelection(cfg:{editor: Editor, textSpan: ts.TextSpan}) {
+    const model = cfg.editor.getModel();
+    let start = model.getPositionAt(cfg.textSpan.start);
+    let end = model.getPositionAt(cfg.textSpan.start + cfg.textSpan.length);
+    cfg.editor.setSelection({
+        startLineNumber: start.lineNumber,
+        startColumn: start.column,
+        endLineNumber: end.lineNumber,
+        endColumn: end.column
+    });
+}
+
 export function gotoPosition(cfg:{editor: Editor, position: EditorPosition}) {
     const pos = {
         lineNumber: cfg.position.line + 1,
@@ -69,4 +81,13 @@ export function gotoPosition(cfg:{editor: Editor, position: EditorPosition}) {
     };
     cfg.editor.setPosition(pos);
     cfg.editor.revealPosition(pos);
+}
+
+
+/**
+ * Position conversion functions
+ */
+export function getCurrentPosition(editor: Editor): number {
+    const position = editor.getPosition();
+    return editor.getModel().getOffsetAt(position);
 }

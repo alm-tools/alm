@@ -30,23 +30,11 @@ import {GotoDefinition} from "./codeResults/gotoDefinition";
 import {FindReferences} from "./codeResults/findReferences";
 import * as gotoHistory from "./gotoHistory";
 import * as clipboardRing from "./clipboardRing";
-import * as gitCommands from "./gitCommands";
-import * as htmlToTsx from "./editorCommands/htmlToTsx";
-import * as cssToTs from "./editorCommands/cssToTs";
-import * as jsonToDts from "./editorCommands/jsonToDts";
-import * as goToLine from "./editorCommands/goToLine";
-import * as gotoTypeScriptSymbol from "./editorCommands/gotoTypeScriptSymbol";
 var ensureImport = RenameVariable
     || GotoDefinition
     || FindReferences
     || gotoHistory
-    || clipboardRing
-    || gitCommands
-    || htmlToTsx
-    || cssToTs
-    || jsonToDts
-    || goToLine
-    || gotoTypeScriptSymbol;
+    || clipboardRing;
 
 export interface State {
     isOmniSearchOpen?: boolean;

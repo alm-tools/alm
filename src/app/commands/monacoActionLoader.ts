@@ -1,4 +1,5 @@
 import * as types from "../../common/types";
+import * as utils from "../../common/utils";
 
 /** Addons. These must be loaded before the function below is ever called so loaded here 🌹 */
 import * as gitStatus from "../monaco/addons/gitStatus";
@@ -7,6 +8,8 @@ import * as gitReset from "../monaco/addons/gitReset";
 import * as htmlToTsx from "../monaco/addons/htmlToTsx";
 import * as cssToTs from "../monaco/addons/cssToTs";
 import * as jsonToDts from "../monaco/addons/jsonToDts";
+import * as gotoTypeScriptSymbol from "../monaco/addons/gotoTypeScriptSymbol";
+import * as findReferences from "../monaco/codeResults/findReferences";
 const ensureImport =
     gitStatus
     || jumpy
@@ -14,7 +17,23 @@ const ensureImport =
     || htmlToTsx
     || cssToTs
     || jsonToDts
+    || gotoTypeScriptSymbol
+    || findReferences // This is causing a cycle so can't enable yet
     ;
+
+/**
+ * These are actions for which we have our own commands
+ */
+const blackListedActions = utils.createMap([
+    // we have our own find experience
+    'actions.find',
+    'editor.action.nextMatchFindAction',
+    'editor.action.previousMatchFindAction',
+    // we have our own goto definition/references/rename experiences
+    'editor.action.goToDeclaration',
+    'editor.action.referenceSearch.trigger',
+    'editor.action.rename',
+]);
 
 /**
  * This creates a dummy monaco editor just to get its actions
@@ -29,7 +48,7 @@ export function getActions(): types.MonacoActionInformation[] {
     const keybindingService = (editor as any)._keybindingService;
     // console.log(keybindingService); // DEBUG
 
-    const actions = editor.getActions();
+    const actions = editor.getActions().filter(a => !blackListedActions[a.id]);
 
     let result = actions.map(a=>{
         // can have multiple (but in my experience they only had singles or 0)

@@ -165,7 +165,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 			folding: true,
 			autoClosingBrackets: true,
 			wrappingColumn: 0,
-			readOnly: this.props.readOnly,
+			readOnly: false, // Never readonly ... even for readonly editors. Otherwise monaco doesn't highlight active line :)
 			scrollBeyondLastLine: false, // Don't scroll by mouse where you can't scroll by keyboard :)
 			formatOnType: true,
 			contextmenu: false, // Disable context menu till we have it actually useful
@@ -195,11 +195,19 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 			this.editor.setModel(doc);
 			doc._editors.push(this.editor);
 
-			// Load editor options
-			loadEditorOptions(editorOptions);
+            // Load editor options
+            loadEditorOptions(editorOptions);
 
-			// Mark as ready and do anything that was waiting for ready to occur 🌹
-			this.afterReadyQueue.forEach(cb=>cb());
+            if (this.props.preview) {
+                let preview = this.props.preview;
+
+                let pos = doc.getPositionAt(preview.start);
+                this.editor.revealLineInCenterIfOutsideViewport(pos.lineNumber);
+                this.editor.setPosition(pos);
+            }
+
+            // Mark as ready and do anything that was waiting for ready to occur 🌹
+            this.afterReadyQueue.forEach(cb=>cb());
 			this.ready = true;
 			this.setState({loading:false});
 		})
@@ -358,6 +366,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
     gotoPosition = (position: EditorPosition) => {
         this.afterReady(() => {
+            if (!this.editor.isFocused()) { this.editor.focus() }
 			monacoUtils.gotoPosition({editor:this.editor,position});
         });
     }
