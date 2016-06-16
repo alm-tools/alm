@@ -25,15 +25,10 @@ import {FindAndReplace} from "./findAndReplace";
 import * as state from "./state/state";
 
 /** Force require  */
-import {RenameVariable} from "./codeResults/renameVariable";
-import {GotoDefinition} from "./codeResults/gotoDefinition";
-import {FindReferences} from "./codeResults/findReferences";
 import * as gotoHistory from "./gotoHistory";
 import * as clipboardRing from "./clipboardRing";
-var ensureImport = RenameVariable
-    || GotoDefinition
-    || FindReferences
-    || gotoHistory
+var ensureImport =
+    gotoHistory
     || clipboardRing;
 
 export interface State {
