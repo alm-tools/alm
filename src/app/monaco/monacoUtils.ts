@@ -26,6 +26,14 @@ export function replaceSelection(config: {
     config.editor.getModel().pushEditOperations([], [editOperation], null);
 }
 
+/** Runs format or format selection (if any) */
+export function format(config: {
+    editor: Editor,
+}){
+    const action = config.editor.getAction('editor.action.format');
+    action.run();
+}
+
 
 /**
  * Useful for language query stuff that we want to debounce + cancel if no longer relevant even after the query is made

@@ -35,15 +35,10 @@ class CssToTsAction extends EditorAction {
         if (!selection.isEmpty()){
             const oldText = editor.getModel().getValueInRange(selection);
             const {asLines, asString} = convert(oldText);
+            // put in the new thing
             monacoUtils.replaceSelection({editor, newText: asString});
-
-            // TODO: potentially auto indent. Maybe even auto format?
-            //
-            // const firstLine = selection.head.line;
-            // for (let i = 0; i < asLines.length; i++) {
-            //     const line = firstLine + i;
-            //     editor.indentLine(line, "smart", true);
-            // }
+            // format the new thing
+            monacoUtils.format({ editor });
         }
         else {
             ui.notifyWarningNormalDisappear('Please select the CSS you want converted to TS and try again 🌹');
