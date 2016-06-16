@@ -2,22 +2,22 @@ import React = require("react");
 import ReactDOM = require("react-dom");
 import Radium = require('radium');
 import csx = require('csx');
-import {BaseComponent} from "../ui";
-import * as ui from "../ui";
-import * as utils from "../../common/utils";
-import * as styles from "../styles/styles";
-import * as state from "../state/state";
-import * as uix from "../uix";
-import * as commands from "../commands/commands";
+import {BaseComponent} from "../../ui";
+import * as ui from "../../ui";
+import * as utils from "../../../common/utils";
+import * as styles from "../../styles/styles";
+import * as state from "../../state/state";
+import * as uix from "../../uix";
+import * as commands from "../../commands/commands";
 import CodeMirror = require('codemirror');
 import Modal = require('react-modal');
-import {server} from "../../socket/socketClient";
-import {Types} from "../../socket/socketContract";
-import {modal} from "../styles/styles";
-import {Robocop} from "../components/robocop";
-import * as docCache from "../codemirror/mode/docCache";
-import {CodeEditor} from "../codemirror/codeEditor";
-import {RefactoringsByFilePath, Refactoring} from "../../common/types";
+import {server} from "../../../socket/socketClient";
+import {Types} from "../../../socket/socketContract";
+import {modal} from "../../styles/styles";
+import {Robocop} from "../../components/robocop";
+import * as docCache from "../../codemirror/mode/docCache";
+import {CodeEditor} from "../../codemirror/codeEditor";
+import {RefactoringsByFilePath, Refactoring} from "../../../common/types";
 
 export interface Props {
     data: Types.GetDefinitionsAtPositionResponse;
@@ -85,7 +85,7 @@ export class GotoDefinition extends BaseComponent<Props, State>{
         let previewRendered = <CodeEditor
                 key={this.state.selectedIndex}
                 filePath={selectedPreview.filePath}
-                readOnly={"nocursor"}
+                readOnly={true}
                 preview={selectedPreview.span}
                 />;
 
@@ -163,26 +163,60 @@ export class GotoDefinition extends BaseComponent<Props, State>{
     }
 }
 
-// Wire up the code mirror command to come here
-CodeMirror.commands[commands.additionalEditorCommands.gotoDefinition] = (editor: CodeMirror.EditorFromTextArea) => {
-    let cursor = editor.getDoc().getCursor();
-    let filePath = editor.filePath;
-    let position = editor.getDoc().indexFromPos(cursor);
-    server.getDefinitionsAtPosition({filePath,position}).then((res)=>{
-        if (res.definitions.length == 0){
-            ui.notifyInfoNormalDisappear('No TypeScript definition at cursor location');
+import * as monacoUtils from "../monacoUtils";
+
+import CommonEditorRegistry = monaco.CommonEditorRegistry;
+import EditorActionDescriptor = monaco.EditorActionDescriptor;
+import IEditorActionDescriptorData = monaco.IEditorActionDescriptorData;
+import ICommonCodeEditor = monaco.ICommonCodeEditor;
+import TPromise = monaco.Promise;
+import EditorAction = monaco.EditorAction;
+import ContextKey = monaco.ContextKey;
+import KeyMod = monaco.KeyMod;
+import KeyCode = monaco.KeyCode;
+
+class GotoDefinitionAction extends EditorAction {
+
+    static ID = 'editor.action.gotoDefinition';
+
+	constructor(descriptor:IEditorActionDescriptorData, editor:ICommonCodeEditor) {
+		super(descriptor, editor);
+	}
+
+	public run():TPromise<boolean> {
+        let editor = this.editor;
+        const filePath = editor.filePath;
+
+        if (!state.inActiveProjectFilePath(filePath)) {
+            ui.notifyInfoNormalDisappear('The current file is no in the active project');
+            return TPromise.as(true);
         }
-        else if (res.definitions.length == 1) {
-            // Go directly 🌹
-            let def = res.definitions[0];
-            commands.doOpenOrFocusFile.emit({
-                filePath: def.filePath,
-                position: def.position
-            });
-        }
-        else {
-            const {node,unmount} = ui.getUnmountableNode();
-            ReactDOM.render(<GotoDefinition data={res} unmount={unmount}/>, node);
-        }
-    });
+
+        let position = monacoUtils.getCurrentPosition(editor);
+
+        server.getDefinitionsAtPosition({filePath,position}).then((res)=>{
+            if (res.definitions.length == 0){
+                ui.notifyInfoNormalDisappear('No TypeScript definition at cursor location');
+            }
+            else if (res.definitions.length == 1) {
+                // Go directly 🌹
+                let def = res.definitions[0];
+                commands.doOpenOrFocusFile.emit({
+                    filePath: def.filePath,
+                    position: def.position
+                });
+            }
+            else {
+                const {node,unmount} = ui.getUnmountableNode();
+                ReactDOM.render(<GotoDefinition data={res} unmount={unmount}/>, node);
+            }
+        });
+
+		return TPromise.as(true);
+	}
 }
+
+CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(GotoDefinitionAction, GotoDefinitionAction.ID, 'TypeScript: Goto Definition', {
+	context: ContextKey.EditorTextFocus,
+	primary: KeyMod.CtrlCmd | KeyCode.KEY_B
+}));

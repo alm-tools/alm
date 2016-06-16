@@ -10,6 +10,7 @@ import * as cssToTs from "../monaco/addons/cssToTs";
 import * as jsonToDts from "../monaco/addons/jsonToDts";
 import * as gotoTypeScriptSymbol from "../monaco/addons/gotoTypeScriptSymbol";
 import * as findReferences from "../monaco/codeResults/findReferences";
+import * as gotoDefinition from "../monaco/codeResults/gotoDefinition";
 const ensureImport =
     gitStatus
     || jumpy
@@ -18,7 +19,8 @@ const ensureImport =
     || cssToTs
     || jsonToDts
     || gotoTypeScriptSymbol
-    || findReferences // This is causing a cycle so can't enable yet
+    || findReferences
+    || gotoDefinition
     ;
 
 /**
