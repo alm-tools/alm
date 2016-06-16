@@ -113,7 +113,7 @@ export class RenameVariable extends BaseComponent<Props, State>{
         });
 
         let previewRendered = <CodeEditor
-                key={this.state.selectedIndex}
+                key={selectedPreview.filePath}
                 filePath={selectedPreview.filePath}
                 readOnly={true}
                 preview={selectedPreview.preview}

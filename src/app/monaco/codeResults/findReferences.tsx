@@ -79,7 +79,7 @@ export class FindReferences extends ui.BaseComponent<Props, State>{
         });
 
         let previewRendered = <CodeEditor
-                key={this.state.selectedIndex}
+                key={selectedPreview.filePath}
                 filePath={selectedPreview.filePath}
                 readOnly={true}
                 preview={selectedPreview.span}

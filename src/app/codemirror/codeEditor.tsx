@@ -32,8 +32,10 @@ declare global {
 interface Props {
 	onFocusChange?: (focused: boolean) => any;
 	readOnly?: boolean;
-	preview?: ts.TextSpan;
 	filePath: string;
+
+    /** This is the only property we allow changing dynamically. Helps with rendering the same file path for different previews */
+    preview?: ts.TextSpan;
 }
 
 export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, loading?: boolean}>{
@@ -201,14 +203,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             loadEditorOptions(editorOptions);
 
             if (this.props.preview) {
-                // Re-layout as for preview style editors monaco seems to render faster than CSS 🌹
-                this.editor.layout();
-
-                let preview = this.props.preview;
-
-                let pos = doc.getPositionAt(preview.start);
-                this.editor.revealLineInCenterIfOutsideViewport(pos.lineNumber);
-                this.editor.setPosition(pos);
+                this.gotoPreview(this.props.preview);
             }
 
             // Mark as ready and do anything that was waiting for ready to occur 🌹
@@ -471,4 +466,20 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 			</div>
 		);
 	}
+
+    componentWillReceiveProps(nextProps:Props){
+        // If next props are getting a preview then old props had them too (based on how we use preview)
+        if (nextProps.preview && nextProps.preview.start !== this.props.preview.start) {
+            this.gotoPreview(nextProps.preview);
+        }
+    }
+
+    gotoPreview(preview: ts.TextSpan){
+        // Re-layout as for preview style editors monaco seems to render faster than CSS 🌹
+        this.editor.layout();
+
+        let pos = this.editor.getModel().getPositionAt(preview.start);
+        this.editor.revealLineInCenterIfOutsideViewport(pos.lineNumber);
+        this.editor.setPosition(pos);
+    }
 }
