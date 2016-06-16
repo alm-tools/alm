@@ -9,6 +9,7 @@ import * as search from "../monaco/search/monacoSearch";
 import * as semanticView from "./addons/semanticView";
 import * as monacoUtils from "../monaco/monacoUtils";
 import * as gitStatus from "../monaco/addons/gitStatus";
+import * as liveAnalysis from "../monaco/addons/liveAnalysis";
 
 // The monokai theme
 require('./monokai.css');
@@ -235,9 +236,8 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             this.disposible.add(this.editor.onDidChangeCursorPosition(this.handleCursorActivity));
         }
 
-        // TODO: mon
         // live analysis
-        // this.disposible.add(liveAnalysis.setupCM(this.codeMirror));
+        this.disposible.add(liveAnalysis.setup(this.editor));
 
         // TODO: mon
         // quick fix
