@@ -56,5 +56,13 @@ export function setup(cm: Editor): { dispose: () => void } {
         refreshLiveAnalysisDebounced();
     });
 
+    /**
+     * Also subscribe to the user clicking the margin
+     * For demo see `debugEditorContribution` in vscode source
+     */
+    // cm.onEditorMouseDown(()=>{
+    //     console.log('here');
+    // })
+
     return disposible;
 }
