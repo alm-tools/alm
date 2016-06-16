@@ -271,10 +271,7 @@ class RenameVariableAction extends EditorAction {
                 if (filePaths.length == 1
                     && filePaths[0] == filePath
                     && res.locations[filePath].length < 5) {
-                    // selectName(editor, res.locations[filePath]);
-                    // TODO: mon
-                    // select all the names in the current file
-                    // Can be done by invoking ctrl + d
+                    selectName(editor, res.locations[filePath]);
                 }
 
                 else {
@@ -293,3 +290,30 @@ CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(RenameVaria
 	context: ContextKey.EditorTextFocus,
 	primary: KeyCode.F2
 }));
+
+
+/** Selects the locations keeping the current one as the first (to allow easy escape back to current cursor) */
+function selectName(editor: monaco.ICommonCodeEditor, locations: ts.TextSpan[]) {
+    const ranges: monaco.ISelection[] = [];
+    const curPos = editor.getSelection();
+
+    for (var i = 0; i < locations.length; i++) {
+        var ref = locations[i];
+
+        let from = editor.getModel().getPositionAt(ref.start);
+        let to = editor.getModel().getPositionAt(ref.start + ref.length);
+        const range = new monaco.Range(from.lineNumber, from.column, to.lineNumber, to.column);
+        const selection: monaco.ISelection = {
+            selectionStartLineNumber: from.lineNumber,
+            selectionStartColumn: from.column,
+            positionLineNumber: to.lineNumber,
+            positionColumn: to.column
+        }
+
+        if (!monaco.Range.containsRange(range, curPos))
+            ranges.push(selection);
+        else
+            ranges.unshift(selection);
+    }
+    editor.setSelections(ranges);
+}
