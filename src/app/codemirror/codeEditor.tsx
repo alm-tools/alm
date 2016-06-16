@@ -213,8 +213,8 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 			if (this.lastScrollPosition != undefined && worthRestoringScrollPosition) {
 				setTimeout(()=>{
 					this.editor.setScrollTop(this.lastScrollPosition);
+                    // console.log(this.props.filePath, before, after, worthRestoringScrollPosition, this.lastScrollPosition); // DEBUG
 					this.lastScrollPosition = undefined;
-					// console.log(this.props.filePath, before, after, worthRestoringScrollPosition, this.lastScrollPosition); // DEBUG
 				})
 			}
 		}
@@ -228,8 +228,13 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
     gotoPosition = (position: EditorPosition) => {
         this.afterReady(() => {
+            this.lastScrollPosition = undefined; // Don't even think about restoring scroll position
+
+            /** e.g. if the tab is already active we don't call `focus` from `gotoPosition` ... however it might not have focus */
             if (!this.editor.isFocused()) { this.editor.focus() }
-			monacoUtils.gotoPosition({editor:this.editor,position});
+
+            /** SetTimeout because if editor comes out of hidden state we goto position too fast and then the scroll position is off */
+            setTimeout(() => monacoUtils.gotoPosition({ editor: this.editor, position }));
         });
     }
 
