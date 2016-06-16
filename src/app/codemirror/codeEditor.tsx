@@ -199,6 +199,9 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             loadEditorOptions(editorOptions);
 
             if (this.props.preview) {
+                // Re-layout as for preview style editors monaco seems to render faster than CSS 🌹
+                this.editor.layout();
+
                 let preview = this.props.preview;
 
                 let pos = doc.getPositionAt(preview.start);
