@@ -1,0 +1,9 @@
+/* Make the highlights same as the one is other lists */
+.monaco-list .monaco-highlighted-label .highlight {
+    color: #66d9ef !important; /* same as `selectListView` renderMatchedSegments style */
+}
+
+/* make the default + selected background color more amenable */
+.vs-dark .monaco-list-row.focused {
+    background-color: #00305a;
+}

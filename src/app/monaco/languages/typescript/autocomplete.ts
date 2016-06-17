@@ -7,6 +7,8 @@ import CancellationToken = monaco.CancellationToken;
 import Thenable = monaco.Thenable;
 import Position = monaco.Position;
 
+require('./autocomplete.css')
+
 /**
  * Provides utilities to perform various line,ch,position,range conversions 🌹
  */

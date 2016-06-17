@@ -230,6 +230,10 @@ function getStyleForToken(
 	lineHasJSX: boolean
 ): string {
     var ClassificationType = ts.ClassificationType;
+
+	let nextStr: string; // setup only if needed
+	const loadNextStr = () => nextStr || (nextStr = line.substr(startIndex + token.string.length).replace(/\s+/g, ''));
+
     switch (token.classificationType) {
         case ClassificationType.numericLiteral:
             return 'constant.numeric';
@@ -275,7 +279,6 @@ function getStyleForToken(
 
         case ClassificationType.identifier:
             let lastToken = line.substr(0, startIndex).trim();
-            let nextStr: string; // setup only if needed
 
             if (
 				lastToken.endsWith('let')
@@ -285,7 +288,7 @@ function getStyleForToken(
             }
             else if (
                 (
-                    (nextStr = line.substr(startIndex + token.string.length).replace(/\s+/g, '')).startsWith('(')
+                    (loadNextStr()).startsWith('(')
                     || nextStr.startsWith('=(')
                     || nextStr.startsWith('=function')
                 )
@@ -308,9 +311,13 @@ function getStyleForToken(
             return 'variable.parameter';
         case ClassificationType.punctuation:
             // Only get punctuation for JSX. Otherwise these would be operator
-            if (lineHasJSX && (token.string == '>' || token.string == '<' || token.string == '>' || token.string == '/')) {
+            if (lineHasJSX && (token.string == '>' || token.string == '<' || token.string == '>')) {
+				// NOTE: would be good to get `meta.begin` vs. `meta.end` for tag matching
                 return 'punctuation.definition.meta.tag'; // A nice blue color
             }
+			if (token.string == '/') {
+				return 'punctuation.definition.meta.end.tag'; // A nice blue color
+			}
             if (token.string === '{' || token.string === '}')
             	return 'delimiter.bracket';
 			if (token.string === '(' || token.string === ')')
