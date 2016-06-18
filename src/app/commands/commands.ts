@@ -76,13 +76,13 @@ export var esc = new UICommand({
  * Active list
  */
 export var gotoNext = new UICommand({
-    keyboardShortcut: 'f8', // atom
+    keyboardShortcut: 'mod+f8', // atom
     description: "Active List: Goto next position",
     context: CommandContext.Global,
 });
 
 export var gotoPrevious = new UICommand({
-    keyboardShortcut: 'shift+f8', // atom
+    keyboardShortcut: 'mod+shift+f8', // atom
     description: "Active List: Goto previous position",
     context: CommandContext.Global,
 });

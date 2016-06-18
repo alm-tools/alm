@@ -23,3 +23,25 @@
 .monaco-editor .margin-view-overlays .line-numbers {
     cursor: default;
 }
+
+/*
+ * Match the goto next error to our desired styles.
+ * Color: from `styles.tsx` errors color
+ * NOTE: this styles all zone widgets but works fine as we only left inline widgets for goto next error
+ */
+.monaco-editor .zone-widget .zone-widget-container {
+    border-top-color: rgb(249, 38, 114) !important;
+    border-bottom-color: rgb(249, 38, 114) !important;
+}
+.monaco-editor .zone-widget .zone-widget-container:focus {
+    outline: none;
+}
+.monaco-editor .zone-widget-arrow.below {
+    border-bottom-color: rgb(249, 38, 114) !important;
+}
+
+/* Also style the text in the goto next error to be better */
+.monaco-editor .zone-widget .zone-widget-container .block.title {
+    font-family: monospace;
+    padding-top: 2px;
+}
