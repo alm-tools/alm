@@ -10,6 +10,7 @@ import * as semanticView from "./addons/semanticView";
 import * as monacoUtils from "../monaco/monacoUtils";
 import * as gitStatus from "../monaco/addons/gitStatus";
 import * as liveAnalysis from "../monaco/addons/liveAnalysis";
+import * as quickFix from "../monaco/addons/quickFix";
 
 // The monokai theme
 require('./monokai.css');
@@ -68,13 +69,6 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 	}
 
 	componentDidMount () {
-        // TODO: mon
-        // quickfix
-        if (!this.props.readOnly) {
-            // TODO: mon
-            // quickFix.setupOptions(options);
-        }
-
         var mountNode = this.refs.codeEditor;
         this.editor = monaco.editor.create(mountNode, {
             value: '...',
@@ -142,11 +136,10 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         // live analysis
         this.disposible.add(liveAnalysis.setup(this.editor));
 
-        // TODO: mon
         // quick fix
-        // if (!this.props.readOnly) {
-        //     this.disposible.add(quickFix.setupCM(this.codeMirror));
-        // }
+        if (!this.props.readOnly) {
+            this.disposible.add(quickFix.setup(this.editor));
+        }
 
         // Git status
         this.disposible.add(gitStatus.setup(this.editor));

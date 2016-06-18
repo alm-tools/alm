@@ -5,6 +5,12 @@
     opacity: .6;
     cursor: pointer;
 }
+
+.monaco-quickfix:before {
+    /* Adding a before content throws live analysis off of its game */
+    /*content: "💡";*/
+}
+
 .monaco-quickfix:hover {
     opacity: 1 !important;
 }
