@@ -12,6 +12,7 @@ import * as gotoTypeScriptSymbol from "../monaco/addons/gotoTypeScriptSymbol";
 import * as findReferences from "../monaco/codeResults/findReferences";
 import * as gotoDefinition from "../monaco/codeResults/gotoDefinition";
 import * as renameVariable from "../monaco/codeResults/renameVariable";
+import * as blaster from "../monaco/addons/blaster";
 const ensureImport =
     gitStatus
     || jumpy
@@ -23,6 +24,7 @@ const ensureImport =
     || findReferences
     || gotoDefinition
     || renameVariable
+    || blaster
     ;
 
 /**
