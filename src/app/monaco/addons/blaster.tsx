@@ -9,10 +9,10 @@ type Change = monaco.editor.IModelContentChangedEvent2;
 export class Blaster {
     private disposible = new CompositeDisposible();
     private detached = false;
-    constructor(private cm: Editor){
+    constructor(private cm: Editor) {
         this.cm = cm;
         this.disposible.add(cm.onDidChangeModelContent(this.handleChange));
-        this.initCanvas(cm);
+        this.initCanvas();
         this.loop();
     }
     dispose() {
@@ -22,13 +22,17 @@ export class Blaster {
 
     canvas: HTMLCanvasElement | null = null;
     ctx: CanvasRenderingContext2D | null = null;
-    initCanvas = (cm:Editor) => {
+    initCanvas = () => {
+        const cm = this.cm;
         this.canvas = document.createElement('canvas');
+        cm.getDomNode().parentElement.appendChild(this.canvas);
         this.ctx = this.canvas.getContext('2d');
 
         this.canvas.style.position = 'absolute';
-        this.canvas.style.width = "100%";
-        this.canvas.style.height = "100%";
+        this.canvas.style.top = "0";
+        this.canvas.style.left = "0";
+        this.canvas.style.bottom = "0";
+        this.canvas.style.right = "0";
         this.canvas.style.zIndex = '1';
         this.canvas.style.pointerEvents = 'none';
 
@@ -38,7 +42,7 @@ export class Blaster {
             this.canvas.height = parent.clientHeight;
         }
         this.disposible.add(onresize.on(measureCanvas));
-        cm.layout = utils.intercepted({context:cm,orig:cm.layout,intercept:measureCanvas});
+        cm.layout = utils.intercepted({ context: cm, orig: cm.layout, intercept: measureCanvas });
         measureCanvas();
     }
 
@@ -58,7 +62,7 @@ export class Blaster {
         this.drawParticles();
     }
 
-    drawShake(){
+    drawShake() {
         // get the time past the previous frame
         var current_time = new Date().getTime();
         var last_time;
@@ -115,7 +119,7 @@ export class Blaster {
 
         this.ctx.fillStyle = 'rgba(' + particle.color[0] + ',' + particle.color[1] + ',' + particle.color[2] + ',' + particle.alpha + ')';
         this.ctx.beginPath();
-        this.ctx.arc(particle.x - particle.size/2, particle.y - particle.size/2, particle.size, 0, 2 * Math.PI);
+        this.ctx.arc(particle.x - particle.size / 2, particle.y - particle.size / 2, particle.size, 0, 2 * Math.PI);
         this.ctx.fill();
     }
 
@@ -123,25 +127,26 @@ export class Blaster {
         this.shakeTime = this.shakeTimeMax = time;
     }, 100);
 
-    // TODO: mon
     // spawn particles
-    // PARTICLE_NUM_RANGE = { min: 5, max: 10 };
-    // throttledSpawnParticles = utils.throttle((effect: Effect) => {
-    //     let cm = this.props.cm;
-    //     var cursorPos = cm.getDoc().getCursor();
-    //
-    //     // Get color from the node
-    //     let posForNode = cm.cursorCoords(cursorPos, 'window');
-    //     var node = document.elementFromPoint(posForNode.left - 5, posForNode.top + 5);
-    //     let color = getRGBComponents(node);
-    //
-    //     // Now create the particles
-    //     var numParticles = random(this.PARTICLE_NUM_RANGE.min, this.PARTICLE_NUM_RANGE.max);
-    //     let pos = cm.cursorCoords(cursorPos, 'page');
-    //     for (var i = 0; i < numParticles; i++) {
-    //         this.particles.push(this.createParticle(pos.left, pos.top - 25, color, effect));
-    //     }
-    // }, 100);
+    PARTICLE_NUM_RANGE = { min: 5, max: 10 };
+    throttledSpawnParticles = utils.throttle((effect: Effect) => {
+        let cm = this.cm;
+        var cursorPos = cm.getPosition();
+
+        // TODO: mon
+        // // Get color from the node
+        // let posForNode = cm.cursorCoords(cursorPos, 'window');
+        // var node = document.elementFromPoint(posForNode.left - 5, posForNode.top + 5);
+        // let color = getRGBComponents(node);
+        let color: [string, string, string] = ['255', '255', '255'];
+
+        // Now create the particles
+        var numParticles = random(this.PARTICLE_NUM_RANGE.min, this.PARTICLE_NUM_RANGE.max);
+        let pos = cm.getScrolledVisiblePosition(cursorPos);
+        for (var i = 0; i < numParticles; i++) {
+            this.particles.push(this.createParticle(pos.left, pos.top, color, effect));
+        }
+    }, 100);
 
     PARTICLE_VELOCITY_RANGE = {
         x: [-1, 1],
@@ -184,14 +189,13 @@ export class Blaster {
         // setup shake
         this.throttledShake(0.3);
 
-        // TODO: mon
         // setup particles
-        // if (change.text.join('')){
-        //     this.throttledSpawnParticles(Effect.Add);
-        // }
-        // else {
-        //     this.throttledSpawnParticles(Effect.Delete);
-        // }
+        if (change.text) {
+            this.throttledSpawnParticles(Effect.Add);
+        }
+        else {
+            this.throttledSpawnParticles(Effect.Delete);
+        }
     };
 }
 
