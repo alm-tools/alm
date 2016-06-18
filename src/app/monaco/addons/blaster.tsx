@@ -132,16 +132,21 @@ export class Blaster {
         let editor = this.cm;
         var cursorPos = editor.getPosition();
 
-        // TODO: mon
-        // // Get color from the node
-        // let posForNode = cm.cursorCoords(cursorPos, 'window');
-        // var node = document.elementFromPoint(posForNode.left - 5, posForNode.top + 5);
-        // let color = getRGBComponents(node);
-        let color: [string, string, string] = ['255', '255', '255'];
+        /** The position relative to dom node of editor */
+        let pos = editor.getScrolledVisiblePosition(cursorPos);
+
+        /** Get the color for the dom token */
+        const editorNode = editor.getDomNode();
+        const editorNodeRect = editorNode.getBoundingClientRect();
+        const posForNode = {
+            x: editorNodeRect.left + pos.left,
+            y: editorNodeRect.top + pos.top,
+        }
+        const node = document.elementFromPoint(posForNode.x - 5, posForNode.y + 5);
+        let color = getRGBComponents(node);
 
         // Now create the particles
         var numParticles = random(this.PARTICLE_NUM_RANGE.min, this.PARTICLE_NUM_RANGE.max);
-        let pos = editor.getScrolledVisiblePosition(cursorPos);
         for (var i = 0; i < numParticles; i++) {
             this.particles.push(this.createParticle(pos.left + 15, pos.top - 5, color, effect));
         }
