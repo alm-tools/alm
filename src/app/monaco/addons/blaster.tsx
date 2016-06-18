@@ -10,7 +10,6 @@ export class Blaster {
     private disposible = new CompositeDisposible();
     private detached = false;
     constructor(private cm: Editor) {
-        this.cm = cm;
         this.disposible.add(cm.onDidChangeModelContent(this.handleChange));
         this.initCanvas();
         this.loop();
@@ -130,8 +129,8 @@ export class Blaster {
     // spawn particles
     PARTICLE_NUM_RANGE = { min: 5, max: 10 };
     throttledSpawnParticles = utils.throttle((effect: Effect) => {
-        let cm = this.cm;
-        var cursorPos = cm.getPosition();
+        let editor = this.cm;
+        var cursorPos = editor.getPosition();
 
         // TODO: mon
         // // Get color from the node
@@ -142,9 +141,9 @@ export class Blaster {
 
         // Now create the particles
         var numParticles = random(this.PARTICLE_NUM_RANGE.min, this.PARTICLE_NUM_RANGE.max);
-        let pos = cm.getScrolledVisiblePosition(cursorPos);
+        let pos = editor.getScrolledVisiblePosition(cursorPos);
         for (var i = 0; i < numParticles; i++) {
-            this.particles.push(this.createParticle(pos.left, pos.top, color, effect));
+            this.particles.push(this.createParticle(pos.left + 15, pos.top - 5, color, effect));
         }
     }, 100);
 
