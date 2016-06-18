@@ -182,7 +182,7 @@ function createOverlays(editor: Editor) {
 
         let pos = 0;
         let lineOverlays: JumpyWidget[] = [];
-        while (pos !== string.length) {
+        while (pos < string.length) {
             var matches = /^[A-Z]?[0-9a-z]+|^[\{\};]+/.exec(string.substr(pos));
             if (matches && matches.length) {
                 let matched = matches[0];
@@ -200,7 +200,8 @@ function createOverlays(editor: Editor) {
                 }
 
                 lineOverlays.push(widget);
-                pos += matched.length;
+                // we want some minimum space between matches
+                pos += Math.max(matched.length,3);
             } else {
                 pos++;
             }
