@@ -35,7 +35,7 @@ export function setup() {
                         // We need a set timeout as when we trigger from 'command search' the focus changes throws off monaco
                         // e.g. goto line action (which tries to create its own modal) does not work without the set timeout
                         setTimeout(() => {
-                            // console.log(action); // DEBUG
+                            // console.log(action); // DEBUG action details
                             action.run();
                         })
                     }

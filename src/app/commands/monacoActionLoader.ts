@@ -39,6 +39,8 @@ const blackListedActions = utils.createMap([
     'editor.action.goToDeclaration',
     'editor.action.referenceSearch.trigger',
     'editor.action.rename',
+    // we have our own quickfix implementation
+    'editor.action.quickFix',
 ]);
 
 /**
