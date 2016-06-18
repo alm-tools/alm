@@ -3,7 +3,7 @@ import * as ui from "../../ui";
 import * as utils from "../../../common/utils";
 import * as monacoUtils from "../monacoUtils";
 import * as state from "../../state/state";
-import * as _selectListView from "../../selectListView";
+import * as selectListView from "../../selectListView";
 import * as React from "react";
 import * as csx from "csx";
 
@@ -41,7 +41,6 @@ class GotoTypeScriptSymbolAction extends EditorAction {
                 return; // potentially show a message
             }
 
-            const selectListView: typeof _selectListView = require("../../selectListView");
             selectListView.selectListView.show({
                 header:`TypeScript symbols in ${utils.getFileName(filePath)}`,
                 data: res.items,
