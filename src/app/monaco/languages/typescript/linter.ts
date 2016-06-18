@@ -31,8 +31,7 @@ export class DiagnostcsAdapter {
 
             let handle: any;
             const performLint = () => {
-                clearTimeout(handle);
-                handle = setTimeout(() => this._doValidate(filePath, model), 2000);
+                this._doValidate(filePath, model);
             }
 
             const disposible = new events.CompositeDisposible();

@@ -135,7 +135,7 @@ const refreshFileDiagnostics = utils.debounce((filePath:string) => {
         let errors = diagnostics.map(diagnosticToCodeError);
         setErrorsByFilePaths([filePath], errors);
     }
-}, 2000);
+}, 1000);
 
 /**
  * Utility functions to convert a `configFile` to a `project`
