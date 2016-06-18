@@ -28,10 +28,8 @@ require('codemirror/addon/edit/matchtags');
 // Our Addons
 import * as quickFix from "./addons/quickFix";
 import textHover = require('./addons/text-hover');
-import blaster = require('./addons/blaster');
 import insertMatchingPair = require('./addons/insertMatchingPair');
 const ensureImport = textHover
-    || blaster
 	|| insertMatchingPair;
 
 // Css overrides
@@ -401,7 +399,6 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 		return (
 			<div className={className} style={csx.extend(csx.horizontal,csx.flex,{position:'relative', maxWidth:'100%'})}>
 				{!this.props.readOnly && <doctor.Doctor cm={this.codeMirror} filePath={this.props.filePath}/>}
-				{!this.props.readOnly && <blaster.Blaster cm={this.codeMirror}/>}
 				<div style={loadingStyle}>LOADING</div>
 				<textarea ref="textarea" name={this.props.filePath} autoComplete="false" />
 			</div>
