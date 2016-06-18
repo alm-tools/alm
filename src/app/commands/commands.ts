@@ -485,15 +485,9 @@ export let additionalEditorCommands = {
     // format: '',
     // toggleBlaster: '',
     // gitSoftResetFile: '',
-    // htmlToTsx: '',
-    // cssToTs: '',
-    // jsonToDts: '',
     // goToLine: '',
     // quickFix: '',
     // gotoTypeScriptSymbol: '',
-
-    jumpy: '',
-
 }
 utils.stringEnum(additionalEditorCommands);
 
@@ -506,7 +500,6 @@ const actions = getActions();
 // Our additionalEditorCommands
 // sublimeMap[`F2`] = additionalEditorCommands.renameVariable;
 // sublimeMap[`${mod}-B`] = additionalEditorCommands.gotoDefinition;
-// sublimeMap[`Shift-Enter`] = additionalEditorCommands.jumpy;
 // sublimeMap[`Shift-${mod}-B`] = additionalEditorCommands.findReferences;
 // sublimeMap[`${mod}-Alt-L`] = additionalEditorCommands.format;
 // sublimeMap[`${mod}-Alt-O`] = additionalEditorCommands.toggleBlaster;
@@ -529,25 +522,6 @@ function addEditorMapToCommands(command: types.MonacoActionInformation) {
     });
 }
 actions.forEach(addEditorMapToCommands)
-
-/** TODO: mon */
-// For our custom *editor* commands that don't have a keymap entry
-// We add them manually
-// new UICommand({
-//     description: 'Editor: HTML to TSX',
-//     context: CommandContext.Editor,
-//     editorCommandName: additionalEditorCommands.htmlToTsx,
-// })
-// new UICommand({
-//     description: 'Editor: CSS to TS',
-//     context: CommandContext.Editor,
-//     editorCommandName: additionalEditorCommands.cssToTs,
-// })
-// new UICommand({
-//     description: 'Editor: JSON to TS definition',
-//     context: CommandContext.Editor,
-//     editorCommandName: additionalEditorCommands.jsonToDts,
-// })
 
 /**
  * This is a consolidation of the `file edited` and `file changed on disk`

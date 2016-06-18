@@ -96,7 +96,7 @@ export function getLinkedDoc(filePath: string): Promise<GetLinkedDocResponse> {
 
                     // Jumpy needs to use the same event and it will cancel this change
                     // But only uses it if `enter` is not pressed
-                    if (doc._jumpyShown && change.text.join('').trim()) return;
+                    // if (doc._jumpyShown && change.text.join('').trim()) return;
 
                     // This is just the user pressing backspace on an empty file.
                     // If we let it go through then the classifier cache will crash.
@@ -135,7 +135,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
     else {
         return docByFilePathPromised[filePath] = server.openFile({ filePath: filePath }).then((res) => {
             let ext = utils.getExt(filePath);
-            let isTsFile = utils.isTsFile(filePath);
+            let isTsFile = utils.isTs(filePath);
 
             let mode = isTsFile
                         ? 'typescript'

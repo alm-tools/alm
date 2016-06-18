@@ -28,11 +28,9 @@ require('codemirror/addon/edit/matchtags');
 // Our Addons
 import * as quickFix from "./addons/quickFix";
 import textHover = require('./addons/text-hover');
-import jumpy = require('./addons/jumpy');
 import blaster = require('./addons/blaster');
 import insertMatchingPair = require('./addons/insertMatchingPair');
 const ensureImport = textHover
-    || jumpy
     || blaster
 	|| insertMatchingPair;
 

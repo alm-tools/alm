@@ -8,7 +8,6 @@ import {server,cast} from "../../../../socket/socketClient";
 import {ExtendedCodeMirrorHint, render, isCompletionActive} from "./autocompleteShared";
 import * as types from "../../../../common/types";
 import * as state from "../../../state/state";
-import * as jumpy from "../jumpy";
 import * as utils from "../../../../common/utils";
 
 require('./autocomplete.css');
@@ -50,11 +49,6 @@ export function setupCodeMirror(cm: CodeMirror.EditorFromTextArea){
 
         /** only on user input (e.g. exclude `cut`) */
         if (change.origin !== '+input'){
-            return;
-        }
-
-        /** Also ignore jumpy :-/ cancelling it from jumpy still causes this to get called */
-        if (jumpy.getState(ed).shown) {
             return;
         }
 
