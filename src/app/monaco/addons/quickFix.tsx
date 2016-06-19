@@ -15,7 +15,7 @@ const quickFixDecorationOptions: monaco.editor.IModelDecorationOptions = {
     hoverMessage: 'QuickFixes available. Click to select.'
 };
 
-export function setup(cm: Editor): { dispose: () => void } {
+export function setup(editor: Editor): { dispose: () => void } {
     // if (cm) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
 
     let lastDecorations: string[] = [];
@@ -25,25 +25,25 @@ export function setup(cm: Editor): { dispose: () => void } {
         // Clear any previous attempt
         lastServerRes = null;
         if (lastDecorations.length) {
-            lastDecorations = cm.deltaDecorations(lastDecorations, []);
+            lastDecorations = editor.deltaDecorations(lastDecorations, []);
         }
 
         // If not active project return
-        if (!state.inActiveProjectFilePath(cm.filePath)) {
+        if (!state.inActiveProjectFilePath(editor.filePath)) {
             return;
         }
 
-        const indentSize = cm.getModel().getOptions().tabSize;
-        const pos = cm.getPosition();
-        const position = cm.getModel().getOffsetAt(pos);
+        const indentSize = editor.getModel().getOptions().tabSize;
+        const pos = editor.getPosition();
+        const position = editor.getModel().getOffsetAt(pos);
 
         // query the server with live analysis
         server.getQuickFixes({
             indentSize,
-            filePath: cm.filePath,
+            filePath: editor.filePath,
             position
         }).then(res=>{
-            const newPos = cm.getPosition();
+            const newPos = editor.getPosition();
             if (!newPos.equals(pos)) return;
 
             lastServerRes = res;
@@ -57,7 +57,7 @@ export function setup(cm: Editor): { dispose: () => void } {
                     } as monaco.Range,
                     options: quickFixDecorationOptions
                 }
-                lastDecorations = cm.deltaDecorations(lastDecorations, [result]);
+                lastDecorations = editor.deltaDecorations(lastDecorations, [result]);
             }
         });
     };
@@ -65,9 +65,9 @@ export function setup(cm: Editor): { dispose: () => void } {
     const refreshQuickFixesDebounced = utils.debounce(refreshQuickFixes, 1000);
 
     const disposible = new CompositeDisposible();
-    cm.onDidFocusEditor(refreshQuickFixesDebounced);
-    cm.onDidChangeModelContent(refreshQuickFixesDebounced);
-    cm.onDidChangeCursorPosition(refreshQuickFixesDebounced);
+    editor.onDidFocusEditor(refreshQuickFixesDebounced);
+    editor.onDidChangeModelContent(refreshQuickFixesDebounced);
+    editor.onDidChangeCursorPosition(refreshQuickFixesDebounced);
     const disposeProjectWatch = cast.activeProjectConfigDetailsUpdated.on(() => {
         refreshQuickFixesDebounced();
     });
@@ -75,7 +75,7 @@ export function setup(cm: Editor): { dispose: () => void } {
     /**
      * Also subscribe to the user clicking the margin
      */
-    cm.onMouseUp((mouseEvent) => {
+    editor.onMouseUp((mouseEvent) => {
         if (mouseEvent.target.type === monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN
             && mouseEvent.target.element.className.includes(quickFixClassName)) {
             if (lastServerRes) {
