@@ -26,7 +26,6 @@ require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/matchtags');
 
 // Our Addons
-import * as quickFix from "./addons/quickFix";
 import textHover = require('./addons/text-hover');
 import insertMatchingPair = require('./addons/insertMatchingPair');
 const ensureImport = textHover
@@ -166,11 +165,6 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         (options as any).foldGutter = true;
         options.gutters.push("CodeMirror-foldgutter");
 
-        // quickfix
-        if (!this.props.readOnly) {
-            quickFix.setupOptions(options);
-        }
-
         // lint
         linter.setupOptions(options, this.props.filePath);
         // also lint on errors changing
@@ -193,11 +187,6 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         if (!this.props.readOnly) {
             this.codeMirror.on('cursorActivity', this.handleCursorActivity);
             this.disposible.add({ dispose: () => this.codeMirror.off('cursorActivity', this.handleCursorActivity) });
-        }
-
-        // quick fix
-        if (!this.props.readOnly) {
-            this.disposible.add(quickFix.setupCM(this.codeMirror));
         }
 
         const loadEditorOptions = (editorOptions:types.EditorOptions) => {
