@@ -159,7 +159,7 @@ export class SelectListView extends BaseComponent<Props, State>{
                             type="text"
                             ref="omniSearchInput"
                             placeholder="Filter"
-                            style={styles.Input.inputBlackStyle}
+                            style={styles.modal.inputStyle}
                             onChange={this.onChangeFilter}
                             onKeyDown={this.onChangeSelected}
                             />
