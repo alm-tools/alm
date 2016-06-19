@@ -19,11 +19,10 @@ export function setup(editor: Editor): { dispose: () => void } {
     // if (cm) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
 
     let lastWidget: monaco.editor.IContentWidget | null = null;
-    let lastServerRes: Types.GetQuickFixesResponse | null = null;
     // The key quick fix get logic
     const refreshQuickFixes = () => {
         // Clear any previous attempt
-        lastServerRes = null;
+        editor._lastQuickFixInformation = null;
         if (lastWidget) {
             editor.removeContentWidget(lastWidget);
             lastWidget = null;
@@ -43,14 +42,15 @@ export function setup(editor: Editor): { dispose: () => void } {
             indentSize,
             filePath: editor.filePath,
             position
-        }).then(res=>{
+        }).then(res => {
+            // If no longer relevant abort and wait for a new call.
             const newPos = editor.getPosition();
             if (!newPos.equals(pos)) return;
 
-            lastServerRes = res;
-
             /** Only add the decoration if there are some fixes available */
             if (res.fixes.length) {
+                editor._lastQuickFixInformation = res;
+
                 // const result: monaco.editor.IModelDeltaDecoration = {
                 //     range: {
                 //         startLineNumber: pos.lineNumber,
@@ -98,4 +98,17 @@ export function setup(editor: Editor): { dispose: () => void } {
     });
 
     return disposible;
+}
+
+/**
+ * We add the quickfix information to the editor to allow easy invocation from an action
+ */
+declare global {
+    namespace monaco {
+        namespace editor {
+            export interface ICommonCodeEditor {
+                _lastQuickFixInformation?: Types.GetQuickFixesResponse
+            }
+        }
+    }
 }
