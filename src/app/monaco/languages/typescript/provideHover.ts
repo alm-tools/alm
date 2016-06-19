@@ -22,6 +22,10 @@ export class ProvideHover {
             if (!res.valid) {
                 return null;
             }
+            /** Since we do not show `error` yet just return if no `info` */
+            if (!res.info) {
+                return null;
+            }
             const result: monaco.languages.Hover = {
                 range: {
                     startLineNumber: res.info.range.from.line + 1,
