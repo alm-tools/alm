@@ -18,14 +18,15 @@ const quickFixDecorationOptions: monaco.editor.IModelDecorationOptions = {
 export function setup(editor: Editor): { dispose: () => void } {
     // if (cm) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
 
-    let lastDecorations: string[] = [];
+    let lastWidget: monaco.editor.IContentWidget | null = null;
     let lastServerRes: Types.GetQuickFixesResponse | null = null;
     // The key quick fix get logic
     const refreshQuickFixes = () => {
         // Clear any previous attempt
         lastServerRes = null;
-        if (lastDecorations.length) {
-            lastDecorations = editor.deltaDecorations(lastDecorations, []);
+        if (lastWidget) {
+            editor.removeContentWidget(lastWidget);
+            lastWidget = null;
         }
 
         // If not active project return
@@ -50,14 +51,38 @@ export function setup(editor: Editor): { dispose: () => void } {
 
             /** Only add the decoration if there are some fixes available */
             if (res.fixes.length) {
-                const result: monaco.editor.IModelDeltaDecoration = {
-                    range: {
-                        startLineNumber: pos.lineNumber,
-                        endLineNumber: pos.lineNumber,
-                    } as monaco.Range,
-                    options: quickFixDecorationOptions
-                }
-                lastDecorations = editor.deltaDecorations(lastDecorations, [result]);
+                // const result: monaco.editor.IModelDeltaDecoration = {
+                //     range: {
+                //         startLineNumber: pos.lineNumber,
+                //         endLineNumber: pos.lineNumber,
+                //     } as monaco.Range,
+                //     options: quickFixDecorationOptions
+                // }
+                // lastDecorations = editor.deltaDecorations(lastDecorations, [result]);
+
+                // Setup the marker. Note: Must be done outside `getDomNode` to make it idempotent
+                var marker = document.createElement("div");
+                marker.className = quickFixClassName + ' hint--right hint--info';
+                marker.setAttribute('data-hint', `Quick fixes available`);
+                marker.innerHTML = "💡";
+                // marker.onclick = () => {
+                //     // TODO: show quick fix selector
+                // }
+
+                lastWidget = {
+                    allowEditorOverflow: false,
+                    getId: () => 'quickfix',
+                    getDomNode: () => marker,
+                    getPosition: () => {
+                        return {
+                            position: { lineNumber: pos.lineNumber, column: editor.getModel().getLineContent(pos.lineNumber).length + 1 },
+                            preference: [
+                                monaco.editor.ContentWidgetPositionPreference.EXACT,
+                            ]
+                        }
+                    }
+                };
+                editor.addContentWidget(lastWidget);
             }
         });
     };
@@ -70,18 +95,6 @@ export function setup(editor: Editor): { dispose: () => void } {
     editor.onDidChangeCursorPosition(refreshQuickFixesDebounced);
     const disposeProjectWatch = cast.activeProjectConfigDetailsUpdated.on(() => {
         refreshQuickFixesDebounced();
-    });
-
-    /**
-     * Also subscribe to the user clicking the margin
-     */
-    editor.onMouseUp((mouseEvent) => {
-        if (mouseEvent.target.type === monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN
-            && mouseEvent.target.element.className.includes(quickFixClassName)) {
-            if (lastServerRes) {
-                // Show the quick fix modal :)
-            }
-        }
     });
 
     return disposible;
