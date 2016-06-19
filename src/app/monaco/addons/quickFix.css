@@ -8,7 +8,7 @@
 
 .monaco-quickfix:before {
     /* Adding a before content throws live analysis off of its game */
-    /*content: "💡";*/
+    content: "💡";
 }
 
 .monaco-quickfix:hover {
