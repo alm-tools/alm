@@ -49,25 +49,16 @@ export function setup(editor: Editor): { dispose: () => void } {
 
             /** Only add the decoration if there are some fixes available */
             if (res.fixes.length) {
-                editor._lastQuickFixInformation = res;
-
-                // const result: monaco.editor.IModelDeltaDecoration = {
-                //     range: {
-                //         startLineNumber: pos.lineNumber,
-                //         endLineNumber: pos.lineNumber,
-                //     } as monaco.Range,
-                //     options: quickFixDecorationOptions
-                // }
-                // lastDecorations = editor.deltaDecorations(lastDecorations, [result]);
+                editor._lastQuickFixInformation = { res, position };
 
                 // Setup the marker. Note: Must be done outside `getDomNode` to make it idempotent
                 var marker = document.createElement("div");
                 marker.className = quickFixClassName;
                 marker.title = `Quick fixes available`;
                 marker.innerHTML = "💡";
-                // marker.onclick = () => {
-                //     // TODO: show quick fix selector
-                // }
+                marker.onclick = () => {
+                    editor.getAction(QuickFixAction.ID).run();
+                }
 
                 lastWidget = {
                     allowEditorOverflow: false,
@@ -107,8 +98,74 @@ declare global {
     namespace monaco {
         namespace editor {
             export interface ICommonCodeEditor {
-                _lastQuickFixInformation?: Types.GetQuickFixesResponse
+                _lastQuickFixInformation?: {
+                    res: Types.GetQuickFixesResponse,
+                    position: number
+                }
             }
         }
     }
 }
+
+
+import CommonEditorRegistry = monaco.CommonEditorRegistry;
+import EditorActionDescriptor = monaco.EditorActionDescriptor;
+import IEditorActionDescriptorData = monaco.IEditorActionDescriptorData;
+import ICommonCodeEditor = monaco.ICommonCodeEditor;
+import TPromise = monaco.Promise;
+import EditorAction = monaco.EditorAction;
+import ContextKey = monaco.ContextKey;
+import KeyMod = monaco.KeyMod;
+import KeyCode = monaco.KeyCode;
+
+import * as selectListView from "../../selectListView";
+import * as ui from "../../ui";
+import * as uix from "../../uix";
+import * as React from "react";
+
+class QuickFixAction extends EditorAction {
+
+    static ID = 'editor.action.quickfix';
+
+	constructor(descriptor:IEditorActionDescriptorData, editor:ICommonCodeEditor) {
+		super(descriptor, editor);
+	}
+
+	public run():TPromise<boolean> {
+        const cm = this.editor;
+
+        if (!cm._lastQuickFixInformation) {
+            ui.notifyInfoNormalDisappear('No active quick fixes for last editor position');
+            return;
+        }
+        const fixes = cm._lastQuickFixInformation.res.fixes;
+        selectListView.selectListView.show({
+            header:'💡 Quick Fixes',
+            data: fixes,
+            render: (fix, highlighted) => {
+                return <div style={{fontFamily:'monospace'}}>{highlighted}</div>;
+            },
+            textify: (fix) => fix.display,
+            onSelect: (fix) => {
+                server.applyQuickFix({
+                    key: fix.key,
+                    indentSize: cm.getModel().getOptions().tabSize,
+                    additionalData: null,
+                    filePath: cm.filePath,
+                    position: cm._lastQuickFixInformation.position
+                }).then((res)=>{
+                    // TODO: apply refactorings
+                    // console.log('Apply refactorings:', res.refactorings); // DEBUG
+                    uix.API.applyRefactorings(res.refactorings);
+                })
+            }
+        });
+
+		return TPromise.as(true);
+	}
+}
+
+CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(QuickFixAction, QuickFixAction.ID, 'TypeScript Quick Fix', {
+	context: ContextKey.EditorTextFocus,
+	primary: KeyMod.Alt | KeyCode.Enter
+}));

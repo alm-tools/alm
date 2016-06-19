@@ -264,4 +264,4 @@ class JumpyAction extends EditorAction {
 CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(JumpyAction, JumpyAction.ID, 'Jumpy', {
 	context: ContextKey.EditorTextFocus,
 	primary: KeyMod.CtrlCmd | KeyCode.Enter
-}, 'Jumpy'));
+}));
