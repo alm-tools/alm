@@ -47,18 +47,15 @@ export function setup(cm: Editor): { dispose: () => void } {
             if (!newPos.equals(pos)) return;
 
             lastServerRes = res;
-            const newDecorations = res.fixes.map(fix => {
-                const result: monaco.editor.IModelDeltaDecoration = {
-                    range: {
-                        startLineNumber: pos.lineNumber,
-                        endLineNumber: pos.lineNumber,
-                    } as monaco.Range,
-                    options: quickFixDecorationOptions
-                }
-                return result;
-            });
+            const result: monaco.editor.IModelDeltaDecoration = {
+                range: {
+                    startLineNumber: pos.lineNumber,
+                    endLineNumber: pos.lineNumber,
+                } as monaco.Range,
+                options: quickFixDecorationOptions
+            }
 
-            lastDecorations = cm.deltaDecorations(lastDecorations, newDecorations);
+            lastDecorations = cm.deltaDecorations(lastDecorations, [result]);
         });
     };
 
