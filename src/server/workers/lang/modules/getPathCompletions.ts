@@ -96,17 +96,25 @@ export function getPathCompletionsForImport(query: GetPathCompletions): types.Pa
  * - aborts if position not valid to autocomplete
  * - automatically excludes `externalModules` if position is reference tag
  */
-export function getPathCompletionsForAutocomplete(query: GetPathCompletionsForAutocomplete): types.PathCompletion[] {
+export function getPathCompletionsForAutocomplete(query: GetPathCompletionsForAutocomplete): types.PathCompletionForAutocomplete[] {
     const sourceFile = query.project.languageService.getNonBoundSourceFile(query.filePath);
     const positionNode = ts.getTokenAtPosition(sourceFile, query.position);
 
+    /** Note: in referenceTag is not supported yet */
     const inReferenceTagPath = false;
+
     const inES6ModuleImportString = isStringLiteralInES6ImportDeclaration(positionNode);
     const inImportRequireString = isStringLiteralInImportRequireDeclaration(positionNode);
 
     if (!inReferenceTagPath && !inES6ModuleImportString && !inImportRequireString){
         return [];
     }
+
+    /** We have to be in a string literal (as reference tag isn't supproted yet) */
+    const pathStringRange = {
+        from: positionNode.pos,
+        to: positionNode.end
+    };
 
     var project = query.project;
     var sourceDir = path.dirname(query.filePath);
@@ -115,6 +123,10 @@ export function getPathCompletionsForAutocomplete(query: GetPathCompletionsForAu
         fileName: string;
         relativePath: string;
         fullPath: string;
+        pathStringRange: {
+            from: number,
+            to: number,
+        }
     }[] = [];
 
     if (!inReferenceTagPath) {
@@ -122,7 +134,8 @@ export function getPathCompletionsForAutocomplete(query: GetPathCompletionsForAu
         externalModules.forEach(e=> files.push({
             fileName: `${e}`,
             relativePath: e,
-            fullPath: e
+            fullPath: e,
+            pathStringRange,
         }));
     }
 
@@ -130,7 +143,8 @@ export function getPathCompletionsForAutocomplete(query: GetPathCompletionsForAu
         files.push({
             fileName: fsu.removeExt(utils.getFileName(p)),
             relativePath: fsu.removeExt(fsu.makeRelativePath(sourceDir, p)),
-            fullPath: p
+            fullPath: p,
+            pathStringRange,
         });
     });
 

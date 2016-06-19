@@ -22,6 +22,7 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
     const {filePath, position, prefix} = query;
     const project = getProject(query.filePath);
     const service = project.languageService;
+    const languageServiceHost = project.languageServiceHost;
 
     const completions: ts.CompletionInfo = service.getCompletionsAtPosition(filePath, position);
     let completionList = completions ? completions.entries.filter(x => !!x) : [];
@@ -138,7 +139,13 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
                 kind: types.completionKindPath,
                 name: f.relativePath,
                 display: f.fileName,
-                comment: f.fullPath
+                comment: f.fullPath,
+
+                textEdit: {
+                    from: languageServiceHost.getLineAndCharacterOfPosition(filePath, f.pathStringRange.from),
+                    to: languageServiceHost.getLineAndCharacterOfPosition(filePath, f.pathStringRange.to),
+                    newText: f.relativePath
+                }
             };
             return result;
         }).concat(completionsToReturn);

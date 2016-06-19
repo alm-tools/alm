@@ -63,8 +63,9 @@ export class SuggestAdapter extends Adapter implements monaco.languages.Completi
 		// Lets fix that:
 		if (prefix == '' && wordInfo.startColumn > 2) {
 			prefix = model.getLineContent(position.lineNumber).substr(wordInfo.startColumn - 2, 1);
-            // console.log({ prefix }); // DEBUG
 		}
+
+		// console.log({ prefix }); // DEBUG
 
 		const filePath = model.filePath;
 		const offset = this._positionToOffset(model, position);
@@ -93,8 +94,23 @@ export class SuggestAdapter extends Adapter implements monaco.languages.Completi
 
 					// Support function completions
                     if (entry.kind === 'snippet') {
-                        result.insertText = entry.insertText
+                        result.insertText = entry.insertText;
                     }
+
+					// For path completions we should create a text edit that eats all the text content
+					// This should work but doesn't (monaco bug). So disabling (= null) for now.
+					if (entry.textEdit = null) {
+						// console.log(entry.textEdit, {position}); // DEBUG
+						result.textEdit = {
+							range: {
+								startLineNumber: entry.textEdit.from.line + 1,
+								startColumn: entry.textEdit.from.ch + 1,
+								endLineNumber: entry.textEdit.to.line + 1,
+								endColumn: entry.textEdit.to.ch + 1,
+							},
+							text: entry.textEdit.newText,
+						}
+					}
 
 					return result;
     			});

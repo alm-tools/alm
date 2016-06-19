@@ -227,6 +227,9 @@ export interface Completion {
 
     /** Only valid if `kind` is snippet */
     insertText?: string;
+
+    /** Only valid if `kind` is path completion */
+    textEdit?: CodeEdit;
 }
 
 /**
@@ -237,6 +240,12 @@ export interface PathCompletion {
     fileName: string;
     relativePath: string;
     fullPath: string;
+}
+export interface PathCompletionForAutocomplete extends PathCompletion {
+    pathStringRange: {
+        from: number,
+        to: number,
+    }
 }
 
 /**
