@@ -79,7 +79,7 @@ export class SuggestAdapter extends Adapter implements monaco.languages.Completi
     			if (!info) {
     				return;
     			}
-				
+
     			let suggestions: MyCompletionItem[] = info.completions.map(entry => {
     				const result: MyCompletionItem = {
     					label: entry.name,
@@ -156,6 +156,7 @@ export class SuggestAdapter extends Adapter implements monaco.languages.Completi
 			case Kind.interface:
 				return monaco.languages.CompletionItemKind.Interface;
 			case Kind.warning:
+			case Kind.file:
 				return monaco.languages.CompletionItemKind.File;
 		}
 
@@ -193,4 +194,5 @@ export class Kind {
 	public static const:string = 'const';
 	public static let:string = 'let';
 	public static warning:string = 'warning';
+	public static file:string = 'file';
 }

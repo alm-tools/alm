@@ -132,11 +132,17 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
         filePath,
         prefix
     });
-    completionsToReturn =
-        pathCompletions.length
-            ? pathCompletions.concat(completionsToReturn)
-            : completionsToReturn;
-
+    if (pathCompletions.length) {
+        completionsToReturn = pathCompletions.map(f => {
+            const result: types.Completion = {
+                kind: 'file',
+                name: f.relativePath,
+                display: f.fileName,
+                comment: f.fullPath
+            };
+            return result;
+        }).concat(completionsToReturn);
+    }
 
     return resolve({
         completions: completionsToReturn,

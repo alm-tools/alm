@@ -22,12 +22,11 @@ function getIdentifierAndFileNames(error: ts.Diagnostic, project: Project, posit
     if (!match) return;
 
     var [, identifierName] = match;
-    var result = getPathCompletionsForImport({
+    const files = getPathCompletionsForImport({
         project,
         filePath: error.file.fileName,
         prefix: identifierName
     });
-    const files = result.map(x => x.pathCompletion);
     var file = files.length > 0 ? files[0].relativePath : undefined;
     var basename = files.length > 0 ? files[0].fileName : undefined;
     return { identifierName, file, basename };

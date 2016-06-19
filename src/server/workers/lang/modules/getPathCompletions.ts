@@ -58,7 +58,7 @@ function sanitizePrefix(prefix: string){
     return result;
 }
 
-export function getPathCompletionsForImport(query: GetPathCompletions): types.Completion[] {
+export function getPathCompletionsForImport(query: GetPathCompletions): types.PathCompletion[] {
     var project = query.project;
     var sourceDir = path.dirname(query.filePath);
     var filePaths = project.configFile.project.files.filter(p => p !== query.filePath && !p.endsWith('.json'));
@@ -88,10 +88,7 @@ export function getPathCompletionsForImport(query: GetPathCompletions): types.Co
     if (!endsInPunctuation)
         files = fuzzaldrin.filter(files, sanitizedPrefix, { key: 'fileName' });
 
-    return files.map(f => {
-        const result: types.Completion = { pathCompletion: f };
-        return result;
-    });
+    return files;
 }
 
 /**
@@ -99,7 +96,7 @@ export function getPathCompletionsForImport(query: GetPathCompletions): types.Co
  * - aborts if position not valid to autocomplete
  * - automatically excludes `externalModules` if position is reference tag
  */
-export function getPathCompletionsForAutocomplete(query: GetPathCompletionsForAutocomplete): types.Completion[] {
+export function getPathCompletionsForAutocomplete(query: GetPathCompletionsForAutocomplete): types.PathCompletion[] {
     const sourceFile = query.project.languageService.getNonBoundSourceFile(query.filePath);
     const positionNode = ts.getTokenAtPosition(sourceFile, query.position);
 
@@ -142,8 +139,5 @@ export function getPathCompletionsForAutocomplete(query: GetPathCompletionsForAu
     if (!endsInPunctuation)
         files = fuzzaldrin.filter(files, sanitizedPrefix, { key: 'fileName' });
 
-    return files.map(f => {
-        const result: types.Completion = { pathCompletion: f };
-        return result;
-    });
+    return files;
 }
