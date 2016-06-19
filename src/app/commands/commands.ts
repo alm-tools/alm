@@ -77,13 +77,13 @@ export var esc = new UICommand({
  */
 export var gotoNext = new UICommand({
     keyboardShortcut: 'mod+f8', // atom
-    description: "Active List: Goto next position",
+    description: "Main Panel : Goto next error in project",
     context: CommandContext.Global,
 });
 
 export var gotoPrevious = new UICommand({
     keyboardShortcut: 'mod+shift+f8', // atom
-    description: "Active List: Goto previous position",
+    description: "Main Panel : Goto previous error in project",
     context: CommandContext.Global,
 });
 
