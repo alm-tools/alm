@@ -1,3 +1,13 @@
+/**
+ * Change the default font.
+ * The default is `consolas` , `courier new`.
+ * This means that if user does not have consolas they get *aweful* courier new.
+ * Don't want that.
+ */
+div.view-lines {
+    font-family: monospace !important;
+}
+
 /* Make the bracket match pop out more */
 .monaco-editor.vs-dark .bracket-match {
     background-color: rgba(100, 100, 100, 0.3);
