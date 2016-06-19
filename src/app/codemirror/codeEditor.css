@@ -3,9 +3,10 @@
  * The default is `consolas` , `courier new`.
  * This means that if user does not have consolas they get *aweful* courier new.
  * Don't want that.
+ * Also mac monospace is aweful. Try and give them monaco.
  */
 div.view-lines {
-    font-family: monospace !important;
+    font-family: consolas, monaco, monospace !important;
 }
 
 /* Make the bracket match pop out more */
