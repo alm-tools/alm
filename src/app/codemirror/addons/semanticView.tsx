@@ -220,7 +220,11 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
                 // also relayout the editor if the last width is not the same as new width
                 const newWidth = ReactDOM.findDOMNode(this).clientWidth;
                 if (this.lastWidth !== newWidth){
+                    // We store `top` (and restore it) otherwise the editor jumps around a bit after relayout.
+                    // A better fix would be to allow users to resize the outline and store that as a setting :-/
+                    const top = this.props.editor.getScrollTop();
                     this.props.editor.layout();
+                    this.props.editor.setScrollTop(top);
                     this.lastWidth = newWidth;
                 }
             })
