@@ -93,9 +93,9 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
     if (query.prefix == '(') {
         const signatures = service.getSignatureHelpItems(query.filePath, query.position);
         if (signatures && signatures.items) {
-            signatures.items.forEach((item) => {
+            signatures.items.forEach((item, index) => {
                 const template: string = item.parameters.map((p, i) => {
-                    const display = '${' + (i + 1) + ':' + ts.displayPartsToString(p.displayParts) + '}';
+                    const display = '{{' + (i + 1) + ':' + ts.displayPartsToString(p.displayParts) + '}}';
                     return display;
                 }).join(ts.displayPartsToString(item.separatorDisplayParts));
 
@@ -104,7 +104,7 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
 
                 // e.g. test(something:string):any;
                 // prefix: test(
-                // template: ${something}
+                // template: {{something}}
                 // suffix: ): any;
                 const description: string =
                     ts.displayPartsToString(item.prefixDisplayParts)
@@ -112,11 +112,12 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
                     + ts.displayPartsToString(item.suffixDisplayParts);
 
                 completionsToReturn.unshift({
-                    snippet: {
-                        template,
-                        name,
-                        description: description
-                    }
+                    kind: 'snippet',
+                    name,
+                    insertText: template,
+
+                    display: 'function signature',
+                    comment: `Overload ${index + 1} of ${signatures.items.length}`
                 });
             });
         }

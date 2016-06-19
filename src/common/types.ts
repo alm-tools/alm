@@ -205,21 +205,18 @@ export type GetJSOutputStatusResponse = {
  * Complete related stuff
  */
 export interface Completion {
-    /** stuff like "var"|"method" etc */
-    kind?: string;
+    /** stuff like "var"|"method"|"snippet" etc */
+    kind: string;
     /** stuff like "toString" */
-    name?: string;
+    name: string;
+
     /** This is displayParts (for functions). Empty for `var` etc. */
     display?: string;
     /** the docComment if any */
     comment?: string;
 
-    /** If snippet is specified then the above stuff is ignored */
-    snippet?: {
-        name: string;
-        description: string;
-        template: string;
-    };
+    /** Only valid if `kind` is snippet */
+    insertText?: string;
 
     /** If a path completion is specified then the above stuff is ignored */
     pathCompletion?: {

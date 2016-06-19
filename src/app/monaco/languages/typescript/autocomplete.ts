@@ -50,17 +50,28 @@ interface MyCompletionItem extends monaco.languages.CompletionItem {
 export class SuggestAdapter extends Adapter implements monaco.languages.CompletionItemProvider {
 
 	public get triggerCharacters(): string[] {
-		return ['.'];
+		return ['.','('];
 	}
 
 	provideCompletionItems(model:monaco.editor.IReadOnlyModel, position:Position, token:CancellationToken): Promise<monaco.languages.CompletionItem[]> {
 		const wordInfo = model.getWordUntilPosition(position);
+		let prefix = wordInfo.word;
+
+		// NOTE: monaco is a bit touchy about `wordInfo`
+		// e.g. for `test(|` it will  return `wordInfo.word == ""`.
+		// We would rather it give us `(`.
+		// Lets fix that:
+		if (prefix == '' && wordInfo.startColumn > 2) {
+			prefix = model.getLineContent(position.lineNumber).substr(wordInfo.startColumn - 2, 1);
+            // console.log({ prefix }); // DEBUG
+		}
+
 		const filePath = model.filePath;
 		const offset = this._positionToOffset(model, position);
 
 		return server
             .getCompletionsAtPosition({
-                prefix: wordInfo.word,
+                prefix,
                 filePath,
                 position: offset
             })
@@ -68,11 +79,9 @@ export class SuggestAdapter extends Adapter implements monaco.languages.Completi
     			if (!info) {
     				return;
     			}
+				
     			let suggestions: MyCompletionItem[] = info.completions.map(entry => {
-					// TODO: mon
-					// Support function completions
-
-    				return {
+    				const result: MyCompletionItem = {
     					label: entry.name,
     					kind: SuggestAdapter.convertKind(entry.kind),
 
@@ -81,26 +90,40 @@ export class SuggestAdapter extends Adapter implements monaco.languages.Completi
                         position: offset,
                         filePath,
     				};
+
+					// Support function completions
+                    if (entry.kind === 'snippet') {
+                        result.insertText = entry.insertText
+                    }
+
+					return result;
     			});
 
     			return suggestions;
     		});
 	}
 
-	resolveCompletionItem(item: monaco.languages.CompletionItem, token: CancellationToken): Promise<monaco.languages.CompletionItem> {
+	resolveCompletionItem(item: monaco.languages.CompletionItem, token: CancellationToken): Promise<monaco.languages.CompletionItem> | monaco.languages.CompletionItem {
 
 		let myItem = item as MyCompletionItem;
 		const filePath = myItem.filePath;
 		const position = myItem.position;
 
+		/** We have a chance to return `detail` and `documentation` */
+
+		// If we already have the result return it
+		if (myItem.orig.display) {
+            return utils.extend(myItem, { detail: myItem.orig.display, documentation: myItem.orig.comment });
+		}
+
+		// Otherwise get it from the server
 		return server
             .getCompletionEntryDetails({filePath,position, label:myItem.label})
             .then(res => {
-                // You basically return the same thing with comments if any
+                // You basically return the same thing with comments if any. If we don't have them just return.
     			if (!res.display && !res.comment) {
     				return myItem;
     			}
-                /** The names here are what monaco expects */
                 const detail = res.display, documentation = res.comment;
                 return utils.extend(myItem, { detail, documentation });
 	        });
