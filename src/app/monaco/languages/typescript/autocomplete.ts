@@ -3,6 +3,8 @@ import {Types} from "../../../../socket/socketContract";
 import * as state from "../../../state/state";
 import * as classifierCache from "../../../codemirror/mode/classifierCache";
 import * as utils from "../../../../common/utils";
+import * as types from "../../../../common/types";
+
 import CancellationToken = monaco.CancellationToken;
 import Thenable = monaco.Thenable;
 import Position = monaco.Position;
@@ -34,6 +36,10 @@ export abstract class Adapter {
  * You are allowed to create your own completion item as long as you provide what monaco needs
  */
 interface MyCompletionItem extends monaco.languages.CompletionItem {
+	// Original server response
+	orig: types.Completion,
+
+	// Used to provide additional help later on
     filePath: string,
     position: number,
 }
@@ -63,11 +69,15 @@ export class SuggestAdapter extends Adapter implements monaco.languages.Completi
     				return;
     			}
     			let suggestions: MyCompletionItem[] = info.completions.map(entry => {
+					// TODO: mon
+					// Support function completions
+
     				return {
     					label: entry.name,
     					kind: SuggestAdapter.convertKind(entry.kind),
 
                         // MyCompletionItem
+                        orig: entry,
                         position: offset,
                         filePath,
     				};
