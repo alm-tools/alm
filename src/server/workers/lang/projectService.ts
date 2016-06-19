@@ -112,7 +112,7 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
                     + ts.displayPartsToString(item.suffixDisplayParts);
 
                 completionsToReturn.unshift({
-                    kind: 'snippet',
+                    kind: types.completionKindSnippet,
                     name,
                     insertText: template,
 
@@ -135,7 +135,7 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
     if (pathCompletions.length) {
         completionsToReturn = pathCompletions.map(f => {
             const result: types.Completion = {
-                kind: 'file',
+                kind: types.completionKindPath,
                 name: f.relativePath,
                 display: f.fileName,
                 comment: f.fullPath

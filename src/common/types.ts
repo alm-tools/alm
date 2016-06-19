@@ -204,8 +204,13 @@ export type GetJSOutputStatusResponse = {
 /**
  * Complete related stuff
  */
+/** Some constants */
+export const completionKindSnippet = "snippet";
+export const completionKindPath = "path";
+
+/** A completion */
 export interface Completion {
-    /** stuff like ("var"|"method"etc)  | "snippet" | "file" etc */
+    /** stuff like ("var"|"method"etc)  | "snippet" | "path" etc */
     kind: string;
     /** stuff like "toString", "./relativePath" */
     name: string;
