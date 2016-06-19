@@ -108,6 +108,9 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
         }
         if (!this.props.editor && props.editor) {
             /** Initial data load */
+            let sel = props.editor.getSelection();
+            const cursor = {line: sel.startLineNumber - 1, ch: sel.endLineNumber - 1};
+            this.setState({ cursor });
             this.reloadData();
 
             const reloadDataDebounced = utils.debounce(this.reloadData, 3000);
@@ -138,7 +141,7 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
         const cursor = {line: sel.startLineNumber - 1, ch: sel.endLineNumber - 1};
         /** If first call OR cursor moved */
         if (!this.state.cursor || (this.state.cursor && this.state.cursor.line !== cursor.line)) {
-            this.setState({cursor});
+            this.setState({ cursor });
             this.afterComponentDidUpdate(()=>{
                 // Scroll to select node in view if any
                 const ref = this.refs[this.selectedRef] as HTMLDivElement;
@@ -204,14 +207,24 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
         return '';
     }
 
+    /** If the tree changes its width we need to relayout the editor */
+    lastWidth: number = 0;
+
     /** Loads the tree data */
     reloadData = () => {
         if (!this.props.filePath) return;
         if (!state.inActiveProjectFilePath(this.props.filePath)) return;
 
         server.getSemanticTree({ filePath: this.props.filePath }).then(res => {
+            this.afterComponentDidUpdate(()=>{
+                // also relayout the editor if the last width is not the same as new width
+                const newWidth = ReactDOM.findDOMNode(this).clientWidth;
+                if (this.lastWidth !== newWidth){
+                    this.props.editor.layout();
+                    this.lastWidth = newWidth;
+                }
+            })
             this.setState({tree: res.nodes});
-            // TODO: render
         });
     }
 }
