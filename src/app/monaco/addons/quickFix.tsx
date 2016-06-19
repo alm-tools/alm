@@ -62,8 +62,8 @@ export function setup(editor: Editor): { dispose: () => void } {
 
                 // Setup the marker. Note: Must be done outside `getDomNode` to make it idempotent
                 var marker = document.createElement("div");
-                marker.className = quickFixClassName + ' hint--right hint--info';
-                marker.setAttribute('data-hint', `Quick fixes available`);
+                marker.className = quickFixClassName;
+                marker.title = `Quick fixes available`;
                 marker.innerHTML = "💡";
                 // marker.onclick = () => {
                 //     // TODO: show quick fix selector
