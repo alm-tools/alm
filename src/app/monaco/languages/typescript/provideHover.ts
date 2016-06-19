@@ -5,19 +5,18 @@ import CancellationToken = monaco.CancellationToken;
 import Position = monaco.Position;
 
 export class ProvideHover {
-    provideHover(model: monaco.editor.IReadOnlyModel, position: Position, token: CancellationToken): Promise<monaco.languages.Hover> {
+    provideHover(model: monaco.editor.IReadOnlyModel, pos: Position, token: CancellationToken): Promise<monaco.languages.Hover> {
         let filePath = model.filePath;
 
         if (!state.inActiveProjectFilePath(model.filePath)) {
             return null;
         }
 
+        const position = model.getOffsetAt(pos);
+
         return server.quickInfo({
             filePath: filePath,
-            editorPosition: {
-                line: position.lineNumber - 1,
-                ch: position.column - 1
-            }
+            position
         }).then(res => {
             // console.log(res); // DEBUG
             if (!res.valid) {

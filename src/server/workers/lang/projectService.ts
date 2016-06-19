@@ -159,9 +159,8 @@ export function getCompletionEntryDetails(query: Types.GetCompletionEntryDetails
 export function quickInfo(query: Types.QuickInfoQuery): Promise<Types.QuickInfoResponse> {
     let project = getProject(query.filePath);
     const {languageServiceHost} = project;
-    const position = languageServiceHost.getPositionOfLineAndCharacter(query.filePath, query.editorPosition.line, query.editorPosition.ch);
-    const errors = positionErrors({filePath: query.filePath, position});
-    var info = project.languageService.getQuickInfoAtPosition(query.filePath, position);
+    const errors = positionErrors({filePath: query.filePath, position: query.position});
+    var info = project.languageService.getQuickInfoAtPosition(query.filePath, query.position);
     if (!info && !errors.length) {
         return Promise.resolve({ valid: false });
     } else {
@@ -264,7 +263,7 @@ export function getDoctorInfo(query: Types.GetDoctorInfoQuery): Promise<Types.Ge
 
     // Just collect other responses
     let defPromised = getDefinitionsAtPosition({ filePath, position });
-    let quickInfoPromised = quickInfo({ filePath, editorPosition: query.editorPosition });
+    let quickInfoPromised = quickInfo({ filePath, position: position });
 
     return defPromised.then((defRes) => {
         return quickInfoPromised.then((infoRes) => {

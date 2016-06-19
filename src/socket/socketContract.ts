@@ -226,7 +226,7 @@ export namespace Types {
     /**
      * Mouse hover
      */
-    export interface QuickInfoQuery extends FilePathEditorPositionQuery { }
+    export interface QuickInfoQuery extends FilePathPositionQuery { }
     export interface QuickInfoResponse {
         valid: boolean; // Do we have a valid response for this query
         info?: {
