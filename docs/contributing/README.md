@@ -10,11 +10,7 @@ You need:
 ```
 git clone https://github.com/alm-tools/alm.git
 cd alm
-npm install
-npm link
 ```
-
-Now you can run `alm`
 
 We highly recommend you use [`nodemon`](https://github.com/remy/nodemon), just run it from the project root:
 
@@ -23,18 +19,21 @@ npm install nodemon -g
 nodemon
 ```
 
+Alternatively if you want to test `alm` on another folder e.g. `your project` (i.e not our folder with our test files) you can make the dev version of `alm` avilable globally with:
+
+```
+npm install
+npm link
+```
+
 # Workflow
 
 Once you have `nodemon` running, if you edit any front-end ts file our Webpack setup will reload the front end only. Make a change to some backend file and the app restarts :rose:
 
 # IDE
-We presently use [`atom-typescript`](https://atom.io/packages/atom-typescript). Eventually this project should be self hosting.
+This is project is self hosted. Just install a released version of alm tools `npm install -g alm` and then you can use that. 
 
-```
-atom .
-```
-
-We critically use it for fast `.ts` -> `.js` workflow.
+You are free to use any other IDE but then you should also run `npm run tscw` to run the same TypeScript version as alm in watch mode.
 
 # Webpack
 All our front-end js gets minified into `bundle.js`. This is what gets npm deployed.
