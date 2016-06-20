@@ -1,37 +1,29 @@
 /**
  * Based of https://gist.github.com/mikeal/1840641
- * But modified to support from a particular port
+ * But modified to support searching from a particular port
+ * Also the original did not actually work.
  */
 
-import * as net from 'net';
+import * as http from 'http';
 
+// The next port we will try
 let portrange = 4444;
-// let dispose = () => null;
+
 export function startPortSearch(startPort: number, cb: (port: number) => void) {
     portrange = startPort;
-
-//     const tryNextPort = (e) => {
-//         console.log(e);
-//         getPort(cb);
-//     }
-//     process.on('uncaughtException', tryNextPort);
-//     dispose = () => process.removeListener('uncaughtException', tryNextPort);
-
     getPort(cb);
-
 }
 
 function getPort(cb) {
     var port = portrange;
     portrange += 1;
 
-
-    var server = net.createServer();
+    var server = http.createServer(() => null);
 
     server.on('error', function(err) {
         getPort(cb);
     });
-    server.listen(port, function(err) {
+    server.listen(port, '0.0.0.0', function(err) {
         // Found one!
         server.once('close', function() {
             cb(port);
