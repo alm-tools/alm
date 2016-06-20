@@ -17,37 +17,37 @@ function test(a, b?, c?) {
 }
 
 let dom = <div>
-  <img/>
+    <img/>
 </div>
 
 class Test {
-  private foo = 123;
-  /** Some constructor comment */
-  constructor() {
+    private foo = 123;
+    /** Some constructor comment */
+    constructor() {
 
-  }
-  test() {
-    return 'asdf' + `${this.foo}`;
-  }
-  /** Some comment for the generic method */
-  aGenericMethod<T>(a: T): T {
-    return a;
-  }
+    }
+    test() {
+        return 'asdf' + `${this.foo}`;
+    }
+    /** Some comment for the generic method */
+    aGenericMethod<T>(a: T): T {
+        return a;
+    }
 }
 
 class GenericTest<T> {
-  someProperty: T;
+    someProperty: T;
 }
 
 const Comp = (props: { text: string }) => {
-  return <div>{props.text}</div>
+    return <div>{props.text}</div>
 }
 const comp = <Comp text="hello world"/>
 
 export class Bas extends Foo {
-  someMethod() {
+    someMethod() {
 
-  }
+    }
 }
 
 let jsonToDtsTesting = `
