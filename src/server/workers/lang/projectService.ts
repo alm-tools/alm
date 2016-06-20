@@ -28,7 +28,7 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
     const endsInPunctuation = utils.prefixEndsInPunctuation(prefix);
 
     /** Doing too many suggestions is slowing us down in some cases */
-    let maxSuggestions = 50;
+    let maxSuggestions = 10000;
     /** Doc comments slow us down tremendously */
     let maxDocComments = 10;
 
