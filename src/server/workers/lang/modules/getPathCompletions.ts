@@ -155,9 +155,6 @@ export function getPathCompletionsForAutocomplete(query: GetPathCompletionsForAu
     });
 
     const sanitizedPrefix = sanitizePrefix(query.prefix);
-    const endsInPunctuation: boolean = utils.prefixEndsInPunctuation(sanitizedPrefix);
-    if (!endsInPunctuation)
-        files = fuzzaldrin.filter(files, sanitizedPrefix, { key: 'fileName' });
 
     return files;
 }

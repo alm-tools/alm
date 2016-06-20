@@ -14,7 +14,6 @@ import * as types from "../../../common/types";
 import * as utils from "../../../common/utils";
 let {resolve} = utils;
 import * as fsu from "../../utils/fsu";
-import fuzzaldrin = require('fuzzaldrin');
 import {errorsCache} from "./cache/tsErrorsCache";
 import {getPathCompletionsForAutocomplete} from "./modules/getPathCompletions";
 
@@ -27,11 +26,6 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
     const completions: ts.CompletionInfo = service.getCompletionsAtPosition(filePath, position);
     let completionList = completions ? completions.entries.filter(x => !!x) : [];
     const endsInPunctuation = utils.prefixEndsInPunctuation(prefix);
-
-    if (prefix.length && prefix.trim().length && !endsInPunctuation) {
-        // Didn't work good for punctuation
-        completionList = fuzzaldrin.filter(completionList, prefix.trim(), { key: 'name' });
-    }
 
     /** Doing too many suggestions is slowing us down in some cases */
     let maxSuggestions = 50;
