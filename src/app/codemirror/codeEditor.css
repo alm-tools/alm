@@ -32,7 +32,10 @@ div.view-lines {
  * https://github.com/Microsoft/vscode/issues/7569
  */
 .monaco-editor .margin-view-overlays .line-numbers {
-    cursor: default;
+    cursor: pointer;
+}
+.monaco-editor.mac .margin-view-overlays .line-numbers {
+    cursor: pointer;
 }
 
 /*
