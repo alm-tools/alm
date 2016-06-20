@@ -37,11 +37,11 @@ export abstract class Adapter {
  */
 interface MyCompletionItem extends monaco.languages.CompletionItem {
 	// Original server response
-	orig: types.Completion,
+	orig?: types.Completion,
 
 	// Used to provide additional help later on
-    filePath: string,
-    position: number,
+    filePath?: string,
+    position?: number,
 }
 
 /**
@@ -118,6 +118,23 @@ export class SuggestAdapter extends Adapter implements monaco.languages.Completi
 					return result;
     			});
 
+                if (prefix.startsWith('i')) {
+                    const sample = {
+                        "name": "if",
+                        "description": "if statement",
+                        "template": "if (${condition}) {\n\t${cursor}\n}"
+                    };
+                    const result : MyCompletionItem = {
+                        label: 'if',
+                        kind: monaco.languages.CompletionItemKind.Snippet,
+
+                        detail: 'snippet',
+                        documentation: 'if statment',
+                        insertText: 'if ({{condition}}) \\{\n\t {{body}}\n}',
+                    }
+                    suggestions.push(result);
+                }
+
     			return suggestions;
     		});
 	}
@@ -131,9 +148,17 @@ export class SuggestAdapter extends Adapter implements monaco.languages.Completi
 		/** We have a chance to return `detail` and `documentation` */
 
 		// If we already have the result return it
-		if (myItem.orig.display) {
+		if (myItem.orig && myItem.orig.display) {
             return utils.extend(myItem, { detail: myItem.orig.display, documentation: myItem.orig.comment });
 		}
+        if (myItem.detail || myItem.documentation) {
+            return myItem;
+		}
+
+        // If not a resolvable completion then return orig
+        if (!filePath || !position) {
+            return myItem;
+        }
 
 		// Otherwise get it from the server
 		return server
