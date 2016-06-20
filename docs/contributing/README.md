@@ -19,7 +19,7 @@ npm install nodemon -g
 nodemon
 ```
 
-Alternatively if you want to test `alm` on another folder e.g. `your project` (i.e not our folder with our test files) you can make the dev version of `alm` avilable globally with:
+Alternatively if you want to test `alm` on another folder e.g. `your project` (i.e not our folder with our test files) you can make the dev version of `alm` avialable globally with:
 
 ```
 npm install
@@ -31,9 +31,8 @@ npm link
 Once you have `nodemon` running, if you edit any front-end ts file our Webpack setup will reload the front end only. Make a change to some backend file and the app restarts :rose:
 
 # IDE
-This is project is self hosted. Just install a released version of alm tools `npm install -g alm` and then you can use that. 
 
-You are free to use any other IDE but then you should also run `npm run tscw` to run the same TypeScript version as alm in watch mode.
+You are free to use any IDE but you should also run `npm run tscw` to run the same TypeScript version as alm in watch mode.
 
 # Webpack
 All our front-end js gets minified into `bundle.js`. This is what gets npm deployed.
