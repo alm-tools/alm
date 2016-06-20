@@ -99,17 +99,20 @@ export class SuggestAdapter extends Adapter implements monaco.languages.Completi
 
 					// For path completions we should create a text edit that eats all the text content
 					// This should work but doesn't (monaco bug). So disabling (= null) for now.
-					if (entry.textEdit = null) {
+					if (entry.textEdit) {
 						// console.log(entry.textEdit, {position}); // DEBUG
 						result.textEdit = {
 							range: {
 								startLineNumber: entry.textEdit.from.line + 1,
-								startColumn: entry.textEdit.from.ch + 1,
+								startColumn: entry.textEdit.from.ch + 3, // Skip preceding ` "`.TODO: The backend should do this better
 								endLineNumber: entry.textEdit.to.line + 1,
-								endColumn: entry.textEdit.to.ch + 1,
+								endColumn: entry.textEdit.to.ch, // Note: no +1 as that would eat the trailing `"`
 							},
 							text: entry.textEdit.newText,
 						}
+						// Need this otherwise monaco tries to filter based on `textEdit`
+						// and that might remove our entry.
+						result.filterText = entry.name;
 					}
 
 					return result;
