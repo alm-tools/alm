@@ -104,9 +104,9 @@ export class SuggestAdapter extends Adapter implements monaco.languages.Completi
 						result.textEdit = {
 							range: {
 								startLineNumber: entry.textEdit.from.line + 1,
-								startColumn: entry.textEdit.from.ch + 3, // Skip preceding ` "`.TODO: The backend should do this better
+								startColumn: entry.textEdit.from.ch + 1,
 								endLineNumber: entry.textEdit.to.line + 1,
-								endColumn: entry.textEdit.to.ch, // Note: no +1 as that would eat the trailing `"`
+								endColumn: entry.textEdit.to.ch + 1,
 							},
 							text: entry.textEdit.newText,
 						}

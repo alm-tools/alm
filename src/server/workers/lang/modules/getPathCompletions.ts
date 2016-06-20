@@ -111,10 +111,16 @@ export function getPathCompletionsForAutocomplete(query: GetPathCompletionsForAu
     }
 
     /** We have to be in a string literal (as reference tag isn't supproted yet) */
+    const pathStringText = positionNode.getFullText();
+    const leadingText = pathStringText.match(/^\s+['|"]/g);
+    const trailingText = pathStringText.match(/['|"]$/g);
+    const from = leadingText ? positionNode.pos + leadingText[0].length : positionNode.pos;
+    const to = trailingText ? positionNode.end - trailingText[0].length : positionNode.end;
     const pathStringRange = {
-        from: positionNode.pos,
-        to: positionNode.end
+        from,
+        to
     };
+    // console.log({textThatWillBeReplaced:sourceFile.getFullText().substr(from, to-from)}); // DEBUG
 
     var project = query.project;
     var sourceDir = path.dirname(query.filePath);
