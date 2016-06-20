@@ -86,18 +86,16 @@ registerImgServerWithExpress(app);
 export const listeningAtUrl = new TypedEvent<{url:string}>();
 
 // Start listening
-const portfinder = require('portfinder');
-portfinder.basePort = clOptions.port;
-portfinder.getPort(function (err, port) {
-    if (err) {
-        console.error(err);
-        exit(errorCodes.couldNotListen);
-    }
+import {startPortSearch} from './server/utils/getPort';
+startPortSearch(clOptions.port, (port) => {
     /** If the user *did* specify a port and we end up not using it */
     if (clOptions.port !== cl.defaultPort
         && port !== clOptions.port) {
         console.log(chalk.magenta(`[WEB] WARNING: Desired port is not available so using port ${port}`));
     }
+    // Also setup in clOptions for future use.
+    clOptions.port = port;
+
     server.listen(port, clOptions.host, function(err) {
         if (err) {
             console.error(err);
