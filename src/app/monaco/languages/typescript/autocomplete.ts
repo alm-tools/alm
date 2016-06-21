@@ -119,9 +119,6 @@ export class SuggestAdapter extends Adapter implements monaco.languages.Completi
 					return result;
     			});
 
-                // TODO:
-                // remove items that are keyword and also have snips :)
-
                 // add all snips
                 defaultSnippets.forEach(item => {
 

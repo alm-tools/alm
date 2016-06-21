@@ -13,88 +13,105 @@ export const defaultSnippets: TemplateConfig[] = [
         "description": "iterate over array",
         "template": "for (let {{2:index}} = 0; {{2:index}} < {{1:array}}.length; {{2:index}}++) {\n\t{{}}\n}"
     },
-    // {
-    //     "name": "fort",
-    //     "description": "iterate over array with temporary variable",
-    //     "template": "for (let {{index}} = 0; ${index} < ${array}.length; ${index}++) {\n\tconst ${array_element} = ${array}[${index}];\n\t${cursor}\n}"
-    // },
-    // {
-    //     "name": "forin",
-    //     "description": "iterate using for .. in",
-    //     "template": "for (const ${2:key} in ${1:iterable}) {\n\t${cursor}\n}"
-    // },
-    // {
-    //     "name": "forof",
-    //     "description": "iterate using for .. of",
-    //     "template": "for (const ${2:item} of ${1:iterable}) {\n\t${cursor}\n}"
-    // },
-    // {
-    //     "name": "import",
-    //     "description": "ES6 style import",
-    //     "template": "import ${2:name} from '${1:path}';${cursor}"
-    // },
-    // {
-    //     "name": "importr",
-    //     "description": "CommonJs Style Import",
-    //     "template": "import ${1:name} = require('${2:path}');${cursor}"
-    // },
-    // {
-    //     "name": "interface",
-    //     "description": "Create a new interface",
-    //     "template": "interface ${1:Name} {\n\t${cursor}\n}"
-    // },
-    // {
-    //     "name": "class",
-    //     "description": "Create a new class",
-    //     "template": "class ${1:Name} {\n\t${cursor}\n}"
-    // },
-    // {
-    //     "name": "namespace",
-    //     "description": "Create a new namespace",
-    //     "template": "namespace ${1:Name} {\n\t${cursor}\n}"
-    // },
-    // {
-    //     "name": "do", "description": "do while statement", "template": "do {\n\t${cursor}\n} while (${condition});"
-    // },
-    // {
-    //     "name": "switch", "description": "switch case statement", "template": "switch (${key}) {\n\tcase ${value}:\n\t\t${cursor}\n\t\tbreak;\n\n\tdefault:\n\t\tbreak;\n}"
-    // },
-    // {
-    //     "name": "if",
-    //     "description": "if statement",
-    //     "template": "if ({{condition}}) {\n\t{{}}\n}"
-    // },
-    // {
-    //     "name": "ifelse", "description": "if else statement", "template": "if (${condition}) {\n\t${cursor}\n} else {\n\t\n}"
-    // },
-    // {
-    //     "name": "elseif", "description": "else if block", "template": "else if (${condition}) {\n\t${cursor}\n}"
-    // },
-    // {
-    //     "name": "else", "description": "else block", "template": "else {\n\t${cursor}\n}"
-    // },
-    // {
-    //     "name": "try", "description": "try catch block", "template": "try {\n\t${cursor}\n} catch (e) {\n\t// ${todo}: handle exception\n}"
-    // },
-    // {
-    //     "name": "catch", "description": "catch block", "template": "catch (e) {\n\t${cursor}// ${todo}: handle exception\n}"
-    // },
-    // {
-    //     "name": "function", "description": "function", "template": "function ${name}(${}) {\n\t${cursor}\n}"
-    // },
-    // {
-    //     "name": "functiona", "description": "anonymous function", "template": "function (${}) {\n\t${cursor}\n}"
-    // },
-    // {
-    //     "name": "new", "description": "create new object", "template": "var ${name} = new ${type}(${arguments});"
-    // },
-    // {
-    //     "name": "lazy", "description": "lazy creation", "template": "if (${name:var} == null) {\n\t${name} = new ${type}(${arguments});\n\t${cursor}\n}\n\nreturn ${name};"
-    // },
-    // {
-    //     "name": "@author", "description": "author name", "template": "@author ${user}"
-    // },
-    // {
-    //     "name": "while", "description": "while loop with condition", "template": "while (${condition}) {\n\t${cursor}\n}"
-    // }
+    {
+        "name": "fort",
+        "description": "iterate over array with temporary variable",
+        "template": "for (let {{index}} = 0; {{index}} < {{array}}.length; {{index}}++) {\n\tconst {{array_element}} = {{array}}[{{index}}];\n\t{{}}\n}"
+    },
+    {
+        "name": "forin",
+        "description": "iterate using for .. in",
+        "template": "for (const {{2:key}} in {{1:iterable}}) {\n\t{{}}\n}"
+    },
+    {
+        "name": "forof",
+        "description": "iterate using for .. of",
+        "template": "for (const {{2:item}} of {{1:iterable}}) {\n\t{{}}\n}"
+    },
+    {
+        "name": "import",
+        "description": "ES6 style import",
+        "template": "import {{2:name}} from '{{1:path}}';{{}}"
+    },
+    {
+        "name": "importr",
+        "description": "CommonJs Style Import",
+        "template": "import {{1:name}} = require('{{2:path}}');{{}}"
+    },
+    {
+        "name": "interface",
+        "description": "Create a new interface",
+        "template": "interface {{1:Name}} {\n\t{{}}\n}"
+    },
+    {
+        "name": "class",
+        "description": "Create a new class",
+        "template": "class {{1:Name}} {\n\t{{}}\n}"
+    },
+    {
+        "name": "namespace",
+        "description": "Create a new namespace",
+        "template": "namespace {{1:Name}} {\n\t{{}}\n}"
+    },
+    {
+        "name": "do", "description": "do while statement", "template": "do {\n\t{{}}\n} while ({{condition}});"
+    },
+    {
+        "name": "switch",
+        "description": "switch case statement",
+        "template": "switch ({{key}}) {\n\tcase {{value}}:\n\t\t{{}}\n\t\tbreak;\n\n\tdefault:\n\t\tbreak;\n}"
+    },
+    {
+        "name": "if",
+        "description": "if statement",
+        "template": "if ({{condition}}) {\n\t{{}}\n}"
+    },
+    {
+        "name": "ifelse",
+        "description": "if else statement",
+        "template": "if ({{condition}}) {\n\t{{}}\n} else {\n\t\n}"
+    },
+    {
+        "name": "elseif",
+        "description": "else if block",
+        "template": "else if ({{condition}}) {\n\t{{}}\n}"
+    },
+    {
+        "name": "else",
+        "description": "else block",
+        "template": "else {\n\t{{}}\n}"
+    },
+    {
+        "name": "try",
+        "description": "try catch block",
+        "template": "try {\n\t{{}}\n} catch (e) {\n\t// {{todo}}: handle exception\n}"
+    },
+    {
+        "name": "catch",
+        "description": "catch block",
+        "template": "catch (e) {\n\t{{}}// {{todo}}: handle exception\n}"
+    },
+    {
+        "name": "function",
+        "description": "function",
+        "template": "function {{}}({{}}) {\n\t{{}}\n}"
+    },
+    {
+        "name": "new",
+        "description": "create new object",
+        "template": "var {{name}} = new {{type}}({{arguments}});"
+    },
+    {
+        "name": "lazy",
+        "description": "lazy creation",
+        "template": "if ({{var}} == null) {\n\t{{var}} = new {{type}}({{arguments}});\n\t{{}}\n}\n\nreturn {{var}};"
+    },
+    {
+        "name": "while",
+        "description": "while loop with condition",
+        "template": "while ({{condition}}) {\n\t{{}}\n}"
+    },
+    {
+        "name": "@author", "description": "author name", "template": "@author {{user}}"
+    },
 ];
