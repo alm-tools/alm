@@ -118,22 +118,17 @@ export class SuggestAdapter extends Adapter implements monaco.languages.Completi
 					return result;
     			});
 
-                if (prefix.startsWith('i')) {
-                    const sample = {
-                        "name": "if",
-                        "description": "if statement",
-                        "template": "if (${condition}) {\n\t${cursor}\n}"
-                    };
-                    const result : MyCompletionItem = {
-                        label: 'if',
-                        kind: monaco.languages.CompletionItemKind.Snippet,
+                // TODO: add all snips
+                const snip: MyCompletionItem = {
+                    label: 'if',
+                    kind: monaco.languages.CompletionItemKind.Snippet,
 
-                        detail: 'snippet',
-                        documentation: 'if statment',
-                        insertText: 'if ({{condition}}) \\{\n\t {{body}}\n}',
-                    }
-                    suggestions.push(result);
+                    detail: 'snippet',
+                    documentation: 'if statment',
+                    insertText: 'if ({{condition}}) \\{\n\t {{body}}\n}',
                 }
+                suggestions.push(snip);
+
 
     			return suggestions;
     		});
