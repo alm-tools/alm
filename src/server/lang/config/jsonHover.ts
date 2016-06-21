@@ -24,12 +24,14 @@ const packageJsonDependenciesSections = [
 import * as utils from "../../../common/utils";
 import * as fmc from "../../disk/fileModelCache";
 import {Types} from "../../../socket/socketContract";
+// TODO: mon : provide `editorPosition`
 export function getQuickInfo(query: { filePath: string, position: number }): Promise<Types.QuickInfoResponse> {
     const response: Types.QuickInfoResponse = {
         valid: false,
         info: {
             name: null,
             comment: null,
+            range: null
         },
         errors: []
     }
@@ -62,6 +64,7 @@ export function getQuickInfo(query: { filePath: string, position: number }): Pro
                     response.info = {
                         name: pack,
                         comment: comments.join('\n'),
+                        range: null
                     }
 
                     return response;

@@ -7,9 +7,12 @@ export interface ServerState {
         current: string;
         type: 'latest' | 'major' | 'minor' | 'patch' | 'prerelease' | 'build';
         name: string;
-    }
+    },
+    version: string
 }
-export let serverState: ServerState = {};
+export let serverState: ServerState = {
+    version: '0.0.0'
+};
 export function setServerState(state: ServerState) {
     serverState = state;
 }

@@ -58,7 +58,7 @@ function sanitizePrefix(prefix: string){
     return result;
 }
 
-export function getPathCompletionsForImport(query: GetPathCompletions): types.Completion[] {
+export function getPathCompletionsForImport(query: GetPathCompletions): types.PathCompletion[] {
     var project = query.project;
     var sourceDir = path.dirname(query.filePath);
     var filePaths = project.configFile.project.files.filter(p => p !== query.filePath && !p.endsWith('.json'));
@@ -88,10 +88,7 @@ export function getPathCompletionsForImport(query: GetPathCompletions): types.Co
     if (!endsInPunctuation)
         files = fuzzaldrin.filter(files, sanitizedPrefix, { key: 'fileName' });
 
-    return files.map(f => {
-        const result: types.Completion = { pathCompletion: f };
-        return result;
-    });
+    return files;
 }
 
 /**
@@ -99,17 +96,31 @@ export function getPathCompletionsForImport(query: GetPathCompletions): types.Co
  * - aborts if position not valid to autocomplete
  * - automatically excludes `externalModules` if position is reference tag
  */
-export function getPathCompletionsForAutocomplete(query: GetPathCompletionsForAutocomplete): types.Completion[] {
+export function getPathCompletionsForAutocomplete(query: GetPathCompletionsForAutocomplete): types.PathCompletionForAutocomplete[] {
     const sourceFile = query.project.languageService.getNonBoundSourceFile(query.filePath);
     const positionNode = ts.getTokenAtPosition(sourceFile, query.position);
 
+    /** Note: in referenceTag is not supported yet */
     const inReferenceTagPath = false;
+
     const inES6ModuleImportString = isStringLiteralInES6ImportDeclaration(positionNode);
     const inImportRequireString = isStringLiteralInImportRequireDeclaration(positionNode);
 
     if (!inReferenceTagPath && !inES6ModuleImportString && !inImportRequireString){
         return [];
     }
+
+    /** We have to be in a string literal (as reference tag isn't supproted yet) */
+    const pathStringText = positionNode.getFullText();
+    const leadingText = pathStringText.match(/^\s+['|"]/g);
+    const trailingText = pathStringText.match(/['|"]$/g);
+    const from = leadingText ? positionNode.pos + leadingText[0].length : positionNode.pos;
+    const to = trailingText ? positionNode.end - trailingText[0].length : positionNode.end;
+    const pathStringRange = {
+        from,
+        to
+    };
+    // console.log({textThatWillBeReplaced:sourceFile.getFullText().substr(from, to-from)}); // DEBUG
 
     var project = query.project;
     var sourceDir = path.dirname(query.filePath);
@@ -118,6 +129,10 @@ export function getPathCompletionsForAutocomplete(query: GetPathCompletionsForAu
         fileName: string;
         relativePath: string;
         fullPath: string;
+        pathStringRange: {
+            from: number,
+            to: number,
+        }
     }[] = [];
 
     if (!inReferenceTagPath) {
@@ -125,7 +140,8 @@ export function getPathCompletionsForAutocomplete(query: GetPathCompletionsForAu
         externalModules.forEach(e=> files.push({
             fileName: `${e}`,
             relativePath: e,
-            fullPath: e
+            fullPath: e,
+            pathStringRange,
         }));
     }
 
@@ -133,17 +149,12 @@ export function getPathCompletionsForAutocomplete(query: GetPathCompletionsForAu
         files.push({
             fileName: fsu.removeExt(utils.getFileName(p)),
             relativePath: fsu.removeExt(fsu.makeRelativePath(sourceDir, p)),
-            fullPath: p
+            fullPath: p,
+            pathStringRange,
         });
     });
 
     const sanitizedPrefix = sanitizePrefix(query.prefix);
-    const endsInPunctuation: boolean = utils.prefixEndsInPunctuation(sanitizedPrefix);
-    if (!endsInPunctuation)
-        files = fuzzaldrin.filter(files, sanitizedPrefix, { key: 'fileName' });
 
-    return files.map(f => {
-        const result: types.Completion = { pathCompletion: f };
-        return result;
-    });
+    return files;
 }

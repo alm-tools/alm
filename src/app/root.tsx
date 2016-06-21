@@ -25,30 +25,11 @@ import {FindAndReplace} from "./findAndReplace";
 import * as state from "./state/state";
 
 /** Force require  */
-import {RenameVariable} from "./codeResults/renameVariable";
-import {GotoDefinition} from "./codeResults/gotoDefinition";
-import {FindReferences} from "./codeResults/findReferences";
-import * as format from "./editorCommands/format";
 import * as gotoHistory from "./gotoHistory";
 import * as clipboardRing from "./clipboardRing";
-import * as gitCommands from "./gitCommands";
-import * as htmlToTsx from "./editorCommands/htmlToTsx";
-import * as cssToTs from "./editorCommands/cssToTs";
-import * as jsonToDts from "./editorCommands/jsonToDts";
-import * as goToLine from "./editorCommands/goToLine";
-import * as gotoTypeScriptSymbol from "./editorCommands/gotoTypeScriptSymbol";
-var ensureImport = RenameVariable
-    || GotoDefinition
-    || FindReferences
-    || format
-    || gotoHistory
-    || clipboardRing
-    || gitCommands
-    || htmlToTsx
-    || cssToTs
-    || jsonToDts
-    || goToLine
-    || gotoTypeScriptSymbol;
+var ensureImport =
+    gotoHistory
+    || clipboardRing;
 
 export interface State {
     isOmniSearchOpen?: boolean;

@@ -23,21 +23,19 @@ export function getEditorOptions(filePath: string): EditorOptions {
         : end_of_line && config.end_of_line === 'crlf' ? '\r\n'
         : os.EOL;
 
-    const indentSize =
-        config.indent_size || 2;
-
-    const tabSize =
-        config.tab_width || 2;
-
     const indent_style = config.indent_style || 'space';
     const convertTabsToSpaces =
         indent_style === 'space' ? true : false;
+
+    // TODO: consolidate tabSize (its indentSize or tabWidth)
+    // Similar to https://github.com/editorconfig/editorconfig-vscode/blob/73d1e7c00de20db83fd47b1d0ab3b0ffc5696ae0/src/Utils.ts#L14-L26
+    const tabSize =
+        config.indent_size || config.tab_width || 2;
 
     const trimTrailingWhitespace = config.trim_trailing_whitespace || false;
     const insertFinalNewline = config.insert_final_newline == undefined ? false : config.insert_final_newline;
 
     return {
-        indentSize,
         tabSize,
         newLineCharacter,
         convertTabsToSpaces,

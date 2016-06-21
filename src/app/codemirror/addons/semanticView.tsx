@@ -17,9 +17,9 @@ import * as cmUtils from "../cmUtils";
 import * as fstyle from "../../base/fstyle";
 import * as styles from "../../styles/styles";
 import {shouldComponentUpdate} from "../../../common/pure";
-import * as CodeMirror from "codemirror";
+import {gotoPosition} from "../../monaco/monacoUtils";
 
-type Editor = CodeMirror.EditorFromTextArea;
+type Editor = monaco.editor.ICommonCodeEditor;
 
 
 namespace SemanticViewStyles {
@@ -74,7 +74,7 @@ namespace SemanticViewStyles {
 }
 
 interface Props {
-    cm?: Editor,
+    editor?: Editor,
     filePath?: string,
 
     // Connected below
@@ -101,19 +101,21 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
     }
     componentWillUnmount() {
         super.componentWillUnmount();
-        this.props.cm.off('cursorActivity', this.handleCursorActivity);
     }
     componentWillReceiveProps(props: Props) {
         if (props.showSemanticView && !this.props.showSemanticView) {
             this.handleCursorActivity();
         }
-        if (!this.props.cm && props.cm) {
+        if (!this.props.editor && props.editor) {
             /** Initial data load */
+            let sel = props.editor.getSelection();
+            const cursor = {line: sel.startLineNumber - 1, ch: sel.endLineNumber - 1};
+            this.setState({ cursor });
             this.reloadData();
 
             const reloadDataDebounced = utils.debounce(this.reloadData, 3000);
             this.disposible.add(commands.fileContentsChanged.on(e=>{
-                if (e.filePath === props.cm.filePath && this.props.showSemanticView){
+                if (e.filePath === props.filePath && this.props.showSemanticView){
                     reloadDataDebounced();
                 }
             }));
@@ -123,23 +125,23 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
                 }
             }));
 
-            this.handleCursorActivity(props.cm);
-            props.cm.on('cursorActivity', this.handleCursorActivity);
+            this.handleCursorActivity(props.editor);
+            this.disposible.add(props.editor.onDidChangeCursorSelection(()=>this.handleCursorActivity()));
         }
     }
 
-    handleCursorActivity = utils.debounce((cm = this.props.cm) => {
-        if (!cm) return; // Still loading or maybe unloaded
+    handleCursorActivity = utils.debounce((editor: Editor = this.props.editor) => {
+        if (!editor) return; // Still loading or maybe unloaded
         if (!state.inActiveProjectFilePath(this.props.filePath)) return;
         if (this.isUnmounted) return;
         if (!this.props.showSemanticView) return;
 
 
-        let doc = cm.getDoc();
-        const cursor = doc.getCursor();
+        let sel = editor.getSelection();
+        const cursor = {line: sel.startLineNumber - 1, ch: sel.endLineNumber - 1};
         /** If first call OR cursor moved */
         if (!this.state.cursor || (this.state.cursor && this.state.cursor.line !== cursor.line)) {
-            this.setState({cursor});
+            this.setState({ cursor });
             this.afterComponentDidUpdate(()=>{
                 // Scroll to select node in view if any
                 const ref = this.refs[this.selectedRef] as HTMLDivElement;
@@ -182,10 +184,10 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
 
     gotoNode = (node: Types.SemanticTreeNode) => {
         const cursor = { line: node.start.line, ch: node.start.ch }
-        const cm = this.props.cm;
-        cm.getDoc().setCursor(cursor);
-        cm.focus();
-        this.setState({cursor});
+        const editor = this.props.editor;
+        gotoPosition({ editor, position: cursor });
+        editor.focus();
+        this.setState({ cursor });
     }
 
     getIconForKind(kind: string) {
@@ -205,14 +207,28 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
         return '';
     }
 
+    /** If the tree changes its width we need to relayout the editor */
+    lastWidth: number = 0;
+
     /** Loads the tree data */
     reloadData = () => {
         if (!this.props.filePath) return;
         if (!state.inActiveProjectFilePath(this.props.filePath)) return;
 
         server.getSemanticTree({ filePath: this.props.filePath }).then(res => {
+            this.afterComponentDidUpdate(()=>{
+                // also relayout the editor if the last width is not the same as new width
+                const newWidth = ReactDOM.findDOMNode(this).clientWidth;
+                if (this.lastWidth !== newWidth){
+                    // We store `top` (and restore it) otherwise the editor jumps around a bit after relayout.
+                    // A better fix would be to allow users to resize the outline and store that as a setting :-/
+                    const top = this.props.editor.getScrollTop();
+                    this.props.editor.layout();
+                    this.props.editor.setScrollTop(top);
+                    this.lastWidth = newWidth;
+                }
+            })
             this.setState({tree: res.nodes});
-            // TODO: render
         });
     }
 }

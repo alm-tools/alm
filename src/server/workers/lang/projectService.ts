@@ -14,7 +14,6 @@ import * as types from "../../../common/types";
 import * as utils from "../../../common/utils";
 let {resolve} = utils;
 import * as fsu from "../../utils/fsu";
-import fuzzaldrin = require('fuzzaldrin');
 import {errorsCache} from "./cache/tsErrorsCache";
 import {getPathCompletionsForAutocomplete} from "./modules/getPathCompletions";
 
@@ -22,18 +21,14 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
     const {filePath, position, prefix} = query;
     const project = getProject(query.filePath);
     const service = project.languageService;
+    const languageServiceHost = project.languageServiceHost;
 
     const completions: ts.CompletionInfo = service.getCompletionsAtPosition(filePath, position);
     let completionList = completions ? completions.entries.filter(x => !!x) : [];
     const endsInPunctuation = utils.prefixEndsInPunctuation(prefix);
 
-    if (prefix.length && prefix.trim().length && !endsInPunctuation) {
-        // Didn't work good for punctuation
-        completionList = fuzzaldrin.filter(completionList, prefix.trim(), { key: 'name' });
-    }
-
     /** Doing too many suggestions is slowing us down in some cases */
-    let maxSuggestions = 50;
+    let maxSuggestions = 10000;
     /** Doc comments slow us down tremendously */
     let maxDocComments = 10;
 
@@ -93,9 +88,9 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
     if (query.prefix == '(') {
         const signatures = service.getSignatureHelpItems(query.filePath, query.position);
         if (signatures && signatures.items) {
-            signatures.items.forEach((item) => {
+            signatures.items.forEach((item, index) => {
                 const template: string = item.parameters.map((p, i) => {
-                    const display = '${' + (i + 1) + ':' + ts.displayPartsToString(p.displayParts) + '}';
+                    const display = '{{' + (i + 1) + ':' + ts.displayPartsToString(p.displayParts) + '}}';
                     return display;
                 }).join(ts.displayPartsToString(item.separatorDisplayParts));
 
@@ -104,7 +99,7 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
 
                 // e.g. test(something:string):any;
                 // prefix: test(
-                // template: ${something}
+                // template: {{something}}
                 // suffix: ): any;
                 const description: string =
                     ts.displayPartsToString(item.prefixDisplayParts)
@@ -112,11 +107,12 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
                     + ts.displayPartsToString(item.suffixDisplayParts);
 
                 completionsToReturn.unshift({
-                    snippet: {
-                        template,
-                        name,
-                        description: description
-                    }
+                    kind: types.completionKindSnippet,
+                    name,
+                    insertText: template,
+
+                    display: 'function signature',
+                    comment: `Overload ${index + 1} of ${signatures.items.length}`
                 });
             });
         }
@@ -131,11 +127,23 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
         filePath,
         prefix
     });
-    completionsToReturn =
-        pathCompletions.length
-            ? pathCompletions.concat(completionsToReturn)
-            : completionsToReturn;
+    if (pathCompletions.length) {
+        completionsToReturn = pathCompletions.map(f => {
+            const result: types.Completion = {
+                kind: types.completionKindPath,
+                name: f.relativePath,
+                display: f.fileName,
+                comment: f.fullPath,
 
+                textEdit: {
+                    from: languageServiceHost.getLineAndCharacterOfPosition(filePath, f.pathStringRange.from),
+                    to: languageServiceHost.getLineAndCharacterOfPosition(filePath, f.pathStringRange.to),
+                    newText: f.relativePath
+                }
+            };
+            return result;
+        }).concat(completionsToReturn);
+    }
 
     return resolve({
         completions: completionsToReturn,
@@ -143,13 +151,24 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
     });
 }
 
+export function getCompletionEntryDetails(query: Types.GetCompletionEntryDetailsQuery): Promise<Types.GetCompletionEntryDetailsResponse> {
+    const project = getProject(query.filePath);
+    const service = project.languageService;
+    const {filePath,position,label} = query;
+
+    const completionDetails = project.languageService.getCompletionEntryDetails(filePath, position, label);
+    const comment = ts.displayPartsToString(completionDetails.documentation || []);
+    const display = ts.displayPartsToString(completionDetails.displayParts || []);
+
+    const result = { display: display, comment: comment };
+    return resolve(result);
+}
+
 export function quickInfo(query: Types.QuickInfoQuery): Promise<Types.QuickInfoResponse> {
     let project = getProject(query.filePath);
-    if (!project.includesSourceFile(query.filePath)) {
-        return Promise.resolve({ valid: false });
-    }
+    const {languageServiceHost} = project;
+    const errors = positionErrors({filePath: query.filePath, position: query.position});
     var info = project.languageService.getQuickInfoAtPosition(query.filePath, query.position);
-    var errors = positionErrors(query);
     if (!info && !errors.length) {
         return Promise.resolve({ valid: false });
     } else {
@@ -157,7 +176,11 @@ export function quickInfo(query: Types.QuickInfoQuery): Promise<Types.QuickInfoR
             valid: true,
             info: info && {
                 name: ts.displayPartsToString(info.displayParts || []),
-                comment: ts.displayPartsToString(info.documentation || [])
+                comment: ts.displayPartsToString(info.documentation || []),
+                range: {
+                    from: project.languageServiceHost.getLineAndCharacterOfPosition(query.filePath, info.textSpan.start),
+                    to: project.languageServiceHost.getLineAndCharacterOfPosition(query.filePath, info.textSpan.start + info.textSpan.length),
+                }
             },
             errors: errors
         });
@@ -248,7 +271,7 @@ export function getDoctorInfo(query: Types.GetDoctorInfoQuery): Promise<Types.Ge
 
     // Just collect other responses
     let defPromised = getDefinitionsAtPosition({ filePath, position });
-    let quickInfoPromised = quickInfo({ filePath, position });
+    let quickInfoPromised = quickInfo({ filePath, position: position });
 
     return defPromised.then((defRes) => {
         return quickInfoPromised.then((infoRes) => {
@@ -292,11 +315,54 @@ export function getReferences(query: Types.GetReferencesQuery): Promise<Types.Ge
 import * as formatting from "./modules/formatting";
 export function formatDocument(query: Types.FormatDocumentQuery): Promise<Types.FormatDocumentResponse> {
     let project = getProject(query.filePath);
-    return resolve({ refactorings: formatting.formatDocument(project, query.filePath, query.editorOptions) });
+    const {languageServiceHost, languageService} = project;
+
+    let tsresult = formatting.formatDocument(project, query.filePath, query.editorOptions);
+    const edits = tsresult.map(res => {
+        const result: Types.FormattingEdit = {
+            from: languageServiceHost.getLineAndCharacterOfPosition(query.filePath, res.span.start),
+            to: languageServiceHost.getLineAndCharacterOfPosition(query.filePath, res.span.start + res.span.length),
+            newText: res.newText
+        };
+        return result;
+    });
+
+    return resolve({edits});
 }
 export function formatDocumentRange(query: Types.FormatDocumentRangeQuery): Promise<Types.FormatDocumentRangeResponse> {
     let project = getProject(query.filePath);
-    return resolve({ refactorings: formatting.formatDocumentRange(project, query.filePath, query.from, query.to, query.editorOptions) });
+    const {languageServiceHost, languageService} = project;
+
+    let tsresult = formatting.formatDocumentRange(project, query.filePath, query.from, query.to, query.editorOptions);
+    const edits = tsresult.map(res => {
+        const result: Types.FormattingEdit = {
+            from: languageServiceHost.getLineAndCharacterOfPosition(query.filePath, res.span.start),
+            to: languageServiceHost.getLineAndCharacterOfPosition(query.filePath, res.span.start + res.span.length),
+            newText: res.newText
+        };
+        return result;
+    });
+
+    return resolve({edits});
+}
+
+export function getFormattingEditsAfterKeystroke(query: Types.FormattingEditsAfterKeystrokeQuery): Promise<Types.FormattingEditsAfterKeystrokeResponse> {
+    let project = getProject(query.filePath);
+    const {languageServiceHost, languageService} = project;
+    const position = languageServiceHost.getPositionOfLineAndCharacter(query.filePath, query.editorPosition.line, query.editorPosition.ch);
+    const options = formatting.completeFormatCodeOptions(query.editorOptions, project.configFile.project.formatCodeOptions);
+
+    const tsresult = languageService.getFormattingEditsAfterKeystroke(query.filePath, position, query.key, options) || [];
+    const edits = tsresult.map(res => {
+        const result: Types.FormattingEdit = {
+            from: languageServiceHost.getLineAndCharacterOfPosition(query.filePath, res.span.start),
+            to: languageServiceHost.getLineAndCharacterOfPosition(query.filePath, res.span.start + res.span.length),
+            newText: res.newText
+        };
+        return result;
+    });
+
+    return resolve({edits});
 }
 
 /**
@@ -657,4 +723,24 @@ export function getSemanticTree(query: Types.GetSemanticTreeQuery): Promise<Type
     // convert to SemanticTreeNodes
     let nodes = navBarItems.map(nbi => navigationBarItemToSemanticTreeNode(nbi, project, query));
     return resolve({ nodes });
+}
+
+/**
+ * Document highlights
+ */
+export function getOccurrencesAtPosition(query: Types.GetOccurancesAtPositionQuery) : Promise<Types.GetOccurancesAtPositionResponse> {
+    let project = getProject(query.filePath);
+    const {languageServiceHost} = project;
+    const position = languageServiceHost.getPositionOfLineAndCharacter(query.filePath, query.editorPosition.line, query.editorPosition.ch);
+    const tsresults = project.languageService.getOccurrencesAtPosition(query.filePath, position) || [];
+    const results: Types.GetOccurancesAtPositionResult[] = tsresults.map(res=>{
+        const result: Types.GetOccurancesAtPositionResult = {
+            filePath: res.fileName,
+            isWriteAccess: res.isWriteAccess,
+            start: project.languageServiceHost.getLineAndCharacterOfPosition(res.fileName, res.textSpan.start),
+            end: project.languageServiceHost.getLineAndCharacterOfPosition(res.fileName, res.textSpan.start + res.textSpan.length),
+        }
+        return result;
+    });
+    return resolve({results});
 }

@@ -24,9 +24,21 @@ export function setup() {
         .filter(x=> x.config.context == commands.CommandContext.Editor)
         .forEach(cmd=> {
             cmd.on(() => {
-                let editor = API.getFocusedCodeEditorIfAny();
-                if (editor && editor.codeMirror) {
-                    editor.codeMirror.execCommand(cmd.config.editorCommandName);
+                let editorTab = API.getFocusedCodeEditorIfAny();
+                if (editorTab && editorTab.editor) {
+                    const editor = editorTab.editor;
+                    const action = editor.getAction(cmd.config.editorCommandName);
+                    if (!action) {
+                        console.error('Failed to find editor action:', cmd.config);
+                    }
+                    else {
+                        // We need a set timeout as when we trigger from 'command search' the focus changes throws off monaco
+                        // e.g. goto line action (which tries to create its own modal) does not work without the set timeout
+                        setTimeout(() => {
+                            // console.log(action); // DEBUG action details
+                            action.run();
+                        })
+                    }
                 }
             });
         });

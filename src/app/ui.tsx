@@ -7,7 +7,6 @@ export import Radium = require('radium');
 export import csx = require('csx');
 import {CompositeDisposible} from "../common/events";
 export import $ = require("jquery");
-import * as commands from "./commands/commands";
 
 /** The base component that provides an easy access point for overall app behaviour changes */
 export class BaseComponent<Props, State> extends React.Component<Props, State>{
@@ -73,9 +72,6 @@ require('react-toggle/style.css')
  */
 import toastr = require("toastr");
 require('toastr/build/toastr.css');
-commands.esc.on(() => {
-    toastr.clear();
-});
 export function notifyInfoQuickDisappear(message: string) {
     toastr.info(message, null, { timeOut: 600 });
 }

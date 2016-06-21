@@ -14,8 +14,15 @@ import workingDir = require('./server/disk/workingDir');
 import * as session from "./server/disk/session";
 import * as chalk from "chalk";
 import * as utils from "./common/utils";
+import * as fsu from "./server/utils/fsu";
 
 const publicPath = path.resolve(__dirname, 'public');
+let monacoSourceDir = fsu.travelUpTheDirectoryTreeTillYouFind(__dirname, 'node_modules') + '/monaco/build/vs';
+/**
+ * To use official monaco:
+ * npm install monaco-editor-core --save-dev
+ */
+// monacoSourceDir = fsu.travelUpTheDirectoryTreeTillYouFind(__dirname, 'node_modules') + '/monaco-editor-core/dev/vs'; // DEBUG
 
 const clOptions = cl.getOptions();
 /** If the cl options favor early exit (e.g. -i) do that */
@@ -59,6 +66,12 @@ setup(app);
 // After dev setup forward to static server
 app.use(express.static(publicPath, {}));
 
+// Monaco works best with its own loader,
+// Serve it up from node_modules
+app.use('/vs', express.static(monacoSourceDir, {}));
+// Also server up our monaco addons
+app.use('/monaco', express.static(__dirname + '/app/monaco', {}));
+
 // Setup a socket server
 import {register} from "./socket/socketServer";
 register(server);
@@ -73,18 +86,16 @@ registerImgServerWithExpress(app);
 export const listeningAtUrl = new TypedEvent<{url:string}>();
 
 // Start listening
-const portfinder = require('portfinder');
-portfinder.basePort = clOptions.port;
-portfinder.getPort(function (err, port) {
-    if (err) {
-        console.error(err);
-        exit(errorCodes.couldNotListen);
-    }
+import {startPortSearch} from './server/utils/getPort';
+startPortSearch(clOptions.port, (port) => {
     /** If the user *did* specify a port and we end up not using it */
     if (clOptions.port !== cl.defaultPort
         && port !== clOptions.port) {
         console.log(chalk.magenta(`[WEB] WARNING: Desired port is not available so using port ${port}`));
     }
+    // Also setup in clOptions for future use.
+    clOptions.port = port;
+
     server.listen(port, clOptions.host, function(err) {
         if (err) {
             console.error(err);
@@ -107,6 +118,9 @@ portfinder.getPort(function (err, port) {
 import * as serverState from "./serverState";
 serverState.addRoute(app);
 const pkg = require('../package.json');
+const version = pkg.version;
+console.log(`Version: ${version}`)
+serverState.setServerState({ version });
 const notifier = require('update-notifier')({
   pkg,
   // updateCheckInterval: 0 // DEBUG
@@ -121,5 +135,5 @@ if (notifier.update) {
         type: 'latest' | 'major' | 'minor' | 'patch' | 'prerelease' | 'build';
         name: string;
     } = notifier.update;
-    serverState.setServerState({ update });
+    serverState.setServerState({ update, version });
 }

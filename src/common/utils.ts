@@ -189,10 +189,18 @@ export function rangeLimited(args: { num: number, min: number, max: number, loop
     return limited;
 }
 
-/** is file path a ts file path */
-export function isTsFile(filePath: string): boolean {
-    let ext = getExt(filePath);
+/**
+ * Is TypeSript or is JavaScript file checks
+ */
+export const isTs = (filePath: string, ext = getExt(filePath)) => {
     return ext == 'ts' || ext == 'tsx';
+}
+export const isJs = (filePath: string, ext = getExt(filePath)) => {
+    return ext == 'js' || ext == 'jsx';
+}
+export const isJsOrTs = (filePath: string) => {
+    const ext = getExt(filePath);
+    return isJs(filePath, ext) || isTs(filePath, ext);
 }
 
 /** `/asdf/bar/j.ts` => `ts` */
@@ -502,17 +510,6 @@ export function isSupportedConfigFileForHover(filePath: string): boolean {
     const fileName = getFileName(filePath);
     return !!supportedHoverConfigFileNames[fileName];
 }
-
-/**
- * Is TypeSript or is JavaScript file checks
- */
-export const isTs = (filePath: string) => {
-    return filePath.endsWith('.ts') || filePath.endsWith('.tsx');
-}
-export const isJs = (filePath: string) => {
-    return filePath.endsWith('.js') || filePath.endsWith('.jsx');
-}
-export const isJsOrTs = (filePath: string) => isJs(filePath) || isTs(filePath);
 
 /**
  * Cancellation token

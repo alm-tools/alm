@@ -1,78 +1,43 @@
-// Code
-import CodeMirror = require('codemirror');
+import * as ui from "../ui";
+import * as csx from "csx";
+import * as React from "react";
+import {cast, server} from "../../socket/socketClient";
+import * as docCache from "./mode/docCache";
+import * as types from "../../common/types";
+import * as cursorHistory from "../cursorHistory";
+import * as search from "../monaco/search/monacoSearch";
+import * as semanticView from "./addons/semanticView";
+import * as monacoUtils from "../monaco/monacoUtils";
+import * as gitStatus from "../monaco/addons/gitStatus";
+import * as liveAnalysis from "../monaco/addons/liveAnalysis";
+import * as quickFix from "../monaco/addons/quickFix";
 
-// CSS
-require('codemirror/lib/codemirror.css')
-require('codemirror/theme/monokai.css')
+// The monokai theme
+require('./monokai.css');
+// Any other style modifications
+require('./codeEditor.css');
 
 /**
- *  addons
+ * We extend the monaco editor
  */
-// comments (single / multiline)
-require('codemirror/addon/comment/comment');
-// code folding
-require('codemirror/addon/fold/foldcode');
-require('codemirror/addon/fold/foldgutter');
-require('codemirror/addon/fold/brace-fold');
-require('codemirror/addon/fold/xml-fold');
-require('codemirror/addon/fold/markdown-fold');
-require('codemirror/addon/fold/comment-fold');
-require('codemirror/addon/fold/foldgutter.css');
-// Highlight active line
-require('codemirror/addon/selection/active-line');
-// Highlight matching brackets
-require('codemirror/addon/edit/matchbrackets');
-// Auto match tags (great for TSX!)
-require('codemirror/addon/edit/matchtags');
-
-// Our Addons
-import * as gitStatus from "./addons/gitStatus";
-import * as quickFix from "./addons/quickFix";
-import * as liveAnalysis from "./addons/liveAnalysis";
-import textHover = require('./addons/text-hover');
-import jumpy = require('./addons/jumpy');
-import blaster = require('./addons/blaster');
-import insertMatchingPair = require('./addons/insertMatchingPair');
-const ensureImport = textHover
-    || jumpy
-    || blaster
-	|| insertMatchingPair;
-
-// Css overrides
-require('./codeEditor.css')
-
-import autocomplete = require('./addons/autocomplete/autocomplete');
-import linter = require('./addons/linter');
-import search = require("./addons/search");
-import typescriptMode = require("./mode/typescriptMode");
-typescriptMode.register();
-import * as docCache from "./mode/docCache";
-
-import React = require('react');
-import ReactDOM = require('react-dom');
-import onresize = require('onresize');
-import * as styles from "../styles/styles";
-import * as csx from "csx";
-import * as ui from "../ui";
-import {cast,server} from "../../socket/socketClient";
-import {createId,getFilePathFromUrl} from "../../common/utils";
-import escape = require("escape-html");
-import * as doctor from "./addons/doctor";
-import * as semanticView from "./addons/semanticView";
-import * as state from "../state/state";
-import { Provider } from 'react-redux';
-import * as utils from "../../common/utils";
-import * as cursorLocation from "../cursorHistory";
-import * as events from "../../common/events";
-import * as cmUtils from "./cmUtils";
-import * as types from "../../common/types";
-import {toHtml} from "../markdown/markdown";
+declare global {
+    module monaco {
+        module editor {
+            interface ICommonCodeEditor {
+                /** keep `filePath` */
+                filePath?: string;
+			}
+		}
+	}
+}
 
 interface Props {
 	onFocusChange?: (focused: boolean) => any;
-	readOnly?: boolean | "nocursor";
-	preview?: ts.TextSpan;
+	readOnly?: boolean;
 	filePath: string;
+
+    /** This is the only property we allow changing dynamically. Helps with rendering the same file path for different previews */
+    preview?: ts.TextSpan;
 }
 
 export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, loading?: boolean}>{
@@ -85,10 +50,11 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 		};
 	}
 
-	codeMirror: CodeMirror.EditorFromTextArea;
+    // TODO: mon
+	editor: monaco.editor.ICodeEditor;
 	refs: {
 		[string: string]: any;
-		textarea: any;
+		codeEditor: HTMLDivElement;
 	}
 
 	/** Ready after the doc is loaded */
@@ -103,257 +69,170 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 	}
 
 	componentDidMount () {
+        var mountNode = this.refs.codeEditor;
+        this.editor = monaco.editor.create(mountNode, {
+            value: '...',
+            theme: 'vs-dark vscode-theme-monokai-themes-Monokai-tmTheme',
+			folding: true,
+			autoClosingBrackets: true,
+			wrappingColumn: 0,
+			readOnly: false, // Never readonly ... even for readonly editors. Otherwise monaco doesn't highlight active line :)
+			scrollBeyondLastLine: false, // Don't scroll by mouse where you can't scroll by keyboard :)
+			formatOnType: true,
+			contextmenu: false, // Disable context menu till we have it actually useful
+			/** Since everything else in our UI is Square */
+			roundedSelection: false,
+            /** For git status, find results, errors */
+            overviewRulerLanes: 3,
+            /** Don't reserve too much space for line numbers */
+            lineNumbersMinChars: 4,
+            /** We need the glyph margin to show live analysis stuff */
+            glyphMargin: true,
+        }, []);
+		this.editor.filePath = this.props.filePath;
 
-        var options: CodeMirror.EditorConfiguration = {
-            // our extension
-            filePath: this.props.filePath,
-            readOnly: this.props.readOnly,
+		// Utility to load editor options
+		const loadEditorOptions = (editorOptions:types.EditorOptions) => {
+		    // Feels consistent with https://code.visualstudio.com/Docs/customization/userandworkspace
+		    this.editor.getModel().updateOptions({
+				insertSpaces: editorOptions.convertTabsToSpaces,
+				tabSize: editorOptions.tabSize
+			});
+		}
 
-            keyMap: 'sublime',
-            theme: 'monokai',
-            indentUnit: 4,
-			indentWithTabs: false,
+		this.disposible.add(cast.editorOptionsChanged.on((res) => {
+		    if (res.filePath === this.props.filePath){
+		        loadEditorOptions(res.editorOptions);
+		    }
+		}));
 
-			// Soft tabs (tabs to spaces):
-			// https://github.com/codemirror/CodeMirror/issues/988#issuecomment-37692827
-            extraKeys: {
-                Tab: function(cm) {
-                    if (cm.doc.somethingSelected()) {
-                        return CodeMirror.Pass;
-                    }
-					if (cm.getOption("indentWithTabs")) {
-						return CodeMirror.Pass;
-					}
-                    var spacesPerTab = cm.getOption("indentUnit");
-                    var spacesToInsert = spacesPerTab - (cm.doc.getCursor("start").ch % spacesPerTab);
-                    var spaces = Array(spacesToInsert + 1).join(" ");
-                    cm.replaceSelection(spaces, "end", "+input");
-                }
-            },
+        // load up the doc
+        docCache.getLinkedDoc(this.props.filePath).then(({doc, editorOptions}) => {
+			// Wire up the doc
+			this.editor.setModel(doc);
+			doc._editors.push(this.editor);
 
-			lineNumbers: true,
-			foldGutter: true,
-            gutters: ["CodeMirror-linenumbers"],
+            // Load editor options
+            loadEditorOptions(editorOptions);
 
-            // Active line addon
-            styleActiveLine: true,
+            if (this.props.preview) {
+                this.gotoPreview(this.props.preview);
+            }
 
-            // Match bracket addon
-            matchBrackets: true,
+            // Mark as ready and do anything that was waiting for ready to occur 🌹
+            this.afterReadyQueue.forEach(cb=>cb());
+			this.ready = true;
+			this.setState({loading:false});
+		})
 
-            // Auto close brackets and strings
-            autoCloseBrackets: true,
-
-            // Match tags (great for tsx!)
-            // It needs `tag` token to work (see code in `xml-fold.js` i.e. `/\btag\b/``)
-            matchTags: {bothTags: true},
-
-            // Text hover
-            textHover: {
-				delay: 50,
-				getTextHover: (cm, data, e: MouseEvent) => {
-	                if (data && data.pos) {
-	                    return this.getQuickInfo(data.pos);
-	                }
-	            },
-			},
-
-			// Blaster
-			// blastCode: { effect: 2 }, // `effect` can be 1 or 2
-
-            /** Overcomes horizontal scrolling for now */
-            lineWrapping: true,
-        } as any;
-
-        // setup hint / autocomplete options
-        autocomplete.setupOptions(options, this.props.filePath);
-
-        // fold
-        (options as any).foldGutter = true;
-        options.gutters.push("CodeMirror-foldgutter");
-
-        // live analysis
-        liveAnalysis.setupOptions(options);
-
-        // quickfix
-        if (!this.props.readOnly) {
-            quickFix.setupOptions(options);
-        }
-
-        // Git status
-        gitStatus.setupOptions(options);
-
-        // lint
-        linter.setupOptions(options, this.props.filePath);
-        // also lint on errors changing
-        this.disposible.add(cast.errorsUpdated.on(()=> this.codeMirror && this.codeMirror.performLint()));
-		// and initially
-		setTimeout(()=> this.codeMirror && this.codeMirror.performLint(),1000);
-
-		var textareaNode = ReactDOM.findDOMNode(this.refs.textarea);
-		this.codeMirror = CodeMirror.fromTextArea(textareaNode as any, options);
-		this.codeMirror.filePath = this.props.filePath;
-		this.codeMirror.on('focus', this.focusChanged.bind(this, true));
-		this.codeMirror.on('blur', this.focusChanged.bind(this, false));
-
-        // Make hint / autocomplete more aggresive
-        autocomplete.setupCodeMirror(this.codeMirror);
-
-        this.disposible.add(onresize.on(() => this.refresh()));
+		this.disposible.add(this.editor.onDidFocusEditor(this.focusChanged.bind(this, true)));
+		this.disposible.add(this.editor.onDidBlurEditor(this.focusChanged.bind(this, false)));
 
         // cursor history
         if (!this.props.readOnly) {
-            this.codeMirror.on('cursorActivity', this.handleCursorActivity);
-            this.disposible.add({ dispose: () => this.codeMirror.off('cursorActivity', this.handleCursorActivity) });
+            this.disposible.add(this.editor.onDidChangeCursorPosition(this.handleCursorActivity));
         }
 
         // live analysis
-        this.disposible.add(liveAnalysis.setupCM(this.codeMirror));
+        this.disposible.add(liveAnalysis.setup(this.editor));
 
         // quick fix
         if (!this.props.readOnly) {
-            this.disposible.add(quickFix.setupCM(this.codeMirror));
+            this.disposible.add(quickFix.setup(this.editor));
         }
 
         // Git status
-        this.disposible.add(gitStatus.setupCM(this.codeMirror));
-
-        const loadEditorOptions = (editorOptions:types.EditorOptions) => {
-            // Set editor options
-            this.codeMirror.setOption('indentUnit', editorOptions.indentSize);
-            this.codeMirror.setOption('tabSize', editorOptions.tabSize);
-            this.codeMirror.setOption('indentWithTabs', !editorOptions.convertTabsToSpaces);
-        }
-
-        // Subscribe to changing editor options
-        this.disposible.add(cast.editorOptionsChanged.on((res) => {
-            if (res.filePath === this.props.filePath){
-                loadEditorOptions(res.editorOptions);
-            }
-        }));
-
-		// Load the document
-        docCache.getLinkedDoc(this.props.filePath).then(({doc, editorOptions})=>{
-            this.codeMirror.swapDoc(doc);
-
-            // Load editor options
-			loadEditorOptions(editorOptions);
-
-            if (this.props.preview) {
-                let preview = this.props.preview;
-                let from = doc.posFromIndex(preview.start);
-                let to = doc.posFromIndex(preview.start + preview.length);
-                cmUtils.jumpToLine({
-                    line: from.line,
-                    ch: from.ch,
-                    editor: this.codeMirror
-                });
-            }
-
-			this.afterReadyQueue.forEach(cb=>cb());
-			this.ready = true;
-			this.setState({loading:false});
-        });
+        this.disposible.add(gitStatus.setup(this.editor));
 	}
 
 	componentWillUnmount () {
 		super.componentWillUnmount();
-		// todo: is there a lighter-weight way to remove the cm instance?
-		if (this.codeMirror) {
-			this.codeMirror.toTextArea();
-			/**
-			 * Very hacky way to unlink docs from CM
-			 * If we don't do this then the doc stays in memory and so does cm :-/
-			 */
-			(this.codeMirror.getDoc() as any).cm = null;
-		}
+		// Note : we don't remove the model from the doc cache for fast reopening
+        this.editor.getModel()._editors = this.editor.getModel()._editors.filter(e => e != this.editor);
+		this.editor.dispose();
+		this.editor = null;
 	}
 
-    getQuickInfo = (pos: CodeMirror.Position): Promise<string | HTMLElement> => {
-        if (
-            state.inActiveProjectFilePath(this.props.filePath)
-            || utils.isSupportedConfigFileForHover(this.props.filePath)
-        ) {
-            return server.quickInfo({ filePath: this.props.filePath, position: this.codeMirror.getDoc().indexFromPos(pos) }).then(resp => {
-                if (!resp.valid) return;
+    // TODO: mon
+    // getQuickInfo = (pos: CodeMirror.Position): Promise<string | HTMLElement> => {
+    //     if (
+    //         state.inActiveProjectFilePath(this.props.filePath)
+    //         || utils.isSupportedConfigFileForHover(this.props.filePath)
+    //     ) {
+    //         return server.quickInfo({ filePath: this.props.filePath, position: this.codeMirror.getDoc().indexFromPos(pos) }).then(resp => {
+    //             if (!resp.valid) return;
+    //
+    //             var message = '';
+    //             if (resp.errors.length) {
+    //                 message = message + `🐛 <i>${resp.errors.map(e => escape(e.message)).join('<br/>')}</i><br/>`
+    //             }
+    //
+    //             if (resp.info) {
+    //                 message = message + `<b>${escape(resp.info.name)}</b>`;
+    //                 if (resp.info.comment) {
+    //                     message = message + `<br/>${toHtml(resp.info.comment)}`;
+    //                 }
+    //             }
+    //
+    //             let div = document.createElement('div');
+    //             div.innerHTML = message;
+    //             return div;
+    //         });
+    //     }
+    // };
 
-                var message = '';
-                if (resp.errors.length) {
-                    message = message + `🐛 <i>${resp.errors.map(e => escape(e.message)).join('<br/>')}</i><br/>`
-                }
-
-                if (resp.info) {
-                    message = message + `<b>${escape(resp.info.name)}</b>`;
-                    if (resp.info.comment) {
-                        message = message + `<br/>${toHtml(resp.info.comment)}`;
-                    }
-                }
-
-                let div = document.createElement('div');
-                div.innerHTML = message;
-                return div;
-            });
-        }
-    };
-
-	getCodeMirror () {
-		return this.codeMirror;
-	}
-
+    firstFocus = true;
 	focus = () => {
-		if (this.codeMirror) {
-			this.handleCursorActivity();
-            this.refresh();
-
-            this.codeMirror.focus();
-            /**
-             * For some reason code mirror fails to focus sometimes.
-             * for this we use an agressive version to ensure
-             * It reaches deep into the bowels of code mirror
-             */
-            const setFocusAgressive = () => {
-                if (!this.codeMirror.hasFocus()) {
-                    this.refs.textarea.focus();
-                    (this.codeMirror as any).display.input.focus();
-                    setTimeout(setFocusAgressive, 10);
-                }
-            }
-            setFocusAgressive();
+		if (!this.ready && this.firstFocus) {
+			this.firstFocus = false;
+			this.afterReadyQueue.push(()=>{
+				this.resize();
+				this.focus();
+			});
 		}
+        else if (this.editor) {
+			this.editor.focus();
+        }
 	}
 
     resize = () => {
-        if (this.codeMirror) {
+        if (this.editor) {
+			const before = this.editor.getDomNode().scrollHeight;
             this.refresh();
+			const after = this.editor.getDomNode().scrollHeight;
+			const worthRestoringScrollPosition = (after !== before) && (after != 0);
+
+			/** Restore last scroll position on refresh after a blur */
+			if (this.lastScrollPosition != undefined && worthRestoringScrollPosition) {
+				setTimeout(()=>{
+					this.editor.setScrollTop(this.lastScrollPosition);
+                    // console.log(this.props.filePath, before, after, worthRestoringScrollPosition, this.lastScrollPosition); // DEBUG
+					this.lastScrollPosition = undefined;
+				})
+			}
 		}
     }
 
+	lastScrollPosition: number | undefined = undefined;
+	willBlur() {
+		this.lastScrollPosition = this.editor.getScrollTop();
+		// console.log('Storing:', this.props.filePath, this.lastScrollPosition); // DEBUG
+	}
+
     gotoPosition = (position: EditorPosition) => {
-        this.afterReady(()=>{
-            cmUtils.jumpToLine({ line: position.line, ch: position.ch, editor: this.codeMirror });
-            this.codeMirror.focus();
-		});
+        this.afterReady(() => {
+            this.lastScrollPosition = undefined; // Don't even think about restoring scroll position
+
+            /** e.g. if the tab is already active we don't call `focus` from `gotoPosition` ... however it might not have focus */
+            if (!this.editor.isFocused()) { this.editor.focus() }
+
+            /** SetTimeout because if editor comes out of hidden state we goto position too fast and then the scroll position is off */
+            setTimeout(() => monacoUtils.gotoPosition({ editor: this.editor, position }));
+        });
     }
 
     private refresh = () => {
-        // http://stackoverflow.com/questions/8349571/codemirror-editor-is-not-loading-content-until-clickeds
-        // Without refresh code mirror will not show up untill clicked
-        if (this.codeMirror) {
-            /**
-             * Without the setTimeout code mirror will lose scroll position
-             */
-            setTimeout(() => {
-                if (this.codeMirror.hasFocus()) { // If out of focus then this refresh can lead to bad results
-                    this.codeMirror.refresh();
-                }
-                else {
-                    const wrapper = this.codeMirror.getWrapperElement();
-                    if (!wrapper) return;
-                    if (!wrapper.clientHeight) return;
-                    this.codeMirror.refresh();
-                }
-            }, 100);
-        }
+        this.editor.layout();
     }
 
     focusChanged = (focused) => {
@@ -363,41 +242,64 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 		this.props.onFocusChange && this.props.onFocusChange(focused);
 	}
 
-    getValue(){
-        return this.codeMirror.getDoc().getValue();
+    getValue() {
+        this.editor.getValue();
     }
 
+	/**
+	 * used to seed the initial search if coming out of hidden
+	 */
+	getSelectionSearchString(): string | undefined {
+		let selection = this.editor.getSelection();
+
+		if (selection.startLineNumber === selection.endLineNumber) {
+			if (selection.isEmpty()) {
+				let wordAtPosition = this.editor.getModel().getWordAtPosition(selection.getStartPosition());
+				if (wordAtPosition) {
+					return wordAtPosition.word;
+				}
+			} else {
+				return this.editor.getModel().getValueInRange(selection);
+			}
+		}
+
+		return undefined;
+	}
+
     search = (options: FindOptions) => {
-        search.commands.search(this.codeMirror, utils.findOptionsToQueryRegex(options));
+        search.commands.search(this.editor, options);
     }
 
     hideSearch = () => {
-        search.commands.hideSearch(this.codeMirror);
+        search.commands.hideSearch(this.editor);
     }
 
     findNext = (options: FindOptions) => {
-        search.commands.findNext(this.codeMirror, utils.findOptionsToQueryRegex(options));
+        search.commands.findNext(this.editor, options);
     }
 
     findPrevious = (options: FindOptions) => {
-        search.commands.findPrevious(this.codeMirror, utils.findOptionsToQueryRegex(options));
+        search.commands.findPrevious(this.editor, options);
     }
 
     replaceNext = (newText: string) => {
-        search.commands.replaceNext(this.codeMirror, newText);
+        search.commands.replaceNext(this.editor, newText);
     }
 
 	replacePrevious = (newText: string) => {
-		search.commands.replacePrevious(this.codeMirror, newText);
+		search.commands.replacePrevious(this.editor, newText);
 	}
 
     replaceAll = (newText: string) => {
-        search.commands.replaceAll(this.codeMirror, newText);
+        search.commands.replaceAll(this.editor, newText);
     }
 
     handleCursorActivity = () => {
-        let cursor = this.codeMirror.getDoc().getCursor();
-        cursorLocation.addEntry(cursor);
+        let cursor = this.editor.getSelection();
+        cursorHistory.addEntry({
+			line: cursor.startLineNumber - 1,
+			ch: cursor.startColumn - 1,
+		});
     };
 
 	render () {
@@ -413,42 +315,31 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 			fontSize:'2rem',
 			padding: '5px',
 			transition: '.2s opacity',
-			opacity: this.state.loading ? 1: 0
+			opacity: this.state.loading ? 1: 0,
+			pointerEvents: 'none',
         };
 		return (
 			<div className={className} style={csx.extend(csx.horizontal,csx.flex,{position:'relative', maxWidth:'100%'})}>
-				{!this.props.readOnly && <doctor.Doctor cm={this.codeMirror} filePath={this.props.filePath}/>}
-				{!this.props.readOnly && <blaster.Blaster cm={this.codeMirror}/>}
-				<div style={loadingStyle}>LOADING</div>
-				<textarea ref="textarea" name={this.props.filePath} autoComplete="false" />
-                {!this.props.readOnly && <semanticView.SemanticView cm={this.codeMirror} filePath={this.props.filePath}/>}
+                <div style={loadingStyle}>LOADING</div>
+                <div ref="codeEditor" style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }} />
+                {!this.props.readOnly && <semanticView.SemanticView editor={this.editor} filePath={this.props.filePath}/>}
 			</div>
 		);
 	}
 
-}
+    componentWillReceiveProps(nextProps:Props){
+        // If next props are getting a preview then old props had them too (based on how we use preview)
+        if (nextProps.preview && nextProps.preview.start !== this.props.preview.start) {
+            this.gotoPreview(nextProps.preview);
+        }
+    }
 
-// marker demo : https://codemirror.net/demo/marker.html
-`
-<style type="text/css">
-      .breakpoints {width: .8em;}
-      .breakpoint { color: #822; }
-      .CodeMirror {border: 1px solid #aaa;}
-    </style>
-`;
-`
-var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-  lineNumbers: true,
-  gutters: ["CodeMirror-linenumbers", "breakpoints"]
-});
-editor.on("gutterClick", function(cm, n) {
-  var info = cm.lineInfo(n);
-  cm.setGutterMarker(n, "breakpoints", info.gutterMarkers ? null : makeMarker());
-});
-function makeMarker() {
-  var marker = document.createElement("div");
-  marker.style.color = "#822";
-  marker.innerHTML = "●";
-  return marker;
+    gotoPreview(preview: ts.TextSpan){
+        // Re-layout as for preview style editors monaco seems to render faster than CSS 🌹
+        this.editor.layout();
+
+        let pos = this.editor.getModel().getPositionAt(preview.start);
+        this.editor.revealLineInCenterIfOutsideViewport(pos.lineNumber);
+        this.editor.setPosition(pos);
+    }
 }
-`;

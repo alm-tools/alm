@@ -78,9 +78,6 @@ export function makeFormatCodeOptions(config: FormatCodeOptions): ts.FormatCodeO
     if (typeof config.placeOpenBraceOnNewLineForControlBlocks === "boolean") {
         options.PlaceOpenBraceOnNewLineForControlBlocks = config.placeOpenBraceOnNewLineForControlBlocks;
     }
-    if (typeof config.indentSize === "number") {
-        options.IndentSize = config.indentSize;
-    }
     if (typeof config.tabSize === "number") {
         options.TabSize = config.tabSize;
     }

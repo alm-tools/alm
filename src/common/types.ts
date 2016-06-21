@@ -204,30 +204,47 @@ export type GetJSOutputStatusResponse = {
 /**
  * Complete related stuff
  */
+/** Some constants */
+export const completionKindSnippet = "snippet";
+export const completionKindPath = "path";
+
+/** A completion */
 export interface Completion {
-    /** stuff like "var"|"method" etc */
-    kind?: string;
-    /** stuff like "toString" */
-    name?: string;
-    /** This is displayParts (for functions). Empty for `var` etc. */
+    /** stuff like ("var"|"method"etc)  | "snippet" | "path" etc */
+    kind: string;
+    /** stuff like "toString", "./relativePath" */
+    name: string;
+
+    /**
+     * This is displayParts (for functions). Empty for `var` etc.
+     */
     display?: string;
-    /** the docComment if any */
+    /**
+     * the docComment if any
+     * Also: `fullPath` for path ;)
+     */
     comment?: string;
 
-    /** If snippet is specified then the above stuff is ignored */
-    snippet?: {
-        name: string;
-        description: string;
-        template: string;
-    };
+    /** Only valid if `kind` is snippet */
+    insertText?: string;
 
-    /** If a path completion is specified then the above stuff is ignored */
-    pathCompletion?: {
-        fileName: string;
-        relativePath: string;
-        fullPath: string;
-        // TODO:
-        // Also tell about the `string` start and end `index` which is what the completion should replace
+    /** Only valid if `kind` is path completion */
+    textEdit?: CodeEdit;
+}
+
+/**
+ * Really only used when moving data around.
+ * We still map it to `Completion` before we handing it over for *autocomplete*
+ */
+export interface PathCompletion {
+    fileName: string;
+    relativePath: string;
+    fullPath: string;
+}
+export interface PathCompletionForAutocomplete extends PathCompletion {
+    pathStringRange: {
+        from: number,
+        to: number,
     }
 }
 
@@ -235,7 +252,6 @@ export interface Completion {
  * Editor Config stuff
  */
 export interface EditorOptions {
-    indentSize: number;
     tabSize: number;
     newLineCharacter: string;
     convertTabsToSpaces: boolean;
@@ -500,4 +516,14 @@ export interface LiveAnalysisResponse {
 export interface LiveAnalysisOverrideInfo {
     line: number;
     overrides: UMLClassMember;
+}
+
+
+/**
+ * Monaco command pallete support
+ */
+export interface MonacoActionInformation {
+    label: string,
+    id: string;
+    kbd: string | null;
 }

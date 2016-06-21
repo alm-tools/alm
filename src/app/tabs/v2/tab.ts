@@ -18,7 +18,8 @@ export interface TabApi {
     focus: TypedEvent<{}>,
     save: TypedEvent<{}>,
     close: TypedEvent<{}>,
-    gotoPosition: TypedEvent<EditorPosition>;
+    gotoPosition: TypedEvent<EditorPosition>,
+    willBlur: TypedEvent<{}>,
 
     /**
      * FAR : having these here means that *all tabs* get to participate in this

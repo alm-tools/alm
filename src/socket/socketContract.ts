@@ -56,6 +56,7 @@ export var server = {
      * Project Service
      */
     getCompletionsAtPosition: {} as QRFunction<Types.GetCompletionsAtPositionQuery, Types.GetCompletionsAtPositionResponse>,
+    getCompletionEntryDetails: {} as QRFunction<Types.GetCompletionEntryDetailsQuery, Types.GetCompletionEntryDetailsResponse>,
     quickInfo: {} as QRFunction<Types.QuickInfoQuery, Types.QuickInfoResponse>,
     getRenameInfo: {} as QRFunction<Types.GetRenameInfoQuery, Types.GetRenameInfoResponse>,
     getDefinitionsAtPosition: {} as QRFunction<Types.GetDefinitionsAtPositionQuery, Types.GetDefinitionsAtPositionResponse>,
@@ -70,6 +71,8 @@ export var server = {
     getQuickFixes: {} as QRFunction<Types.GetQuickFixesQuery, Types.GetQuickFixesResponse>,
     applyQuickFix: {} as QRFunction<Types.ApplyQuickFixQuery, Types.ApplyQuickFixResponse>,
     getSemanticTree: {} as QRFunction<Types.GetSemanticTreeQuery, Types.GetSemanticTreeReponse>,
+    getOccurrencesAtPosition: {} as QRFunction<Types.GetOccurancesAtPositionQuery, Types.GetOccurancesAtPositionResponse>,
+    getFormattingEditsAfterKeystroke: {} as QRFunction<Types.FormattingEditsAfterKeystrokeQuery, Types.FormattingEditsAfterKeystrokeResponse>,
 
     /**
      * Documentation Browser
@@ -213,6 +216,13 @@ export namespace Types {
         endsInPunctuation: boolean;
     }
 
+    export interface GetCompletionEntryDetailsQuery {
+        filePath:string, position: number, label: string
+    }
+    export interface GetCompletionEntryDetailsResponse {
+        display: string, comment: string
+    }
+
     /**
      * Mouse hover
      */
@@ -220,10 +230,14 @@ export namespace Types {
     export interface QuickInfoResponse {
         valid: boolean; // Do we have a valid response for this query
         info?: {
-            name?: string;
-            comment?: string;
-        }
-        errors: CodeError[];
+            name: string;
+            comment: string;
+            range?: {
+                from: EditorPosition,
+                to: EditorPosition
+            }
+        },
+        errors?: CodeError[]
     }
 
     /**
@@ -295,7 +309,7 @@ export namespace Types {
         editorOptions: types.EditorOptions;
     }
     export interface FormatDocumentResponse {
-        refactorings: types.RefactoringsByFilePath
+        edits: FormattingEdit[];
     }
     export interface FormatDocumentRangeQuery extends FilePathQuery {
         editorOptions: types.EditorOptions;
@@ -303,7 +317,19 @@ export namespace Types {
         to: EditorPosition;
     }
     export interface FormatDocumentRangeResponse {
-        refactorings: types.RefactoringsByFilePath
+        edits: FormattingEdit[];
+    }
+    export interface FormattingEditsAfterKeystrokeQuery extends FilePathEditorPositionQuery {
+        key: string
+        editorOptions: types.EditorOptions;
+    }
+    export interface FormattingEdit {
+        from: EditorPosition,
+        to: EditorPosition,
+        newText: string
+    }
+    export interface FormattingEditsAfterKeystrokeResponse {
+        edits: FormattingEdit[]
     }
 
     /**
@@ -395,5 +421,18 @@ export namespace Types {
     }
     export interface GetSemanticTreeReponse {
         nodes: SemanticTreeNode[];
+    }
+    /**
+     * Get occurances
+     */
+    export interface GetOccurancesAtPositionQuery extends FilePathEditorPositionQuery {}
+    export interface GetOccurancesAtPositionResult {
+        filePath: string;
+        start: EditorPosition;
+        end: EditorPosition;
+        isWriteAccess: boolean;
+    }
+    export interface GetOccurancesAtPositionResponse {
+        results: GetOccurancesAtPositionResult[];
     }
 }

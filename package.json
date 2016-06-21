@@ -15,6 +15,7 @@
     "tscw": "ntsc -p ./src -w",
     "uts": "npm install ntypescript@latest --save --save-exact && npm run tsc",
     "ucm": "npm install codemirror@latest --save --save-exact && npm run tsc",
+    "umonaco": "npm install monaco@latest --save --save-exact && npm run tsc",
     "preversion": "npm run tsc",
     "postversion": "git push --follow-tags",
     "mochaw": "mocha ./src/tests -w"
@@ -51,6 +52,7 @@
     "glob-expand": "^0.1.0",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
+    "monaco": "1.201606212306.0",
     "multimatch": "^2.1.0",
     "mv": "^2.1.1",
     "ncp": "^2.0.0",
@@ -58,7 +60,6 @@
     "ntypescript": "1.201606022159.1",
     "open": "0.0.5",
     "ora": "^0.2.0",
-    "portfinder": "^0.4.0",
     "rimraf": "^2.4.2",
     "socket.io": "^1.3.6",
     "update-notifier": "^0.5.0"

@@ -1,0 +1,25 @@
+
+.monaco-live-analysis-override {
+    margin-left: 5px;
+    font-size: .7rem;
+    transition: opacity .2s;
+    opacity: .6;
+    cursor: pointer;
+}
+
+/* copy from font awesome */
+.monaco-live-analysis-override:before, .monaco-live-analysis-override:before {
+    content: "\F0AA"; /* circle-arrow-up */
+    font: normal normal normal 10px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    /* classIconColorTheme */
+    color: #4DA6FF;
+}
+
+.monaco-live-analysis-override:hover {
+    opacity: 1 !important;
+}

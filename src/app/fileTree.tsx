@@ -133,7 +133,8 @@ let helpRowStyle = {
 })
 @ui.Radium
 export class FileTree extends BaseComponent<Props, State>{
-    shouldComponentUpdate = pure.shouldComponentUpdate;
+    /** can't be pure right now because of how we've written `selectedState` */
+    // shouldComponentUpdate = pure.shouldComponentUpdate;
 
     /** makes it easier to lookup directories */
     dirLookup:{[dirPath:string]:TreeDirItem} = {};
@@ -635,7 +636,7 @@ export class FileTree extends BaseComponent<Props, State>{
                 // just expand
                 this.state.expansionState[selectedFilePath] = true;
                 this.setState({ expansionState: this.state.expansionState });
-                return;
+                return false;
             }
             return false;
         });

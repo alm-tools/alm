@@ -1,0 +1,11 @@
+.monaco-quickfix {
+    margin-left: 0px;
+    font-size: .8rem;
+    transition: opacity .2s;
+    opacity: .6;
+    cursor: pointer;
+}
+
+.monaco-quickfix:hover {
+    opacity: 1 !important;
+}

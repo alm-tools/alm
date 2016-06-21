@@ -49,12 +49,24 @@ export class FindAndReplace extends BaseComponent<Props, State>{
 
     componentDidMount() {
         this.disposible.add(commands.findAndReplace.on(() => {
-            state.setFindOptionsIsShown(true);
-
             /** Find input might not be there if current tab doesn't support search */
             if (!this.findInput()){
                 return;
             }
+
+            // if not shown and the current tab is an editor we should load the selected text from the editor (if any)
+            if (!state.getState().findOptions.isShown) {
+                let codeEditor = tabState.getFocusedCodeEditorIfAny();
+                if (codeEditor){
+                    const selectedString = codeEditor.getSelectionSearchString();
+                    if (selectedString) {
+                        state.setFindOptionsQuery(selectedString);
+                        this.findInput().value = selectedString;
+                    }
+                }
+            }
+            state.setFindOptionsIsShown(true);
+
             this.findInput().select();
             this.replaceInput() && this.replaceInput().select();
             this.findInput().focus();

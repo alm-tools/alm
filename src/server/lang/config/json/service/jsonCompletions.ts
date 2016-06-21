@@ -102,18 +102,15 @@ export function getCompletionsAtPosition(this:{}, query: Types.GetCompletionsAtP
                 }
                 else {
                     let template = suggestion.insertText;
-                    /** Replace `{{}}` with `${}` */
-                    template = template.replace(/\{\{/g,"${");
-                    template = template.replace(/\}\}/g,"}");
 
                     completionsToReturn.push({
                         kind: "snippet",
                         name: suggestion.label, // Needed for fuzzaldrin
-                        snippet: {
-                            name: suggestion.label,
-                            description: suggestion.documentation,
-                            template,
-                        }
+
+                        display: suggestion.label,
+                        comment: suggestion.documentation,
+
+                        insertText: suggestion.insertText,
                     });
                 }
             }

@@ -172,6 +172,7 @@ namespace Server {
             return projectServiceMaster.worker.quickInfo(query);
         }
     }
+    export var getCompletionEntryDetails : typeof contract.server.getCompletionEntryDetails = projectServiceMaster.worker.getCompletionEntryDetails;
     export var getRenameInfo : typeof contract.server.getRenameInfo = projectServiceMaster.worker.getRenameInfo;
     export var getDefinitionsAtPosition : typeof contract.server.getDefinitionsAtPosition = projectServiceMaster.worker.getDefinitionsAtPosition;
     export var getDoctorInfo : typeof contract.server.getDoctorInfo = projectServiceMaster.worker.getDoctorInfo;
@@ -186,6 +187,8 @@ namespace Server {
     export var applyQuickFix : typeof contract.server.applyQuickFix = projectServiceMaster.worker.applyQuickFix;
     export var build: typeof contract.server.build = projectServiceMaster.worker.build;
     export var getSemanticTree: typeof contract.server.getSemanticTree = projectServiceMaster.worker.getSemanticTree;
+    export var getOccurrencesAtPosition: typeof contract.server.getOccurrencesAtPosition = projectServiceMaster.worker.getOccurrencesAtPosition;
+    export var getFormattingEditsAfterKeystroke: typeof contract.server.getFormattingEditsAfterKeystroke = projectServiceMaster.worker.getFormattingEditsAfterKeystroke;
 
     /**
      * Documentation browser

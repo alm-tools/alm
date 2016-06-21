@@ -21,6 +21,7 @@ export var worker = {
 
     // Project Service stuff
     getCompletionsAtPosition: {} as typeof socketContract.server.getCompletionsAtPosition,
+    getCompletionEntryDetails: {} as typeof socketContract.server.getCompletionEntryDetails,
     quickInfo: {} as typeof socketContract.server.quickInfo,
     getRenameInfo: {} as typeof socketContract.server.getRenameInfo,
     getDefinitionsAtPosition: {} as typeof socketContract.server.getDefinitionsAtPosition,
@@ -35,6 +36,8 @@ export var worker = {
     getQuickFixes: {} as typeof socketContract.server.getQuickFixes,
     applyQuickFix: {} as typeof socketContract.server.applyQuickFix,
     getSemanticTree: {} as typeof socketContract.server.getSemanticTree,
+    getOccurrencesAtPosition: {} as typeof socketContract.server.getOccurrencesAtPosition,
+    getFormattingEditsAfterKeystroke: {} as typeof socketContract.server.getFormattingEditsAfterKeystroke,
 
     /** Documentation browser */
     getTopLevelModuleNames: {} as typeof socketContract.server.getTopLevelModuleNames,
