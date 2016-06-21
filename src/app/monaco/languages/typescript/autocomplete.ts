@@ -4,6 +4,7 @@ import * as state from "../../../state/state";
 import * as classifierCache from "../../../codemirror/mode/classifierCache";
 import * as utils from "../../../../common/utils";
 import * as types from "../../../../common/types";
+import {defaultSnippets} from "./snippets";
 
 import CancellationToken = monaco.CancellationToken;
 import Thenable = monaco.Thenable;
@@ -118,16 +119,23 @@ export class SuggestAdapter extends Adapter implements monaco.languages.Completi
 					return result;
     			});
 
-                // TODO: add all snips
-                const snip: MyCompletionItem = {
-                    label: 'if',
-                    kind: monaco.languages.CompletionItemKind.Snippet,
+                // TODO:
+                // remove items that are keyword and also have snips :)
 
-                    detail: 'snippet',
-                    documentation: 'if statment',
-                    insertText: 'if ({{condition}}) \\{\n\t {{body}}\n}',
-                }
-                suggestions.push(snip);
+                // add all snips
+                defaultSnippets.forEach(item => {
+
+                    const snip: MyCompletionItem = {
+                        label: item.name,
+                        kind: monaco.languages.CompletionItemKind.Snippet,
+
+                        detail: 'snippet',
+                        documentation: item.description,
+                        insertText: item.template,
+                    }
+
+                    suggestions.push(snip);
+                });
 
 
     			return suggestions;
