@@ -9,6 +9,14 @@ div.view-lines {
     font-family: consolas, menlo, monospace !important;
 }
 
+/**
+ * The hover widget: fix its font ... since i noticed it :)
+ * WARNING: I am setting it on *all* child divs
+ */
+.monaco-editor-hover.monaco-editor-background div {
+    font-family: consolas, menlo, monospace !important;
+}
+
 /* Make the bracket match pop out more */
 .monaco-editor.vs-dark .bracket-match {
     background-color: rgba(100, 100, 100, 0.3);
