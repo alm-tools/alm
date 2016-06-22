@@ -86,6 +86,7 @@ let treeItemStyle = {
     cursor:'pointer',
     padding: '3px',
     userSelect: 'none',
+    fontSize: '.9em',
     opacity: .8,
     ':focus': {
         outline: 'none',
