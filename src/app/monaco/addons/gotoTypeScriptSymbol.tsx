@@ -74,5 +74,5 @@ class GotoTypeScriptSymbolAction extends EditorAction {
 
 CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(GotoTypeScriptSymbolAction, GotoTypeScriptSymbolAction.ID, 'Goto TypeScript Symbol in file', {
 	context: ContextKey.EditorTextFocus,
-	primary: KeyMod.CtrlCmd | KeyCode.KEY_Y
+	primary: KeyMod.CtrlCmd | KeyCode.KEY_H
 }));

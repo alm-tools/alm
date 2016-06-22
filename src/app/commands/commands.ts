@@ -210,7 +210,7 @@ export var gotoTab9 = new UICommand({
  * OmniSearch
  */
 export var omniFindFile = new UICommand({
-    keyboardShortcut: 'mod+p',  // atom,sublime
+    keyboardShortcut: 'mod+o',  // atom,sublime
     description: "Find a file in the working directory",
     context: CommandContext.Global,
 });
@@ -225,12 +225,12 @@ export var omniSelectProject = new UICommand({
     context: CommandContext.Global,
 });
 export var omniProjectSymbols = new UICommand({
-    keyboardShortcut: 'mod+shift+y', //
+    keyboardShortcut: 'mod+shift+h',
     description: "Find sYmbols in active project",
     context: CommandContext.Global,
 });
 export var omniProjectSourcefile = new UICommand({
-    keyboardShortcut: 'mod+alt+y', //
+    keyboardShortcut: 'mod+p', //
     description: "Find Source File in active project",
     context: CommandContext.Global,
 });
@@ -403,7 +403,7 @@ export let treeOpenInExplorerFinder = new UICommand({
 export var doOpenFile = new events.TypedEvent<{ filePath: string, position?: EditorPosition }>();
 export var doOpenOrFocusFile = new events.TypedEvent<{ filePath: string, position?: EditorPosition }>();
 export var openFileFromDisk = new UICommand({
-    keyboardShortcut: 'mod+o',
+    keyboardShortcut: 'mod+shift+o',
     description: 'Open a file present on server disk',
     context: CommandContext.Global,
 });
@@ -445,13 +445,6 @@ export function register() {
                 return !!c.config.allowDefault;
             });
         }
-    });
-
-    // Commands with multiple key bindings
-    // enable at some point
-    Mousetrap.bindGlobal('mod+h', function() { // atom,sublime,c9
-        findAndReplace.emit({});
-        return false;
     });
 }
 
