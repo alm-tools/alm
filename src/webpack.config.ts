@@ -26,7 +26,7 @@ var config = {
                 loader: "style!css!less"
             },
             {
-                test: /\.(otf|eot|png|svg|ttf|woff|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                test: /\.(otf|eot|png|svg|ttf|woff|woff2)(\?v=[0-9\.]*)?$/,
                 loader: 'url?limit=100000'
             },
         ]
