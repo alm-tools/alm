@@ -88,6 +88,17 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             lineNumbersMinChars: 4,
             /** We need the glyph margin to show live analysis stuff */
             glyphMargin: true,
+            /**
+             * Change the default font.
+             * The default is `consolas` , `courier new`.
+             * This means that if user does not have consolas they get *aweful* courier new.
+             * Don't want that.
+             * Also the default change by OS.
+             * I prefer consistency so going with `hack` everywhere
+             */
+            fontFamily: 'hack, consolas, menlo, monospace',
+            /** Also make the font a bit bigger */
+            fontSize: 14,
         }, []);
 		this.editor.filePath = this.props.filePath;
 

@@ -1,22 +1,9 @@
-div.view-lines {
-    /**
-     * Change the default font.
-     * The default is `consolas` , `courier new`.
-     * This means that if user does not have consolas they get *aweful* courier new.
-     * Don't want that.
-     * Also mac monospace is aweful. Try and give them menlo.
-     */
-    font-family: consolas, menlo, monospace !important;
-    /* Bump up the font size */
-    font-size: 14px !important;
-}
-
 /**
  * The hover widget: fix its font ... since i noticed it :)
  * WARNING: I am setting it on *all* child divs
  */
 .monaco-editor-hover.monaco-editor-background div {
-    font-family: consolas, menlo, monospace !important;
+    font-family: monospace !important;
 }
 
 /* Make the bracket match pop out more */
