@@ -537,3 +537,18 @@ console.table(
         .map(c=>({cmd:c.config.description, shortcut:c.config.keyboardShortcut}))
 );
 /* DEBUG */
+
+/**
+ * Prevent *ctrl + y* (common redo) from opening the browser history by mistake.
+ * Happens if the editor is not in focus
+ */
+// import {someFormOfInput} from "../utils/someFormOfInput";
+// let windowListener = new Mousetrap(document.body);
+// windowListener.bind('mod+y',function(event:any){
+//     if (someFormOfInput(event.srcElement || event.target)) {
+//         return true;
+//     }
+//     // Prevent
+//     console.log('prevented',event);
+//     return false;
+// });
