@@ -20,8 +20,9 @@ export class TypeAssertPropertyAccessToAny implements QuickFix {
 
     provideFix(info: QuickFixQueryInformation): Refactoring[] {
         /**
+         * Lingo: PA = PropertyAccessExpression, ID = Identifier
          * We want the largest property access expressing `a.b.c` starting at the identifer `c`
-         * Since this gets tokenized as `a.b` `.` `c` so its just the parent :)
+         * Since this gets tokenized as PA (PA`a.b`)(ID`c`) so its just the parent :)
          */
         let parent = info.positionNode.parent;
         if (parent.kind == ts.SyntaxKind.PropertyAccessExpression) {

@@ -15,8 +15,7 @@
 /* Make the code in the hover look different */
 /* Code Block */
 .monaco-editor.vs-dark .monaco-editor-hover [data-code] {
-    display: block;
-    background-color: #555;
+    /* WARNING: errors also come through as code blocks so be careful styling this */
     margin: 3px 0;
 }
 /* Code inline */
