@@ -3,7 +3,25 @@
  * WARNING: I am setting it on *all* child divs
  */
 .monaco-editor-hover.monaco-editor-background div {
-    font-family: monospace !important;
+    font-family: hack, monospace !important;
+}
+/*
+ * Make the hover border color a bit better
+ */
+.monaco-editor.vs-dark .monaco-editor-hover {
+    border-color: #CCC;
+}
+/* Make the code in the hover look different */
+/* Code Block */
+.monaco-editor.vs-dark .monaco-editor-hover [data-code] {
+    display: block;
+    background-color: #555;
+    margin: 3px 0;
+}
+/* Code inline */
+.monaco-editor.vs-dark .monaco-editor-hover code {
+    padding: 0 3px;
+    background-color: #555;
 }
 
 /* Make the bracket match pop out more */

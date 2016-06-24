@@ -33,12 +33,12 @@ export class ProvideHover {
                     endLineNumber: res.info.range.to.line + 1,
                     endColumn: res.info.range.to.ch + 1,
                 },
-                htmlContent: [
-                    {text: res.info.name},
+                contents: [
+                    `***${res.info.name}***`
                 ]
             }
             if (res.info.comment){
-                result.htmlContent.push({formattedText: res.info.comment}) // Markdown doesn't work right now.
+                result.contents.push('\n\n' + res.info.comment)
             }
             return result;
         });

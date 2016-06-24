@@ -539,16 +539,13 @@ console.table(
 /* DEBUG */
 
 /**
- * Prevent *ctrl + y* (common redo) from opening the browser history by mistake.
- * Happens if the editor is not in focus
+ * Mac (the chrome browser in mac) doesn't have *cmd + y* (common redo).
+ * Instead it opens the browser history by mistake.
+ * So we redirect it to redo for any open editor :)
  */
-// import {someFormOfInput} from "../utils/someFormOfInput";
-// let windowListener = new Mousetrap(document.body);
-// windowListener.bind('mod+y',function(event:any){
-//     if (someFormOfInput(event.srcElement || event.target)) {
-//         return true;
-//     }
-//     // Prevent
-//     console.log('prevented',event);
-//     return false;
-// });
+Mousetrap.bindGlobal('mod+y',function(event:any){
+    // If the focus is on editor than monaco already handles it
+    // If we made it till here .... then ....
+    // Prevent default
+    return false;
+});
