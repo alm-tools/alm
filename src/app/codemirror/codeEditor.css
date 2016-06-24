@@ -1,9 +1,10 @@
 /**
  * The hover widget: fix its font ... since i noticed it :)
- * WARNING: I am setting it on *all* child divs
  */
-.monaco-editor-hover.monaco-editor-background div {
+.monaco-editor-hover.monaco-editor-background div:first-child {
     font-family: hack, monospace !important;
+    /* Just center the whole thing better */
+    margin-left: 1px;
 }
 /*
  * Make the hover border color a bit better
