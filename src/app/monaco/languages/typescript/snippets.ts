@@ -112,6 +112,16 @@ export const defaultSnippets: TemplateConfig[] = [
         "template": "while ({{condition}}) {\n\t{{}}\n}"
     },
     {
+        "name": "log",
+        "description": "console.log()",
+        template: "console.log({{}})",
+    },
+    {
+        name: 'exhaustive',
+        description: 'Exhaustive check for discriminated union',
+        template: 'default: let _exhaustiveCheck: never = {{}};'
+    },
+    {
         "name": "@author", "description": "author name", "template": "@author {{user}}"
     },
 ];
