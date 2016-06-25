@@ -41,42 +41,8 @@ export class FindModelBoundToEditorModel {
 	private _updateDecorationsScheduler:RunOnceScheduler;
 
 	constructor(editor:editorCommon.ICommonCodeEditor, state:FindReplaceState) {
-		this._editor = editor;
-		this._state = state;
-		this._toDispose = [];
-
-		this._decorations = new FindDecorations(editor);
-		this._toDispose.push(this._decorations);
-
-		this._updateDecorationsScheduler = new RunOnceScheduler(() => this.research(false), 100);
-		this._toDispose.push(this._updateDecorationsScheduler);
-
-		this._toDispose.push(this._editor.onDidChangeCursorPosition((e:editorCommon.ICursorPositionChangedEvent) => {
-			if (
-				e.reason === editorCommon.CursorChangeReason.Explicit
-				|| e.reason === editorCommon.CursorChangeReason.Undo
-				|| e.reason === editorCommon.CursorChangeReason.Redo
-			) {
-				this._decorations.setStartPosition(this._editor.getPosition());
-			}
-		}));
-
-		this._ignoreModelContentChanged = false;
-		this._toDispose.push(this._editor.onDidChangeModelRawContent((e:editorCommon.IModelContentChangedEvent) => {
-			if (this._ignoreModelContentChanged) {
-				return;
-			}
-			if (e.changeType === "ModelRawContentChangedFlush") {
-				// a model.setValue() was called
-				this._decorations.reset();
-			}
-			this._decorations.setStartPosition(this._editor.getPosition());
-			this._updateDecorationsScheduler.schedule();
-		}));
-
-		this._toDispose.push(this._state.addChangeListener((e) => this._onStateChanged(e)));
-
-		this.research(false, this._state.searchScope);
+	    // I deleted the code here because we don't actually call this function
+        // it exists purely for type checking against what are essentially monaco internals ;)
 	}
 
 	public dispose(): void {
