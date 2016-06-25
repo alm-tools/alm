@@ -11,6 +11,7 @@ var config = {
         path: buildPath,
         filename: 'bundle.js'
     },
+    plugins: [],
     module: {
         noParse: [
             /clipboard\.min/,

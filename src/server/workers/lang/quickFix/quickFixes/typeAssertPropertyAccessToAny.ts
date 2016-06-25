@@ -28,7 +28,7 @@ export class TypeAssertPropertyAccessToAny implements QuickFix {
         if (parent.kind == ts.SyntaxKind.PropertyAccessExpression) {
             let propertyAccess = <ts.PropertyAccessExpression>parent;
             let start = propertyAccess.getStart();
-            let end = propertyAccess.dotToken.getStart();
+            let end = propertyAccess.expression.getEnd();
 
             let oldText = propertyAccess.getText().substr(0, end - start);
 

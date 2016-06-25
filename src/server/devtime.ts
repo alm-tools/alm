@@ -32,7 +32,7 @@ const bundleDevTimeProxy = utils.once(() => {
     ].concat(config.entry);
 
     // Add the Hot Replacement plugin for hot style updates
-    devConfig.plugins = [new Webpack.HotModuleReplacementPlugin()];
+    devConfig.plugins.push(new Webpack.HotModuleReplacementPlugin());
 
     /**
      * Standard webpack bundler stuff
