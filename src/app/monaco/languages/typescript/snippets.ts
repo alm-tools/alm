@@ -119,7 +119,7 @@ export const defaultSnippets: TemplateConfig[] = [
     {
         name: 'exhaustive',
         description: 'Exhaustive check for discriminated union',
-        template: 'default: let _exhaustiveCheck: never = {{}};'
+        template: 'let _exhaustiveCheck: never = {{}};'
     },
     {
         "name": "@author", "description": "author name", "template": "@author {{user}}"
