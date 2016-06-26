@@ -26,7 +26,6 @@ export function setupMonacoTypecript() {
 
 import * as tokenization from "./tokenization";
 import {richLanguageConfiguration} from "./richLanguageConfiguration";
-import * as linter from "./linter";
 import * as provideDocumentHighlights from "./provideDocumentHighlights";
 import {ProvideHover} from "./provideHover";
 import {DocumentFormatter, DocumentRangeFormatter, FormatOnTypeAdapter} from "./formatting";
@@ -38,9 +37,6 @@ function setupMode(modeId: 'typescript' | 'javascript') {
 
     /** Setup bracket matching etc. */
     monaco.languages.setLanguageConfiguration(modeId, richLanguageConfiguration);
-
-    /** Setup inline errors */
-    new linter.DiagnostcsAdapter(modeId);
 
     /** Setup highlight occurances */
     monaco.languages.registerDocumentHighlightProvider(modeId, provideDocumentHighlights);

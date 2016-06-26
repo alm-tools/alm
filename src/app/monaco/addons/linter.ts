@@ -5,10 +5,11 @@
  * - use our live error pushing
  * - use `filePath` instead of `uri`
  */
-import * as events from "../../../../common/events";
-import * as state from "../../../state/state";
-import {cast,server} from "../../../../socket/socketClient";
+import * as events from "../../../common/events";
+import * as state from "../../state/state";
+import {cast,server} from "../../../socket/socketClient";
 type IDisposable = events.Disposable;
+type Editor = monaco.editor.ICodeEditor;
 
 export class DiagnostcsAdapter {
 
@@ -92,4 +93,8 @@ function codeErrorToMonacoError(codeError: CodeError): monaco.editor.IMarkerData
         endLineNumber: codeError.to.line + 1,
         endColumn: codeError.to.ch + 1,
     };
+}
+
+export function setup(editor: Editor): { dispose: () => void } {
+    if (editor) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
 }

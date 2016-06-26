@@ -11,6 +11,7 @@ import * as monacoUtils from "../monaco/monacoUtils";
 import * as gitStatus from "../monaco/addons/gitStatus";
 import * as liveAnalysis from "../monaco/addons/liveAnalysis";
 import * as quickFix from "../monaco/addons/quickFix";
+import * as linter from "../monaco/addons/linter";
 
 // The monokai theme
 require('./monokai.css');
@@ -146,6 +147,9 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
         // live analysis
         this.disposible.add(liveAnalysis.setup(this.editor));
+
+        // lint
+        this.disposible.add(linter.setup(this.editor));
 
         // quick fix
         if (!this.props.readOnly) {
