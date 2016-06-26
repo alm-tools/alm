@@ -12,6 +12,7 @@ import * as gitStatus from "../monaco/addons/gitStatus";
 import * as liveAnalysis from "../monaco/addons/liveAnalysis";
 import * as quickFix from "../monaco/addons/quickFix";
 import * as linter from "../monaco/addons/linter";
+import * as docblockr from "../monaco/addons/dockblockr";
 
 // The monokai theme
 require('./monokai.css');
@@ -159,6 +160,9 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
         // Git status
         this.disposible.add(gitStatus.setup(this.editor));
+
+        // Docblockr
+        this.disposible.add(docblockr.setup(this.editor));
 	}
 
 	componentWillUnmount () {
