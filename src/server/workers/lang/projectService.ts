@@ -695,7 +695,7 @@ function flattenNavBarItems(items: ts.NavigationBarItem[]): ts.NavigationBarItem
     });
 
     // Now we only need the children of the root :)
-    return results[0].childItems;
+    return results[0].childItems || [];
 }
 function navigationBarItemToSemanticTreeNode(item: ts.NavigationBarItem, project: Project, query: Types.FilePathQuery): Types.SemanticTreeNode {
     let toReturn: Types.SemanticTreeNode = {
