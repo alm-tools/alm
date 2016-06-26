@@ -54,16 +54,16 @@ export function setup(cm: Editor): { dispose: () => void } {
     const refreshLiveAnalysisDebounced = utils.debounce(refreshLiveAnalysis, 3000);
 
     const disposible = new CompositeDisposible();
-    cm.onDidFocusEditor(refreshLiveAnalysisDebounced);
-    cm.onDidChangeModelContent(refreshLiveAnalysisDebounced);
-    const disposeProjectWatch = cast.activeProjectConfigDetailsUpdated.on(() => {
+    disposible.add(cm.onDidFocusEditor(refreshLiveAnalysisDebounced));
+    disposible.add(cm.onDidChangeModelContent(refreshLiveAnalysisDebounced));
+    disposible.add(cast.activeProjectConfigDetailsUpdated.on(() => {
         refreshLiveAnalysisDebounced();
-    });
+    }));
 
     /**
      * Also subscribe to the user clicking the margin
      */
-    cm.onMouseUp((mouseEvent) => {
+    disposible.add(cm.onMouseUp((mouseEvent) => {
         if (mouseEvent.target.type === monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN
             && mouseEvent.target.element.className.includes(overrideClassName)) {
             const position = mouseEvent.target.position;
@@ -77,7 +77,7 @@ export function setup(cm: Editor): { dispose: () => void } {
                 }
             }
         }
-    });
+    }));
 
     return disposible;
 }

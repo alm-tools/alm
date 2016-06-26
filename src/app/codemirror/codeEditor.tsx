@@ -11,6 +11,7 @@ import * as monacoUtils from "../monaco/monacoUtils";
 import * as gitStatus from "../monaco/addons/gitStatus";
 import * as liveAnalysis from "../monaco/addons/liveAnalysis";
 import * as quickFix from "../monaco/addons/quickFix";
+import * as linter from "../monaco/addons/linter";
 
 // The monokai theme
 require('./monokai.css');
@@ -129,6 +130,10 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             if (this.props.preview) {
                 this.gotoPreview(this.props.preview);
             }
+
+            // linter
+            // NOTE: done here because it depends on model :)
+            this.disposible.add(linter.setup(this.editor));
 
             // Mark as ready and do anything that was waiting for ready to occur 🌹
             this.afterReadyQueue.forEach(cb=>cb());
