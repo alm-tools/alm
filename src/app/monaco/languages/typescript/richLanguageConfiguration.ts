@@ -27,13 +27,18 @@ export const richLanguageConfiguration:monaco.languages.LanguageConfiguration = 
 		{
 			// e.g.  * ...|
 			beforeText: /^(\t|(\ \ ))*\ \*(\ ([^\*]|\*(?!\/))*)?$/,
-			action: { indentAction: monaco.languages.IndentAction.None, appendText: '* ' }
+			action: { indentAction: monaco.languages.IndentAction.Indent, appendText: '* ' }
 		},
 		{
 			// e.g.  */|
 			beforeText: /^(\t|(\ \ ))*\ \*\/\s*$/,
 			action: { indentAction: monaco.languages.IndentAction.None, removeText: 1 }
-		}
+		},
+		{
+			// e.g. //|
+			beforeText: /^\s*\/\/.*$/,
+			action: { indentAction: monaco.languages.IndentAction.Indent, appendText: '// ' }
+		},
 	],
 
 	__electricCharacterSupport: {

@@ -60,9 +60,25 @@ export class FormatOnTypeAdapter implements monaco.languages.OnTypeFormattingEdi
 
     provideOnTypeFormattingEdits(model: monaco.editor.IReadOnlyModel, position: Position, ch: string, options: monaco.languages.FormattingOptions, token: CancellationToken): Thenable<monaco.editor.ISingleEditOperation[]> {
         const filePath = model.filePath;
+        const empty = Promise.resolve([]);
 
         if (!state.inActiveProjectFilePath(model.filePath)) {
-            return Promise.resolve([]);
+            return empty;
+        }
+
+        /**
+         * If the user just did a docblockr enter
+         * And we insert stuff like `* `
+         * Then ts will remove the trailing space.
+         * We want to keep that so check for it
+         */
+        const lineContent = model.getLineContent(position.lineNumber);
+        if (
+            lineContent.endsWith('* ')
+            || lineContent.endsWith('// ')
+            || lineContent.endsWith('/// ')
+        ) {
+            return empty;
         }
 
         return server.getFormattingEditsAfterKeystroke({
