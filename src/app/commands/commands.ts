@@ -549,3 +549,12 @@ Mousetrap.bindGlobal('mod+y',function(event:any){
     // Prevent default
     return false;
 });
+/**
+ * Mac: Cmd + H at the wrong place hides the window.
+ */
+Mousetrap.bindGlobal('mod+h', function(event: any) {
+    // If the focus is on editor than monaco already handles it
+    // If we made it till here .... then ....
+    // Prevent default
+    return false;
+});
