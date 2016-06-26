@@ -1,0 +1,16 @@
+.monaco-lint-marker-error:before, .monaco-lint-message-error:before {
+    content: "\f057";
+    font: normal normal normal 10px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    /* our error color scheme */
+    color: #f92672;
+
+    /* To make it consistent with override gutter */
+    font-size: .9em;
+    cursor: pointer;
+    margin-left: 5px;
+}

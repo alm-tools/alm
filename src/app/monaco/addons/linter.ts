@@ -10,6 +10,15 @@ import * as state from "../../state/state";
 type IDisposable = events.Disposable;
 type Editor = monaco.editor.ICodeEditor;
 
+require('./linter.css');
+const gutterClassName = 'monaco-lint-marker-error';
+const gutterDecorationOptions: monaco.editor.IModelDecorationOptions = {
+    glyphMarginClassName: gutterClassName,
+    isWholeLine: true,
+    hoverMessage: 'Errors exist in code on this line.'
+};
+
+
 function codeErrorToMonacoError(codeError: CodeError): monaco.editor.IMarkerData {
     return {
         severity: monaco.Severity.Error,
@@ -34,8 +43,22 @@ export function setup(editor: Editor): { dispose: () => void } {
 
         // console.log('here', rawErrors); // DEBUG
 
+        // Set inline markers. Monaco also uses these for `f8` next error nav.
         let markers = rawErrors.map(codeErrorToMonacoError);
         monaco.editor.setModelMarkers(model, 'alm-linter', markers);
+
+        // Set gutter decorations
+        const newDecorations = rawErrors.map(override => {
+            const result: monaco.editor.IModelDeltaDecoration = {
+                range: {
+                    startLineNumber: override.from.line + 1,
+                    endLineNumber: override.to.line + 1,
+                } as monaco.Range,
+                options: gutterDecorationOptions
+            }
+            return result;
+        });
+        lastDecorations = editor.deltaDecorations(lastDecorations, newDecorations);
     }
 
     // Perform an initial lint
@@ -43,5 +66,27 @@ export function setup(editor: Editor): { dispose: () => void } {
     const disposible = new events.CompositeDisposible();
     // Subscribe for future updates
     disposible.add(state.subscribeSub(x => x.errorsUpdate, performLint));
+
+	/**
+	 * Also subscribe to the user clicking the margin
+	 */
+    disposible.add(editor.onMouseUp((mouseEvent) => {
+        if (mouseEvent.target.type === monaco.editor.MouseTargetType.GUTTER_GLYPH_MARGIN
+            && mouseEvent.target.element.className.includes(gutterClassName)) {
+
+            const position = mouseEvent.target.position;
+            if (position) {
+                let rawErrors = state.getState().errorsUpdate.errorsByFilePath[editor.filePath] || [];
+				const error = rawErrors.find(x => x.from.line === position.lineNumber - 1);
+                if (error) {
+                    editor.setPosition({
+                        lineNumber: error.from.line + 1,
+                        column: error.from.ch + 1
+                    });
+                }
+            }
+        }
+    }));
+
     return disposible;
 }
