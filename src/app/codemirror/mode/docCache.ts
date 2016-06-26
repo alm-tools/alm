@@ -259,9 +259,16 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                     // Note that we use *mark as coming from server* so we don't go into doc.change handler later on :)
                     editCameFromServerCount++;
 
-                    // Need to set the filepath as calling `setValue` calls `getInitialState` on the tokenizer 🌹
-                    window.creatingModelFilePath = filePath;
-                    doc.setValue(res.contents);
+                    // NOTE: we don't do `setValue` as
+                    // - that creates a new tokenizer (we would need to use `window.creatingModelFilePath`)
+                    // - looses all undo history.
+                    // Instead we *replace* all the text that is there 🌹
+                    const totalDocRange = doc.getFullModelRange();
+                    monacoUtils.replaceRange({
+                        range: totalDocRange,
+                        model: doc,
+                        newText: res.contents
+                    });
                 }
             });
 
