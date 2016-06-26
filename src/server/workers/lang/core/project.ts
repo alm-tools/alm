@@ -65,7 +65,12 @@ export class Project {
     public getDiagnosticsForFile(filePath: string) {
         var diagnostics = this.languageService.getSyntacticDiagnostics(filePath);
         if (diagnostics.length === 0) {
-            diagnostics = this.languageService.getSemanticDiagnostics(filePath);
+            if (this.configFile.project.compilerOptions.skipLibCheck && filePath.endsWith('.d.ts')) {
+                // Nothing to do
+            }
+            else {
+                diagnostics = this.languageService.getSemanticDiagnostics(filePath);
+            }
         }
         return diagnostics;
     }
@@ -91,7 +96,12 @@ export class Project {
                         cancellationToken,
                         items: sourceFiles,
                         cb: (sourceFile) => {
-                            ts.addRange(allDiagnostics, program.getSemanticDiagnostics(sourceFile));
+                            if (this.configFile.project.compilerOptions.skipLibCheck && sourceFile.isDeclarationFile) {
+                                // Nothing to do
+                            }
+                            else {
+                                ts.addRange(allDiagnostics, program.getSemanticDiagnostics(sourceFile));
+                            }
                         },
                     });
                 })
