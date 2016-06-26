@@ -131,6 +131,10 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
                 this.gotoPreview(this.props.preview);
             }
 
+            // linter
+            // NOTE: done here because it depends on model :)
+            this.disposible.add(linter.setup(this.editor));
+
             // Mark as ready and do anything that was waiting for ready to occur 🌹
             this.afterReadyQueue.forEach(cb=>cb());
 			this.ready = true;
@@ -147,9 +151,6 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
         // live analysis
         this.disposible.add(liveAnalysis.setup(this.editor));
-
-        // linter
-        this.disposible.add(linter.setup(this.editor));
 
         // quick fix
         if (!this.props.readOnly) {

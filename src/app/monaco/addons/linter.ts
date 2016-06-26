@@ -7,7 +7,6 @@
  */
 import * as events from "../../../common/events";
 import * as state from "../../state/state";
-import {cast,server} from "../../../socket/socketClient";
 type IDisposable = events.Disposable;
 type Editor = monaco.editor.ICodeEditor;
 
@@ -26,19 +25,23 @@ function codeErrorToMonacoError(codeError: CodeError): monaco.editor.IMarkerData
 export function setup(editor: Editor): { dispose: () => void } {
     // if (editor) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
 
-	function performLint(): void {
-		let filePath: string = editor.filePath;
-		let model: monaco.editor.IModel = editor.getModel();
+    let lastDecorations: string[] = [];
+    function performLint(): void {
+        let filePath: string = editor.filePath;
+        let model: monaco.editor.IModel = editor.getModel();
 
-		let rawErrors = state.getState().errorsUpdate.errorsByFilePath[filePath] || [];
-		let markers = rawErrors.map(codeErrorToMonacoError);
-		monaco.editor.setModelMarkers(model, 'alm-linter', markers);
-	}
+        let rawErrors = state.getState().errorsUpdate.errorsByFilePath[filePath] || [];
 
-	// Perform an initial lint
-	performLint();
-	const disposible = new events.CompositeDisposible();
-	// Subscribe for future updates
-	disposible.add(cast.errorsUpdated.on(performLint));
-	return disposible;
+        // console.log('here', rawErrors); // DEBUG
+
+        let markers = rawErrors.map(codeErrorToMonacoError);
+        monaco.editor.setModelMarkers(model, 'alm-linter', markers);
+    }
+
+    // Perform an initial lint
+    performLint();
+    const disposible = new events.CompositeDisposible();
+    // Subscribe for future updates
+    disposible.add(state.subscribeSub(x => x.errorsUpdate, performLint));
+    return disposible;
 }
