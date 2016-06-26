@@ -45,7 +45,7 @@ const modifiedDecorationOptions: monaco.editor.IModelDecorationOptions = {
         position: monaco.editor.OverviewRulerLane.Left
     }
 };
-const removedColor = 'red';
+const removedColor = '#00ccff';
 const removedClassName = fstyle.style({
     borderLeft: `3px solid ${removedColor}`,
     marginLeft: `5px`
