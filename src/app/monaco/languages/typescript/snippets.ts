@@ -124,4 +124,13 @@ export const defaultSnippets: TemplateConfig[] = [
     {
         "name": "@author", "description": "author name", "template": "@author {{user}}"
     },
+    {
+        name: 'ctor',
+        description: 'constructor',
+        template:[
+			"constructor() {",
+			"\t{{}}",
+			"}"
+		].join('\n'),
+    }
 ];
