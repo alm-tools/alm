@@ -148,7 +148,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         // live analysis
         this.disposible.add(liveAnalysis.setup(this.editor));
 
-        // lint
+        // linter
         this.disposible.add(linter.setup(this.editor));
 
         // quick fix

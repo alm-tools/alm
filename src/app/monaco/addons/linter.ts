@@ -11,78 +11,6 @@ import {cast,server} from "../../../socket/socketClient";
 type IDisposable = events.Disposable;
 type Editor = monaco.editor.ICodeEditor;
 
-export class DiagnostcsAdapter {
-
-	private _disposables: IDisposable[] = [];
-	private _listener: { [filePath: string]: events.CompositeDisposible } = Object.create(null);
-
-	constructor(public langauge: 'javascript' | 'typescript') {
-		const onModelAdd = (model: monaco.editor.IModel): void => {
-			if (model.getModeId() !== langauge) {
-				return;
-			}
-
-            /** Get the file path for the model that is getting created */
-            const filePath = window.creatingModelFilePath;
-            if (!filePath) {
-                // Should not happen as already bail out if language is not of the kind we setup in the doccache 🌹
-                console.error('should not happen');
-                return;
-            }
-
-            let handle: any;
-            const performLint = () => {
-                this._doValidate(filePath, model);
-            }
-
-            const disposible = new events.CompositeDisposible();
-			this._listener[model.filePath] = disposible;
-
-            // subscribe for future updates
-            disposible.add(cast.errorsUpdated.on(performLint));
-
-            // also validate initially
-			this._doValidate(filePath, model);
-		};
-
-		const onModelRemoved = (model: monaco.editor.IModel): void => {
-            if (model.filePath && this._listener[model.filePath]) {
-                this._listener[model.filePath].dispose();
-                delete this._listener[model.filePath];
-            }
-		};
-
-		this._disposables.push(monaco.editor.onDidCreateModel(onModelAdd));
-		this._disposables.push(monaco.editor.onWillDisposeModel(onModelRemoved));
-		this._disposables.push(monaco.editor.onDidChangeModelLanguage(event => {
-			onModelRemoved(event.model);
-			onModelAdd(event.model);
-		}));
-
-		this._disposables.push({
-			dispose: () => {
-				for (let key in this._listener) {
-					this._listener[key].dispose();
-				}
-			}
-		});
-
-		monaco.editor.getModels().forEach(onModelAdd);
-	}
-
-	public dispose(): void {
-		this._disposables.forEach(d => d && d.dispose());
-		this._disposables = [];
-	}
-
-	private _doValidate(filePath: string, model: monaco.editor.IModel): void {
-        let rawErrors = state.getState().errorsUpdate.errorsByFilePath[filePath] || [];
-        let markers = rawErrors.map(codeErrorToMonacoError);
-        monaco.editor.setModelMarkers(model, this.langauge, markers);
-	}
-}
-
-
 function codeErrorToMonacoError(codeError: CodeError): monaco.editor.IMarkerData {
     return {
         severity: monaco.Severity.Error,
@@ -96,5 +24,21 @@ function codeErrorToMonacoError(codeError: CodeError): monaco.editor.IMarkerData
 }
 
 export function setup(editor: Editor): { dispose: () => void } {
-    if (editor) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
+    // if (editor) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
+
+	function performLint(): void {
+		let filePath: string = editor.filePath;
+		let model: monaco.editor.IModel = editor.getModel();
+
+		let rawErrors = state.getState().errorsUpdate.errorsByFilePath[filePath] || [];
+		let markers = rawErrors.map(codeErrorToMonacoError);
+		monaco.editor.setModelMarkers(model, 'alm-linter', markers);
+	}
+
+	// Perform an initial lint
+	performLint();
+	const disposible = new events.CompositeDisposible();
+	// Subscribe for future updates
+	disposible.add(cast.errorsUpdated.on(performLint));
+	return disposible;
 }
