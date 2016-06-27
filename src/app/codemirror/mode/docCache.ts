@@ -52,6 +52,8 @@ declare global {
  */
 import {setupMonacoTypecript} from "../../monaco/languages/typescript/monacoTypeScript";
 setupMonacoTypecript();
+import {setupMonacoJson} from "../../monaco/languages/json/monacoJson";
+setupMonacoJson();
 
 /**
  * Ext lookup
