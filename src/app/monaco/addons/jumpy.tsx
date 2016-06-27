@@ -31,7 +31,8 @@ declare global {
  */
 let lowerCharacters = [];
 for (let i = 'a'.charCodeAt(0); i <= 'z'.charCodeAt(0); i++) {
-    lowerCharacters.push(String.fromCharCode(i));
+    const key = String.fromCharCode(i)
+    lowerCharacters.push(key);
 }
 export let keys: string[] = []
 for (let c1 of lowerCharacters) {
@@ -94,7 +95,8 @@ function addOverlay(editor: Editor) {
             e.stopPropagation();
 
             // The character representation
-            const char = lowerCharacters[e.keyCode - monaco.KeyCode.KEY_A];
+            const char = String.fromCharCode(e.browserEvent.which).toLowerCase();
+            // console.log({char}); // DEBUG
 
             let state = getState(editor);
             if (!state.key1) {
