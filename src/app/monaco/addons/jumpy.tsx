@@ -183,7 +183,7 @@ function createOverlays(editor: Editor) {
         let pos = 0;
         let lineOverlays: JumpyWidget[] = [];
         while (pos < string.length) {
-            var matches = /^[A-Z]?[0-9a-z]+|^[\{\};]+/.exec(string.substr(pos));
+            var matches = splitRegex.exec(string.substr(pos));
             if (matches && matches.length) {
                 let matched = matches[0];
                 let name = keys[keysIndex++];
