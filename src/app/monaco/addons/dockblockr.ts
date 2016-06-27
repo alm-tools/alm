@@ -10,9 +10,9 @@ type Editor = monaco.editor.ICodeEditor;
  * Note: the order of the snippets is important
  */
 const snippets = {
-    '////': `/*********************
- * {{}}
- *********************/`,
+    '////': `//////////////////////
+// {{}}
+//////////////////////`,
 
 
     '///': `/**
