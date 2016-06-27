@@ -201,7 +201,7 @@ function createOverlays(editor: Editor) {
 
                 lineOverlays.push(widget);
                 // we want some minimum space between matches
-                pos += Math.max(matched.length,3);
+                pos += Math.max(matched.length,2);
             } else {
                 pos++;
             }
