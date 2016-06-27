@@ -2,8 +2,12 @@
 
 This folder contains a bunch of stuff needed to parse json mostly pulled off the internet. Origin sources are mentioned in the headers.
 
+Core Stuff:
 * core/jsonc-parser: The `scanner` really.
 
+Monaco Stuff:
+* monacoJson: The entry point for monacoJson stuff.
+* tokenization: Provides the syntax highlighting for monaco.
 
 ## Background
 
