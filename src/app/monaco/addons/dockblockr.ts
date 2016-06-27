@@ -6,7 +6,13 @@
 import {CompositeDisposible} from "../../../common/events";
 type Editor = monaco.editor.ICodeEditor;
 
+/**
+ * Note: the order of the snippets is important
+ */
 const snippets = {
+    '///': `/**
+ * {{}}
+ */`,
     '//': `/** {{}} */`,
 }
 
@@ -14,25 +20,25 @@ export function setup(editor: Editor): { dispose: () => void } {
     // if (editor) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
 
     const disposible = new CompositeDisposible();
-    disposible.add(editor.onKeyDown((e)=>{
+    disposible.add(editor.onKeyDown((e) => {
         if (e.keyCode === monaco.KeyCode.Tab) {
             const position = editor.getPosition();
             const contents = editor.getModel().getLineContent(position.lineNumber).substr(0, position.column - 1);
 
             const matchers = Object.keys(snippets);
-            for (let snippet of matchers) {
-                if (contents.endsWith(snippet)) {
+            for (let snippetKey of matchers) {
+                if (contents.endsWith(snippetKey)) {
                     e.preventDefault();
                     e.stopPropagation();
 
-                    // Need access from monaco for:
-                    // - CodeSnippet
-                    // - getSnippetController
-                    // 
-                    // const codeSnippet = new CodeSnippet(snippets[snippet]);
-                    // const overwriteBefore = snippet.length;
-                    // const overwriteAfter = 0;
-                    // getSnippetController(this.editor).run(codeSnippet, overwriteBefore , overwriteAfter));
+                    /** Insert the snippet */
+                    const codeSnippet = new monaco.CodeSnippet(snippets[snippetKey]);
+                    const overwriteBefore = snippetKey.length;
+                    const overwriteAfter = 0;
+                    monaco.getSnippetController(editor).run(codeSnippet, overwriteBefore, overwriteAfter);
+
+                    // Don't run any other snippets :)
+                    return;
                 }
             }
         }
