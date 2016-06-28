@@ -14,7 +14,6 @@
 
 import Json = require('../core/jsonc-parser');
 import {IJSONSchema, IJSONSchemaMap} from '../core/jsonSchema';
-import URI from '../utils/uri';
 import Strings = require('../utils/strings');
 import Parser = require('../core/jsonParser');
 import {localize} from "../core/localize";
