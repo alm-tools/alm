@@ -11,7 +11,7 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import Json = require('./jsonc');
+import Json = require('../../../../app/monaco/languages/json/core/jsonc-parser');
 import JsonSchema = require('./jsonSchema');
 import {JSONLocation} from './jsonLocation';
 
