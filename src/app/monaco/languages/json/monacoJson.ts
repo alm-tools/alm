@@ -11,6 +11,29 @@ export function setupMonacoJson() {
         const languageId = 'json';
 
         // Tokenizer
-        monaco.languages.setTokensProvider(languageId, createTokenizationSupport(true))
+        monaco.languages.setTokensProvider(languageId, createTokenizationSupport(true));
+
+        /** Setup bracket matching etc. */
+        monaco.languages.setLanguageConfiguration(languageId, richEditConfiguration);
     });
 }
+
+const richEditConfiguration: monaco.languages.LanguageConfiguration = {
+	wordPattern: /(-?\d*\.\d\w*)|([^\[\{\]\}\:\"\,\s]+)/g,
+
+	comments: {
+		lineComment: '//',
+		blockComment: ['/*', '*/']
+	},
+
+	brackets: [
+		['{', '}'],
+		['[', ']']
+	],
+
+	autoClosingPairs: [
+		{ open: '{', close: '}', notIn: ['string'] },
+		{ open: '[', close: ']', notIn: ['string'] },
+		{ open: '"', close: '"', notIn: ['string'] }
+	]
+};
