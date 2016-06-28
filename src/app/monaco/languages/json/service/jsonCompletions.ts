@@ -27,7 +27,7 @@ type Thenable<T> = Promise<T>;
  */
 const schemas: { fileName: string, content: JsonSchema.IJSONSchema }[] = [];
 Object.keys(utils.supportedAutocompleteConfigFileNames).forEach(fileName => {
-    const rawContent = require(`./schemas/${fileName}`);
+    const rawContent = require(`../schemas/${fileName}`);
     SchemaService.resolveSchemaContent(rawContent); // Mutates it in place
     schemas.push({
         fileName,
@@ -40,7 +40,7 @@ Object.keys(utils.supportedAutocompleteConfigFileNames).forEach(fileName => {
  */
 import {Types}  from "../../../../../socket/socketContract";
 import fuzzaldrin = require('fuzzaldrin');
-export function getCompletionsAtPosition(this:{}, query: Types.GetCompletionsAtPositionQuery & {contents: string}): Promise<Types.GetCompletionsAtPositionResponse> {
+export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQuery & {contents: string}): Promise<Types.GetCompletionsAtPositionResponse> {
     const {filePath, prefix} = query;
     const fileName = utils.getFileName(filePath).toLowerCase();
     const offset = query.position;

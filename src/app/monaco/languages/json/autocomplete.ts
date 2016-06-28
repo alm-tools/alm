@@ -1,6 +1,6 @@
 import * as utils from "../../../../common/utils";
 import * as monacoUtils from "../../monacoUtils";
-import {cast, server} from "../../../../socket/socketClient";
+import {getCompletionsAtPosition} from "./service/jsonCompletions";
 
 import CancellationToken = monaco.CancellationToken;
 import Thenable = monaco.Thenable;
@@ -27,7 +27,9 @@ export class CompletionAdapter implements monaco.languages.CompletionItemProvide
             return Promise.resolve(result);
         }
 
-        return server.getCompletionsAtPosition({filePath, position: offset, prefix}).then((res)=>{
+        const contents = model.getValue();
+
+        return getCompletionsAtPosition({filePath, position: offset, prefix, contents}).then((res)=>{
             res.completions.forEach(completion => {
                 const item: monaco.languages.CompletionItem = {
                     label: completion.name,

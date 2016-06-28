@@ -16,6 +16,8 @@ Still stuff from VSCode but heavily modified to use the above ^ to give intellig
 * `jsonSchemaService.ts`
 * `jsonCompletion.ts` file is the one I needed to customize to get what I wanted for our types.
 
+# Schemas Folder
+These files are download from http://schemastore.org/json/
 
 # Monaco Stuff:
 * monacoJson: The entry point for monacoJson stuff.
