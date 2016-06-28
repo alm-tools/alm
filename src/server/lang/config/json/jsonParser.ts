@@ -1,5 +1,5 @@
 /**
- * From : https://github.com/Microsoft/vscode/blob/master/extensions/json/server/src/jsonParser.ts
+ * From : https://github.com/Microsoft/vscode-json-languageservice/blob/master/src/parser/jsonParser.ts
  *
  * Modifications:
  * - removed `localize` dependency
