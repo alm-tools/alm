@@ -1,5 +1,5 @@
 /**
- * Based on https://github.com/Microsoft/vscode/blob/master/extensions/json/server/src/jsonCompletion.ts
+ * Based on https://github.com/Microsoft/vscode-json-languageservice/blob/master/src/services/jsonCompletion.ts
  *
  * But with our types etc.
  *
