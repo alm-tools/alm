@@ -1,4 +1,5 @@
 import {createTokenizationSupport} from "./tokenization";
+import {CompletionAdapter} from "./autocomplete";
 
 export function setupMonacoJson() {
     monaco.languages.register({
@@ -15,6 +16,9 @@ export function setupMonacoJson() {
 
         /** Setup bracket matching etc. */
         monaco.languages.setLanguageConfiguration(languageId, richEditConfiguration);
+
+        /** Setup Completion Adapter */
+        monaco.languages.registerCompletionItemProvider(languageId, new CompletionAdapter());
     });
 }
 
