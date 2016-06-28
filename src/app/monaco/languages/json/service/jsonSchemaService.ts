@@ -13,22 +13,46 @@
 'use strict';
 
 import Json = require('../core/jsonc-parser');
-import {IJSONSchema, IJSONSchemaMap} from '../core/jsonSchema';
+import {JSONSchema, JSONSchemaMap} from '../core/jsonSchema';
 import Strings = require('../utils/strings');
 import Parser = require('../core/jsonParser');
 import {localize} from "../core/localize";
+import * as utils from "../../../../../common/utils";
 type Thenable<T> = Promise<T>;
+
+/**
+ * Register our schemas
+ * Mostly downloaded from http://json.schemastore.org/
+ *
+ * New additions need to
+ * - Download and put in schemas
+ * - Update utils.ts for "supportedConfigFileNames"
+ */
+export const schemas: { fileName: string, content: JSONSchema }[] = [];
+Object.keys(utils.supportedAutocompleteConfigFileNames).forEach(fileName => {
+    const rawContent = require(`../schemas/${fileName}`);
+    resolveSchemaContent(rawContent); // Mutates it in place
+    schemas.push({
+        fileName,
+        content: rawContent
+    });
+});
+export function getSchemaForResource(filePath): Promise<ResolvedSchema> {
+    const fileName = utils.getFileName(filePath);
+    const schema = schemas.find(s=>s.fileName === fileName).content;
+    return Promise.resolve(new ResolvedSchema(schema));
+}
 
 /**
  * Copied straight out of JSONSchemaService
  * Resolves *links* in schema definitions
  * NOTE: Mutates the argument `schema` too!
  */
-export function resolveSchemaContent(schema: IJSONSchema): Thenable<ResolvedSchema> {
+export function resolveSchemaContent(schema: JSONSchema): Thenable<ResolvedSchema> {
 
     let resolveErrors: string[] = [];
 
-    let findSection = (schema: IJSONSchema, path: string): any => {
+    let findSection = (schema: JSONSchema, path: string): any => {
         if (!path) {
             return schema;
         }
@@ -40,7 +64,7 @@ export function resolveSchemaContent(schema: IJSONSchema): Thenable<ResolvedSche
         return current;
     };
 
-    let resolveLink = (node: any, linkedSchema: IJSONSchema, linkPath: string): void => {
+    let resolveLink = (node: any, linkedSchema: JSONSchema, linkPath: string): void => {
         let section = findSection(linkedSchema, linkPath);
         if (section) {
             for (let key in section) {
@@ -65,20 +89,20 @@ export function resolveSchemaContent(schema: IJSONSchema): Thenable<ResolvedSche
         });
     };
 
-    let resolveRefs = (node: IJSONSchema, parentSchema: IJSONSchema): Thenable<any> => {
-        let toWalk : IJSONSchema[] = [node];
-        let seen: IJSONSchema[] = [];
+    let resolveRefs = (node: JSONSchema, parentSchema: JSONSchema): Thenable<any> => {
+        let toWalk : JSONSchema[] = [node];
+        let seen: JSONSchema[] = [];
 
         let openPromises: Thenable<any>[] = [];
 
-        let collectEntries = (...entries: IJSONSchema[]) => {
+        let collectEntries = (...entries: JSONSchema[]) => {
             for (let entry of entries) {
                 if (typeof entry === 'object') {
                     toWalk.push(entry);
                 }
             }
         };
-        let collectMapEntries = (...maps: IJSONSchemaMap[]) => {
+        let collectMapEntries = (...maps: JSONSchemaMap[]) => {
             for (let map of maps) {
                 if (typeof map === 'object') {
                     for (let key in map) {
@@ -88,7 +112,7 @@ export function resolveSchemaContent(schema: IJSONSchema): Thenable<ResolvedSche
                 }
             }
         };
-        let collectArrayEntries = (...arrays: IJSONSchema[][]) => {
+        let collectArrayEntries = (...arrays: JSONSchema[][]) => {
             for (let array of arrays) {
                 if (Array.isArray(array)) {
                     toWalk.push.apply(toWalk, array);
@@ -111,8 +135,8 @@ export function resolveSchemaContent(schema: IJSONSchema): Thenable<ResolvedSche
                 }
             }
             collectEntries(next.items, next.additionalProperties, next.not);
-            collectMapEntries(next.definitions, next.properties, next.patternProperties, <IJSONSchemaMap> next.dependencies);
-            collectArrayEntries(next.anyOf, next.allOf, next.oneOf, <IJSONSchema[]> next.items);
+            collectMapEntries(next.definitions, next.properties, next.patternProperties, <JSONSchemaMap> next.dependencies);
+            collectArrayEntries(next.anyOf, next.allOf, next.oneOf, <JSONSchema[]> next.items);
         }
         return Promise.all(openPromises);
     };
@@ -121,19 +145,19 @@ export function resolveSchemaContent(schema: IJSONSchema): Thenable<ResolvedSche
 }
 
 export class ResolvedSchema {
-	public schema: IJSONSchema;
+	public schema: JSONSchema;
 	public errors: string[];
 
-	constructor(schema: IJSONSchema, errors: string[] = []) {
+	constructor(schema: JSONSchema, errors: string[] = []) {
 		this.schema = schema;
 		this.errors = errors;
 	}
 
-	public getSection(path: string[]): IJSONSchema {
+	public getSection(path: string[]): JSONSchema {
 		return this.getSectionRecursive(path, this.schema);
 	}
 
-	private getSectionRecursive(path: string[], schema: IJSONSchema): IJSONSchema {
+	private getSectionRecursive(path: string[], schema: JSONSchema): JSONSchema {
 		if (!schema || path.length === 0) {
 			return schema;
 		}

@@ -1,6 +1,6 @@
 import * as utils from "../../../../common/utils";
 import * as monacoUtils from "../../monacoUtils";
-import {getCompletionsAtPosition} from "./service/jsonCompletions";
+import {getCompletionsAtPosition} from "./service/jsonCompletions2";
 
 import CancellationToken = monaco.CancellationToken;
 import Thenable = monaco.Thenable;
