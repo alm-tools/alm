@@ -12,7 +12,7 @@
  * ```
  * Both `node` and `location` are extremely handy
  */
-import Parser = require('./json/jsonParser');
+import Parser = require('./core/jsonParser');
 
 const packageJsonDependenciesSections = [
     'dependencies',
@@ -21,11 +21,11 @@ const packageJsonDependenciesSections = [
     'peerDependencies',
 ]
 
-import * as utils from "../../../common/utils";
-import * as fmc from "../../disk/fileModelCache";
-import {Types} from "../../../socket/socketContract";
+import * as utils from "../../../../common/utils";
+import {Types} from "../../../../socket/socketContract";
+
 // TODO: mon : provide `editorPosition`
-export function getQuickInfo(query: { filePath: string, position: number }): Promise<Types.QuickInfoResponse> {
+export function getQuickInfo(query: { filePath: string, position: number, contents: string }): Promise<Types.QuickInfoResponse> {
     const response: Types.QuickInfoResponse = {
         valid: false,
         info: {
@@ -40,7 +40,7 @@ export function getQuickInfo(query: { filePath: string, position: number }): Pro
     const fileName = utils.getFileName(filePath).toLowerCase();
     const offset = query.position;
 
-    const contents = fmc.getOrCreateOpenFile(filePath).getContents();
+    const contents = query.contents;
     const doc = Parser.parse(contents);
     let node = doc.getNodeFromOffsetEndInclusive(offset);
     const location = node.getNodeLocation();

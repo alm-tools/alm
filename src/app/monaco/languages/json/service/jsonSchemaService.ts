@@ -12,12 +12,12 @@
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-import Json = require('../jsonc');
-import {IJSONSchema, IJSONSchemaMap} from '../jsonSchema';
+import Json = require('../core/jsonc-parser');
+import {IJSONSchema, IJSONSchemaMap} from '../core/jsonSchema';
 import URI from '../utils/uri';
 import Strings = require('../utils/strings');
-import Parser = require('../jsonParser');
-import {localize} from "../localize";
+import Parser = require('../core/jsonParser');
+import {localize} from "../core/localize";
 type Thenable<T> = Promise<T>;
 
 /**

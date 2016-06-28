@@ -11,10 +11,10 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as utils from "../../../../../common/utils";
-import Parser = require('../jsonParser');
+import Parser = require('../core/jsonParser');
 import SchemaService = require('./jsonSchemaService');
-import JsonSchema = require('../jsonSchema');
-import {localize} from "../localize";
+import JsonSchema = require('../core/jsonSchema');
+import {localize} from "../core/localize";
 type Thenable<T> = Promise<T>;
 
 /**
@@ -39,9 +39,8 @@ Object.keys(utils.supportedAutocompleteConfigFileNames).forEach(fileName => {
  * BAS: My functions
  */
 import {Types}  from "../../../../../socket/socketContract";
-import * as fmc from "../../../../disk/fileModelCache";
 import fuzzaldrin = require('fuzzaldrin');
-export function getCompletionsAtPosition(this:{}, query: Types.GetCompletionsAtPositionQuery): Promise<Types.GetCompletionsAtPositionResponse> {
+export function getCompletionsAtPosition(this:{}, query: Types.GetCompletionsAtPositionQuery & {contents: string}): Promise<Types.GetCompletionsAtPositionResponse> {
     const {filePath, prefix} = query;
     const fileName = utils.getFileName(filePath).toLowerCase();
     const offset = query.position;
@@ -49,7 +48,7 @@ export function getCompletionsAtPosition(this:{}, query: Types.GetCompletionsAtP
     const endsInPunctuation = utils.prefixEndsInPunctuation(prefix);
     const schema = schemas.find(s=>s.fileName === fileName).content;
 
-    const contents = fmc.getOrCreateOpenFile(filePath).getContents();
+    const contents = query.contents;
     const doc = Parser.parse(contents);
 
     // TODO: validation :)
@@ -446,8 +445,9 @@ function getTextForEnumValue(value: any): string {
     return snippet;
 }
 
-// TODO: repurpose for us
-import {CompletionItem, CompletionItemKind} from "./vscode-types";
+// Repurposed for us
+import CompletionItem = monaco.languages.CompletionItem;
+import CompletionItemKind = monaco.languages.CompletionItemKind;
 export interface ISuggestionsCollector {
     add(suggestion: CompletionItem): void;
     error(message: string): void;

@@ -18,12 +18,6 @@ import * as activeProjectConfig from "../server/disk/activeProjectConfig";
 import {errorsCache} from "../server/globalErrorCache";
 import * as projectServiceMaster from "../server/workers/lang/projectServiceMaster";
 
-/**
- * Support editing config files
- */
-import * as jsonCompletions from "../server/lang/config/json/service/jsonCompletions";
-import * as jsonHover from "../server/lang/config/jsonHover";
-
 namespace Server {
     export var echo: typeof contract.server.echo = (data, client) => {
         console.log('Echo request received:', data);
@@ -157,20 +151,10 @@ namespace Server {
      * Project service
      */
     export var getCompletionsAtPosition: typeof contract.server.getCompletionsAtPosition = (query) => {
-        if (utils.isSupportedConfigFileForAutocomplete(query.filePath)) {
-            return jsonCompletions.getCompletionsAtPosition(query);
-        }
-        else {
-            return projectServiceMaster.worker.getCompletionsAtPosition(query);
-        }
+        return projectServiceMaster.worker.getCompletionsAtPosition(query);
     }
     export var quickInfo : typeof contract.server.quickInfo = (query) => {
-        if (utils.isSupportedConfigFileForHover(query.filePath)) {
-            return jsonHover.getQuickInfo(query);
-        }
-        else {
-            return projectServiceMaster.worker.quickInfo(query);
-        }
+        return projectServiceMaster.worker.quickInfo(query);
     }
     export var getCompletionEntryDetails : typeof contract.server.getCompletionEntryDetails = projectServiceMaster.worker.getCompletionEntryDetails;
     export var getRenameInfo : typeof contract.server.getRenameInfo = projectServiceMaster.worker.getRenameInfo;
