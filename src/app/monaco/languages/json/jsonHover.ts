@@ -40,61 +40,57 @@ const packageJsonDependenciesSections = [
 import * as utils from "../../../../common/utils";
 import {Types} from "../../../../socket/socketContract";
 
-// TODO: mon : provide `editorPosition`
-export function getQuickInfo(query: { filePath: string, position: number, contents: string }): Promise<Types.QuickInfoResponse> {
-    const response: Types.QuickInfoResponse = {
-        valid: false,
-        info: {
-            name: null,
-            comment: null,
-            range: null
-        },
-        errors: []
-    }
+import {cast, server} from "../../../../socket/socketClient";
+import * as state from "../../../state/state";
+import {onlyLastCallWithDelay} from "../../monacoUtils";
+import CancellationToken = monaco.CancellationToken;
+import Position = monaco.Position;
 
-    const {filePath} = query;
-    const fileName = utils.getFileName(filePath).toLowerCase();
-    const offset = query.position;
+export class ProvideHover {
+    provideHover(model: monaco.editor.IReadOnlyModel, pos: Position, token: CancellationToken): Promise<monaco.languages.Hover> {
+        const response: monaco.languages.Hover = {
+            range: null,
+            contents: [],
+        }
 
-    const contents = query.contents;
-    const doc = Parser.parse(contents);
-    let node = doc.getNodeFromOffsetEndInclusive(offset);
-    const location = node.getNodeLocation();
+        const {filePath} = model;
+        const fileName = utils.getFileName(filePath).toLowerCase();
+        const offset = model.getOffsetAt(pos);
 
-    /**
-     * Provide intelligence based on file name
-     */
-    if (fileName === "package.json") {
-        /** Provide latest version hint for depencencies */
-        if (packageJsonDependenciesSections.some(section => location.matches([section, '*']))) {
-            const path = location.getSegments(); // e.g. ["devDependencies", "mocha"]
-            let pack = path[path.length - 1];
-            if (typeof pack === 'string') {
-                return getInfo(pack).then(res => {
-                    if (!res.description && !res.version) return response;
+        const contents = model.getValue();
+        const doc = Parser.parse(contents);
+        let node = doc.getNodeFromOffsetEndInclusive(offset);
+        const location = node.getNodeLocation();
 
-                    response.valid = true;
-                    const comments = [];
-                    res.description && comments.push(res.description);
-                    res.version && comments.push(`Latest version: ${res.version}`);
-                    response.info = {
-                        name: pack,
-                        comment: comments.join('\n'),
-                        range: null
-                    }
+        /**
+         * Provide intelligence based on file name
+         */
+        if (fileName === "package.json") {
+            /** Provide latest version hint for depencencies */
+            if (packageJsonDependenciesSections.some(section => location.matches([section, '*']))) {
+                const path = location.getSegments(); // e.g. ["devDependencies", "mocha"]
+                let pack = path[path.length - 1];
+                if (typeof pack === 'string') {
+                    return getInfo(pack).then(res => {
+                        if (!res.description && !res.version) return response;
 
-                    return response;
-                });
+                        res.description && response.contents.push(res.description);
+                        res.version && response.contents.push(`Latest version: ${res.version}`);
+
+                        return response;
+                    });
+                }
             }
         }
-    }
 
-    return utils.resolve(response)
+        return utils.resolve(response)
+    }
 }
+
 
 import * as fetch from "node-fetch";
 function getInfo(pack: string): Promise<{description?: string, version?: string}> {
-    const queryUrl = 'http://registry.npmjs.org/' + encodeURIComponent(pack) + '/latest';
+    const queryUrl = 'http://registry.npmjs.org:80/' + encodeURIComponent(pack) + '/latest';
 
     return fetch(queryUrl)
         .then(function(response) {

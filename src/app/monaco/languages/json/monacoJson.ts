@@ -1,5 +1,6 @@
 import {createTokenizationSupport} from "./tokenization";
 import {CompletionAdapter} from "./autocomplete";
+import {ProvideHover} from "./jsonHover";
 
 export function setupMonacoJson() {
     monaco.languages.register({
@@ -19,6 +20,9 @@ export function setupMonacoJson() {
 
         /** Setup Completion Adapter */
         monaco.languages.registerCompletionItemProvider(languageId, new CompletionAdapter());
+
+        /** Setup hover support */
+        monaco.languages.registerHoverProvider(languageId, new ProvideHover());
     });
 }
 
