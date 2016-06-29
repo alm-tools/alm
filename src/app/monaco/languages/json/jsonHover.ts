@@ -11,6 +11,22 @@
  * let location = node.getNodeLocation();
  * ```
  * Both `node` and `location` are extremely handy
+ *
+ * Also validation:
+ *
+ ```ts
+ const doc = Parser.parse(contents);
+
+ // TODO: validation :)
+ if (!doc.errors.length) {
+     doc.validate(schema);
+     // console.log('Schema Validation:',doc.errors,doc.warnings);
+ }
+ else {
+     // console.log('Parse Errors:', doc.errors);
+ }
+ ```
+ *
  */
 import Parser = require('./core/jsonParser');
 
