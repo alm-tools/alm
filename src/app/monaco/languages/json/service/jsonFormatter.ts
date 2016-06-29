@@ -1,6 +1,7 @@
 /**
  * From https://raw.githubusercontent.com/Microsoft/vscode-json-languageservice/master/src/services/jsonFormatter.ts
- * Redirected dependencies
+ * - Redirected dependencies
+ * - Made `getEol` use editorconfig ;)
  */
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
@@ -195,16 +196,7 @@ function computeIndentLevel(content: string, offset: number, options: Formatting
 }
 
 function getEOL(document: TextDocument): string {
-	let text = document.getValue();
-	if (document.getLineCount() > 1) {
-		let to = document.getOffsetAt(new Position(1, 0));
-		let from = to;
-		while (from > 0 && isEOL(text, from - 1)) {
-			from--;
-		}
-		return text.substr(from, to - from);
-	}
-	return '\n';
+    return document._editorOptions.newLineCharacter;
 }
 
 function isEOL(text: string, offset: number) {

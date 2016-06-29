@@ -1,6 +1,7 @@
 import {createTokenizationSupport} from "./tokenization";
 import {CompletionAdapter} from "./autocomplete";
 import {ProvideHover} from "./jsonHover";
+import {DocumentFormattingEditProvider, DocumentRangeFormattingEditProvider} from "./formatting";
 
 export function setupMonacoJson() {
     monaco.languages.register({
@@ -23,25 +24,29 @@ export function setupMonacoJson() {
 
         /** Setup hover support */
         monaco.languages.registerHoverProvider(languageId, new ProvideHover());
+
+        /** Formatting */
+        monaco.languages.registerDocumentFormattingEditProvider(languageId, new DocumentFormattingEditProvider());
+        monaco.languages.registerDocumentRangeFormattingEditProvider(languageId, new DocumentRangeFormattingEditProvider());
     });
 }
 
 const richEditConfiguration: monaco.languages.LanguageConfiguration = {
-	wordPattern: /(-?\d*\.\d\w*)|([^\[\{\]\}\:\"\,\s]+)/g,
+    wordPattern: /(-?\d*\.\d\w*)|([^\[\{\]\}\:\"\,\s]+)/g,
 
-	comments: {
-		lineComment: '//',
-		blockComment: ['/*', '*/']
-	},
+    comments: {
+        lineComment: '//',
+        blockComment: ['/*', '*/']
+    },
 
-	brackets: [
-		['{', '}'],
-		['[', ']']
-	],
+    brackets: [
+        ['{', '}'],
+        ['[', ']']
+    ],
 
-	autoClosingPairs: [
-		{ open: '{', close: '}', notIn: ['string'] },
-		{ open: '[', close: ']', notIn: ['string'] },
-		{ open: '"', close: '"', notIn: ['string'] }
-	]
+    autoClosingPairs: [
+        { open: '{', close: '}', notIn: ['string'] },
+        { open: '[', close: ']', notIn: ['string'] },
+        { open: '"', close: '"', notIn: ['string'] }
+    ]
 };
