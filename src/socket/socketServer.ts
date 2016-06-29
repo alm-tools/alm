@@ -7,6 +7,7 @@ import * as flm from "../server/workers/fileListing/fileListingMaster";
 import * as workingDir from "../server/disk/workingDir";
 import {FileModel} from "../server/disk/fileModel";
 import * as gitService from "../server/workers/external/gitService";
+import * as npmService from "../server/workers/external/npmService";
 import * as findAndReplaceMultiService from "../server/workers/external/findAndReplaceMultiService";
 import * as session from "../server/disk/session";
 import * as utils from "../common/utils";
@@ -208,6 +209,11 @@ namespace Server {
     export var gitStatus : typeof contract.server.gitStatus = gitService.gitStatus;
     export var gitReset : typeof contract.server.gitReset = gitService.gitReset;
     export var gitDiff : typeof contract.server.gitDiff = gitService.gitDiff;
+
+    /**
+     * NPM service
+     */
+    export var npmLatest: typeof contract.server.npmLatest = npmService.npmLatest;
 
     /**
      * FARM

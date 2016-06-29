@@ -105,6 +105,11 @@ export var server = {
     gitDiff: {} as QRFunction<{filePath:string},types.GitDiff>,
 
     /**
+     * NPM Service
+     */
+    npmLatest: {} as QRFunction<{pack:string},{ description?: string, version?: string }>,
+
+    /**
      * FARM
      */
     startFarming: {} as QRFunction<Types.FarmConfig, {}>,

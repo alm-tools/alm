@@ -48,8 +48,14 @@ import Position = monaco.Position;
 
 export class ProvideHover {
     provideHover(model: monaco.editor.IReadOnlyModel, pos: Position, token: CancellationToken): Promise<monaco.languages.Hover> {
+        const wordInfo = model.getWordUntilPosition(pos);
         const response: monaco.languages.Hover = {
-            range: null,
+            range: {
+                startLineNumber: pos.lineNumber,
+                endLineNumber: pos.lineNumber,
+                startColumn: wordInfo.startColumn,
+                endColumn: wordInfo.endColumn,
+            },
             contents: [],
         }
 
@@ -71,10 +77,11 @@ export class ProvideHover {
                 const path = location.getSegments(); // e.g. ["devDependencies", "mocha"]
                 let pack = path[path.length - 1];
                 if (typeof pack === 'string') {
-                    return getInfo(pack).then(res => {
+                    return server.npmLatest({pack}).then(res => {
+                        // console.log(res);
                         if (!res.description && !res.version) return response;
 
-                        res.description && response.contents.push(res.description);
+                        res.description && response.contents.push(`**${res.description}**`);
                         res.version && response.contents.push(`Latest version: ${res.version}`);
 
                         return response;
@@ -85,31 +92,4 @@ export class ProvideHover {
 
         return utils.resolve(response)
     }
-}
-
-
-import * as fetch from "node-fetch";
-function getInfo(pack: string): Promise<{description?: string, version?: string}> {
-    const queryUrl = 'http://registry.npmjs.org:80/' + encodeURIComponent(pack) + '/latest';
-
-    return fetch(queryUrl)
-        .then(function(response) {
-            return response.json()
-        })
-        .then(function(obj) {
-            let result: {
-                description?: string,
-                version?: string
-            } = {};
-            if (obj.description) {
-                result.description = obj.description;
-            }
-            if (obj.version) {
-                result.version = obj.version;
-            }
-            return result;
-        })
-        .catch((error) => {
-            return {};
-        });
 }
