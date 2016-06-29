@@ -27,20 +27,8 @@ export class CompletionAdapter implements monaco.languages.CompletionItemProvide
             return Promise.resolve(result);
         }
 
-        const contents = model.getValue();
-
-        return getCompletionsAtPosition({filePath, position: offset, prefix, contents}).then((res)=>{
-            res.completions.forEach(completion => {
-                const item: monaco.languages.CompletionItem = {
-                    label: completion.name,
-                    kind: monaco.languages.CompletionItemKind.Snippet,
-                    insertText: completion.insertText,
-                };
-
-                result.items.push(item);
-            });
-
-            return result;
+        return getCompletionsAtPosition(model, position).then((res) => {
+            return res;
         });
 	}
 

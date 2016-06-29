@@ -29,7 +29,7 @@ import PromiseConstructor = monaco.Promise;
 import CompletionItem = monaco.languages.CompletionItem;
 import CompletionItemKind = monaco.languages.CompletionItemKind;
 import CompletionList = monaco.languages.CompletionList;
-import TextDocument = monaco.editor.IModel;
+import TextDocument = monaco.editor.IReadOnlyModel;
 import Position = monaco.Position;
 import Range = monaco.Range;
 /**
