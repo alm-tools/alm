@@ -23,7 +23,6 @@ import schemaService = require('./jsonSchemaService');
 import {JSONSchema} from '../core/jsonSchema';
 
 
-import {} from 'vscode-languageserver-types';
 import Thenable = monaco.Thenable;
 import PromiseConstructor = monaco.Promise;
 import CompletionItem = monaco.languages.CompletionItem;
