@@ -1,25 +1,25 @@
-/** https://github.com/Microsoft/vscode/blob/master/extensions/json/server/src/jsonSchema.ts */
+/** https://raw.githubusercontent.com/Microsoft/vscode-json-languageservice/master/src/jsonSchema.ts */
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 'use strict';
 
-export interface IJSONSchema {
+export interface JSONSchema {
 	id?: string;
 	$schema?: string;
 	type?: string | string[];
 	title?: string;
 	default?: any;
-	definitions?: IJSONSchemaMap;
+	definitions?: JSONSchemaMap;
 	description?: string;
-	properties?: IJSONSchemaMap;
-	patternProperties?: IJSONSchemaMap;
-	additionalProperties?: boolean | IJSONSchema;
+	properties?: JSONSchemaMap;
+	patternProperties?: JSONSchemaMap;
+	additionalProperties?: boolean | JSONSchema;
 	minProperties?: number;
 	maxProperties?: number;
-	dependencies?: IJSONSchemaMap | string[];
-	items?: IJSONSchema | IJSONSchema[];
+	dependencies?: JSONSchemaMap | string[];
+	items?: JSONSchema | JSONSchema[];
 	minItems?: number;
 	maxItems?: number;
 	uniqueItems?: boolean;
@@ -34,10 +34,10 @@ export interface IJSONSchema {
 	multipleOf?: number;
 	required?: string[];
 	$ref?: string;
-	anyOf?: IJSONSchema[];
-	allOf?: IJSONSchema[];
-	oneOf?: IJSONSchema[];
-	not?: IJSONSchema;
+	anyOf?: JSONSchema[];
+	allOf?: JSONSchema[];
+	oneOf?: JSONSchema[];
+	not?: JSONSchema;
 	enum?: any[];
 	format?: string;
 
@@ -45,6 +45,6 @@ export interface IJSONSchema {
 	errorMessage?: string; // VSCode extension
 }
 
-export interface IJSONSchemaMap {
-	[name: string]:IJSONSchema;
+export interface JSONSchemaMap {
+	[name: string]:JSONSchema;
 }

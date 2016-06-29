@@ -13,13 +13,13 @@ const getPackageJsonFilePath = () => {
     try {
         packageJsonFilePath = fsu.travelUpTheDirectoryTreeTillYouFind(packageJsonFilePath, 'package.json');
     }
-    catch (e) {}
+    catch (e) { }
     return packageJsonFilePath;
 }
 
 /** Main utility function to execute a command */
-let npmCmd = (...args: string[]):Promise<string> => {
-    return new Promise((resolve,reject)=>{
+let npmCmd = (...args: string[]): Promise<string> => {
+    return new Promise((resolve, reject) => {
         const cwd = wd.getProjectRoot();
         cp.exec(`npm ${args.join(' ')}`, { cwd: cwd }, (err, stdout, stderr) => {
             if (stderr.toString().trim().length) {
@@ -30,6 +30,32 @@ let npmCmd = (...args: string[]):Promise<string> => {
     });
 }
 
-export function npmInfo(args:{packageName: string}): Promise<string> {
-    return npmCmd('npm','info',args.packageName);
+export function npmInfo(args: { packageName: string }): Promise<string> {
+    return npmCmd('npm', 'info', args.packageName);
+}
+
+import * as fetch from "node-fetch";
+export function npmLatest({pack}: { pack: string }): Promise<{ description?: string, version?: string }> {
+    const queryUrl = 'http://registry.npmjs.org:80/' + encodeURIComponent(pack) + '/latest';
+
+    return fetch(queryUrl)
+        .then(function(response) {
+            return response.json()
+        })
+        .then(function(obj) {
+            let result: {
+                description?: string,
+                version?: string
+            } = {};
+            if (obj.description) {
+                result.description = obj.description;
+            }
+            if (obj.version) {
+                result.version = obj.version;
+            }
+            return result;
+        })
+        .catch((error) => {
+            return {description: `Failed to query info for ${pack}`};
+        });
 }

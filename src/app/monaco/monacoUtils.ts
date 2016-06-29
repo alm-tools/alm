@@ -114,3 +114,11 @@ export function getCurrentPosition(editor: Editor): number {
     const position = editor.getPosition();
     return editor.getModel().getOffsetAt(position);
 }
+
+export function positionToOffset(model: monaco.editor.IReadOnlyModel, position: monaco.IPosition): number {
+    return model.getOffsetAt(position);
+}
+
+export function offsetToPosition(model: monaco.editor.IReadOnlyModel, offset: number): monaco.IPosition {
+    return model.getPositionAt(offset);
+}

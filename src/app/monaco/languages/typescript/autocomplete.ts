@@ -5,33 +5,13 @@ import * as classifierCache from "../../../codemirror/mode/classifierCache";
 import * as utils from "../../../../common/utils";
 import * as types from "../../../../common/types";
 import {defaultSnippets} from "./snippets";
+import * as monacoUtils from "../../monacoUtils";
 
 import CancellationToken = monaco.CancellationToken;
 import Thenable = monaco.Thenable;
 import Position = monaco.Position;
 
 require('./autocomplete.css')
-
-/**
- * Provides utilities to perform various line,ch,position,range conversions 🌹
- */
-export abstract class Adapter {
-	protected _positionToOffset(model: monaco.editor.IReadOnlyModel, position: monaco.IPosition): number {
-		return model.getOffsetAt(position);
-	}
-
-	protected _offsetToPosition(model: monaco.editor.IReadOnlyModel, offset: number): monaco.IPosition {
-		return model.getPositionAt(offset);
-	}
-
-	protected _textSpanToRange(model: monaco.editor.IReadOnlyModel, span: ts.TextSpan): monaco.IRange {
-		let p1 = this._offsetToPosition(model, span.start);
-		let p2 = this._offsetToPosition(model, span.start + span.length);
-		let {lineNumber: startLineNumber, column: startColumn} = p1;
-		let {lineNumber: endLineNumber, column: endColumn} = p2;
-		return { startLineNumber, startColumn, endLineNumber, endColumn };
-	}
-}
 
 /**
  * You are allowed to create your own completion item as long as you provide what monaco needs
@@ -48,7 +28,7 @@ interface MyCompletionItem extends monaco.languages.CompletionItem {
 /**
  * Autocomplete
  */
-export class SuggestAdapter extends Adapter implements monaco.languages.CompletionItemProvider {
+export class SuggestAdapter implements monaco.languages.CompletionItemProvider {
 
 	public get triggerCharacters(): string[] {
 		return ['.','('];
@@ -69,7 +49,7 @@ export class SuggestAdapter extends Adapter implements monaco.languages.Completi
 		// console.log({ prefix }); // DEBUG
 
 		const filePath = model.filePath;
-		const offset = this._positionToOffset(model, position);
+		const offset = monacoUtils.positionToOffset(model, position);
 
 		return server
             .getCompletionsAtPosition({

@@ -7,6 +7,7 @@ import * as flm from "../server/workers/fileListing/fileListingMaster";
 import * as workingDir from "../server/disk/workingDir";
 import {FileModel} from "../server/disk/fileModel";
 import * as gitService from "../server/workers/external/gitService";
+import * as npmService from "../server/workers/external/npmService";
 import * as findAndReplaceMultiService from "../server/workers/external/findAndReplaceMultiService";
 import * as session from "../server/disk/session";
 import * as utils from "../common/utils";
@@ -17,12 +18,6 @@ import * as activeProjectConfig from "../server/disk/activeProjectConfig";
 
 import {errorsCache} from "../server/globalErrorCache";
 import * as projectServiceMaster from "../server/workers/lang/projectServiceMaster";
-
-/**
- * Support editing config files
- */
-import * as jsonCompletions from "../server/lang/config/json/service/jsonCompletions";
-import * as jsonHover from "../server/lang/config/jsonHover";
 
 namespace Server {
     export var echo: typeof contract.server.echo = (data, client) => {
@@ -157,20 +152,10 @@ namespace Server {
      * Project service
      */
     export var getCompletionsAtPosition: typeof contract.server.getCompletionsAtPosition = (query) => {
-        if (utils.isSupportedConfigFileForAutocomplete(query.filePath)) {
-            return jsonCompletions.getCompletionsAtPosition(query);
-        }
-        else {
-            return projectServiceMaster.worker.getCompletionsAtPosition(query);
-        }
+        return projectServiceMaster.worker.getCompletionsAtPosition(query);
     }
     export var quickInfo : typeof contract.server.quickInfo = (query) => {
-        if (utils.isSupportedConfigFileForHover(query.filePath)) {
-            return jsonHover.getQuickInfo(query);
-        }
-        else {
-            return projectServiceMaster.worker.quickInfo(query);
-        }
+        return projectServiceMaster.worker.quickInfo(query);
     }
     export var getCompletionEntryDetails : typeof contract.server.getCompletionEntryDetails = projectServiceMaster.worker.getCompletionEntryDetails;
     export var getRenameInfo : typeof contract.server.getRenameInfo = projectServiceMaster.worker.getRenameInfo;
@@ -224,6 +209,11 @@ namespace Server {
     export var gitStatus : typeof contract.server.gitStatus = gitService.gitStatus;
     export var gitReset : typeof contract.server.gitReset = gitService.gitReset;
     export var gitDiff : typeof contract.server.gitDiff = gitService.gitDiff;
+
+    /**
+     * NPM service
+     */
+    export var npmLatest: typeof contract.server.npmLatest = npmService.npmLatest;
 
     /**
      * FARM
