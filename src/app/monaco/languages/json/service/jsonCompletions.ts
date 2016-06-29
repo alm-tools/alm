@@ -1,10 +1,10 @@
 /**
  * Based on https://github.com/Microsoft/vscode-json-languageservice/blob/master/src/services/jsonCompletion.ts
  *
- * Redirected dependencies
- *
+ * - Redirected dependencies
  * - I deleted stuff around `jsonContributions` (I have no idea what it is)
  * - Changed TextModel => monaco.IModel
+ * - Removed any constructor parameters
  */
 
 /*---------------------------------------------------------------------------------------------
