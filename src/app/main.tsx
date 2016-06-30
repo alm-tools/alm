@@ -1,10 +1,3 @@
-const waitForMonaco = () => {
-    if (typeof monaco === 'undefined') {
-        requestAnimationFrame(waitForMonaco);
-    }
-    else {
-        require('./trueMain');
-    }
+(window as any).monacoReady = function() {
+    require('./trueMain');
 }
-
-document.addEventListener('DOMContentLoaded', waitForMonaco);
