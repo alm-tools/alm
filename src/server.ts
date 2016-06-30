@@ -17,7 +17,9 @@ import * as utils from "./common/utils";
 import * as fsu from "./server/utils/fsu";
 
 const publicPath = path.resolve(__dirname, 'public');
-let monacoSourceDir = fsu.travelUpTheDirectoryTreeTillYouFind(__dirname, 'node_modules') + '/monaco/build/vs';
+const nodeModulesDir = fsu.travelUpTheDirectoryTreeTillYouFind(__dirname, 'node_modules');
+let monacoSourceDir = nodeModulesDir + '/monaco/build/vs';
+const monacoCssDir = nodeModulesDir + '/monaco-css/release/min';
 /**
  * To use official monaco:
  * npm install monaco-editor-core --save-dev
@@ -69,6 +71,7 @@ app.use(express.static(publicPath, {}));
 // Monaco works best with its own loader,
 // Serve it up from node_modules
 app.use('/vs', express.static(monacoSourceDir, {}));
+app.use('/vs/language/css', express.static(monacoCssDir, {}));
 // Also server up our monaco addons
 app.use('/monaco', express.static(__dirname + '/app/monaco', {}));
 

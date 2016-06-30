@@ -27,11 +27,12 @@
     // Still leaving the `require` function available as its probably used internally by monaco still!
     var monacoRequire = require;
     monacoRequire(['vs/editor/editor.main'], function() {
-    		// At this point we've loaded the monaco-editor-core
-    		// It has exposed itself as the `monaco` global
-
+        // At this point we've loaded the monaco-editor-core
+        // It has exposed itself as the `monaco` global
+        monacoRequire(['vs/language/css/monaco.contribution'],function(){
             // Now run `main.tsx` :)
             monacoReady();
+        });
 	});
     </script>
 
