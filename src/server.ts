@@ -16,8 +16,19 @@ import * as chalk from "chalk";
 import * as utils from "./common/utils";
 import * as fsu from "./server/utils/fsu";
 
+// Basic static serving
 const publicPath = path.resolve(__dirname, 'public');
-let monacoSourceDir = fsu.travelUpTheDirectoryTreeTillYouFind(__dirname, 'node_modules') + '/monaco/build/vs';
+// Monaco works best with its own loader,
+// We will serve it up from node_modules. So find out their location
+const nodeModulesDir = fsu.travelUpTheDirectoryTreeTillYouFind(__dirname, 'node_modules');
+
+// `Where` to statically serve `what`
+const staticServing = {
+    '': publicPath,
+    '/vs': nodeModulesDir + '/monaco/build/vs',
+    '/vs/language/css': nodeModulesDir + '/monaco-css/release/min',
+}
+
 /**
  * To use official monaco:
  * npm install monaco-editor-core --save-dev
@@ -64,13 +75,15 @@ import {setup} from './server/devtime';
 setup(app);
 
 // After dev setup forward to static server
-app.use(express.static(publicPath, {}));
-
-// Monaco works best with its own loader,
-// Serve it up from node_modules
-app.use('/vs', express.static(monacoSourceDir, {}));
-// Also server up our monaco addons
-app.use('/monaco', express.static(__dirname + '/app/monaco', {}));
+Object.keys(staticServing).map(where => {
+    const what = staticServing[where];
+    if (where) {
+        app.use(where, express.static(what, {}));
+    }
+    else {
+        app.use(express.static(what, {}));
+    }
+});
 
 // Setup a socket server
 import {register} from "./socket/socketServer";
