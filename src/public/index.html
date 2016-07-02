@@ -29,7 +29,12 @@
     monacoRequire(['vs/editor/editor.main'], function() {
         // At this point we've loaded the monaco-editor-core
         // It has exposed itself as the `monaco` global
-        monacoRequire(['vs/language/css/monaco.contribution'],function(){
+
+        // Also load all the plugins
+        var monacoPlugins = [
+            'vs/language/css/monaco.contribution',
+        ]
+        monacoRequire(monacoPlugins,function(){
             // Now run `main.tsx` :)
             monacoReady();
         });
