@@ -41,9 +41,6 @@ require('hint.css/hint.css');
 // Setup font awesome
 require('font-awesome/css/font-awesome.css');
 
-// Setup our code font
-require('hack-font/build/webfonts/css/hack.css');
-
 // Setup ntypescript
 require('ntypescript');
 

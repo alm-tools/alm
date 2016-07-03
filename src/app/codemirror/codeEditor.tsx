@@ -96,9 +96,9 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
              * This means that if user does not have consolas they get *aweful* courier new.
              * Don't want that.
              * Also the default change by OS.
-             * I prefer consistency so going with `hack` everywhere
+             * I prefer consistency so going with custom font everywhere
              */
-            fontFamily: 'hack, consolas, menlo, monospace',
+            fontFamily: 'consolas, menlo, monospace',
             /** Also make the font a bit bigger */
             fontSize: 13,
         }, []);

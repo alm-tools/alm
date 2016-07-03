@@ -2,7 +2,7 @@
     position: absolute;
 
     font-size: .7em;
-    font-family: hack;
+    font-family: consolas, menlo, monospace;
 
     font-weight: bold;
     color: #333;
