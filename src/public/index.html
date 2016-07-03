@@ -21,6 +21,18 @@
     <script src="/build/bundle.js"></script>
 
     <!-- Load Monaco -->
+    <script>
+        // The monaco loader will swap to a `node` loader (which tries to read files off disk) if this page is loaded in electron
+        // We don't want that as it breaks our `require` paths
+        // So throw off its *detect* logic
+        // The stuff we delete, we don't need it in our UI anyways 🌹
+        if (typeof 'process' !== 'undefined') {
+            delete process; 
+        }
+        if (typeof module !== 'undefined') {
+            delete module;
+        }
+    </script>
     <script src="vs/loader.js"></script>
     <script>
     // Calling it monaco require as we don't want webpack figuring it out! so in our code base we call it monaco require
