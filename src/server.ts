@@ -1,3 +1,10 @@
+/**
+ * The location of this file is important as its our main backend entry point
+ * It is used by:
+ * - our `bin/alm`
+ * - extenal users invoking `node <this file>`
+ * So don't move it :)
+ */
 import express = require("express");
 import http = require('http');
 import https = require('https');
