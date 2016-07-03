@@ -38,15 +38,19 @@ export class TypedEvent<T> {
     }
 
     emit = (event: T) => {
-        this.listeners.forEach((listener) => listener(event));
-        this.listenersOncer.forEach((listener) => listener(event));
-        this.listenersOncer = [];
-
+        /** Update any `current` listeners */
         this._last = event;
         while (this._currentQueue.length) {
             let item = this._currentQueue.pop();
             item.resolve(event);
         }
+
+        /** Update any general listeners */
+        this.listeners.forEach((listener) => listener(event));
+
+        /** Clear the `once` queue */
+        this.listenersOncer.forEach((listener) => listener(event));
+        this.listenersOncer = [];
     }
 
     pipe = (te: TypedEvent<T>): Disposable => {

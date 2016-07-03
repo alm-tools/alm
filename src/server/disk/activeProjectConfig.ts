@@ -228,7 +228,7 @@ namespace ConfigFile {
 /**
  * As soon as we get a new file listing refresh available projects
  */
-flm.filePathsUpdated.on(function(data) {
+flm.filePathsCompleted.on(function(data) {
     refreshAvailableProjects();
 });
 

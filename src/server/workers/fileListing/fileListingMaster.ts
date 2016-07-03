@@ -7,7 +7,7 @@ import * as types from "../../../common/types";
 
 /** called whenever the list of files we know about is updated */
 export const filePathsUpdated = new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string; completed: boolean;}>();
-/** only called once for when the file paths are completed */
+/** only starts getting called when the initial file paths listing is completed */
 export const filePathsCompleted = new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string; completed: boolean;}>();
 
 /**
@@ -25,10 +25,10 @@ namespace Master {
 
     /** warning, this function is named differently from the event filePathsUpdated for a reason */
     export const fileListUpdated: typeof contract.master.fileListUpdated = (q) => {
-        filePathsUpdated.emit({ filePaths: q.filePaths, rootDir: workingDir.getProjectRoot(), completed:q.completed });
-        if (q.completed){
+        if (q.completed) {
             filePathsCompleted.emit({ filePaths: q.filePaths, rootDir: workingDir.getProjectRoot(), completed:q.completed });
         }
+        filePathsUpdated.emit({ filePaths: q.filePaths, rootDir: workingDir.getProjectRoot(), completed:q.completed });
         return Promise.resolve({});
     }
 
