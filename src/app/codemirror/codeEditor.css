@@ -1,8 +1,7 @@
 /**
- * The hover widget: fix its font ... since i noticed it :)
+ * The hover widget
  */
 .monaco-editor-hover.monaco-editor-background div:first-child {
-    font-family: hack, monospace !important;
     /* Just center the whole thing better */
     margin-left: 1px;
 }
