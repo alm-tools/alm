@@ -260,14 +260,25 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
     var cwdPath = path.relative(process.cwd(), path.dirname(projectFile));
     let toExpand = [];
     /** Determine the glob to expand (if any) */
-    if (!projectSpec.files && !projectSpec.filesGlob && projectSpec.compilerOptions.allowJs) {
+    if (!projectSpec.files && !projectSpec.filesGlob && !projectSpec.include && projectSpec.compilerOptions.allowJs) {
         toExpand = invisibleFilesGlobWithJS;
     }
-    else if (!projectSpec.files && !projectSpec.filesGlob) {
+    else if (!projectSpec.files && !projectSpec.filesGlob && !projectSpec.include) {
         toExpand = invisibleFilesGlob;
     }
-    else if (projectSpec.filesGlob) { // If there is a files glob we will use that
-        toExpand = projectSpec.filesGlob;
+    else if (projectSpec.filesGlob || projectSpec.include) {
+        // If there is a files glob we will use that first
+        if (projectSpec.filesGlob) {
+            toExpand = projectSpec.filesGlob;
+        }
+        else {
+            toExpand = [];
+        }
+        // Now include the `include` if any
+        if (projectSpec.include) {
+            toExpand = toExpand.concat(projectSpec.include.map(x => `./${x}`));
+            toExpand = toExpand.concat(projectSpec.include.map(x => `./${x}/**`));
+        }
     }
     /** Other things that need to go in the glob */
     if (projectSpec.exclude) { // If there is an exclude we will add that
@@ -278,10 +289,6 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
         const defaultExcludes =  ["node_modules", "bower_components", "jspm_packages"];
         toExpand = toExpand.concat(defaultExcludes.map(dir=>`!./${dir}`)) // as it is (for files)
         toExpand = toExpand.concat(defaultExcludes.map(dir=>`!./${dir}/**`)) // any sub directories (for dirs)
-    }
-    if (projectSpec.include) {
-        toExpand = toExpand.concat(projectSpec.include.map(x => `./${x}`));
-        toExpand = toExpand.concat(projectSpec.include.map(x => `./${x}/**`));
     }
     if (projectSpec.compilerOptions && projectSpec.compilerOptions.outDir) { // If there is an outDir we will exclude that as well
         toExpand.push(`!./${projectSpec.compilerOptions.outDir}/**`);
