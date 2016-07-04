@@ -173,7 +173,7 @@ export class Doctor extends ui.BaseComponent<Props,State> {
         if (doctorInfo && doctorInfo.quickInfo){
              typeInfo = <div style={doctorRow}>
                     <strong>SIG</strong>&nbsp;
-                    <strong style={{fontFamily:'monospace'} as any}>{doctorInfo.quickInfo.name}</strong>
+                    <strong style={{fontFamily:'monospace'}}>{doctorInfo.quickInfo.name}</strong>
                 </div>;
              comment = doctorInfo.quickInfo.comment &&
                 <div style={doctorRow}>
