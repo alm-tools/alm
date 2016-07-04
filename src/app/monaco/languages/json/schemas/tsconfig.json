@@ -18,7 +18,7 @@
     "excludeDefinition": {
       "properties": {
         "exclude": {
-          "description": "Specifies a list of file / folder that need to be excluded from compilation. The 'exclude' property only affects the files included via the 'include' property and not the 'files' property.",
+          "description": "Specifies a list globs that need to be excluded from compilation. The 'exclude' property only affects the files included via the 'include' property and not the 'files' property.",
           "type": "array",
           "items": {
             "type": "string",
@@ -27,22 +27,10 @@
         }
       }
     },
-    "includeDefition": {
+    "includeDefinition": {
       "properties": {
         "include": {
-          "description": "Specifies a list of file / folder patterns that match files to be included in compilation.",
-          "type": "array",
-          "items": {
-            "type": "string",
-            "format": "uri"
-          }
-        }
-      }
-    },
-    "filesGlobDefinition": {
-      "properties": {
-        "filesGlob": {
-          "description": "Specifies a list of glob patterns that match files to be included from compilation",
+          "description": "Specifies a list of glob patterns that match files to be included in compilation.",
           "type": "array",
           "items": {
             "type": "string",
@@ -351,8 +339,7 @@
       "anyOf": [
         { "$ref": "#/definitions/filesDefinition" },
         { "$ref": "#/definitions/excludeDefinition" },
-        { "$ref": "#/definitions/includeDefinition" },
-        { "$ref": "#/definitions/filesGlobDefinition" }
+        { "$ref": "#/definitions/includeDefinition" }
       ]
     }
   ]
