@@ -173,6 +173,7 @@ export function fileListingDelta(delta: types.FileListingDelta) {
         const fullPaths = delta.addedFilePaths.concat(delta.removedFilePaths).map(c=>c.filePath);
 
         /** Multimatch eccentricity */
+        // Test using : https://tonicdev.com/npm/multimatch
         //
         // var multimatch = require('multimatch');
         // multimatch(['test/foo.ts.ts'],['**/*.ts']) // OKAY
@@ -184,9 +185,10 @@ export function fileListingDelta(delta: types.FileListingDelta) {
         //
         // Also
         // multimatch(['/test/foo.ts.ts'],['test/**/*.ts']); // NOT OKAY
+        // multimatch(['/test/foo.ts.ts'],['**test/**/*.ts']); //NOT OKAY
         // multimatch(['/test/foo.ts.ts'],['**/test/**/*.ts']); // OKAY
         //
-        // So Prepend `**` to all toExpand
+        // So Prepend `**/` to all toExpand
 
         const leadingDotSlashEater = /^[\.|(\.\.)|\/]*/;
 
