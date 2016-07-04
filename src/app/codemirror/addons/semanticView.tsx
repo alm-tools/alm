@@ -138,7 +138,7 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
 
 
         let sel = editor.getSelection();
-        const cursor = {line: sel.startLineNumber - 1, ch: sel.endLineNumber - 1};
+        const cursor = {line: sel.startLineNumber - 1, ch: sel.startColumn - 1};
         /** If first call OR cursor moved */
         if (!this.state.cursor || (this.state.cursor && this.state.cursor.line !== cursor.line)) {
             this.setState({ cursor });

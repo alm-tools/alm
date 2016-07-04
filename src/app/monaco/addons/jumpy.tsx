@@ -4,6 +4,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as utils from "../../../common/utils";
 import * as events from "../../../common/events";
+import * as monacoUtils from "../monacoUtils";
 
 /** Load jumpy css */
 require('./jumpy.css');
@@ -164,8 +165,7 @@ function createOverlays(editor: Editor) {
     // window.foo = editor;
 
     // The text in viewport
-    // HACK: The current lines visible api
-    const range: Range = (editor as any)._view.layoutProvider.getLinesViewportData().visibleRange;
+    const range: Range = monacoUtils.getVisibleLines(editor);
     let text = doc.getValueInRange(range);
 
     /** What we use to split the text */

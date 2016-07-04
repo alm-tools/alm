@@ -13,6 +13,7 @@ import * as liveAnalysis from "../monaco/addons/liveAnalysis";
 import * as quickFix from "../monaco/addons/quickFix";
 import * as linter from "../monaco/addons/linter";
 import * as docblockr from "../monaco/addons/dockblockr";
+import * as doctor from "../monaco/addons/doctor";
 
 // The monokai theme
 require('./monokai.css');
@@ -340,6 +341,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         };
 		return (
 			<div className={className} style={csx.extend(csx.horizontal,csx.flex,{position:'relative', maxWidth:'100%'})}>
+                {!this.props.readOnly && <doctor.Doctor cm={this.editor} filePath={this.props.filePath}/>}
                 <div style={loadingStyle}>LOADING</div>
                 <div ref="codeEditor" style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }} />
                 {!this.props.readOnly && <semanticView.SemanticView editor={this.editor} filePath={this.props.filePath}/>}

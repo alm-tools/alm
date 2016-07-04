@@ -106,6 +106,20 @@ export function gotoPosition(cfg:{editor: Editor, position: EditorPosition}) {
     cfg.editor.revealPosition(pos);
 }
 
+export function getVisibleLines(editor: Editor): monaco.Range {
+    // HACK: The current lines visible api
+    const range: monaco.Range = (editor as any)._view.layoutProvider.getLinesViewportData().visibleRange;
+    return range;
+}
+
+/** Note: Only useful if in single cursor mode */
+export function isCursorInTopHalf(cm: Editor): boolean {
+    let cursor = cm.getPosition();
+    let scrollInfo = getVisibleLines(cm);
+
+    // Closer to top than bottom
+    return (cursor.lineNumber - scrollInfo.startLineNumber) < (scrollInfo.endLineNumber - cursor.lineNumber);
+}
 
 /**
  * Position conversion functions

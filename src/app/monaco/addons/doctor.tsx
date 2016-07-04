@@ -14,9 +14,9 @@ import * as utils from "../../../common/utils";
 import {server} from "../../../socket/socketClient";
 import {Types} from "../../../socket/socketContract";
 import * as commands from "../../commands/commands";
-import * as cmUtils from "../cmUtils";
+import * as monacoUtils from "../monacoUtils";
 
-type Editor = CodeMirror.EditorFromTextArea;
+type Editor = monaco.editor.ICodeEditor;
 
 let docuStyle = {
     zIndex : '4', // To come over CM
@@ -102,23 +102,22 @@ interface State {
 export class Doctor extends ui.BaseComponent<Props,State> {
     componentWillUnmount() {
         super.componentWillUnmount();
-        this.props.cm.off('cursorActivity', this.handleCursorActivity);
     }
     componentWillReceiveProps(props:Props){
         if (props.showDoctor && !this.props.showDoctor){
             this.handleCursorActivity();
         }
         if (!this.props.cm && props.cm){
-            props.cm.on('cursorActivity', this.handleCursorActivity);
+            this.disposible.add(props.cm.onDidChangeCursorPosition(this.handleCursorActivity));
         }
     }
 
     handleCursorActivity = () => {
         let cm = this.props.cm;
         if (!cm) return; // Still loading
-        let doc = cm.getDoc();
-        let isSingleCursor = cmUtils.isSingleCursor(this.props.cm);
-        if (!isSingleCursor) {
+
+        let selections = cm.getSelections();
+        if (selections.length !== 1) {
             if (this.state.singleCursor) {
                 this.setState({ singleCursor: false });
             }
@@ -128,8 +127,9 @@ export class Doctor extends ui.BaseComponent<Props,State> {
             this.setState({ singleCursor: true });
         }
 
-        const cursor = doc.getCursor();
-        const isCursorInTopHalf = cmUtils.isCursorInTopHalf(cm);
+        let sel = cm.getSelection();
+        const cursor = {line: sel.startLineNumber - 1, ch: sel.startColumn - 1};
+        const isCursorInTopHalf = monacoUtils.isCursorInTopHalf(cm);
         if (isCursorInTopHalf) {
             this.setState({ onBottom: true, cursor, doctorInfo: null, searching: true });
         }
@@ -145,7 +145,6 @@ export class Doctor extends ui.BaseComponent<Props,State> {
         if (!state.inActiveProjectFilePath(this.props.filePath)) return;
 
         let cm = this.props.cm;
-        let doc = cm.getDoc();
         server.getDoctorInfo({ filePath: this.props.filePath, editorPosition: this.state.cursor }).then(res=>{
             this.setState({ doctorInfo: res, searching: false });
         });
