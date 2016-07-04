@@ -653,6 +653,60 @@ export class FileTree extends BaseComponent<Props, State>{
             let copypathDom = ReactDOM.findDOMNode(copyButtonRef);
             (copypathDom as any).click();
         });
+
+        /**
+         * TS to js and JS to ts
+         */
+        handlers.bind('t', ()=> {
+            if (this.loading) return;
+            let selection = goDownToSmallestSelection();
+            if (!selection) {
+                ui.notifyInfoNormalDisappear('Nothing selected');
+                return false;
+            }
+
+            let filePath = selection.selectedFilePath;
+            if (selection.isDir ||
+                (!filePath.endsWith('.js')) && !filePath.endsWith('.jsx')) {
+                ui.notifyInfoNormalDisappear('Please select a `.js`/`jsx` file');
+                return false;
+            }
+
+            const newFilePath = filePath.replace(/\.js$/g, '.ts').replace(/\.jsx$/g, '.tsx');
+            server.movePath({ src: filePath, dest: newFilePath }).then(res => {
+                commands.doOpenOrFocusFile.emit({ filePath: newFilePath });
+                setAsOnlySelectedNoFocus(newFilePath, false);
+                commands.closeFilesDirs.emit({ files:[filePath], dirs:[] });
+                ui.notifySuccessNormalDisappear('File extension changed to be TypeScript');
+            });
+
+            return false;
+        });
+        handlers.bind('j', ()=> {
+            if (this.loading) return;
+            let selection = goDownToSmallestSelection();
+            if (!selection) {
+                ui.notifyInfoNormalDisappear('Nothing selected');
+                return false;
+            }
+
+            let filePath = selection.selectedFilePath;
+            if (selection.isDir ||
+                (!filePath.endsWith('.ts')) && !filePath.endsWith('.tsx')) {
+                ui.notifyInfoNormalDisappear('Please select a `.ts`/`tsx` file');
+                return false;
+            }
+
+            const newFilePath = filePath.replace(/\.ts$/g, '.js').replace(/\.tsx$/g, '.jsx');
+            server.movePath({ src: filePath, dest: newFilePath }).then(res => {
+                commands.doOpenOrFocusFile.emit({ filePath: newFilePath });
+                setAsOnlySelectedNoFocus(newFilePath, false);
+                commands.closeFilesDirs.emit({ files:[filePath], dirs:[] });
+                ui.notifySuccessNormalDisappear('File extension changed to be JavaScript');
+            });
+
+            return false;
+        });
     }
     refNames = {
         __treeroot:'__treeroot',
@@ -707,6 +761,8 @@ export class FileTree extends BaseComponent<Props, State>{
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>R</span> to rename file / folder</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>C</span> to copy path to clipboard</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>O</span> to open in explorer/finder</div>
+                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>T</span> to change .js to .ts</div>
+                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>J</span> to change .ts to .js</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>arrow keys</span> to browse</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>del or backspace</span> to delete</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>enter</span> to open file / expand dir</div>
