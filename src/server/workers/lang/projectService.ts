@@ -29,56 +29,16 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
 
     /** Doing too many suggestions is slowing us down in some cases */
     let maxSuggestions = 10000;
-    /** Doc comments slow us down tremendously */
-    let maxDocComments = 10;
 
     // limit to maxSuggestions
     if (completionList.length > maxSuggestions) completionList = completionList.slice(0, maxSuggestions);
 
-    // Potentially use it more aggresively at some point
-    // This queries the langauge service so its a bit slow
-    function docComment(c: ts.CompletionEntry): {
-        /** The display parts e.g. (a:number)=>string */
-        display: string;
-        /** The doc comment */
-        comment: string;
-    } {
-        const completionDetails = project.languageService.getCompletionEntryDetails(filePath, position, c.name);
-        const comment = ts.displayPartsToString(completionDetails.documentation || []);
-
-        // Show the signatures for methods / functions
-        var display: string;
-        if (c.kind == "method" || c.kind == "function" || c.kind == "property") {
-            let parts = completionDetails.displayParts || [];
-            // don't show `(method)` or `(function)` as that is taken care of by `kind`
-            if (parts.length > 3) {
-                parts = parts.splice(3);
-            }
-            display = ts.displayPartsToString(parts);
-        }
-        else {
-            display = '';
-        }
-        display = display.trim();
-
-        return { display: display, comment: comment };
-    }
-
     let completionsToReturn: Types.Completion[] = completionList.map((c, index) => {
-        if (index < maxDocComments) {
-            var details = docComment(c);
-        }
-        else {
-            details = {
-                display: '',
-                comment: ''
-            }
-        }
         return {
             name: c.name,
             kind: c.kind,
-            comment: details.comment,
-            display: details.display
+            comment: '',
+            display: ''
         };
     });
 
@@ -157,6 +117,10 @@ export function getCompletionEntryDetails(query: Types.GetCompletionEntryDetails
     const {filePath,position,label} = query;
 
     const completionDetails = project.languageService.getCompletionEntryDetails(filePath, position, label);
+
+    /** For JS Projects I am getting `completionDetails` as `undefined` for a few members :-/ */
+    if (!completionDetails) return resolve({ display: label, comment: '' });
+
     const comment = ts.displayPartsToString(completionDetails.documentation || []);
     const display = ts.displayPartsToString(completionDetails.displayParts || []);
 
