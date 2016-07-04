@@ -9,6 +9,11 @@ function fileFromLibFolder(fileName: string) {
     return path.join(path.dirname(require.resolve('ntypescript')), fileName).split('\\').join('/');
 }
 
+/** From the compiler's commandLineParser we find the `lib` to `fileName` mapping */
+import * as ts from "ntypescript";
+const libOption = ts.optionDeclarations.find(x=>x.name == "lib") as ts.CommandLineOptionOfListType;
+const libToFileNameMap = libOption.element.type as ts.Map<string>;
+
 /** Based on the compiler options returns you the lib files that should be included */
 export const getDefaultLibFilePaths = (options: ts.CompilerOptions): string[] => {
     if (options.noLib) {
@@ -16,7 +21,7 @@ export const getDefaultLibFilePaths = (options: ts.CompilerOptions): string[] =>
     }
     if (options.lib) {
         /** Note: this might need to be more fancy at some point. E.g. user types `es6.array` but we need to get `es2015.array` */
-        return options.lib.map((fileName) => fileFromLibFolder(`lib.${fileName}.d.ts`));
+        return options.lib.map((lib) => fileFromLibFolder(libToFileNameMap[lib]));
     }
     return [fileFromLibFolder(ts.getDefaultLibFileName(options))];
 }
