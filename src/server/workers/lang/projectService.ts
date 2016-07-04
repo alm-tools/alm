@@ -118,7 +118,10 @@ export function getCompletionEntryDetails(query: Types.GetCompletionEntryDetails
 
     const completionDetails = project.languageService.getCompletionEntryDetails(filePath, position, label);
 
-    /** For JS Projects I am getting `completionDetails` as `undefined` for a few members :-/ */
+    /**
+     * For JS Projects, TS will add all sorts of globals as members (because it cannot know for sure)
+     * However if you try to `getCompletionEntryDetails` for them, you will get `undefined`.
+     */
     if (!completionDetails) return resolve({ display: label, comment: '' });
 
     const comment = ts.displayPartsToString(completionDetails.documentation || []);
