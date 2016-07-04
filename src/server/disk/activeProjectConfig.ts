@@ -160,6 +160,7 @@ export function fileListingDelta(delta: types.FileListingDelta) {
 
     const projectDir = configFile.projectFileDirectory;
     let toExpand = configFile.project.toExpand;
+    // console.log({originalToExpand: toExpand}); // DEBUG
 
     // HEURISTIC : if some delta file path is *under* the `tsconfig.json` path
     if (
@@ -171,22 +172,36 @@ export function fileListingDelta(delta: types.FileListingDelta) {
          */
         const fullPaths = delta.addedFilePaths.concat(delta.removedFilePaths).map(c=>c.filePath);
 
-        /** Mutlimatch eccentricity */
-        //multimatch(['test/foo.ts.ts'],['**/*.ts']) OKAY
-        //multimatch(['/test/foo.ts.ts'],['**/*.ts']) OKAY
-        //multimatch(['./test/foo.ts.ts'],['**/*.ts']) NOT OKAY
-        //multimatch(['test/foo.ts.ts'],['./**/*.ts']) NOT OKAY
+        /** Multimatch eccentricity */
+        //
+        // var multimatch = require('multimatch');
+        // multimatch(['test/foo.ts.ts'],['**/*.ts']) // OKAY
+        // multimatch(['/test/foo.ts.ts'],['**/*.ts']) // OKAY
+        // multimatch(['./test/foo.ts.ts'],['**/*.ts']) // NOT OKAY
+        // multimatch(['test/foo.ts.ts'],['./**/*.ts']) // NOT OKAY
+        //
         // So remove . and .. from both paths and toExpand
+        //
+        // Also
+        // multimatch(['/test/foo.ts.ts'],['test/**/*.ts']); // NOT OKAY
+        // multimatch(['/test/foo.ts.ts'],['**/test/**/*.ts']); // OKAY
+        //
+        // So Prepend `**` to all toExpand
 
-        toExpand = toExpand.map(t => t.replace(/^\.|(\.\.)/, ''));
+        const leadingDotSlashEater = /^[\.|(\.\.)|\/]*/;
+
+        toExpand = toExpand.map(t => t.replace(leadingDotSlashEater, ''));
+        toExpand = toExpand.map(t => '**/' + t);
 
         const makeRelativeForMultiMatch =
             (path:string) =>
                 fsu.makeRelativePath(projectDir,path)
-                    .replace(/^\.|(\.\.)/, '');
+                    .replace(leadingDotSlashEater, '');
 
         const relativePaths = fullPaths.map(makeRelativeForMultiMatch);
         const matched = !!multimatch(relativePaths,toExpand).length;
+
+        // console.log({ matched, toExpand, relativePaths }); // DEBUG
 
         if (matched) {
             syncDebounced()
