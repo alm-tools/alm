@@ -97,6 +97,7 @@ interface CompilerOptions {
 interface TypeScriptProjectRawSpecification {
     compilerOptions?: CompilerOptions;
     exclude?: string[];                                 // optional: An array of 'glob / minimatch / RegExp' patterns to specify directories / files to exclude
+    include?: string[];                                 // optional: An array of 'glob / minimatch / RegExp' patterns to specify directories / files to include
     files?: string[];                                   // optional: paths to files
     filesGlob?: string[];                               // optional: An array of 'glob / minimatch / RegExp' patterns to specify source files
     formatCodeOptions?: formatting.FormatCodeOptions;   // optional: formatting options
@@ -277,6 +278,10 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
         const defaultExcludes =  ["node_modules", "bower_components", "jspm_packages"];
         toExpand = toExpand.concat(defaultExcludes.map(dir=>`!./${dir}`)) // as it is (for files)
         toExpand = toExpand.concat(defaultExcludes.map(dir=>`!./${dir}/**`)) // any sub directories (for dirs)
+    }
+    if (projectSpec.include) {
+        toExpand = toExpand.concat(projectSpec.include.map(x => `./${x}`));
+        toExpand = toExpand.concat(projectSpec.include.map(x => `./${x}/**`));
     }
     if (projectSpec.compilerOptions && projectSpec.compilerOptions.outDir) { // If there is an outDir we will exclude that as well
         toExpand.push(`!./${projectSpec.compilerOptions.outDir}/**`);
