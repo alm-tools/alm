@@ -128,6 +128,14 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
             this.handleCursorActivity(props.editor);
             this.disposible.add(props.editor.onDidChangeCursorSelection(()=>this.handleCursorActivity()));
         }
+        /**
+         * If just hidden and we have an editor, then the editor needs resizing
+         */
+        if (!props.showSemanticView && this.props.showSemanticView && this.props.editor) {
+            this.afterComponentDidUpdate(()=>{
+                this.relayoutEditor();
+            });
+        }
     }
 
     handleCursorActivity = utils.debounce((editor: Editor = this.props.editor) => {
@@ -220,15 +228,18 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
                 // also relayout the editor if the last width is not the same as new width
                 const newWidth = ReactDOM.findDOMNode(this).clientWidth;
                 if (this.lastWidth !== newWidth){
-                    // We store `top` (and restore it) otherwise the editor jumps around a bit after relayout.
-                    // A better fix would be to allow users to resize the outline and store that as a setting :-/
-                    const top = this.props.editor.getScrollTop();
-                    this.props.editor.layout();
-                    this.props.editor.setScrollTop(top);
+                    this.relayoutEditor();
                     this.lastWidth = newWidth;
                 }
             })
             this.setState({tree: res.nodes});
         });
+    }
+
+    relayoutEditor() {
+        // We store `top` (and restore it) otherwise the editor jumps around a bit after relayout.
+        const top = this.props.editor.getScrollTop();
+        this.props.editor.layout();
+        this.props.editor.setScrollTop(top);
     }
 }
