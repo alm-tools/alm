@@ -186,6 +186,7 @@ export class StatusBar extends BaseComponent<Props, State>{
             </span>;
 
         const errorFilteringActive = this.props.errorsDisplayMode !== types.ErrorsDisplayMode.all || this.props.errorsFilter.trim();
+        const errorsFilteredCount = tabState.errorsByFilePathFiltered().errorsFlattened.length;
 
         return (
             <div>
@@ -198,7 +199,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                         <span style={csx.extend(this.props.errorsUpdate.totalCount?styles.statusBarError:styles.statusBarSuccess,{transition: 'color .4s'})}>
                             {this.props.errorsUpdate.totalCount} <Icon name="times-circle"/>
                             {errorFilteringActive && ' '}
-                            {errorFilteringActive && <Icon name="filter"/>}
+                            {errorFilteringActive && <span>( {errorsFilteredCount} <Icon name="filter"/>)</span>}
                         </span>
                     </span>
                     {fileTreeToggleRendered}
