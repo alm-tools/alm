@@ -115,6 +115,11 @@ export var server = {
     startFarming: {} as QRFunction<Types.FarmConfig, {}>,
     stopFarmingIfRunning: {} as QRFunction<{}, {}>,
     farmResults: {} as QRFunction<{},Types.FarmNotification>,
+
+    /**
+     * Config creator
+     */
+    createEditorconfig: {} as QRFunction<{}, {}>
 }
 
 export var client = {

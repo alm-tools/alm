@@ -27,8 +27,10 @@ import * as state from "./state/state";
 /** Force require  */
 import * as gotoHistory from "./gotoHistory";
 import * as clipboardRing from "./clipboardRing";
+import * as configCreator from "./configCreator/configCreator";
 var ensureImport =
     gotoHistory
+    || configCreator
     || clipboardRing;
 
 export interface State {

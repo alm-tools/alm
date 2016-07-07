@@ -20,7 +20,7 @@ Just create an `.editorconfig` file in the root of your project. Here is a sampl
 ```ini
 root = true
 
-[*.{ts,tsx}]
+[*.{js,jsx,ts,tsx}]
 indent_style = space
 indent_size = 2
 trim_trailing_whitespace = true

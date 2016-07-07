@@ -9,6 +9,7 @@ import {FileModel} from "../server/disk/fileModel";
 import * as gitService from "../server/workers/external/gitService";
 import * as npmService from "../server/workers/external/npmService";
 import * as findAndReplaceMultiService from "../server/workers/external/findAndReplaceMultiService";
+import * as configCreatorService from "../server/workers/external/configCreatorService";
 import * as session from "../server/disk/session";
 import * as utils from "../common/utils";
 let resolve = sls.resolve;
@@ -221,6 +222,11 @@ namespace Server {
     export var startFarming : typeof contract.server.startFarming = findAndReplaceMultiService.startFarming;
     export var stopFarmingIfRunning : typeof contract.server.stopFarmingIfRunning = findAndReplaceMultiService.stopFarmingIfRunning;
     export var farmResults: typeof contract.server.farmResults = (query:{}) => findAndReplaceMultiService.farmResultsUpdated.current();
+
+    /**
+     * Config creator
+     */
+    export const createEditorconfig = configCreatorService.createEditorconfig;
 }
 
 // Ensure that the namespace follows the contract

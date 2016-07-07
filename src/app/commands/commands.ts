@@ -433,6 +433,14 @@ export var doOpenASTFullView = new UICommand({
 });
 
 /**
+ * Common configuration file creations
+ */
+export const createEditorconfig = new UICommand({
+    description: 'Create a .editorconfig',
+    context: CommandContext.Global,
+});
+
+/**
  * Registration
  */
 export function register() {

@@ -183,7 +183,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
 
             /** Susbcribe to editor options changing */
             cast.editorOptionsChanged.on((res) => {
-    		    if (res.filePath === this.props.filePath) {
+    		    if (res.filePath === filePath) {
     		        doc._editorOptions = res.editorOptions;
     		    }
     		});

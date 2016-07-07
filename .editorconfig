@@ -1,16 +1,5 @@
-# EditorConfig is awesome: http://EditorConfig.org
-
-# No .editorconfig files above the root directory
-root = true
-
-# Indentation override for all TS files in src
-[*.{ts,tsx}]
-indent_style = space
-indent_size = 4
-trim_trailing_whitespace = true
-insert_final_newline = true
-
-# Matches the exact files either package.json or .travis.yml
-[{package.json,.travis.yml}]
+[*.{js,jsx,ts,tsx}]
 indent_style = space
 indent_size = 2
+trim_trailing_whitespace = true
+insert_final_newline = true
