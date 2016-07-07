@@ -106,7 +106,11 @@ export class RenameVariable extends BaseComponent<Props, State>{
             let active = selected ? styles.tabHeaderActive : {};
             let ref = selected && "selectedTabTitle";
             return (
-                <div ref={ref} key={item.filePath + i} style={[styles.tabHeader,active,{overflow:'hidden'}]} onClick={()=>this.selectAndRefocus(i)}>
+                <div
+                    ref={ref}
+                    key={item.filePath + i}
+                    style={[styles.tabHeader,active,{overflow:'hidden'}]}
+                    onClick={()=>this.selectAndRefocus(i)}>
                     <div title={item.filePath} style={{overflow:'hidden',textOverflow:'ellipsis'}}>{utils.getFileName(item.filePath)} ({item.indexForFilePath} of {item.totalForFilePath})</div>
                 </div>
             );

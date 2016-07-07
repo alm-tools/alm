@@ -76,7 +76,12 @@ export class GotoDefinition extends BaseComponent<Props, State>{
             let active = selected ? styles.tabHeaderActive : {};
             let ref = selected && "selectedTabTitle";
             return (
-                <div ref={ref} key={item.filePath + i} style={[styles.tabHeader,active,{overflow:'hidden'}]} onClick={()=>this.selectAndRefocus(i)}>
+                <div
+                    ref={ref}
+                    key={item.filePath + i}
+                    style={[styles.tabHeader,active,{overflow:'hidden'}]}
+                    onClick={()=>this.selectAndRefocus(i)}
+                    onDoubleClick={()=>this.openIndex(i)}>
                     <div title={item.filePath} style={{overflow:'hidden',textOverflow:'ellipsis'}}>{utils.getFileName(item.filePath)} (line: {item.position.line + 1})</div>
                 </div>
             );
@@ -140,17 +145,18 @@ export class GotoDefinition extends BaseComponent<Props, State>{
         }
         if (keyStates.enter) {
             event.preventDefault();
-            let newText = (ReactDOM.findDOMNode(this.refs.mainInput) as HTMLInputElement).value.trim();
-
-            let def = this.props.data.definitions[this.state.selectedIndex];
-            commands.doOpenOrFocusFile.emit({
-                filePath: def.filePath,
-                position: def.position
-            });
-
-            setTimeout(()=>{this.props.unmount()});
+            this.openIndex(this.state.selectedIndex);
         }
     };
+
+    openIndex = (index: number) => {
+        let def = this.props.data.definitions[index];
+        commands.doOpenOrFocusFile.emit({
+            filePath: def.filePath,
+            position: def.position
+        });
+        setTimeout(()=>{this.props.unmount()});
+    }
 
     selectAndRefocus = (index: number) => {
         this.setState({selectedIndex:index});
