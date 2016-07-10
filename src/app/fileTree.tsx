@@ -109,13 +109,14 @@ let treeItemIsGeneratedStyle = {
 let currentSelectedItemCopyStyle = {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
-    height:'.8rem',
+    whiteSpace: 'pre', // Prevents wrapping
 
     cursor: 'pointer',
-    margin: '2px',
-    fontFamily: 'monospace',
-    fontSize: '.9rem',
+    marginLeft: '2px',
+    fontSize: '.6rem',
     fontWeight: 'bold',
+    color: '#CCC',
+    textShadow: '0 0 3px rgba(255, 255, 255, 0.5)',
 }
 
 let helpRowStyle = {
@@ -733,7 +734,7 @@ export class FileTree extends BaseComponent<Props, State>{
                     {this.props.filePathsCompleted || <Robocop/>}
                     {
                         singlePathSelected
-                        && <div style={[csx.content, csx.horizontal, { paddingTop: '5px', paddingBottom: '5px', width: this.state.width - 15+'px'}]}>
+                        && <div style={[csx.content, csx.horizontal, csx.center, csx.centerJustified, { paddingTop: '5px', paddingBottom: '5px', width: this.state.width - 15+'px'}]}>
                             <clipboard.Clipboard ref='copypath' text={singlePathSelected}/>
                             <span
                                 className="hint--top"
