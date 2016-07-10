@@ -29,7 +29,7 @@ namespace SemanticViewStyles {
 
         // Font
         color: '#BBB',
-        fontSize: '.5rem',
+        fontSize: '.6rem',
         fontWeight: 'bold',
 
         // Overflow
