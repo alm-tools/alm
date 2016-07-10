@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
 </head>
 
-<body>
+<!-- Apply the editor background to body as a style attribute for better initial load look -->
+<body style="background-color: #272822">
     <!-- socketio -->
     <script src="/socket.io/socket.io.js"></script>
 
@@ -14,47 +15,8 @@
         <div class="alm-connection-status-activity"></div>
     </div>
 
-    <!-- Our serverState -->
-    <script src="/serverState.js"></script>
-
-    <!-- Our main javascript -->
-    <script src="/build/bundle.js"></script>
-
-    <!-- Load Monaco -->
-    <script>
-        // The monaco loader will swap to a `node` loader (which tries to read files off disk) if this page is loaded in electron
-        // We don't want that as it breaks our `require` paths
-        // So throw off its *detect* logic
-        // The stuff we delete, we don't need it in our UI anyways 🌹
-        if (typeof 'process' !== 'undefined') {
-            delete process; 
-        }
-        if (typeof module !== 'undefined') {
-            delete module;
-        }
-    </script>
-    <script src="vs/loader.js"></script>
-    <script>
-    // Calling it monaco require as we don't want webpack figuring it out! so in our code base we call it monaco require
-    // Still leaving the `require` function available as its probably used internally by monaco still!
-    var monacoRequire = require;
-    monacoRequire(['vs/editor/editor.main'], function() {
-        // At this point we've loaded the monaco-editor-core
-        // It has exposed itself as the `monaco` global
-
-        // Also load all the plugins
-        var monacoPlugins = [
-            'vs/language/css/monaco.contribution',
-        ]
-        monacoRequire(monacoPlugins,function(){
-            // Now run `main.tsx` :)
-            monacoReady();
-        });
-	});
-    </script>
-
+    <!-- Some root level styling -->
     <style>
-
     /* apply a natural box layout model to all elements, but allowing components to change */
     html {
       box-sizing: border-box;
@@ -67,11 +29,6 @@
     html, body, #app, #root {
         height: 100%;
         overflow: hidden;
-    }
-
-    /* Make the root background same as the editor background */
-    #root {
-        background-color: #272822;
     }
 
     /* Scroll bar for chrome */
@@ -112,6 +69,45 @@
         border: 2px solid #3C3C3C;
     }
     </style>
+
+    <!-- Our serverState -->
+    <script src="/serverState.js"></script>
+
+    <!-- Our main javascript -->
+    <script src="/build/bundle.js"></script>
+
+    <!-- Load Monaco -->
+    <script>
+        // The monaco loader will swap to a `node` loader (which tries to read files off disk) if this page is loaded in electron
+        // We don't want that as it breaks our `require` paths
+        // So throw off its *detect* logic
+        // The stuff we delete, we don't need it in our UI anyways 🌹
+        if (typeof 'process' !== 'undefined') {
+            delete process; 
+        }
+        if (typeof module !== 'undefined') {
+            delete module;
+        }
+    </script>
+    <script src="vs/loader.js"></script>
+    <script>
+    // Calling it monaco require as we don't want webpack figuring it out! so in our code base we call it monaco require
+    // Still leaving the `require` function available as its probably used internally by monaco still!
+    var monacoRequire = require;
+    monacoRequire(['vs/editor/editor.main'], function() {
+        // At this point we've loaded the monaco-editor-core
+        // It has exposed itself as the `monaco` global
+
+        // Also load all the plugins
+        var monacoPlugins = [
+            'vs/language/css/monaco.contribution',
+        ]
+        monacoRequire(monacoPlugins,function(){
+            // Now run `main.tsx` :)
+            monacoReady();
+        });
+	});
+    </script>
 
     <!-- The main app container -->
     <div id="app"></div>
