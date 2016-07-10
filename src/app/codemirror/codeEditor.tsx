@@ -101,7 +101,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
              */
             fontFamily: 'consolas, menlo, monospace',
             /** Also make the font a bit bigger */
-            fontSize: 13,
+            fontSize: 16,
         }, []);
 		this.editor.filePath = this.props.filePath;
 
