@@ -23,17 +23,13 @@ import * as chalk from "chalk";
 import * as utils from "./common/utils";
 import * as fsu from "./server/utils/fsu";
 
-// Basic static serving
-const publicPath = path.resolve(__dirname, 'public');
-// Monaco works best with its own loader,
-// We will serve it up from node_modules. So find out their location
-const nodeModulesDir = fsu.travelUpTheDirectoryTreeTillYouFind(__dirname, 'node_modules');
-
 // `Where` to statically serve `what`
 const staticServing = {
-    '': publicPath,
-    '/vs': nodeModulesDir + '/monaco/build/vs',
-    '/vs/language/css': nodeModulesDir + '/monaco-css/release/min',
+    '': path.resolve(__dirname, 'public'),
+    // Monaco works best with its own loader,
+    // We will serve it up from node_modules
+    '/vs':  utils.getDirectory(fsu.consistentPath(require.resolve('monaco/build/vs/loader'))),
+    '/vs/language/css': utils.getDirectory(fsu.consistentPath(require.resolve('monaco-css/release/min/monaco.contribution'))),
 }
 
 /**
