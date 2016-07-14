@@ -4,6 +4,7 @@
 
 import * as fsu from "../utils/fsu";
 import * as utils from "../../common/utils";
+import * as settings from "./settings";
 
 let projectRoot = fsu.consistentPath(process.cwd());
 
@@ -14,6 +15,7 @@ export function getProjectRoot() {
 export function setProjectRoot(rootDir: string) {
     projectRoot = fsu.consistentPath(rootDir);
     process.chdir(projectRoot);
+    settings.addWorkingDir(projectRoot);
 }
 
 export function makeRelative(filePath: string) {

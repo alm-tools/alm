@@ -23,7 +23,7 @@ Windows 8 - 'C:\Users\User\AppData\Roaming'
 Windows XP - 'C:\Documents and Settings\User\Application Data'
 Linux - '/var/local'
  */
-const userDataDir = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Preferences' : '/var/local');
+const userDataDir = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Preferences' : '/var/local');
 const appSettingsFolder = userDataDir + '/alm';
 mkdirp.sync(appSettingsFolder);
 const appSettingsFile = appSettingsFolder + '/settingsV1.json';
@@ -65,7 +65,7 @@ function setSettings(settings: Settings) {
 /**
  * Various setting functions
  */
-function addWorkingDir(workingDir: string) {
+export function addWorkingDir(workingDir: string) {
     const settings = getSettings();
     if (settings.workingDirs.find((x) => x === workingDir)) return;
     settings.workingDirs.push(workingDir);
