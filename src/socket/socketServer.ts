@@ -232,7 +232,7 @@ namespace Server {
     /**
      * Settings
      */
-    export const getSettingsFilePath: typeof contract.server.getSettingsFilePath = (query:{}) => Promise.resolve(settings.getSettingsFilePath());
+    export const getSettingsFilePath: typeof contract.server.getSettingsFilePath = (query:{}) => Promise.resolve({filePath:settings.getSettingsFilePath()});
 }
 
 // Ensure that the namespace follows the contract

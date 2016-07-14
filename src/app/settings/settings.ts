@@ -7,7 +7,7 @@ import * as ui from "../ui";
 import {server} from "../../socket/socketClient";
 
 commands.openSettingsFile.on(()=>{
-    server.getSettingsFilePath({}).then((filePath)=>{
-        console.log(filePath);
+    server.getSettingsFilePath({}).then((res)=>{
+        commands.doOpenOrFocusFile.emit({filePath: res.filePath});
     })
 })

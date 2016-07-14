@@ -124,7 +124,7 @@ export var server = {
     /**
      * Settings
      */
-    getSettingsFilePath: {} as QRFunction<{}, {}>
+    getSettingsFilePath: {} as QRFunction<{}, {filePath: string}>,
 }
 
 export var client = {
