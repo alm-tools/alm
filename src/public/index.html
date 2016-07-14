@@ -84,6 +84,7 @@
         // The stuff we delete, we don't need it in our UI anyways 🌹
         if (typeof 'process' !== 'undefined') {
             delete process;
+            window.isElectron = true;
         }
         if (typeof module !== 'undefined') {
             delete module;
