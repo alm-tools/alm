@@ -28,9 +28,11 @@ import * as state from "./state/state";
 import * as gotoHistory from "./gotoHistory";
 import * as clipboardRing from "./clipboardRing";
 import * as configCreator from "./configCreator/configCreator";
+import * as settings from "./settings/settings";
 var ensureImport =
     gotoHistory
     || configCreator
+    || settings
     || clipboardRing;
 
 export interface State {

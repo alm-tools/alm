@@ -26,7 +26,11 @@ Linux - '/var/local'
 const userDataDir = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Preferences' : '/var/local');
 const appSettingsFolder = userDataDir + '/alm';
 mkdirp.sync(appSettingsFolder);
-const appSettingsFile = appSettingsFolder + '/settingsV1.json';
+const settingsFilePath = appSettingsFolder + '/settingsV1.json';
+
+export function getSettingsFilePath() {
+    return settingsFilePath;
+}
 
 /**
  * Get / Set Settings
@@ -37,8 +41,8 @@ function getSettings(): Settings {
             workingDirs: []
         };
 
-    if (fsu.existsSync(appSettingsFile)) {
-        const parsed = json.parse<Settings>(fsu.readFile(appSettingsFile));
+    if (fsu.existsSync(settingsFilePath)) {
+        const parsed = json.parse<Settings>(fsu.readFile(settingsFilePath));
         if (parsed.error) {
             console.error('Could not parse the settings file:', parsed.error);
             return settings;
@@ -59,7 +63,7 @@ function getSettings(): Settings {
 
 function setSettings(settings: Settings) {
     const str = json.stringify(settings);
-    fsu.writeFile(appSettingsFile, str);
+    fsu.writeFile(settingsFilePath, str);
 }
 
 /**

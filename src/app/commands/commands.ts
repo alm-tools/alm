@@ -441,6 +441,14 @@ export const createEditorconfig = new UICommand({
 });
 
 /**
+ * Settings stuff
+ */
+export const openSettingsFile = new UICommand({
+    description: 'Open settings file',
+    context: CommandContext.Global
+})
+
+/**
  * Registration
  */
 export function register() {

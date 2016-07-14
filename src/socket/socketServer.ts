@@ -10,6 +10,7 @@ import * as gitService from "../server/workers/external/gitService";
 import * as npmService from "../server/workers/external/npmService";
 import * as findAndReplaceMultiService from "../server/workers/external/findAndReplaceMultiService";
 import * as configCreatorService from "../server/workers/external/configCreatorService";
+import * as settings from "../server/disk/settings";
 import * as session from "../server/disk/session";
 import * as utils from "../common/utils";
 let resolve = sls.resolve;
@@ -227,6 +228,11 @@ namespace Server {
      * Config creator
      */
     export const createEditorconfig = configCreatorService.createEditorconfig;
+
+    /**
+     * Settings
+     */
+    export const getSettingsFilePath: typeof contract.server.getSettingsFilePath = (query:{}) => Promise.resolve(settings.getSettingsFilePath());
 }
 
 // Ensure that the namespace follows the contract
