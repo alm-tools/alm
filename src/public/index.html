@@ -83,7 +83,7 @@
         // So throw off its *detect* logic
         // The stuff we delete, we don't need it in our UI anyways 🌹
         if (typeof 'process' !== 'undefined') {
-            delete process; 
+            delete process;
         }
         if (typeof module !== 'undefined') {
             delete module;
@@ -101,6 +101,7 @@
         // Also load all the plugins
         var monacoPlugins = [
             'vs/language/css/monaco.contribution',
+            'vs/basic-languages/src/monaco.contribution',
         ]
         monacoRequire(monacoPlugins,function(){
             // Now run `main.tsx` :)

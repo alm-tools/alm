@@ -56,18 +56,6 @@ import {setupMonacoJson} from "../../monaco/languages/json/monacoJson";
 setupMonacoJson();
 
 /**
- *  CSS mode is not registering itself.
- *  refs https://github.com/Microsoft/monaco-css/issues/3
- */
-monaco.languages.register({
-	id: 'css',
-	extensions: ['.css'],
-	aliases: ['css'],
-	mimetypes: ['text/css'],
-});
-
-
-/**
  * Ext lookup
  */
 const extLookup: { [ext: string]: monaco.languages.ILanguageExtensionPoint } = {};

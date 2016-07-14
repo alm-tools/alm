@@ -29,7 +29,11 @@ const staticServing = {
     // Monaco works best with its own loader,
     // We will serve it up from node_modules
     '/vs':  utils.getDirectory(fsu.consistentPath(require.resolve('monaco/build/vs/loader'))),
+    // Note:
+    // - the names of these modules come from the `define` call in the `contribution` file ;)
+    // - the path is ofcourse to the contribution file.
     '/vs/language/css': utils.getDirectory(fsu.consistentPath(require.resolve('monaco-css/release/min/monaco.contribution'))),
+    '/vs/basic-languages/src': utils.getDirectory(fsu.consistentPath(require.resolve('monaco-languages/release/src/monaco.contribution'))),
 }
 
 /**
