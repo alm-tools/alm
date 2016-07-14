@@ -16,6 +16,7 @@
     "uts": "npm install ntypescript@latest --save --save-exact && npm run tsc",
     "ucm": "npm install codemirror@latest --save --save-exact && npm run tsc",
     "umonaco": "npm install monaco@latest monaco-css@latest monaco-languages@latest --save --save-exact && npm run tsc",
+    "ureact": "npm install react@latest react-dom@latest --save --save-exact",
     "preversion": "npm run tsc",
     "postversion": "git push --follow-tags",
     "mochaw": "mocha ./src/tests -w"
