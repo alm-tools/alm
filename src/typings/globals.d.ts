@@ -1,10 +1,10 @@
 /// <reference path="../../node_modules/ntypescript/bin/ntypescript.d.ts"/>
 
 /**
- * This is setup in our index.html to allow us to check if we are running in electrong
- * And then we provide special features for them
+ * This is setup in our index.html to allow us to check if we are running in electron
+ * And then we can provide special features for them
  */
-var isElectron: boolean;
+declare const isElectron: boolean;
 
 interface EditorPosition {
     line: number;
