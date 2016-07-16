@@ -1003,6 +1003,58 @@ export namespace TreeNode {
         }
     }
 
+    /**
+     * File Name Based Icon
+     */
+    class FileNameBasedIcon extends React.Component<{ fileName: string }, {}> {
+      shouldComponentUpdate = pure.shouldComponentUpdate;
+      render() {
+        const fileName = this.props.fileName.toLowerCase();
+        const ext = utils.getExt(fileName);
+
+        // Default
+        let iconName = 'file-text-o';
+
+        if (ext == 'md') {
+            iconName = 'book';
+        }
+        else if (ext == 'json') {
+            iconName = 'database';
+        }
+        else if (ext == 'html' || ext == 'htm') {
+            iconName = 'file-code-o';
+        }
+        else if (ext == 'css' || ext == 'less' || ext == 'scss' || ext == 'sass'){
+            iconName = 'css3';
+        }
+        else if (ext.startsWith('git')) {
+            iconName = 'github';
+        }
+        else if (ext.endsWith('sh') || ext == 'bat' || ext == 'batch') {
+            iconName = 'terminal';
+        }
+        else if (ext.endsWith('coffee')) {
+            iconName = 'coffee';
+        }
+        else if (utils.isTs(fileName)) {
+            iconName = 'rocket';
+        }
+        else if (utils.isJs(fileName)) {
+            iconName = 'plane';
+        }
+        else if (utils.isImage(fileName)) {
+            iconName = 'file-image-o';
+        }
+
+        const icon = <Icon name={iconName}/>;
+
+        return <div>
+            {icon} {this.props.fileName}
+        </div>;
+      }
+    }
+
+    /** Renders the file item */
     @ui.Radium
     export class File extends React.Component<{
         item: TreeFileItem;
@@ -1035,7 +1087,7 @@ export namespace TreeNode {
 
             return (
                 <div style={[treeItemStyle, selectedStyle, inProjectStyle, isGeneratedStyle]} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleSelectFile(evt, this.props.item) }>
-                    <div style={{ marginLeft: this.props.depth * 10 }}> <Icon name="file-text-o"/> {this.props.item.name}</div>
+                    <div style={{ marginLeft: this.props.depth * 10 }}><FileNameBasedIcon fileName={this.props.item.name}/></div>
                 </div>
             );
         }
