@@ -39,7 +39,7 @@ namespace Worker {
         const filterName = (filePath: string) => {
             return (
                 // Remove .git we have no use for that here
-                !filePath.includes('/.git/')
+                !filePath.endsWith('.git') && !filePath.includes('/.git/')
                 // MAC
                 && !filePath.endsWith('.DS_Store')
             );
