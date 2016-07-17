@@ -125,6 +125,12 @@ namespace Worker {
 
         // create initial list using 10x faster glob.Glob!
         (function() {
+
+            /** These things are coming on a mac for some reason */
+            const ignoreThisPathThatGlobGivesForUnknownReasons = (filePath:string) => {
+                return filePath.includes('0.0.0.0') || (filePath.includes('[object Object]'))
+            }
+
             const cwd = q.directory;
             const mg = new glob.Glob('**', { cwd, dot: true }, (e, newList) => {
                 if (e) {
@@ -135,16 +141,16 @@ namespace Worker {
                     let p = path.resolve(cwd, nl);
                     let type = mg.cache[p] && mg.cache[p] == 'FILE' ? types.FilePathType.File : types.FilePathType.Dir;
 
-                    /** These things are coming on a mac for some reason */
-                    if (nl.includes('0.0.0.0') || (nl.includes('[object Object]'))) {
-                        // console.log(nl, mg.cache[p]);
+                    if (ignoreThisPathThatGlobGivesForUnknownReasons(nl)) {
+                        // console.log(nl, mg.cache[p]); /// DEBUG
+                        return null;
                     }
 
                     return {
                         filePath: fsu.consistentPath(p),
                         type,
                     }
-                });
+                }).filter(x=>!!x);
 
                 // Initial search complete!
                 completed = true;
@@ -155,6 +161,9 @@ namespace Worker {
             mg.on('match', (match) => {
                 let p = path.resolve(cwd, match);
                 if (mg.cache[p]) {
+                    if (ignoreThisPathThatGlobGivesForUnknownReasons(match)) {
+                        return;
+                    }
                     liveList[fsu.consistentPath(p)] = mg.cache[p] == 'FILE' ? types.FilePathType.File : types.FilePathType.Dir;
                     sendNewFileListThrottled();
                 }

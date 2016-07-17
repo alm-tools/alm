@@ -49,7 +49,7 @@
     "escape-html": "^1.0.3",
     "express": "4.13.0",
     "fuzzaldrin": "^2.1.0",
-    "glob": "^5.0.14",
+    "glob": "^7.0.5",
     "glob-expand": "^0.1.0",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
