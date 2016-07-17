@@ -21,9 +21,9 @@ export interface Settings {
 OS X - '/Users/user/Library/Preferences'
 Windows 8 - 'C:\Users\User\AppData\Roaming'
 Windows XP - 'C:\Documents and Settings\User\Application Data'
-Linux - '/var/local'
+Linux - `/home/bas/.local/share` (http://askubuntu.com/a/14536/7327)
  */
-const userDataDir = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Preferences' : '/var/local');
+const userDataDir = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Preferences' : process.env.HOME + '/.local/share');
 const appSettingsFolder = userDataDir + '/alm';
 mkdirp.sync(appSettingsFolder);
 const settingsFilePath = appSettingsFolder + '/settingsV1.json';
