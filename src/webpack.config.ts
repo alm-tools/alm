@@ -1,5 +1,8 @@
+/**
+ * NOTE: be careful what you import in this file as it is loaded in our deploy boot as well.
+ * So don't use `webpack` or `require('wepack')` etc.
+ */
 import path = require('path');
-const webpack = require('webpack');
 var nodeModulesPath = path.resolve(__dirname, 'node_modules');
 var buildPath = path.resolve(__dirname, 'public', 'build');
 var mainPath = path.resolve(__dirname, 'app', 'main.js');
@@ -12,13 +15,7 @@ var config = {
         path: buildPath,
         filename: 'bundle.js'
     },
-    plugins: [
-        new webpack.DefinePlugin({
-            'process.env': {
-                'NODE_ENV': JSON.stringify('production')
-            }
-        })
-    ],
+    plugins: [],
     module: {
         noParse: [
             /clipboard\.min/,
