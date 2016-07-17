@@ -29,10 +29,12 @@ import * as gotoHistory from "./gotoHistory";
 import * as clipboardRing from "./clipboardRing";
 import * as configCreator from "./configCreator/configCreator";
 import * as settings from "./settings/settings";
+import * as openFileFromServerDisk from "./openFileFromServerDisk/openFileFromServerDisk";
 var ensureImport =
     gotoHistory
     || configCreator
     || settings
+    || openFileFromServerDisk
     || clipboardRing;
 
 export interface State {

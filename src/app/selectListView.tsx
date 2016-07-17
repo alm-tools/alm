@@ -35,6 +35,8 @@ export interface State {
     render?: (t: DataItem, highlighted: JSX.Element[]) => any;
     textify?: (t: DataItem) => string;
     onSelect?: (t: DataItem) => void;
+
+    getNewData?: (filterValue: string) => Promise<DataItem[]>;
 }
 
 @ui.Radium
@@ -64,9 +66,15 @@ export class SelectListView extends BaseComponent<Props, State>{
         header: string;
         data: T[];
         render: (t: T, highlighted: JSX.Element[]) => any;
-        /** This text will be used for filtering as well as passing to render */
+        /** This text will be used for filtering as well as creating 'highlighted' which is passed to render */
         textify: (t: T) => string;
         onSelect: (t: T) => void;
+
+        /**
+         * Allows you to provide new data that can be used for filtering
+         * Use Case: Opening a file from the server disk
+         */
+        getNewData?: (text: string) => Promise<T[]>;
     }) {
         this.filteredResults = args.data.concat([]);
 
@@ -80,6 +88,8 @@ export class SelectListView extends BaseComponent<Props, State>{
             render: args.render,
             textify: args.textify,
             onSelect: args.onSelect,
+
+            getNewData: args.getNewData || (() => Promise.resolve(args.data)),
         });
 
         ReactDOM.findDOMNode(this.refs.omniSearchInput).focus();

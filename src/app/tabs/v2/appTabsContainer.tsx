@@ -262,9 +262,6 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 this.tabState.triggerFocusAndSetAsSelected(currentTabId)
             }
         });
-        commands.openFileFromDisk.on(() => {
-            ui.comingSoon("Open a file from the server disk");
-        });
         commands.doOpenFile.on((e) => {
             let codeTab: TabInstance = {
                 id: createId(),
