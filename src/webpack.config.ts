@@ -1,4 +1,5 @@
 import path = require('path');
+const webpack = require('webpack');
 var nodeModulesPath = path.resolve(__dirname, 'node_modules');
 var buildPath = path.resolve(__dirname, 'public', 'build');
 var mainPath = path.resolve(__dirname, 'app', 'main.js');
@@ -11,7 +12,13 @@ var config = {
         path: buildPath,
         filename: 'bundle.js'
     },
-    plugins: [],
+    plugins: [
+        new webpack.DefinePlugin({
+            'process.env': {
+                'NODE_ENV': JSON.stringify('production')
+            }
+        })
+    ],
     module: {
         noParse: [
             /clipboard\.min/,

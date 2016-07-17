@@ -31,6 +31,9 @@ const bundleDevTimeProxy = utils.once(() => {
         // Also keep existing
     ].concat(config.entry);
 
+    // Clear the current plugins (especially the production build one)
+    devConfig.plugins = [];
+
     // Add the Hot Replacement plugin for hot style updates
     devConfig.plugins.push(new Webpack.HotModuleReplacementPlugin());
 
