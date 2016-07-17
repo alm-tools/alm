@@ -11,6 +11,7 @@ import * as npmService from "../server/workers/external/npmService";
 import * as findAndReplaceMultiService from "../server/workers/external/findAndReplaceMultiService";
 import * as configCreatorService from "../server/workers/external/configCreatorService";
 import * as settings from "../server/disk/settings";
+import * as serverDiskService from "../server/workers/external/serverDiskService";
 import * as session from "../server/disk/session";
 import * as utils from "../common/utils";
 let resolve = sls.resolve;
@@ -233,6 +234,11 @@ namespace Server {
      * Settings
      */
     export const getSettingsFilePath: typeof contract.server.getSettingsFilePath = (query:{}) => Promise.resolve({filePath:settings.getSettingsFilePath()});
+
+    /**
+     * Server Disk Service
+     */
+    export const getDirItems: typeof contract.server.getDirItems = (query: { dirPath: string }) => Promise.resolve({ dirItems: serverDiskService.getDirItems(query.dirPath) });
 }
 
 // Ensure that the namespace follows the contract

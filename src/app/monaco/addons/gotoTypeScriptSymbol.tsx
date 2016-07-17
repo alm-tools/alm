@@ -63,7 +63,8 @@ class GotoTypeScriptSymbolAction extends EditorAction {
                 },
                 textify: (item) => item.name,
                 onSelect: (item) => {
-                    monacoUtils.gotoPosition({editor, position:item.position});
+                    monacoUtils.gotoPosition({ editor, position: item.position });
+                    return '';
                 }
             });
         });

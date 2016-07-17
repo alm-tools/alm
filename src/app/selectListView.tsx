@@ -34,7 +34,7 @@ export interface State {
     data?: DataItem[];
     render?: (t: DataItem, highlighted: JSX.Element[]) => any;
     textify?: (t: DataItem) => string;
-    onSelect?: (t: DataItem) => void;
+    onSelect?: (t: DataItem) => string;
 
     getNewData?: (filterValue: string) => Promise<DataItem[]>;
 }
@@ -68,11 +68,16 @@ export class SelectListView extends BaseComponent<Props, State>{
         render: (t: T, highlighted: JSX.Element[]) => any;
         /** This text will be used for filtering as well as creating 'highlighted' which is passed to render */
         textify: (t: T) => string;
-        onSelect: (t: T) => void;
+        /**
+         * If onselect returns a string then it is shown as an error
+         * TODO: actually support this `return`
+         */
+        onSelect: (t: T) => string;
 
         /**
          * Allows you to provide new data that can be used for filtering
          * Use Case: Opening a file from the server disk
+         * TODO: actually support this
          */
         getNewData?: (text: string) => Promise<T[]>;
     }) {

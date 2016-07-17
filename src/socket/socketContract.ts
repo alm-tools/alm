@@ -125,6 +125,11 @@ export var server = {
      * Settings
      */
     getSettingsFilePath: {} as QRFunction<{}, {filePath: string}>,
+
+    /**
+     * Server Disk Service
+     */
+    getDirItems: {} as QRFunction<{dirPath: string}, {dirItems: types.FilePath[]}>,
 }
 
 export var client = {

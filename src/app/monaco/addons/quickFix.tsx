@@ -157,7 +157,8 @@ class QuickFixAction extends EditorAction {
                     // TODO: apply refactorings
                     // console.log('Apply refactorings:', res.refactorings); // DEBUG
                     uix.API.applyRefactorings(res.refactorings);
-                })
+                });
+                return '';
             }
         });
 

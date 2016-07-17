@@ -10,7 +10,8 @@ commands.openFileFromDisk.on(() => {
         render: (filePath, matched)=> matched,
         textify: (filePath) => filePath,
         onSelect: (filePath) => {
-            commands.doOpenOrFocusFile.emit({filePath});
+            commands.doOpenOrFocusFile.emit({ filePath });
+            return '';
         },
         getNewData:(filterValue) => {
             // TODO:
