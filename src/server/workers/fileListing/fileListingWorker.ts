@@ -134,6 +134,12 @@ namespace Worker {
                 let list = newList.map(nl => {
                     let p = path.resolve(cwd, nl);
                     let type = mg.cache[p] && mg.cache[p] == 'FILE' ? types.FilePathType.File : types.FilePathType.Dir;
+
+                    /** These things are coming on a mac for some reason */
+                    if (nl.includes('0.0.0.0') || (nl.includes('[object Object]'))) {
+                        // console.log(nl, mg.cache[p]);
+                    }
+
                     return {
                         filePath: fsu.consistentPath(p),
                         type,
