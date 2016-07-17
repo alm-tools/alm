@@ -36,15 +36,19 @@ namespace Worker {
         let bufferedAdded: types.FilePath[] = [];
         let bufferedRemoved: types.FilePath[] = [];
 
+        const filterName = (filePath: string) => {
+            return (
+                // Remove .git we have no use for that here
+                !filePath.includes('/.git/')
+                // MAC
+                && !filePath.endsWith('.DS_Store')
+            );
+        }
+
         // Utility to send new file list
         const sendNewFileList = () => {
             let filePaths = Object.keys(liveList)
-                .filter(x =>
-                    // Remove .git we have no use for that here
-                    !x.includes('/.git/')
-                    // MAC
-                    && x !== '.DS_Store'
-                )
+                .filter(filterName)
                 // sort
                 .sort((a, b) => {
                     // sub dir wins!
@@ -79,8 +83,8 @@ namespace Worker {
             // Unless of course this is the *initial* sending of file listing
             if (bufferedAdded.length || bufferedRemoved.length) {
                 master.fileListingDelta({
-                    addedFilePaths: bufferedAdded,
-                    removedFilePaths: bufferedRemoved
+                    addedFilePaths: bufferedAdded.filter(x=>filterName(x.filePath)),
+                    removedFilePaths: bufferedRemoved.filter(x=>filterName(x.filePath))
                 });
                 bufferedAdded = [];
                 bufferedRemoved = [];
