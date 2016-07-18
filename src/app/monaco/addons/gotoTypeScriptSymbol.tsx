@@ -42,7 +42,7 @@ class GotoTypeScriptSymbolAction extends EditorAction {
             }
 
             selectListView.selectListView.show({
-                header:`TypeScript symbols in ${utils.getFileName(filePath)}`,
+                header:`TypeScript symbols (Hieroglyphs) in ${utils.getFileName(filePath)}`,
                 data: res.items,
                 render: (symbol, matched) => {
                     // NOTE: Code duplicated in `omniSearch.tsx` (except this needs to set font explicitly)
