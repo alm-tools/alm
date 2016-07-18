@@ -584,7 +584,12 @@ const makeCancelable = <T>(promise:Promise<T>) => {
  * For promise chains that might become invalid fast
  */
 export function onlyLastCall<T>(call: () => Promise<T>) {
-    const delay = 200;
+    /**
+     * Kept the delay to 0 as I am using this in select list view
+     * and that really benifits from immediate feedback.
+     */
+    const delay = 0;
+
     let timeout: any;
     let _resolve: any;
     let _reject: any;
@@ -594,7 +599,7 @@ export function onlyLastCall<T>(call: () => Promise<T>) {
         timeout = null;
 
         let {promise, cancel} = makeCancelable(call());
-        
+
         _cancel = cancel;
 
         promise

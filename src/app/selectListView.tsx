@@ -195,14 +195,16 @@ export class SelectListView extends BaseComponent<Props, State>{
     onChangeFilter = debounce((e) => {
         let filterValue = ReactDOM.findDOMNode(this.refs.omniSearchInput).value;
 
-        this.filteredResults = getFilteredItems({
-            items: this.state.data,
-            textify: this.state.textify,
-            filterValue
-        });
+        this.getNewData().then(()=>{
+            this.filteredResults = getFilteredItems({
+                items: this.state.data,
+                textify: this.state.textify,
+                filterValue
+            });
 
-        this.filteredResults = this.filteredResults.slice(0, this.maxShowCount);
-        this.setState({ filterValue, selectedIndex: 0 });
+            this.filteredResults = this.filteredResults.slice(0, this.maxShowCount);
+            this.setState({ filterValue, selectedIndex: 0 });
+        });
     }, 50);
     incrementSelected = debounce(() => {
         this.setState({ selectedIndex: rangeLimited({ num: ++this.state.selectedIndex, min: 0, max: Math.min(this.maxShowCount - 1, this.filteredResults.length - 1), loopAround: true }) });
@@ -228,7 +230,14 @@ export class SelectListView extends BaseComponent<Props, State>{
         let result = this.filteredResults[index];
         this.state.onSelect(result);
         this.closeOmniSearch();
-    }
+    };
+
+    getNewData = utils.onlyLastCall(() => {
+        let filterValue = ReactDOM.findDOMNode(this.refs.omniSearchInput).value;
+        return this.state.getNewData(filterValue).then((data)=>{
+            this.setState({data});
+        });
+    });
 }
 
 /**
