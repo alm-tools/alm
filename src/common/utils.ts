@@ -556,3 +556,67 @@ export function cancellableForEach<T>(config: {
         lookAtNext();
     });
 }
+
+/**
+ * https://github.com/facebook/react/issues/5465#issuecomment-157888325
+ */
+const makeCancelable = <T>(promise:Promise<T>) => {
+  let hasCanceled_ = false;
+
+  const wrappedPromise = new Promise((resolve: any, reject) => {
+    promise.then((val) =>
+      hasCanceled_ ? reject({isCanceled: true}) : resolve(val)
+    );
+    promise.catch((error) =>
+      hasCanceled_ ? reject({isCanceled: true}) : reject(error)
+    );
+  });
+
+  return {
+    promise: wrappedPromise as Promise<T>,
+    cancel() {
+      hasCanceled_ = true;
+    },
+  };
+};
+
+/**
+ * For promise chains that might become invalid fast
+ */
+export function onlyLastCall<T>(call: () => Promise<T>) {
+    const delay = 200;
+    let timeout: any;
+    let _resolve: any;
+    let _reject: any;
+    let _cancel: () => void = () => null;
+
+    const later = () => {
+        timeout = null;
+
+        let {promise, cancel} = makeCancelable(call());
+        
+        _cancel = cancel;
+
+        promise
+            .then((res) => {
+                _resolve(res);
+            })
+            .catch((rej) => {
+                _reject(rej);
+            })
+    }
+
+    let trueCall = () => new Promise((resolve, reject) => {
+        if (timeout) {
+            clearTimeout(timeout);
+        }
+
+        // Cancel any pending
+        _cancel();
+
+        _resolve = resolve;
+        _reject = reject;
+        timeout = setTimeout(later, delay);
+    })
+    return trueCall;
+}
