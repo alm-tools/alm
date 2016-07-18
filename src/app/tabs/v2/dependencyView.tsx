@@ -38,7 +38,9 @@ let controlRightStyle = {
     padding: '10px',
 
     overflow: 'auto',
-    wordBreak: 'break-all'
+    wordBreak: 'break-all',
+
+    pointerEvents: 'all',
 }
 let controlItemStyle = {
     pointerEvents:'auto',
