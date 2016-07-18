@@ -110,7 +110,7 @@ namespace Worker {
                     }
 
                     let list = globResult.map(nl => {
-                        let p = path.resolve(dirPath, nl);
+                        let p = fsu.resolve(dirPath, nl);
                         let type = mg.cache[p] && mg.cache[p] == 'FILE' ? types.FilePathType.File : types.FilePathType.Dir;
                         return {
                             filePath: fsu.consistentPath(p),
@@ -138,7 +138,8 @@ namespace Worker {
                 }
 
                 let list = newList.map(nl => {
-                    let p = path.resolve(cwd, nl);
+                    let p = fsu.resolve(cwd, nl);
+                    // NOTE: the glob cache also uses consistent path even on windows, hence `fsu.resolve` ^ :)
                     let type = mg.cache[p] && mg.cache[p] == 'FILE' ? types.FilePathType.File : types.FilePathType.Dir;
 
                     if (ignoreThisPathThatGlobGivesForUnknownReasons(nl)) {
@@ -159,7 +160,7 @@ namespace Worker {
             });
             /** Still send the listing while globbing so user gets immediate feedback */
             mg.on('match', (match) => {
-                let p = path.resolve(cwd, match);
+                let p = fsu.resolve(cwd, match);
                 if (mg.cache[p]) {
                     if (ignoreThisPathThatGlobGivesForUnknownReasons(match)) {
                         return;
