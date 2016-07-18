@@ -226,7 +226,7 @@ export var omniSelectProject = new UICommand({
 });
 export var omniProjectSymbols = new UICommand({
     keyboardShortcut: 'mod+shift+h',
-    description: "Find sYmbols in active project",
+    description: "Find Symbols (Hieroglyphs) in active project",
     context: CommandContext.Global,
 });
 export var omniProjectSourcefile = new UICommand({

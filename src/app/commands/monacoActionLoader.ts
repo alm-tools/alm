@@ -43,6 +43,10 @@ const blackListedActions = utils.createMap([
     'editor.action.rename',
     // we have our own quickfix implementation
     'editor.action.quickFix',
+    // we have our own goto symbol for TypeScript
+    // Sadly disabiling this means we lose it for `css` files too.
+    // But its okay as far as I am concerned.
+    'editor.action.quickOutline'
 ]);
 
 /**

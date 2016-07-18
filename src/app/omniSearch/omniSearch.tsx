@@ -321,8 +321,8 @@ class SearchState {
             },
             {
                 mode: SearchMode.Symbol,
-                description: 'Search for sYmbols in active project',
-                shortcut: 'y',
+                description: 'Search for Symbols (Hieroglyphs) in active project',
+                shortcut: 'h',
                 searchingName: "Symbols",
                 keyboardShortcut: commands.omniProjectSymbols.config.keyboardShortcut
             },

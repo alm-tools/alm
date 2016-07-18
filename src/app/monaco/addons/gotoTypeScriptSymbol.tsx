@@ -73,7 +73,7 @@ class GotoTypeScriptSymbolAction extends EditorAction {
 	}
 }
 
-CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(GotoTypeScriptSymbolAction, GotoTypeScriptSymbolAction.ID, 'Goto TypeScript Symbol in file', {
+CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(GotoTypeScriptSymbolAction, GotoTypeScriptSymbolAction.ID, 'Goto TypeScript Symbol (Hieroglyph) in file', {
 	context: ContextKey.EditorTextFocus,
 	primary: KeyMod.CtrlCmd | KeyCode.KEY_H
 }));
