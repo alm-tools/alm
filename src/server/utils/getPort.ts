@@ -6,28 +6,30 @@
 
 import * as http from 'http';
 
-// The next port we will try
-let portrange = 4444;
+export class GetPort {
+    // The next port we will try
+    portrange = 4444;
+    startPortSearch = (startPort: number, cb: (port: number) => void) => {
+        this.portrange = startPort;
+        this.getPort(cb);
+    }
+    private getPort = (cb) => {
+        var port = this.portrange;
+        this.portrange += 1;
 
-export function startPortSearch(startPort: number, cb: (port: number) => void) {
-    portrange = startPort;
-    getPort(cb);
-}
+        var server = http.createServer(() => null);
 
-function getPort(cb) {
-    var port = portrange;
-    portrange += 1;
-
-    var server = http.createServer(() => null);
-
-    server.on('error', function(err) {
-        getPort(cb);
-    });
-    server.listen(port, '0.0.0.0', function(err) {
-        // Found one!
-        server.once('close', function() {
-            cb(port);
+        server.on('error', (err) => {
+            this.getPort(cb);
         });
-        server.close();
-    });
+        server.listen(port, '0.0.0.0', (err) => {
+            // Found one!
+            server.once('close', () => {
+                console.log('found', port)
+                cb(port);
+            });
+            console.log('okay', port)
+            server.close();
+        });
+    }
 }

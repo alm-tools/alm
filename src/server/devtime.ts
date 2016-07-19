@@ -7,81 +7,97 @@ import path = require('path');
 import fs = require('fs');
 import express = require('express');
 import * as utils from "../common/utils";
+import {GetPort} from './utils/getPort';
 
-const webpackDevServerPort = 8888;
 const devtimeDetectionFile = __dirname + '/devtime.txt';
 
-const bundleDevTimeProxy = utils.once(() => {
-    const Webpack = require('webpack');
-    const WebpackDevServer = require('webpack-dev-server');
-    const notification = '[WDS]'; // Webpack dev server
+let webpackDevServerPort = 0;
+let devTimeProxy: (req: express.Request, res: express.Response, next: Function) => void = null;
+const bundleDevTimeProxy = () => {
+    if (devTimeProxy) return devTimeProxy;
 
     /**
-     * Update the prod config for dev time ease
-     */
-    const devConfig = Object.create(config);
-    // Makes sure errors in console map to the correct file and line number
-    devConfig.devtool = 'eval';
-    // Add aditional entry points
-    devConfig.entry = [
-        // For hot style updates
-        require.resolve('webpack/hot/dev-server'),
-        // The script refreshing the browser on hot updates
-        `${require.resolve('webpack-dev-server/client')}?http://127.0.0.1:${webpackDevServerPort}`,
-        // Also keep existing
-    ].concat(config.entry);
-
-    // Add the Hot Replacement plugin for hot style updates
-    devConfig.plugins.push(new Webpack.HotModuleReplacementPlugin());
-
-    /**
-     * Standard webpack bundler stuff
-     */
-    const compiler = Webpack(devConfig);
-    compiler.plugin('compile', function() {
-        console.log(`${notification} Bundling ..... `)
-    });
-    compiler.plugin('done', function(result) {
-        console.log(`${notification} Bundled in ${(result.endTime - result.startTime)} ms!`);
-    });
-
-    /**
-     * Wrap up the bundler in a dev server
-     */
-    const bundler = new WebpackDevServer(compiler, {
-
-        // We need to tell Webpack to serve our bundled application
-        // from the build path. When proxying
-        publicPath: '/build/',
-
-        // Configure hot replacement
-        hot: true,
-
-        // The rest is terminal configurations
-        quiet: false,
-        noInfo: true,
-        stats: {
-            colors: true
-        }
-    });
-    bundler.listen(webpackDevServerPort, '127.0.0.1', function() {
-        console.log(`${notification} Server listening on port: ${webpackDevServerPort}`);
-    });
-
-    /**
-     * Provide a proxy server that will pass your requests to the dev server
+     * Provide a proxy server that will pass your requests to webpack if a webpack port is found
      */
     const httpProxy = require('http-proxy');
     const proxyServer = httpProxy.createProxyServer();
-    return function (req:express.Request,res:express.Response){
+    devTimeProxy = function(req: express.Request, res: express.Response, next) {
+        if (!webpackDevServerPort) next();
+
         proxyServer.web(req, res, {
-            target: `http://127.0.0.1:${webpackDevServerPort}`
+            target: `http://0.0.0.0:${webpackDevServerPort}`
         });
-        proxyServer.on('error',(err)=>{
-            console.log('[WDS] Proxy ERROR',err);
+        proxyServer.on('error', (err) => {
+            console.log('[WDS] Proxy ERROR', err);
         });
     }
-});
+
+    new GetPort().startPortSearch(8888, (port) => {
+
+        // console.log('found port', port); // DEBUG
+
+        webpackDevServerPort = port;
+
+        const Webpack = require('webpack');
+        const WebpackDevServer = require('webpack-dev-server');
+        const notification = '[WDS]'; // Webpack dev server
+
+        /**
+         * Update the prod config for dev time ease
+         */
+        const devConfig = Object.create(config);
+        // Makes sure errors in console map to the correct file and line number
+        devConfig.devtool = 'eval';
+        // Add aditional entry points
+        devConfig.entry = [
+            // For hot style updates
+            require.resolve('webpack/hot/dev-server'),
+            // The script refreshing the browser on hot updates
+            `${require.resolve('webpack-dev-server/client')}?http://0.0.0.0:${webpackDevServerPort}`,
+            // Also keep existing
+        ].concat(config.entry);
+
+        // Add the Hot Replacement plugin for hot style updates
+        devConfig.plugins.push(new Webpack.HotModuleReplacementPlugin());
+
+        /**
+         * Standard webpack bundler stuff
+         */
+        const compiler = Webpack(devConfig);
+        compiler.plugin('compile', function() {
+            console.log(`${notification} Bundling ..... `)
+        });
+        compiler.plugin('done', function(result) {
+            console.log(`${notification} Bundled in ${(result.endTime - result.startTime)} ms!`);
+        });
+
+        /**
+         * Wrap up the bundler in a dev server
+         */
+        const bundler = new WebpackDevServer(compiler, {
+
+            // We need to tell Webpack to serve our bundled application
+            // from the build path. When proxying
+            publicPath: '/build/',
+
+            // Configure hot replacement
+            hot: true,
+
+            // The rest is terminal configurations
+            quiet: false,
+            noInfo: true,
+            stats: {
+                colors: true
+            }
+        });
+        bundler.listen(webpackDevServerPort, '0.0.0.0', function() {
+            console.log(`${notification} Server listening on port: ${webpackDevServerPort}`);
+        });
+
+    });
+
+    return devTimeProxy;
+}
 
 function bundleDeploy() {
     // build
@@ -128,7 +144,7 @@ export function setup(app: express.Express) {
      */
     app.all('/build/*', function(req, res, next) {
         if (devTime) {
-            bundleDevTimeProxy()(req,res);
+            bundleDevTimeProxy()(req, res, next);
         }
         else {
             next();
