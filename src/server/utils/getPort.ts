@@ -25,10 +25,8 @@ export class GetPort {
         server.listen(port, '0.0.0.0', (err) => {
             // Found one!
             server.once('close', () => {
-                console.log('found', port)
                 cb(port);
             });
-            console.log('okay', port)
             server.close();
         });
     }
