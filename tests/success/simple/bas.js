@@ -6,7 +6,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var foo_1 = require("./foo");
 var bar = foo_1.foo;
-function test(a, b, c) {
+function test(x, y, z) {
 }
 var dom = React.createElement("div", null, 
     React.createElement("img", null)

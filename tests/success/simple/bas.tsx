@@ -10,10 +10,9 @@ let bar = foo;
 // bar = '456';
 // \bar < useful for search testing
 /** This is test comment */
-function test(a);
-function test(a, b);
-function test(a, b?, c?) {
-
+function test(x);
+function test(x, y);
+function test(x, y?, z?) {
 }
 
 let dom = <div>
