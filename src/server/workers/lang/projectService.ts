@@ -68,7 +68,8 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
 
                 completionsToReturn.unshift({
                     kind: types.completionKindSnippet,
-                    name,
+                    /** We use `(sig)` prefix to make sure its sorted by monaco to be at the top */
+                    name: '(sig) ' + name,
                     insertText: template,
 
                     display: 'function signature',
