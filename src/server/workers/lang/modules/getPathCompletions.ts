@@ -16,7 +16,11 @@ function getExternalModuleNames(program: ts.Program): string[] {
         // Look for ambient external module declarations
         ts.forEachChild(sourceFile, child => {
             if (child.kind === ts.SyntaxKind.ModuleDeclaration && (<ts.ModuleDeclaration>child).name.kind === ts.SyntaxKind.StringLiteral) {
-                entries.push((<ts.ModuleDeclaration>child).name.text);
+                let name = (<ts.ModuleDeclaration>child).name.text;
+                if (name.endsWith('/index')) {
+                    name = utils.getDirectory(name);
+                }
+                entries.push(name);
             }
         });
     });
@@ -145,7 +149,15 @@ export function getPathCompletionsForAutocomplete(query: GetPathCompletionsForAu
         }));
     }
 
-    filePaths.forEach(p=> {
+    filePaths.forEach(p => {
+        const lowerCaseExtRemoved = fsu.removeExt(p.toLowerCase());
+        if (
+            lowerCaseExtRemoved.endsWith('/index')
+            || lowerCaseExtRemoved.endsWith('/index.d')
+        ) {
+            p = utils.getDirectory(p);
+        }
+
         files.push({
             fileName: fsu.removeExt(utils.getFileName(p)),
             relativePath: fsu.removeExt(fsu.makeRelativePath(sourceDir, p)),

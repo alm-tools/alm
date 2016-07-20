@@ -39,7 +39,13 @@ export function makeRelativePath(relativeFolder: string, filePath: string) {
 }
 
 export function removeExt(filePath: string) {
-    return filePath.substr(0, filePath.lastIndexOf('.'));
+    const lastIndex = filePath.lastIndexOf('.');
+    if (lastIndex == -1 /** Didn't find `.` */
+        /** Found `.` in case `./` || `../` */
+        || (lastIndex === 0 && (filePath[1] === '/' || filePath[2] === '/'))) {
+        return filePath;
+    }
+    return filePath.substr(0, lastIndex);
 }
 
 export function readFile(filePath: string): string {
