@@ -132,5 +132,34 @@ export const defaultSnippets: TemplateConfig[] = [
 			"\t{{}}",
 			"}"
 		].join('\n'),
-    }
+    },
+    {
+        name: 'constructor',
+        description: 'constructor',
+        template:[
+			"constructor() {",
+			"\t{{}}",
+			"}"
+		].join('\n'),
+    },
+
+    /**
+     * Snippets for common imports
+     */
+     /** React */
+     {
+         name: 'react',
+         description: 'import React',
+         template: "import * as React from 'react';"
+     },
+     {
+         name: 'reactdom',
+         description: 'import ReactDOM',
+         template: "import * as ReactDOM from 'react-dom';"
+     },
+     {
+         name: 'reactdomserver',
+         description: 'import ReactDOMServer',
+         template: "import * as ReactDOMServer from 'react-dom/server';"
+     }
 ];
