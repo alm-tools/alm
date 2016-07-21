@@ -25,7 +25,7 @@ const bundleDevTimeProxy = () => {
         if (!webpackDevServerPort) next();
 
         proxyServer.web(req, res, {
-            target: `http://0.0.0.0:${webpackDevServerPort}`
+            target: `http://127.0.0.1:${webpackDevServerPort}`
         });
         proxyServer.on('error', (err) => {
             console.log('[WDS] Proxy ERROR', err);
@@ -53,7 +53,7 @@ const bundleDevTimeProxy = () => {
             // For hot style updates
             require.resolve('webpack/hot/dev-server'),
             // The script refreshing the browser on hot updates
-            `${require.resolve('webpack-dev-server/client')}?http://0.0.0.0:${webpackDevServerPort}`,
+            `${require.resolve('webpack-dev-server/client')}?http://127.0.0.1:${webpackDevServerPort}`,
             // Also keep existing
         ].concat(config.entry);
 
@@ -90,6 +90,7 @@ const bundleDevTimeProxy = () => {
                 colors: true
             }
         });
+        /** Listen on all local address. If we don't then our `getPort` breaks on a mac */
         bundler.listen(webpackDevServerPort, '0.0.0.0', function() {
             console.log(`${notification} Server listening on port: ${webpackDevServerPort}`);
         });
