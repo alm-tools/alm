@@ -2,7 +2,7 @@ import * as sw from "../../utils/simpleWorker";
 import * as contract from "./projectServiceContract";
 
 import * as fmc from "../../disk/fileModelCache";
-import {resolve,selectMany} from "../../../common/utils";
+import {resolve, selectMany} from "../../../common/utils";
 import {TypedEvent} from "../../../common/events";
 import * as types from "../../../common/types";
 import * as projectDataLoader from "../../disk/projectDataLoader";
@@ -20,13 +20,13 @@ namespace Master {
             return resolve({});
         }
     export const getFileContents: typeof contract.master.getFileContents
-        = (data) =>{
+        = (data) => {
             const contents = fmc.getOrCreateOpenFile(data.filePath).getContents();
-            return resolve({contents});
+            return resolve({ contents });
         }
     export const getOpenFilePaths: typeof contract.master.getOpenFilePaths
         = (data) =>
-            resolve(fmc.getOpenFiles().map(f=>f.config.filePath));
+            resolve(fmc.getOpenFiles().map(f => f.config.filePath));
 
     // sinks for important caches
     export const receiveErrorCacheDelta: typeof contract.master.receiveErrorCacheDelta
@@ -49,6 +49,11 @@ namespace Master {
             liveBuildResults.emit(data);
             return resolve({});
         }
+    export const receiveIncrementallyAddedFile: typeof contract.master.receiveIncrementallyAddedFile
+        = (data) => {
+            activeProjectConfig.incrementallyAddedFile(data.filePath);
+            return resolve({});
+        }
 }
 
 // Ensure that the namespace follows the contract
@@ -64,12 +69,12 @@ export const {worker} = sw.startWorker({
 import * as activeProjectConfig  from "../../disk/activeProjectConfig";
 import * as fileListingMaster from "../fileListing/fileListingMaster";
 export function start() {
-    activeProjectConfig.activeProjectConfigDetailsUpdated.on((activeProjectConfigDetails)=>{
+    activeProjectConfig.activeProjectConfigDetailsUpdated.on((activeProjectConfigDetails) => {
         const projectData = projectDataLoader.getProjectDataLoaded(activeProjectConfigDetails);
-        worker.setActiveProjectConfigDetails({projectData});
+        worker.setActiveProjectConfigDetails({ projectData });
     });
-    fileListingMaster.fileListingDelta.on((delta)=>activeProjectConfig.fileListingDelta(delta));
-    fmc.didEdits.on((edits)=>worker.fileEdited(edits));
-    fmc.savedFileChangedOnDisk.on((update)=>worker.fileChangedOnDisk(update));
+    fileListingMaster.fileListingDelta.on((delta) => activeProjectConfig.fileListingDelta(delta));
+    fmc.didEdits.on((edits) => worker.fileEdited(edits));
+    fmc.savedFileChangedOnDisk.on((update) => worker.fileChangedOnDisk(update));
     fmc.didStatusChange.on((update) => update.saved && worker.fileSaved({ filePath: update.filePath }));
 }

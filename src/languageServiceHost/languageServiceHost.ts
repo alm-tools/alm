@@ -1,5 +1,6 @@
 import ts = require('ntypescript');
 import liner = require('./liner');
+import {TypedEvent} from "../common/events";
 
 let toPath = ts.toPath;
 import Path = ts.Path;
@@ -8,7 +9,7 @@ let copyListRemovingItem = ts.copyListRemovingItem;
 interface ILineInfo extends liner.ILineInfo { }
 let createFileMap = ts.createFileMap;
 /** BAS : a function I added, useful as we are working without true fs host */
-const toSimplePath = (fileName:string):Path => toPath(fileName, '', (x) => x);
+const toSimplePath = (fileName: string): Path => toPath(fileName, '', (x) => x);
 /** our compiler settings for simple tokenization */
 const defaultCompilerOptions: ts.CompilerOptions = {
     jsx: ts.JsxEmit.React,
@@ -419,17 +420,20 @@ export class LanguageServiceHost extends LSHost {
      * We allow incremental loading of resources.
      * Needed for node_modules and for stuff like `user types a require statement`
      */
+    incrementallyAddedFile = new TypedEvent<{filePath: string}>();
+
     getScriptSnapshot(fileName: string): ts.IScriptSnapshot {
         let snap = super.getScriptSnapshot(fileName);
         if (!snap) {
             // This script should be a part of the project if it exists
             // But we only do this in the server
-            if (typeof process !== "undefined" && typeof require !== "undefined"){
+            if (typeof process !== "undefined" && typeof require !== "undefined") {
                 if (require('fs').existsSync(fileName)) {
                     try {
                         /** Just because the file exists doesn't mean we can *read* it. */
                         this.addScript(fileName, require('fs').readFileSync(fileName, 'utf8'));
                         snap = super.getScriptSnapshot(fileName);
+                        this.incrementallyAddedFile.emit({filePath:fileName});
                     }
                     catch (e) {
 

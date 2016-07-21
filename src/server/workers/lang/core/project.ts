@@ -31,6 +31,11 @@ export class Project {
             this.languageServiceHost.addScript(filePath, contents);
         });
 
+        this.languageServiceHost.incrementallyAddedFile.on((data)=>{
+            // console.log(data); // DEBUG
+            master.receiveIncrementallyAddedFile(data)
+        });
+
         this.languageService = ts.createLanguageService(this.languageServiceHost, ts.createDocumentRegistry());
     }
 

@@ -36,6 +36,20 @@ export let configFileUpdated = new TypedEvent<types.TypeScriptConfigFileDetails>
 export let projectFilePathsUpdated = new TypedEvent<{ filePaths: string[] }>();
 
 /**
+ * Allows incremental update of file paths based on *advanced* project analysis
+ */
+export const incrementallyAddedFile = (filePath: string) => {
+    if (configFile
+        && configFile.project
+        && configFile.project.files
+        && !configFile.project.files.some(f => f === filePath)
+    ) {
+        configFile.project.files.push(filePath);
+        projectFilePathsUpdated.emit({ filePaths: configFile.project.files });
+    }
+}
+
+/**
  * Errors in tsconfig.json
  */
 import {ErrorsCache} from "../utils/errorsCache";
