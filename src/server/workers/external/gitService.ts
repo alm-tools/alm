@@ -7,8 +7,8 @@ import * as fmc from "../../disk/fileModelCache";
 import * as types from "../../../common/types";
 
 /** Main utility function to execute a command */
-let gitCmd = (...args: string[]):Promise<string> => {
-    return new Promise((resolve,reject)=>{
+let gitCmd = (...args: string[]): Promise<string> => {
+    return new Promise((resolve, reject) => {
         cp.exec(`git ${args.join(' ')}`, { cwd: wd.getProjectRoot() }, (err, stdout, stderr) => {
             if (stderr.toString().trim().length) {
                 return resolve(stderr.toString());
@@ -18,16 +18,16 @@ let gitCmd = (...args: string[]):Promise<string> => {
     });
 }
 
-export function gitStatus(args:{}): Promise<string> {
+export function gitStatus(args: {}): Promise<string> {
     return gitCmd('status');
 }
 
 /** This is a soft reset. i.e. it keeps your staged changes */
-export function gitReset(args:{filePath:string}): Promise<string> {
+export function gitReset(args: { filePath: string }): Promise<string> {
     fmc.saveOpenFile(args.filePath);
     // Delay because if we reset the file immediately the ^ save
     // makes the *change* detection in file model view to ignore what happened.
-    return new Promise((resolve,reject) =>
+    return new Promise((resolve, reject) =>
         setTimeout(() => {
             gitCmd('checkout --', args.filePath).then(resolve, reject);
         }, 500)
@@ -35,7 +35,9 @@ export function gitReset(args:{filePath:string}): Promise<string> {
 }
 
 /**
- * Docs : http://stackoverflow.com/q/37097761/390330
+ * Docs :
+ * - http://stackoverflow.com/q/37097761/390330
+ * - https://git-scm.com/docs/git-diff
  * Some inspiration : https://github.com/jisaacks/GitGutter/blob/1f673cbe009e2e0f4393c25e83be895871b4923f/git_gutter_handler.py#L149-L177
  */
 const gitDiffRegex = /@@[^@@]*@@/g;
