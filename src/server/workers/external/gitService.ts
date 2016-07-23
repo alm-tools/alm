@@ -51,7 +51,7 @@ export function gitDiff(args: { filePath: string }): Promise<types.GitDiff> {
     /**
      * We diff with `HEAD` to still show staged changes (as there are still in your headspace as *area you are working on*)
      */
-    return gitCmd('diff', '-U0', '--no-color', 'HEAD', args.filePath).then(res => {
+    return gitCmd('diff', '-U0', '--no-color', '--no-ext-diff', 'HEAD', args.filePath).then(res => {
         const added: types.GitDiffSpan[] = [];
         const removed: number[] = [];
         const modified: types.GitDiffSpan[] = [];
