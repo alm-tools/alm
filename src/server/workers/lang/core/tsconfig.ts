@@ -1,7 +1,6 @@
 import * as fmc from "../../../disk/fileModelCache";
 import * as fsu from "../../../utils/fsu";
 import fs = require('fs');
-import ts = require('ntypescript');
 import * as json from "../../../../common/json";
 import {makeBlandError,reverseKeysAndValues, uniq, extend, isJs} from "../../../../common/utils";
 import {PackageJsonParsed, TsconfigJsonParsed, TypeScriptConfigFileDetails} from "../../../../common/types";

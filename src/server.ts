@@ -5,6 +5,14 @@
  * - extenal users invoking `node <this file>`
  * So don't move it :)
  */
+
+/**
+ * Load up TypeScript
+ */
+import * as byots  from "byots";
+const ensureImport = byots;
+
+/** Other imports */
 import express = require("express");
 import http = require('http');
 import https = require('https');

@@ -1,4 +1,10 @@
 /**
+ * Load up TypeScript
+ */
+import _ts = require('byots');
+const ensureImport = _ts;
+
+/**
  * The main entry point for the front end
  */
 import {Root} from "./root";
@@ -40,9 +46,6 @@ require('hint.css/hint.css');
 
 // Setup font awesome
 require('font-awesome/css/font-awesome.css');
-
-// Setup ntypescript
-require('ntypescript');
 
 const afterLoaded = () => {
     // The main app element

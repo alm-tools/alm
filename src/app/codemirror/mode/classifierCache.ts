@@ -14,7 +14,6 @@
  *
  */
 import {TypedEvent} from "../../../common/events";
-import ts = require('ntypescript');
 import * as lsh from "../../../languageServiceHost/languageServiceHost";
 
 const languageServiceHost = new lsh.LanguageServiceHost();

@@ -4,13 +4,18 @@
 
 import * as path from "path";
 
+/** A constant pointing you to the TypeScript dir */
+export const typescriptDirectory = path.dirname(require.resolve('typescript')).split('\\').join('/');
+
+/** Tells you if a filePath is inside the TypeScript dir (most likely some lib file) */
+export const isFileInTypeScriptDir = (filePath: string) => filePath.startsWith(typescriptDirectory);
+
 /** Returns you the filePath of a fileName from the TypeScript folder */
 function fileFromLibFolder(fileName: string) {
-    return path.join(path.dirname(require.resolve('ntypescript')), fileName).split('\\').join('/');
+    return path.join(typescriptDirectory, fileName).split('\\').join('/');
 }
 
 /** From the compiler's commandLineParser we find the `lib` to `fileName` mapping */
-import * as ts from "ntypescript";
 const libOption = ts.optionDeclarations.find(x=>x.name == "lib") as ts.CommandLineOptionOfListType;
 const libToFileNameMap = libOption.element.type as ts.Map<string>;
 
@@ -25,9 +30,3 @@ export const getDefaultLibFilePaths = (options: ts.CompilerOptions): string[] =>
     }
     return [fileFromLibFolder(ts.getDefaultLibFileName(options))];
 }
-
-/** A constant pointing you to the TypeScript dir */
-export const typescriptDirectory = path.dirname(require.resolve('ntypescript')).split('\\').join('/');
-
-/** Tells you if a filePath is inside the TypeScript dir (most likely some lib file) */
-export const isFileInTypeScriptDir = (filePath: string) => filePath.startsWith(typescriptDirectory);

@@ -1,4 +1,3 @@
-import ts = require('ntypescript');
 import liner = require('./liner');
 import {TypedEvent} from "../common/events";
 

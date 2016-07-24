@@ -1,3 +1,9 @@
+/**
+ * Load up TypeScript
+ */
+import * as byots  from "byots";
+const ensureImport = byots;
+
 import * as sw from "../../utils/simpleWorker";
 import * as contract from "./projectServiceContract";
 import * as activeProject from "./activeProject"

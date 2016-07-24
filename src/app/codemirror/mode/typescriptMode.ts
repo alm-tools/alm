@@ -1,5 +1,4 @@
 "use strict";
-import ts = require('ntypescript');
 import * as classifierCache from "./classifierCache";
 
 /** Our state per line for CodeMirror mode */
