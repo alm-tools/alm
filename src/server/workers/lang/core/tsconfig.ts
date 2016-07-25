@@ -18,6 +18,7 @@ import {validate} from "./tsconfigValidation";
  * 	1 Add to `tsconfigValidation`
  * 	2 If its an enum : Update `typescriptEnumMap`
  * 	3 If its a path : Update `pathResolveTheseOptions`
+ * 	4 Update the tsconfig.json file `properties` in schema from https://github.com/SchemaStore/schemastore/blob/master/src/schemas/json/tsconfig.json
  */
 interface CompilerOptions {
     allowJs?: boolean;
@@ -58,10 +59,13 @@ interface CompilerOptions {
     noFallthroughCasesInSwitch?: boolean;
     noImplicitAny?: boolean;
     noImplicitReturns?: boolean;
+    noImplicitThis?: boolean
     noImplicitUseStrict?: boolean;
     noLib?: boolean;
     noLibCheck?: boolean;
     noResolve?: boolean;
+    noUnusedParameters?: boolean;
+    noUnusedLocals?: boolean;
     out?: string;
     outFile?: string;
     outDir?: string;
