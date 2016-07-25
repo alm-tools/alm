@@ -6,7 +6,8 @@ import {resolve} from "../../../common/utils";
 /** This is were we push the errors */
 import {errorsCache} from "../../globalErrorCache";
 /** This is where we get the active project information from */
-import {projectFilePathsUpdated} from "../../disk/activeProjectConfig";
+import * as activeProjectConfig from "../../disk/activeProjectConfig";
+import * as projectDataLoader from "../../disk/projectDataLoader";
 
 namespace Master {
     export const receiveErrorCacheDelta: typeof contract.master.receiveErrorCacheDelta
@@ -25,7 +26,10 @@ export const {worker} = sw.startWorker({
     masterImplementation: Master
 });
 export function start() {
-    projectFilePathsUpdated.on((e)=>worker.activeProjectFilePaths(e));
+    activeProjectConfig.activeProjectConfigDetailsUpdated.on((activeProjectConfigDetails) => {
+        const projectData = projectDataLoader.getProjectDataLoaded(activeProjectConfigDetails);
+        worker.setProjectData(projectData);
+    });
     // TODO: lint
     // push if any file in the active project changes.
 }

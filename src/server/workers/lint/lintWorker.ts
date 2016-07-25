@@ -1,13 +1,20 @@
+/**
+ * Load up TypeScript
+ */
+import * as byots  from "byots";
+const ensureImport = byots;
+
 import * as sw from "../../utils/simpleWorker";
 import * as contract from "./lintContract";
 
 import {resolve} from "../../../common/utils";
+import * as types from "../../../common/types";
 import * as Linter from "tslint";
+import {LanguageServiceHost} from "../../../languageServiceHost/languageServiceHost";
 
 namespace Worker {
-    export const activeProjectFilePaths: typeof contract.worker.activeProjectFilePaths = (data) => {
-        // console.log('Linter got filePaths', data.filePaths.length); // DEBUG
-        LinterImplementation.setFilePaths(data.filePaths);
+    export const setProjectData: typeof contract.worker.setProjectData = (data) => {
+        LinterImplementation.setProjectData(data);
         return resolve({});
     }
 }
@@ -24,23 +31,39 @@ export const {master} = sw.runWorker({
  * The actual linter stuff lives in this namespace
  */
 namespace LinterImplementation {
-    let filePaths: string[] = [];
+    let projectData: types.ProjectDataLoaded | null = null;
 
-    export function setFilePaths(_filePaths: string[]) {
-        filePaths = filePaths;
+    export function setProjectData(_projectData: types.ProjectDataLoaded) {
+        projectData = _projectData;
         lintAgain();
     }
 
-    /**
-     * We only create the program when we are ready to lint
-     */
-    let program: ts.Program | null = null;
-
     function lintAgain() {
+        console.log('About to start linting files: ', projectData.filePathWithContents.length); // DEBUG
+
+        /**
+         * Create the program
+         */
+         const languageServiceHost = new LanguageServiceHost(projectData.configFile.project.compilerOptions);
+
+         // Add all the files
+         projectData.filePathWithContents.forEach(({filePath,contents}) => {
+             languageServiceHost.addScript(filePath, contents);
+         });
+         // And for incremental ones lint again
+         languageServiceHost.incrementallyAddedFile.on((data)=>{
+             // console.log(data); // DEBUG
+             // TODO: lint : lint these files
+         });
+
+         const languageService = ts.createLanguageService(languageServiceHost, ts.createDocumentRegistry());
+         const program = languageService.getProgram();
+
+
         /**
          * TODO: lint
-         * create the program
          *
+         * Load the linter config
          * create the Linter for each file and get its output
          *
          */
