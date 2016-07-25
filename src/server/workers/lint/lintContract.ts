@@ -6,11 +6,11 @@ import * as sw from "../../utils/simpleWorker";
  * A contract on how the worker --calls--> master
  */
 export const worker = {
-    // TODO: Put your own
-    echo: {} as sw.QRFunction<{ text: string, num: number }, { text: string, num: number }>,
+    /** Linter takes in all the files in the project */
+    activeProjectFilePaths: {} as sw.QRFunction<{ filePaths: string[] }, {}>,
 }
 
 export const master = {
-    // TODO: Put your own
-    increment: {} as sw.QRFunction<{ num: number }, { num: number }>,
+    /** Linter sends out errors */
+    receiveErrorCacheDelta: {} as sw.QRFunction<ErrorCacheDelta, {}>,
 }

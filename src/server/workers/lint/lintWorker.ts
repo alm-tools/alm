@@ -1,14 +1,12 @@
 import * as sw from "../../utils/simpleWorker";
 import * as contract from "./lintContract";
 
+import {resolve} from "../../../common/utils";
+
 namespace Worker {
-    export const echo: typeof contract.worker.echo = (q) => {
-        return master.increment(q).then((res) => {
-            return {
-                text: q.text,
-                num: res.num
-            };
-        });
+    export const activeProjectFilePaths: typeof contract.worker.activeProjectFilePaths = (data) => {
+        console.log('Got the file paths. Now I should start linting them.', data.filePaths.length);
+        return resolve({});
     }
 }
 
