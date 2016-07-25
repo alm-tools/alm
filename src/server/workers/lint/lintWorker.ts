@@ -20,7 +20,9 @@ export const {master} = sw.runWorker({
     masterContract: contract.master
 });
 
-
+/**
+ * The actual linter stuff lives in this namespace
+ */
 namespace LinterImplementation {
     let filePaths: string[] = [];
 
