@@ -4,9 +4,8 @@
  *
  * Modified to be more powerful
  * - (filePath aware)
- * - Changed to use `ntypescript`.
+ * - Changed to use `classifierCache`.
  */
-import ts = require('ntypescript');
 import * as classifierCache from "../../../codemirror/mode/classifierCache";
 
 export enum Language {

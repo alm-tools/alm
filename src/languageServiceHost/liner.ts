@@ -1,4 +1,3 @@
-import ts = require('ntypescript');
 import Debug = ts.Debug;
 
 /**

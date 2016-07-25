@@ -1,4 +1,3 @@
-/// <reference path="../../node_modules/ntypescript/bin/ntypescript.d.ts"/>
 
 /**
  * This is setup in our index.html to allow us to check if we are running in electron

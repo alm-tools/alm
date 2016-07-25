@@ -19,7 +19,6 @@ var config = {
     module: {
         noParse: [
             /clipboard\.min/,
-            /ntypescript/,
         ],
         loaders: [
             {
@@ -41,6 +40,10 @@ var config = {
         ]
     },
     node: {
+      /**
+       * This is here because we couldn't find a way for webpack to
+       * ignore the fs access in our languageServiceHost
+       */
       fs: "empty"
     }
 };

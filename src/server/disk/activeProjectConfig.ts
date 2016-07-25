@@ -231,8 +231,6 @@ export function fileListingDelta(delta: types.FileListingDelta) {
 import fs = require("fs");
 import path = require("path");
 namespace ConfigFile {
-    const typescriptDirectory = path.dirname(require.resolve('ntypescript')).split('\\').join('/');
-
     /**
      * This explicilty loads the project from the filesystem to check it for errors
      * For Virtual projects it just returns the in memory project
