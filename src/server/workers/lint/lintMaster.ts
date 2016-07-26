@@ -31,5 +31,9 @@ export function start() {
         worker.setProjectData(projectData);
     });
     // TODO: lint
-    // push if any file in the active project changes.
+    // push if any file *saved* in the active project changes.
+    // NOTE: only saved ones as linter reads directly from disk and works on whole file contents
+
+    // TODO: lint
+    // Push if a file ending with `tslint.json` changes.
 }

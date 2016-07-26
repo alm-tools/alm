@@ -429,8 +429,9 @@ export class LanguageServiceHost extends LSHost {
             if (typeof process !== "undefined" && typeof require !== "undefined") {
                 if (require('fs').existsSync(fileName)) {
                     try {
-                        /** Just because the file exists doesn't mean we can *read* it. */
-                        this.addScript(fileName, require('fs').readFileSync(fileName, 'utf8'));
+                        /** Just because the file exists doesn't mean we can *read* it. Hence the try */
+                        const contents = require('fs').readFileSync(fileName, 'utf8');
+                        this.addScript(fileName, contents);
                         snap = super.getScriptSnapshot(fileName);
                         this.incrementallyAddedFile.emit({filePath:fileName});
                     }

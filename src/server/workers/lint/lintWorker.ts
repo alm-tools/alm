@@ -11,6 +11,9 @@ import {resolve} from "../../../common/utils";
 import * as types from "../../../common/types";
 import * as Linter from "tslint";
 import {LanguageServiceHost} from "../../../languageServiceHost/languageServiceHost";
+import {isFileInTypeScriptDir} from "../lang/core/typeScriptDir";
+
+const linterMessagePrefix = `[LINT]`
 
 namespace Worker {
     export const setProjectData: typeof contract.worker.setProjectData = (data) => {
@@ -31,34 +34,84 @@ export const {master} = sw.runWorker({
  * The actual linter stuff lives in this namespace
  */
 namespace LinterImplementation {
-    let projectData: types.ProjectDataLoaded | null = null;
 
-    export function setProjectData(_projectData: types.ProjectDataLoaded) {
-        projectData = _projectData;
-        lintAgain();
+    /** The tslint linter takes a few configuration options before it can lint a file */
+    interface LinterConfig {
+        projectData: types.ProjectDataLoaded;
+        program: ts.Program;
     }
+    let linterConfig: LinterConfig | null = null;
 
-    function lintAgain() {
-        console.log('About to start linting files: ', projectData.filePathWithContents.length); // DEBUG
+    /** We only do this once per project change */
+    let informedUserAboutMissingConfig: boolean = false;
+
+    /**
+      * This is the entry point for the linter to start its work
+      */
+    export function setProjectData(projectData: types.ProjectDataLoaded) {
+        informedUserAboutMissingConfig = false;
 
         /**
          * Create the program
          */
-         const languageServiceHost = new LanguageServiceHost(projectData.configFile.project.compilerOptions);
+        const languageServiceHost = new LanguageServiceHost(projectData.configFile.project.compilerOptions);
 
-         // Add all the files
-         projectData.filePathWithContents.forEach(({filePath,contents}) => {
-             languageServiceHost.addScript(filePath, contents);
-         });
-         // And for incremental ones lint again
-         languageServiceHost.incrementallyAddedFile.on((data)=>{
-             // console.log(data); // DEBUG
-             // TODO: lint : lint these files
-         });
+        // Add all the files
+        projectData.filePathWithContents.forEach(({filePath, contents}) => {
+            languageServiceHost.addScript(filePath, contents);
+        });
+        // And for incremental ones lint again
+        languageServiceHost.incrementallyAddedFile.on((data) => {
+            //  console.log(data); // DEBUG
+            lintAgain();
+        });
 
-         const languageService = ts.createLanguageService(languageServiceHost, ts.createDocumentRegistry());
-         const program = languageService.getProgram();
+        const languageService = ts.createLanguageService(languageServiceHost, ts.createDocumentRegistry());
+        const program = languageService.getProgram();
 
+        /**
+         * Now create the tslint config
+         */
+        linterConfig = {
+            projectData,
+            program
+        };
+
+        lintAgain();
+    }
+
+    /**
+     * Called whenever
+     *  - a file is edited
+     *  - added to the compilation context
+     */
+    function lintAgain() {
+        const sourceFiles = linterConfig.program.getSourceFiles().filter(x => !isFileInTypeScriptDir(x.fileName));
+        if (!sourceFiles.length) return;
+
+        /** Look for tslint.json by findup from the project dir */
+        const projectDir = linterConfig.projectData.configFile.projectFileDirectory;
+        const configurationPath = Linter.findConfigurationPath(null, projectDir);
+        // console.log({configurationPath}); // DEBUG
+        /** lint abort if the config is not ready present yet */
+        if (!configurationPath) {
+            if (!informedUserAboutMissingConfig) {
+                informedUserAboutMissingConfig = true;
+                console.log(linterMessagePrefix, 'No tslint configuration found.');
+            }
+            return;
+        }
+
+        /** We have our configuration file. Now lets convert it to configuration :) */
+        const configuration = Linter.loadConfigurationFromPath(configurationPath);
+
+        /** Now start the lazy lint */
+        lintWithCancellationToken(configuration);
+    }
+
+    /** TODO: support cancellation token */
+    function lintWithCancellationToken(linterConfiguration: any) {
+        console.log(linterMessagePrefix, 'About to start linting files: ', linterConfig.program.getSourceFiles().length); // DEBUG
 
         /**
          * TODO: lint
