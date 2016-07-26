@@ -174,6 +174,9 @@ export var cast = {
     fileOutputStatusUpdated: new TypedEvent<types.JSOutputStatus>(),
     completeOutputStatusCacheUpdated: new TypedEvent<types.JSOutputStatusCache>(),
     liveBuildResults: new TypedEvent<types.LiveBuildResults>(),
+
+    /** Server quit */
+    serverExiting: new TypedEvent<{}>(),
 }
 
 
