@@ -146,16 +146,6 @@ const afterLoaded = () => {
         window.open(`${window.location.href.replace(location.href,'')}#${types.urlHashNewSession}`, '',`innerWidth=${width}, innerHeight=${height}`);
     });
 
-    cast.serverExiting.on(()=>{
-        console.log('TODO: exit the app');
-        // document.getElementById('app').innerHTML =
-        // ReactDOMServer.renderToString(
-        //     <div>
-        //         The server application has exited. You can close this tab.
-        //     </div>
-        // );
-    })
-
     /** Set the window session */
     server.getValidSessionId({ sessionId: clientSession.getSessionId() }).then((res) => {
         clientSession.setSessionId(res.sessionId);

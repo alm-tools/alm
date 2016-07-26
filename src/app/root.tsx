@@ -1,7 +1,8 @@
-import types = require("../common/types");
 /**
  * The root frontend component
  */
+ /** Types */
+import types = require("../common/types");
 import * as React from "react";
 import * as ui from "./ui";
 import * as uix from "./uix";
@@ -17,6 +18,7 @@ import {OmniSearch} from "./omniSearch/omniSearch";
 import {FileTree} from "./fileTree";
 import {SelectListView} from "./selectListView";
 import {InputDialog} from "./dialogs/inputDialog";
+import {ServerExit} from "./serverExit/serverExit";
 
 import {StatusBar} from "./statusBar";
 import {MainPanel} from "./mainPanel";
@@ -41,7 +43,6 @@ export interface State {
     isOmniSearchOpen?: boolean;
 }
 
-@ui.Radium
 export class Root extends ui.BaseComponent<{}, State>{
     constructor(props: {}) {
         super(props);
@@ -69,11 +70,13 @@ export class Root extends ui.BaseComponent<{}, State>{
 
                 <OmniSearch/>
 
+                <ServerExit/>
+
                 <SelectListView/>
 
                 <InputDialog/>
 
-                <div style={[csx.flex, csx.horizontal]}>
+                <div style={csx.extend(csx.flex, csx.horizontal)}>
                     <FileTree/>
                     <AppTabsContainer/>
                 </div>
