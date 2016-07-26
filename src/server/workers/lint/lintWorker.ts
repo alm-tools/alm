@@ -1,4 +1,8 @@
 /**
+ * The heart of the linter
+ */
+
+/**
  * Load up TypeScript
  */
 import * as byots  from "byots";
@@ -7,7 +11,7 @@ const ensureImport = byots;
 import * as sw from "../../utils/simpleWorker";
 import * as contract from "./lintContract";
 
-import {resolve} from "../../../common/utils";
+import {resolve, timer} from "../../../common/utils";
 import * as types from "../../../common/types";
 import * as Linter from "tslint";
 import {LanguageServiceHost} from "../../../languageServiceHost/languageServiceHost";
@@ -104,14 +108,45 @@ namespace LinterImplementation {
 
         /** We have our configuration file. Now lets convert it to configuration :) */
         const configuration = Linter.loadConfigurationFromPath(configurationPath);
+        /** Also need to setup the rules directory */
+        const possiblyRelativeRulesDirectory = configuration.rulesDirectory;
+        const rulesDirectory = Linter.getRulesDirectories(possiblyRelativeRulesDirectory, configurationPath);
 
         /** Now start the lazy lint */
-        lintWithCancellationToken(configuration);
+        lintWithCancellationToken({ configuration, rulesDirectory });
     }
 
     /** TODO: support cancellation token */
-    function lintWithCancellationToken(linterConfiguration: any) {
+    function lintWithCancellationToken(
+        {configuration, rulesDirectory}
+            : { configuration: /** linter doesn't export this type directly */ any, rulesDirectory: string | string[] }
+    ) {
         console.log(linterMessagePrefix, 'About to start linting files: ', linterConfig.program.getSourceFiles().length); // DEBUG
+
+        const sourceFiles = linterConfig.program.getSourceFiles().filter(x => !isFileInTypeScriptDir(x.fileName));
+
+        // Note: tslint is a big stingy with its definitions so we use `any` to make our ts def compat with its ts defs.
+        const program = linterConfig.program as any;
+
+        const time = timer();
+        sourceFiles.forEach(sf => {
+            const filePath = sf.fileName;
+            const contents = sf.getText();
+
+            const linter = new Linter(filePath, contents, { configuration, rulesDirectory }, program);
+            const lintResult = linter.lint();
+
+            if (lintResult.failureCount) {
+                // console.log(linterMessagePrefix, filePath, lintResult.failureCount); // DEBUG
+                // TODO: store these lint errors
+            }
+            else {
+                // TODO: lint clear all errors for filePath;
+            }
+
+        });
+
+        console.log(linterMessagePrefix, 'Lint complete', time.seconds);
 
         /**
          * TODO: lint
