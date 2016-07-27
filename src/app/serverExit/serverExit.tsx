@@ -21,11 +21,14 @@ export class ServerExit extends ui.BaseComponent<{}, { isOpen }>{
         return (
             <Modal
                 isOpen={this.state.isOpen}
-                onRequestClose={() => ui.notifyInfoQuickDisappear("Please close the browser tab manually") }>
-                <div style={csx.extend(csx.centerCenter, csx.flex, { color: 'white', fontSize: '20px' }) }>
+                onRequestClose={this.askUserToClose}>
+                <div
+                    style={csx.extend(csx.centerCenter, csx.flex, { color: 'white', fontSize: '20px' }) }
+                    onClick={this.askUserToClose}>
                     The server has exited. Please close this browser tab.
                 </div>
             </Modal>
         );
     }
+    askUserToClose = () => ui.notifyInfoQuickDisappear("Please close the browser tab manually")
 }
