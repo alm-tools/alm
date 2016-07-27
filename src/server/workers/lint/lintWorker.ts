@@ -13,9 +13,15 @@ import * as contract from "./lintContract";
 
 import {resolve, timer} from "../../../common/utils";
 import * as types from "../../../common/types";
-import * as Linter from "tslint";
 import {LanguageServiceHost} from "../../../languageServiceHost/languageServiceHost";
 import {isFileInTypeScriptDir} from "../lang/core/typeScriptDir";
+import {ErrorsCache} from "../../utils/errorsCache";
+
+/** Bring in tslint */
+import * as Linter from "tslint";
+/** Tslint typings. Only use in type annotations */
+import {IConfigurationFile} from "../../../../node_modules/tslint/lib/configuration";
+import {RuleFailure} from "../../../../node_modules/tslint/lib/language/rule/rule";
 
 const linterMessagePrefix = `[LINT]`
 
@@ -49,11 +55,18 @@ namespace LinterImplementation {
     /** We only do this once per project change */
     let informedUserAboutMissingConfig: boolean = false;
 
+    /** Our error cache */
+    const errorCache = new ErrorsCache();
+    errorCache.errorsDelta.on(master.receiveErrorCacheDelta);
+
     /**
       * This is the entry point for the linter to start its work
       */
     export function setProjectData(projectData: types.ProjectDataLoaded) {
+        /** Reinit */
+        errorCache.clearErrors();
         informedUserAboutMissingConfig = false;
+        linterConfig = null;
 
         /**
          * Create the program
@@ -119,35 +132,43 @@ namespace LinterImplementation {
     /** TODO: support cancellation token */
     function lintWithCancellationToken(
         {configuration, rulesDirectory}
-            : { configuration: /** linter doesn't export this type directly */ any, rulesDirectory: string | string[] }
+            : { configuration: IConfigurationFile, rulesDirectory: string | string[] }
     ) {
         const sourceFiles =
             linterConfig.program.getSourceFiles()
-            .filter(x => !x.isDeclarationFile);
+                .filter(x => !x.isDeclarationFile);
 
         console.log(linterMessagePrefix, 'About to start linting files: ', sourceFiles.length); // DEBUG
 
         // Note: tslint is a big stingy with its definitions so we use `any` to make our ts def compat with its ts defs.
         const program = linterConfig.program as any;
 
+        /** Used to push to the errorCache */
+        const filePaths: string[] = [];
+        let errors: CodeError[] = [];
+
         const time = timer();
         sourceFiles.forEach(sf => {
             const filePath = sf.fileName;
             const contents = sf.getText();
 
+
             const linter = new Linter(filePath, contents, { configuration, rulesDirectory }, program);
             const lintResult = linter.lint();
 
+            filePaths.push(filePath);
             if (lintResult.failureCount) {
                 // console.log(linterMessagePrefix, filePath, lintResult.failureCount); // DEBUG
-                // TODO: store these lint errors
+                errors = errors.concat(
+                    lintResult.failures.map(
+                        le => lintErrorToCodeError(le,contents)
+                    )
+                );
             }
-            else {
-                // TODO: lint clear all errors for filePath;
-            }
-
         });
 
+        /** Push to errorCache */
+        errorCache.setErrorsByFilePaths(filePaths, errors);
         console.log(linterMessagePrefix, 'Lint complete', time.seconds);
 
         /**
@@ -157,5 +178,30 @@ namespace LinterImplementation {
          * create the Linter for each file and get its output
          *
          */
+    }
+
+    /** Utility */
+    function lintErrorToCodeError(lintError: RuleFailure, contents: string): CodeError {
+        const start = lintError.getStartPosition().getLineAndCharacter();
+        const end = lintError.getEndPosition().getLineAndCharacter();
+        const preview = contents.substring(
+            lintError.getStartPosition().getPosition(),
+            lintError.getEndPosition().getPosition()
+        );
+
+        const result: CodeError = {
+            filePath: lintError.getFileName(),
+            message: lintError.getFailure(),
+            from: {
+                line: start.line,
+                ch: start.character
+            },
+            to: {
+                line: end.line,
+                ch: end.character
+            },
+            preview: preview
+        }
+        return result;
     }
 }
