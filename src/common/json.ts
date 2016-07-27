@@ -83,7 +83,8 @@ export function parseErrorToCodeError(filePath: string, error: ParseError) : Cod
         from: error.from,
         to: error.to,
         message: error.message,
-        preview: error.preview
+        preview: error.preview,
+        level: 'error'
     }
 }
 

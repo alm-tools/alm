@@ -246,18 +246,23 @@ namespace ErrorRenders {
     export class SingleError extends React.Component<{error:CodeError},{}>{
         shouldComponentUpdate = pure.shouldComponentUpdate;
 
-        render(){
+        render() {
             const e = this.props.error;
+            const style = e.level === 'error'
+                ? styles.errorsPanel.errorDetailsContainer
+                : styles.errorsPanel.warningDetailsContainer;
 
-            return (<div style={csx.extend(styles.hand, styles.errorsPanel.errorDetailsContainer) } onClick={() => openErrorLocation(e) }>
-                <div style={styles.errorsPanel.errorDetailsContent}>
-                    <div style={styles.errorsPanel.errorMessage}>
-                        🐛({e.from.line + 1}: {e.from.ch + 1}) {e.message}
-                        {' '}<Clipboard text={`${e.filePath}:${e.from.line + 1} ${e.message}`}/>
+            return (
+                <div style={style} onClick={() => openErrorLocation(e) }>
+                    <div style={styles.errorsPanel.errorDetailsContent}>
+                        <div style={styles.errorsPanel.errorMessage}>
+                            🐛({e.from.line + 1}: {e.from.ch + 1}) {e.message}
+                            {' '}<Clipboard text={`${e.filePath}:${e.from.line + 1} ${e.message}`}/>
+                        </div>
+                        {e.preview ? <div style={styles.errorsPanel.errorPreview}>{e.preview}</div> : ''}
                     </div>
-                    {e.preview ? <div style={styles.errorsPanel.errorPreview}>{e.preview}</div> : ''}
                 </div>
-            </div>);
+            );
         }
     }
 }

@@ -200,7 +200,8 @@ namespace LinterImplementation {
                 line: end.line,
                 ch: end.character
             },
-            preview: preview
+            preview: preview,
+            level: 'warning',
         }
         return result;
     }

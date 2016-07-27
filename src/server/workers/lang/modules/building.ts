@@ -26,6 +26,7 @@ export function diagnosticToCodeError(diagnostic: ts.Diagnostic): CodeError {
         to: { line: endPosition.line, ch: endPosition.character },
         message: ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n'),
         preview,
+        level: 'error'
     };
 }
 

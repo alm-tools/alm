@@ -300,7 +300,8 @@ export function makeBlandError(filePath: string, error: string): CodeError {
             ch: 0
         },
         message: error,
-        preview: null
+        preview: null,
+        level: 'error'
     }
 }
 

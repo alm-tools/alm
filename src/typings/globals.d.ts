@@ -34,6 +34,7 @@ interface CodeError {
     to: EditorPosition;
     message: string;
     preview: string;
+    level: 'warning'|'error';
 }
 
 interface ErrorsByFilePath {
