@@ -121,9 +121,11 @@ namespace LinterImplementation {
         {configuration, rulesDirectory}
             : { configuration: /** linter doesn't export this type directly */ any, rulesDirectory: string | string[] }
     ) {
-        console.log(linterMessagePrefix, 'About to start linting files: ', linterConfig.program.getSourceFiles().length); // DEBUG
+        const sourceFiles =
+            linterConfig.program.getSourceFiles()
+            .filter(x => !x.isDeclarationFile);
 
-        const sourceFiles = linterConfig.program.getSourceFiles().filter(x => !isFileInTypeScriptDir(x.fileName));
+        console.log(linterMessagePrefix, 'About to start linting files: ', sourceFiles.length); // DEBUG
 
         // Note: tslint is a big stingy with its definitions so we use `any` to make our ts def compat with its ts defs.
         const program = linterConfig.program as any;
