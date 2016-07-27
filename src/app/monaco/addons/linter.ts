@@ -21,7 +21,7 @@ const gutterDecorationOptions: monaco.editor.IModelDecorationOptions = {
 
 function codeErrorToMonacoError(codeError: CodeError): monaco.editor.IMarkerData {
     return {
-        severity: monaco.Severity.Error,
+        severity: codeError.level === 'error' ? monaco.Severity.Error : monaco.Severity.Warning,
         message: codeError.message,
 
         startLineNumber: codeError.from.line + 1,
