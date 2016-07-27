@@ -2,7 +2,7 @@ import csx = require('csx');
 
 export const textColor = '#AAA';
 export let errorColor = '#f92672';
-export let warningColor = '#f8e487';
+export let warningColor = '#f6d675'; // Color from CodeMirror `lint.css` warning squiggly color
 export let successColor = '#00c990';
 export let highlightColor = "#6edeef";
 export let selectedBackgroundColor = '#444';
