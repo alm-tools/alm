@@ -225,19 +225,31 @@ namespace ErrorRenders {
         shouldComponentUpdate = pure.shouldComponentUpdate;
 
         render() {
-            let errors =
-                this.props.errors
+            const codeErrors = this.props.errors;
+
+            const errors = codeErrors.filter(x=>x.level === 'error');
+            const warnings = codeErrors.filter(x=>x.level === 'warning');
+
+            let errorsRendered =
+                    // error before warning
+                    errors.concat(warnings)
                     .map((e, j) => (
                         <SingleError key={`${j}`} error={e}/>
                     ));
 
             return <div>
                 <div style={styles.errorsPanel.filePath} onClick={() => openErrorLocation(this.props.errors[0]) }>
-                    <Icon name="file-code-o" style={{ fontSize: '.8rem' }}/> {this.props.filePath} ({errors.length})
+                    <Icon name="file-code-o" style={{ fontSize: '.8rem' }}/>
+                    &nbsp;{this.props.filePath}
+                    (
+                        {!!errors.length && <span style={{color: styles.errorColor}}>{errors.length}</span>}
+                        {!!(errors.length && warnings.length) && ','}
+                        {!!warnings.length && <span style={{color: styles.warningColor}}>{warnings.length}</span>}
+                    )
                 </div>
 
                 <div style={styles.errorsPanel.perFileList}>
-                    {errors}
+                    {errorsRendered}
                 </div>
             </div>;
         }
