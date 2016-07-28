@@ -19,7 +19,7 @@ let resolve = sls.resolve;
 import * as fmc from "../server/disk/fileModelCache";
 import * as activeProjectConfig from "../server/disk/activeProjectConfig";
 
-import {errorsCache} from "../server/globalErrorCache";
+import {errorsCache} from "../server/globalErrorCacheServer";
 import * as projectServiceMaster from "../server/workers/lang/projectServiceMaster";
 
 namespace Server {
