@@ -1,0 +1,431 @@
+{
+	"title": "JSON schema for the TSLint configuration files",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+
+	"type": "object",
+	"additionalProperties": true,
+
+	"definitions": {
+		"ruledefinitions": {
+			"properties": {
+				"align": {
+					"description": "Enforces vertical alignment for parameters, arguments and/or statements",
+					"type": [ "array" ],
+					"items": {
+						"enum": [ true, false, "parameters", "arguments", "statements" ]
+					}
+				},
+				"ban": {
+					"description": "Bans the use of specific functions",
+					"type": [ "boolean", "array" ],
+					"items": {
+						"type": [ "boolean", "array" ]
+					}
+				},
+				"class-name": {
+					"description": "Enforces PascalCased class and interface names",
+					"type": "boolean"
+				},
+				"comment-format": {
+					"description": "Enforces rules for single-line comments",
+					"type": "array",
+					"items": {
+						"enum": [ true, false, "check-space", "check-lowercase", "check-uppercase" ]
+					}
+				},
+				"component-class-suffix": {
+					"description": "Enforces all components having the suffix of 'Component'",
+					"type": "boolean"
+				},
+				"component-selector-name": {
+					"description": "Enforces naming conventions for components",
+					"type": "array",
+					"items": {
+						"enum": [ true, false, "camelCase", "kebab-case" ]
+					}
+				},
+				"component-selector-prefix": {
+					"description": "Enforces all components to have a uniform prefix",
+					"type": "array",
+					"items": {
+						"enum": [ true, false, "sg" ]
+					}
+				},
+				"component-selector-type": {
+					"description": "Enforces the type of a component",
+					"type": "array",
+					"items": {
+						"enum": [ true, false, "attribute", "element" ]
+					}
+				},
+				"curly": {
+					"description": "Enforces braces for if/for/do/while statements",
+					"type": "boolean"
+				},
+				"directive-class-suffix": {
+					"description": "Enforces all components having the suffix of 'Directive'",
+					"type": "boolean"
+				},
+				"directive-selector-name": {
+					"description": "Enforces naming conventions for directives",
+					"type": "array",
+					"items": {
+						"enum": [ true, false, "camelCase", "kebab-case" ]
+					}
+				},
+				"directive-selector-prefix": {
+					"description": "Enforces all directives to have a uniform prefix",
+					"type": "array",
+					"items": {
+						"enum": [ true, false, "sg" ]
+					}
+				},
+				"directive-selector-type": {
+					"description": "Enforces the type of a directive",
+					"type": "array",
+					"items": {
+						"enum": [ true, false, "attribute", "element" ]
+					}
+				},
+				"eofline": {
+					"description": "Enforces the file to end with a newline",
+					"type": "boolean"
+				},
+				"forin": {
+					"description": "Enforces a for...in statement to be filtered with an if statement",
+					"type": "boolean"
+				},
+				"indent": {
+					"description": "Enforces consistent indentation levels",
+					"type": "array",
+					"items": {
+						"type": [ "boolean", "integer", "string" ]
+					}
+				},
+				"interface-name": {
+					"description": "Enforces the rule that interface names must or must not begin with a capital 'I'",
+					"type": "array",
+					"items": {
+						"enum": [ true, false, "always-prefix", "never-prefix" ]
+					}
+				},
+				"jsdoc-format": {
+					"description": "Enforces basic format rules for jsdoc comments",
+					"type": "boolean"
+				},
+				"label-position": {
+					"description": "Enforces labels only on sensible statements",
+					"type": "boolean"
+				},
+				"label-undefined": {
+					"description": "Checks that labels are defined before usage",
+					"type": "boolean"
+				},
+				"max-line-length": {
+					"description": "Sets the maximum length of a line",
+					"type": "array",
+					"items": {
+						"type": [ "boolean", "integer" ]
+					}
+				},
+				"member-access": {
+					"description": "Enforces using explicit visibility on class members",
+					"type": [ "array", "boolean" ],
+					"items": {
+						"type": [ "boolean", "string" ],
+						"enum": [ true, false, "check-accessor", "check-constructor" ]
+					}
+				},
+				"member-ordering": {
+					"description": "Enforces chosen member ordering",
+					"type": "array",
+					"items": {
+						"type": [ "object", "boolean", "string" ]
+					}
+				},
+				"no-any": {
+					"description": "Disallows usages of any as a type decoration",
+					"type": "boolean"
+				},
+				"no-arg": {
+					"description": "Disallows access to arguments.callee",
+					"type": "boolean"
+				},
+				"no-attribute-parameter-decorator": {
+					"description": "Disallows the @Attribute decorator in constructors",
+					"type": "boolean"
+				},
+				"no-bitwise": {
+					"description": "Disallows bitwise operators",
+					"type": "boolean"
+				},
+				"no-conditional-assignment": {
+					"description": "Disallows any type of assignment in any conditionals; this applies to do-while, for, if, and while statements",
+					"type": "boolean"
+				},
+				"no-console": {
+					"description": "Disallows access to the specified functions on console",
+					"type": "array",
+					"items": {
+						"enum": [
+							true,
+							false,
+							"assert",
+							"count",
+							"debug",
+							"dir",
+							"dirxml",
+							"error",
+							"group",
+							"groupCollapsed",
+							"groupEnd",
+							"info",
+							"log",
+							"profile",
+							"profileEnd",
+							"table",
+							"time",
+							"timeEnd",
+							"timeStamp",
+							"trace",
+							"warn"
+						]
+					}
+				},
+				"no-consecutive-blank-lines": {
+					"description": "Disallows having more than one blank line in a row in a file",
+					"type": "boolean"
+				},
+				"no-construct": {
+					"description": "Disallows access to the constructors of String, Number and Boolean",
+					"type": "boolean"
+				},
+				"no-constructor-vars": {
+					"description": "Disallows the public and private modifiers for constructor parameters",
+					"type": "boolean"
+				},
+				"no-debugger": {
+					"description": "Disallows debugger statements",
+					"type": "boolean"
+				},
+				"no-duplicate-key": {
+					"description": "Disallows duplicate keys in object literals",
+					"type": "boolean"
+				},
+				"no-duplicate-variable": {
+					"description": "Disallows duplicate variable declarations in the same block scope",
+					"type": "boolean"
+				},
+				"no-shadowed-variable": {
+					"description": "Disallows shadowed variable declarations",
+					"type": "boolean"
+				},
+				"no-empty": {
+					"description": "Disallows empty blocks",
+					"type": "boolean"
+				},
+				"no-eval": {
+					"description": "Disallows eval function invocations",
+					"type": "boolean"
+				},
+				"no-forward-ref": {
+					"description": "Enforces avoidence of utilizing forwardRef's in classes and variables",
+					"type": "boolean"
+				},
+				"no-inferrable-types": {
+					"description": "Disallows explicit type declarations for variables or parameters initialized to a number, string, or boolean",
+					"type": ["boolean", "array"]
+				},
+				"no-input-rename": {
+					"description": "Disallows the renaming of input properties",
+					"type": "boolean"
+				},
+				"no-internal-module": {
+					"description": "Disallows internal module, use namespace instead",
+					"type": "boolean"
+				},
+				"no-output-rename": {
+					"description": "Disallows the renaming of output properties",
+					"type": "boolean"
+				},
+				"no-require-imports": {
+					"description": "Disallows require() style imports",
+					"type": "boolean"
+				},
+				"no-string-literal": {
+					"description": "Disallows object access via string literals",
+					"type": "boolean"
+				},
+				"no-switch-case-fall-through": {
+					"description": "Disallows falling through case statements",
+					"type": "boolean"
+				},
+				"no-trailing-comma": {
+					"description": "Disallows trailing comma within object literals",
+					"type": "boolean"
+				},
+				"no-trailing-whitespace": {
+					"description": "Disallows trailing whitespace at the end of a line",
+					"type": "boolean"
+				},
+				"no-unreachable": {
+					"description": "Disallows unreachable code after break, catch, throw, and return statements",
+					"type": "boolean"
+				},
+				"no-unused-expression": {
+					"description": "Disallows unused expression statements",
+					"type": "boolean"
+				},
+				"no-unused-variable": {
+					"description": "Disallows unused imports, variables, functions and private class members",
+					"type": [ "array", "boolean" ],
+					"items": {
+						"type": [ "boolean", "string", "object" ]
+					}
+				},
+				"no-use-before-declare": {
+					"description": "Disallows usage of variables before their declaration",
+					"type": "boolean"
+				},
+				"no-var-keyword": {
+					"description": "Disallows usage of the var keyword, use let or const instead",
+					"type": "boolean"
+				},
+				"no-var-requires": {
+					"description": "Disallows the use of require statements except in import statements",
+					"type": "boolean"
+				},
+				"one-line": {
+					"description": "Enforces the specified tokens to be on the same line as the expression preceding it",
+					"type": "array",
+					"items": {
+						"enum": [ true, false, "check-open-brace", "check-catch", "check-finally", "check-else", "check-whitespace" ]
+					}
+				},
+				"pipe-naming": {
+					"description": "Enforces naming conventions for Pipes",
+					"type": "array",
+					"items": {
+						"enum": [ true, "camelCase", "sg" ]
+					}
+				},
+				"quotemark": {
+					"description": "Enforces consistent single or double quoted string literals",
+					"type": "array",
+					"items": {
+						"enum": [ true, false, "double", "single", "jsx-double", "jsx-single", "avoid-escape" ]
+					}
+				},
+				"radix": {
+					"description": "Enforces the radix parameter of parseInt",
+					"type": "boolean"
+				},
+				"semicolon": {
+					"description": "Enforces semicolons at the end of every statement",
+          "type": "array",
+          "items": {
+            "enum": [ true, false, "always", "never"]
+          }
+				},
+				"sort-object-literal-keys": {
+					"description": "Checks that keys in object literals are declared in alphabetical order",
+					"type": "boolean"
+				},
+				"switch-default": {
+					"description": "Enforces a default case in switch statements",
+					"type": "boolean"
+				},
+				"triple-equals": {
+					"description": "Enforces === and !== in favor of == and !=",
+					"type": [ "array", "boolean" ],
+					"items": {
+						"type": [ "boolean", "string" ],
+						"enum": [ true, false, "allow-null-check", "allow-undefined-check" ]
+					}
+				},
+				"typedef": {
+					"description": "Enforces type definitions to exist",
+					"type": "array",
+					"items": {
+						"enum": [
+						  true,
+						  false,
+						  "call-signature",
+              "parameter",
+              "arrow-parameter",
+              "property-declaration",
+              "variable-declaration",
+              "member-variable-declaration"
+						]
+					}
+				},
+				"typedef-whitespace": {
+					"description": "Enforces spacing whitespace for type definitions",
+					"type": "array",
+					"items": {
+						"type": [ "object", "boolean" ]
+					}
+				},
+				"use-host-property-decorator": {
+					"description": "Enforces the use of @HostBindings and @HostListeners instead of the host property",
+					"type": "boolean"
+				},
+				"use-input-property-decorator": {
+					"description": "Enforces the use of the @Input property decorator instead of the inputs property",
+					"type": "boolean"
+				},
+				"use-life-cycle-interface": {
+					"description": "Enforces all life cycle code using the lifecycle hook interfaces",
+					"type": "boolean"
+				},
+				"use-output-property-decorator": {
+					"description": "Enforces the use of the @Output property decorator instead of the outputs property",
+					"type": "boolean"
+				},
+				"use-pipe-transform-interface": {
+					"description": "Enforces all pipes using the PipeTransform interface",
+					"type": "boolean"
+				},
+				"use-strict": {
+					"description": "Enforces ECMAScript 5's strict mode",
+					"type": "array",
+					"items": {
+						"enum": [ true, false, "check-module", "check-function" ]
+					}
+				},
+				"variable-name": {
+					"description": "Allows only camelCased or UPPER_CASED variable names",
+					"type": [ "array", "boolean" ],
+					"items": {
+						"enum": [ true, false, "check-format", "allow-leading-underscore", "allow-trailing-underscore", "allow-pascal-case", "ban-keywords" ]
+					}
+				},
+				"whitespace": {
+					"description": "Enforces spacing whitespace",
+					"type": "array",
+					"items": {
+						"enum": [ true, false, "check-branch", "check-decl", "check-operator", "check-module", "check-separator", "check-type", "check-typecast" ]
+					}
+				}
+			},
+			"type": "object"
+		}
+	},
+
+	"properties": {
+		"rulesDirectory": {
+			"description": "The directory where the codelytics rules live",
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"rules": {
+			"$ref": "#/definitions/ruledefinitions"
+		},
+		"extends": {
+		  "description": "Extend another configuration (built in config OR a node resolvable .json file) ",
+		  "type": "string"
+        }
+	}
+}
