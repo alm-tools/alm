@@ -172,7 +172,7 @@ namespace LinterImplementation {
         /** create the Linter for each file and get its output */
         sourceFiles.forEach(sf => {
             const filePath = sf.fileName;
-            const contents = sf.getText();
+            const contents = sf.getFullText();
 
 
             const linter = new Linter(filePath, contents, linterConfig.linterConfig, lintprogram);
