@@ -23,11 +23,20 @@ import * as Linter from "tslint";
 import {IConfigurationFile} from "../../../../node_modules/tslint/lib/configuration";
 import {RuleFailure} from "../../../../node_modules/tslint/lib/language/rule/rule";
 
+/**
+ * Horrible file access :)
+ */
+import * as fsu from "../../utils/fsu";
+
 const linterMessagePrefix = `[LINT]`
 
 namespace Worker {
     export const setProjectData: typeof contract.worker.setProjectData = (data) => {
         LinterImplementation.setProjectData(data);
+        return resolve({});
+    }
+    export const fileSaved: typeof contract.worker.fileSaved = (data) => {
+        LinterImplementation.fileSaved(data);
         return resolve({});
     }
 }
@@ -48,7 +57,14 @@ namespace LinterImplementation {
     /** The tslint linter takes a few configuration options before it can lint a file */
     interface LinterConfig {
         projectData: types.ProjectDataLoaded;
-        program: ts.Program;
+        ls: ts.LanguageService;
+        lsh: LanguageServiceHost;
+
+        /** Only if there is a valid linter config found */
+        linterConfig?: {
+            configuration: IConfigurationFile,
+            rulesDirectory: string | string[]
+        }
     }
     let linterConfig: LinterConfig | null = null;
 
@@ -80,21 +96,21 @@ namespace LinterImplementation {
         // And for incremental ones lint again
         languageServiceHost.incrementallyAddedFile.on((data) => {
             //  console.log(data); // DEBUG
-            lintAgain();
+            loadLintConfigAndLint();
         });
 
         const languageService = ts.createLanguageService(languageServiceHost, ts.createDocumentRegistry());
-        const program = languageService.getProgram();
 
         /**
          * Now create the tslint config
          */
         linterConfig = {
             projectData,
-            program
+            ls: languageService,
+            lsh: languageServiceHost,
         };
 
-        lintAgain();
+        loadLintConfigAndLint();
     }
 
     /**
@@ -102,8 +118,8 @@ namespace LinterImplementation {
      *  - a file is edited
      *  - added to the compilation context
      */
-    function lintAgain() {
-        const sourceFiles = linterConfig.program.getSourceFiles().filter(x => !isFileInTypeScriptDir(x.fileName));
+    function loadLintConfigAndLint() {
+        const sourceFiles = linterConfig.ls.getProgram().getSourceFiles().filter(x => !isFileInTypeScriptDir(x.fileName));
         if (!sourceFiles.length) return;
 
         /** Look for tslint.json by findup from the project dir */
@@ -125,35 +141,41 @@ namespace LinterImplementation {
         const possiblyRelativeRulesDirectory = configuration.rulesDirectory;
         const rulesDirectory = Linter.getRulesDirectories(possiblyRelativeRulesDirectory, configurationPath);
 
+        /**
+         * The linter config is now also good to go
+         */
+        linterConfig.linterConfig = {
+            configuration, rulesDirectory
+        }
+
         /** Now start the lazy lint */
-        lintWithCancellationToken({ configuration, rulesDirectory });
+        lintWithCancellationToken();
     }
 
-    /** TODO: support cancellation token */
-    function lintWithCancellationToken(
-        {configuration, rulesDirectory}
-            : { configuration: IConfigurationFile, rulesDirectory: string | string[] }
-    ) {
+    /** TODO: lint support cancellation token */
+    function lintWithCancellationToken() {
+        const program = linterConfig.ls.getProgram();
         const sourceFiles =
-            linterConfig.program.getSourceFiles()
+            program.getSourceFiles()
                 .filter(x => !x.isDeclarationFile);
 
         console.log(linterMessagePrefix, 'About to start linting files: ', sourceFiles.length); // DEBUG
 
         // Note: tslint is a big stingy with its definitions so we use `any` to make our ts def compat with its ts defs.
-        const program = linterConfig.program as any;
+        const lintprogram = program as any;
 
         /** Used to push to the errorCache */
         const filePaths: string[] = [];
         let errors: CodeError[] = [];
 
         const time = timer();
+        /** create the Linter for each file and get its output */
         sourceFiles.forEach(sf => {
             const filePath = sf.fileName;
             const contents = sf.getText();
 
 
-            const linter = new Linter(filePath, contents, { configuration, rulesDirectory }, program);
+            const linter = new Linter(filePath, contents, linterConfig.linterConfig, lintprogram);
             const lintResult = linter.lint();
 
             filePaths.push(filePath);
@@ -170,14 +192,28 @@ namespace LinterImplementation {
         /** Push to errorCache */
         errorCache.setErrorsByFilePaths(filePaths, errors);
         console.log(linterMessagePrefix, 'Lint complete', time.seconds);
+    }
 
-        /**
-         * TODO: lint
-         *
-         * Load the linter config
-         * create the Linter for each file and get its output
-         *
-         */
+    export function fileSaved({filePath}:{filePath:string}) {
+        if (!linterConfig || !linterConfig.linterConfig){
+            return;
+        }
+        if (!filePath.endsWith('.ts')) {
+            return;
+        }
+        /** tslint : do the whole thing */
+        if (filePath.endsWith('tslint.json')){
+            loadLintConfigAndLint();
+            return;
+        }
+        const sf = linterConfig.ls.getProgram().getSourceFiles().find(sf => sf.fileName === filePath);
+        if (!sf) {
+            return;
+        }
+        /** Update the file contents (so that when we get the program it just works) */
+        linterConfig.lsh.setContents(filePath, fsu.readFile(sf.fileName));
+        /** if any file changes (and since we use program) still do the whole thing */
+        loadLintConfigAndLint();
     }
 
     /** Utility */
