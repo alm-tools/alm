@@ -168,6 +168,12 @@ export class ErrorsCache {
     public getErrors = () => this._errorsByFilePath;
     public setErrors = (errorsByFilePath: ErrorsByFilePath) => this._errorsByFilePath = errorsByFilePath;
 
+    /** Only used for debugging */
+    public debugGetErrorsFlattened = () =>
+        Object.keys(this._errorsByFilePath)
+        .map(x => this._errorsByFilePath[x])
+        .reduce((acc, x) => acc.concat(x), []);
+
     /**
      * Clear all errors. Resets the cache.
      *

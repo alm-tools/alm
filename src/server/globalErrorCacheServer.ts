@@ -8,3 +8,6 @@
  */
 import {ErrorsCache} from "./utils/errorsCache";
 export const errorsCache = new ErrorsCache();
+errorsCache.errorsDelta.on(()=>{
+    // console.log('Error count', errorsCache.debugGetErrorsFlattened().length); // DEBUG
+})

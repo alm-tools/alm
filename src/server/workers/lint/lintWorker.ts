@@ -101,6 +101,11 @@ namespace LinterImplementation {
         });
 
         const languageService = ts.createLanguageService(languageServiceHost, ts.createDocumentRegistry());
+        /**
+         * We must call get program before making any changes to the files otherwise TypeScript throws up
+         * we don't actually use the program just yet :)
+         */
+        const program = languageService.getProgram();
 
         /**
          * Now create the tslint config
@@ -120,9 +125,6 @@ namespace LinterImplementation {
      *  - added to the compilation context
      */
     function loadLintConfigAndLint() {
-        const sourceFiles = linterConfig.ls.getProgram().getSourceFiles().filter(x => !isFileInTypeScriptDir(x.fileName));
-        if (!sourceFiles.length) return;
-
         /** Look for tslint.json by findup from the project dir */
         const projectDir = linterConfig.projectData.configFile.projectFileDirectory;
         const configurationPath = Linter.findConfigurationPath(null, projectDir);
