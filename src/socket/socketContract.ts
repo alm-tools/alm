@@ -119,7 +119,7 @@ export var server = {
     /**
      * Config creator
      */
-    createEditorconfig: {} as QRFunction<{}, {}>,
+    createEditorconfig: {} as QRFunction<{}, {alreadyPresent:string}>,
 
     /**
      * Settings
