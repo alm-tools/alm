@@ -66,7 +66,7 @@ export function setup(editor: Editor): { dispose: () => void } {
     performLint();
     const disposible = new events.CompositeDisposible();
     // Subscribe for future updates
-    disposible.add(errorsCache.errorsUpdated.on(performLint));
+    disposible.add(errorsCache.errorsDelta.on(performLint));
 
 	/**
 	 * Also subscribe to the user clicking the margin

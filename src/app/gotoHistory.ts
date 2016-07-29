@@ -34,7 +34,7 @@ const reloadErrorsInOpenFiles = utils.debounce(() => {
     });
 }, 500);
 
-errorsCache.errorsUpdated.on(reloadErrorsInOpenFiles);
+errorsCache.errorsDelta.on(reloadErrorsInOpenFiles);
 state.subscribeSub(state => state.errorsDisplayMode, reloadErrorsInOpenFiles);
 state.subscribeSub(state => state.errorsFilter, reloadErrorsInOpenFiles);
 tabStateChanged.on(reloadErrorsInOpenFiles);

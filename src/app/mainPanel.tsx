@@ -86,7 +86,7 @@ export class MainPanel extends BaseComponent<Props, State>{
         this.disposible.add(tabStateChanged.on(()=>{
             this.forceUpdate();
         }));
-        this.disposible.add(errorsCache.errorsUpdated.on(()=>{
+        this.disposible.add(errorsCache.errorsDelta.on(()=>{
             this.forceUpdate();
         }))
     }

@@ -12,9 +12,18 @@ const errorKey = (error:CodeError)=>`${error.from.line}:${error.from.ch}:${error
 export class ErrorsCache {
 
     /**
-     * For a lazy view of the current state. Note: this is throttled + limited for performance
+     * For an initial sync.
+     * e.g. when the socket server reboots
+     *   it wants to clear any errors that any connected clicks might have
      */
-    public errorsUpdated = new TypedEvent<LimitedErrorsUpdate>();
+    public initErrors = new TypedEvent<{}>();
+    constructor() {
+        this.initErrors.emit({});
+    }
+    public reInitErrors = () => {
+        this._errorsByFilePath = {};
+        this.sendErrors();
+    }
 
     /**
      * Event that can be wired up to sync one error cache with another
@@ -54,8 +63,6 @@ export class ErrorsCache {
      * debounced as constantly sending errors quickly degrades the web experience
      */
     private sendErrors = debounce(() => {
-        this.errorsUpdated.emit(this.getErrorsLimited());
-
         // Create a delta
         const oldErrorsByFilePath = this.lastErrorsByFilePath;
         const newErrorsByFilePath = this._errorsByFilePath;

@@ -88,7 +88,7 @@ export class StatusBar extends BaseComponent<Props, State>{
     componentDidMount() {
         statusBar = this;
         tabStateChanged.on(()=>this.forceUpdate());
-        errorsCache.errorsUpdated.on(() => this.forceUpdate());
+        errorsCache.errorsDelta.on(() => this.forceUpdate());
     }
 
     render() {

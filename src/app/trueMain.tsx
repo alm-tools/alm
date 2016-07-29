@@ -72,6 +72,7 @@ const afterLoaded = () => {
     cast.errorsDelta.on((errorsDelta)=>{
         errorsCache.applyDelta(errorsDelta);
     });
+    cast.initErrors.on(()=>errorsCache.reInitErrors());
     pendingRequestsChanged.on((r)=>{
         state.setPendingRequests(r.pending);
     });
