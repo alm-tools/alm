@@ -163,6 +163,12 @@ export class ErrorsCache {
     }
 
     /**
+     * Get/Set all the errors for an initial sync between error caches
+     */
+    public getErrors = () => this._errorsByFilePath;
+    public setErrors = (errorsByFilePath: ErrorsByFilePath) => this._errorsByFilePath = errorsByFilePath;
+
+    /**
      * Clear all errors. Resets the cache.
      */
     public clearErrors = () => {

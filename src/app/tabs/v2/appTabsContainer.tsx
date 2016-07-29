@@ -29,6 +29,7 @@ import {CodeEditor} from "../../codemirror/codeEditor";
 import * as state from "../../state/state";
 import * as pure from "../../../common/pure";
 import * as settings from "../../state/settings";
+import {errorsCache} from "../../globalErrorCacheClient";
 
 /**
  * Singleton + tab state migrated from redux to the local component
@@ -1172,6 +1173,9 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         addTabs: (tabs: TabInstance[]) => {
             tabs.forEach(tab => this.addTabToLayout(tab));
         },
+        /**
+         * TODO: this function is a bit heavy so can use some caching
+         */
         errorsByFilePathFiltered: (): {
             errorsFlattened: CodeError[],
             errorsByFilePath: ErrorsByFilePath
@@ -1179,7 +1183,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             const allState = state.getState();
             const filter = allState.errorsFilter.trim();
             const mode = allState.errorsDisplayMode;
-            const allErrors = allState.errorsUpdate.errorsByFilePath;
+            const allErrors = errorsCache.getErrors();
 
             /** Flatten errors as we need those for "gotoHistory" */
             let errorsFlattened = utils.selectMany(Object.keys(allErrors).map(x => allErrors[x]));

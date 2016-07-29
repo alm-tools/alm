@@ -7,6 +7,7 @@
  */
 import * as events from "../../../common/events";
 import * as state from "../../state/state";
+import {errorsCache} from "../../globalErrorCacheClient";
 type IDisposable = events.Disposable;
 type Editor = monaco.editor.ICodeEditor;
 
@@ -39,7 +40,7 @@ export function setup(editor: Editor): { dispose: () => void } {
         let filePath: string = editor.filePath;
         let model: monaco.editor.IModel = editor.getModel();
 
-        let rawErrors = state.getState().errorsUpdate.errorsByFilePath[filePath] || [];
+        let rawErrors = errorsCache.getErrorsForFilePath(filePath);
 
         // console.log('here', rawErrors); // DEBUG
 
@@ -65,7 +66,7 @@ export function setup(editor: Editor): { dispose: () => void } {
     performLint();
     const disposible = new events.CompositeDisposible();
     // Subscribe for future updates
-    disposible.add(state.subscribeSub(x => x.errorsUpdate, performLint));
+    disposible.add(errorsCache.errorsUpdated.on(performLint));
 
 	/**
 	 * Also subscribe to the user clicking the margin
@@ -76,7 +77,7 @@ export function setup(editor: Editor): { dispose: () => void } {
 
             const position = mouseEvent.target.position;
             if (position) {
-                let rawErrors = state.getState().errorsUpdate.errorsByFilePath[editor.filePath] || [];
+                let rawErrors = errorsCache.getErrorsForFilePath(editor.filePath);
 				const error = rawErrors.find(x => x.from.line === position.lineNumber - 1);
                 if (error) {
                     editor.setPosition({

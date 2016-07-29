@@ -7,7 +7,6 @@ import {AvailableProjectConfig} from "../../common/types";
 export interface StoreState {
     activeProject?: AvailableProjectConfig;
     errorsExpanded?: boolean;
-    errorsUpdate?: LimitedErrorsUpdate;
     errorsDisplayMode?: types.ErrorsDisplayMode;
     errorsFilter?: string;
 
@@ -40,12 +39,6 @@ export interface StoreState {
 let initialStoreState: StoreState = {
     activeProject: null,
     errorsExpanded: false,
-    errorsUpdate: {
-        errorsByFilePath: {},
-        totalCount: 0,
-        syncCount: 0,
-        tooMany: false,
-    },
     errorsDisplayMode: types.ErrorsDisplayMode.all,
     errorsFilter: '',
     activeProjectFilePathTruthTable: {},
@@ -137,12 +130,6 @@ export let setErrorsDisplayMode = redux.add('setErrorsDisplayMode', (state, payl
 export let setErrorsFilter = redux.add('setErrorsFilter', (state, payload: string): StoreState => {
     return {
         errorsFilter: payload,
-    };
-});
-
-export let setErrorsUpdate = redux.add('setErrorsUpdate', (state, payload: LimitedErrorsUpdate): StoreState => {
-    return {
-        errorsUpdate: payload
     };
 });
 

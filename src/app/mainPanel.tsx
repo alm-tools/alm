@@ -24,6 +24,7 @@ import * as state from "./state/state";
 import * as gotoHistory from "./gotoHistory";
 import {tabState,tabStateChanged} from "./tabs/v2/appTabsContainer";
 import * as settings from "./state/settings";
+import {errorsCache} from "./globalErrorCacheClient";
 
 let notificationKeyboardStyle = {
     border: '2px solid',
@@ -38,7 +39,6 @@ export interface Props {
     errorsExpanded?: boolean;
     activeProject?: AvailableProjectConfig;
     activeProjectFiles?: { [filePath: string]: boolean };
-    errorsUpdate?: LimitedErrorsUpdate;
     socketConnected?: boolean;
     errorsDisplayMode?: types.ErrorsDisplayMode;
     errorsFilter?: string;
@@ -61,7 +61,6 @@ let resizerStyle = {
         errorsExpanded: state.errorsExpanded,
         activeProject: state.activeProject,
         activeProjectFiles: state.activeProjectFilePathTruthTable,
-        errorsUpdate: state.errorsUpdate,
         socketConnected: state.socketConnected,
         errorsDisplayMode: state.errorsDisplayMode,
         errorsFilter: state.errorsFilter,
@@ -87,9 +86,13 @@ export class MainPanel extends BaseComponent<Props, State>{
         this.disposible.add(tabStateChanged.on(()=>{
             this.forceUpdate();
         }));
+        this.disposible.add(errorsCache.errorsUpdated.on(()=>{
+            this.forceUpdate();
+        }))
     }
 
     render(){
+        const errorsUpdate = errorsCache.getErrorsLimited();
         let errorPanel = undefined;
         if (this.props.errorsExpanded){
             errorPanel = <div>
@@ -124,19 +127,19 @@ export class MainPanel extends BaseComponent<Props, State>{
                                     disabled={!this.props.errorsFilter.trim()}
                                     onClick={()=>state.setErrorsFilter('')}/>
                             </div>
-                            {this.props.errorsUpdate.tooMany
+                            {errorsUpdate.tooMany
                                 && <div
                                     style={styles.errorsPanel.tooMany}
                                     className="hint--bottom-left hint--info"
                                     data-hint="We only sync the top 50 per file with a limit of 250. That ensures that live linting doesn't slow anything else down.">
-                                    {this.props.errorsUpdate.totalCount} total. Showing top {this.props.errorsUpdate.syncCount}.
+                                    {errorsUpdate.totalCount} total. Showing top {errorsUpdate.syncCount}.
                                 </div>}
                         </div>
                     </div>
                 }
 
                 {
-                    this.props.errorsUpdate.totalCount
+                    errorsUpdate.totalCount
                         ? this.renderErrors()
                         : <div style={styles.errorsPanel.success}>No Errors ❤</div>
                 }

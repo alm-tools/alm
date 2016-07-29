@@ -19,6 +19,7 @@ import {Progress} from "./components/progress";
 import {connect} from "react-redux";
 import {StoreState,expandErrors,collapseErrors} from "./state/state";
 import * as state from "./state/state";
+import {errorsCache} from "./globalErrorCacheClient";
 
 
 let notificationKeyboardStyle = {
@@ -47,7 +48,6 @@ export interface Props {
     errorsExpanded?: boolean;
     activeProject?: AvailableProjectConfig;
     activeProjectFiles?: { [filePath: string]: boolean };
-    errorsUpdate?: LimitedErrorsUpdate;
     socketConnected?: boolean;
     outputStatusCache?: types.JSOutputStatusCache;
     liveBuildResults?: types.LiveBuildResults;
@@ -70,7 +70,6 @@ export var statusBar: StatusBar;
         errorsExpanded: state.errorsExpanded,
         activeProject: state.activeProject,
         activeProjectFiles: state.activeProjectFilePathTruthTable,
-        errorsUpdate: state.errorsUpdate,
         socketConnected: state.socketConnected,
         outputStatusCache: state.outputStatusCache,
         liveBuildResults: state.liveBuildResults,
@@ -89,6 +88,7 @@ export class StatusBar extends BaseComponent<Props, State>{
     componentDidMount() {
         statusBar = this;
         tabStateChanged.on(()=>this.forceUpdate());
+        errorsCache.errorsUpdated.on(() => this.forceUpdate());
     }
 
     render() {
@@ -185,6 +185,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                 </span>
             </span>;
 
+        const errorsUpdate = errorsCache.getErrorsLimited();
         const errorFilteringActive = this.props.errorsDisplayMode !== types.ErrorsDisplayMode.all || this.props.errorsFilter.trim();
         const errorsFilteredCount = tabState.errorsByFilePathFiltered().errorsFlattened.length;
 
@@ -195,9 +196,9 @@ export class StatusBar extends BaseComponent<Props, State>{
                     <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)}
                         onClick={this.toggleErrors}
                         className="hint--top-right"
-                        data-hint={`${this.props.errorsUpdate.totalCount} errors. Click to toggle message panel.`}>
-                        <span style={csx.extend(this.props.errorsUpdate.totalCount?styles.statusBarError:styles.statusBarSuccess,{transition: 'color .4s'})}>
-                            {this.props.errorsUpdate.totalCount} <Icon name="times-circle"/>
+                        data-hint={`${errorsUpdate.totalCount} errors. Click to toggle message panel.`}>
+                        <span style={csx.extend(errorsUpdate.totalCount?styles.statusBarError:styles.statusBarSuccess,{transition: 'color .4s'})}>
+                            {errorsUpdate.totalCount} <Icon name="times-circle"/>
                             {errorFilteringActive && ' '}
                             {errorFilteringActive && <span>( {errorsFilteredCount} <Icon name="filter"/>)</span>}
                         </span>
