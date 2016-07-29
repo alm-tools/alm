@@ -12,6 +12,7 @@ import * as sw from "../../utils/simpleWorker";
 import * as contract from "./lintContract";
 
 import {resolve, timer} from "../../../common/utils";
+import * as utils from "../../../common/utils";
 import * as types from "../../../common/types";
 import {LanguageServiceHost} from "../../../languageServiceHost/languageServiceHost";
 import {isFileInTypeScriptDir} from "../lang/core/typeScriptDir";
@@ -152,8 +153,15 @@ namespace LinterImplementation {
         lintWithCancellationToken();
     }
 
-    /** TODO: lint support cancellation token */
+    /** lint support cancellation token */
+    let cancellationToken = utils.cancellationToken();
     function lintWithCancellationToken() {
+        /** Cancel any previous */
+        if (cancellationToken) {
+            cancellationToken.cancel();
+            cancellationToken = utils.cancellationToken();
+        }
+
         const program = linterConfig.ls.getProgram();
         const sourceFiles =
             program.getSourceFiles()
@@ -170,28 +178,34 @@ namespace LinterImplementation {
 
         const time = timer();
         /** create the Linter for each file and get its output */
-        sourceFiles.forEach(sf => {
-            const filePath = sf.fileName;
-            const contents = sf.getFullText();
+        utils.cancellableForEach({
+            cancellationToken,
+            items: sourceFiles,
+            cb: (sf => {
+                const filePath = sf.fileName;
+                const contents = sf.getFullText();
 
 
-            const linter = new Linter(filePath, contents, linterConfig.linterConfig, lintprogram);
-            const lintResult = linter.lint();
+                const linter = new Linter(filePath, contents, linterConfig.linterConfig, lintprogram);
+                const lintResult = linter.lint();
 
-            filePaths.push(filePath);
-            if (lintResult.failureCount) {
-                // console.log(linterMessagePrefix, filePath, lintResult.failureCount); // DEBUG
-                errors = errors.concat(
-                    lintResult.failures.map(
-                        le => lintErrorToCodeError(le,contents)
-                    )
-                );
-            }
+                filePaths.push(filePath);
+                if (lintResult.failureCount) {
+                    // console.log(linterMessagePrefix, filePath, lintResult.failureCount); // DEBUG
+                    errors = errors.concat(
+                        lintResult.failures.map(
+                            le => lintErrorToCodeError(le, contents)
+                        )
+                    );
+                }
+            })
+        }).then((res) => {
+            /** Push to errorCache */
+            errorCache.setErrorsByFilePaths(filePaths, errors);
+            console.log(linterMessagePrefix, 'Lint complete', time.seconds);
+        }).catch((e) => {
+            console.log(linterMessagePrefix, 'Lint cancelled');
         });
-
-        /** Push to errorCache */
-        errorCache.setErrorsByFilePaths(filePaths, errors);
-        console.log(linterMessagePrefix, 'Lint complete', time.seconds);
     }
 
     export function fileSaved({filePath}:{filePath:string}) {
