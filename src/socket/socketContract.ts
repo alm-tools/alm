@@ -157,7 +157,6 @@ export var cast = {
 
     /** Errors for a file path */
     errorsDelta: new TypedEvent<ErrorCacheDelta>(),
-    initErrors: new TypedEvent<{}>(),
 
     /** Available projects updated */
     availableProjectsUpdated: new TypedEvent<AvailableProjectConfig[]>(),

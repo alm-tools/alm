@@ -10,6 +10,11 @@ const errorKey = (error:CodeError)=>`${error.from.line}:${error.from.ch}:${error
  * and notifies anyone who is concerned of updated values
  */
 export class ErrorsCache {
+    /**
+     * When a cache boots up (e.g. server restart). Its good to know if its an initial errors delta
+     * If so the client might want to clear all previous errors
+     */
+    initial = true;
 
     /**
      * Event that can be wired up to sync one error cache with another
@@ -54,8 +59,10 @@ export class ErrorsCache {
         const newErrorsByFilePath = this._errorsByFilePath;
         const delta: ErrorCacheDelta = {
             added:{},
-            removed:{}
+            removed:{},
+            initial: this.initial,
         };
+        this.initial = false;
 
         // Added:
         Object.keys(newErrorsByFilePath).forEach((filePath)=>{

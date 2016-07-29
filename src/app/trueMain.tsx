@@ -69,10 +69,12 @@ const afterLoaded = () => {
     server.getErrors({}).then((errorsUpdate)=>{
         errorsCache.setErrors(errorsUpdate);
     });
-    cast.errorsDelta.on((errorsDelta)=>{
+    cast.errorsDelta.on((errorsDelta) => {
+        if (errorsDelta.initial) {
+            errorsCache.clearErrors();
+        }
         errorsCache.applyDelta(errorsDelta);
     });
-    cast.initErrors.on(()=>errorsCache.clearErrors());
     pendingRequestsChanged.on((r)=>{
         state.setPendingRequests(r.pending);
     });
