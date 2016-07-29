@@ -22,7 +22,7 @@ export class ErrorsCache {
     }
     public reInitErrors = () => {
         this._errorsByFilePath = {};
-        this.sendErrors();
+        this.initErrors.emit({});
     }
 
     /**
