@@ -274,7 +274,7 @@ export function register(app: http.Server | https.Server) {
 
     /** Errors */
     errorsCache.errorsDelta.pipe(cast.errorsDelta);
-    errorsCache.initErrors.pipe(cast.initErrors);
+    cast.initErrors.emit({});
 
     /** FARM */
     findAndReplaceMultiService.farmResultsUpdated.pipe(cast.farmResultsUpdated);

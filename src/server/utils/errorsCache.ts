@@ -12,20 +12,6 @@ const errorKey = (error:CodeError)=>`${error.from.line}:${error.from.ch}:${error
 export class ErrorsCache {
 
     /**
-     * For an initial sync.
-     * e.g. when the socket server reboots
-     *   it wants to clear any errors that any connected clicks might have
-     */
-    public initErrors = new TypedEvent<{}>();
-    constructor() {
-        this.initErrors.emit({});
-    }
-    public reInitErrors = () => {
-        this._errorsByFilePath = {};
-        this.initErrors.emit({});
-    }
-
-    /**
      * Event that can be wired up to sync one error cache with another
      */
     public errorsDelta = new TypedEvent<ErrorCacheDelta>();
@@ -177,6 +163,10 @@ export class ErrorsCache {
 
     /**
      * Clear all errors. Resets the cache.
+     *
+     * Also good or an initial sync.
+     * e.g. when the socket server reboots
+     *   it wants to clear any errors that any connected clicks might have
      */
     public clearErrors = () => {
         this._errorsByFilePath = {};
