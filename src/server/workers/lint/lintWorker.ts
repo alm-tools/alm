@@ -125,6 +125,8 @@ namespace LinterImplementation {
      *  - added to the compilation context
      */
     function loadLintConfigAndLint() {
+        linterConfig.linterConfig = undefined;
+        errorCache.clearErrors();
         /** Look for tslint.json by findup from the project dir */
         const projectDir = linterConfig.projectData.configFile.projectFileDirectory;
         const configurationPath = Linter.findConfigurationPath(null, projectDir);
@@ -139,7 +141,15 @@ namespace LinterImplementation {
         }
 
         /** We have our configuration file. Now lets convert it to configuration :) */
-        const configuration = Linter.loadConfigurationFromPath(configurationPath);
+        let configuration:IConfigurationFile;
+        try {
+            configuration = Linter.loadConfigurationFromPath(configurationPath);
+        }
+        catch (err) {
+            console.log(linterMessagePrefix, 'Invalid config:', configurationPath);
+            errorCache.setErrorsByFilePaths([configurationPath], [utils.makeBlandError(configurationPath, err.message)]);
+            return;
+        }
         /** Also need to setup the rules directory */
         const possiblyRelativeRulesDirectory = configuration.rulesDirectory;
         const rulesDirectory = Linter.getRulesDirectories(possiblyRelativeRulesDirectory, configurationPath);
@@ -211,15 +221,23 @@ namespace LinterImplementation {
     }
 
     export function fileSaved({filePath}:{filePath:string}) {
-        if (!linterConfig || !linterConfig.linterConfig){
-            return;
-        }
-        if (!filePath.endsWith('.ts')) {
+        if (!linterConfig){
             return;
         }
         /** tslint : do the whole thing */
         if (filePath.endsWith('tslint.json')){
             loadLintConfigAndLint();
+            return;
+        }
+        /**
+         * Now only proceed further if we have a linter config
+         * and the file is a ts file
+         * and in the current project
+         */
+        if (!linterConfig.linterConfig) {
+            return;
+        }
+        if (!filePath.endsWith('.ts')) {
             return;
         }
         const sf = linterConfig.ls.getProgram().getSourceFiles().find(sf => sf.fileName === filePath);
@@ -228,8 +246,10 @@ namespace LinterImplementation {
         }
         /** Update the file contents (so that when we get the program it just works) */
         linterConfig.lsh.setContents(filePath, fsu.readFile(sf.fileName));
-        /** if any file changes (and since we use program) still do the whole thing */
-        loadLintConfigAndLint();
+        /**
+         * Since we use program and types flow we would still need to lint the whole thing
+         */
+        lintWithCancellationToken();
     }
 
     /** Utility */
