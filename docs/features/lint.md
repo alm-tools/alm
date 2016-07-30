@@ -4,7 +4,9 @@ We provide a high quality integration with tslint.
 
 ## tslint.json
 
-Determine the `tslint.json` with a simple findup. We recommend a single `tslint.json` file in your project.
+We determine the `tslint.json` with a simple findup from the current `tsconfig.json` so the closest one wins ❤️.
+
+> We recommend a single `tslint.json` file in your project.
 
 ## Built in Project support
 
