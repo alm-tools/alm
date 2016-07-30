@@ -11,6 +11,7 @@ import {RefactoringsByFilePath, Refactoring} from "../../../common/types";
 import * as state from "../../state/state";
 import {EditorOptions} from "../../../common/types";
 import * as monacoUtils from "../../monaco/monacoUtils";
+import * as events from "../../../common/events";
 
 /**
  * We extend the monaco editor model
@@ -84,7 +85,7 @@ export type GetLinkedDocResponse = {
     editorOptions: EditorOptions
 }
 
-export function getLinkedDoc(filePath: string): Promise<GetLinkedDocResponse> {
+export function getLinkedDoc(filePath: string,editor: monaco.editor.ICodeEditor): Promise<GetLinkedDocResponse> {
     return getOrCreateDoc(filePath)
         .then(({doc, isJsOrTsFile, editorOptions}) => {
 
@@ -132,17 +133,25 @@ export function getLinkedDoc(filePath: string): Promise<GetLinkedDocResponse> {
             //     });
             // }
 
+            /** Wire up the doc */
+			editor.setModel(doc);
+
+            /** Add to list of editors */
+            doc._editors.push(editor);
+
             return {doc: doc, editorOptions: editorOptions};
         });
 }
 
 export function removeLinkedDoc(filePath:string, editor: monaco.editor.ICodeEditor){
-    editor.getModel()._editors = this.editor.getModel()._editors.filter(e => e != this.editor);
+    editor.getModel()._editors = editor.getModel()._editors.filter(e => e != editor);
     // if this was the last editor using this model then we remove it from the cache as well
     // otherwise we might get a file even if its deleted from the server
-    if (!this.editor.getModel()._editors.length){
-        // TODO: 
-        // docCache.removeModel()
+    if (!editor.getModel()._editors.length){
+        docByFilePathPromised[filePath].then(x=>{
+            x.disposable.dispose();
+            delete docByFilePathPromised[filePath];
+        })
     }
 }
 
@@ -150,6 +159,7 @@ type DocPromiseResult = {
     doc: monaco.editor.IModel,
     isJsOrTsFile: boolean,
     editorOptions: EditorOptions,
+    disposable: IDisposable,
 }
 let docByFilePathPromised: { [filePath: string]: Promise<DocPromiseResult> } = Object.create(null);
 
@@ -159,6 +169,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
     }
     else {
         return docByFilePathPromised[filePath] = server.openFile({ filePath: filePath }).then((res) => {
+            const disposable = new events.CompositeDisposible();
             let ext = utils.getExt(filePath);
             let isJsOrTsFile = utils.isJsOrTs(filePath);
 
@@ -168,7 +179,10 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
             // console.log(mode,supportedModesMap[ext]); // Debug mode
 
             // Add to classifier cache
-            if (isJsOrTsFile) { classifierCache.addFile(filePath, res.contents); }
+            if (isJsOrTsFile) {
+                classifierCache.addFile(filePath, res.contents);
+                disposable.add({ dispose: () => classifierCache.removeFile(filePath) });
+             }
 
             // create the doc
             window.creatingModelFilePath = filePath;
@@ -180,11 +194,11 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
             doc._editorOptions = res.editorOptions;
 
             /** Susbcribe to editor options changing */
-            cast.editorOptionsChanged.on((res) => {
+            disposable.add(cast.editorOptionsChanged.on((res) => {
     		    if (res.filePath === filePath) {
     		        doc._editorOptions = res.editorOptions;
     		    }
-    		});
+    		}));
 
             let editCameFromServerCount = 0;
 
@@ -192,7 +206,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
             let editorOperationCounter = 0;
 
             // setup to push doc changes to server
-            doc.onDidChangeContent(evt => {
+            disposable.add(doc.onDidChangeContent(evt => {
                 // Keep the ouput status cache informed
                 state.ifJSStatusWasCurrentThenMoveToOutOfDate({inputFilePath: filePath});
 
@@ -214,10 +228,10 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
 
                 // Keep the classifier in sync
                 if (isJsOrTsFile) { classifierCache.editFile(filePath, codeEdit) }
-            });
+            }));
 
             // setup to get doc changes from server
-            cast.didEdits.on(res=> {
+            disposable.add(cast.didEdits.on(res=> {
 
                 // console.log('got server edit', res.edit.sourceId,'our', sourceId)
 
@@ -250,10 +264,10 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                         doc.pushEditOperations([], [editOperation], null);
                     }
                 });
-            });
+            }));
 
             // setup loading saved files changing on disk
-            cast.savedFileChangedOnDisk.on((res) => {
+            disposable.add(cast.savedFileChangedOnDisk.on((res) => {
                 if (res.filePath == filePath
                     && doc.getValue() !== res.contents) {
 
@@ -282,10 +296,16 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                         newText: res.contents
                     });
                 }
-            });
+            }));
 
             // Finally return the doc
-            return { doc, isJsOrTsFile, editorOptions: res.editorOptions };
+            const result: DocPromiseResult = {
+                doc,
+                isJsOrTsFile,
+                editorOptions: res.editorOptions,
+                disposable: disposable,
+            };
+            return result;
         });
     }
 }

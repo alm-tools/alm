@@ -18,9 +18,11 @@ const quickFixDecorationOptions: monaco.editor.IModelDecorationOptions = {
 export function setup(editor: Editor): { dispose: () => void } {
     // if (cm) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
 
+    let disposed = false;
     let lastWidget: monaco.editor.IContentWidget | null = null;
     // The key quick fix get logic
     const refreshQuickFixes = () => {
+        if (disposed) return;
         // Clear any previous attempt
         editor._lastQuickFixInformation = null;
         if (lastWidget) {
@@ -81,13 +83,17 @@ export function setup(editor: Editor): { dispose: () => void } {
     const refreshQuickFixesDebounced = utils.debounce(refreshQuickFixes, 1000);
 
     const disposible = new CompositeDisposible();
-    editor.onDidFocusEditor(refreshQuickFixesDebounced);
-    editor.onDidChangeModelContent(refreshQuickFixesDebounced);
-    editor.onDidChangeCursorPosition(refreshQuickFixesDebounced);
-    const disposeProjectWatch = cast.activeProjectConfigDetailsUpdated.on(() => {
+    disposible.add(editor.onDidFocusEditor(refreshQuickFixesDebounced));
+    disposible.add(editor.onDidChangeModelContent(refreshQuickFixesDebounced));
+    disposible.add(editor.onDidChangeCursorPosition(refreshQuickFixesDebounced));
+    disposible.add(cast.activeProjectConfigDetailsUpdated.on(() => {
         refreshQuickFixesDebounced();
-    });
-
+    }));
+    disposible.add({
+        dispose(){
+            disposed = true;
+        }
+    })
     return disposible;
 }
 

@@ -8,10 +8,10 @@ export interface Disposable {
 
 export class CompositeDisposible implements Disposable {
     private disposibles: Disposable[] = [];
-    add(disposible: Disposable) {
+    add = (disposible: Disposable) => {
         this.disposibles.push(disposible);
     }
-    dispose() {
+    dispose = () => {
         this.disposibles.forEach(d=> d.dispose());
     }
 }

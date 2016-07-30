@@ -121,11 +121,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 		}));
 
         // load up the doc
-        docCache.getLinkedDoc(this.props.filePath).then(({doc, editorOptions}) => {
-			// Wire up the doc
-			this.editor.setModel(doc);
-			doc._editors.push(this.editor);
-
+        docCache.getLinkedDoc(this.props.filePath, this.editor).then(({doc, editorOptions}) => {
             // Load editor options
             loadEditorOptions(editorOptions);
 

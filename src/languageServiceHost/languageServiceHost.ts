@@ -376,6 +376,10 @@ export class LSHost implements ts.LanguageServiceHost {
  * This class is my own creation.
  */
 export class LanguageServiceHost extends LSHost {
+    removeFile(filename: string){
+        const script = this.getScriptInfo(filename);
+        this.removeRoot(script);
+    }
     /**
      * Basically having setContents ensure long term stability even if stuff does get out of sync due to errors in above implementation
      */
