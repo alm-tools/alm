@@ -43,3 +43,4 @@
   * [Dependencies](/contributing/dependencies.md)
   * [Quick Fix](/contributing/quickfix.md)
   * [Why?](/contributing/why.md)
+  * [Demo](/contributing/demo.md)
