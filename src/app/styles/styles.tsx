@@ -2,6 +2,7 @@ import csx = require('csx');
 
 export const textColor = '#AAA';
 export let errorColor = '#f92672';
+export let warningColor = '#f6d675'; // Color from CodeMirror `lint.css` warning squiggly color
 export let successColor = '#00c990';
 export let highlightColor = "#6edeef";
 export let selectedBackgroundColor = '#444';
@@ -144,13 +145,27 @@ export namespace errorsPanel {
     }
 
     export let perFileList = {
-        paddingLeft: '6px',
-        borderLeft: '6px solid ' + errorColor
     }
 
-    export let errorDetailsContainer = {
-        padding: '3px',
-    }
+    const itemDetailsContainer = csx.extend(
+        hand, {
+            padding: '3px'
+        }
+    );
+    export let errorDetailsContainer = csx.extend(
+        itemDetailsContainer,
+        {
+            borderLeft: '6px solid ' + errorColor
+
+        }
+    );
+    export let warningDetailsContainer = csx.extend(
+        itemDetailsContainer,
+        {
+            borderLeft: '6px solid ' + warningColor
+        }
+    );
+
     export let errorDetailsContent = {
         padding: '3px',
     }

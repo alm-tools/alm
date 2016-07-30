@@ -19,7 +19,7 @@ let resolve = sls.resolve;
 import * as fmc from "../server/disk/fileModelCache";
 import * as activeProjectConfig from "../server/disk/activeProjectConfig";
 
-import {errorsCache} from "../server/globalErrorCache";
+import {errorsCache} from "../server/globalErrorCacheServer";
 import * as projectServiceMaster from "../server/workers/lang/projectServiceMaster";
 
 namespace Server {
@@ -148,7 +148,7 @@ namespace Server {
      * Error handling
      */
     export var getErrors: typeof contract.server.getErrors = (data) => {
-        return resolve(errorsCache.getErrorsLimited());
+        return resolve(errorsCache.getErrors());
     }
 
     /**
@@ -273,7 +273,7 @@ export function register(app: http.Server | https.Server) {
     activeProjectConfig.errorsInTsconfig.errorsDelta.on((delta) => errorsCache.applyDelta(delta));
 
     /** Errors */
-    errorsCache.errorsUpdated.pipe(cast.errorsUpdated);
+    errorsCache.errorsDelta.pipe(cast.errorsDelta);
 
     /** FARM */
     findAndReplaceMultiService.farmResultsUpdated.pipe(cast.farmResultsUpdated);

@@ -24,6 +24,7 @@ import * as state from "./state/state";
 import * as gotoHistory from "./gotoHistory";
 import {tabState,tabStateChanged} from "./tabs/v2/appTabsContainer";
 import * as settings from "./state/settings";
+import {errorsCache} from "./globalErrorCacheClient";
 
 let notificationKeyboardStyle = {
     border: '2px solid',
@@ -38,7 +39,6 @@ export interface Props {
     errorsExpanded?: boolean;
     activeProject?: AvailableProjectConfig;
     activeProjectFiles?: { [filePath: string]: boolean };
-    errorsUpdate?: LimitedErrorsUpdate;
     socketConnected?: boolean;
     errorsDisplayMode?: types.ErrorsDisplayMode;
     errorsFilter?: string;
@@ -61,7 +61,6 @@ let resizerStyle = {
         errorsExpanded: state.errorsExpanded,
         activeProject: state.activeProject,
         activeProjectFiles: state.activeProjectFilePathTruthTable,
-        errorsUpdate: state.errorsUpdate,
         socketConnected: state.socketConnected,
         errorsDisplayMode: state.errorsDisplayMode,
         errorsFilter: state.errorsFilter,
@@ -87,9 +86,13 @@ export class MainPanel extends BaseComponent<Props, State>{
         this.disposible.add(tabStateChanged.on(()=>{
             this.forceUpdate();
         }));
+        this.disposible.add(errorsCache.errorsDelta.on(()=>{
+            this.forceUpdate();
+        }))
     }
 
     render(){
+        const errorsUpdate = errorsCache.getErrorsLimited();
         let errorPanel = undefined;
         if (this.props.errorsExpanded){
             errorPanel = <div>
@@ -124,19 +127,19 @@ export class MainPanel extends BaseComponent<Props, State>{
                                     disabled={!this.props.errorsFilter.trim()}
                                     onClick={()=>state.setErrorsFilter('')}/>
                             </div>
-                            {this.props.errorsUpdate.tooMany
+                            {errorsUpdate.tooMany
                                 && <div
                                     style={styles.errorsPanel.tooMany}
                                     className="hint--bottom-left hint--info"
                                     data-hint="We only sync the top 50 per file with a limit of 250. That ensures that live linting doesn't slow anything else down.">
-                                    {this.props.errorsUpdate.totalCount} total. Showing top {this.props.errorsUpdate.syncCount}.
+                                    {errorsUpdate.totalCount} total. Showing top {errorsUpdate.syncCount}.
                                 </div>}
                         </div>
                     </div>
                 }
 
                 {
-                    this.props.errorsUpdate.totalCount
+                    errorsUpdate.totalCount
                         ? this.renderErrors()
                         : <div style={styles.errorsPanel.success}>No Errors ❤</div>
                 }
@@ -225,19 +228,31 @@ namespace ErrorRenders {
         shouldComponentUpdate = pure.shouldComponentUpdate;
 
         render() {
-            let errors =
-                this.props.errors
+            const codeErrors = this.props.errors;
+
+            const errors = codeErrors.filter(x=>x.level === 'error');
+            const warnings = codeErrors.filter(x=>x.level === 'warning');
+
+            let errorsRendered =
+                    // error before warning
+                    errors.concat(warnings)
                     .map((e, j) => (
                         <SingleError key={`${j}`} error={e}/>
                     ));
 
             return <div>
                 <div style={styles.errorsPanel.filePath} onClick={() => openErrorLocation(this.props.errors[0]) }>
-                    <Icon name="file-code-o" style={{ fontSize: '.8rem' }}/> {this.props.filePath} ({errors.length})
+                    <Icon name="file-code-o" style={{ fontSize: '.8rem' }}/>
+                    &nbsp;{this.props.filePath}
+                    (
+                        {!!errors.length && <span style={{color: styles.errorColor}}>{errors.length}</span>}
+                        {!!(errors.length && warnings.length) && ','}
+                        {!!warnings.length && <span style={{color: styles.warningColor}}>{warnings.length}</span>}
+                    )
                 </div>
 
                 <div style={styles.errorsPanel.perFileList}>
-                    {errors}
+                    {errorsRendered}
                 </div>
             </div>;
         }
@@ -246,18 +261,23 @@ namespace ErrorRenders {
     export class SingleError extends React.Component<{error:CodeError},{}>{
         shouldComponentUpdate = pure.shouldComponentUpdate;
 
-        render(){
+        render() {
             const e = this.props.error;
+            const style = e.level === 'error'
+                ? styles.errorsPanel.errorDetailsContainer
+                : styles.errorsPanel.warningDetailsContainer;
 
-            return (<div style={csx.extend(styles.hand, styles.errorsPanel.errorDetailsContainer) } onClick={() => openErrorLocation(e) }>
-                <div style={styles.errorsPanel.errorDetailsContent}>
-                    <div style={styles.errorsPanel.errorMessage}>
-                        🐛({e.from.line + 1}: {e.from.ch + 1}) {e.message}
-                        {' '}<Clipboard text={`${e.filePath}:${e.from.line + 1} ${e.message}`}/>
+            return (
+                <div style={style} onClick={() => openErrorLocation(e) }>
+                    <div style={styles.errorsPanel.errorDetailsContent}>
+                        <div style={styles.errorsPanel.errorMessage}>
+                            🐛({e.from.line + 1}: {e.from.ch + 1}) {e.message}
+                            {' '}<Clipboard text={`${e.filePath}:${e.from.line + 1} ${e.message}`}/>
+                        </div>
+                        {e.preview ? <div style={styles.errorsPanel.errorPreview}>{e.preview}</div> : ''}
                     </div>
-                    {e.preview ? <div style={styles.errorsPanel.errorPreview}>{e.preview}</div> : ''}
                 </div>
-            </div>);
+            );
         }
     }
 }

@@ -21,7 +21,7 @@ enum BarEnum {
 
 class BarGlobalClass {
   constructor() {
-    
+
   }
   private static aPrivateStaticMember: string;
   globalClassMember: string;
@@ -38,6 +38,6 @@ namespace Foo.Bar.Bas {
     public someMember;
   }
   export class InNameSpaceInheritance extends BarGlobalClass {
-    public someOtherMember: string; 
+    public someOtherMember: string;
   }
 }

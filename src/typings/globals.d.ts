@@ -34,6 +34,7 @@ interface CodeError {
     to: EditorPosition;
     message: string;
     preview: string;
+    level: 'warning'|'error';
 }
 
 interface ErrorsByFilePath {
@@ -57,6 +58,7 @@ interface LimitedErrorsUpdate {
 type ErrorCacheDelta = {
     added: ErrorsByFilePath;
     removed: ErrorsByFilePath;
+    initial: boolean;
 }
 
 /**

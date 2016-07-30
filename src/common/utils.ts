@@ -300,7 +300,8 @@ export function makeBlandError(filePath: string, error: string): CodeError {
             ch: 0
         },
         message: error,
-        preview: null
+        preview: null,
+        level: 'error'
     }
 }
 
@@ -477,7 +478,7 @@ export function timer() {
             const seconds = Math.ceil((new Date().getTime() - timeStart) / 1000) + 's';
             return seconds;
         },
-        /** Milliseconds */
+        /** Milliseconds e.g. 2000ms etc. */
         get ms() {
             const ms = (new Date().getTime() - timeStart) + 'ms';
             return ms;
@@ -491,6 +492,7 @@ export function timer() {
 export const supportedAutocompleteConfigFileNames: { [fileName: string]: boolean } = {
     'tsconfig.json': true,
     'package.json': true,
+    'tslint.json': true,
 }
 /**
  * Files for which we have autocomplete intelligence

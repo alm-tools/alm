@@ -20,6 +20,7 @@ import {tabState} from "./tabs/v2/appTabsContainer";
 import * as settings from "./state/settings";
 import * as clientSession from "./state/clientSession";
 import * as types from "../common/types";
+import {errorsCache} from "./globalErrorCacheClient";
 
 import {server, cast, pendingRequestsChanged, connectionStatusChanged} from "../socket/socketClient";
 var Modal = require('react-modal');
@@ -66,10 +67,13 @@ const afterLoaded = () => {
 
     // Anything that should mutate the state
     server.getErrors({}).then((errorsUpdate)=>{
-        state.setErrorsUpdate(errorsUpdate);
+        errorsCache.setErrors(errorsUpdate);
     });
-    cast.errorsUpdated.on((errorsByFilePath)=>{
-        state.setErrorsUpdate(errorsByFilePath);
+    cast.errorsDelta.on((errorsDelta) => {
+        if (errorsDelta.initial) {
+            errorsCache.clearErrors();
+        }
+        errorsCache.applyDelta(errorsDelta);
     });
     pendingRequestsChanged.on((r)=>{
         state.setPendingRequests(r.pending);

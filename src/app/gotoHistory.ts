@@ -3,6 +3,7 @@ import * as state from "./state/state";
 import * as commands from "./commands/commands";
 import * as utils from "../common/utils";
 import {tabState, tabStateChanged} from "./tabs/v2/appTabsContainer";
+import {errorsCache} from "./globalErrorCacheClient";
 
 /** Interfaces used by GotoHistory feature */
 interface GotoPosition {
@@ -33,7 +34,7 @@ const reloadErrorsInOpenFiles = utils.debounce(() => {
     });
 }, 500);
 
-state.subscribeSub(state => state.errorsUpdate.errorsByFilePath, reloadErrorsInOpenFiles);
+errorsCache.errorsDelta.on(reloadErrorsInOpenFiles);
 state.subscribeSub(state => state.errorsDisplayMode, reloadErrorsInOpenFiles);
 state.subscribeSub(state => state.errorsFilter, reloadErrorsInOpenFiles);
 tabStateChanged.on(reloadErrorsInOpenFiles);

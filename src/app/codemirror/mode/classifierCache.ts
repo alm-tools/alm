@@ -22,6 +22,9 @@ const languageService = ts.createLanguageService(languageServiceHost);
 export function addFile(filePath: string, contents: string) {
     languageServiceHost.addScript(filePath, contents);
 }
+export function removeFile(filePath: string){
+    languageServiceHost.removeFile(filePath);
+}
 export function editFile(filePath: string, codeEdit: CodeEdit) {
     languageServiceHost.applyCodeEdit(filePath, codeEdit.from, codeEdit.to, codeEdit.newText);
 }

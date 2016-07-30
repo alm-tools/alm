@@ -1,8 +1,7 @@
 import * as workingDir from "../../disk/workingDir";
 import * as fsu from "../../utils/fsu";
 
-/** Warning: we just write if anything was there so be careful */
-export function createEditorconfig(data:{}): Promise<{}> {
+export function createEditorconfig(data:{}): Promise<{alreadyPresent: string}> {
     const defaultContents = `
 [*.{js,jsx,ts,tsx}]
 indent_style = space
@@ -12,7 +11,9 @@ insert_final_newline = true
     `.trim();
     const filePath = workingDir.makeAbsolute('./.editorconfig');
 
+    if (fsu.existsSync(filePath)){
+        return Promise.resolve({alreadyPresent:filePath});
+    }
     fsu.writeFile(filePath,defaultContents);
-
-    return Promise.resolve({});
+    return Promise.resolve({alreadyPresent:''});
 }

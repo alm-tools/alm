@@ -15,6 +15,7 @@ import {server} from "../../../socket/socketClient";
 import {Types} from "../../../socket/socketContract";
 import * as commands from "../../commands/commands";
 import * as monacoUtils from "../monacoUtils";
+import {errorsCache} from "../../globalErrorCacheClient";
 
 type Editor = monaco.editor.ICodeEditor;
 
@@ -81,7 +82,6 @@ interface Props {
 
     // Connected below
     showDoctor?: boolean,
-    errorsByFilePath?: ErrorsByFilePath;
 }
 
 interface State {
@@ -95,7 +95,6 @@ interface State {
 @connect((state: state.StoreState): Props => {
     return {
         showDoctor: state.showDoctor,
-        errorsByFilePath: state.errorsUpdate.errorsByFilePath,
     };
 })
 @ui.Radium
@@ -160,7 +159,7 @@ export class Doctor extends ui.BaseComponent<Props,State> {
             return <div/>;
         }
 
-        let rawErrors = this.props.errorsByFilePath[this.props.filePath] || [];
+        let rawErrors = errorsCache.getErrorsForFilePath(this.props.filePath);
         let errors = rawErrors.filter(re=> re.from.line == this.state.cursor.line).filter(re=> re.from.ch <= this.state.cursor.ch && this.state.cursor.ch <= re.to.ch);
 
         let positionStyle = this.state.onBottom?docuOnBottomStyle:docuOnTopStyle;

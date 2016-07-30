@@ -50,7 +50,7 @@ export var server = {
     /**
      * Error stuff
      */
-    getErrors: {} as QRFunction<{}, LimitedErrorsUpdate>,
+    getErrors: {} as QRFunction<{}, ErrorsByFilePath>,
 
     /**
      * Project Service
@@ -119,7 +119,7 @@ export var server = {
     /**
      * Config creator
      */
-    createEditorconfig: {} as QRFunction<{}, {}>,
+    createEditorconfig: {} as QRFunction<{}, {alreadyPresent:string}>,
 
     /**
      * Settings
@@ -156,7 +156,7 @@ export var cast = {
     editorOptionsChanged: new TypedEvent<{ filePath: string, editorOptions: types.EditorOptions }>(),
 
     /** Errors for a file path */
-    errorsUpdated: new TypedEvent<LimitedErrorsUpdate>(),
+    errorsDelta: new TypedEvent<ErrorCacheDelta>(),
 
     /** Available projects updated */
     availableProjectsUpdated: new TypedEvent<AvailableProjectConfig[]>(),

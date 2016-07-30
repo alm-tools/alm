@@ -8,7 +8,7 @@ import * as types from "../../../common/types";
 import * as projectDataLoader from "../../disk/projectDataLoader";
 
 // *sinks* for important caches
-import {errorsCache} from "../../globalErrorCache";
+import {errorsCache} from "../../globalErrorCacheServer";
 export const fileOutputStatusUpdated = new TypedEvent<types.JSOutputStatus>();
 export const completeOutputStatusCacheUpdated = new TypedEvent<types.JSOutputStatusCache>();
 export const liveBuildResults = new TypedEvent<types.LiveBuildResults>();

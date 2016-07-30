@@ -121,11 +121,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 		}));
 
         // load up the doc
-        docCache.getLinkedDoc(this.props.filePath).then(({doc, editorOptions}) => {
-			// Wire up the doc
-			this.editor.setModel(doc);
-			doc._editors.push(this.editor);
-
+        docCache.getLinkedDoc(this.props.filePath, this.editor).then(({doc, editorOptions}) => {
             // Load editor options
             loadEditorOptions(editorOptions);
 
@@ -168,8 +164,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
 	componentWillUnmount () {
 		super.componentWillUnmount();
-		// Note : we don't remove the model from the doc cache for fast reopening
-        this.editor.getModel()._editors = this.editor.getModel()._editors.filter(e => e != this.editor);
+        docCache.removeLinkedDoc(this.props.filePath, this.editor);
 		this.editor.dispose();
 		this.editor = null;
 	}

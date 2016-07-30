@@ -10,11 +10,11 @@ const errorKey = (error:CodeError)=>`${error.from.line}:${error.from.ch}:${error
  * and notifies anyone who is concerned of updated values
  */
 export class ErrorsCache {
-
     /**
-     * For a lazy view of the current state. Note: this is throttled + limited for performance
+     * When a cache boots up (e.g. server restart). Its good to know if its an initial errors delta
+     * If so the client might want to clear all previous errors
      */
-    public errorsUpdated = new TypedEvent<LimitedErrorsUpdate>();
+    initial = true;
 
     /**
      * Event that can be wired up to sync one error cache with another
@@ -54,15 +54,15 @@ export class ErrorsCache {
      * debounced as constantly sending errors quickly degrades the web experience
      */
     private sendErrors = debounce(() => {
-        this.errorsUpdated.emit(this.getErrorsLimited());
-
         // Create a delta
         const oldErrorsByFilePath = this.lastErrorsByFilePath;
         const newErrorsByFilePath = this._errorsByFilePath;
         const delta: ErrorCacheDelta = {
             added:{},
-            removed:{}
+            removed:{},
+            initial: this.initial,
         };
+        this.initial = false;
 
         // Added:
         Object.keys(newErrorsByFilePath).forEach((filePath)=>{
@@ -163,7 +163,23 @@ export class ErrorsCache {
     }
 
     /**
+     * Get/Set all the errors for an initial sync between error caches
+     */
+    public getErrors = () => this._errorsByFilePath;
+    public setErrors = (errorsByFilePath: ErrorsByFilePath) => this._errorsByFilePath = errorsByFilePath;
+
+    /** Only used for debugging */
+    public debugGetErrorsFlattened = () =>
+        Object.keys(this._errorsByFilePath)
+        .map(x => this._errorsByFilePath[x])
+        .reduce((acc, x) => acc.concat(x), []);
+
+    /**
      * Clear all errors. Resets the cache.
+     *
+     * Also good or an initial sync.
+     * e.g. when the socket server reboots
+     *   it wants to clear any errors that any connected clicks might have
      */
     public clearErrors = () => {
         this._errorsByFilePath = {};
