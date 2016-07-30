@@ -136,6 +136,16 @@ export function getLinkedDoc(filePath: string): Promise<GetLinkedDocResponse> {
         });
 }
 
+export function removeLinkedDoc(filePath:string, editor: monaco.editor.ICodeEditor){
+    editor.getModel()._editors = this.editor.getModel()._editors.filter(e => e != this.editor);
+    // if this was the last editor using this model then we remove it from the cache as well
+    // otherwise we might get a file even if its deleted from the server
+    if (!this.editor.getModel()._editors.length){
+        // TODO: 
+        // docCache.removeModel()
+    }
+}
+
 type DocPromiseResult = {
     doc: monaco.editor.IModel,
     isJsOrTsFile: boolean,
