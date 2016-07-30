@@ -1,10 +1,12 @@
 # Lint
 
-We provide a high quality integration with tslint.
+We provide a high quality integration with tslint that works as a `warning` system consolidated with the TypeScript error analysis.
+
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/linter.png)
 
 ## tslint.json
 
-We determine the `tslint.json` with a simple findup from the current `tsconfig.json` so the closest one wins ❤️.
+Configuration is driven with `tslint.json`. We determine the `tslint.json` with a simple findup from the current `tsconfig.json` so the closest one wins ❤️.
 
 > We recommend a single `tslint.json` file in your project.
 
