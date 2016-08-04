@@ -17,15 +17,17 @@ export function getProgramDependencies(projectFile: types.TypeScriptConfigFileDe
         var targets = getSourceFileImports(file)
             .filter((fileReference) => isRelative(fileReference))
             .map(fileReference => {
-            var file = path.resolve(dir, fileReference + '.ts');
-            if (!fs.existsSync(file)) {
-                file = path.resolve(dir, fileReference + '.tsx');
-            }
-            if (!fs.existsSync(file)) {
-                file = path.resolve(dir, fileReference + '.d.ts');
-            }
-            return file;
-        });
+                var file = path.resolve(dir, fileReference + '.ts');
+                if (!fs.existsSync(file)) {
+                    file = path.resolve(dir, fileReference + '.tsx');
+                }
+                if (!fs.existsSync(file)) {
+                    /** Do not resolve to a `.d.ts` file as it makes no sense to analyze those */
+                    return null;
+                }
+                return file;
+            })
+            .filter(x => !!x);
 
         for (let target of targets) {
             var targetPath = consistentPath(path.relative(projectDir, consistentPath(target)));
