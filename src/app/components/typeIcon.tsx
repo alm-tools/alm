@@ -152,8 +152,8 @@ interface DocumentedTypeHeaderProps {
 export class DocumentedTypeHeader extends ui.BaseComponent<DocumentedTypeHeaderProps, State>{
     shouldComponentUpdate = pure.shouldComponentUpdate;
     render() {
-        const hasLifetime = !!this.props.lifetime && this.props.lifetime !== UMLClassMemberLifetime.Instance;
-        const hasVisibility = !!this.props.visibility && this.props.visibility !== UMLClassMemberVisibility.Public;
+        const hasLifetime = (this.props.lifetime != null) && this.props.lifetime !== UMLClassMemberLifetime.Instance;
+        const hasVisibility = (this.props.visibility != null) && this.props.visibility !== UMLClassMemberVisibility.Public;
 
         return <div style={DocumentedTypeHeaderStyles.root}>
             <TypeIcon iconType={this.props.icon}/>
