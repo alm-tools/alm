@@ -10,6 +10,7 @@ import {throttle} from "../../../common/utils";
 import path = require('path');
 import {TypedEvent}  from "../../../common/events";
 import * as types from "../../../common/types";
+import * as chalk from "chalk";
 
 /** A Map for faster live calculations */
 type LiveList = { [filePath: string]: types.FilePathType };
@@ -134,6 +135,13 @@ namespace Worker {
             const cwd = q.directory;
             const mg = new glob.Glob('**', { cwd, dot: true }, (e, newList) => {
                 if (e) {
+                    checkGlobbingError(e);
+                    if (abortGlobbing) {
+                        mg.abort();
+                        // if we don't exit then glob keeps globbing + erroring despite mg.abort()
+                        process.exit();
+                        return;
+                    }
                     console.error('Globbing error:', e);
                 }
 
@@ -270,3 +278,21 @@ export const {master} = sw.runWorker({
 function debug(...args) {
     console.error.apply(console, args);
 }
+
+
+/**
+ * If its a permission error warn the user that they should start in some project directory
+ */
+let abortGlobbing = false;
+function checkGlobbingError(err: any) {
+    if (err.path &&
+        (err.code == 'EPERM' /*win*/ || err.code == 'EACCES' /*mac*/)
+    ) {
+        abortGlobbing = true;
+        master.abort({filePath: err.path});
+    }
+}
+process.on('error',()=>{
+    console.log('here');
+    process.exit();
+})

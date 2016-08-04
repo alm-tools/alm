@@ -4,6 +4,8 @@ import * as contract from "./fileListingContract";
 import {TypedEvent} from "../../../common/events";
 import * as workingDir from "../../disk/workingDir";
 import * as types from "../../../common/types";
+import {emitServerExit} from "../../../socket/serverExit";
+import * as chalk from "chalk";
 
 /** called whenever the list of files we know about is updated */
 export const filePathsUpdated = new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string; completed: boolean;}>();
@@ -21,6 +23,15 @@ namespace Master {
         return Promise.resolve({
             num: ++q.num
         });
+    }
+
+    export const abort: typeof contract.master.abort = (q) => {
+        console.log(chalk.red(`Exiting: Permission error when trying to list ${q.filePath}.
+- You started the IDE in some project folder (not '/' or 'c:\\' etc)
+- Check access to the path`
+));
+        emitServerExit();
+        return Promise.resolve({});
     }
 
     /** warning, this function is named differently from the event filePathsUpdated for a reason */

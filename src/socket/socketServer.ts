@@ -14,6 +14,7 @@ import * as settings from "../server/disk/settings";
 import * as serverDiskService from "../server/workers/external/serverDiskService";
 import * as session from "../server/disk/session";
 import * as utils from "../common/utils";
+import {onServerExit} from "./serverExit";
 let resolve = sls.resolve;
 
 import * as fmc from "../server/disk/fileModelCache";
@@ -286,18 +287,7 @@ export function register(app: http.Server | https.Server) {
     projectServiceMaster.liveBuildResults.pipe(cast.liveBuildResults);
 
     /** If the server exits notify the clients */
-    const exiting = () => cast.serverExiting.emit({});
-    /**
-     * http://stackoverflow.com/a/14032965/390330
-     * However the network stack only works if user does ctrl+c. In other cases we cannot even cast.
-     */
-    function exitHandler(options, err) {
-        exiting();
-        process.exit();
-    }
-    // catches ctrl+c event
-    process.on('SIGINT', exitHandler);
-
+    onServerExit(() => cast.serverExiting.emit({}));
 
     // For testing
     // setInterval(() => cast.hello.emit({ text: 'nice' }), 1000);
