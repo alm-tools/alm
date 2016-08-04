@@ -39,6 +39,7 @@ The total list of features is long and you can read the guide for that :). But t
   * Jump to tab
   * Duplicate
   * Split right
+  * Jumpy
 
 
 * Multiple browser windows editing in sync
