@@ -41,13 +41,12 @@ The total list of features is long and you can read the guide for that :). But t
   * Split right
   * Jumpy
 
-
-* Multiple browser windows editing in sync
-
-* Code Blaster
-
 * Migration:
   * allowJS
   * HTML to TSX
   * CSS to JS
   * JSON Definition to TS
+
+* Multiple browser windows editing in sync
+
+* Code Blaster
