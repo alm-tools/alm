@@ -121,7 +121,7 @@ export class ASTNode {
 			if (this.type !== schema.type) {
 				validationResult.warnings.push({
 					location: { start: this.start, end: this.end },
-					message: schema.errorMessage || localize('typeMismatchWarning', 'Incorrect type. Expected "{0}"', schema.type)
+					message: schema.errorMessage || localize('typeMismatchWarning', 'Incorrect type. Expected "{0}"', schema.type as any)
 				});
 			}
 		}

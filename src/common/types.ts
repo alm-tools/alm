@@ -182,7 +182,7 @@ export interface JSOutputStatus {
 /** The JS file can only be in one of these states */
 export enum JSOutputState {
     /** As it is from the TypeScript language service. Either emit is blocked or compiler options are noEmit */
-    EmitSkipped,
+    EmitSkipped = 1,
     /** If emit not skipped perhaps there isn't a JS file emit for this (e.g .d.ts files) */
     NoJSFile,
     /** If JS file then its one of these */
@@ -465,12 +465,12 @@ export interface UMLClass {
     extends?: UMLClass;
 }
 export enum UMLClassMemberVisibility {
-    Public,
+    Public = 1,
     Private,
     Protected
 }
 export enum UMLClassMemberLifetime {
-    Instance,
+    Instance = 1,
     Static
 }
 export interface UMLClassMember {
