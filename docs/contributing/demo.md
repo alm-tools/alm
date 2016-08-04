@@ -50,4 +50,4 @@ The total list of features is long and you can read the guide for that :). But t
   * allowJS
   * HTML to TSX
   * CSS to JS
-  * Definition to TS
+  * JSON Definition to TS
