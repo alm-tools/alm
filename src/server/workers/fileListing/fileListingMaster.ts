@@ -27,7 +27,7 @@ namespace Master {
 
     export const abort: typeof contract.master.abort = (q) => {
         console.log(chalk.red(`Exiting: Permission error when trying to list ${q.filePath}.
-- You started the IDE in some project folder (not '/' or 'c:\\' etc)
+- Start the IDE in a project folder (e.g. '/your/project')
 - Check access to the path`
 ));
         emitServerExit();
