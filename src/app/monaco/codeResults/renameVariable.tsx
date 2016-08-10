@@ -295,6 +295,8 @@ class RenameVariableAction extends EditorAction {
 	}
 }
 
+CommonEditorRegistry.registerEditorAction(new RenameVariableAction());
+
 /** Selects the locations keeping the current one as the first (to allow easy escape back to current cursor) */
 function selectName(editor: monaco.ICommonCodeEditor, locations: ts.TextSpan[]) {
     const ranges: monaco.ISelection[] = [];
