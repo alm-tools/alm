@@ -252,27 +252,35 @@ function getRGBComponents(node: Element): [string, string, string] {
  */
 
 import CommonEditorRegistry = monaco.CommonEditorRegistry;
-import EditorActionDescriptor = monaco.EditorActionDescriptor;
 import IEditorActionDescriptorData = monaco.IEditorActionDescriptorData;
 import ICommonCodeEditor = monaco.ICommonCodeEditor;
 import TPromise = monaco.Promise;
 import EditorAction = monaco.EditorAction;
-import ContextKey = monaco.ContextKey;
 import KeyMod = monaco.KeyMod;
 import KeyCode = monaco.KeyCode;
+import ServicesAccessor = monaco.ServicesAccessor;
+import IActionOptions = monaco.IActionOptions;
+import EditorContextKeys = monaco.EditorContextKeys;
 
 class ToggleBlasterAction extends EditorAction {
 
-    static ID = 'editor.action.toggleBlaster';
-
-    constructor(descriptor: IEditorActionDescriptorData, editor: ICommonCodeEditor) {
-        super(descriptor, editor);
+    constructor() {
+        super({
+            id: 'editor.action.toggleBlaster',
+			label: 'Toggle Blaster',
+			alias: 'Toggle Blaster',
+			precondition: EditorContextKeys.Writable,
+			kbOpts: {
+                kbExpr: EditorContextKeys.TextFocus,
+				primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KEY_O
+			}
+        });
     }
 
     public blaster: Blaster | null = null;
-    public run(): TPromise<boolean> {
+    public run(accessor:ServicesAccessor, editor:ICommonCodeEditor): void | TPromise<void> {
         if (!this.blaster) {
-            this.blaster = new Blaster(this.editor as Editor);
+            this.blaster = new Blaster(editor as Editor);
             ui.notifySuccessNormalDisappear('Have fun 🌹!');
         }
         else {
@@ -280,12 +288,7 @@ class ToggleBlasterAction extends EditorAction {
             this.blaster = null;
             ui.notifyInfoQuickDisappear('Hope you had fun 💖');
         }
-
-        return TPromise.as(true);
     }
 }
 
-CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(ToggleBlasterAction, ToggleBlasterAction.ID, 'Toggle Blaster', {
-    context: ContextKey.EditorTextFocus,
-    primary: KeyMod.CtrlCmd | KeyMod.Alt | KeyCode.KEY_O
-}));
+CommonEditorRegistry.registerEditorAction(new ToggleBlasterAction());

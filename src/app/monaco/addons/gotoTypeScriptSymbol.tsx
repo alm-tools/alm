@@ -8,30 +8,37 @@ import * as React from "react";
 import * as csx from "csx";
 
 import CommonEditorRegistry = monaco.CommonEditorRegistry;
-import EditorActionDescriptor = monaco.EditorActionDescriptor;
 import IEditorActionDescriptorData = monaco.IEditorActionDescriptorData;
 import ICommonCodeEditor = monaco.ICommonCodeEditor;
 import TPromise = monaco.Promise;
 import EditorAction = monaco.EditorAction;
-import ContextKey = monaco.ContextKey;
 import KeyMod = monaco.KeyMod;
 import KeyCode = monaco.KeyCode;
+import ServicesAccessor = monaco.ServicesAccessor;
+import IActionOptions = monaco.IActionOptions;
+import EditorContextKeys = monaco.EditorContextKeys;
 
 class GotoTypeScriptSymbolAction extends EditorAction {
 
-    static ID = 'editor.action.gotoTypeScriptSymbol';
-
-	constructor(descriptor:IEditorActionDescriptorData, editor:ICommonCodeEditor) {
-		super(descriptor, editor);
+	constructor() {
+        super({
+            id: 'editor.action.gotoTypeScriptSymbol',
+			label: 'Goto TypeScript Symbol (Hieroglyph) in file',
+			alias: 'Goto TypeScript Symbol (Hieroglyph) in file',
+			precondition: EditorContextKeys.Writable,
+			kbOpts: {
+                kbExpr: EditorContextKeys.TextFocus,
+				primary: KeyMod.CtrlCmd | KeyCode.KEY_H
+			}
+        });
 	}
 
-	public run():TPromise<boolean> {
-        let editor = this.editor;
+	public run(accessor:ServicesAccessor, editor:ICommonCodeEditor): void | TPromise<void> {
         const filePath = editor.filePath;
 
         if (!state.inActiveProjectFilePath(filePath)) {
             ui.notifyInfoNormalDisappear('The current file is no in the active project');
-            return TPromise.as(true);
+            return;
         }
 
 
@@ -68,12 +75,7 @@ class GotoTypeScriptSymbolAction extends EditorAction {
                 }
             });
         });
-
-		return TPromise.as(true);
 	}
 }
 
-CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(GotoTypeScriptSymbolAction, GotoTypeScriptSymbolAction.ID, 'Goto TypeScript Symbol (Hieroglyph) in file', {
-	context: ContextKey.EditorTextFocus,
-	primary: KeyMod.CtrlCmd | KeyCode.KEY_H
-}));
+CommonEditorRegistry.registerEditorAction(new GotoTypeScriptSymbolAction());
