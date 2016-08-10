@@ -26,8 +26,8 @@ class HtmlToTsxAction extends EditorAction {
 	constructor() {
         super({
             id: 'editor.action.htmlToTsx',
-			label: 'JSON to TypeScript definition (.d.ts)',
-			alias: 'JSON to TypeScript definition (.d.ts)',
+			label: 'HTML to TSX',
+			alias: 'HTML to TSX',
 			precondition: EditorContextKeys.Writable,
         });
 	}
