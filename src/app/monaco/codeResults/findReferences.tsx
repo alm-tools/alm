@@ -167,30 +167,37 @@ export class FindReferences extends ui.BaseComponent<Props, State>{
 import * as monacoUtils from "../monacoUtils";
 
 import CommonEditorRegistry = monaco.CommonEditorRegistry;
-import EditorActionDescriptor = monaco.EditorActionDescriptor;
 import IEditorActionDescriptorData = monaco.IEditorActionDescriptorData;
 import ICommonCodeEditor = monaco.ICommonCodeEditor;
 import TPromise = monaco.Promise;
 import EditorAction = monaco.EditorAction;
-import ContextKey = monaco.ContextKey;
 import KeyMod = monaco.KeyMod;
 import KeyCode = monaco.KeyCode;
+import ServicesAccessor = monaco.ServicesAccessor;
+import IActionOptions = monaco.IActionOptions;
+import EditorContextKeys = monaco.EditorContextKeys;
 
 class FindReferencesAction extends EditorAction {
 
-    static ID = 'editor.action.findReferencesAction';
-
-	constructor(descriptor:IEditorActionDescriptorData, editor:ICommonCodeEditor) {
-		super(descriptor, editor);
+	constructor() {
+        super({
+            id: 'editor.action.findReferencesAction',
+            label: 'TypeScript: Find references',
+            alias: 'TypeScript: Find references',
+            precondition: EditorContextKeys.Focus,
+            kbOpts: {
+                kbExpr: EditorContextKeys.TextFocus,
+                primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_B
+            }
+        });
 	}
 
-	public run():TPromise<boolean> {
-        let editor = this.editor;
+	public run(accessor:ServicesAccessor, editor:ICommonCodeEditor): void | TPromise<void> {
         const filePath = editor.filePath;
 
         if (!state.inActiveProjectFilePath(filePath)) {
             ui.notifyInfoNormalDisappear('The current file is no in the active project');
-            return TPromise.as(true);
+            return;
         }
 
         let position = monacoUtils.getCurrentPosition(editor);
@@ -211,12 +218,7 @@ class FindReferencesAction extends EditorAction {
                 ReactDOM.render(<FindReferences data={res} unmount={unmount}/>, node);
             }
         });
-
-		return TPromise.as(true);
 	}
 }
 
-CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(FindReferencesAction, FindReferencesAction.ID, 'TypeScript: Find references', {
-	context: ContextKey.EditorTextFocus,
-	primary: KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_B
-}));
+CommonEditorRegistry.registerEditorAction(new FindReferencesAction());

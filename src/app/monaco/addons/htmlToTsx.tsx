@@ -2,14 +2,15 @@ import * as ui from "../../ui";
 import * as monacoUtils from "../monacoUtils";
 
 import CommonEditorRegistry = monaco.CommonEditorRegistry;
-import EditorActionDescriptor = monaco.EditorActionDescriptor;
 import IEditorActionDescriptorData = monaco.IEditorActionDescriptorData;
 import ICommonCodeEditor = monaco.ICommonCodeEditor;
 import TPromise = monaco.Promise;
 import EditorAction = monaco.EditorAction;
-import ContextKey = monaco.ContextKey;
 import KeyMod = monaco.KeyMod;
 import KeyCode = monaco.KeyCode;
+import ServicesAccessor = monaco.ServicesAccessor;
+import IActionOptions = monaco.IActionOptions;
+import EditorContextKeys = monaco.EditorContextKeys;
 
 /* Test:
 <!-- Hello world -->
@@ -22,14 +23,16 @@ import KeyCode = monaco.KeyCode;
 
 class HtmlToTsxAction extends EditorAction {
 
-    static ID = 'editor.action.htmlToTsx';
-
-	constructor(descriptor:IEditorActionDescriptorData, editor:ICommonCodeEditor) {
-		super(descriptor, editor);
+	constructor() {
+        super({
+            id: 'editor.action.htmlToTsx',
+			label: 'JSON to TypeScript definition (.d.ts)',
+			alias: 'JSON to TypeScript definition (.d.ts)',
+			precondition: EditorContextKeys.Writable,
+        });
 	}
 
-	public run():TPromise<boolean> {
-        const editor = this.editor;
+    public run(accessor:ServicesAccessor, editor:ICommonCodeEditor): void | TPromise<void> {
         let filePath = editor.filePath;
         let selection = editor.getSelection();
         if (!selection.isEmpty()){
@@ -41,12 +44,10 @@ class HtmlToTsxAction extends EditorAction {
         else {
             ui.notifyWarningNormalDisappear('Please select the HTML you want converted to TSX and try again 🌹');
         }
-
-		return TPromise.as(true);
 	}
 }
 
-CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(HtmlToTsxAction, HtmlToTsxAction.ID, 'HTML to TSX'));
+CommonEditorRegistry.registerEditorAction(new HtmlToTsxAction());
 
 
 /**

@@ -115,14 +115,15 @@ declare global {
 
 
 import CommonEditorRegistry = monaco.CommonEditorRegistry;
-import EditorActionDescriptor = monaco.EditorActionDescriptor;
 import IEditorActionDescriptorData = monaco.IEditorActionDescriptorData;
 import ICommonCodeEditor = monaco.ICommonCodeEditor;
 import TPromise = monaco.Promise;
 import EditorAction = monaco.EditorAction;
-import ContextKey = monaco.ContextKey;
 import KeyMod = monaco.KeyMod;
 import KeyCode = monaco.KeyCode;
+import ServicesAccessor = monaco.ServicesAccessor;
+import IActionOptions = monaco.IActionOptions;
+import EditorContextKeys = monaco.EditorContextKeys;
 
 import * as selectListView from "../../selectListView";
 import * as ui from "../../ui";
@@ -133,12 +134,21 @@ class QuickFixAction extends EditorAction {
 
     static ID = 'editor.action.quickfix';
 
-	constructor(descriptor:IEditorActionDescriptorData, editor:ICommonCodeEditor) {
-		super(descriptor, editor);
+	constructor() {
+        super({
+            id: QuickFixAction.ID,
+            label: 'TypeScript Quick Fix',
+            alias: 'TypeScript Quick Fix',
+            precondition: EditorContextKeys.Focus,
+            kbOpts: {
+                kbExpr: EditorContextKeys.TextFocus,
+                primary: KeyMod.Alt | KeyCode.Enter
+            }
+        });
 	}
 
-	public run():TPromise<boolean> {
-        const cm = this.editor;
+	public run(accessor:ServicesAccessor, editor:ICommonCodeEditor): void | TPromise<void> {
+        const cm = editor;
 
         if (!cm._lastQuickFixInformation) {
             ui.notifyInfoNormalDisappear('No active quick fixes for last editor position');
@@ -167,12 +177,7 @@ class QuickFixAction extends EditorAction {
                 return '';
             }
         });
-
-		return TPromise.as(true);
 	}
 }
 
-CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(QuickFixAction, QuickFixAction.ID, 'TypeScript Quick Fix', {
-	context: ContextKey.EditorTextFocus,
-	primary: KeyMod.Alt | KeyCode.Enter
-}));
+CommonEditorRegistry.registerEditorAction(new QuickFixAction());

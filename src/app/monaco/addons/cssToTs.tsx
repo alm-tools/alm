@@ -2,14 +2,15 @@ import * as ui from "../../ui";
 import * as monacoUtils from "../monacoUtils";
 
 import CommonEditorRegistry = monaco.CommonEditorRegistry;
-import EditorActionDescriptor = monaco.EditorActionDescriptor;
 import IEditorActionDescriptorData = monaco.IEditorActionDescriptorData;
 import ICommonCodeEditor = monaco.ICommonCodeEditor;
 import TPromise = monaco.Promise;
 import EditorAction = monaco.EditorAction;
-import ContextKey = monaco.ContextKey;
 import KeyMod = monaco.KeyMod;
 import KeyCode = monaco.KeyCode;
+import ServicesAccessor = monaco.ServicesAccessor;
+import IActionOptions = monaco.IActionOptions;
+import EditorContextKeys = monaco.EditorContextKeys;
 
 /* Test:
 const styles = {
@@ -22,14 +23,16 @@ const styles = {
 
 class CssToTsAction extends EditorAction {
 
-    static ID = 'editor.action.cssToTs';
-
-	constructor(descriptor:IEditorActionDescriptorData, editor:ICommonCodeEditor) {
-		super(descriptor, editor);
+    constructor() {
+		super({
+            id: 'editor.action.cssToTs',
+			label: 'CSS to TS',
+			alias: 'CSS to TS',
+			precondition: EditorContextKeys.Writable,
+        });
 	}
 
-	public run():TPromise<boolean> {
-        const editor = this.editor;
+	public run(accessor:ServicesAccessor, editor:ICommonCodeEditor): void | TPromise<void> {
         let filePath = editor.filePath;
         let selection = editor.getSelection();
         if (!selection.isEmpty()){
@@ -43,12 +46,10 @@ class CssToTsAction extends EditorAction {
         else {
             ui.notifyWarningNormalDisappear('Please select the CSS you want converted to TS and try again 🌹');
         }
-
-		return TPromise.as(true);
 	}
 }
 
-CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(CssToTsAction, CssToTsAction.ID, 'CSS to TS'));
+CommonEditorRegistry.registerEditorAction(new CssToTsAction());
 
 /**
  * Take a look at :

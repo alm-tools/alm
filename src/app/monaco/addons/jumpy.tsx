@@ -240,30 +240,35 @@ function createOverlays(editor: Editor) {
 }
 
 import CommonEditorRegistry = monaco.CommonEditorRegistry;
-import EditorActionDescriptor = monaco.EditorActionDescriptor;
 import IEditorActionDescriptorData = monaco.IEditorActionDescriptorData;
 import ICommonCodeEditor = monaco.ICommonCodeEditor;
 import TPromise = monaco.Promise;
 import EditorAction = monaco.EditorAction;
-import ContextKey = monaco.ContextKey;
 import KeyMod = monaco.KeyMod;
 import KeyCode = monaco.KeyCode;
+import ServicesAccessor = monaco.ServicesAccessor;
+import IActionOptions = monaco.IActionOptions;
+import EditorContextKeys = monaco.EditorContextKeys;
 
 class JumpyAction extends EditorAction {
 
-    static ID = 'editor.action.jumpy';
+	constructor() {
+        super({
+            id: 'editor.action.jumpy',
+            label: 'Jumpy',
+            alias: 'Jumpy',
+            precondition: EditorContextKeys.Focus,
+            kbOpts: {
+                kbExpr: EditorContextKeys.TextFocus,
+                primary: KeyMod.CtrlCmd | KeyCode.Enter
+            }
+        });
 
-	constructor(descriptor:IEditorActionDescriptorData, editor:ICommonCodeEditor) {
-		super(descriptor, editor);
 	}
 
-	public run():TPromise<boolean> {
-        addOverlay(this.editor as any);
-		return TPromise.as(true);
+	public run(accessor:ServicesAccessor, editor:ICommonCodeEditor): void | TPromise<void> {
+        addOverlay(editor as any);
 	}
 }
 
-CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(JumpyAction, JumpyAction.ID, 'Jumpy', {
-	context: ContextKey.EditorTextFocus,
-	primary: KeyMod.CtrlCmd | KeyCode.Enter
-}));
+CommonEditorRegistry.registerEditorAction(new JumpyAction());

@@ -235,30 +235,37 @@ export class RenameVariable extends BaseComponent<Props, State>{
 import * as monacoUtils from "../monacoUtils";
 
 import CommonEditorRegistry = monaco.CommonEditorRegistry;
-import EditorActionDescriptor = monaco.EditorActionDescriptor;
 import IEditorActionDescriptorData = monaco.IEditorActionDescriptorData;
 import ICommonCodeEditor = monaco.ICommonCodeEditor;
 import TPromise = monaco.Promise;
 import EditorAction = monaco.EditorAction;
-import ContextKey = monaco.ContextKey;
 import KeyMod = monaco.KeyMod;
 import KeyCode = monaco.KeyCode;
+import ServicesAccessor = monaco.ServicesAccessor;
+import IActionOptions = monaco.IActionOptions;
+import EditorContextKeys = monaco.EditorContextKeys;
 
 class RenameVariableAction extends EditorAction {
 
-    static ID = 'editor.action.renameVariable';
-
-	constructor(descriptor:IEditorActionDescriptorData, editor:ICommonCodeEditor) {
-		super(descriptor, editor);
+	constructor() {
+        super({
+            id: 'editor.action.renameVariable',
+			label: 'TypeScript: Rename Variable',
+			alias: 'TypeScript: Rename Variable',
+			precondition: EditorContextKeys.Writable,
+			kbOpts: {
+                kbExpr: EditorContextKeys.TextFocus,
+				primary: KeyCode.F2
+			}
+        });
 	}
 
-	public run():TPromise<boolean> {
-        let editor = this.editor;
+	public run(accessor:ServicesAccessor, editor:ICommonCodeEditor): void | TPromise<void> {
         const filePath = editor.filePath;
 
         if (!state.inActiveProjectFilePath(filePath)) {
             ui.notifyInfoNormalDisappear('The current file is no in the active project');
-            return TPromise.as(true);
+            return;
         }
 
         let position = monacoUtils.getCurrentPosition(editor);
@@ -285,16 +292,8 @@ class RenameVariableAction extends EditorAction {
                 }
             }
         });
-
-		return TPromise.as(true);
 	}
 }
-
-CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(RenameVariableAction, RenameVariableAction.ID, 'TypeScript: Rename Variable', {
-	context: ContextKey.EditorTextFocus,
-	primary: KeyCode.F2
-}));
-
 
 /** Selects the locations keeping the current one as the first (to allow easy escape back to current cursor) */
 function selectName(editor: monaco.ICommonCodeEditor, locations: ts.TextSpan[]) {

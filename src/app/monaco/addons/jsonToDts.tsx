@@ -2,14 +2,15 @@ import * as ui from "../../ui";
 import * as monacoUtils from "../monacoUtils";
 
 import CommonEditorRegistry = monaco.CommonEditorRegistry;
-import EditorActionDescriptor = monaco.EditorActionDescriptor;
 import IEditorActionDescriptorData = monaco.IEditorActionDescriptorData;
 import ICommonCodeEditor = monaco.ICommonCodeEditor;
 import TPromise = monaco.Promise;
 import EditorAction = monaco.EditorAction;
-import ContextKey = monaco.ContextKey;
 import KeyMod = monaco.KeyMod;
 import KeyCode = monaco.KeyCode;
+import ServicesAccessor = monaco.ServicesAccessor;
+import IActionOptions = monaco.IActionOptions;
+import EditorContextKeys = monaco.EditorContextKeys;
 
 /* Test:
 {
@@ -25,14 +26,16 @@ import KeyCode = monaco.KeyCode;
 
 class JsonToDts extends EditorAction {
 
-    static ID = 'editor.action.jsonToDts';
-
-	constructor(descriptor:IEditorActionDescriptorData, editor:ICommonCodeEditor) {
-		super(descriptor, editor);
+	constructor() {
+        super({
+            id: 'editor.action.jsonToDts',
+			label: 'JSON to TypeScript definition (.d.ts)',
+			alias: 'JSON to TypeScript definition (.d.ts)',
+			precondition: EditorContextKeys.Writable,
+        });
 	}
 
-	public run():TPromise<boolean> {
-        const editor = this.editor;
+	public run(accessor:ServicesAccessor, editor:ICommonCodeEditor): void | TPromise<void> {
         let filePath = editor.filePath;
         let selection = editor.getSelection();
         if (!selection.isEmpty()){
@@ -45,12 +48,10 @@ class JsonToDts extends EditorAction {
         else {
             ui.notifyWarningNormalDisappear('Please select the JavaScript object literal (or json) you want converted to a TypeScript definition and try again 🌹');
         }
-
-		return TPromise.as(true);
 	}
 }
 
-CommonEditorRegistry.registerEditorAction(new EditorActionDescriptor(JsonToDts, JsonToDts.ID, 'JSON to TypeScript definition (.d.ts)'));
+CommonEditorRegistry.registerEditorAction(new JsonToDts());
 
 
 /**
