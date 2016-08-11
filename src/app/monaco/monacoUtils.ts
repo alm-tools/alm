@@ -121,6 +121,19 @@ export function isCursorInTopHalf(cm: Editor): boolean {
     return (cursor.lineNumber - scrollInfo.startLineNumber) < (scrollInfo.endLineNumber - cursor.lineNumber);
 }
 
+export function getSelectionOrCurrentLine(editor: Editor): string {
+    const selection = editor.getSelection();
+    let hasSelection = !selection.isEmpty();
+    if (hasSelection) {
+        let selected = editor.getModel().getValueInRange(selection);
+        return selected;
+    }
+    else {
+        let selected = editor.getModel().getLineContent(selection.startLineNumber);
+        return selected;
+    }
+}
+
 /**
  * Position conversion functions
  */

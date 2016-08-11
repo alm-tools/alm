@@ -3,7 +3,7 @@
  */
 
 /** Imports */
-import {replaceSelection} from "./monaco/monacoUtils";
+import {replaceSelection, getSelectionOrCurrentLine} from "./monaco/monacoUtils";
 import * as commands from "./commands/commands";
 import * as utils from "../common/utils";
 import * as ui from "./ui";
@@ -15,19 +15,11 @@ let index = 0;
 export function addToClipboardRing(mode: 'cut' | 'copy') {
     let codeEditor = uix.API.getFocusedCodeEditorIfAny();
     if (!codeEditor) return;
-    const selection = codeEditor.editor.getSelection();
-    let hasSelection = !selection.isEmpty();
 
-    if (hasSelection) {
-        let selected = codeEditor.editor.getModel().getValueInRange(selection);
-        index = 0; // Reset seek index
-        addSelected(selected);
-    }
-    else {
-        let selected = codeEditor.editor.getModel().getLineContent(selection.startLineNumber);
-        index = 0; // Reset seek index
-        addSelected(selected);
-    }
+    index = 0; // Reset seek index
+
+    let selected = getSelectionOrCurrentLine(codeEditor.editor);
+    addSelected(selected);
 }
 
 function addSelected(selected: string): boolean {
