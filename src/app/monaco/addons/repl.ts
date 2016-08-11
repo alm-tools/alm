@@ -31,8 +31,8 @@ class SendToReplAction extends EditorAction {
 			precondition: EditorContextKeys.Writable,
             kbOpts: {
                 kbExpr: EditorContextKeys.TextFocus,
-                /** From ELM https://github.com/sbrink/vscode-elm/blob/b40b73249f284515fd398ac388ba7f480644e26c/package.json#L119-L123 */
-				primary: KeyMod.Alt | KeyCode.US_SLASH
+                /** Like ctrl + shift + m which toggles js output */
+				primary: KeyMod.CtrlCmd | KeyCode.KEY_M
 			}
         });
 	}
@@ -46,9 +46,15 @@ class SendToReplAction extends EditorAction {
 CommonEditorRegistry.registerEditorAction(new SendToReplAction());
 
 
-/** TODO: Offload transpile to server and use their options */
 function compileAndExecuteTs(tsCode:string){
-    const js = ts.transpile(tsCode);
+    /** TODO: Offload transpile to server and use their options */
+    let js = ts.transpile(tsCode);
+
+    /** Remove "use strict"; + newline */
+    js = js.substr('"use strict";'.length).trim();
+
+    /** Log to make it look like we typed it */
     console.log(js);
+    /** Run it to show the result */
     eval(js);
 }
