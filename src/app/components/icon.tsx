@@ -23,7 +23,6 @@ export interface State {
 
 }
 
-@ui.Radium
 export class Icon extends BaseComponent<Props, State>{
     shouldComponentUpdate = pure.shouldComponentUpdate;
     render() {
