@@ -24,6 +24,8 @@ import {tabState} from "./tabs/v2/appTabsContainer";
 import * as settings from "./state/settings";
 type TruthTable = utils.TruthTable;
 
+
+
 export interface Props {
     // from react-redux ... connected below
     filePaths?: types.FilePath[];
@@ -54,6 +56,8 @@ export interface State {
     treeRoot?: TreeDirItem;
     expansionState?: { [filePath: string]: boolean };
     showHelp?: boolean;
+
+    treeScrollHasFocus?: boolean;
 
      // TODO: support multiple selections at some point, hence a dict
     readonly selectedPaths?: SelectedPaths;
@@ -149,6 +153,7 @@ export class FileTree extends BaseComponent<Props, State>{
             expansionState: {},
             selectedPaths: {},
             treeRoot: { name: 'loading', filePath: 'loading', subDirs: [], files: [] },
+            treeScrollHasFocus: false,
         };
         this.setupTree(props);
 
@@ -715,20 +720,19 @@ export class FileTree extends BaseComponent<Props, State>{
     }
 
     render() {
-
         let singlePathSelected = Object.keys(this.state.selectedPaths).length == 1
             && Object.keys(this.state.selectedPaths)[0];
 
-
         let hideStyle = !this.props.fileTreeShown && { display: 'none' };
-        const haveFocus = (Radium as any).getState(this.state,this.refNames.__treeViewScroll,':focus');
+        const haveFocus = this.state.treeScrollHasFocus;
         const helpOpacity = haveFocus ? 1 : 0;
 
         return (
             <div ref={this.refNames.__treeroot} className="alm-tree-root" style={[csx.flexRoot, csx.horizontal, { width: this.state.width, zIndex: 6 }, hideStyle]}>
 
                 <div style={[csx.flex, csx.vertical, treeListStyle, styles.someChildWillScroll, csx.newLayerParent]}>
-                    <div ref={this.refNames.__treeViewScroll} style={[csx.flex, csx.scroll, treeScrollStyle]} tabIndex={0}>
+                    <div ref={this.refNames.__treeViewScroll} style={[csx.flex, csx.scroll, treeScrollStyle]} tabIndex={0}
+                        onFocus={()=>this.setState({treeScrollHasFocus: true})} onBlur={()=>this.setState({treeScrollHasFocus: false})}>
                         {this.renderDir(this.state.treeRoot)}
                     </div>
                     {this.props.filePathsCompleted || <Robocop/>}
