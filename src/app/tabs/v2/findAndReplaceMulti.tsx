@@ -345,16 +345,6 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
                                 onKeyDown={this.findKeyDownHandler}
                                 onChange={this.findChanged} defaultValue={''}/>
                         </div>
-                        {
-                            /* I have disabled replaced as this is not the core focus of this application
-                            <div style={[csx.horizontal, csx.center, styles.padded1]}>
-                                <input tabIndex={2} ref="replace"
-                                    placeholder="Replace"
-                                    style={[inputBlackStyle, inputCodeStyle, csx.flex]}
-                                    onKeyDown={this.replaceKeyDownHandler} />
-                            </div>
-                            */
-                        }
                     </div>
                     <div style={csx.content}>
                         <div style={csx.extend(csx.horizontal, csx.aroundJustified, styles.padded1)}>
@@ -510,28 +500,6 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
         }
         if (enter) {
             this.startSearch();
-        }
-    };
-    replaceKeyDownHandler = (e: React.SyntheticEvent) => {
-        let {tab, shift, enter, mod} = ui.getKeyStates(e);
-
-        /**
-         * Handling commit
-         */
-        if (!this.state.findQuery) {
-            return;
-        }
-        if (mod && enter) {
-            commands.replaceAll.emit({ newText: this.replaceWith() });
-            return;
-        }
-        if (shift && enter) {
-            commands.replacePrevious.emit({ newText: this.replaceWith() });
-            return;
-        }
-        if (enter) {
-            commands.replaceNext.emit({ newText: this.replaceWith() });
-            return;
         }
     };
     findChanged = () => {
@@ -694,7 +662,6 @@ namespace FileResults {
     }
     export interface State {
     }
-    @ui.Radium
     export class FileResults extends React.Component<Props,State>{
         shouldComponentUpdate = pure.shouldComponentUpdate;
 
