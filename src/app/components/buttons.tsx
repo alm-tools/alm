@@ -2,6 +2,7 @@ import * as csx from "csx";
 import {textColor} from "../styles/styles";
 import * as React from "react";
 import * as ui from "../ui";
+import * as fstyle from "../base/fstyle";
 
 const activeStyle =  {
     backgroundImage: 'linear-gradient(#353434, #7B7B7B)',
@@ -10,7 +11,7 @@ const activeStyle =  {
 const disabledStyle =  {
     opacity: '.5',
 }
-const buttonBlackStyle = csx.extend(
+const buttonBlackClassName = fstyle.style(
     csx.flexRoot,
     {
         fontFamily:'sans-serif',
@@ -27,11 +28,13 @@ const buttonBlackStyle = csx.extend(
         border: '1px solid #464646',
         userSelect: 'none',
         outline: '0px',
-        ':active': activeStyle
+    },
+    {
+        '&:active': activeStyle
     }
 );
 
-export const ButtonBlack = ui.Radium((props: { text: string, onClick: () => any, isActive?:boolean, disabled?: boolean }) => {
-    const style = csx.extend(buttonBlackStyle, props.isActive ? activeStyle : {}, props.disabled ? disabledStyle : {});
-    return <button onClick={props.onClick} style={style} disabled={props.disabled}>{props.text}</button>;
-});
+export const ButtonBlack = (props: { text: string, onClick: () => any, isActive?:boolean, disabled?: boolean }) => {
+    const style = csx.extend(props.isActive ? activeStyle : {}, props.disabled ? disabledStyle : {});
+    return <button className={buttonBlackClassName} onClick={props.onClick} style={style} disabled={props.disabled}>{props.text}</button>;
+};

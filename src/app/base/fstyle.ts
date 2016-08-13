@@ -15,6 +15,7 @@ if (typeof requestAnimationFrame === 'undefined') {
 /** Just for autocomplete convinience */
 export interface CSSProperties extends React.CSSProperties {
   '&:hover'?: React.CSSProperties;
+  '&:active'?: React.CSSProperties;
 }
 
 /**
