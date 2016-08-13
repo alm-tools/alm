@@ -38,8 +38,12 @@ export interface Options {
     hideInput?: boolean;
 }
 
-@ui.Radium
 export class InputDialog extends BaseComponent<Props, State>{
+    constructor(props){
+        super(props);
+        this.state = {};
+    }
+    
     private onOk: (value:string) => void = () => null;
     private onEsc: () => void = () => null;
 
@@ -83,16 +87,15 @@ export class InputDialog extends BaseComponent<Props, State>{
             /** We want the modal to be auto fitting in height for this case */
             style={{
                 content:{bottom:'auto'}
-            }as any}
-            >
-            <div style={[csx.vertical, csx.flex]}>
-                <div style={[csx.horizontal]}>
+            }}>
+            <div style={csx.extend(csx.vertical, csx.flex)}>
+                <div style={csx.horizontal}>
                     <h4>{this.state.header}</h4>
-                    <div style={[csx.flex]}></div>
+                    <div style={csx.flex}></div>
                     <div style={{ fontSize: '0.9rem', color: 'grey' } as any}><code style={styles.modal.keyStrokeStyle}>Esc</code> to exit <code style={styles.modal.keyStrokeStyle}>Enter</code> to commit</div>
                 </div>
 
-                <div style={[styles.padded1TopBottom, csx.vertical]}>
+                <div style={csx.extend(styles.padded1TopBottom, csx.vertical)}>
                     <input
                         type="text"
                         ref="mainInput"
