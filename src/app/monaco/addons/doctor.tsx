@@ -16,11 +16,12 @@ import {Types} from "../../../socket/socketContract";
 import * as commands from "../../commands/commands";
 import * as monacoUtils from "../monacoUtils";
 import {errorsCache} from "../../globalErrorCacheClient";
+import * as fstyle from "../../base/fstyle";
 
 type Editor = monaco.editor.ICodeEditor;
 
-let docuStyle = {
-    zIndex : '4', // To come over CM
+let docuClassName = fstyle.style({
+    zIndex : 4, // To come over CM
     color: '#DDD',
     padding: '5px',
     background: '#343333',
@@ -45,12 +46,12 @@ let docuStyle = {
     maxHeight: '400px',
     minHeight: '100px',
 
-    opacity: '0.7', // Light as this is not the user's focus
+    opacity: 0.7, // Light as this is not the user's focus
     transition: 'opacity .2s',
-    ':hover':{
-        opacity: '1'
+    '&:hover':{
+        opacity: 1
     }
-}
+})
 
 let docuOnTopStyle = {
     top: '0px',
@@ -97,7 +98,6 @@ interface State {
         showDoctor: state.showDoctor,
     };
 })
-@ui.Radium
 export class Doctor extends ui.BaseComponent<Props,State> {
     componentWillUnmount() {
         super.componentWillUnmount();
@@ -216,7 +216,7 @@ export class Doctor extends ui.BaseComponent<Props,State> {
             </div>
         }
 
-        return <div style={csx.extend(csx.newLayer,docuStyle,positionStyle,csx.vertical)}>
+        return <div className={docuClassName} style={csx.extend(csx.newLayer,positionStyle,csx.vertical)}>
             <div style={csx.vertical}>
             {
                 errors.map(e=>{

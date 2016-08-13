@@ -10,6 +10,7 @@ Because we have this distributed between TS / CSS files we document these here:
 * Main Panel : 6 (`mainPanel.ts`)
 * Modal Overlay: 100 (in `index.html`)
 * File Tree View: 6 (`fileTree.tsx`)
+* Doctor : 4 (`doctor.tsx` to come on top of CM)
 
 # Background color
 Whenever possible prefer the Editor background color.
