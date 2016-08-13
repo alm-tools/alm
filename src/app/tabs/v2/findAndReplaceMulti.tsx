@@ -312,7 +312,8 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
 
         let rendered = (
             <div
-                style={csx.extend(csx.vertical, csx.flex, styles.noFocusOutline, styles.someChildWillScroll) }>
+                className={ResultsStyles.noFocusClassName}
+                style={csx.extend(csx.vertical, csx.flex, styles.someChildWillScroll) }>
                 <div ref="results" tabIndex={0} className={ResultsStyles.rootClassName}>
                     {
                         hasSearch

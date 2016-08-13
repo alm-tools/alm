@@ -15,6 +15,8 @@ import * as fstyle from "../../base/fstyle";
 
 import {Types} from "../../../socket/socketContract";
 
+export const noFocusOutlineClassName = fstyle.style(styles.noFocusOutlineBase);
+
 type NodeDisplay = Types.NodeDisplay;
 let EOL = '\n';
 
@@ -140,7 +142,8 @@ ${this.state.text.substring(node.pos, node.end)}
         return (
             <div
                 ref="root" tabIndex={0}
-                style={csx.extend(csx.horizontal,csx.flex,styles.noFocusOutline, styles.someChildWillScroll)}>
+                className={noFocusOutlineClassName}
+                style={csx.extend(csx.horizontal,csx.flex, styles.someChildWillScroll)}>
                 {content}
             </div>
         );

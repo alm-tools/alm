@@ -241,7 +241,7 @@ export namespace Input {
         padding: '2px',
         border: '2px solid #3C3C3C',
         transition: 'border .2s',
-        ':focus':{
+        '&:focus':{
             border: '2px solid #0099E0',
             boxShadow: '0px 0px 1px 1px #0099E0'
         }
@@ -269,8 +269,8 @@ export namespace Tip {
 /**
  * For when you don't want anything on focus
  */
-export const noFocusOutline = {
-    ":focus":{
+export const noFocusOutlineBase = {
+    "&:focus":{
         outline: 'none'
     }
 }

@@ -23,8 +23,6 @@ export interface State {
     selectedIndex?: number;
 }
 
-
-@ui.Radium
 export class FindReferences extends ui.BaseComponent<Props, State>{
 
     constructor(props: Props) {
@@ -74,7 +72,7 @@ export class FindReferences extends ui.BaseComponent<Props, State>{
             return (
                 <div
                     ref={ref} key={item.filePath + i}
-                    style={[styles.tabHeader,active,{overflow:'hidden'}]}
+                    style={csx.extend(styles.tabHeader,active,{overflow:'hidden'})}
                     onClick={()=>this.selectAndRefocus(i)}
                     onDoubleClick={()=>this.openIndex(i)}>
                     <div title={item.filePath} style={{overflow:'hidden',textOverflow:'ellipsis'}}>{utils.getFileName(item.filePath)} (line: {item.position.line + 1})</div>
@@ -93,10 +91,10 @@ export class FindReferences extends ui.BaseComponent<Props, State>{
             <Modal
                   isOpen={true}
                   onRequestClose={this.props.unmount}>
-                  <div style={[csx.vertical, csx.flex]}>
-                      <div style={[csx.horizontal, csx.content]}>
+                  <div style={csx.extend(csx.vertical, csx.flex)}>
+                      <div style={csx.extend(csx.horizontal, csx.content)}>
                           <h4>References</h4>
-                          <div style={[csx.flex]}></div>
+                          <div style={csx.flex}></div>
                           <div style={{fontSize:'0.9rem', color:'grey'} as any}>
                             <code style={modal.keyStrokeStyle}>Esc</code> to exit <code style={modal.keyStrokeStyle}>Enter</code> to select
                             {' '}<code style={modal.keyStrokeStyle}>Up / Down</code> to see usages
@@ -112,11 +110,11 @@ export class FindReferences extends ui.BaseComponent<Props, State>{
                           onKeyDown={this.onChangeSelected}
                           />
 
-                      <div style={[csx.horizontal, csx.flex, { overflow: 'hidden' }]}>
+                      <div style={csx.extend(csx.horizontal, csx.flex, { overflow: 'hidden' })}>
                           <div style={{width:'200px', overflow:'auto'} as any}>
                               {filePathsRendered}
                           </div>
-                          <div style={[csx.flex, csx.flexRoot, styles.modal.previewContainerStyle]}>
+                          <div style={csx.extend(csx.flex, csx.flexRoot, styles.modal.previewContainerStyle)}>
                                 {previewRendered}
                           </div>
                       </div>
