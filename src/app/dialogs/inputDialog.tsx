@@ -14,6 +14,9 @@ import {cast, server} from "../../socket/socketClient";
 import * as commands from "../commands/commands";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
 import * as utils from "../../common/utils";
+import * as fstyle from "../base/fstyle";
+
+const inputClassName = fstyle.style(styles.modal.inputStyleBase);
 
 /** The singleton dialog instance */
 export var inputDialog: InputDialog;
@@ -72,7 +75,7 @@ export class InputDialog extends BaseComponent<Props, State>{
     }
 
     render() {
-        const inputStyle = this.state.hideInput ? { height: '0px', opacity: 0 } : styles.modal.inputStyle;
+        const inputStyle = this.state.hideInput ? { height: '0px', opacity: 0 } : { opacity: 1 };
         return <Modal
             ref="modal"
             isOpen={this.state.isOpen}
@@ -94,6 +97,7 @@ export class InputDialog extends BaseComponent<Props, State>{
                         type="text"
                         ref="mainInput"
                         style={inputStyle}
+                        className={inputClassName}
                         onChange={this.onChangeFilter}
                         onKeyDown={this.onChangeSelected}
                         />

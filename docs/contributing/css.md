@@ -12,8 +12,16 @@ Because we have this distributed between TS / CSS files we document these here:
 * File Tree View: 6 (`fileTree.tsx`)
 
 # Background color
-Whenever possible prefer the Editor background color. 
+Whenever possible prefer the Editor background color.
 
-* You don't need it explicitly at the root components as we have it setup for `GoldenLayout` (in `appTabsContainer.css`) as well as `body` (in `index.html` as a style attribute) 
+* You don't need it explicitly at the root components as we have it setup for `GoldenLayout` (in `appTabsContainer.css`) as well as `body` (in `index.html` as a style attribute)
 
 * tips.tsx (in `appTabsContainer.css`).
+
+# FStyle
+
+We use free-style to manage our CSS in JS (TS). Just a bit of naming convention:
+
+* `**ClassName` : must be used in `className=` attribute
+* `**Base` : must be used to make a `ClassName`.
+* `**Style`: can be used to make a `ClassName` or directly in a style.

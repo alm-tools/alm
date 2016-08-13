@@ -18,6 +18,9 @@ import {Robocop} from "../../components/robocop";
 import * as docCache from "../../codemirror/mode/docCache";
 import {CodeEditor} from "../../codemirror/codeEditor";
 import {RefactoringsByFilePath, Refactoring} from "../../../common/types";
+import * as fstyle from "../../base/fstyle";
+
+const inputClassName = fstyle.style(styles.modal.inputStyleBase);
 
 export interface Props {
     info: Types.GetRenameInfoResponse;
@@ -140,7 +143,7 @@ export class RenameVariable extends BaseComponent<Props, State>{
                       <div style={[styles.padded1TopBottom, csx.vertical, csx.content]}>
                           <input
                               defaultValue={this.props.info.displayName}
-                              style={styles.modal.inputStyle}
+                              className={inputClassName}
                               type="text"
                               ref="mainInput"
                               placeholder="Filter"

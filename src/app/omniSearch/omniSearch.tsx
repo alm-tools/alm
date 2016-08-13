@@ -19,6 +19,9 @@ import * as CodeMirror from "codemirror";
 import {Robocop} from "../components/robocop";
 import * as utils from "../../common/utils";
 import {tabState} from "../tabs/v2/appTabsContainer";
+import * as fstyle from "../base/fstyle";
+
+const inputClassName = fstyle.style(styles.modal.inputStyleBase);
 
 /** Stuff shared by the select list view */
 import {renderMatchedSegments, getFilteredItems} from ".././selectListView";
@@ -150,7 +153,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
                     <div style={[csx.content, styles.padded1TopBottom,csx.vertical]}>
                         <input
                             defaultValue={this.searchState.rawFilterValue}
-                            style={styles.modal.inputStyle}
+                            className={inputClassName}
                             type="text"
                             ref="omniSearchInput"
                             placeholder="Filter"

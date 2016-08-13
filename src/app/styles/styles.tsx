@@ -200,7 +200,7 @@ export namespace modal {
     };
 
     /** Big input */
-    export let inputStyle = {
+    export let inputStyleBase = {
         backgroundColor: 'rgb(42,42,42)',
         color: 'white',
         outline: 'none',
@@ -211,7 +211,7 @@ export namespace modal {
 
         border: '3px solid #3C3C3C',
         transition: 'border .2s',
-        ':focus':{
+        '&:focus':{
             boxShadow: '0px 0px 1px 1px #3C3C3C'
         }
     }

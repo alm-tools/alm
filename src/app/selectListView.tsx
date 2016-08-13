@@ -15,6 +15,9 @@ import {cast, server} from "../socket/socketClient";
 import * as commands from "./commands/commands";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
 import * as utils from "../common/utils";
+import * as fstyle from "./base/fstyle";
+
+const inputClassName = fstyle.style(styles.modal.inputStyleBase);
 
 /**
  * The singleton select list view
@@ -174,7 +177,7 @@ export class SelectListView extends BaseComponent<Props, State>{
                             type="text"
                             ref="omniSearchInput"
                             placeholder="Filter"
-                            style={styles.modal.inputStyle}
+                            className={inputClassName}
                             onChange={this.onChangeFilter}
                             onKeyDown={this.onChangeSelected}
                             />

@@ -3,8 +3,9 @@ import {textColor} from "../styles/styles";
 import * as React from "react";
 import * as ui from "../ui";
 import * as styles from "../styles/styles";
+import * as fstyle from "../base/fstyle";
 
-const inputBlackStyle = csx.extend(styles.modal.inputStyle, {
+const inputBlackClassName = fstyle.style(styles.modal.inputStyleBase, {
     fontSize: '.7rem',
     lineHeight: '.7rem',
     fontFamily: 'sans-serif',
@@ -18,10 +19,10 @@ export const InputBlack = ui.Radium((props: {
     onKeyDown?: () => any,
     placeholder?: string,
 }) => {
-    const style = csx.extend(inputBlackStyle, props.style || {});
     return (
         <input
-            style={style}
+            className={inputBlackClassName}
+            style={props.style}
             type="text"
             placeholder={props.placeholder}
             value={props.value}
