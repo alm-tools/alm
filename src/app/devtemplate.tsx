@@ -14,7 +14,6 @@ export interface State {
 
 }
 
-@ui.Radium
 export class FindAndReplace extends BaseComponent<Props, State>{
     render(){
         return (

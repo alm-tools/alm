@@ -12,7 +12,7 @@ const inputBlackClassName = fstyle.style(styles.modal.inputStyleBase, {
     flex: '1',
 });
 
-export const InputBlack = ui.Radium((props: {
+export const InputBlack = (props: {
     style?: React.CSSProperties,
     value: string,
     onChange: (value: string) => any,
@@ -30,4 +30,4 @@ export const InputBlack = ui.Radium((props: {
             onKeyDown={props.onKeyDown}
         />
     );
-});
+};

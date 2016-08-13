@@ -35,7 +35,6 @@ export interface State {
     error?: string;
 }
 
-@ui.Radium
 export class ASTView extends ui.BaseComponent<Props, State> {
 
     constructor(props: Props) {
