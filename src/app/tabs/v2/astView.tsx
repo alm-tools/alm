@@ -11,13 +11,12 @@ import * as styles from "../../styles/styles";
 import * as onresize from "onresize";
 import {ErrorMessage} from "../errorMessage";
 import {Clipboard} from "../../components/clipboard";
+import * as fstyle from "../../base/fstyle";
 
 import {Types} from "../../../socket/socketContract";
 
 type NodeDisplay = Types.NodeDisplay;
 let EOL = '\n';
-
-let {inputBlackStyle} = styles.Input;
 
 /**
  * The styles

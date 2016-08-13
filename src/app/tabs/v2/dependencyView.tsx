@@ -15,8 +15,6 @@ import {Clipboard} from "../../components/clipboard";
 type FileDependency = Types.FileDependency;
 let EOL = '\n';
 
-let {inputBlackStyle} = styles.Input;
-
 /**
  * The styles
  */

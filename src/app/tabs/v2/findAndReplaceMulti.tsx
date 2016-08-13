@@ -20,6 +20,7 @@ import * as pure from "../../../common/pure";
 import * as buttons from "../../components/buttons";
 import * as types from "../../../common/types";
 import * as gls from "../../base/gls";
+import * as fstyle from "../../base/fstyle";
 
 type NodeDisplay = Types.NodeDisplay;
 let EOL = '\n';
@@ -27,18 +28,20 @@ let EOL = '\n';
 /**
  * The styles
  */
-let {inputBlackStyle} = styles.Input;
 import {inputCodeStyle, searchOptionsLabelStyle}
 from "../../findAndReplace";
 
+let {inputBlackStyleBase} = styles.Input;
+const inputBlackClassName = fstyle.style(inputBlackStyleBase);
+
 namespace ResultsStyles {
-    export const root = csx.extend(
+    export const rootClassName = fstyle.style(
         csx.flex,
         csx.scroll,
         styles.padded1,
         {
             border: '1px solid grey',
-            ':focus': {
+            '&:focus': {
                 outline: 'none',
                 border: '1px solid ' + styles.highlightColor,
             }
@@ -67,6 +70,14 @@ namespace ResultsStyles {
     export let selected = {
         backgroundColor: styles.selectedBackgroundColor
     };
+
+    export const noFocusClassName = fstyle.style(
+        {
+            '&:focus': {
+                outline: 'none'
+            }
+        }
+    )
 }
 
 /**
@@ -101,7 +112,6 @@ export interface State {
     isFullWord?: boolean;
 }
 
-@ui.Radium
 export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
     constructor(props: Props) {
         super(props);
@@ -303,7 +313,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
         let rendered = (
             <div
                 style={csx.extend(csx.vertical, csx.flex, styles.noFocusOutline, styles.someChildWillScroll) }>
-                <div ref="results" tabIndex={0} style={ResultsStyles.root}>
+                <div ref="results" tabIndex={0} className={ResultsStyles.rootClassName}>
                     {
                         hasSearch
                             ? this.renderSearchResults()
@@ -324,12 +334,13 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
     renderSearchControls() {
         return (
             <div style={csx.vertical}>
-                <div style={[csx.horizontal, csx.center]}>
-                    <div style={[csx.flex, csx.vertical]}>
-                        <div style={[csx.horizontal, csx.center, styles.padded1]}>
+                <div style={csx.extend(csx.horizontal, csx.center)}>
+                    <div style={csx.extend(csx.flex, csx.vertical)}>
+                        <div style={csx.extend(csx.horizontal, csx.center, styles.padded1)}>
                             <input tabIndex={1} ref="find"
                                 placeholder="Find"
-                                style={[inputBlackStyle, inputCodeStyle, csx.flex]}
+                                className={inputBlackClassName}
+                                style={csx.extend(inputCodeStyle, csx.flex)}
                                 onKeyDown={this.findKeyDownHandler}
                                 onChange={this.findChanged} defaultValue={''}/>
                         </div>
@@ -344,9 +355,9 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
                             */
                         }
                     </div>
-                    <div style={[csx.content]}>
-                        <div style={[csx.horizontal, csx.aroundJustified, styles.padded1]}>
-                            <label style={[csx.horizontal, csx.center]}>
+                    <div style={csx.content}>
+                        <div style={csx.extend(csx.horizontal, csx.aroundJustified, styles.padded1)}>
+                            <label style={csx.extend(csx.horizontal, csx.center)}>
                                 <ui.Toggle
                                     tabIndex={3}
                                     ref="regex"
@@ -355,7 +366,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
                                     .*
                                 </span>
                             </label>
-                            <label style={[csx.horizontal, csx.center]}>
+                            <label style={csx.extend(csx.horizontal, csx.center)}>
                                 <ui.Toggle
                                     tabIndex={4}
                                     ref="caseInsensitive"
@@ -364,7 +375,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
                                     Aa
                                 </span>
                             </label>
-                            <label style={[csx.horizontal, csx.center]}>
+                            <label style={csx.extend(csx.horizontal, csx.center)}>
                                 <ui.Toggle
                                     tabIndex={5}
                                     ref="fullWord"
@@ -377,7 +388,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
                         </div>
                     </div>
                 </div>
-                <div style={[styles.Tip.root]}>
+                <div style={styles.Tip.root}>
                     <div>
                     Controls:
                     {' '}<span style={styles.Tip.keyboardShortCutStyle}>Esc</span> to focus on results
@@ -409,7 +420,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
 
         return (
             <div style={csx.extend(csx.flex, styles.errorsPanel.main, {userSelect:'none'}) }>
-                <div style={[ResultsStyles.header, csx.horizontal]}>
+                <div style={csx.extend(ResultsStyles.header, csx.horizontal)}>
                     Total Results ({this.state.results.length})
                     {
                         (this.state.results.length >= types.maxCountFindAndReplaceMultiResults)
@@ -697,16 +708,14 @@ namespace FileResults {
                     <div
                         ref={this.props.filePath + ':' + -1}
                         tabIndex={0}
+                        className={ResultsStyles.noFocusClassName}
                         style={
                             csx.extend(
                                 selectedStyle,
                                 styles.errorsPanel.filePath,
                                 {
                                     margin:'8px 0px',
-                                    padding: '3px' ,
-                                    ':focus': {
-                                        outline: 'none',
-                                    }
+                                    padding: '3px'
                                 }
                             )
                         }>
@@ -728,6 +737,7 @@ namespace FileResults {
                         key={i}
                         ref={result.filePath + ':' + result.line}
                         tabIndex={0}
+                        className={ResultsStyles.noFocusClassName}
                         style={
                             csx.extend(
                                 styles.padded1,
@@ -736,9 +746,6 @@ namespace FileResults {
                                     overflow: 'hidden',
                                     textOverflow: 'ellipsis',
                                     whiteSpace: 'pre',
-                                    ':focus': {
-                                        outline: 'none',
-                                    }
                                 },
                                 selectedStyle
                             )

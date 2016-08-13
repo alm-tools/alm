@@ -234,7 +234,7 @@ export let hiddenInput = {
 }
 
 export namespace Input {
-    export let inputBlackStyle = {
+    export let inputBlackStyleBase = {
         backgroundColor: '#333',
         color: 'white',
         outline: 'none',

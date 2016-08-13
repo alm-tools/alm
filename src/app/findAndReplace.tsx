@@ -12,8 +12,12 @@ import {connect} from "react-redux";
 import {Icon} from "./components/icon";
 import * as tabRegistry from "./tabs/v2/tabRegistry";
 import {tabState,tabStateChanged} from "./tabs/v2/appTabsContainer";
+import * as fstyle from "./base/fstyle";
+import {extend} from "csx";
 
-let {inputBlackStyle} = styles.Input;
+let {inputBlackStyleBase} = styles.Input;
+const inputBlackClassName = fstyle.style(inputBlackStyleBase);
+
 export let inputCodeStyle = {
     fontFamily: 'monospace',
 }
@@ -44,7 +48,6 @@ export interface State {
         findQuery: state.findOptions,
     };
 })
-@ui.Radium
 export class FindAndReplace extends BaseComponent<Props, State>{
 
     componentDidMount() {
@@ -114,12 +117,13 @@ export class FindAndReplace extends BaseComponent<Props, State>{
 
         if (!advancedFind){
             return (
-                <div style={[csx.horizontal,shownStyle]}>
-                    <div style={[csx.flex, csx.vertical]}>
-                        <div style={[csx.horizontal, csx.center, styles.padded1]}>
+                <div style={csx.extend(csx.horizontal,shownStyle)}>
+                    <div style={extend(csx.flex, csx.vertical)}>
+                        <div style={extend(csx.horizontal, csx.center, styles.padded1)}>
                             <input tabIndex={1} ref="find"
                             	placeholder="Find"
-                                style={[inputBlackStyle, inputCodeStyle, csx.flex]}
+                                className={inputBlackClassName}
+                                style={extend(inputCodeStyle, csx.flex)}
                                 onKeyDown={this.findKeyDownHandler}
                                 onChange={this.findChanged} defaultValue={this.props.findQuery.query}/>
                         </div>
@@ -129,26 +133,28 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         }
 
         return (
-            <div style={[csx.vertical,shownStyle]}>
-                <div style={[csx.horizontal,shownStyle]}>
-                    <div style={[csx.flex, csx.vertical]}>
-                        <div style={[csx.horizontal, csx.center, styles.padded1]}>
+            <div style={extend(csx.vertical,shownStyle)}>
+                <div style={extend(csx.horizontal,shownStyle)}>
+                    <div style={extend(csx.flex, csx.vertical)}>
+                        <div style={extend(csx.horizontal, csx.center, styles.padded1)}>
                             <input tabIndex={1} ref="find"
                             	placeholder="Find"
-                                style={[inputBlackStyle, inputCodeStyle, csx.flex]}
+                                className={inputBlackClassName}
+                                style={csx.extend(inputCodeStyle, csx.flex)}
                                 onKeyDown={this.findKeyDownHandler}
                                 onChange={this.findChanged} defaultValue={this.props.findQuery.query}/>
                         </div>
-                        <div style={[csx.horizontal, csx.center, styles.padded1]}>
+                        <div style={extend(csx.horizontal, csx.center, styles.padded1)}>
                             <input tabIndex={2} ref="replace"
                             	placeholder="Replace"
-                                style={[inputBlackStyle, inputCodeStyle, csx.flex]}
+                                className={inputBlackClassName}
+                                style={csx.extend(inputCodeStyle, csx.flex)}
                                 onKeyDown={this.replaceKeyDownHandler} />
                         </div>
                     </div>
-                    <div style={[csx.centerCenter]}>
-                        <div style={[csx.horizontal, csx.aroundJustified, styles.padded1]}>
-                            <label style={[csx.horizontal,csx.center]}>
+                    <div style={csx.centerCenter}>
+                        <div style={csx.extend(csx.horizontal, csx.aroundJustified, styles.padded1)}>
+                            <label style={extend(csx.horizontal,csx.center)}>
                             	<ui.Toggle
                                     tabIndex={3}
                                     ref="regex"
@@ -157,7 +163,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
                                     .*
                                 </span>
                             </label>
-                            <label style={[csx.horizontal,csx.center]}>
+                            <label style={extend(csx.horizontal,csx.center)}>
                             	<ui.Toggle
                                     tabIndex={4}
                                     ref="caseInsensitive"
@@ -166,7 +172,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
                                     Aa
                                 </span>
                             </label>
-                            <label style={[csx.horizontal,csx.center]}>
+                            <label style={extend(csx.horizontal,csx.center)}>
                             	<ui.Toggle
                                     tabIndex={5}
                                     ref="fullWord"
@@ -179,7 +185,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
                         </div>
                     </div>
                 </div>
-                <div style={[styles.Tip.root]}>
+                <div style={styles.Tip.root}>
                     <span style={styles.Tip.keyboardShortCutStyle}>Esc</span> to exit
                     {' '}<span style={styles.Tip.keyboardShortCutStyle}>Enter</span> to find/replace next
                     {' '}<span style={styles.Tip.keyboardShortCutStyle}>Shift + Enter</span> to find/replace previous

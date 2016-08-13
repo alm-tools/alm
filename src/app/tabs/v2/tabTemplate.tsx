@@ -23,7 +23,6 @@ import * as gls from "../../base/gls";
 import * as fstyle from "../../base/fstyle";
 import {MarkDown} from "../../markdown/markdown";
 
-let {inputBlackStyle} = styles.Input;
 import {CodeEditor} from "../../codemirror/codeEditor";
 
 /**
