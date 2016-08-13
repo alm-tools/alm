@@ -11,6 +11,7 @@ import * as $ from "jquery";
 import * as styles from "../../styles/styles";
 import * as onresize from "onresize";
 import {Clipboard} from "../../components/clipboard";
+import * as fstyle from "../../base/fstyle";
 
 type FileDependency = Types.FileDependency;
 let EOL = '\n';
@@ -40,21 +41,20 @@ let controlRightStyle = {
 
     pointerEvents: 'all',
 }
-let controlItemStyle = {
+let controlItemClassName = fstyle.style({
     pointerEvents:'auto',
 
     padding:'.4rem',
     transition:'background .2s',
     background: 'rgba(200,200,200,.05)',
-    ':hover':{
+    '&:hover':{
         background: 'rgba(200,200,200,.25)',
     }
-}
+})
 let cycleHeadingStyle = {
     fontSize:'1.2rem',
 }
 
-@ui.Radium
 export class DependencyView extends ui.BaseComponent<Props, State> {
 
     private graphRenderer: GraphRenderer;
@@ -117,7 +117,7 @@ export class DependencyView extends ui.BaseComponent<Props, State> {
             ? this.state.cycles.map((cycle,i)=>{
                 let cycleText = cycle.join(' ⬅️ ');
                 return (
-                    <div key={i} style={controlItemStyle}>
+                    <div key={i} className={controlItemClassName}>
                         <div style={cycleHeadingStyle}> {i+1}) Cycle <Clipboard text={cycleText} /></div>
                         <div>
                             {cycleText}
@@ -125,7 +125,7 @@ export class DependencyView extends ui.BaseComponent<Props, State> {
                     </div>
                 );
             })
-            : <div key={-1} style={controlItemStyle}>No cycles 🌹</div>;
+            : <div key={-1} className={controlItemClassName}>No cycles 🌹</div>;
 
         return (
             <div
@@ -138,9 +138,9 @@ export class DependencyView extends ui.BaseComponent<Props, State> {
                 </div>
 
                 <div ref="controlRoot" className="graph-controls"
-                    style={[csx.newLayer, csx.horizontal, csx.endJustified, controlRootStyle]}>
-                    <div style={[csx.vertical, controlRightStyle]}>
-                        <div className="control-zoom" style={controlItemStyle}>
+                    style={csx.extend(csx.newLayer, csx.horizontal, csx.endJustified, controlRootStyle)}>
+                    <div style={csx.extend(csx.vertical, controlRightStyle)}>
+                        <div className={`control-zoom ${controlItemClassName}`}>
                             <a className="control-zoom-in" href="#" title="Zoom in" onClick={this.zoomIn}/>
                             <a className="control-zoom-out" href="#" title="Zoom out" onClick={this.zoomOut}/>
                             <a className="control-fit" href="#" title="Fit" onClick={this.zoomFit}/>
