@@ -3,6 +3,7 @@ import Radium = require('radium');
 import csx = require('csx');
 import {BaseComponent} from "../ui";
 import * as ui from "../ui";
+import * as fstyle from "../base/fstyle";
 
 export interface Props {
     text: string;
@@ -11,7 +12,7 @@ export interface State {
 
 }
 
-let buttonStyle = {
+let buttonClassName = fstyle.style({
     height: '18px',
     padding: '2px 3px',
     display: 'inline-flex',
@@ -22,21 +23,20 @@ let buttonStyle = {
     userSelect: 'none',
     outline: '0px',
 
-    ':active': {
+    '&:active': {
         backgroundImage: 'linear-gradient(#353434, #7B7B7B)',
     }
-}
+});
 
 let clippy = {
     width: '12px',
     height: '12px'
 }
 
-@ui.Radium
 export class Clipboard extends BaseComponent<Props, State>{
     render(){
         return (
-            <button style={csx.extend(buttonStyle,csx.center)} data-clipboard-text={this.props.text} onClick={(event)=>event.stopPropagation() || ui.notifyInfoQuickDisappear("Copied")}>
+            <button className={buttonClassName} style={csx.extend(csx.center)} data-clipboard-text={this.props.text} onClick={(event)=>event.stopPropagation() || ui.notifyInfoQuickDisappear("Copied")}>
                 <img src="assets/clippy.svg" style={clippy}/>
             </button>
         );
