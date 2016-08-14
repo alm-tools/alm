@@ -99,6 +99,10 @@ interface State {
     };
 })
 export class Doctor extends ui.BaseComponent<Props,State> {
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
     componentWillUnmount() {
         super.componentWillUnmount();
     }

@@ -42,7 +42,6 @@ export interface State {
     getNewData?: (filterValue: string) => Promise<DataItem[]>;
 }
 
-@ui.Radium
 export class SelectListView extends BaseComponent<Props, State>{
 
     filteredResults: DataItem[];
@@ -156,7 +155,7 @@ export class SelectListView extends BaseComponent<Props, State>{
             } : {};
             let ref = selected && "selected";
             return (
-                <div key={i} style={[selectedStyle, styles.padded2, styles.hand, csx.content]} onClick={()=>this.selectIndex(i)} ref={ref}>
+                <div key={i} style={csx.extend(selectedStyle, styles.padded2, styles.hand, csx.content)} onClick={()=>this.selectIndex(i)} ref={ref}>
                         {this.state.render(item, renderMatchedSegments(this.state.textify(item), this.state.filterValue)) }
                 </div>
             );
@@ -165,14 +164,14 @@ export class SelectListView extends BaseComponent<Props, State>{
         return <Modal
             isOpen={this.state.isOpen}
             onRequestClose={this.closeOmniSearch}>
-                <div style={[csx.vertical, csx.flex]}>
-                    <div style={[csx.horizontal, csx.content]}>
+                <div style={csx.extend(csx.vertical, csx.flex)}>
+                    <div style={csx.extend(csx.horizontal, csx.content)}>
                         <h4>{this.state.header}</h4>
-                        <div style={[csx.flex]}></div>
+                        <div style={csx.flex}></div>
                         <div style={{fontSize:'0.9rem', color:'grey'} as any}><code style={styles.modal.keyStrokeStyle}>Esc</code> to exit <code style={styles.modal.keyStrokeStyle}>Enter</code> to select</div>
                     </div>
 
-                    <div style={[styles.padded1TopBottom, csx.vertical, csx.content]}>
+                    <div style={csx.extend(styles.padded1TopBottom, csx.vertical, csx.content)}>
                         <input
                             type="text"
                             ref="omniSearchInput"
@@ -183,8 +182,8 @@ export class SelectListView extends BaseComponent<Props, State>{
                             />
                         </div>
 
-                    <div style={[csx.vertical, csx.flex, { overflow: 'auto' }]}>
-                        <div style={[csx.vertical]}>
+                    <div style={csx.extend(csx.vertical, csx.flex, { overflow: 'auto' })}>
+                        <div style={csx.vertical}>
                             {fileListRendered}
                         </div>
                     </div>

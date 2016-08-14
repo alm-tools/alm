@@ -55,7 +55,6 @@ let listItemStyle = {
 
 let searchingNameStyle = { marginTop: '0px', marginBottom: '0px', marginLeft: '10px', border: '1px solid grey', padding: '4px 4px', background: 'black' };
 
-@ui.Radium
 export class OmniSearch extends BaseComponent<Props, State>{
     mode: SearchMode = SearchMode.File;
 
@@ -142,15 +141,15 @@ export class OmniSearch extends BaseComponent<Props, State>{
         return <Modal
               isOpen={this.searchState.isShown}
               onRequestClose={this.searchState.closeOmniSearch}>
-                <div style={[csx.vertical, csx.flex]}>
-                    <div style={[csx.content, csx.horizontal,csx.center]}>
-                        <h4 style={{marginTop:'1rem', marginBottom: '1rem'} as any}>Omni Search <Icon name="search"/></h4>
+                <div style={csx.extend(csx.vertical, csx.flex)}>
+                    <div style={csx.extend(csx.content, csx.horizontal,csx.center)}>
+                        <h4 style={{marginTop:'1rem', marginBottom: '1rem'}}>Omni Search <Icon name="search"/></h4>
                         {searchingName ? <h5  style={searchingNameStyle}>{searchingName}</h5> : ''}
-                        <div style={[csx.flex]}></div>
-                        <div style={{fontSize:'0.9rem', color:'grey'} as any}><code style={styles.modal.keyStrokeStyle}>Esc</code> to exit <code style={styles.modal.keyStrokeStyle}>Enter</code> to select</div>
+                        <div style={csx.flex}></div>
+                        <div style={{fontSize:'0.9rem', color:'grey'}}><code style={styles.modal.keyStrokeStyle}>Esc</code> to exit <code style={styles.modal.keyStrokeStyle}>Enter</code> to select</div>
                     </div>
 
-                    <div style={[csx.content, styles.padded1TopBottom,csx.vertical]}>
+                    <div style={csx.extend(csx.content, styles.padded1TopBottom,csx.vertical)}>
                         <input
                             defaultValue={this.searchState.rawFilterValue}
                             className={inputClassName}
@@ -164,7 +163,7 @@ export class OmniSearch extends BaseComponent<Props, State>{
 
                     {this.searchState.optionalMessage()}
 
-                    <div ref="searchScroll" className="scrollContainer" style={[csx.vertical,csx.flex,{overflow:'auto'}]}>
+                    <div ref="searchScroll" className="scrollContainer" style={csx.extend(csx.vertical,csx.flex,{overflow:'auto'})}>
                         {renderedResults}
                     </div>
                 </div>
@@ -684,7 +683,7 @@ class SearchState {
             let ref = selected && "selected";
 
             return (
-                <div key={index} style={[style, styles.padded2, styles.hand, listItemStyle]} onClick={() => this.choseIndex(index) } ref={ref}>
+                <div key={index} style={csx.extend(style, styles.padded2, styles.hand, listItemStyle)} onClick={() => this.choseIndex(index) } ref={ref}>
                     {rendered}
                 </div>
             );
