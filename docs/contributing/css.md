@@ -5,7 +5,7 @@ We try to use as little CSS as possible but when using third party libraries som
 # Z-Index
 Because we have this distributed between TS / CSS files we document these here:
 
-* Golden-Layout: 5 (in `appTabsContainer.css`)
+* Golden-Layout: 2 (in `appTabsContainer.css`)
 * Main Panel : 6 (`mainPanel.ts`)
 * Modal Overlay: 100 (in `index.html`)
 * File Tree View: 6 (`fileTree.tsx`)

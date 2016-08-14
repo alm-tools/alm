@@ -23,11 +23,6 @@ import * as gls from "../../base/gls";
 import * as fstyle from "../../base/fstyle";
 import {MarkDown} from "../../markdown/markdown";
 
-/**
- * A color that looks nice over the "Codemirror" background black
- */
-const blackHighlightColor = "#1C1D18"
-
 export interface Props extends tab.TabProps {
 }
 export interface State {

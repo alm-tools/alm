@@ -169,34 +169,6 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 		this.editor = null;
 	}
 
-    // TODO: mon
-    // getQuickInfo = (pos: CodeMirror.Position): Promise<string | HTMLElement> => {
-    //     if (
-    //         state.inActiveProjectFilePath(this.props.filePath)
-    //         || utils.isSupportedConfigFileForHover(this.props.filePath)
-    //     ) {
-    //         return server.quickInfo({ filePath: this.props.filePath, position: this.codeMirror.getDoc().indexFromPos(pos) }).then(resp => {
-    //             if (!resp.valid) return;
-    //
-    //             var message = '';
-    //             if (resp.errors.length) {
-    //                 message = message + `🐛 <i>${resp.errors.map(e => escape(e.message)).join('<br/>')}</i><br/>`
-    //             }
-    //
-    //             if (resp.info) {
-    //                 message = message + `<b>${escape(resp.info.name)}</b>`;
-    //                 if (resp.info.comment) {
-    //                     message = message + `<br/>${toHtml(resp.info.comment)}`;
-    //                 }
-    //             }
-    //
-    //             let div = document.createElement('div');
-    //             div.innerHTML = message;
-    //             return div;
-    //         });
-    //     }
-    // };
-
     firstFocus = true;
 	focus = () => {
 		if (!this.ready && this.firstFocus) {
@@ -319,9 +291,9 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
     };
 
 	render () {
-		var className = 'ReactCodeMirror';
+		var className = 'ReactCodeEditor';
 		if (this.state.isFocused) {
-			className += ' ReactCodeMirror--focused';
+			className += ' ReactCodeEditor--focused';
         }
         const loadingStyle = {
             position: 'absolute', top: '45%', left: '45%', zIndex: 1,

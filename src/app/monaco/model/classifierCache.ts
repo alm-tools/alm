@@ -5,13 +5,6 @@
  * and apply its edits (similar to our server fileModel) so that we can do classifications on particular lines
  *
  * Since the ts classifier works on a language service we have a *single* language service to hold all files
- *
- *
- * How we apply the updates is a bit tricky.
- * - We want to do this *before* CM asks for classifications
- * - but we also need to accomodate for two tabs having the same file open and thus sending the same edits :-/
- * - * We definitely need to look into a single codemirror shared doc, with a single history, single edit stream, single text :)
- *
  */
 import {TypedEvent} from "../../../common/events";
 import * as lsh from "../../../languageServiceHost/languageServiceHost";

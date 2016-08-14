@@ -47,7 +47,7 @@ export class BaseComponent<Props, State> extends React.Component<Props, State>{
 
 /**
  * Certain components control when they unmount themselves
- * e.g. inline CodeMirror stuff, Modals
+ * e.g. Modals
  * This gives a convinient point for this logic
  */
 export function getUnmountableNode() {

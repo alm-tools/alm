@@ -175,7 +175,10 @@ export class FileModel {
         return this.text[line];
     }
 
-    /** splitLinesAuto from codemirror */
+    /**
+     * split lines
+     * https://github.com/codemirror/CodeMirror/blob/5738f9b2cff5241ea13e32db3579eb347e56e7a0/lib/codemirror.js#L8594
+     */
     private splitlines(string: string) { return string.split(/\r\n?|\n/); };
 
     /** https://github.com/sindresorhus/detect-newline/blob/master/index.js */

@@ -1,7 +1,5 @@
 /// <reference path="browser/ambient/chalk/chalk.d.ts" />
 /// <reference path="browser/ambient/chokidar/chokidar.d.ts" />
-/// <reference path="browser/ambient/codemirror-showhint/codemirror-showhint.d.ts" />
-/// <reference path="browser/ambient/codemirror/codemirror.d.ts" />
 /// <reference path="browser/ambient/colors/colors.d.ts" />
 /// <reference path="browser/ambient/cookie-parser/cookie-parser.d.ts" />
 /// <reference path="browser/ambient/d3/d3.d.ts" />

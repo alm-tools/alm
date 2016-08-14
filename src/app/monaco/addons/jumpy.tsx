@@ -14,8 +14,7 @@ type Editor = monaco.editor.ICodeEditor;
 import Range = monaco.Range;
 
 /**
- * Where we store out state. Stuff like this is conventional CodeMirror code
- * Don't judge me :P
+ * Where we store out state
  */
 declare global {
     namespace monaco {

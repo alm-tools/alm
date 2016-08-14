@@ -96,42 +96,6 @@ export function getLinkedDoc(filePath: string,editor: monaco.editor.ICodeEditor)
                 }
             });
 
-            // TODO: mon
-            // Keep the classifier cache in sync
-            // Has to be done on each doc (sadly) because:
-            // `beforeChange` on parent doc is not called by Code mirror if changes originate in this doc :-/
-            // we need `beforeChange` to make sure query to indent is made with right classifications
-            //
-            // Also note : this is only called on explicit user editing this doc. So we do no origin checking.
-            // Also: whenever we change the parent doc manually (all cm.doc come here including templates), we have to do classification syncing there (not here)
-            // if (isTsFile) {
-            //     (linkedDoc as any).on('beforeChange', (doc: CodeMirror.Doc, change: CodeMirror.EditorChange) => {
-            //
-            //         // console.log(change); // DEBUG
-            //
-            //         // Jumpy needs to use the same event and it will cancel this change
-            //         // But only uses it if `enter` is not pressed
-            //         if (doc._jumpyShown && change.text.join('').trim()) return;
-            //
-            //         // This is just the user pressing backspace on an empty file.
-            //         // If we let it go through then the classifier cache will crash.
-            //         // So abort
-            //         if (change.from.line === change.to.line && change.from.ch === change.to.ch && change.text.length === 1 && change.text[0].length === 0){
-            //             return;
-            //         }
-            //
-            //         let codeEdit: CodeEdit = {
-            //             from: { line: change.from.line, ch: change.from.ch },
-            //             to: { line: change.to.line, ch: change.to.ch },
-            //             newText: change.text.join('\n'),
-            //             sourceId: localSourceId
-            //         };
-            //
-            //         // Keep the classifier in sync
-            //         classifierCache.editFile(filePath, codeEdit);
-            //     });
-            // }
-
             /** Wire up the doc */
 			editor.setModel(doc);
 
