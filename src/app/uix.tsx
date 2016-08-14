@@ -6,7 +6,6 @@ import * as state from "./state/state";
 import {RefactoringsByFilePath} from "../common/types";
 import * as utils from "../common/utils";
 import * as commands from "./commands/commands";
-import CodeMirror = require('codemirror');
 
 /** Cant this in these UI components. Will cause cycles! */
 import * as codeEditor from "./codemirror/codeEditor";

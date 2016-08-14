@@ -13,14 +13,12 @@ import * as utils from "../../../common/utils";
 import {server} from "../../../socket/socketClient";
 import {Types} from "../../../socket/socketContract";
 import * as commands from "../../commands/commands";
-import * as cmUtils from "../cmUtils";
 import * as fstyle from "../../base/fstyle";
 import * as styles from "../../styles/styles";
 import {shouldComponentUpdate} from "../../../common/pure";
 import {gotoPosition} from "../../monaco/monacoUtils";
 
 type Editor = monaco.editor.ICommonCodeEditor;
-
 
 namespace SemanticViewStyles {
     export const root = {

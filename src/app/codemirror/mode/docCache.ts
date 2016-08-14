@@ -2,7 +2,6 @@
  * We should have all the CM docs cached for consistent history and stuff
  */
 import {TypedEvent} from "../../../common/events";
-import * as CodeMirror from "codemirror";
 import {cast, server} from "../../../socket/socketClient";
 import * as editBatcher from "./editBatcher";
 import * as utils from "../../../common/utils";

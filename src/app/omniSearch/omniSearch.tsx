@@ -14,7 +14,6 @@ import {TypedEvent} from "../../common/events";
 import * as state from "../state/state";
 import * as types from "../../common/types";
 import {AvailableProjectConfig} from "../../common/types";
-import * as CodeMirror from "codemirror";
 import {Robocop} from "../components/robocop";
 import * as utils from "../../common/utils";
 import {tabState} from "../tabs/v2/appTabsContainer";
