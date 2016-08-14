@@ -1,19 +1,19 @@
-import * as ui from "../ui";
+import * as ui from "../../ui";
 import * as csx from "csx";
 import * as React from "react";
-import {cast, server} from "../../socket/socketClient";
-import * as docCache from "./mode/docCache";
-import * as types from "../../common/types";
-import * as cursorHistory from "../cursorHistory";
-import * as search from "../monaco/search/monacoSearch";
-import * as semanticView from "./addons/semanticView";
-import * as monacoUtils from "../monaco/monacoUtils";
-import * as gitStatus from "../monaco/addons/gitStatus";
-import * as liveAnalysis from "../monaco/addons/liveAnalysis";
-import * as quickFix from "../monaco/addons/quickFix";
-import * as linter from "../monaco/addons/linter";
-import * as docblockr from "../monaco/addons/dockblockr";
-import * as doctor from "../monaco/addons/doctor";
+import {cast, server} from "../../../socket/socketClient";
+import * as docCache from "../model/docCache";
+import * as types from "../../../common/types";
+import * as cursorHistory from "../../cursorHistory";
+import * as search from "../search/monacoSearch";
+import * as semanticView from "../addons/semanticView";
+import * as monacoUtils from "../monacoUtils";
+import * as gitStatus from "../addons/gitStatus";
+import * as liveAnalysis from "../addons/liveAnalysis";
+import * as quickFix from "../addons/quickFix";
+import * as linter from "../addons/linter";
+import * as docblockr from "../addons/dockblockr";
+import * as doctor from "../addons/doctor";
 
 // The monokai theme
 require('./monokai.css');
@@ -169,34 +169,6 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 		this.editor = null;
 	}
 
-    // TODO: mon
-    // getQuickInfo = (pos: CodeMirror.Position): Promise<string | HTMLElement> => {
-    //     if (
-    //         state.inActiveProjectFilePath(this.props.filePath)
-    //         || utils.isSupportedConfigFileForHover(this.props.filePath)
-    //     ) {
-    //         return server.quickInfo({ filePath: this.props.filePath, position: this.codeMirror.getDoc().indexFromPos(pos) }).then(resp => {
-    //             if (!resp.valid) return;
-    //
-    //             var message = '';
-    //             if (resp.errors.length) {
-    //                 message = message + `🐛 <i>${resp.errors.map(e => escape(e.message)).join('<br/>')}</i><br/>`
-    //             }
-    //
-    //             if (resp.info) {
-    //                 message = message + `<b>${escape(resp.info.name)}</b>`;
-    //                 if (resp.info.comment) {
-    //                     message = message + `<br/>${toHtml(resp.info.comment)}`;
-    //                 }
-    //             }
-    //
-    //             let div = document.createElement('div');
-    //             div.innerHTML = message;
-    //             return div;
-    //         });
-    //     }
-    // };
-
     firstFocus = true;
 	focus = () => {
 		if (!this.ready && this.firstFocus) {
@@ -319,9 +291,9 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
     };
 
 	render () {
-		var className = 'ReactCodeMirror';
+		var className = 'ReactCodeEditor';
 		if (this.state.isFocused) {
-			className += ' ReactCodeMirror--focused';
+			className += ' ReactCodeEditor--focused';
         }
         const loadingStyle = {
             position: 'absolute', top: '45%', left: '45%', zIndex: 1,

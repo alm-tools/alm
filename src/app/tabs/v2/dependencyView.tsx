@@ -21,8 +21,6 @@ let EOL = '\n';
  */
 require('./dependencyView.less');
 
-import {CodeEditor} from "../../codemirror/codeEditor";
-
 export interface Props extends tab.TabProps {
 }
 export interface State {

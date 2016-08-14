@@ -1,7 +1,7 @@
 import { cast, server } from "../../../../socket/socketClient";
 import { Types } from "../../../../socket/socketContract";
 import * as state from "../../../state/state";
-import * as classifierCache from "../../../codemirror/mode/classifierCache";
+import * as classifierCache from "../../model/classifierCache";
 import * as utils from "../../../../common/utils";
 import * as types from "../../../../common/types";
 import { defaultSnippets } from "./snippets";

@@ -6,12 +6,14 @@ import * as state from "./state/state";
 import {RefactoringsByFilePath} from "../common/types";
 import * as utils from "../common/utils";
 import * as commands from "./commands/commands";
-import CodeMirror = require('codemirror');
 
-/** Cant this in these UI components. Will cause cycles! */
-import * as codeEditor from "./codemirror/codeEditor";
 import {tabState, TabInstance} from "./tabs/v2/appTabsContainer";
-import * as docCache from "./codemirror/mode/docCache";
+import * as docCache from "./monaco/model/docCache";
+
+/**
+ * Cant use it in UI components. Will cause cycles!. Only used as types here
+ */
+import * as _codeEditor from "./monaco/editor/codeEditor";
 
 /**
  * After the app boots up
@@ -75,7 +77,7 @@ export namespace API {
         docCache.applyRefactoringsToTsDocs(refactorings);
     }
 
-    export function getFocusedCodeEditorIfAny(): codeEditor.CodeEditor {
+    export function getFocusedCodeEditorIfAny(): _codeEditor.CodeEditor {
         return tabState.getFocusedCodeEditorIfAny();
     }
 }

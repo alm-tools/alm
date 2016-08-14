@@ -8,7 +8,7 @@ export let highlightColor = "#6edeef";
 export let selectedBackgroundColor = '#444';
 
 /**
- * A background color that looks nice over the "Codemirror" background black
+ * A background color that looks nice over the "editor" background black
  */
 export const blackHighlightColor = "#1C1D18"
 

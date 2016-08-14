@@ -96,19 +96,17 @@
 }
 
 /**
- * Force the lm_splitter to be above CodeMirror / other tab stuff
- * CodeMirror z-index : 2
+ * Force the lm_splitter to be above other tab stuff
  */
 .lm_splitter {
-    z-index: 5;
+    z-index: 2;
 }
 
 /**
- * Force the lm_dropTargetIndicator to be above CodeMirror / other tab stuff
- * CodeMirror z-index : 2
+ * Force the lm_dropTargetIndicator to be above other tab stuff
  */
 .lm_dropTargetIndicator {
-    z-index: 5;
+    z-index: 2;
 }
 
 /**

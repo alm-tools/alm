@@ -31,7 +31,6 @@
 * [Contributing / Design Notes](/contributing/README.md)
   * [Architecture Overview](/contributing/async.md)
   * [Conventions](/contributing/conventions.md)
-  * [CodeMirror](/contributing/codemirror.md)
   * [Syntax Highlighting](/contributing/syntax.md)
   * [Document Syncing](/contributing/document.md)
   * [Deployment](/contributing/deployment.md)

@@ -20,38 +20,41 @@ import * as fstyle from "../../base/fstyle";
 
 type Editor = monaco.editor.ICodeEditor;
 
-let docuClassName = fstyle.style({
-    zIndex : 4, // To come over CM
-    color: '#DDD',
-    padding: '5px',
-    background: '#343333',
-    fontSize: '.8rem',
+let docuClassName = fstyle.style(
+    csx.newLayer,
+    {
+        zIndex: 1, // To come over the editor
+        color: '#DDD',
+        padding: '5px',
+        background: '#343333',
+        fontSize: '.8rem',
 
-    // place to right
-    right: '0px',
-    left: 'inherit',
+        // Place to the right
+        right: '0px',
+        left: 'inherit',
 
-    // margin on all side to clear CM scroll bars and look good in general
-    margin: '12px',
+        // margin on all side to clear CM scroll bars and look good in general
+        margin: '12px',
 
-    // Overflow y and break in x
-    overflowY: 'auto',
-    wordWrap: 'break-word',
+        // Overflow y and break in x
+        overflowY: 'auto',
+        wordWrap: 'break-word',
 
-    // Don't let it get too big
-    width: '30%',
-    maxWidth: '400px',
-    minWidth: '200px',
-    height: '30%',
-    maxHeight: '400px',
-    minHeight: '100px',
+        // Don't let it get too big
+        width: '30%',
+        maxWidth: '400px',
+        minWidth: '200px',
+        height: '30%',
+        maxHeight: '400px',
+        minHeight: '100px',
 
-    opacity: 0.7, // Light as this is not the user's focus
-    transition: 'opacity .2s',
-    '&:hover':{
-        opacity: 1
+        opacity: 0.7, // Light as this is not the user's focus
+        transition: 'opacity .2s',
+        '&:hover': {
+            opacity: 1
+        }
     }
-})
+);
 
 let docuOnTopStyle = {
     top: '0px',
@@ -220,7 +223,7 @@ export class Doctor extends ui.BaseComponent<Props,State> {
             </div>
         }
 
-        return <div className={docuClassName} style={csx.extend(csx.newLayer,positionStyle,csx.vertical)}>
+        return <div className={docuClassName} style={csx.extend(positionStyle, csx.vertical)}>
             <div style={csx.vertical}>
             {
                 errors.map(e=>{

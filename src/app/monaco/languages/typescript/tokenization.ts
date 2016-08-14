@@ -6,7 +6,7 @@
  * - (filePath aware)
  * - Changed to use `classifierCache`.
  */
-import * as classifierCache from "../../../codemirror/mode/classifierCache";
+import * as classifierCache from "../../model/classifierCache";
 
 export enum Language {
 	TypeScript,

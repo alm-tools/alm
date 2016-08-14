@@ -1,7 +1,7 @@
 import {cast, server} from "../../../../socket/socketClient";
 import {Types} from "../../../../socket/socketContract";
 import * as state from "../../../state/state";
-import * as classifierCache from "../../../codemirror/mode/classifierCache";
+import * as classifierCache from "../../model/classifierCache";
 import CancellationToken = monaco.CancellationToken;
 import Thenable = monaco.Thenable;
 import Position = monaco.Position;

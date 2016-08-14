@@ -8,14 +8,13 @@ import * as styles from "../../styles/styles";
 import * as state from "../../state/state";
 import * as uix from "../../uix";
 import * as commands from "../../commands/commands";
-import CodeMirror = require('codemirror');
 import Modal = require('react-modal');
 import {server} from "../../../socket/socketClient";
 import {Types} from "../../../socket/socketContract";
 import {modal} from "../../styles/styles";
 import {Robocop} from "../../components/robocop";
-import * as docCache from "../../codemirror/mode/docCache";
-import {CodeEditor} from "../../codemirror/codeEditor";
+import * as docCache from "../model/docCache";
+import {CodeEditor} from "../editor/codeEditor";
 import {RefactoringsByFilePath, Refactoring} from "../../../common/types";
 
 export interface Props {

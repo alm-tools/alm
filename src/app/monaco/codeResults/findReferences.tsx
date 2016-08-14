@@ -11,7 +11,7 @@ import {server} from "../../../socket/socketClient";
 import {Types} from "../../../socket/socketContract";
 import {modal} from "../../styles/styles";
 import {Robocop} from "../../components/robocop";
-import {CodeEditor} from "../../codemirror/codeEditor";
+import {CodeEditor} from "../editor/codeEditor";
 import {RefactoringsByFilePath, Refactoring} from "../../../common/types";
 
 export interface Props {

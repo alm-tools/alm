@@ -14,7 +14,6 @@
     "tsc": "tsc -p ./src",
     "tscw": "tsc -p ./src -w",
     "uts": "npm install typescript@next tslint@next byots@latest --save --save-exact && npm run tsc",
-    "ucm": "npm install codemirror@latest --save --save-exact && npm run tsc",
     "umonaco": "npm install monaco@latest monaco-css@latest monaco-languages@latest --save --save-exact && npm run tsc",
     "ureact": "npm install react@latest react-dom@latest --save --save-exact",
     "preversion": "npm run tsc",
@@ -71,7 +70,6 @@
   },
   "devDependencies": {
     "clipboard": "^1.4.2",
-    "codemirror": "5.15.2",
     "css-loader": "^0.17.0",
     "csx": "4.0.0",
     "d3": "^3.5.12",

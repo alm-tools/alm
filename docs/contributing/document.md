@@ -1,7 +1,7 @@
 # Document Handling
-A code editor edits files. I'm calling the data representation of these files in the *browser client* as *documents* ([this is what these are called in CodeMirror][document]).
+A code editor edits files. I'm calling the data representation of these files in the *browser client* as *model*.
 
-A Code Editor instance ([codeEditor.ts][codeEditor.ts]) asks the [docCache.ts][docCache.ts] for document by filePath. The docCache load the file from the server, converts them to a CodeMirror *document*, and passes it to the CodeMirror Editor instance.
+A Code Editor instance ([codeEditor.ts][codeEditor.ts]) asks the [docCache.ts][docCache.ts] for document by filePath. The docCache load the file from the server, converts them to a *model*, and passes it to the Editor instance.
 
 
 ## Linked docs
@@ -20,8 +20,7 @@ The docCache makes sure that edits that were created locally aren't applied by a
 ## Syntax Highlighting
 For the purpose of TypeScript Syntax Highlighting the docCache also keeps the document up to date in the `classifierCache` ([classifierCache.ts][classifierCache.ts]) by sending it edits. [More on Syntax Highlighting][syntax].
 
-[document]:https://codemirror.net/doc/manual.html#Doc
-[docCache.ts]:https://github.com/alm-tools/alm/blob/master/src/app/codemirror/mode/docCache.ts
-[codeEditor.ts]:https://github.com/alm-tools/alm/blob/master/src/app/codemirror/codeEditor.tsx
-[classifierCache.ts]:https://github.com/alm-tools/alm/blob/master/src/app/codemirror/mode/classifierCache.ts
+[docCache.ts]:https://github.com/alm-tools/alm/blob/master/src/app/monaco/model/docCache.ts
+[codeEditor.ts]:https://github.com/alm-tools/alm/blob/master/src/app/monaco/editor/codeEditor.tsx
+[classifierCache.ts]:https://github.com/alm-tools/alm/blob/master/src/app/monaco/model/classifierCache.ts
 [syntax]: ./syntax.md

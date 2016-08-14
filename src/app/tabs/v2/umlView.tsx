@@ -20,8 +20,6 @@ import {MarkDown} from "../../markdown/markdown";
 
 const {blackHighlightColor} = styles;
 
-import {CodeEditor} from "../../codemirror/codeEditor";
-
 export interface Props extends tab.TabProps {
 }
 export interface State {

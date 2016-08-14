@@ -25,7 +25,7 @@ import * as alertOnLeave from "../../utils/alertOnLeave";
 import {getSessionId, setSessionId} from "../../state/clientSession";
 import * as onresize from "onresize";
 import {TypedEvent} from "../../../common/events";
-import {CodeEditor} from "../../codemirror/codeEditor";
+import {CodeEditor} from "../../monaco/editor/codeEditor";
 import * as state from "../../state/state";
 import * as pure from "../../../common/pure";
 import * as settings from "../../state/settings";

@@ -4,7 +4,7 @@
 
 import * as React from "react";
 import {TypedEvent} from "../../../common/events";
-import {CodeEditor} from "../../codemirror/codeEditor";
+import {CodeEditor} from "../../monaco/editor/codeEditor";
 
 /**
  * API used to trigger effects in the component

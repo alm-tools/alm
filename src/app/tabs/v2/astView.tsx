@@ -25,8 +25,6 @@ let EOL = '\n';
  */
 require('./astView.less');
 
-import {CodeEditor} from "../../codemirror/codeEditor";
-
 export interface Props extends tab.TabProps {
 }
 export interface State {
