@@ -11,7 +11,6 @@ import * as $ from "jquery";
 import * as styles from "../../styles/styles";
 import * as onresize from "onresize";
 import {Clipboard} from "../../components/clipboard";
-import {CodeEditor} from "../../codemirror/codeEditor";
 import {Types} from "../../../socket/socketContract";
 import {Icon} from "../../components/icon";
 import * as Mousetrap from "mousetrap";

@@ -23,8 +23,6 @@ import * as gls from "../../base/gls";
 import * as fstyle from "../../base/fstyle";
 import {MarkDown} from "../../markdown/markdown";
 
-import {CodeEditor} from "../../codemirror/codeEditor";
-
 /**
  * A color that looks nice over the "Codemirror" background black
  */

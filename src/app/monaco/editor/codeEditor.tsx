@@ -1,19 +1,19 @@
-import * as ui from "../ui";
+import * as ui from "../../ui";
 import * as csx from "csx";
 import * as React from "react";
-import {cast, server} from "../../socket/socketClient";
-import * as docCache from "./mode/docCache";
-import * as types from "../../common/types";
-import * as cursorHistory from "../cursorHistory";
-import * as search from "../monaco/search/monacoSearch";
-import * as semanticView from "./addons/semanticView";
-import * as monacoUtils from "../monaco/monacoUtils";
-import * as gitStatus from "../monaco/addons/gitStatus";
-import * as liveAnalysis from "../monaco/addons/liveAnalysis";
-import * as quickFix from "../monaco/addons/quickFix";
-import * as linter from "../monaco/addons/linter";
-import * as docblockr from "../monaco/addons/dockblockr";
-import * as doctor from "../monaco/addons/doctor";
+import {cast, server} from "../../../socket/socketClient";
+import * as docCache from "../model/docCache";
+import * as types from "../../../common/types";
+import * as cursorHistory from "../../cursorHistory";
+import * as search from "../search/monacoSearch";
+import * as semanticView from "../addons/semanticView";
+import * as monacoUtils from "../monacoUtils";
+import * as gitStatus from "../addons/gitStatus";
+import * as liveAnalysis from "../addons/liveAnalysis";
+import * as quickFix from "../addons/quickFix";
+import * as linter from "../addons/linter";
+import * as docblockr from "../addons/dockblockr";
+import * as doctor from "../addons/doctor";
 
 // The monokai theme
 require('./monokai.css');

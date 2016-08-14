@@ -16,7 +16,7 @@ import * as utils from "../../../common/utils";
 import {store} from "../../state/state";
 import { Provider } from 'react-redux';
 
-import {CodeEditor} from "../../codemirror/codeEditor";
+import {CodeEditor} from "../../monaco/editor/codeEditor";
 import {ImageViewer} from "../../imageViewer/imageViewer";
 
 export interface Props extends tab.TabProps {
