@@ -1,6 +1,6 @@
 # Editor
 
-The heart of the editor is [CodeMirror for quite a few reasons][codemirror]. It greatly decrease our barrier to entry. A great thing is that we have it configured in *sublime text* mode.
+The heart of the editor is Monaco for quite a few reasons. A great thing is that we have it configured in *sublime text* mode so should feel fairly familiar.
 
 > Imitation is the sincerest form of flattery
 
@@ -16,7 +16,7 @@ The heart of the editor is [CodeMirror for quite a few reasons][codemirror]. It 
 
 ## Sublime
 
-Sublime users will feel right at home as they get to use all their favorite features as it is e.g. `Ctrl|⌘ + P` (find file), `Ctrl|⌘ + Shift + P` (find command), `Ctrl|⌘ + /` (comment uncomment code), `Ctrl|⌘ + D` (select next match) and even `Alt + Shift + ⇅` for column selection   
+Sublime and VSCode users will feel right at home as they get to use all their favorite features as it is e.g. `Ctrl|⌘ + P` (find file), `Ctrl|⌘ + Shift + P` (find command), `Ctrl|⌘ + /` (comment uncomment code), `Ctrl|⌘ + D` (select next match) and `Ctrl|⌘ + Alt + ⇅` for column selection   
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/rectangular.gif)
 
@@ -51,6 +51,3 @@ You can cycle paste through the stuff that you copied / cut from the IDE. `Shift
 Because why not. `Ctrl|⌘ + Shift + O` to toggle.
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/blaster.gif)
-
-
-[codemirror]:../contributing/codemirror.md
