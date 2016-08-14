@@ -2,7 +2,6 @@ import {server} from "../socket/socketClient";
 import * as types from "../common/types";
 import React = require("react");
 import ReactDOM = require("react-dom");
-import Radium = require('radium');
 import csx = require('csx');
 import {BaseComponent} from "./ui";
 import * as ui from "./ui";
@@ -22,6 +21,7 @@ import * as clipboard from "./components/clipboard";
 import * as pure from "../common/pure";
 import {tabState} from "./tabs/v2/appTabsContainer";
 import * as settings from "./state/settings";
+import * as fstyle from "./base/fstyle";
 type TruthTable = utils.TruthTable;
 
 
@@ -77,25 +77,25 @@ let treeListStyle = {
     padding:'3px',
 }
 
-let treeScrollStyle = {
+let treeScrollClassName = fstyle.style({
     border: '1px solid grey',
-    ':focus': {
+    '&:focus': {
         outline: 'none',
         border: '1px solid ' + styles.highlightColor
     }
-}
+})
 
-let treeItemStyle = {
+let treeItemClassName = fstyle.style({
     whiteSpace: 'nowrap',
     cursor:'pointer',
     padding: '3px',
     userSelect: 'none',
     fontSize: '.9em',
     opacity: .8,
-    ':focus': {
+    '&:focus': {
         outline: 'none',
     }
-}
+})
 
 let treeItemSelectedStyle = {
     backgroundColor:styles.selectedBackgroundColor,
@@ -137,7 +137,7 @@ let helpRowStyle = {
         fileTreeShown: state.fileTreeShown,
     };
 })
-@ui.Radium
+
 export class FileTree extends BaseComponent<Props, State>{
     /** can't be pure right now because of how we've written `selectedState` */
     // shouldComponentUpdate = pure.shouldComponentUpdate;
@@ -728,17 +728,17 @@ export class FileTree extends BaseComponent<Props, State>{
         const helpOpacity = haveFocus ? 1 : 0;
 
         return (
-            <div ref={this.refNames.__treeroot} className="alm-tree-root" style={[csx.flexRoot, csx.horizontal, { width: this.state.width, zIndex: 6 }, hideStyle]}>
+            <div ref={this.refNames.__treeroot} className="alm-tree-root" style={csx.extend(csx.flexRoot, csx.horizontal, { width: this.state.width, zIndex: 6 }, hideStyle)}>
 
-                <div style={[csx.flex, csx.vertical, treeListStyle, styles.someChildWillScroll, csx.newLayerParent]}>
-                    <div ref={this.refNames.__treeViewScroll} style={[csx.flex, csx.scroll, treeScrollStyle]} tabIndex={0}
+                <div style={csx.extend(csx.flex, csx.vertical, treeListStyle, styles.someChildWillScroll, csx.newLayerParent)}>
+                    <div ref={this.refNames.__treeViewScroll} className={treeScrollClassName} style={csx.extend(csx.flex, csx.scroll)} tabIndex={0}
                         onFocus={()=>this.setState({treeScrollHasFocus: true})} onBlur={()=>this.setState({treeScrollHasFocus: false})}>
                         {this.renderDir(this.state.treeRoot)}
                     </div>
                     {this.props.filePathsCompleted || <Robocop/>}
                     {
                         singlePathSelected
-                        && <div style={[csx.content, csx.horizontal, csx.center, csx.centerJustified, { paddingTop: '5px', paddingBottom: '5px', width: this.state.width - 15+'px'}]}>
+                        && <div style={csx.extend(csx.content, csx.horizontal, csx.center, csx.centerJustified, { paddingTop: '5px', paddingBottom: '5px', width: this.state.width - 15+'px'})}>
                             <clipboard.Clipboard ref='copypath' text={singlePathSelected}/>
                             <span
                                 className="hint--top"
@@ -750,14 +750,14 @@ export class FileTree extends BaseComponent<Props, State>{
                             </span>
                         </div>
                     }
-                    <div style={[csx.content,csx.centerCenter, {fontSize: '.7em', lineHeight: '2em', opacity: helpOpacity, transition: 'opacity .2s'}]}>
+                    <div style={csx.extend(csx.content,csx.centerCenter, {fontSize: '.7em', lineHeight: '2em', opacity: helpOpacity, transition: 'opacity .2s'})}>
                         <span>Tap <span style={styles.Tip.keyboardShortCutStyle}>H</span> to toggle tree view help</span>
                     </div>
                     {
                         this.state.showHelp
-                        && <div style={[csx.newLayer, csx.centerCenter, csx.flex, {background: 'rgba(0,0,0,.7)'}]}
+                        && <div style={csx.extend(csx.newLayer, csx.centerCenter, csx.flex, {background: 'rgba(0,0,0,.7)'})}
                             onClick={()=>this.setState({showHelp:false})}>
-                            <div style={[csx.flexRoot, csx.vertical]}>
+                            <div style={csx.extend(csx.flexRoot, csx.vertical)}>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>ESC</span> to hide help</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>A</span> to add a file</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>Shift + A</span> to add a folder</div>
@@ -780,7 +780,7 @@ export class FileTree extends BaseComponent<Props, State>{
                 </div>
 
                 <DraggableCore onDrag={this.handleDrag} onStop={this.handleDragStop}>
-                    <div style={[csx.flexRoot, csx.centerCenter, resizerStyle]}><Icon name="ellipsis-v"/></div>
+                    <div style={csx.extend(csx.flexRoot, csx.centerCenter, resizerStyle)}><Icon name="ellipsis-v"/></div>
                 </DraggableCore>
 
             </div>
@@ -978,7 +978,6 @@ export class FileTree extends BaseComponent<Props, State>{
 }
 
 export namespace TreeNode {
-    @ui.Radium
     export class Dir extends React.Component<
         {
             item: TreeDirItem,
@@ -1000,7 +999,7 @@ export namespace TreeNode {
             let inProjectStyle = this.props.activeProjectFilePathTruthTable[item.filePath] ? treeItemInProjectStyle : {};
 
             return (
-                <div style={[treeItemStyle, selectedStyle, inProjectStyle]} key={item.filePath} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleToggleDir(evt,item) }>
+                <div className={treeItemClassName} style={csx.extend(selectedStyle, inProjectStyle)} key={item.filePath} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleToggleDir(evt,item) }>
                     <div style={{ marginLeft: depth * 10 }}> <Icon name={icon}/> {item.name}</div>
                 </div>
             );
@@ -1059,7 +1058,6 @@ export namespace TreeNode {
     }
 
     /** Renders the file item */
-    @ui.Radium
     export class File extends React.Component<{
         item: TreeFileItem;
         depth: number;
@@ -1090,7 +1088,7 @@ export namespace TreeNode {
             let isGeneratedStyle = isGenerated ? treeItemIsGeneratedStyle : {};
 
             return (
-                <div style={[treeItemStyle, selectedStyle, inProjectStyle, isGeneratedStyle]} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleSelectFile(evt, this.props.item) }>
+                <div className={treeItemClassName} style={csx.extend(selectedStyle, inProjectStyle, isGeneratedStyle)} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleSelectFile(evt, this.props.item) }>
                     <div style={{ marginLeft: this.props.depth * 10 }}><FileNameBasedIcon fileName={this.props.item.name}/></div>
                 </div>
             );

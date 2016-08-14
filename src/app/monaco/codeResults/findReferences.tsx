@@ -1,6 +1,5 @@
 import React = require("react");
 import ReactDOM = require("react-dom");
-import Radium = require('radium');
 import csx = require('csx');
 import * as ui from "../../ui";
 import * as utils from "../../../common/utils";

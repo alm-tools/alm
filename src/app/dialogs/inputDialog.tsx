@@ -3,7 +3,6 @@
  */
 import React = require("react");
 var ReactDOM = require("react-dom");
-import Radium = require('radium');
 import csx = require('csx');
 import {BaseComponent} from "../ui";
 import * as ui from "../ui";
@@ -43,7 +42,7 @@ export class InputDialog extends BaseComponent<Props, State>{
         super(props);
         this.state = {};
     }
-    
+
     private onOk: (value:string) => void = () => null;
     private onEsc: () => void = () => null;
 

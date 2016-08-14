@@ -2,7 +2,6 @@ import utils = require("../common/utils");
 import styles = require("./styles/styles");
 import React = require("react");
 import ReactDOMServer = require("react-dom/server");
-import Radium = require('radium');
 import csx = require('csx');
 import {BaseComponent} from "./ui";
 import * as ui from "./ui";

@@ -9,7 +9,7 @@ Wanted to create something that would help all TypeScript developers, all they n
 * MultiMonitor: Just open a new browser tab (we have this as command as well `Duplicate Window`)!
 
 ## TypeScript ❤
-* Cause it was fun to do, and demos a lot of Tech in combination and I keep getting questions about how to do these in a neat workflow: `TypeScript`,`webpack`,`react`,`radium`, `redux`. Well here is real world usage.
+* Cause it was fun to do, and demos a lot of Tech in combination and I keep getting questions about how to do these in a neat workflow: `TypeScript`,`webpack`,`react`,`CSS in TypeScript`,`redux`. Well here is real world usage.
 * Wrote from scratch. With simplicity in mind.
 * Did I mention that I love TypeScript and really wanted to prove that *it provides a technical advantage that greatly increases developer efficiency*.
 * Provide you with a base editor that you can build internal projects on top of TypeScript with. The code editing experience should be top notch ... beyond this you can add stuff like WYSIWYG editors taking advantage of the full TypeScript language service.
