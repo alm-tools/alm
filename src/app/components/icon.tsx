@@ -61,7 +61,7 @@ export class Icon extends BaseComponent<Props, State>{
         }
 
         return (
-            <i className={classNames} style={style} {...props}></i>
+            <i className={classNames} style={style}></i>
         );
     }
 }
