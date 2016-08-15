@@ -114,8 +114,6 @@ export var errors = {
     GET_PROJECT_INVALID_PATH: 'The path used to query for tsconfig.json does not exist',
     GET_PROJECT_NO_PROJECT_FOUND: 'No Project Found',
     GET_PROJECT_FAILED_TO_OPEN_PROJECT_FILE: 'Failed to fs.readFileSync the project file',
-    GET_PROJECT_JSON_PARSE_FAILED: 'Failed to JSON.parse the project file',
-    GET_PROJECT_GLOB_EXPAND_FAILED: 'Failed to expand filesGlob in the project file',
     GET_PROJECT_PROJECT_FILE_INVALID_OPTIONS: 'Project file contains invalid options',
 
     CREATE_FILE_MUST_EXIST: 'The Typescript file must exist on disk in order to create a project',
@@ -127,7 +125,6 @@ export interface ProjectFileErrorDetails {
 }
 
 import path = require('path');
-import expand = require('glob-expand');
 import os = require('os');
 import formatting = require('./formatCodeOptions');
 
