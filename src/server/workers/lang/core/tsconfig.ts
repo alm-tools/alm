@@ -102,7 +102,6 @@ interface TypeScriptProjectRawSpecification {
     exclude?: string[];                                 // optional: An array of 'glob / minimatch / RegExp' patterns to specify directories / files to exclude
     include?: string[];                                 // optional: An array of 'glob / minimatch / RegExp' patterns to specify directories / files to include
     files?: string[];                                   // optional: paths to files
-    filesGlob?: string[];                               // optional: An array of 'glob / minimatch / RegExp' patterns to specify source files
     formatCodeOptions?: formatting.FormatCodeOptions;   // optional: formatting options
     compileOnSave?: boolean;                            // optional: compile on save. Ignored to build tools. Used by IDEs
     buildOnSave?: boolean;
@@ -260,20 +259,14 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
     var cwdPath = path.relative(process.cwd(), path.dirname(projectFile));
     let toExpand = [];
     /** Determine the glob to expand (if any) */
-    if (!projectSpec.files && !projectSpec.filesGlob && !projectSpec.include && projectSpec.compilerOptions.allowJs) {
+    if (!projectSpec.files && !projectSpec.include && projectSpec.compilerOptions.allowJs) {
         toExpand = invisibleFilesGlobWithJS;
     }
-    else if (!projectSpec.files && !projectSpec.filesGlob && !projectSpec.include) {
+    else if (!projectSpec.files && !projectSpec.include) {
         toExpand = invisibleFilesGlob;
     }
-    else if (projectSpec.filesGlob || projectSpec.include) {
-        // If there is a files glob we will use that first
-        if (projectSpec.filesGlob) {
-            toExpand = projectSpec.filesGlob;
-        }
-        else {
-            toExpand = [];
-        }
+    else if (projectSpec.include) {
+        toExpand = [];
         // Now include the `include` if any
         if (projectSpec.include) {
             toExpand = toExpand.concat(projectSpec.include.map(x => `./${x}`));
@@ -329,7 +322,6 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
     var project: TsconfigJsonParsed = {
         compilerOptions: {},
         files: projectSpec.files.map(x => path.resolve(projectFileDirectory, x)),
-        filesGlob: projectSpec.filesGlob,
         toExpand: toExpand,
         formatCodeOptions: formatting.makeFormatCodeOptions(projectSpec.formatCodeOptions),
         compileOnSave: projectSpec.compileOnSave == undefined ? true : projectSpec.compileOnSave,

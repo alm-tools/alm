@@ -309,7 +309,6 @@ export interface TsconfigJsonParsed {
     compilerOptions: ts.CompilerOptions;
     files: string[];
     typings: string[]; // These are considered externs for .d.ts. Note : duplicated in files
-    filesGlob?: string[];
     /**
      * This is cached in the parsed result as the final thing we are expanding
      * Takes into account `filesGlob` + `exclude` + `outDir` + anything else
