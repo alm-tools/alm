@@ -254,7 +254,10 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
         return { error: bland };
     }
 
-    /** Finally expand whatever needs expanding */
+    /**
+     * Finally expand whatever needs expanding
+     * See : https://github.com/TypeStrong/tsconfig/issues/19
+     */
     try {
         const tsResult = ts.parseJsonConfigFileContent(projectSpec, ts.sys, path.dirname(projectFile), null, projectFile);
         // console.log(tsResult); // DEBUG
