@@ -52,7 +52,7 @@
     "glob": "^7.0.5",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
-    "monaco": "1.201608100247.0",
+    "monaco": "1.201608152240.0",
     "monaco-css": "1.1.2",
     "monaco-languages": "0.3.1",
     "multimatch": "^2.1.0",
