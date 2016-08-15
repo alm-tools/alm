@@ -3,7 +3,7 @@
     "allowJs": true,
     "outDir": "./js"
   },
-  "filesGlob": [
-    "./src/**"
+  "include": [
+    "./src/**/*"
   ]
 }

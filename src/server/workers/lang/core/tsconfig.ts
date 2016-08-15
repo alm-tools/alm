@@ -129,10 +129,10 @@ import formatting = require('./formatCodeOptions');
 
 const projectFileName = 'tsconfig.json';
 /**
- * This is what we use when the user doesn't specify a files / filesGlob
+ * This is what we use when the user doesn't specify a files / include
  */
-const invisibleFilesGlob = ["./**/*.ts", "./**/*.tsx"];
-const invisibleFilesGlobWithJS = ["./**/*.ts", "./**/*.tsx", "./**/*.js"];
+const invisibleFilesInclude = ["./**/*.ts", "./**/*.tsx"];
+const invisibleFilesIncludeWithJS = ["./**/*.ts", "./**/*.tsx", "./**/*.js"];
 
 /**
  * What we use to
@@ -254,53 +254,17 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
         return { error: bland };
     }
 
-    // Our customizations for "tsconfig.json"
-    // Use grunt.file.expand type of logic
-    var cwdPath = path.relative(process.cwd(), path.dirname(projectFile));
-    let toExpand = [];
-    /** Determine the glob to expand (if any) */
-    if (!projectSpec.files && !projectSpec.include && projectSpec.compilerOptions.allowJs) {
-        toExpand = invisibleFilesGlobWithJS;
-    }
-    else if (!projectSpec.files && !projectSpec.include) {
-        toExpand = invisibleFilesGlob;
-    }
-    else if (projectSpec.include) {
-        toExpand = [];
-        // Now include the `include` if any
-        if (projectSpec.include) {
-            toExpand = toExpand.concat(projectSpec.include.map(x => `./${x}`));
-            toExpand = toExpand.concat(projectSpec.include.map(x => `./${x}/**`));
-        }
-    }
-    /** Other things that need to go in the glob */
-    if (projectSpec.exclude) { // If there is an exclude we will add that
-        toExpand = toExpand.concat(projectSpec.exclude.map(x=>`!./${x}`)) // as it is (for files)
-        toExpand = toExpand.concat(projectSpec.exclude.map(x=>`!./${x}/**`)) // any sub directories (for dirs)
-    }
-    else { // Othewise we exclude a few defaults
-        const defaultExcludes =  ["node_modules", "bower_components", "jspm_packages"];
-        toExpand = toExpand.concat(defaultExcludes.map(dir=>`!./${dir}`)) // as it is (for files)
-        toExpand = toExpand.concat(defaultExcludes.map(dir=>`!./${dir}/**`)) // any sub directories (for dirs)
-    }
-    if (projectSpec.compilerOptions && projectSpec.compilerOptions.outDir) { // If there is an outDir we will exclude that as well
-        toExpand.push(`!./${projectSpec.compilerOptions.outDir}/**`);
-    }
     /** Finally expand whatever needs expanding */
-    projectSpec.files = (projectSpec.files || []);
-    if (toExpand.length) {
-        try {
-            projectSpec.files = projectSpec.files.concat(expand({ filter: 'isFile', cwd: cwdPath }, toExpand));
-        }
-        catch (ex) {
-            return {
-                error: makeBlandError(projectFilePath,ex.message)
-            }
+    try {
+        const tsResult = ts.parseJsonConfigFileContent(projectSpec, ts.sys, path.dirname(projectFile), null, projectFile);
+        // console.log(tsResult); // DEBUG
+        projectSpec.files = tsResult.fileNames || [];
+    }
+    catch (ex) {
+        return {
+            error: makeBlandError(projectFilePath,ex.message)
         }
     }
-
-    // Remove all relativeness
-    projectSpec.files = projectSpec.files.map((file) => path.resolve(projectFileDirectory, file));
 
     var pkg: PackageJsonParsed = null;
     try {
@@ -322,7 +286,6 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
     var project: TsconfigJsonParsed = {
         compilerOptions: {},
         files: projectSpec.files.map(x => path.resolve(projectFileDirectory, x)),
-        toExpand: toExpand,
         formatCodeOptions: formatting.makeFormatCodeOptions(projectSpec.formatCodeOptions),
         compileOnSave: projectSpec.compileOnSave == undefined ? true : projectSpec.compileOnSave,
         package: pkg,

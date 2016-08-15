@@ -14,10 +14,8 @@
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true
     },
-    "filesGlob": [
-        "**/*.ts",
-        "**/*.tsx",
-        "!node_modules/**"
+    "include": [
+        "**/*"
     ],
     "exclude": [],
     "atom": {
