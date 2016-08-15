@@ -61,8 +61,8 @@ export function getActions(): types.MonacoActionInformation[] {
     // WARNING: This isn't documented or well exposed
     // but this is what `quickCommand.ts` (the built in command pallet) uses
     // It uses its on (injected) version but fortunately its on the editor as well
-    const keybindingService = (editor as any)._keybindingService;
-    // console.log(keybindingService); // DEBUG
+    const keybindingService = (editor as any)._standaloneKeybindingService;
+    // console.log(editor, keybindingService); // DEBUG
 
     const actions = editor.getActions().filter(a => !blackListedActions[a.id]);
 
