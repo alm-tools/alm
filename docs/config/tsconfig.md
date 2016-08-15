@@ -12,8 +12,8 @@ We support autocomplete for many of the TSConfig options:
 The following are the key properties of `tsconfig.json`:
 
 * [`compilerOptions`](#compileroptions)
-* [`filesGlob`](#filesglob)
 * [`files`](#files)
+* [`include`](#include)
 * [`exclude`](#exclude)
 * [`compileOnSave`](#compileonsave)
 * [`formatCodeOptions`](#formatcodeoptions)
@@ -31,44 +31,10 @@ The key compiler options. e.g:
 ```
 The docs for these compiler options [exist here](https://github.com/Microsoft/TypeScript-Handbook/blob/master/pages/Compiler%20Options.md).
 
-### filesGlob
-
-We support [node style globs](npmjs.com/package/glob). e.g.
-
-```json
-"filesGlob": [
-  "**/*.ts",
-  "**/*.tsx",
-  "!node_modules/**"
-]
-```
-
-Note: The proper way to exclude a directory in node's `glob` module is `!somedirectory/**`. E.g. `!node_modules/**`. Please **don't add** a trailing `*` (e.g. `!node_modules/**/*.ts`) as that will force us to list the directory which can be slow.
-
 ### files
-
-You can specify individual files instead of using a glob.
-
-```json
-"files": [
-  "core.ts",
-  "sys.ts",
-  "types.ts"
-]
-```
-
-> 🔴: This option is ignored if you use `filesGlob`. Use either `files` or `filesGlob`
-
+### include
 ### exclude
-
-You can specify exclude directories using `exclude` property. E.g.
-
-```json
-"exclude": [
-  "node_modules",
-  "wwwroot"
-]
-```
+Please see the docs here : https://basarat.gitbooks.io/typescript/content/docs/project/files.html
 
 ### compileOnSave
 

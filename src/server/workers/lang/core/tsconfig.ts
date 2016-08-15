@@ -99,8 +99,8 @@ interface CompilerOptions {
  */
 interface TypeScriptProjectRawSpecification {
     compilerOptions?: CompilerOptions;
-    exclude?: string[];                                 // optional: An array of 'glob / minimatch / RegExp' patterns to specify directories / files to exclude
-    include?: string[];                                 // optional: An array of 'glob / minimatch / RegExp' patterns to specify directories / files to include
+    exclude?: string[];                                 // optional: An array of 'glob' patterns to specify directories / files to exclude
+    include?: string[];                                 // optional: An array of 'glob' patterns to specify directories / files to include
     files?: string[];                                   // optional: paths to files
     formatCodeOptions?: formatting.FormatCodeOptions;   // optional: formatting options
     compileOnSave?: boolean;                            // optional: compile on save. Ignored to build tools. Used by IDEs
