@@ -99,10 +99,9 @@ interface CompilerOptions {
  */
 interface TypeScriptProjectRawSpecification {
     compilerOptions?: CompilerOptions;
-    exclude?: string[];                                 // optional: An array of 'glob / minimatch / RegExp' patterns to specify directories / files to exclude
-    include?: string[];                                 // optional: An array of 'glob / minimatch / RegExp' patterns to specify directories / files to include
+    exclude?: string[];                                 // optional: An array of 'glob' patterns to specify directories / files to exclude
+    include?: string[];                                 // optional: An array of 'glob' patterns to specify directories / files to include
     files?: string[];                                   // optional: paths to files
-    filesGlob?: string[];                               // optional: An array of 'glob / minimatch / RegExp' patterns to specify source files
     formatCodeOptions?: formatting.FormatCodeOptions;   // optional: formatting options
     compileOnSave?: boolean;                            // optional: compile on save. Ignored to build tools. Used by IDEs
     buildOnSave?: boolean;
@@ -114,8 +113,6 @@ export var errors = {
     GET_PROJECT_INVALID_PATH: 'The path used to query for tsconfig.json does not exist',
     GET_PROJECT_NO_PROJECT_FOUND: 'No Project Found',
     GET_PROJECT_FAILED_TO_OPEN_PROJECT_FILE: 'Failed to fs.readFileSync the project file',
-    GET_PROJECT_JSON_PARSE_FAILED: 'Failed to JSON.parse the project file',
-    GET_PROJECT_GLOB_EXPAND_FAILED: 'Failed to expand filesGlob in the project file',
     GET_PROJECT_PROJECT_FILE_INVALID_OPTIONS: 'Project file contains invalid options',
 
     CREATE_FILE_MUST_EXIST: 'The Typescript file must exist on disk in order to create a project',
@@ -127,16 +124,15 @@ export interface ProjectFileErrorDetails {
 }
 
 import path = require('path');
-import expand = require('glob-expand');
 import os = require('os');
 import formatting = require('./formatCodeOptions');
 
 const projectFileName = 'tsconfig.json';
 /**
- * This is what we use when the user doesn't specify a files / filesGlob
+ * This is what we use when the user doesn't specify a files / include
  */
-const invisibleFilesGlob = ["./**/*.ts", "./**/*.tsx"];
-const invisibleFilesGlobWithJS = ["./**/*.ts", "./**/*.tsx", "./**/*.js"];
+const invisibleFilesInclude = ["./**/*.ts", "./**/*.tsx"];
+const invisibleFilesIncludeWithJS = ["./**/*.ts", "./**/*.tsx", "./**/*.js"];
 
 /**
  * What we use to
@@ -258,59 +254,20 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
         return { error: bland };
     }
 
-    // Our customizations for "tsconfig.json"
-    // Use grunt.file.expand type of logic
-    var cwdPath = path.relative(process.cwd(), path.dirname(projectFile));
-    let toExpand = [];
-    /** Determine the glob to expand (if any) */
-    if (!projectSpec.files && !projectSpec.filesGlob && !projectSpec.include && projectSpec.compilerOptions.allowJs) {
-        toExpand = invisibleFilesGlobWithJS;
+    /**
+     * Finally expand whatever needs expanding
+     * See : https://github.com/TypeStrong/tsconfig/issues/19
+     */
+    try {
+        const tsResult = ts.parseJsonConfigFileContent(projectSpec, ts.sys, path.dirname(projectFile), null, projectFile);
+        // console.log(tsResult); // DEBUG
+        projectSpec.files = tsResult.fileNames || [];
     }
-    else if (!projectSpec.files && !projectSpec.filesGlob && !projectSpec.include) {
-        toExpand = invisibleFilesGlob;
-    }
-    else if (projectSpec.filesGlob || projectSpec.include) {
-        // If there is a files glob we will use that first
-        if (projectSpec.filesGlob) {
-            toExpand = projectSpec.filesGlob;
-        }
-        else {
-            toExpand = [];
-        }
-        // Now include the `include` if any
-        if (projectSpec.include) {
-            toExpand = toExpand.concat(projectSpec.include.map(x => `./${x}`));
-            toExpand = toExpand.concat(projectSpec.include.map(x => `./${x}/**`));
+    catch (ex) {
+        return {
+            error: makeBlandError(projectFilePath,ex.message)
         }
     }
-    /** Other things that need to go in the glob */
-    if (projectSpec.exclude) { // If there is an exclude we will add that
-        toExpand = toExpand.concat(projectSpec.exclude.map(x=>`!./${x}`)) // as it is (for files)
-        toExpand = toExpand.concat(projectSpec.exclude.map(x=>`!./${x}/**`)) // any sub directories (for dirs)
-    }
-    else { // Othewise we exclude a few defaults
-        const defaultExcludes =  ["node_modules", "bower_components", "jspm_packages"];
-        toExpand = toExpand.concat(defaultExcludes.map(dir=>`!./${dir}`)) // as it is (for files)
-        toExpand = toExpand.concat(defaultExcludes.map(dir=>`!./${dir}/**`)) // any sub directories (for dirs)
-    }
-    if (projectSpec.compilerOptions && projectSpec.compilerOptions.outDir) { // If there is an outDir we will exclude that as well
-        toExpand.push(`!./${projectSpec.compilerOptions.outDir}/**`);
-    }
-    /** Finally expand whatever needs expanding */
-    projectSpec.files = (projectSpec.files || []);
-    if (toExpand.length) {
-        try {
-            projectSpec.files = projectSpec.files.concat(expand({ filter: 'isFile', cwd: cwdPath }, toExpand));
-        }
-        catch (ex) {
-            return {
-                error: makeBlandError(projectFilePath,ex.message)
-            }
-        }
-    }
-
-    // Remove all relativeness
-    projectSpec.files = projectSpec.files.map((file) => path.resolve(projectFileDirectory, file));
 
     var pkg: PackageJsonParsed = null;
     try {
@@ -332,8 +289,6 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
     var project: TsconfigJsonParsed = {
         compilerOptions: {},
         files: projectSpec.files.map(x => path.resolve(projectFileDirectory, x)),
-        filesGlob: projectSpec.filesGlob,
-        toExpand: toExpand,
         formatCodeOptions: formatting.makeFormatCodeOptions(projectSpec.formatCodeOptions),
         compileOnSave: projectSpec.compileOnSave == undefined ? true : projectSpec.compileOnSave,
         package: pkg,

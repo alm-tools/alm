@@ -13,7 +13,6 @@ import * as utils from "../../common/utils";
 import * as tsconfig from "../workers/lang/core/tsconfig";
 import * as types from "../../common/types";
 import {AvailableProjectConfig} from "../../common/types";
-import multimatch = require("multimatch");
 
 /** Disk access / session stuff */
 import * as session from "./session";
@@ -167,14 +166,11 @@ const syncDebounced = utils.debounce(sync, 1000);
  */
 export function fileListingDelta(delta: types.FileListingDelta) {
     // Check if we have a current project
-    // If we have a current project does it have a `filesGlob`
+    // If we have a current project does it have some expansion
     // If so check if some files need to be *removed* or *added*
     if (!configFile) return;
-    if (!configFile.project.toExpand) return;
 
     const projectDir = configFile.projectFileDirectory;
-    let toExpand = configFile.project.toExpand;
-    // console.log({originalToExpand: toExpand}); // DEBUG
 
     // HEURISTIC : if some delta file path is *under* the `tsconfig.json` path
     if (
@@ -184,42 +180,8 @@ export function fileListingDelta(delta: types.FileListingDelta) {
         /**
          * Does something match the glob
          */
-        const fullPaths = delta.addedFilePaths.concat(delta.removedFilePaths).map(c=>c.filePath);
-
-        /** Multimatch eccentricity */
-        // Test using : https://tonicdev.com/npm/multimatch
-        //
-        // var multimatch = require('multimatch');
-        // multimatch(['test/foo.ts.ts'],['**/*.ts']) // OKAY
-        // multimatch(['/test/foo.ts.ts'],['**/*.ts']) // OKAY
-        // multimatch(['./test/foo.ts.ts'],['**/*.ts']) // NOT OKAY
-        // multimatch(['test/foo.ts.ts'],['./**/*.ts']) // NOT OKAY
-        //
-        // So remove . and .. from both paths and toExpand
-        //
-        // Also
-        // multimatch(['/test/foo.ts.ts'],['test/**/*.ts']); // NOT OKAY
-        // multimatch(['/test/foo.ts.ts'],['**test/**/*.ts']); //NOT OKAY
-        // multimatch(['/test/foo.ts.ts'],['**/test/**/*.ts']); // OKAY
-        //
-        // So Prepend `**/` to all toExpand
-
-        const leadingDotSlashEater = /^[\.|(\.\.)|\/]*/;
-
-        toExpand = toExpand.map(t => t.replace(leadingDotSlashEater, ''));
-        toExpand = toExpand.map(t => '**/' + t);
-
-        const makeRelativeForMultiMatch =
-            (path:string) =>
-                fsu.makeRelativePath(projectDir,path)
-                    .replace(leadingDotSlashEater, '');
-
-        const relativePaths = fullPaths.map(makeRelativeForMultiMatch);
-        const matched = !!multimatch(relativePaths,toExpand).length;
-
-        // console.log({ matched, toExpand, relativePaths }); // DEBUG
-
-        if (matched) {
+        const matched = delta.addedFilePaths.concat(delta.removedFilePaths).map(c=>c.filePath).filter(fp=>utils.isJsOrTs(fp));
+        if (matched.length){
             syncDebounced()
         }
     }
