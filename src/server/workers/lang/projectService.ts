@@ -472,10 +472,14 @@ export function getJSOutputStatus(query: Types.FilePathQuery, autoEmit = true): 
     /**
      * Note: If we have compileOnSave as false then the output status isn't relevant
      */
+    const noJsFile = (project.configFile.project.compileOnSave === false)
+        || (project.configFile.inMemory === true)
+        || !jsFile;
+
     let state = output.emitSkipped ? types.JSOutputState.EmitSkipped
-        : (project.configFile.project.compileOnSave === false) || !jsFile ? types.JSOutputState.NoJSFile
-            : getContents(jsFile.name) === jsFile.text ? types.JSOutputState.JSUpToDate
-                : types.JSOutputState.JSOutOfDate;
+    : noJsFile ? types.JSOutputState.NoJSFile
+    : getContents(jsFile.name) === jsFile.text ? types.JSOutputState.JSUpToDate
+    : types.JSOutputState.JSOutOfDate;
 
     /**
      * If the state is JSOutOfDate we can easily fix that to bring it up to date for `compileOnSave`
