@@ -27,3 +27,9 @@ While you learn TypeScript you might like the error panel open. But no one likes
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/errorPanelToggle.gif)
 
 > Sorry for making you use the semicolon key
+
+## Visibility
+
+Of course you will be notified when there is ts work happening 🌹
+
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/tsworking.gif)
