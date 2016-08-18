@@ -520,3 +520,10 @@ export interface MonacoActionInformation {
     id: string;
     kbd: string | null;
 }
+
+/**
+ * When a worker is *working* it can send us a message
+ */
+export type Working = {
+    working: boolean
+}

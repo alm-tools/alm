@@ -73,7 +73,8 @@ export var master = {
     receiveFileOutputStatusUpdate: {} as sw.QRFunction<types.JSOutputStatus, {}>,
     receiveCompleteOutputStatusCacheUpdate: {} as sw.QRFunction<types.JSOutputStatusCache, {}>,
     receiveLiveBuildResults: {} as sw.QRFunction<types.LiveBuildResults, {}>,
-    receiveIncrementallyAddedFile: {} as sw.QRFunction<{filePath: string}, {}>
+    receiveIncrementallyAddedFile: {} as sw.QRFunction<{filePath: string}, {}>,
+    receiveWorking: {} as sw.QRFunction<types.Working, {}>,
 
     // TODO:
     // endpoint to tell about file output statuses

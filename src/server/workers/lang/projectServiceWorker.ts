@@ -116,6 +116,10 @@ outputStatusCache.fileOuputStatusUpdated.on((fileOuputStatusUpdate) => {
 outputStatusCache.completeOutputStatusCacheUpdated.on((completeOutputStatusCacheUpdate) => master.receiveCompleteOutputStatusCacheUpdate(completeOutputStatusCacheUpdate));
 outputStatusCache.liveBuildResults.on((liveBuildResults) => master.receiveLiveBuildResults(liveBuildResults));
 
+activeProject.working.on(working => {
+    master.receiveWorking(working)
+});
+
 /**
  * We send down the master to `activeProject` otherwise we get in a cyclic reference :-/
  * (activeProject needs us.master to read files) + (we need activeProject to tell it to set active project configuration)

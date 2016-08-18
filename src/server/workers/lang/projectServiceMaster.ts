@@ -12,6 +12,7 @@ import {errorsCache} from "../../globalErrorCacheServer";
 export const fileOutputStatusUpdated = new TypedEvent<types.JSOutputStatus>();
 export const completeOutputStatusCacheUpdated = new TypedEvent<types.JSOutputStatusCache>();
 export const liveBuildResults = new TypedEvent<types.LiveBuildResults>();
+export const working = new TypedEvent<types.Working>();
 
 namespace Master {
     export const sync: typeof contract.master.sync
@@ -52,6 +53,12 @@ namespace Master {
     export const receiveIncrementallyAddedFile: typeof contract.master.receiveIncrementallyAddedFile
         = (data) => {
             activeProjectConfig.incrementallyAddedFile(data.filePath);
+            return resolve({});
+        }
+
+    export const receiveWorking: typeof contract.master.receiveWorking
+        = (data) => {
+            working.emit(data);
             return resolve({});
         }
 }

@@ -158,13 +158,16 @@ export var cast = {
     /** Errors for a file path */
     errorsDelta: new TypedEvent<ErrorCacheDelta>(),
 
+    /** TS analysis taking place */
+    tsWorking: new TypedEvent<types.Working>(),
+
     /** Available projects updated */
     availableProjectsUpdated: new TypedEvent<AvailableProjectConfig[]>(),
 
     /** Active project name updated */
     activeProjectConfigDetailsUpdated: new TypedEvent<AvailableProjectConfig>(),
 
-    /** Active project files` */
+    /** Active project files */
     activeProjectFilePathsUpdated: new TypedEvent<{filePaths:string[]}>(),
 
     /** FARM */

@@ -53,6 +53,7 @@ export interface Props {
     fileTreeShown?: boolean;
     errorsDisplayMode?: types.ErrorsDisplayMode;
     errorsFilter?: string;
+    tsWorking?: types.Working;
 }
 export interface State {
 }
@@ -75,6 +76,7 @@ export var statusBar: StatusBar;
         fileTreeShown: state.fileTreeShown,
         errorsDisplayMode: state.errorsDisplayMode,
         errorsFilter: state.errorsFilter,
+        tsWorking: state.tsWorking,
     };
 })
 export class StatusBar extends BaseComponent<Props, State>{
@@ -236,6 +238,17 @@ export class StatusBar extends BaseComponent<Props, State>{
                         {this.props.socketConnected?
                              <span className="hint--left hint--success" data-hint="Connected to server"> <Icon style={{color:styles.successColor, cursor:'pointer'}} name="flash" onClick={()=>ui.notifySuccessNormalDisappear("Connected to alm server")}/></span>
                             :<span className="hint--left hint--error" data-hint="Disconnected from server"> <Icon style={{color:styles.errorColor, cursor:'pointer'}} name="spinner" spin={true} onClick={()=>ui.notifyWarningNormalDisappear("Disconneted from alm server")}/></span>}
+                    </span>
+                    <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand) }>
+                        <span
+                            className="hint--left hint--info"
+                            data-hint={this.props.tsWorking.working ? "TS Worker Busy" : "TS Worker Idle"}
+                            style={{
+                                color: this.props.tsWorking.working ? 'white' : 'grey',
+                                transition: 'color .4s'
+                            }}>
+                            TS
+                        </span>
                     </span>
                     <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)}>
                         <span style={{paddingRight: '2px'} as any} onClick={this.giveStar} className="hint--left" data-hint={`If you like it then you should have put a star on it 🌟. Also, go here for support. Version: ${serverState.version}`}>🌟</span>

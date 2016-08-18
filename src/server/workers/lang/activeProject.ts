@@ -24,6 +24,8 @@ export function setMaster(m: typeof masterType) {
     master = m;
 }
 
+/** On working */
+export const working = new TypedEvent<types.Working>();
 /** The active project name */
 let activeProjectConfigDetails: types.ProjectDataLoaded = null;
 /** The currently active project */
@@ -93,6 +95,7 @@ const refreshAllProjectDiagnostics = () => {
     if (currentProject) {
         const timer = utils.timer();
         const projectFilePath = currentProject.configFile.projectFilePath;
+
         if (initialSync) {
             console.error(`[TSC] Started Initial Error Analysis: ${projectFilePath}`);
         }
@@ -111,6 +114,8 @@ const refreshAllProjectDiagnostics = () => {
 
             console.log(`[TSC] FileCount: ${filePaths.length} `, errors.length? chalk.red(`Errors: ${errors.length}`): chalk.green(`Errors: ${errors.length}`));
             initialSync = false;
+
+            working.emit({working: false});
         })
         .catch((res)=>{
             console.log('[TSC] Cancelled error analysis');
@@ -118,13 +123,14 @@ const refreshAllProjectDiagnostics = () => {
     }
 };
 const cancelAnyPendingAnalysisAndMarkforRefreshingAllProjectDiagnostics = () => {
+    working.emit({working: true});
     if (cancellationToken) {
         cancellationToken.cancel();
         cancellationToken = null;
     }
     refreshAllProjectDiagnosticsDebounced();
 }
-const refreshAllProjectDiagnosticsDebounced = utils.debounce(refreshAllProjectDiagnostics, 5000);
+const refreshAllProjectDiagnosticsDebounced = utils.debounce(refreshAllProjectDiagnostics, 3000);
 
 /**
  * Constantly streaming this is slow for large files so this is debounced as well

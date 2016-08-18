@@ -286,6 +286,9 @@ export function register(app: http.Server | https.Server) {
     projectServiceMaster.completeOutputStatusCacheUpdated.pipe(cast.completeOutputStatusCacheUpdated);
     projectServiceMaster.liveBuildResults.pipe(cast.liveBuildResults);
 
+    /** TS Working */
+    projectServiceMaster.working.pipe(cast.tsWorking);
+
     /** If the server exits notify the clients */
     onServerExit(() => cast.serverExiting.emit({}));
 

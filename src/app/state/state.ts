@@ -34,6 +34,9 @@ export interface StoreState {
 
     showDoctor?: boolean;
     showSemanticView?: boolean;
+
+    /** TS worker working */
+    tsWorking?: types.Working;
 }
 
 let initialStoreState: StoreState = {
@@ -62,6 +65,9 @@ let initialStoreState: StoreState = {
     fileTreeShown: false,
     showDoctor: false,
     showSemanticView: false,
+    tsWorking: {
+        working: false,
+    },
 };
 
 let redux = new SimpleRedux<StoreState>(initialStoreState);
@@ -263,5 +269,11 @@ export const ifJSStatusWasCurrentThenMoveToOutOfDate = redux.add('ifJSStatusWasC
     const outputStatusCache = redux.updateFields({ [payload.inputFilePath]: newState })(state.outputStatusCache);
     return {
         outputStatusCache
+    };
+});
+
+export const setTSWorking = redux.add('setTSWorking', (state: StoreState, payload: types.Working): StoreState => {
+    return {
+        tsWorking: payload
     };
 });

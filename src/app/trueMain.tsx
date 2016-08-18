@@ -121,6 +121,9 @@ const afterLoaded = () => {
     cast.liveBuildResults.on((res) => {
         state.setLiveBuildResults(res);
     });
+    cast.tsWorking.on(res => {
+        state.setTSWorking(res);
+    });
     commands.sync.on(()=>{
         server.sync({});
     });
