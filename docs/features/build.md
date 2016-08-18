@@ -23,3 +23,9 @@ As soon as you open or edit a TypeScript file we do an intelligent emit of the e
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/emitToggle.png)
 
 [tsconfig-compile-on-save]:/config/tsconfig.md#compileonsave
+
+## Compile and send JavaScript to the console
+
+`Ctrl|⌘ + M` compiles the selected TypeScript, transpiles it to JavaScript and then sends it to the browser (chrome) console.
+
+> Can be used even if `compileOnSave` is false ;)
