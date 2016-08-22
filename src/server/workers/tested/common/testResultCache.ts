@@ -1,7 +1,7 @@
-import {TypedEvent} from "../../common/events";
-import {createMapByKey, debounce, selectMany} from "../../common/utils";
+import {TypedEvent} from "../../../../common/events";
+import {createMapByKey, debounce, selectMany} from "../../../../common/utils";
 import equal = require('deep-equal');
-import * as types from "../../common/types";
+import * as types from "../../../../common/types";
 
 /**
  * Maintains the list of tests that have been encountered,
