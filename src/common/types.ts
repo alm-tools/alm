@@ -547,7 +547,6 @@ export type TestResult = {
     /** Only in case of test failure */
     error?: CodeError;
 }
-
 export type TestSuiteResult = {
     description: string,
 
