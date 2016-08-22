@@ -527,3 +527,28 @@ export interface MonacoActionInformation {
 export type Working = {
     working: boolean
 }
+
+/**
+ * Tested
+ */
+export enum TestStatus {
+    NotRunYet = 1,
+    Fail,
+    Success,
+    Skipped,
+}
+export type TestResult = {
+    time: string;
+    description: string;
+    status: TestStatus;
+
+    skipped?: boolean;
+
+    /** Only in case of test failure */
+    error?: CodeError;
+}
+
+export type TestSuiteResult = {
+    description: string,
+    tests: TestResult[],
+}

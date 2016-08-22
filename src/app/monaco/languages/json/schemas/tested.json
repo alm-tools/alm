@@ -1,5 +1,5 @@
 {
-	"title": "JSON schema for the ALM configuration files",
+	"title": "JSON schema for the tested configuration files",
 	"$schema": "http://json-schema.org/draft-04/schema#",
 
 	"type": "object",
