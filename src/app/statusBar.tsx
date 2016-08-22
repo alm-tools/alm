@@ -247,7 +247,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                                 color: this.props.tsWorking.working ? 'white' : 'grey',
                                 transition: 'color .4s'
                             }}>
-                            TS
+                            <Icon name="rocket"/>
                         </span>
                     </span>
                     <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)}>
