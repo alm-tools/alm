@@ -550,5 +550,8 @@ export type TestResult = {
 
 export type TestSuiteResult = {
     description: string,
+
+    /** Can have other TestSuites or Tests */
+    testSuite: TestSuiteResult[],
     tests: TestResult[],
 }
