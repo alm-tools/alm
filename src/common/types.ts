@@ -554,3 +554,17 @@ export type TestSuiteResult = {
     testSuite: TestSuiteResult[],
     tests: TestResult[],
 }
+/** The root of any testing system is a test file */
+export type TestModule = {
+    filePath: string;
+    suites: TestSuiteResult[];
+}
+
+export type TestSuitesByFilePath = {
+    [filePath: string]: TestModule;
+}
+/** We just push the modules that have updated */
+export type TestDelta = {
+    moduleMap: TestSuitesByFilePath,
+    initial: boolean;
+}
