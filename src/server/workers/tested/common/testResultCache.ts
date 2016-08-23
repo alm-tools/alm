@@ -5,8 +5,7 @@ import * as types from "../../../../common/types";
 
 // What we use to identify a unique test
 const same = (a: types.TestModule, b: types.TestModule): boolean => {
-    /** TODO: tested delta */
-    return true;
+    return equal(a, b);
 }
 
 
