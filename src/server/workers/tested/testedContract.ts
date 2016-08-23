@@ -9,4 +9,6 @@ export const worker = {
 export const master = {
     /** Sends out test resuts */
     receiveTestResultDelta: {} as sw.QRFunction<types.TestDelta, {}>,
+    /** Sends out errors for config / file exceptions */
+    receiveErrorCacheDelta: {} as sw.QRFunction<ErrorCacheDelta, {}>,
 }
