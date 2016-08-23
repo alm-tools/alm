@@ -8,5 +8,5 @@ export const worker = {
 
 export const master = {
     /** Sends out test resuts */
-    receiveErrorCacheDelta: {} as sw.QRFunction<types.TestSuiteResult, {}>,
+    receiveTestResultDelta: {} as sw.QRFunction<types.TestDelta, {}>,
 }
