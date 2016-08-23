@@ -565,6 +565,7 @@ export type TestSuitesByFilePath = {
 }
 /** We just push the modules that have updated */
 export type TestDelta = {
-    moduleMap: TestSuitesByFilePath,
+    updatedModuleMap: TestSuitesByFilePath,
+    clearedModules: string[];
     initial: boolean;
 }

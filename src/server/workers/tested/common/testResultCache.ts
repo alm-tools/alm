@@ -3,6 +3,13 @@ import {createMapByKey, debounce, selectMany} from "../../../../common/utils";
 import equal = require('deep-equal');
 import * as types from "../../../../common/types";
 
+// What we use to identify a unique test
+const same = (a: types.TestModule, b: types.TestModule): boolean => {
+    /** TODO: tested delta */
+    return true;
+}
+
+
 /**
  * Maintains the list of tests that have been encountered,
  * and notifies anyone who is concerned of updated values
@@ -23,17 +30,24 @@ export class TestResultCache {
      * You can wire up an errors Delta from one cache to this one.
      */
     public applyDelta = (delta:types.TestDelta) => {
-        // TODO:
-
+        if (delta.initial) {
+            this.current = delta.updatedModuleMap;
+        }
+        else {
+            Object.keys(delta.updatedModuleMap).forEach(filePath => {
+                this.current[filePath] = delta.updatedModuleMap[filePath];
+            });
+            delta.clearedModules.forEach(fp => {
+                delete this.current[fp];
+            });
+        }
         this.sendDelta();
     }
-
 
     /**
      *  DELTA MAINTAINANCE
      */
     private last: types.TestSuitesByFilePath = Object.create(null);
-
 
     /**
      * current errors
@@ -48,32 +62,46 @@ export class TestResultCache {
         const last = this.last;
         const current = this.current;
         const delta: types.TestDelta = {
-            moduleMap: Object.create(null),
+            updatedModuleMap: Object.create(null),
+            clearedModules: [],
             initial: this.initial,
         };
         this.initial = false;
 
-        // Added:
+        Object.keys(current).forEach(fp => {
+            // Added
+            if (!last[fp]) {
+                delta.updatedModuleMap[fp] = current[fp];
+            }
+            // Diff
+            else if (!same(current[fp], last[fp])) {
+                delta.updatedModuleMap[fp] = current[fp];
+            }
+        });
 
-
-        // Removed:
+        /** Removed */
+        Object.keys(last).forEach(fp => {
+            if (!this.current[fp]){
+                delta.clearedModules.push(fp);
+            }
+        });
 
         // Send out the delta
+        this.testDelta.emit(delta);
 
         // Preserve for future delta
-
+        this.last = Object.create(null);
+        Object.keys(this.current).map(fp => this.last[fp] = this.current[fp]);
     }, 250);
 
-    /** The pased errors are considered *the only current* errors for the filePath */
-    public setErrorsByFilePaths = (filePaths: string[], errors: CodeError[]) => {
+    /** The passed results are considered the only ones. All else is cleared */
+    public setResults = (results: types.TestModule[]) => {
+        this.current = Object.create(null);
+        results.forEach(res => {
+            this.current[res.filePath] = res;
+        });
 
-        // For all found errors add them
-
-        // For not found errors clear them
-
-        if (/*somethingNew*/ true) {
-            this.sendDelta();
-        }
+        this.sendDelta();
     }
 
     /**
@@ -84,18 +112,7 @@ export class TestResultCache {
      *   it wants to clear any errors that any connected clicks might have
      */
     public clearErrors = () => {
-        // this._errorsByFilePath = {};
+        this.current = Object.create(null);
         this.sendDelta();
-    }
-
-    /** Utility to provide a semantic name to *clearing errors*  */
-    public clearErrorsForFilePath = (filePath: string) => {
-        // this._errorsByFilePath[filePath] = [];
-        this.sendDelta();
-    }
-
-    /** Utility to query */
-    public getErrorsForFilePath = (filePath: string) => {
-        // return this._errorsByFilePath[filePath] || [];
     }
 }
