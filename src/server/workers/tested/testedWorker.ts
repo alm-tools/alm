@@ -8,6 +8,11 @@ import {parse, parseErrorToCodeError} from "../../../common/json";
 namespace Worker {
     export const fileSaved: typeof contract.worker.fileSaved = (data) => {
         /** TODO: tested file saved */
+
+        if (data.filePath.toLowerCase().endsWith('tested.json')){
+            TestedWorkerImplementation.restart();
+        }
+
         return resolve({});
     }
 }
@@ -21,8 +26,7 @@ export const {master} = sw.runWorker({
 });
 
 import {ErrorsCache} from "../../utils/errorsCache";
-const errorCache = new ErrorsCache();
-errorCache.errorsDelta.on(master.receiveErrorCacheDelta);
+
 
 namespace TestedWorkerImplementation {
     type TestedJsonRaw = {
@@ -36,13 +40,29 @@ namespace TestedWorkerImplementation {
         filePaths: string[];
     }
 
-    const globalState = {
-        started: false,
+    /** Init errors */
+    const errorCache = new ErrorsCache();
+    errorCache.errorsDelta.on(master.receiveErrorCacheDelta);
 
+    /** Init global state */
+    let globalState = {
+        started: false,
+        testedJson: {
+            filePath: []
+        }
     }
+
+    /**
+     * Reinit the global state + errors
+     */
     function reinit() {
-        globalState.started = false;
         errorCache.clearErrors();
+        globalState = {
+            started: false,
+            testedJson: {
+                filePath: []
+            }
+        }
     }
 
     /**
@@ -72,6 +92,26 @@ namespace TestedWorkerImplementation {
         }
 
         const rawData = parsed.data;
-        /** TODO: tested expand raw data into real data */
+
+
     }
+}
+
+
+/** Utility: include / exclude expansion */
+import * as byots from "byots";
+function expandIncludeExclude(rootDir: string, cfg: { include: string[], exclude: string[] }): string[] {
+    const tsResult = ts.parseJsonConfigFileContent(JSON.stringify({
+        compilerOptions: {
+            allowJs: true
+        },
+        include: cfg.include,
+        exclude: cfg.exclude
+    }),
+        ts.sys,
+        rootDir,
+        null,
+        rootDir + '/tsconfig.json');
+    console.log(tsResult); // DEBUG
+    return tsResult.fileNames || [];
 }

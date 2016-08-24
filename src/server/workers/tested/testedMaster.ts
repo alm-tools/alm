@@ -30,6 +30,9 @@ export const {worker} = sw.startWorker({
     workerContract: contract.worker,
     masterImplementation: Master
 });
+
+import * as fmc from "../../disk/fileModelCache";
 export function start() {
-    // Any optional initilization on worker;
+    // only saved ones as linter reads directly from disk and works on whole file contents
+    fmc.didStatusChange.on((update) => update.saved && worker.fileSaved({ filePath: update.filePath }));
 }
