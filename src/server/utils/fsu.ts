@@ -96,12 +96,12 @@ export function isRelative(str: string) {
 /**
   * returns the path if found
   * @throws an error "not found" if not found */
-export function travelUpTheDirectoryTreeTillYouFind(dir: string, fileOrDirectory: string,
+export function travelUpTheDirectoryTreeTillYouFind(startDir: string, fileOrDirectory: string,
     /** This is useful if we don't want to file `node_modules from inside node_modules` */
     abortIfInside = false): string {
-    while (fs.existsSync(dir)) { // while directory exists
+    while (fs.existsSync(startDir)) { // while directory exists
 
-        var potentialFile = dir + '/' + fileOrDirectory;
+        var potentialFile = startDir + '/' + fileOrDirectory;
 
         /** This means that we were *just* in this directory */
         if (before == potentialFile) {
@@ -114,10 +114,10 @@ export function travelUpTheDirectoryTreeTillYouFind(dir: string, fileOrDirectory
             return potentialFile;
         }
         else { // go up
-            var before = dir;
-            dir = path.dirname(dir);
+            var before = startDir;
+            startDir = path.dirname(startDir);
             // At root:
-            if (dir == before) throw new Error("not found");
+            if (startDir == before) throw new Error("not found");
         }
     }
 }
