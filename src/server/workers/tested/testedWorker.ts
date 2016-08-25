@@ -15,11 +15,17 @@ import * as mochaRunner from "./runners/mochaRunner";
 
 const testedMessagePrefix = `[TESTED]`;
 
+/**
+ * TIP if other workers start using this file we will move its parsing / handling
+ * to the main web worker.
+ */
+const configFileName = 'alm.json';
+
 namespace Worker {
     export const fileSaved: typeof contract.worker.fileSaved = (data) => {
         /** TODO: tested new test file added */
 
-        if (data.filePath.toLowerCase().endsWith('tested.json')){
+        if (data.filePath.toLowerCase().endsWith(configFileName)){
             TestedWorkerImplementation.restart();
         }
 
@@ -91,21 +97,21 @@ namespace TestedWorkerImplementation {
 
     /**
      * Restart if:
-     * - tested.json changes
+     * - config file changes
      * - working directory changes
      */
     export function restart() {
         reinit();
         let testedJsonFilePath: string;
         try {
-            testedJsonFilePath = fsu.travelUpTheDirectoryTreeTillYouFind(process.cwd(), 'tested.json');
+            testedJsonFilePath = fsu.travelUpTheDirectoryTreeTillYouFind(process.cwd(), configFileName);
         }
         catch (err) {
             // Leave disabled
             return;
         }
 
-        // Validate tested.json
+        // Validate configFile
         const parsed = parse<TestedJsonRaw>(fsu.readFile(testedJsonFilePath));
         if (parsed.error){
             errorCache.setErrorsByFilePaths(
@@ -115,10 +121,14 @@ namespace TestedWorkerImplementation {
             return;
         }
 
-        /** Sanitize raw data */
         const rawData = parsed.data;
-        rawData.tests = rawData.tests || {
-        };
+
+        /** This config file may or may not be valid. But its definitely not for `testing` */
+        if (!rawData.tests) {
+            return;
+        }
+
+        /** Sanitize raw data */
         rawData.tests.include = rawData.tests.include || ["./**/*.ts", "./**/*.tsx"],
         rawData.tests.exclude = rawData.tests.exclude || ["node_modules"];
 
