@@ -9,6 +9,8 @@ import * as fsu from "../../utils/fsu";
 import {parse, parseErrorToCodeError} from "../../../common/json";
 import * as utils from "../../../common/utils";
 
+const testedMessagePrefix = `[TESTED]`;
+
 namespace Worker {
     export const fileSaved: typeof contract.worker.fileSaved = (data) => {
         /** TODO: tested file saved */
@@ -52,7 +54,7 @@ namespace TestedWorkerImplementation {
     let globalState = {
         started: false,
         testedJson: {
-            filePath: []
+            filePaths: []
         }
     }
 
@@ -64,7 +66,7 @@ namespace TestedWorkerImplementation {
         globalState = {
             started: false,
             testedJson: {
-                filePath: []
+                filePaths: []
             }
         }
     }
@@ -95,13 +97,26 @@ namespace TestedWorkerImplementation {
             return;
         }
 
+        /** Sanitize raw data */
         const rawData = parsed.data;
         rawData.tests = rawData.tests || {
-            include: ["./**/*.ts", "./**/*.tsx"],
         };
+        rawData.tests.include = rawData.tests.include || ["./**/*.ts", "./**/*.tsx"],
         rawData.tests.exclude = rawData.tests.exclude || ["node_modules"];
-        expandIncludeExclude(utils.getDirectory(testedJsonFilePath),rawData.tests);
+
+        /** Expand the filePaths */
+        const filePaths = expandIncludeExclude(utils.getDirectory(testedJsonFilePath),rawData.tests);
+
+        /** Good to go */
+        globalState.started = true;
+        globalState.testedJson = {
+            filePaths
+        };
+
+        console.log(testedMessagePrefix, "File count:", filePaths.length);
     }
+
+    /** TODO: tested run tests with cancellation token */
 }
 
 /**
@@ -111,17 +126,17 @@ TestedWorkerImplementation.restart();
 
 /** Utility: include / exclude expansion */
 function expandIncludeExclude(rootDir: string, cfg: { include?: string[], exclude?: string[] }): string[] {
-    const tsResult = ts.parseJsonConfigFileContent(JSON.stringify({
-        compilerOptions: {
-            allowJs: true
+    const tsResult = ts.parseJsonConfigFileContent(
+        {
+            compilerOptions: {
+                allowJs: false
+            },
+            include: cfg.include,
+            exclude: cfg.exclude
         },
-        include: cfg.include,
-        exclude: cfg.exclude
-    }),
         ts.sys,
-        rootDir,
-        null,
-        rootDir + '/tsconfig.json');
+        rootDir
+    );
     // console.log(tsResult); // DEBUG
     return tsResult.fileNames || [];
 }
