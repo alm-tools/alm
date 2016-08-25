@@ -129,7 +129,7 @@ function expandIncludeExclude(rootDir: string, cfg: { include?: string[], exclud
     const tsResult = ts.parseJsonConfigFileContent(
         {
             compilerOptions: {
-                allowJs: false
+                allowJs: true
             },
             include: cfg.include,
             exclude: cfg.exclude
