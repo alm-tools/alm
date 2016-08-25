@@ -493,7 +493,7 @@ export const supportedAutocompleteConfigFileNames: { [fileName: string]: boolean
     'tsconfig.json': true,
     'package.json': true,
     'tslint.json': true,
-    'tested.json': true,
+    'alm.json': true,
 }
 /**
  * Files for which we have autocomplete intelligence
