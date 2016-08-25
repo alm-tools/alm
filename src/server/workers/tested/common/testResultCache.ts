@@ -104,13 +104,13 @@ export class TestResultCache {
     }
 
     /**
-     * Clear all errors. Resets the cache.
+     * Clear all results. Resets the cache.
      *
      * Also good or an initial sync.
      * e.g. when the socket server reboots
      *   it wants to clear any errors that any connected clicks might have
      */
-    public clearErrors = () => {
+    public clearResults = () => {
         this.current = Object.create(null);
         this.sendDelta();
     }

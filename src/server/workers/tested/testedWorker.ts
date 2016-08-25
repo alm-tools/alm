@@ -43,7 +43,7 @@ export const {master} = sw.runWorker({
 });
 
 import {ErrorsCache} from "../../utils/errorsCache";
-
+import {TestResultCache} from "./common/testResultCache";
 
 namespace TestedWorkerImplementation {
     type TestedJsonRaw = {
@@ -61,6 +61,10 @@ namespace TestedWorkerImplementation {
     const errorCache = new ErrorsCache();
     errorCache.errorsDelta.on(master.receiveErrorCacheDelta);
 
+    /** Init test result cache */
+    const testResultCache = new TestResultCache();
+    testResultCache.testDelta.on(master.receiveTestResultDelta);
+
     /** Init global state */
     export let globalState = {
         started: false,
@@ -75,6 +79,7 @@ namespace TestedWorkerImplementation {
      */
     function reinit() {
         errorCache.clearErrors();
+        testResultCache.clearResults();
         globalState = {
             started: false,
             testedJson: {
