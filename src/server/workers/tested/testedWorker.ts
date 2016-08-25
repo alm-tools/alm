@@ -97,6 +97,11 @@ namespace TestedWorkerImplementation {
     }
 }
 
+/**
+ * As soon as the worker starts up we do an initial start
+ */
+TestedWorkerImplementation.restart();
+
 
 /** Utility: include / exclude expansion */
 import * as byots from "byots";
