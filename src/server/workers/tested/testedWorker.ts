@@ -82,7 +82,7 @@ namespace TestedWorkerImplementation {
         }
 
         // Validate tested.json
-        const parsed = parse<TestedJsonRaw>(testedJsonFilePath);
+        const parsed = parse<TestedJsonRaw>(fsu.readFile(testedJsonFilePath));
         if (parsed.error){
             errorCache.setErrorsByFilePaths(
                 [testedJsonFilePath],
