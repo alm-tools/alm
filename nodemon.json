@@ -2,6 +2,6 @@
     "ignore": [
         "src/app/*",
         "tests/*",
-        "tested.json"
+        "alm.json"
     ]
 }
