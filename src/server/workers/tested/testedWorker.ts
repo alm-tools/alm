@@ -13,6 +13,10 @@ import {parse, parseErrorToCodeError} from "../../../common/json";
 import * as utils from "../../../common/utils";
 import * as mochaRunner from "./runners/mochaRunner";
 
+import {TypedEvent} from "../../../common/events";
+/** On working */
+export const working = new TypedEvent<types.Working>();
+
 const testedMessagePrefix = `[TESTED]`;
 
 /**
@@ -149,23 +153,25 @@ namespace TestedWorkerImplementation {
     }
 
     /** TODO: tested run tests with cancellation token */
-    let running = false;
+    let runningSomeTest = false;
     export function runNext() {
-        if (running) return;
+        if (runningSomeTest) return;
 
         if (globalState.filePathsToRun.length) {
             const next = globalState.filePathsToRun.shift();
             globalState.filePathsToRun = utils.uniq(globalState.filePathsToRun);
 
-            running = true;
+            runningSomeTest = true;
+            working.emit({working: true});
             mochaRunner.runTest(next).then(res=>{
                 /** TODO: tested use the results */
                 console.log(testedMessagePrefix,next);
-                running = false;
+                runningSomeTest = false;
                 runNext();
             });
         }
         else {
+            working.emit({working: false});
             console.log(testedMessagePrefix, "Done");
         }
     }
