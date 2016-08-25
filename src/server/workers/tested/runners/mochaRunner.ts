@@ -1,7 +1,7 @@
 /**
  * @module
  */
-import * as types from "../../../common/types";
+import * as types from "../../../../common/types";
 
 /**
  * Takes a file name and runs it with ts-node + mocha and
