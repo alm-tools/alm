@@ -1,9 +1,13 @@
+import * as byots  from "byots";
+const ensureImport = byots;
+
 import * as sw from "../../utils/simpleWorker";
 import * as types from "../../../common/types";
 import * as contract from "./testedContract";
 import {resolve} from "../../../common/utils";
 import * as fsu from "../../utils/fsu";
 import {parse, parseErrorToCodeError} from "../../../common/json";
+import * as utils from "../../../common/utils";
 
 namespace Worker {
     export const fileSaved: typeof contract.worker.fileSaved = (data) => {
@@ -31,8 +35,8 @@ import {ErrorsCache} from "../../utils/errorsCache";
 namespace TestedWorkerImplementation {
     type TestedJsonRaw = {
         tests: {
-            include: string[],
-            exclude: string[],
+            include?: string[],
+            exclude?: string[],
         }
     }
 
@@ -92,8 +96,11 @@ namespace TestedWorkerImplementation {
         }
 
         const rawData = parsed.data;
-
-
+        rawData.tests = rawData.tests || {
+            include: ["./**/*.ts", "./**/*.tsx"],
+        };
+        rawData.tests.exclude = rawData.tests.exclude || ["node_modules"];
+        expandIncludeExclude(utils.getDirectory(testedJsonFilePath),rawData.tests);
     }
 }
 
@@ -102,10 +109,8 @@ namespace TestedWorkerImplementation {
  */
 TestedWorkerImplementation.restart();
 
-
 /** Utility: include / exclude expansion */
-import * as byots from "byots";
-function expandIncludeExclude(rootDir: string, cfg: { include: string[], exclude: string[] }): string[] {
+function expandIncludeExclude(rootDir: string, cfg: { include?: string[], exclude?: string[] }): string[] {
     const tsResult = ts.parseJsonConfigFileContent(JSON.stringify({
         compilerOptions: {
             allowJs: true
@@ -117,6 +122,6 @@ function expandIncludeExclude(rootDir: string, cfg: { include: string[], exclude
         rootDir,
         null,
         rootDir + '/tsconfig.json');
-    console.log(tsResult); // DEBUG
+    // console.log(tsResult); // DEBUG
     return tsResult.fileNames || [];
 }
