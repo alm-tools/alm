@@ -8,6 +8,10 @@ import * as types from "../../../../common/types";
  * returns its parsed test output
  */
 export function runTest(filePath: string): Promise<types.TestModule> {
+    const toExec = "node_modules/bin/ts-node node_module/bin/mocha filePath";
+
+    /** TODO: tested actually run the test */
+
     const result: types.TestModule = {
         filePath: filePath,
         suites: []
