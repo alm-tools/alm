@@ -108,7 +108,9 @@ namespace TestedWorkerImplementation {
         reinit();
         let testedJsonFilePath: string;
         try {
+            /** TODO: tested ... process.cwd is wrong here */
             testedJsonFilePath = fsu.travelUpTheDirectoryTreeTillYouFind(process.cwd(), configFileName);
+            (() => { throw new Error("fix the path bas") })();
         }
         catch (err) {
             // Leave disabled
