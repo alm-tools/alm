@@ -32,7 +32,13 @@ export const {worker} = sw.startWorker({
 });
 
 import * as fmc from "../../disk/fileModelCache";
+import * as wd from "../../disk/workingDir";
 export function start() {
+    /** Start up the working with working dir */
+    const init = () => worker.init({workingDir: wd.getProjectRoot()});
+    wd.projectRootUpdated.on(init);
+    init();
+
     // only saved ones as linter reads directly from disk and works on whole file contents
     fmc.didStatusChange.on((update) => update.saved && worker.fileSaved({ filePath: update.filePath }));
 }

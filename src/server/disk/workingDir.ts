@@ -5,8 +5,11 @@
 import * as fsu from "../utils/fsu";
 import * as utils from "../../common/utils";
 import * as settings from "./settings";
+import {TypedEvent} from "../../common/events";
 
+export const projectRootUpdated = new TypedEvent<{filePath:string}>();
 let projectRoot = fsu.consistentPath(process.cwd());
+projectRootUpdated.emit({filePath: projectRoot});
 
 export function getProjectRoot() {
     return projectRoot;
@@ -16,6 +19,7 @@ export function setProjectRoot(rootDir: string) {
     projectRoot = fsu.consistentPath(rootDir);
     process.chdir(projectRoot);
     settings.addWorkingDir(projectRoot);
+    projectRootUpdated.emit({filePath: projectRoot});
 }
 
 export function makeRelative(filePath: string) {

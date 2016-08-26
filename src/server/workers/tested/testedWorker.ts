@@ -26,8 +26,14 @@ const testedMessagePrefix = `[TESTED]`;
 const configFileName = 'alm.json';
 
 namespace Worker {
+    export const init: typeof contract.worker.init = (data) => {
+        TestedWorkerImplementation.init(data.workingDir);
+        TestedWorkerImplementation.restart();
+        return resolve({});
+    }
+
     export const fileSaved: typeof contract.worker.fileSaved = (data) => {
-        /** TODO: tested new test file added */
+        /** TODO: tested new test file added to the directory */
 
         if (data.filePath.toLowerCase().endsWith(configFileName)){
             TestedWorkerImplementation.restart();
@@ -78,6 +84,7 @@ namespace TestedWorkerImplementation {
     /** Init global state */
     export let globalState = {
         started: false,
+        workingDir: '',
         testedJson: {
             filePaths: []
         },
@@ -87,16 +94,21 @@ namespace TestedWorkerImplementation {
     /**
      * Reinit the global state + errors
      */
-    function reinit() {
+    export function init(workingDir = '') {
         errorCache.clearErrors();
         testResultCache.clearResults();
         globalState = {
             started: false,
+            workingDir,
             testedJson: {
                 filePaths: []
             },
             filePathsToRun: []
         }
+    }
+
+    function reinit() {
+        init(globalState.workingDir);
     }
 
     /**
@@ -108,9 +120,7 @@ namespace TestedWorkerImplementation {
         reinit();
         let testedJsonFilePath: string;
         try {
-            /** TODO: tested ... process.cwd is wrong here */
-            testedJsonFilePath = fsu.travelUpTheDirectoryTreeTillYouFind(process.cwd(), configFileName);
-            (() => { throw new Error("fix the path bas") })();
+            testedJsonFilePath = fsu.travelUpTheDirectoryTreeTillYouFind(globalState.workingDir, configFileName);
         }
         catch (err) {
             // Leave disabled
@@ -178,11 +188,6 @@ namespace TestedWorkerImplementation {
         }
     }
 }
-
-/**
- * As soon as the worker starts up we do an initial start
- */
-TestedWorkerImplementation.restart();
 
 /** Utility: include / exclude expansion */
 function expandIncludeExclude(rootDir: string, cfg: { include?: string[], exclude?: string[] }): string[] {
