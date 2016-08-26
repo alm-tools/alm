@@ -5,6 +5,7 @@ import * as types from "../../../../common/types";
 import * as cp from "child_process";
 import * as utils from "../../../../common/utils";
 import * as fsu from "../../../utils/fsu";
+import {tap} from "./tap";
 
 const tsNodeCompilerOptions = JSON.stringify({
     allowJs: true,
@@ -38,10 +39,12 @@ let mochaExec = (filePath:string): Promise<string> => {
                 TS_NODE_COMPILER_OPTIONS
             }
         }, (err, stdout, stderr) => {
-            if (stderr.toString().trim().length) {
-                return resolve(stderr.toString());
-            }
-            return resolve(stdout);
+            const output =
+                stderr.toString().trim().length
+                    ? stderr.toString()
+                    : stdout.toString();
+
+            return resolve(tap({ output, filePath }));
         });
     });
 }
