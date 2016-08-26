@@ -16,20 +16,28 @@ const tsNodeCompilerOptions = JSON.stringify({
 let mochaExec = (filePath:string): Promise<string> => {
     /** Find key paths */
     const nodeModulesFolder = fsu.travelUpTheDirectoryTreeTillYouFind(__dirname, "node_modules");
-    const tsNodePath = `${nodeModulesFolder}/.bin/ts-node`;
+    const tsNodePath = `${nodeModulesFolder}/ts-node`;
     const mochaPath = `${nodeModulesFolder}/.bin/mocha`;
 
     /** Execute this */
     const toExec
-        = `node ${tsNodePath} --compilerOptions '${tsNodeCompilerOptions}' ${mochaPath} ${filePath}`;
+        = `node ${mochaPath} '${tsNodePath}/register' ${filePath} --reporter tap`;
 
-    console.log("Will Exec", toExec)
+    // console.log("TESTED Will Exec", toExec); // DEBUG
 
     /** In this dir */
     const cwd = utils.getDirectory(filePath);
 
+    /** With these compiler options */
+    const TS_NODE_COMPILER_OPTIONS = tsNodeCompilerOptions;
+
     return new Promise((resolve, reject) => {
-        cp.exec(toExec, { cwd: cwd }, (err, stdout, stderr) => {
+        cp.exec(toExec, {
+            cwd,
+            env: {
+                TS_NODE_COMPILER_OPTIONS
+            }
+        }, (err, stdout, stderr) => {
             if (stderr.toString().trim().length) {
                 return resolve(stderr.toString());
             }
