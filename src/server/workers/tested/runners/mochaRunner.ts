@@ -14,7 +14,7 @@ const tsNodeCompilerOptions = JSON.stringify({
 });
 
 /** Main utility function to execute a command */
-let mochaExec = (filePath:string): Promise<string> => {
+let mochaExec = (filePath:string) => {
     /** Find key paths */
     const nodeModulesFolder = fsu.travelUpTheDirectoryTreeTillYouFind(__dirname, "node_modules");
     const tsNodePath = `${nodeModulesFolder}/ts-node`;
@@ -55,15 +55,5 @@ let mochaExec = (filePath:string): Promise<string> => {
  * returns its parsed test output
  */
 export function runTest(filePath: string): Promise<types.TestModule> {
-
-    /** TODO: tested actually run the test */
-    mochaExec(filePath).then(res=>{
-        console.log(res);
-    })
-
-    const result: types.TestModule = {
-        filePath: filePath,
-        suites: []
-    }
-    return Promise.resolve(result);
+    return mochaExec(filePath);
 }
