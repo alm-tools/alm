@@ -558,6 +558,18 @@ export type TestSuiteResult = {
 export type TestModule = {
     filePath: string;
     suites: TestSuiteResult[];
+
+    /** Present once its been run */
+    stats: {
+        testCount: number;
+
+        passCount: number;
+        failCount: number;
+        skipCount: number;
+
+        /** milliseconds */
+        durationMs: number;
+    };
 }
 
 export type TestSuitesByFilePath = {

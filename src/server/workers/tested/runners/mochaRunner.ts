@@ -69,14 +69,30 @@ export function runTest(filePath: string): Promise<types.TestModule> {
  */
 export function parseMochaJSON(cfg: { output: string, filePath: string }): types.TestModule {
     // console.log(cfg.output); // DEBUG
+
     const output = json.parse<MochaJSON>(cfg.output).data;
     // console.log(cfg.output) // DEBUG
+
+    const stats = output.stats;
+    // console.log(output.stats); // DEBUG
 
     /** TODO: tested parse output */
     const result: types.TestModule = {
         filePath: cfg.filePath,
-        suites: []
+        suites: [],
+
+        stats: {
+            testCount: stats.tests,
+
+            passCount: stats.passes,
+            failCount: stats.failures,
+            skipCount: stats.pending,
+
+            durationMs: stats.duration,
+        }
     }
+
+
     return result;
 }
 
