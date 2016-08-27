@@ -538,11 +538,11 @@ export enum TestStatus {
     Skipped,
 }
 export type TestResult = {
-    time: string;
     description: string;
     status: TestStatus;
 
-    skipped?: boolean;
+    /** None if skipped */
+    duration?: number;
 
     /** Only in case of test failure */
     error?: CodeError;

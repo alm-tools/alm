@@ -18,7 +18,7 @@ let mochaExec = (filePath:string) => {
     /** Find key paths */
     const nodeModulesFolder = fsu.travelUpTheDirectoryTreeTillYouFind(__dirname, "node_modules");
     const tsNodePath = `${nodeModulesFolder}/ts-node`;
-    const mochaPath = `${nodeModulesFolder}/.bin/mocha`;
+    const mochaPath = `${nodeModulesFolder}/mocha/bin/mocha`;
 
     /** Execute this */
     const toExec
@@ -76,6 +76,10 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
 }
 
 
+/**
+ * Key mocha data structures
+ * Gathered by running the samples ;)
+ */
 type MochaJSON = {
     stats: Stats;
 
