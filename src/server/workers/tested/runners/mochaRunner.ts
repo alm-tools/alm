@@ -22,7 +22,7 @@ let mochaExec = (filePath:string) => {
 
     /** Execute this */
     const toExec
-        = `node ${mochaPath} '${tsNodePath}/register' ${filePath} --reporter json`;
+        = [mochaPath, `${tsNodePath}/register`, filePath,'--reporter', 'json'];
 
     // console.log("TESTED Will Exec", toExec); // DEBUG
 
@@ -32,19 +32,25 @@ let mochaExec = (filePath:string) => {
     /** With these compiler options */
     const TS_NODE_COMPILER_OPTIONS = tsNodeCompilerOptions;
 
-    return new Promise((resolve, reject) => {
-        cp.exec(toExec, {
+    return new Promise<types.TestModule>((resolve, reject) => {
+        const child = cp.spawn(process.execPath,toExec, {
             cwd,
             env: {
                 TS_NODE_COMPILER_OPTIONS
             }
-        }, (err, stdout, stderr) => {
-            const output =
-                stderr.toString().trim().length
-                    ? stderr.toString()
-                    : stdout.toString();
+        });
 
-            return resolve(parseMochaJSON({ output, filePath }));
+        const output: string[] = [];
+        child.stdout.on('data', (data) => {
+            output.push(data.toString());
+        });
+
+        child.stderr.on('data', (data) => {
+            console.log(`MOCHA STDERR: ${data}`);
+        });
+
+        child.on('close', (code) => {
+            resolve(parseMochaJSON({ output: output.join(''), filePath }));
         });
     });
 }
@@ -64,8 +70,7 @@ export function runTest(filePath: string): Promise<types.TestModule> {
 export function parseMochaJSON(cfg: { output: string, filePath: string }): types.TestModule {
     // console.log(cfg.output); // DEBUG
     const output = json.parse<MochaJSON>(cfg.output).data;
-
-    // console.log(output) // DEBUG
+    // console.log(cfg.output) // DEBUG
 
     /** TODO: tested parse output */
     const result: types.TestModule = {
