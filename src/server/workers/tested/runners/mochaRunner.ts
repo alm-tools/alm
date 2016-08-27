@@ -76,7 +76,11 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
     const stats = output.stats;
     // console.log(output.stats); // DEBUG
 
-    /** TODO: tested parse output */
+    const tests = output.tests || [];
+
+
+    /** TODO: tested tests -> suites */
+
     const result: types.TestModule = {
         filePath: cfg.filePath,
         suites: [],
