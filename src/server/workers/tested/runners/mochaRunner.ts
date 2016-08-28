@@ -164,12 +164,43 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
             return types.TestStatus.Fail;
         }
 
+        const testErrorToCodeError = (test: Test): CodeError => {
+            /** TODO: tested mocha error to code error */
+            if (!Object.keys(test.err).length) {
+                return undefined;
+            }
+            const err = test.err as Err;
+
+            const message = err.stack;
+            const stack = err.stack;
+
+            /**
+             * TODO: tested Get from the stack
+             */
+            const position = {
+                line: 0,
+                ch: 0
+            };
+
+            const codeError: CodeError = {
+                filePath: cfg.filePath,
+
+                from: position,
+                to: position,
+
+                message: message,
+                preview: null,
+                level: 'error'
+            }
+
+            return codeError;
+        }
+
         const testResult = {
             description: test.title,
             status: testStatus(test),
             durationMs: test.duration,
-            /** TODO: tested mocha error to code error */
-            error: null
+            error: testErrorToCodeError(test)
         }
 
         suite.tests.push(testResult);
