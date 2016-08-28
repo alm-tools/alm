@@ -164,43 +164,81 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
             return types.TestStatus.Fail;
         }
 
-        const testErrorToCodeError = (test: Test): CodeError => {
+        const makeTestError = (test: Test): types.TestError => {
             /** TODO: tested mocha error to code error */
             if (!Object.keys(test.err).length) {
                 return undefined;
             }
             const err = test.err as Err;
 
-            const message = err.stack;
-            const stack = err.stack;
+            const makeStack = (raw: string): types.TestErrorStack => {
+                const rawSample = `
+Error: Fail
+    at Context.<anonymous> (D:\REPOS\alm\src\tests\testedTest.ts:21:15)
+    at callFn (D:\REPOS\alm\node_modules\mocha\lib\runnable.js:334:21)
+    at Test.Runnable.run (D:\REPOS\alm\node_modules\mocha\lib\runnable.js:327:7)
+    at Runner.runTest (D:\REPOS\alm\node_modules\mocha\lib\runner.js:429:10)
+    at D:\REPOS\alm\node_modules\mocha\lib\runner.js:535:12
+    at next (D:\REPOS\alm\node_modules\mocha\lib\runner.js:349:14)
+    at D:\REPOS\alm\node_modules\mocha\lib\runner.js:359:7
+    at next (D:\REPOS\alm\node_modules\mocha\lib\runner.js:285:14)
+    at Immediate._onImmediate (D:\REPOS\alm\node_modules\mocha\lib\runner.js:327:5)
+`
+                let lines = raw.split(/\r\n?|\n/);
+                /** First line is just the error message. Don't need it */
+                lines = lines.slice(1);
 
-            /**
-             * TODO: tested Get from the stack
-             */
-            const position = {
-                line: 0,
-                ch: 0
-            };
+                /** Remove each leading `at ` */
+                lines = lines.map(l => l.trim().substr(3));
 
-            const codeError: CodeError = {
-                filePath: cfg.filePath,
+                /** For lines that have function name, they end with `)`. So detect and remove leading `(` for them */
+                lines = lines.map(l => {
+                    if (l.endsWith(')')){
+                        const withStartRemoved = l.substr(l.indexOf('(') + 1);
+                        const withEndRemoved = withStartRemoved.substr(0, withStartRemoved.length - 2);
+                        return withEndRemoved;
+                    }
+                    else {
+                        return l;
+                    }
+                });
 
-                from: position,
-                to: position,
+                const stack = lines.map(l => {
+                    let [filePath, lineStr, chStr] = l.split(':');
+                    chStr = chStr || '0';
 
-                message: message,
-                preview: null,
-                level: 'error'
+                    const line = parseInt(lineStr);
+                    const ch = parseInt(chStr);
+
+                    return {filePath, line, ch};
+                })
+
+                return stack;
             }
 
-            return codeError;
+            const message = err.stack;
+            const stack = makeStack(err.stack);
+
+            /**
+             * Position
+             */
+            const position = stack[0];
+
+            const testError: types.TestError = {
+                filePath: cfg.filePath,
+                position: position,
+                message: message,
+                stack: stack
+            }
+
+            return testError;
         }
 
         const testResult = {
             description: test.title,
             status: testStatus(test),
             durationMs: test.duration,
-            error: testErrorToCodeError(test)
+            error: makeTestError(test)
         }
 
         suite.tests.push(testResult);

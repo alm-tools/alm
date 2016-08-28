@@ -537,6 +537,18 @@ export enum TestStatus {
     Success,
     Skipped,
 }
+export type TestErrorStack = {
+    filePath: string
+    line: number
+    ch: number
+}[];
+export type TestError = {
+    filePath: string,
+    position: EditorPosition,
+    message: string
+
+    stack: TestErrorStack
+}
 export type TestResult = {
     description: string;
     status: TestStatus;
@@ -545,7 +557,7 @@ export type TestResult = {
     durationMs?: number;
 
     /** Only in case of test failure */
-    error?: CodeError;
+    error?: TestError;
 }
 export type TestSuiteResult = {
     description: string,
