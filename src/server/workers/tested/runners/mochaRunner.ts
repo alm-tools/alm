@@ -78,8 +78,6 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
 
     const tests = output.tests || [];
 
-
-    /** TODO: tested tests -> suites */
     const suites: types.TestSuiteResult[] = [];
 
     /**
@@ -118,20 +116,34 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
         /**
          * Otherwise create
          */
-
-        /** TODO: tested. Look up recursively somehow? */
-
         let currentSuite: types.TestSuiteResult = {
             description,
             suites: [],
-            tests: []
+            tests: [],
+            stats: {
+                testCount: 0,
+                passCount: 0,
+                failCount: 0,
+                skipCount: 0,
+                durationMs: 0,
+            }
         }
 
         /** Add to suite map for faster lookup */
         suiteMap[description] = currentSuite;
 
-        /** Add to suites */
-        suites.push(currentSuite);
+        /**
+         * Add to suites
+         * If the last test spec name is same as the start of this one then its a sub spec ;)
+         */
+        if (suites.length && (description.startsWith(suites[suites.length - 1].description))) {
+            const lastSuite = suites[suites.length - 1];
+            currentSuite.description = currentSuite.description.substr(lastSuite.description.length).trim();
+            lastSuite.suites.push(currentSuite);
+        }
+        else { /** Otherwise its a new root level spec */
+            suites.push(currentSuite);
+        }
 
         /** Return */
         return currentSuite;
@@ -152,22 +164,27 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
             return types.TestStatus.Fail;
         }
 
-        suite.tests.push({
+        const testResult = {
             description: test.title,
             status: testStatus(test),
             durationMs: test.duration,
             /** TODO: tested mocha error to code error */
             error: null
-        });
+        }
+
+        suite.tests.push(testResult);
+
+        /** Update suite stats */
+        suite.stats = {
+            testCount: suite.stats.testCount + 1,
+            passCount: testResult.status === types.TestStatus.Success ? suite.stats.passCount + 1 : suite.stats.passCount,
+            failCount: testResult.status === types.TestStatus.Fail ? suite.stats.failCount + 1 : suite.stats.failCount,
+            skipCount: testResult.status === types.TestStatus.Skipped ? suite.stats.skipCount + 1 : suite.stats.skipCount,
+            durationMs: suite.stats.durationMs + (testResult.durationMs || 0),
+        }
     });
 
-    console.log(suites);
-
-    //
-    // const continueForThisSuite = () => {
-    //
-    // }
-
+    // console.log(suites); // DEBUG
 
     const result: types.TestModule = {
         filePath: cfg.filePath,

@@ -550,6 +550,8 @@ export type TestResult = {
 export type TestSuiteResult = {
     description: string,
 
+    stats: TestContainerStats,
+
     /** Can have other TestSuites or Tests */
     suites: TestSuiteResult[],
     tests: TestResult[],
@@ -560,17 +562,20 @@ export type TestModule = {
     suites: TestSuiteResult[];
 
     /** Present once its been run */
-    stats: {
-        testCount: number;
-
-        passCount: number;
-        failCount: number;
-        skipCount: number;
-
-        /** milliseconds */
-        durationMs: number;
-    };
+    stats: TestContainerStats;
 }
+
+/** Both modules and suites are test containers and have these stats */
+export type TestContainerStats = {
+    testCount: number;
+
+    passCount: number;
+    failCount: number;
+    skipCount: number;
+
+    /** milliseconds */
+    durationMs: number;
+};
 
 export type TestSuitesByFilePath = {
     [filePath: string]: TestModule;
