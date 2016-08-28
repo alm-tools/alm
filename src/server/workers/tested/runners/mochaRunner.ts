@@ -80,10 +80,98 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
 
 
     /** TODO: tested tests -> suites */
+    const suites: types.TestSuiteResult[] = [];
+
+    /**
+     * PLAN
+     * Collect first level suites
+     * Collect second level suites
+     */
+    /**
+     * First collect all the suite names
+     * Becuase they go like:
+     * a
+     *   test
+     *   test
+     *
+     *   a b
+     *     test
+     *     test
+     *
+     *   test
+     *   test
+     * k
+     *   test
+     *
+     *   k u
+     *     test
+     *
+     * We only need to keep the *current* suite and add to that.
+     */
+
+    const suiteMap: { [description: string]: types.TestSuiteResult } = Object.create(null);
+    const suiteExists = (description: string): boolean => !!suiteMap[description];
+    const getOrCreateSuite = (description: string) => {
+        /** If already created return */
+        if (suiteExists(description)) return suiteMap[description];
+
+        /**
+         * Otherwise create
+         */
+
+        /** TODO: tested. Look up recursively somehow? */
+
+        let currentSuite: types.TestSuiteResult = {
+            description,
+            suites: [],
+            tests: []
+        }
+
+        /** Add to suite map for faster lookup */
+        suiteMap[description] = currentSuite;
+
+        /** Add to suites */
+        suites.push(currentSuite);
+
+        /** Return */
+        return currentSuite;
+    }
+
+    tests.forEach(test => {
+        const suiteDescription = test.fullTitle.substr(0, test.fullTitle.length - test.title.length).trim();
+
+        const suite = getOrCreateSuite(suiteDescription);
+
+        const testStatus = (test: Test): types.TestStatus => {
+            if (test.duration == null) {
+                return types.TestStatus.Skipped
+            }
+            if (!Object.keys(test.err).length) {
+                return types.TestStatus.Success
+            }
+            return types.TestStatus.Fail;
+        }
+
+        suite.tests.push({
+            description: test.title,
+            status: testStatus(test),
+            durationMs: test.duration,
+            /** TODO: tested mocha error to code error */
+            error: null
+        });
+    });
+
+    console.log(suites);
+
+    //
+    // const continueForThisSuite = () => {
+    //
+    // }
+
 
     const result: types.TestModule = {
         filePath: cfg.filePath,
-        suites: [],
+        suites,
 
         stats: {
             testCount: stats.tests,
@@ -95,7 +183,6 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
             durationMs: stats.duration,
         }
     }
-
 
     return result;
 }
@@ -132,7 +219,7 @@ interface Stats {
 interface Test {
     /** Title contains the `it` section */
     title: string;
-    /** Full title contains the `describe` + ' ' + `it` sections */
+    /** Full title contains the `describe` + (any other)` describe` + ' ' + `it` sections */
     fullTitle: string;
     /**
      * Duration in ms

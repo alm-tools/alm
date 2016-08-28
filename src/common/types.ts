@@ -542,7 +542,7 @@ export type TestResult = {
     status: TestStatus;
 
     /** None if skipped */
-    duration?: number;
+    durationMs?: number;
 
     /** Only in case of test failure */
     error?: CodeError;
@@ -551,7 +551,7 @@ export type TestSuiteResult = {
     description: string,
 
     /** Can have other TestSuites or Tests */
-    testSuite: TestSuiteResult[],
+    suites: TestSuiteResult[],
     tests: TestResult[],
 }
 /** The root of any testing system is a test file */
