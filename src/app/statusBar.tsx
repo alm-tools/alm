@@ -99,7 +99,7 @@ export class StatusBar extends BaseComponent<Props, State>{
         let filePath = tab && utils.getFilePathFromUrl(tab.url);
         let protocol = tab && utils.getFilePathAndProtocolFromUrl(tab.url).protocol;
 
-        const hasActiveProject = this.props.activeProject
+        const activeProjectDetails = this.props.activeProject
             ?<span
                 className="hint--top-right"
                 data-hint="Active Project path. Click to open project file"
@@ -194,7 +194,7 @@ export class StatusBar extends BaseComponent<Props, State>{
 
         /** Tested */
         const testResultsStats = testResultsCache.getStats();
-        
+
         return (
             <div>
                 <div style={csx.extend(styles.statusBar,csx.horizontal,csx.center, styles.noWrap)}>
@@ -210,7 +210,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                         </span>
                     </span>
                     {fileTreeToggleRendered}
-                    {hasActiveProject}
+                    {activeProjectDetails}
                     {inActiveProjectSection}
                     {filePath
                         ?<span
