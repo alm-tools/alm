@@ -200,6 +200,7 @@ export class StatusBar extends BaseComponent<Props, State>{
         /** Tested */
         const testResultsStats = testResultsCache.getStats();
         const failing = !!testResultsStats.failCount;
+        const totalThatRan = testResultsStats.passCount + testResultsStats.failCount;
         const testStatsRendered = !!testResultsStats.testCount && <span
             className="hint--top-right"
             data-hint={`Test Total: ${testResultsStats.testCount}, Pass: ${testResultsStats.passCount}, Fail: ${testResultsStats.failCount}, Skip: ${testResultsStats.skipCount}`}
@@ -216,15 +217,15 @@ export class StatusBar extends BaseComponent<Props, State>{
                     {
                         marginRight: '5px',
                         transition: '.4s color, .4s opacity',
-                        opacity: this.props.testedWorking.working ? 1 : 0.5, 
+                        opacity: this.props.testedWorking.working ? 1 : 0.5,
                     }
                 )}>
                     <Icon name="bug"/>
             </span>
             {
                 failing
-                ? <span style={{ color: styles.errorColor, fontWeight: 'bold'}}>{testResultsStats.failCount} fail</span>
-                : <span style={{ color: styles.successColor, fontWeight: 'bold'}}>{testResultsStats.passCount} pass</span>
+                ? <span style={{ color: styles.errorColor, fontWeight: 'bold'}}>{testResultsStats.failCount}/{totalThatRan} fail</span>
+                : <span style={{ color: styles.successColor, fontWeight: 'bold'}}>{testResultsStats.passCount}/{totalThatRan} pass</span>
             }
         </span>
 
