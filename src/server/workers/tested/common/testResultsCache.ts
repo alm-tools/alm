@@ -127,25 +127,27 @@ export class TestResultsCache {
      */
     public getResults = () => this.last;
     /** set after initial sync */
-    public setResults = (results: types.TestSuitesByFilePath) => this.current = results;
+    public setResults = (results: types.TestSuitesByFilePath) => {
+        this.current = results;
+        this.sendDelta();
+    }
 
     /**
      * Collects overall stats
      */
     public getStats = (): types.TestContainerStats => {
         const allModules = Object.keys(this.current).map(k=>this.current[k]);
-        const allRootSuites = utils.selectMany(allModules.map(m=>m.suites));
 
         const sumReducer = (arr: any[]): number => arr.reduce((i, acc) => acc + i, 0);
 
         const result: types.TestContainerStats = {
-            testCount: sumReducer(allRootSuites.map(x=>x.stats.testCount)),
+            testCount: sumReducer(allModules.map(x=>x.stats.testCount)),
 
-            passCount: sumReducer(allRootSuites.map(x=>x.stats.passCount)),
-            failCount: sumReducer(allRootSuites.map(x=>x.stats.failCount)),
-            skipCount: sumReducer(allRootSuites.map(x=>x.stats.skipCount)),
-            
-            durationMs: sumReducer(allRootSuites.map(x=>x.stats.durationMs)),
+            passCount: sumReducer(allModules.map(x=>x.stats.passCount)),
+            failCount: sumReducer(allModules.map(x=>x.stats.failCount)),
+            skipCount: sumReducer(allModules.map(x=>x.stats.skipCount)),
+
+            durationMs: sumReducer(allModules.map(x=>x.stats.durationMs)),
         }
 
         return result;

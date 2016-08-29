@@ -200,10 +200,11 @@ export class StatusBar extends BaseComponent<Props, State>{
         const failing = !!testResultsStats.failCount;
         const testStatsRendered = !!testResultsStats.testCount && <span
             className="hint--top-right"
-            data-hint="Test Results"
+            data-hint={`Test Total: ${testResultsStats.testCount}, Pass: ${testResultsStats.passCount}, Fail: ${testResultsStats.failCount}, Skip: ${testResultsStats.skipCount}`}
             style={csx.extend(activeProjectContainerStyle)}
             onClick={()=>{
                 console.log(testResultsStats);
+                console.log(testResultsCache.getResults());
             }}>
             <span
                 style={csx.extend(
