@@ -23,12 +23,12 @@ export class TestResultCache {
     /**
      * Event that can be wired up to sync one cache with another
      */
-    public testDelta = new TypedEvent<types.TestDelta>();
+    public testResultsDelta = new TypedEvent<types.TestResultsDelta>();
 
     /**
      * You can wire up an errors Delta from one cache to this one.
      */
-    public applyDelta = (delta:types.TestDelta) => {
+    public applyTestResultsDelta = (delta:types.TestResultsDelta) => {
         if (delta.initial) {
             this.current = delta.updatedModuleMap;
         }
@@ -60,7 +60,7 @@ export class TestResultCache {
         // TODO Create a delta
         const last = this.last;
         const current = this.current;
-        const delta: types.TestDelta = {
+        const delta: types.TestResultsDelta = {
             updatedModuleMap: Object.create(null),
             clearedModules: [],
             initial: this.initial,
@@ -86,7 +86,7 @@ export class TestResultCache {
         });
 
         // Send out the delta
-        this.testDelta.emit(delta);
+        this.testResultsDelta.emit(delta);
 
         // Preserve for future delta
         this.last = Object.create(null);

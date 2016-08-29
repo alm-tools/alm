@@ -10,9 +10,9 @@ import * as testResultCache from "./common/testResultCache";
 const testCache = new testResultCache.TestResultCache();
 
 namespace Master {
-    export const receiveTestResultDelta: typeof contract.master.receiveTestResultDelta
+    export const receiveTestResultsDelta: typeof contract.master.receiveTestResultsDelta
         = (data) => {
-            testCache.applyDelta(data);
+            testCache.applyTestResultsDelta(data);
             return resolve({});
         };
     export const receiveErrorCacheDelta: typeof contract.master.receiveErrorCacheDelta

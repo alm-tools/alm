@@ -157,6 +157,7 @@ export var cast = {
 
     /** Errors for a file path */
     errorsDelta: new TypedEvent<ErrorCacheDelta>(),
+    testResultDelta: new TypedEvent<types.TestResultsDelta>(),
 
     /** TS analysis taking place */
     tsWorking: new TypedEvent<types.Working>(),

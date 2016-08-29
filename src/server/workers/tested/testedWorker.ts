@@ -79,7 +79,7 @@ namespace TestedWorkerImplementation {
 
     /** Init test result cache */
     const testResultCache = new TestResultCache();
-    testResultCache.testDelta.on(master.receiveTestResultDelta);
+    testResultCache.testResultsDelta.on(master.receiveTestResultsDelta);
 
     /** Init global state */
     export let globalState = {
