@@ -32,14 +32,17 @@ let notificationKeyboardStyle = {
 const ouputStatusStyle = csx.extend(styles.noSelect, {fontSize:'.6rem'});
 
 const activeProjectContainerStyle = csx.extend(
-    styles.statusBarSection, styles.hand,
+    styles.statusBarSection,
+    styles.hand,
+    styles.noSelect,
     {
         border: '1px solid grey',
         paddingTop: '2px',
         paddingBottom: '2px',
         paddingLeft: '4px',
         paddingRight: '4px',
-        fontSize: '.7rem'
+        fontSize: '.7rem',
+        marginTop: '1px',
     }
 );
 
