@@ -160,7 +160,7 @@ namespace TestedWorkerImplementation {
         console.log(testedMessagePrefix, "File count:", filePaths.length);
 
         /** Kick off */
-        globalState.filePathsToRun = filePaths;
+        globalState.filePathsToRun = filePaths.map(x => x);
         runNext();
     }
 
