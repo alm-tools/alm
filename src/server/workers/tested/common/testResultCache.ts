@@ -94,12 +94,18 @@ export class TestResultCache {
     }, 250);
 
     /** The passed results are considered the only ones. All else is cleared */
-    public setResults = (results: types.TestModule[]) => {
+    public setResultsTotal = (results: types.TestModule[]) => {
         this.current = Object.create(null);
         results.forEach(res => {
             this.current[res.filePath] = res;
         });
 
+        this.sendDelta();
+    }
+
+    /** Only for one file */
+    public addResult = (result: types.TestModule) => {
+        this.current[result.filePath] = result;
         this.sendDelta();
     }
 

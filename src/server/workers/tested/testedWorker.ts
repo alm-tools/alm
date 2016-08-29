@@ -175,9 +175,15 @@ namespace TestedWorkerImplementation {
             runningSomeTest = true;
             working.emit({working: true});
             mochaRunner.runTest(next).then(res=>{
-                /** TODO: tested use the results */
-                console.log(testedMessagePrefix, next);
+                /**
+                 * Add result
+                 */
+                testResultCache.addResult(res);
+
+                /** No longer running */
                 runningSomeTest = false;
+
+                /** Try and run the next one if any */
                 runNext();
             });
         }
