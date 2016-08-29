@@ -138,7 +138,7 @@ export class TestResultsCache {
     public getStats = (): types.TestContainerStats => {
         const allModules = Object.keys(this.current).map(k=>this.current[k]);
 
-        const sumReducer = (arr: any[]): number => arr.reduce((i, acc) => acc + i, 0);
+        const sumReducer = (arr: number[]) => arr.reduce((i, acc) => acc + i, 0);
 
         const result: types.TestContainerStats = {
             testCount: sumReducer(allModules.map(x=>x.stats.testCount)),
