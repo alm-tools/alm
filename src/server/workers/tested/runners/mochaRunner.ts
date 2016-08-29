@@ -36,7 +36,13 @@ let mochaExec = (filePath:string) => {
         const child = cp.spawn(process.execPath,toExec, {
             cwd,
             env: {
-                TS_NODE_COMPILER_OPTIONS
+                TS_NODE_COMPILER_OPTIONS,
+                /**
+                 * Disable cache to prevent errors like:
+                 * Cannot write file '/Users/syedb/REPOS/alm/src/$$ts-node$$/common/utils.js'
+                 * because it would be overwritten by multiple input files.
+                 */
+                TS_NODE_CACHE: false,
             }
         });
 
