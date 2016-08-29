@@ -164,7 +164,6 @@ namespace TestedWorkerImplementation {
         runNext();
     }
 
-    /** TODO: tested run tests with cancellation token */
     let runningSomeTest = false;
     export function runNext() {
         if (runningSomeTest) return;

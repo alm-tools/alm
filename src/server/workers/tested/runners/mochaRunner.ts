@@ -171,7 +171,6 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
         }
 
         const makeTestError = (test: Test): types.TestError => {
-            /** TODO: tested mocha error to code error */
             if (!Object.keys(test.err).length) {
                 return undefined;
             }
