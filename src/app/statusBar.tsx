@@ -197,6 +197,29 @@ export class StatusBar extends BaseComponent<Props, State>{
 
         /** Tested */
         const testResultsStats = testResultsCache.getStats();
+        const failing = !!testResultsStats.failCount;
+        const testStatsRendered = !!testResultsStats.testCount && <span
+            className="hint--top-right"
+            data-hint="Test Results"
+            style={csx.extend(activeProjectContainerStyle)}
+            onClick={()=>{
+                console.log(testResultsStats);
+            }}>
+            <span
+                style={csx.extend(
+                    styles.noSelect,
+                    failing ? styles.statusBarError : styles.statusBarSuccess,
+                    styles.hand,
+                    {marginRight: '5px'}
+                )}>
+                    <Icon name="bug"/>
+            </span>
+            {
+                failing
+                ? <span style={{ color: styles.errorColor, fontWeight: 'bold'}}>{testResultsStats.failCount} fail</span>
+                : <span style={{ color: styles.successColor, fontWeight: 'bold'}}>{testResultsStats.passCount} pass</span>
+            }
+        </span>
 
         return (
             <div>
@@ -212,6 +235,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                             {errorFilteringActive && <span>( {errorsFilteredCount} <Icon name="filter"/>)</span>}
                         </span>
                     </span>
+                    {testStatsRendered}
                     {fileTreeToggleRendered}
                     {activeProjectDetails}
                     {inActiveProjectSection}

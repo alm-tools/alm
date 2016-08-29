@@ -140,12 +140,14 @@ export class TestResultsCache {
 
         const result: types.TestContainerStats = {
             testCount: sumReducer(allRootSuites.map(x=>x.stats.testCount)),
+
             passCount: sumReducer(allRootSuites.map(x=>x.stats.passCount)),
             failCount: sumReducer(allRootSuites.map(x=>x.stats.failCount)),
             skipCount: sumReducer(allRootSuites.map(x=>x.stats.skipCount)),
+            
             durationMs: sumReducer(allRootSuites.map(x=>x.stats.durationMs)),
         }
-        
+
         return result;
     }
 }
