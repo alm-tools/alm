@@ -6,8 +6,8 @@ import {resolve} from "../../../common/utils";
 /** This is were we push the errors */
 import {errorsCache} from "../../globalErrorCacheServer";
 
-import * as testResultCache from "./common/testResultCache";
-const testCache = new testResultCache.TestResultCache();
+import * as testResultCache from "./common/testResultsCache";
+export const testCache = new testResultCache.TestResultsCache();
 
 namespace Master {
     export const receiveTestResultsDelta: typeof contract.master.receiveTestResultsDelta

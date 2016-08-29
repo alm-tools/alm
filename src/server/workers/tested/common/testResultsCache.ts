@@ -13,7 +13,7 @@ const same = (a: types.TestModule, b: types.TestModule): boolean => {
  * Maintains the list of tests that have been encountered,
  * and notifies anyone who is concerned of updated values
  */
-export class TestResultCache {
+export class TestResultsCache {
     /**
      * When a cache boots up (e.g. server restart). Its good to know if its an initial test run
      * If so the client might want to clear all previous results
@@ -120,4 +120,11 @@ export class TestResultCache {
         this.current = Object.create(null);
         this.sendDelta();
     }
+
+    /**
+     * Get the last results so you can start listening to new deltas
+     */
+    public getResults = () => this.last;
+    /** set after initial sync */
+    public setResults = (results: types.TestSuitesByFilePath) => this.last = results;
 }
