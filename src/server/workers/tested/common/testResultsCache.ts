@@ -2,6 +2,7 @@ import {TypedEvent} from "../../../../common/events";
 import {createMapByKey, debounce, selectMany} from "../../../../common/utils";
 import equal = require('deep-equal');
 import * as types from "../../../../common/types";
+import * as utils from "../../../../common/utils";
 
 // What we use to identify a unique test
 const same = (a: types.TestModule, b: types.TestModule): boolean => {
@@ -126,5 +127,25 @@ export class TestResultsCache {
      */
     public getResults = () => this.last;
     /** set after initial sync */
-    public setResults = (results: types.TestSuitesByFilePath) => this.last = results;
+    public setResults = (results: types.TestSuitesByFilePath) => this.current = results;
+
+    /**
+     * Collects overall stats
+     */
+    public getStats = (): types.TestContainerStats => {
+        const allModules = Object.keys(this.current).map(k=>this.current[k]);
+        const allRootSuites = utils.selectMany(allModules.map(m=>m.suites));
+
+        const sumReducer = (arr: any[]): number => arr.reduce((i, acc) => acc + i, 0);
+
+        const result: types.TestContainerStats = {
+            testCount: sumReducer(allRootSuites.map(x=>x.stats.testCount)),
+            passCount: sumReducer(allRootSuites.map(x=>x.stats.passCount)),
+            failCount: sumReducer(allRootSuites.map(x=>x.stats.failCount)),
+            skipCount: sumReducer(allRootSuites.map(x=>x.stats.skipCount)),
+            durationMs: sumReducer(allRootSuites.map(x=>x.stats.durationMs)),
+        }
+        
+        return result;
+    }
 }

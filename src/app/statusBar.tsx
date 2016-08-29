@@ -19,6 +19,7 @@ import {connect} from "react-redux";
 import {StoreState,expandErrors,collapseErrors} from "./state/state";
 import * as state from "./state/state";
 import {errorsCache} from "./globalErrorCacheClient";
+import {testResultsCache} from "./clientTestResultsCache";
 
 
 let notificationKeyboardStyle = {
@@ -90,6 +91,7 @@ export class StatusBar extends BaseComponent<Props, State>{
         statusBar = this;
         tabStateChanged.on(()=>this.forceUpdate());
         errorsCache.errorsDelta.on(() => this.forceUpdate());
+        testResultsCache.testResultsDelta.on(() => this.forceUpdate());
     }
 
     render() {
@@ -190,6 +192,9 @@ export class StatusBar extends BaseComponent<Props, State>{
         const errorFilteringActive = this.props.errorsDisplayMode !== types.ErrorsDisplayMode.all || this.props.errorsFilter.trim();
         const errorsFilteredCount = tabState.errorsByFilePathFiltered().errorsFlattened.length;
 
+        /** Tested */
+        const testResultsStats = testResultsCache.getStats();
+        
         return (
             <div>
                 <div style={csx.extend(styles.statusBar,csx.horizontal,csx.center, styles.noWrap)}>
