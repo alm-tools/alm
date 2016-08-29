@@ -37,6 +37,7 @@ export interface StoreState {
 
     /** TS worker working */
     tsWorking?: types.Working;
+    testedWorking?: types.Working;
 }
 
 let initialStoreState: StoreState = {
@@ -66,6 +67,9 @@ let initialStoreState: StoreState = {
     showDoctor: false,
     showSemanticView: false,
     tsWorking: {
+        working: false,
+    },
+    testedWorking: {
         working: false,
     },
 };
@@ -275,5 +279,10 @@ export const ifJSStatusWasCurrentThenMoveToOutOfDate = redux.add('ifJSStatusWasC
 export const setTSWorking = redux.add('setTSWorking', (state: StoreState, payload: types.Working): StoreState => {
     return {
         tsWorking: payload
+    };
+});
+export const setTestedWorking = redux.add('setTestedWorking', (state: StoreState, payload: types.Working): StoreState => {
+    return {
+        testedWorking: payload
     };
 });

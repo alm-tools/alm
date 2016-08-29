@@ -14,8 +14,6 @@ import * as utils from "../../../common/utils";
 import * as mochaRunner from "./runners/mochaRunner";
 
 import {TypedEvent} from "../../../common/events";
-/** On working */
-export const working = new TypedEvent<types.Working>();
 
 const testedMessagePrefix = `[TESTED]`;
 
@@ -173,7 +171,7 @@ namespace TestedWorkerImplementation {
             globalState.filePathsToRun = utils.uniq(globalState.filePathsToRun);
 
             runningSomeTest = true;
-            working.emit({working: true});
+            setWorking();
             mochaRunner.runTest(next).then(res=>{
                 /**
                  * Add result
@@ -188,9 +186,25 @@ namespace TestedWorkerImplementation {
             });
         }
         else {
-            working.emit({working: false});
-            console.log(testedMessagePrefix, "Done");
+            clearWorking();
         }
+    }
+}
+
+/**
+ * Debounced to match the test delta sending debounce.
+ */
+let _isWorking = false;
+const clearWorking = utils.debounce(() => {
+    _isWorking = false;
+    master.receiveWorking({ working: false });
+    console.log(testedMessagePrefix, "Completed");
+}, 1000);
+const setWorking = () => {
+    if (!_isWorking) {
+        master.receiveWorking({working: true});
+        _isWorking = true;
+        console.log(testedMessagePrefix, "Testing");
     }
 }
 

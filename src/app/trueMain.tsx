@@ -131,6 +131,9 @@ const afterLoaded = () => {
     cast.tsWorking.on(res => {
         state.setTSWorking(res);
     });
+    cast.testedWorking.on(res => {
+        state.setTestedWorking(res);
+    });
     commands.sync.on(()=>{
         server.sync({});
     });

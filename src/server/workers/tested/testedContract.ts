@@ -9,6 +9,7 @@ export const worker = {
 }
 
 export const master = {
+    receiveWorking: {} as sw.QRFunction<types.Working, {}>,
     /** Sends out test resuts */
     receiveTestResultsDelta: {} as sw.QRFunction<types.TestResultsDelta, {}>,
     /** Sends out errors for config / file exceptions */

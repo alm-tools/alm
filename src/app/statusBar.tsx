@@ -58,6 +58,7 @@ export interface Props {
     errorsDisplayMode?: types.ErrorsDisplayMode;
     errorsFilter?: string;
     tsWorking?: types.Working;
+    testedWorking?: types.Working;
 }
 export interface State {
 }
@@ -81,6 +82,7 @@ export var statusBar: StatusBar;
         errorsDisplayMode: state.errorsDisplayMode,
         errorsFilter: state.errorsFilter,
         tsWorking: state.tsWorking,
+        testedWorking: state.testedWorking,
     };
 })
 export class StatusBar extends BaseComponent<Props, State>{
@@ -211,7 +213,11 @@ export class StatusBar extends BaseComponent<Props, State>{
                     styles.noSelect,
                     failing ? styles.statusBarError : styles.statusBarSuccess,
                     styles.hand,
-                    {marginRight: '5px'}
+                    {
+                        marginRight: '5px',
+                        transition: '.4s color, .4s opacity',
+                        opacity: this.props.testedWorking.working ? 1 : 0.5, 
+                    }
                 )}>
                     <Icon name="bug"/>
             </span>

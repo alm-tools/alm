@@ -22,7 +22,7 @@ import * as activeProjectConfig from "../server/disk/activeProjectConfig";
 
 import {errorsCache} from "../server/globalErrorCacheServer";
 import * as projectServiceMaster from "../server/workers/lang/projectServiceMaster";
-import {testCache} from "../server/workers/tested/testedMaster";
+import {testCache, working as testedWorking} from "../server/workers/tested/testedMaster";
 
 namespace Server {
     export var echo: typeof contract.server.echo = (data, client) => {
@@ -286,6 +286,7 @@ export function register(app: http.Server | https.Server) {
 
     /** Tested */
     testCache.testResultsDelta.pipe(cast.testResultsDelta);
+    testedWorking.pipe(cast.testedWorking);
 
     /** FARM */
     findAndReplaceMultiService.farmResultsUpdated.pipe(cast.farmResultsUpdated);

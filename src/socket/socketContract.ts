@@ -165,6 +165,7 @@ export var cast = {
 
     /** Tested */
     testResultsDelta: new TypedEvent<types.TestResultsDelta>(),
+    testedWorking: new TypedEvent<types.Working>(),
 
     /** TS analysis taking place */
     tsWorking: new TypedEvent<types.Working>(),
