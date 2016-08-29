@@ -17,7 +17,7 @@ Add a simple `alm.json` at the root working directory of your project:
 ```
 Optionally you can also provide an `exclude` pattern.
 
-> `include` and `exclude` have the same behaviour as TypeScirpt's tsconfig. In fact we use the ts compiler to expand these.
+> `include` and `exclude` have the same behaviour as TypeScript's tsconfig. In fact we use the ts compiler to expand these.
 
 Testing is automatically enabled if such a file is detected and disabled otherwise.
 
@@ -25,5 +25,14 @@ Testing is automatically enabled if such a file is detected and disabled otherwi
 
 If testing is enabled we show you the test count / fails / passes in the status bar.
 
+## Running without alm
+
+Install `mocha` and `ts-node` and `typescript`. Now you can add something like the following to your package.json:
+
+```
+  "test": "mocha --compilers ts:ts-node/register,tsx:ts-node/register"
+```
+
+now `npm run test` 🌹.
 
 [stats]: http://www.npmtrends.com/mocha-vs-jasmine-vs-qunit-vs-jest-vs-ava
