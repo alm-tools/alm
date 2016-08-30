@@ -5,6 +5,7 @@ describe("Level.1 Suite", () => {
         });
 
         it("Level.2.2 should fail", ()=> {
+            // console.log('hey')
             throw new Error("Fail")
         });
 
