@@ -15,7 +15,7 @@ describe("Level.1 Suite", () => {
     })
 
     it("Level.1.1 should pass", ()=> {
-
+        console.log('over here as well');
     });
 
     it("Level.1.2 should fail", () => {
