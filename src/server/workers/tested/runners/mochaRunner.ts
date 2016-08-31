@@ -234,6 +234,7 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
     // console.log(suites); // DEBUG
 
     const instrumentationData = readAndDeleteDataFile(cfg.filePath);
+    // console.log(JSON.stringify(instrumentationData.logs, null, 2)); // DEBUG
 
     const result: types.TestModule = {
         filePath: cfg.filePath,

@@ -33,7 +33,7 @@ export const makeStack = (raw: string): types.TestErrorStack => {
     lines = lines.map(l => {
         if (l.endsWith(')')){
             const withStartRemoved = l.substr(l.indexOf('(') + 1);
-            const withEndRemoved = withStartRemoved.substr(0, withStartRemoved.length - 2);
+            const withEndRemoved = withStartRemoved.substr(0, withStartRemoved.length - 1);
             return withEndRemoved;
         }
         else {

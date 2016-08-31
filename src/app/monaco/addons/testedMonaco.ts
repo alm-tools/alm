@@ -54,6 +54,8 @@ export function setup(editor: Editor): { dispose: () => void } {
         /** Update logs for this file */
         const markers = thisModule.logs.map(log=>logToMonacoMarker(log));
         monaco.editor.setModelMarkers(model, markerSource, markers);
+
+        /** TODO: tested update inline `error` (failed test) for this file */
         // console.log(thisModule.logs); // DEBUG
     }, 500);
 
