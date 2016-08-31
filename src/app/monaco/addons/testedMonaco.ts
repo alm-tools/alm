@@ -55,7 +55,13 @@ export function setup(editor: Editor): { dispose: () => void } {
         const markers = thisModule.logs.map(log=>logToMonacoMarker(log));
         monaco.editor.setModelMarkers(model, markerSource, markers);
 
-        /** TODO: tested update inline `error` (failed test) for this file */
+        /**
+         * TODO: tested. Consider adding inline widgets. Find the last character in the line
+         * and add a widget there?
+         * Or maybe a complete line widget? 
+         */
+
+        /** TODO: tested update inline `error` (failed test) for this file in error pink */
         // console.log(thisModule.logs); // DEBUG
     }, 500);
 
