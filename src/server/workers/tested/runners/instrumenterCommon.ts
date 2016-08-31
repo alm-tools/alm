@@ -43,10 +43,11 @@ export const makeStack = (raw: string): types.TestErrorStack => {
 
     const stack = lines.map(l => {
         let [filePath, lineStr, chStr] = l.split(':');
-        chStr = chStr || '0';
+        chStr = chStr || '1';
 
-        const line = parseInt(lineStr);
-        const ch = parseInt(chStr);
+        /** The chrome ones are 1 based. We want 0 based */
+        const line = parseInt(lineStr) - 1;
+        const ch = parseInt(chStr) - 1;
 
         return { filePath, position: { line, ch } };
     })

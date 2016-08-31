@@ -4,12 +4,30 @@
 import {testResultsCache} from "../../clientTestResultsCache";
 import * as events from "../../../common/events";
 import * as utils from "../../../common/utils";
+import * as types from "../../../common/types";
+import * as json from "../../../common/json";
 type IDisposable = events.Disposable;
 type Editor = monaco.editor.ICodeEditor;
 
 
+const markerSource = 'alm-tested';
+
+function logToMonacoMarker(log: types.TestLog): monaco.editor.IMarkerData {
+    return {
+        severity: monaco.Severity.Info,
+        message: json.stringify(log.args),
+
+        startLineNumber: log.position.position.line + 1,
+        startColumn: log.position.position.ch + 1,
+        endLineNumber: log.position.position.line + 1,
+        endColumn: log.position.position.ch + 1,
+    };
+}
+
 export function setup(editor: Editor): { dispose: () => void } {
     // if (editor) return { dispose: () => null }; // DEBUG : while the feature isn't complete used to disable it
+
+    let hadSomeTestsResults = false;
 
     const performLogRefresh = utils.debounce((): void => {
         let filePath: string = editor.filePath;
@@ -22,10 +40,21 @@ export function setup(editor: Editor): { dispose: () => void } {
          */
         const allResults = testResultsCache.getResults();
         const thisModule = allResults[filePath];
-        if (!thisModule) return;
+        if (!thisModule) {
+            if (hadSomeTestsResults) {
+                /** TODO: tested clear them */
+                monaco.editor.setModelMarkers(model, markerSource, []);
+            }
+            hadSomeTestsResults = false;
+            return;
+        }
+
+        hadSomeTestsResults = true;
 
         /** Update logs for this file */
-        console.log(thisModule.logs);
+        const markers = thisModule.logs.map(log=>logToMonacoMarker(log));
+        monaco.editor.setModelMarkers(model, markerSource, markers);
+        // console.log(thisModule.logs); // DEBUG
     }, 500);
 
     // Perform an initial lint
