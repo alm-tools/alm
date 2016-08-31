@@ -4,8 +4,8 @@ describe("Level.1 Suite", () => {
 
         });
 
-        it("Level.2.2 should fail", ()=> {
-            // console.log('hey')
+        it("Level.2.2 should fail", () => {
+            console.log('Over here bud');
             throw new Error("Fail")
         });
 
@@ -18,7 +18,7 @@ describe("Level.1 Suite", () => {
 
     });
 
-    it("Level.1.2 should fail", ()=> {
+    it("Level.1.2 should fail", () => {
         throw new Error("Fail")
     });
 
