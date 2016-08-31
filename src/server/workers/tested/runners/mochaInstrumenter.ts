@@ -32,11 +32,13 @@ console.log = function() {
 }
 
 /**
- * TODO: tested send logs to the data file
  * Get the filePath from the arguments ;)
  */
-// log(process.argv)
-
+const filePath = process.argv[process.argv.length - 3];
+/* TODO: tested send logs to the data file */
+process.on('exit', ()=> {
+    common.writeDataFile(filePath, {logs})
+})
 
 /** Utility to get stack */
 const stackFromCaller = () => makeStack((new Error() as any).stack)

@@ -59,7 +59,7 @@ export const makeStack = (raw: string): types.TestErrorStack => {
  * - the instrumenter
  * - to the runner
  */
-const getDataFilePath = (filePath:string) => filePath + '/_almTestData.json';
+const getDataFilePath = (filePath:string) => filePath + '_almTestData.json';
 export type DataFileContents = {
     logs: types.TestLog[]
 }

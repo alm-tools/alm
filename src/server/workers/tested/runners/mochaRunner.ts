@@ -6,7 +6,7 @@ import * as cp from "child_process";
 import * as utils from "../../../../common/utils";
 import * as fsu from "../../../utils/fsu";
 import * as json from "../../../../common/json";
-import {makeStack} from "./instrumenterCommon";
+import {makeStack, readAndDeleteDataFile} from "./instrumenterCommon";
 
 const tsNodeCompilerOptions = JSON.stringify({
     /**
@@ -28,12 +28,17 @@ let mochaExec = (filePath:string) => {
 
     /** Execute this */
     const toExec
-        = [mochaPath,
+        = [
+            mochaPath,
             `${tsNodePath}/register`,
             instrumentationPath,
-            /** NOTE: the location of `filePath` in args (second last) is used by instrumenter */
+            /**
+             * NOTE: the location of `filePath` in args is used by the instrumenter
+             * -3
+             */
             filePath,
-            '--reporter', 'json'];
+            '--reporter', 'json'
+        ];
 
     // console.log("TESTED Will Exec", toExec); // DEBUG
 
@@ -228,14 +233,13 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
 
     // console.log(suites); // DEBUG
 
+    const instrumentationData = readAndDeleteDataFile(cfg.filePath);
+
     const result: types.TestModule = {
         filePath: cfg.filePath,
         suites,
 
-        /**
-         * TODO: tested get logs from data file
-         */
-        logs: [],
+        logs: instrumentationData.logs,
 
         stats: {
             testCount: stats.tests,
