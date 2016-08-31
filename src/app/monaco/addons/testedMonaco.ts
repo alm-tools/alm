@@ -15,7 +15,7 @@ const markerSource = 'alm-tested';
 function logToMonacoMarker(log: types.TestLog): monaco.editor.IMarkerData {
     return {
         severity: monaco.Severity.Info,
-        message: json.stringify(log.args),
+        message: log.args.map(a=>json.stringify(a).trim()).join('\n'),
 
         startLineNumber: log.position.position.line + 1,
         startColumn: log.position.position.ch + 1,
