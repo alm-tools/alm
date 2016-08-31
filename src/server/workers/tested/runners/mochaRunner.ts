@@ -49,11 +49,13 @@ let mochaExec = (filePath:string) => {
             env: {
                 TS_NODE_COMPILER_OPTIONS,
                 /**
-                 * Disable cache to prevent errors like:
-                 * Cannot write file '/Users/syedb/REPOS/alm/src/$$ts-node$$/common/utils.js'
-                 * because it would be overwritten by multiple input files.
+                 * Disable cache just because
                  */
                 TS_NODE_CACHE: false,
+                /**
+                 * disableWarnings as we don't want it to prevent us from running the js
+                 */
+                TS_NODE_DISABLE_WARNINGS: true,
             }
         });
 
