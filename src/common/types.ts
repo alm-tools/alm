@@ -574,7 +574,7 @@ export type TestLog = {
      * Arguments.
      * Note: they will be stringified and unstringified by the time they make it to the UI
      */
-    args: any[]
+    args: any[];
 }
 /** The root of any testing system is a test file */
 export type TestModule = {

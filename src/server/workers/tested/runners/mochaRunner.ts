@@ -9,8 +9,12 @@ import * as json from "../../../../common/json";
 import {makeStack} from "./instrumenterCommon";
 
 const tsNodeCompilerOptions = JSON.stringify({
-    allowJs: true,
-    target: 'es6',
+    /**
+     * Keep getting "cannot write file" ts / ts-node errors otherwise
+     */
+    allowJs: false,
+    /** Node's not quite there yet */
+    target: 'es5',
     module: 'commonjs'
 });
 
