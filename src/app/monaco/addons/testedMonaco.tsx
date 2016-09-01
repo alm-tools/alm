@@ -12,6 +12,55 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 type IDisposable = events.Disposable;
 type Editor = monaco.editor.ICodeEditor;
+import Position = monaco.Position;
+type ICodeEditor = monaco.editor.ICodeEditor;
+
+
+declare class _ZoneWidget {
+    constructor(...args:any[]);
+    create():void;
+    show(pos:Position, heightInLines: number): void;
+    dispose(): void;
+};
+const ZoneWidget:typeof _ZoneWidget = monacoRequire('vs/editor/contrib/zoneWidget/browser/zoneWidget').ZoneWidget;
+const dom = monacoRequire('vs/base/browser/dom');
+
+/** For reference see `gotoError.ts` in monaco source code */
+class MyMarkerWidget extends ZoneWidget {
+    private _editor: ICodeEditor;
+	private _parentContainer: HTMLElement;
+    private _container: HTMLElement;
+    private _title: HTMLElement;
+
+    constructor(editor: Editor){
+        super(editor, { showArrow: true, showFrame: true, isAccessible: false, frameColor: styles.highlightColor });
+        this.create();
+    }
+    protected _fillContainer(container: HTMLElement): void {
+		this._parentContainer = container;
+		dom.addClass(container, 'marker-widget');
+		this._parentContainer.tabIndex = 0;
+		this._parentContainer.setAttribute('role', 'tooltip');
+
+		this._container = document.createElement('div');
+		container.appendChild(this._container);
+
+		this._title = document.createElement('div');
+		this._title.className = 'block title';
+		this._container.appendChild(this._title);
+
+        this._title.innerHTML = "Hello World";
+	}
+
+    public show(where: Position, heightInLines: number): void {
+		super.show(where, heightInLines);
+		this._parentContainer.focus();
+	}
+
+    public dispose() {
+        super.dispose();
+    }
+}
 
 const keyForMonacoDifferentiation = "alm_tested"
 
@@ -67,6 +116,9 @@ export function setup(editor: Editor): { dispose: () => void } {
             log,
             node
         })
+
+        const widget = new MyMarkerWidget(editor);
+        widget.show(new Position(lineNumber, column), 10);
     }
 
 
