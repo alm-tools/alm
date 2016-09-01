@@ -17,18 +17,18 @@ type ICodeEditor = monaco.editor.ICodeEditor;
 
 
 declare class _ZoneWidget {
-    constructor(...args:any[]);
-    create():void;
-    show(pos:Position, heightInLines: number): void;
+    constructor(...args: any[]);
+    create(): void;
+    show(pos: Position, heightInLines: number): void;
     dispose(): void;
 };
-const ZoneWidget:typeof _ZoneWidget = monacoRequire('vs/editor/contrib/zoneWidget/browser/zoneWidget').ZoneWidget;
+const ZoneWidget: typeof _ZoneWidget = monacoRequire('vs/editor/contrib/zoneWidget/browser/zoneWidget').ZoneWidget;
 const dom = monacoRequire('vs/base/browser/dom');
 
 /** For reference see `gotoError.ts` in monaco source code */
 class MyMarkerWidget extends ZoneWidget {
     private _editor: ICodeEditor;
-	private _parentContainer: HTMLElement;
+    private _parentContainer: HTMLElement;
     private _container: HTMLElement;
     private _title: HTMLElement;
 
@@ -36,9 +36,9 @@ class MyMarkerWidget extends ZoneWidget {
         editor: Editor,
         frameColor: string,
         domNode: HTMLDivElement,
-        position: {line: number, ch: number},
+        position: { line: number, ch: number },
         heightInLines: number,
-    }){
+    }) {
         super(config.editor, {
             showArrow: true,
             showFrame: true,
@@ -50,13 +50,13 @@ class MyMarkerWidget extends ZoneWidget {
         this.show(position, config.heightInLines);
     }
     protected _fillContainer(container: HTMLElement): void {
-		this._parentContainer = container;
-		dom.addClass(container, 'marker-widget');
-		this._parentContainer.tabIndex = 0;
-		this._parentContainer.setAttribute('role', 'tooltip');
+        this._parentContainer = container;
+        dom.addClass(container, 'marker-widget');
+        this._parentContainer.tabIndex = 0;
+        this._parentContainer.setAttribute('role', 'tooltip');
 
-		this._parentContainer.appendChild(this.config.domNode);
-	}
+        this._parentContainer.appendChild(this.config.domNode);
+    }
 
     public dispose() {
         super.dispose();
@@ -104,7 +104,7 @@ export function setup(editor: Editor): { dispose: () => void } {
             editor,
             frameColor: styles.highlightColor,
             domNode: node,
-            position: {line, ch},
+            position: { line, ch },
             heightInLines: argsStringifiedAndJoined.split('\n').length + 1,
         });
 
@@ -169,9 +169,46 @@ export function setup(editor: Editor): { dispose: () => void } {
 
 
 /**
- * Imagine a data structure that has
- * List<T>
- * getId()T
+ * Imagine a data structure that takes `T[]`
+ * and given `getId(): T`
+ *
+ * Calls these on delta for `T[]`
+ *
  * onAdd => do stuff
  * onRemove => do stuff
  */
+class DeltaList<T> {
+    constructor(private config: {
+        getId: (item: T) => string;
+        onAdd: (item: T) => any;
+        onRemove: (item: T) => any;
+    }) { }
+
+    private map: { [id: string]: T } = Object.create(null);
+
+    delta(items: T[]) {
+        /** new dict */
+        const newDict = Object.create(null);
+        items.forEach(item => newDict[this.config.getId(item)] = item);
+
+        /** old dict */
+        const oldDict = this.map;
+
+        /** Added? */
+        items.forEach(item => {
+            const id = this.config.getId(item);
+            if (!oldDict[id]) {
+                this.config.onAdd(item);
+            }
+        });
+
+        /** Removed? */
+        Object.keys(oldDict).forEach(id => {
+            if (!newDict[id]){
+                this.config.onRemove(oldDict[id]);
+            }
+        });
+
+        this.map = newDict;
+    }
+}
