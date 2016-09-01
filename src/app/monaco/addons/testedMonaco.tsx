@@ -39,41 +39,35 @@ export function setup(editor: Editor): { dispose: () => void } {
 
     type Widget = {
         widgetDispose: {dispose():void},
-        log: types.TestLog,
-        node: HTMLDivElement;
     }
-    const widgets: Widget[] = [];
-    const getWidgetId = (log: types.TestLog) => {
-        return `${keyForMonacoDifferentiation} - ${log.position.position.line} - ${log.position.position.ch}`;
-    }
-    const addContentWidget = (log: types.TestLog) => {
-        const argsStringifiedAndJoined = log.args.map((a) => json.stringify(a).trim()).join('\n-----\n');
+    const deltaWidgets = new DeltaList<types.TestLog, Widget>({
+        getId: (log: types.TestLog) => {
+            return `${keyForMonacoDifferentiation} - ${JSON.stringify(log)}`;
+        },
+        onAdd:(log) => {
+            const argsStringifiedAndJoined = log.args.map((a) => json.stringify(a).trim()).join('\n-----\n');
 
-        let nodeRendered =
-            <div className={TestedMonacoStyles.logOverlayClassName}>
-                {argsStringifiedAndJoined}
-            </div>;
-        let node = document.createElement('div');
-        ReactDOM.render(nodeRendered, node);
+            let nodeRendered =
+                <div className={TestedMonacoStyles.logOverlayClassName}>
+                    {argsStringifiedAndJoined}
+                </div>;
+            let node = document.createElement('div');
+            ReactDOM.render(nodeRendered, node);
 
-        const line = log.position.position.line;
-        const ch = log.position.position.ch;
+            const line = log.position.position.line;
+            const ch = log.position.position.ch;
 
-        const widgetDispose = MonacoInlineWidget.add({
-            editor,
-            frameColor: styles.highlightColor,
-            domNode: node,
-            position: { line, ch },
-            heightInLines: argsStringifiedAndJoined.split('\n').length + 1,
-        });
-
-        widgets.push({
-            widgetDispose,
-            log,
-            node
-        });
-    }
-
+            const widgetDispose = MonacoInlineWidget.add({
+                editor,
+                frameColor: styles.highlightColor,
+                domNode: node,
+                position: { line, ch },
+                heightInLines: argsStringifiedAndJoined.split('\n').length + 1,
+            });
+            return {widgetDispose};
+        },
+        onRemove: (log, state) => state.widgetDispose.dispose(),
+    });
 
     const performLogRefresh = utils.debounce((): void => {
         let filePath: string = editor.filePath;
@@ -88,8 +82,7 @@ export function setup(editor: Editor): { dispose: () => void } {
         const thisModule = allResults[filePath];
         if (!thisModule) {
             if (hadSomeTestsResults) {
-                /** TODO: tested clear them */
-
+                deltaWidgets.delta([]);
             }
             hadSomeTestsResults = false;
             return;
@@ -105,7 +98,7 @@ export function setup(editor: Editor): { dispose: () => void } {
          * For those new add them.
          */
 
-        thisModule.logs.map(addContentWidget);
+        deltaWidgets.delta(thisModule.logs);
 
         /**
          * TODO: tested. Consider adding inline widgets. Find the last character in the line
@@ -133,22 +126,36 @@ export function setup(editor: Editor): { dispose: () => void } {
  *
  * Calls these on delta for `T[]`
  *
- * onAdd => do stuff
+ * onAdd => do stuff and give me some state I will call for onRemove
  * onRemove => do stuff
  */
-class DeltaList<T> {
+class DeltaList<T,State> {
     constructor(private config: {
         getId: (item: T) => string;
-        onAdd: (item: T) => any;
-        onRemove: (item: T) => any;
+        onAdd: (item: T) => State;
+        onRemove: (item: T, state: State) => void;
     }) { }
 
-    private map: { [id: string]: T } = Object.create(null);
+    private map: {
+        [id: string]: {
+            item: T,
+            state: State,
+        }
+    } = Object.create(null);
 
     delta(items: T[]) {
         /** new dict */
-        const newDict = Object.create(null);
-        items.forEach(item => newDict[this.config.getId(item)] = item);
+        const newDict:{
+            [id: string]: {
+                item: T,
+                /** State will be initialized if its new */
+                state: any
+            }
+        } = Object.create(null);
+        items.forEach(item => newDict[this.config.getId(item)] = {
+            item,
+            state: {}
+        });
 
         /** old dict */
         const oldDict = this.map;
@@ -157,14 +164,18 @@ class DeltaList<T> {
         items.forEach(item => {
             const id = this.config.getId(item);
             if (!oldDict[id]) {
-                this.config.onAdd(item);
+                const state = this.config.onAdd(item);
+                newDict[id] = {
+                    item,
+                    state
+                }
             }
         });
 
         /** Removed? */
         Object.keys(oldDict).forEach(id => {
             if (!newDict[id]){
-                this.config.onRemove(oldDict[id]);
+                this.config.onRemove(oldDict[id].item, oldDict[id].state);
             }
         });
 
