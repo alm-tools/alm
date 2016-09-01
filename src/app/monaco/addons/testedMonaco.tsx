@@ -144,25 +144,19 @@ class DeltaList<T,State> {
     } = Object.create(null);
 
     delta(items: T[]) {
-        /** new dict */
-        const newDict:{
-            [id: string]: {
-                item: T,
-                /** State will be initialized if its new */
-                state: any
-            }
-        } = Object.create(null);
-        items.forEach(item => newDict[this.config.getId(item)] = {
-            item,
-            state: {}
-        });
+        /** for quick lookup */
+        const quickNewItemLookup = utils.createMap(items.map(this.config.getId));
+
+        /** New dict */
+        let newDict = this.map;
+        newDict = Object.create(null);
 
         /** old dict */
         const oldDict = this.map;
 
-        /** Added? */
         items.forEach(item => {
             const id = this.config.getId(item);
+            /** Added? */
             if (!oldDict[id]) {
                 const state = this.config.onAdd(item);
                 newDict[id] = {
@@ -170,11 +164,15 @@ class DeltaList<T,State> {
                     state
                 }
             }
+            /** Just copy over */
+            else {
+                newDict[id] = oldDict[id];
+            }
         });
 
         /** Removed? */
         Object.keys(oldDict).forEach(id => {
-            if (!newDict[id]){
+            if (!quickNewItemLookup[id]){
                 this.config.onRemove(oldDict[id].item, oldDict[id].state);
             }
         });
