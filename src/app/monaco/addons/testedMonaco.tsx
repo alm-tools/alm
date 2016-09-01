@@ -16,60 +16,19 @@ import Position = monaco.Position;
 type ICodeEditor = monaco.editor.ICodeEditor;
 
 
-declare class _ZoneWidget {
-    constructor(...args: any[]);
-    create(): void;
-    show(pos: Position, heightInLines: number): void;
-    dispose(): void;
-};
-const ZoneWidget: typeof _ZoneWidget = monacoRequire('vs/editor/contrib/zoneWidget/browser/zoneWidget').ZoneWidget;
-const dom = monacoRequire('vs/base/browser/dom');
-
-/** For reference see `gotoError.ts` in monaco source code */
-class MyMarkerWidget extends ZoneWidget {
-    private _editor: ICodeEditor;
-    private _parentContainer: HTMLElement;
-    private _container: HTMLElement;
-    private _title: HTMLElement;
-
-    constructor(private config: {
-        editor: Editor,
-        frameColor: string,
-        domNode: HTMLDivElement,
-        position: { line: number, ch: number },
-        heightInLines: number,
-    }) {
-        super(config.editor, {
-            showArrow: true,
-            showFrame: true,
-            isAccessible: false,
-            frameColor: config.frameColor,
-        });
-        this.create();
-        const position = new Position(config.position.line + 1, config.position.ch + 1);
-        this.show(position, config.heightInLines);
-    }
-    protected _fillContainer(container: HTMLElement): void {
-        this._parentContainer = container;
-        dom.addClass(container, 'marker-widget');
-        this._parentContainer.tabIndex = 0;
-        this._parentContainer.setAttribute('role', 'tooltip');
-
-        this._parentContainer.appendChild(this.config.domNode);
-    }
-
-    public dispose() {
-        super.dispose();
-    }
-}
-
 const keyForMonacoDifferentiation = "alm_tested"
 
 namespace TestedMonacoStyles {
     export const logOverlayClassName = fstyle.style({
         whiteSpace: 'pre',
         color: styles.highlightColor,
-        pointerEvents: 'none'
+        pointerEvents: 'none',
+
+        /**
+         * This is to match the line height for a line in monaco
+         * Inspected a line in monaco to figure this out
+         */
+        lineHeight: '24px',
     })
 }
 
@@ -79,7 +38,7 @@ export function setup(editor: Editor): { dispose: () => void } {
     let hadSomeTestsResults = false;
 
     type Widget = {
-        widget: MyMarkerWidget,
+        widgetDispose: {dispose():void},
         log: types.TestLog,
         node: HTMLDivElement;
     }
@@ -100,7 +59,7 @@ export function setup(editor: Editor): { dispose: () => void } {
         const line = log.position.position.line;
         const ch = log.position.position.ch;
 
-        const widget = new MyMarkerWidget({
+        const widgetDispose = MonacoInlineWidget.add({
             editor,
             frameColor: styles.highlightColor,
             domNode: node,
@@ -109,7 +68,7 @@ export function setup(editor: Editor): { dispose: () => void } {
         });
 
         widgets.push({
-            widget,
+            widgetDispose,
             log,
             node
         });
@@ -210,5 +169,55 @@ class DeltaList<T> {
         });
 
         this.map = newDict;
+    }
+}
+
+namespace MonacoInlineWidget {
+    declare class _ZoneWidget {
+        constructor(...args: any[]);
+        create(): void;
+        show(pos: Position, heightInLines: number): void;
+        dispose(): void;
+    };
+    const ZoneWidget: typeof _ZoneWidget = monacoRequire('vs/editor/contrib/zoneWidget/browser/zoneWidget').ZoneWidget;
+
+    type Config = {
+        editor: Editor,
+        frameColor: string,
+        domNode: HTMLDivElement,
+        position: { line: number, ch: number },
+        heightInLines: number,
+    }
+
+    /** For reference see `gotoError.ts` in monaco source code */
+    class MyMarkerWidget extends ZoneWidget {
+        private _editor: ICodeEditor;
+        private _parentContainer: HTMLElement;
+
+        constructor(private config: Config) {
+            super(config.editor, {
+                showArrow: true,
+                showFrame: true,
+                isAccessible: false,
+                frameColor: config.frameColor,
+            });
+            this.create();
+            const position = new Position(config.position.line + 1, config.position.ch + 1);
+            this.show(position, config.heightInLines);
+        }
+        protected _fillContainer(container: HTMLElement): void {
+            this._parentContainer = container;
+            this._parentContainer.tabIndex = 0;
+            this._parentContainer.setAttribute('role', 'tooltip');
+            this._parentContainer.appendChild(this.config.domNode);
+        }
+
+        public dispose() {
+            super.dispose();
+        }
+    }
+
+    export function add(config: Config): { dispose: () => void } {
+        return new MyMarkerWidget(config);
     }
 }
