@@ -45,7 +45,9 @@ export function setup(editor: Editor): { dispose: () => void } {
             return `${keyForMonacoDifferentiation} - ${JSON.stringify(log)}`;
         },
         onAdd:(log) => {
-            const argsStringifiedAndJoined = log.args.map((a) => json.stringify(a).trim()).join('\n-----\n');
+            const argsStringifiedAndJoined =
+                log.args.map((a) => json.stringify(a).trim())
+                    .join('\n———————————————\n');
 
             let nodeRendered =
                 <div className={TestedMonacoStyles.logOverlayClassName}>
