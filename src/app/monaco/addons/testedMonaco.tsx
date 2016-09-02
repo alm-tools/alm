@@ -207,9 +207,6 @@ namespace MonacoInlineWidget {
 
         constructor(private config: Config) {
             super(config.editor, {
-                showArrow: true,
-                showFrame: true,
-                isAccessible: false,
                 frameColor: config.frameColor,
             });
             this.create();
@@ -229,6 +226,25 @@ namespace MonacoInlineWidget {
     }
 
     export function add(config: Config): { dispose: () => void } {
-        return new MyMarkerWidget(config);
+        /**
+         * Store some stuff before adding
+         */
+        /** The widget jumps the cursor position. Don't do that */
+        const position = config.editor.getPosition();
+        /** Also jumps scroll position */
+        const scrollTop = config.editor.getScrollTop();
+
+        /** Add  */
+        const widget = new MyMarkerWidget(config);
+
+        /**
+         * Restore stuff after adding
+         */
+        config.editor.setPosition(position);
+        setTimeout(()=> {
+            config.editor.setScrollTop(scrollTop);
+        })
+
+        return widget;
     }
 }
