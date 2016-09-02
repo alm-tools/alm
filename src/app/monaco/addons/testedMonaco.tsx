@@ -37,10 +37,8 @@ export function setup(editor: Editor): { dispose: () => void } {
 
     let hadSomeTestsResults = false;
 
-    type Widget = {
-        widgetDispose: {dispose():void},
-    }
-    const deltaWidgets = new DeltaList<types.TestLog, Widget>({
+    type WidgetDispose = { dispose(): void };
+    const deltaLogWidgets = new DeltaList<types.TestLog, WidgetDispose>({
         getId: (log: types.TestLog) => {
             return `${keyForMonacoDifferentiation} - ${JSON.stringify(log)}`;
         },
@@ -66,9 +64,9 @@ export function setup(editor: Editor): { dispose: () => void } {
                 position: { line, ch },
                 heightInLines: argsStringifiedAndJoined.split('\n').length + 1,
             });
-            return {widgetDispose};
+            return widgetDispose;
         },
-        onRemove: (log, state) => state.widgetDispose.dispose(),
+        onRemove: (log, state) => state.dispose(),
     });
 
     const performLogRefresh = utils.debounce((): void => {
@@ -84,7 +82,7 @@ export function setup(editor: Editor): { dispose: () => void } {
         const thisModule = allResults[filePath];
         if (!thisModule) {
             if (hadSomeTestsResults) {
-                deltaWidgets.delta([]);
+                deltaLogWidgets.delta([]);
             }
             hadSomeTestsResults = false;
             return;
@@ -100,7 +98,7 @@ export function setup(editor: Editor): { dispose: () => void } {
          * For those new add them.
          */
 
-        deltaWidgets.delta(thisModule.logs);
+        deltaLogWidgets.delta(thisModule.logs);
 
         /**
          * TODO: tested. Consider adding inline widgets. Find the last character in the line
