@@ -91,20 +91,12 @@ export function setup(editor: Editor): { dispose: () => void } {
         hadSomeTestsResults = true;
 
         /**
-         * TODO: tested
          * Update logs for this file
          * For those found update them
          * For those not found delete them
          * For those new add them.
          */
-
         deltaLogWidgets.delta(thisModule.logs);
-
-        /**
-         * TODO: tested. Consider adding inline widgets. Find the last character in the line
-         * and add a widget there?
-         * Or maybe a complete line widget?
-         */
 
         /** TODO: tested update inline `error` (failed test) for this file in error pink */
         // console.log(thisModule.logs); // DEBUG
