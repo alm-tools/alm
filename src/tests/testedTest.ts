@@ -4,9 +4,13 @@ describe("Level.1 Suite", () => {
 
         });
 
+        const alwaysThrow = () => { throw new Error("Hey baby") };
+
+        const callAlwaysThrow = () => alwaysThrow();
+
         it("Level.2.2 should fail", () => {
-            console.log('Over here bud');
-            throw new Error("Fail")
+            console.log('Your face');
+            callAlwaysThrow();
         });
 
         it.skip("Level.2.3 skipped", ()=> {
@@ -16,7 +20,7 @@ describe("Level.1 Suite", () => {
 
     it("Level.1.1 should pass", () => {
         const something = 456;
-        console.log('over here as well', {something}, "another", "and another ");
+        console.log('over here as well', { something }, "another","Yeah baby totally");
     });
 
     it("Level.1.2 should fail", () => {

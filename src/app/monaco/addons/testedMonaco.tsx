@@ -17,11 +17,11 @@ type ICodeEditor = monaco.editor.ICodeEditor;
 
 
 const keyForMonacoDifferentiation = "alm_tested"
+const lineSeperator = '\n———————————————\n';
 
 namespace TestedMonacoStyles {
-    export const logOverlayClassName = fstyle.style({
+    const overlayCommon = {
         whiteSpace: 'pre',
-        color: styles.highlightColor,
         pointerEvents: 'none',
 
         /**
@@ -29,7 +29,21 @@ namespace TestedMonacoStyles {
          * Inspected a line in monaco to figure this out
          */
         lineHeight: '24px',
-    })
+    }
+
+    export const logOverlayClassName = fstyle.style(
+        overlayCommon,
+        {
+            color: styles.highlightColor,
+        }
+    );
+
+    export const errorStackOverlayClassName = fstyle.style(
+        overlayCommon,
+        {
+            color: styles.errorColor,
+        }
+    );
 }
 
 export function setup(editor: Editor): { dispose: () => void } {
@@ -45,7 +59,7 @@ export function setup(editor: Editor): { dispose: () => void } {
         onAdd:(log) => {
             const argsStringifiedAndJoined =
                 log.args.map((a) => json.stringify(a).trim())
-                    .join('\n———————————————\n');
+                    .join(lineSeperator);
 
             let nodeRendered =
                 <div className={TestedMonacoStyles.logOverlayClassName}>
@@ -69,6 +83,47 @@ export function setup(editor: Editor): { dispose: () => void } {
         onRemove: (log, state) => state.dispose(),
     });
 
+    const deltaTestResultsWidgets = new DeltaList<types.TestResult, WidgetDispose>({
+        getId: (result: types.TestResult) => {
+            return `${keyForMonacoDifferentiation} - ${JSON.stringify(result)}`;
+        },
+        onAdd: (result) => {
+            /**
+             * TODO: tested do something for passing ones
+             * Nothing for passing ones yet
+             */
+            if (!result.error) return {dispose:()=>null};
+
+            let detailsStringifiedAndJoined =
+                result.error.stack
+                    /** Remove the first one as that is where we will show the error */
+                    .slice(1)
+                    .map((a) => `${a.filePath}:${a.position.line + 1}:${a.position.ch + 1}`)
+                    .join(lineSeperator);
+            detailsStringifiedAndJoined = `${result.error.message}${lineSeperator}${detailsStringifiedAndJoined}`
+
+            let nodeRendered =
+                <div className={TestedMonacoStyles.errorStackOverlayClassName}>
+                    {detailsStringifiedAndJoined}
+                </div>;
+            let node = document.createElement('div');
+            ReactDOM.render(nodeRendered, node);
+
+            const line = result.error.position.line;
+            const ch = result.error.position.ch;
+
+            const widgetDispose = MonacoInlineWidget.add({
+                editor,
+                frameColor: styles.errorColor,
+                domNode: node,
+                position: { line, ch },
+                heightInLines: detailsStringifiedAndJoined.split('\n').length + 1,
+            });
+            return widgetDispose;
+        },
+        onRemove: (result, state) => state.dispose(),
+    });
+
     const performLogRefresh = utils.debounce((): void => {
         let filePath: string = editor.filePath;
         let model: monaco.editor.IModel = editor.getModel();
@@ -83,6 +138,7 @@ export function setup(editor: Editor): { dispose: () => void } {
         if (!thisModule) {
             if (hadSomeTestsResults) {
                 deltaLogWidgets.delta([]);
+                deltaTestResultsWidgets.delta([]);
             }
             hadSomeTestsResults = false;
             return;
@@ -98,7 +154,9 @@ export function setup(editor: Editor): { dispose: () => void } {
          */
         deltaLogWidgets.delta(thisModule.logs);
 
-        /** TODO: tested update inline `error` (failed test) for this file in error pink */
+        /** Also show the test results */
+        deltaTestResultsWidgets.delta(thisModule.testResults);
+
         // console.log(thisModule.logs); // DEBUG
     }, 500);
 

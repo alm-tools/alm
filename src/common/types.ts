@@ -583,6 +583,12 @@ export type TestModule = {
     /** From instrumentation */
     logs: TestLog[];
 
+    /**
+     * Also contained in the `suites`
+     * But raised up for better module level overview
+     */
+    testResults: TestResult[];
+
     /** Present once its been run */
     suites: TestSuiteResult[];
     stats: TestContainerStats;

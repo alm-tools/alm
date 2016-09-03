@@ -104,6 +104,8 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
 
     const suites: types.TestSuiteResult[] = [];
 
+    const testResults: types.TestResult[] = [];
+
     /**
      * PLAN
      * Collect first level suites
@@ -194,7 +196,7 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
             }
             const err = test.err as Err;
 
-            const message = err.stack;
+            const message = err.message;
             const stack = makeStack(err.stack);
 
             /**
@@ -219,6 +221,7 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
             error: makeTestError(test)
         }
 
+        /** Add to the suite  */
         suite.tests.push(testResult);
 
         /** Update suite stats */
@@ -229,6 +232,9 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
             skipCount: testResult.status === types.TestStatus.Skipped ? suite.stats.skipCount + 1 : suite.stats.skipCount,
             durationMs: suite.stats.durationMs + (testResult.durationMs || 0),
         }
+
+        /** Also add to the root module */
+        testResults.push(testResult);
     });
 
     // console.log(suites); // DEBUG
@@ -241,6 +247,8 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
         suites,
 
         logs: instrumentationData.logs,
+
+        testResults,
 
         stats: {
             testCount: stats.tests,
