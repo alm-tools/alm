@@ -6,7 +6,7 @@ import * as types from "../../../../common/types";
 export {TestLog} from "../../../../common/types";
 import {stringify} from "../../../../common/json";
 export {stringify} from "../../../../common/json";
-import {writeFile, readFile, deleteFile} from "../../../utils/fsu";
+import {writeFile, readFile, deleteFile, consistentPath} from "../../../utils/fsu";
 
 /**
 Error: Fail
@@ -43,11 +43,15 @@ export const makeStack = (raw: string): types.TestErrorStack => {
 
     const stack = lines.map(l => {
         let [filePath, lineStr, chStr] = l.split(':');
-        chStr = chStr || '1';
 
-        /** The chrome ones are 1 based. We want 0 based */
+        filePath = consistentPath(filePath);
+
+        /**
+         * The chrome ones are 1 based. We want 0 based
+         * Also `chStr` is optional
+         */
         const line = parseInt(lineStr) - 1;
-        const ch = parseInt(chStr) - 1;
+        const ch = parseInt(chStr || '1') - 1;
 
         return { filePath, position: { line, ch } };
     })
