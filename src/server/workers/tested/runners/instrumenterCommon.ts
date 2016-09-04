@@ -42,16 +42,18 @@ export const makeStack = (raw: string): types.TestErrorStack => {
     });
 
     const stack = lines.map(l => {
-        let [filePath, lineStr, chStr] = l.split(':');
+        let parts = l.split(':');
 
-        filePath = consistentPath(filePath);
+        const chStr = parts[parts.length - 1];
+        const lineStr = parts[parts.length - 2];
+        /** NOTE: file path on windows will contain `:`. Hence the join */
+        const filePath = parts.slice(0, parts.length - 2).join(':');
 
         /**
          * The chrome ones are 1 based. We want 0 based
-         * Also `chStr` is optional
          */
         const line = parseInt(lineStr) - 1;
-        const ch = parseInt(chStr || '1') - 1;
+        const ch = parseInt(chStr) - 1;
 
         return { filePath, position: { line, ch } };
     })
