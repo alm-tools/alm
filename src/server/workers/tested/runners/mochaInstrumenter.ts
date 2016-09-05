@@ -40,3 +40,50 @@ const filePath = process.argv[process.argv.length - 1];
 process.on('exit', ()=> {
     common.writeDataFile(filePath, {logs})
 })
+
+
+/**
+ * Intercept all calls to describe and it
+ * TODO: tested to note down positions
+ */
+var Mocha = require('mocha');
+const origBDD = Mocha.interfaces["bdd"];
+Mocha.interfaces["bdd"] = function(suite) {
+    // Still do what the original one did to let its `pre-require` pass
+    origBDD(suite);
+
+    const addToDescribe = function() {
+        const stack = stackFromCaller().slice(1);
+        const args = ((Array as any).from(arguments));
+        const testLogPosition = makeTestLogPosition(filePath, stack);
+    }
+
+    // And attach our own custom pre-require to fixup context watchers
+    suite.on('pre-require', function(context, file, mocha) {
+        const origDescribe = context.describe;
+        const origDescribeOnly = context.describe.only;
+        const origDescribeSkip = context.describe.skip;
+        context.describe = function(title) {
+            return origDescribe.apply(context,arguments);
+        }
+        context.describe.only = function(title){
+            return origDescribeOnly.apply(origDescribe,arguments);
+        }
+        context.describe.skip = function(title){
+            return origDescribeSkip.apply(origDescribe,arguments);
+        }
+
+        const origIt = context.it;
+        const origItOnly = context.it.only;
+        const origItSkip = context.it.skip;
+        context.it = function(title){
+            return origIt.apply(context,arguments);
+        }
+        context.it.only = function(title){
+            return origItOnly.apply(origIt,arguments);
+        }
+        context.it.skip = function(title){
+            return origItSkip.apply(origIt,arguments);
+        }
+    });
+}
