@@ -15,7 +15,11 @@ const tsNodeCompilerOptions = JSON.stringify({
     allowJs: false,
     /** Node's not quite there yet */
     target: 'es5',
-    module: 'commonjs'
+    module: 'commonjs',
+
+    /** Hopefully prevent a few source map bugs */
+    sourceMap: true,
+    inlineSources: true,
 });
 
 /** Main utility function to execute a command */
