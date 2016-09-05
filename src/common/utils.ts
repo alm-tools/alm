@@ -338,7 +338,10 @@ export function stringEnum(x){
     Object.keys(x).map((key) => x[key] = key);
 }
 
-/** Just adds your intercept function to be called whenever the original function in called */
+/**
+ * Just adds your intercept function to be called whenever the original function in called
+ * Calls your function *before* the original is called
+ */
 export function intercepted<T extends Function>(config: {context:any;orig:T;intercept:T}):T{
     return function(){
         config.intercept.apply(null, arguments);
