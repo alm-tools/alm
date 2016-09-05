@@ -27,8 +27,11 @@ namespace TestedMonacoStyles {
         /**
          * This is to match the line height for a line in monaco
          * Inspected a line in monaco to figure this out
+         * On mac it was 24px
+         * On windows it was 22px.
+         * Going with the small value globally instead of trying to figure it out
          */
-        lineHeight: '24px',
+        lineHeight: '22px',
     }
 
     export const logOverlayClassName = fstyle.style(
