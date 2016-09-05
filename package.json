@@ -7,6 +7,8 @@
     "alm": "./bin/alm"
   },
   "scripts": {
+    "start": "nodemon",
+    "alm": "alm -o",
     "test": "echo \"Testing is just build at the moment, run from prepublish\"",
     "clean": "rm ./src/public/build/bundle.js",
     "prepublish": "bash ./scripts/prepublish.sh",
@@ -71,6 +73,7 @@
     "update-notifier": "1.0.2"
   },
   "devDependencies": {
+    "alm": "latest",
     "clipboard": "^1.4.2",
     "css-loader": "^0.24.0",
     "csx": "4.0.0",
@@ -88,6 +91,7 @@
     "marked": "^0.3.5",
     "mocha": "^2.4.5",
     "mousetrap": "^1.5.3",
+    "nodemon": "1.10.2",
     "normalize.css": "^3.0.3",
     "onresize": "^1.0.1",
     "react": "15.3.1",
