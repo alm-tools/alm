@@ -14,10 +14,9 @@ const {stringify, makeStack, makeTestLogPosition} = common;
  * Collects all our logs
  */
 const logs: TestLog[] = [];
-const addToLogs = (theArgs: IArguments) => {
-    /** 0 is our caller. 1 is *our* caller's caller */
-    const stack = stackFromCaller().slice(1);
-    const args = ((Array as any).from(theArgs));
+const addToLogs = function() {
+    const stack = stackFromCaller()
+    const args = ((Array as any).from(arguments));
     const testLogPosition = makeTestLogPosition(filePath, stack);
     logs.push({ testLogPosition, args });
 }
@@ -28,9 +27,10 @@ const addToLogs = (theArgs: IArguments) => {
  * the whole `console` is actually readonly in nodejs and cannot be set.
  */
 const log = console.log.bind(console);
-console.log = function() {
-    addToLogs(arguments);
-}
+console.log = addToLogs;
+console.warn = addToLogs;
+console.error = addToLogs;
+
 
 /**
  * Get the filePath from the arguments ;)
