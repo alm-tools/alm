@@ -6,7 +6,7 @@ import * as types from "../../../../common/types";
 export {TestLog} from "../../../../common/types";
 import {stringify} from "../../../../common/json";
 export {stringify} from "../../../../common/json";
-import {writeFile, readFile, deleteFile, consistentPath} from "../../../utils/fsu";
+import { writeFile, readFile, deleteFile, consistentPath } from "../../../utils/fsu";
 
 /**
 Error: Fail
@@ -60,7 +60,9 @@ export const makeStack = (raw: string): types.TestErrorStack => {
     return stack;
 }
 
-
+/**
+ * When we care about the last log point in the file.
+ */
 export const makeTestLogPosition = (filePath: string, stack: types.TestErrorStack): types.TestLogPosition => {
     const tipOfTheStack = stack[0];
     const result: types.TestLogPosition = {
@@ -70,6 +72,15 @@ export const makeTestLogPosition = (filePath: string, stack: types.TestErrorStac
     }
     return result;
 }
+
+/** Utility to get stack */
+export const stackFromCaller = () => makeStack((new Error() as any).stack)
+    /**
+     * Skip 1 as its this function
+     * Skip another as its the function calling us
+     */
+    .slice(2);
+
 
 /**
  * We use the file to pass information from

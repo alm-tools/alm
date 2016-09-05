@@ -8,14 +8,14 @@
 /** Our only import */
 import * as common from "./instrumenterCommon";
 import {TestLog} from "./instrumenterCommon";
-const {stringify, makeStack, makeTestLogPosition} = common;
+const {stringify, makeStack, makeTestLogPosition, stackFromCaller} = common;
 
 /**
  * Collects all our logs
  */
 const logs: TestLog[] = [];
 const addToLogs = function() {
-    const stack = stackFromCaller()
+    const stack = stackFromCaller();
     const args = ((Array as any).from(arguments));
     const testLogPosition = makeTestLogPosition(filePath, stack);
     logs.push({ testLogPosition, args });
@@ -40,11 +40,3 @@ const filePath = process.argv[process.argv.length - 3];
 process.on('exit', ()=> {
     common.writeDataFile(filePath, {logs})
 })
-
-/** Utility to get stack */
-const stackFromCaller = () => makeStack((new Error() as any).stack)
-    /**
-     * Skip 1 as its this function
-     * Skip another as its the function calling us
-     */
-    .slice(2);
