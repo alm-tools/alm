@@ -30,8 +30,8 @@ let mochaExec = (filePath:string) => {
     const toExec
         = [
             mochaPath,
-            `${tsNodePath}/register`,
-            instrumentationPath,
+            '--require', `${tsNodePath}/register`,
+            '--require', instrumentationPath,
             '--reporter', 'json',
             /**
              * NOTE: the location of `filePath` in args is used by the instrumenter
