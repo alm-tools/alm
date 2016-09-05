@@ -23,7 +23,7 @@ let mochaExec = (filePath:string) => {
     /** Find key paths */
     const nodeModulesFolder = fsu.travelUpTheDirectoryTreeTillYouFind(__dirname, "node_modules");
     const tsNodePath = `${nodeModulesFolder}/ts-node`;
-    const mochaPath = `${nodeModulesFolder}/mocha/bin/mocha`;
+    const mochaPath = `${nodeModulesFolder}/mocha/bin/_mocha`;
     const instrumentationPath = __dirname + '/mochaInstrumenter.ts';
 
     /** Execute this */
