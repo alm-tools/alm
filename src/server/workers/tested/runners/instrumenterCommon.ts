@@ -4,7 +4,7 @@
  */
 import * as types from "../../../../common/types";
 export {TestLog} from "../../../../common/types";
-import {stringify} from "../../../../common/json";
+import {stringify, parse} from "../../../../common/json";
 export {stringify} from "../../../../common/json";
 import { writeFile, readFile, deleteFile, consistentPath } from "../../../utils/fsu";
 
@@ -98,7 +98,9 @@ export const writeDataFile = (filePath: string, contents: DataFileContents) => {
 }
 export const readAndDeleteDataFile = (filePath: string) => {
     const dataFilePath = getDataFilePath(filePath);
-    const result: DataFileContents = JSON.parse(readFile(dataFilePath));
+    const result: DataFileContents = parse<DataFileContents>(readFile(dataFilePath)).data || {
+        logs: []
+    };
     deleteFile(dataFilePath);
     return result;
 }
