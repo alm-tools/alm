@@ -71,14 +71,11 @@ export function setup(editor: Editor): { dispose: () => void } {
             let node = document.createElement('div');
             ReactDOM.render(nodeRendered, node);
 
-            const line = log.position.position.line;
-            const ch = log.position.position.ch;
-
             const widgetDispose = MonacoInlineWidget.add({
                 editor,
                 frameColor: styles.highlightColor,
                 domNode: node,
-                position: { line, ch },
+                position: log.testLogPosition.lastPositionInFile,
                 heightInLines: argsStringifiedAndJoined.split('\n').length + 1,
             });
             return widgetDispose;
@@ -112,14 +109,11 @@ export function setup(editor: Editor): { dispose: () => void } {
             let node = document.createElement('div');
             ReactDOM.render(nodeRendered, node);
 
-            const line = result.error.position.line;
-            const ch = result.error.position.ch;
-
             const widgetDispose = MonacoInlineWidget.add({
                 editor,
                 frameColor: styles.errorColor,
                 domNode: node,
-                position: { line, ch },
+                position: result.error.testLogPosition.lastPositionInFile,
                 heightInLines: detailsStringifiedAndJoined.split('\n').length + 1,
             });
             return widgetDispose;

@@ -20,7 +20,6 @@ Error: Fail
   at next (D:\REPOS\alm\node_modules\mocha\lib\runner.js:285:14)
   at Immediate._onImmediate (D:\REPOS\alm\node_modules\mocha\lib\runner.js:327:5)
 */
-
 export const makeStack = (raw: string): types.TestErrorStack => {
     let lines = raw.split(/\r\n?|\n/);
     /** First line is just the error message. Don't need it */
@@ -47,7 +46,7 @@ export const makeStack = (raw: string): types.TestErrorStack => {
         const chStr = parts[parts.length - 1];
         const lineStr = parts[parts.length - 2];
         /** NOTE: file path on windows will contain `:`. Hence the join */
-        const filePath = parts.slice(0, parts.length - 2).join(':');
+        const filePath = consistentPath(parts.slice(0, parts.length - 2).join(':'));
 
         /**
          * The chrome ones are 1 based. We want 0 based
@@ -59,6 +58,17 @@ export const makeStack = (raw: string): types.TestErrorStack => {
     })
 
     return stack;
+}
+
+
+export const makeTestLogPosition = (filePath: string, stack: types.TestErrorStack): types.TestLogPosition => {
+    const tipOfTheStack = stack[0];
+    const result: types.TestLogPosition = {
+        isActualLastInFile: tipOfTheStack.filePath === filePath,
+        lastPositionInFile: stack.find(s => s.filePath === filePath).position,
+        stack
+    }
+    return result;
 }
 
 /**

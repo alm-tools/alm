@@ -538,12 +538,15 @@ export enum TestStatus {
     Skipped,
 }
 export type TestErrorStack = FilePathPosition[];
+export type TestLogPosition = {
+    lastPositionInFile: EditorPosition;
+    isActualLastInFile: boolean;
+    stack: TestErrorStack;
+}
 export type TestError = {
-    filePath: string,
-    position: EditorPosition,
-    message: string
-
-    stack: TestErrorStack
+    testLogPosition: TestLogPosition;
+    message: string;
+    stack: TestErrorStack;
 }
 export type TestResult = {
     description: string;
@@ -569,7 +572,7 @@ export type TestLog = {
      * The log might not be pointing to the same file. We should still show it against
      * `this` spec execution
      */
-    position: FilePathPosition;
+    testLogPosition: TestLogPosition;
     /**
      * Arguments.
      * Note: they will be stringified and unstringified by the time they make it to the UI

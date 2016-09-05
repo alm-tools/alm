@@ -8,7 +8,7 @@
 /** Our only import */
 import * as common from "./instrumenterCommon";
 import {TestLog} from "./instrumenterCommon";
-const {stringify, makeStack} = common;
+const {stringify, makeStack, makeTestLogPosition} = common;
 
 /**
  * Collects all our logs
@@ -16,9 +16,10 @@ const {stringify, makeStack} = common;
 const logs: TestLog[] = [];
 const addToLogs = (theArgs: IArguments) => {
     /** 0 is our caller. 1 is *our* caller's caller */
-    const position = stackFromCaller()[1];
+    const stack = stackFromCaller().slice(1);
     const args = ((Array as any).from(theArgs));
-    logs.push({ position, args });
+    const testLogPosition = makeTestLogPosition(filePath, stack);
+    logs.push({ testLogPosition, args });
 }
 
 /**

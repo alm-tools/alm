@@ -6,7 +6,7 @@ import * as cp from "child_process";
 import * as utils from "../../../../common/utils";
 import * as fsu from "../../../utils/fsu";
 import * as json from "../../../../common/json";
-import {makeStack, readAndDeleteDataFile} from "./instrumenterCommon";
+import {makeStack, readAndDeleteDataFile, makeTestLogPosition} from "./instrumenterCommon";
 
 const tsNodeCompilerOptions = JSON.stringify({
     /**
@@ -202,11 +202,10 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
             /**
              * Position
              */
-            const tipOfStack = stack[0];
+            const testLogPosition = makeTestLogPosition(cfg.filePath, stack);
 
             const testError: types.TestError = {
-                filePath: cfg.filePath,
-                position: tipOfStack.position,
+                testLogPosition,
                 message: message,
                 stack: stack
             }
