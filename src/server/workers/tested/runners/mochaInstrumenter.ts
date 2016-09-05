@@ -36,7 +36,7 @@ console.error = addToLogs;
  * Get the filePath from the arguments ;)
  */
 const filePath = process.argv[process.argv.length - 1];
-/* TODO: tested send logs to the data file */
+/* Send logs to the data file */
 process.on('exit', ()=> {
     common.writeDataFile(filePath, {logs})
 })
