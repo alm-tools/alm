@@ -242,6 +242,12 @@ namespace MonacoInlineWidget {
         frameColor: string,
         domNode: HTMLDivElement,
         position: { line: number, ch: number },
+
+        /**
+         * Consider removing this and using height measuring
+         * e.g. https://github.com/wnr/element-resize-detector
+         * which is used by https://github.com/souporserious/react-measure/blob/db00f18922a0934544751c56c536689f675da9fa/src/Measure.jsx#L38
+         */
         heightInLines: number,
     }
 
