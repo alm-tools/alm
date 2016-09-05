@@ -32,12 +32,12 @@ let mochaExec = (filePath:string) => {
             mochaPath,
             `${tsNodePath}/register`,
             instrumentationPath,
+            '--reporter', 'json',
             /**
              * NOTE: the location of `filePath` in args is used by the instrumenter
-             * -3
+             * -1
              */
             filePath,
-            '--reporter', 'json'
         ];
 
     // console.log("TESTED Will Exec", toExec); // DEBUG
