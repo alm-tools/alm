@@ -339,13 +339,13 @@ export function stringEnum(x){
 }
 
 /**
- * Just adds your intercept function to be called whenever the original function in called
+ * Just adds your intercept function to be called whenever the original function is called
  * Calls your function *before* the original is called
  */
-export function intercepted<T extends Function>(config: {context:any;orig:T;intercept:T}):T{
-    return function(){
+export function intercepted<T extends Function>(config: { context: any; orig: T; intercept: T }): T {
+    return function() {
         config.intercept.apply(null, arguments);
-        return config.orig.apply(config.context,arguments);
+        return config.orig.apply(config.context, arguments);
     } as any;
 }
 
