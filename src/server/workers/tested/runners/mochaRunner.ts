@@ -110,6 +110,8 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
 
     const testResults: types.TestResult[] = [];
 
+    const instrumentationData = readAndDeleteDataFile(cfg.filePath);
+
     /**
      * PLAN
      * Collect first level suites
@@ -139,7 +141,7 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
 
     const suiteMap: { [description: string]: types.TestSuiteResult } = Object.create(null);
     const suiteExists = (description: string): boolean => !!suiteMap[description];
-    const getOrCreateSuite = (description: string) => {
+    const getOrCreateSuite = (description: string, suitePositions: types.TestSuitePosition[]) => {
         /** If already created return */
         if (suiteExists(description)) return suiteMap[description];
 
@@ -148,6 +150,8 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
          */
         let currentSuite: types.TestSuiteResult = {
             description,
+            /** Setup later when we have the *right* description */
+            testLogPostion: null,
             suites: [],
             tests: [],
             stats: {
@@ -175,6 +179,9 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
             suites.push(currentSuite);
         }
 
+        /** Fixup the test log position now that we have the right description */
+        currentSuite.testLogPostion = suitePositions.find(s => s.title == currentSuite.description).testLogPosition;
+
         /** Return */
         return currentSuite;
     }
@@ -182,7 +189,7 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
     tests.forEach(test => {
         const suiteDescription = test.fullTitle.substr(0, test.fullTitle.length - test.title.length).trim();
 
-        const suite = getOrCreateSuite(suiteDescription);
+        const suite = getOrCreateSuite(suiteDescription, instrumentationData.suites);
 
         const testStatus = (test: Test): types.TestStatus => {
             if (test.duration == null) {
@@ -228,8 +235,9 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
             return testError;
         }
 
-        const testResult = {
+        const testResult: types.TestResult = {
             description: test.title,
+            testLogPostion: instrumentationData.its.find(it => it.title === test.title).testLogPosition,
             status: testStatus(test),
             durationMs: test.duration,
             error: makeTestError(test)
@@ -250,8 +258,6 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
         /** Also add to the root module */
         testResults.push(testResult);
     });
-
-    const instrumentationData = readAndDeleteDataFile(cfg.filePath);
 
     const result: types.TestModule = {
         filePath: cfg.filePath,
