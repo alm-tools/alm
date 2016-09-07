@@ -204,6 +204,17 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
             const stack = makeStack(err.stack);
 
             /**
+             * On mac mocha (or tsnode or source-map-support?)
+             * is returning an error stack that doesn't have full filePath :-/
+             * so we need it to resolve it correctly.
+             */
+            stack.forEach(item => {
+                if (item.filePath.indexOf('/') === -1) {
+                    item.filePath = fsu.resolve(utils.getDirectory(cfg.filePath), item.filePath);
+                }
+            });
+
+            /**
              * Position
              */
             const testLogPosition = makeTestLogPosition(cfg.filePath, stack);
@@ -240,10 +251,7 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
         testResults.push(testResult);
     });
 
-    // console.log(suites); // DEBUG
-
     const instrumentationData = readAndDeleteDataFile(cfg.filePath);
-    // console.log(JSON.stringify(instrumentationData.logs, null, 2)); // DEBUG
 
     const result: types.TestModule = {
         filePath: cfg.filePath,
