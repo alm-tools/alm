@@ -55,10 +55,15 @@ Mocha.interfaces["bdd"] = function(suite) {
     // Still do what the original one did to let its `pre-require` pass
     origBDD(suite);
 
-    const addToDescribe = function() {
+    const addToDescribe = function(title:string) {
         const stack = stackFromCaller().slice(1);
-        const args = ((Array as any).from(arguments));
         const testLogPosition = makeTestLogPosition(filePath, stack);
+        suites.push({ title, testLogPosition });
+    }
+    const addToIt = function(title:string) {
+        const stack = stackFromCaller().slice(1);
+        const testLogPosition = makeTestLogPosition(filePath, stack);
+        its.push({ title, testLogPosition });
     }
 
     // And attach our own custom pre-require to fixup context watchers
@@ -67,26 +72,32 @@ Mocha.interfaces["bdd"] = function(suite) {
         const origDescribeOnly = context.describe.only;
         const origDescribeSkip = context.describe.skip;
         context.describe = function(title) {
-            return origDescribe.apply(context,arguments);
+            addToDescribe(title);
+            return origDescribe.apply(context, arguments);
         }
-        context.describe.only = function(title){
-            return origDescribeOnly.apply(origDescribe,arguments);
+        context.describe.only = function(title) {
+            addToDescribe(title);
+            return origDescribeOnly.apply(origDescribe, arguments);
         }
-        context.describe.skip = function(title){
-            return origDescribeSkip.apply(origDescribe,arguments);
+        context.describe.skip = function(title) {
+            addToDescribe(title);
+            return origDescribeSkip.apply(origDescribe, arguments);
         }
 
         const origIt = context.it;
         const origItOnly = context.it.only;
         const origItSkip = context.it.skip;
-        context.it = function(title){
-            return origIt.apply(context,arguments);
+        context.it = function(title) {
+            addToIt(title);
+            return origIt.apply(context, arguments);
         }
-        context.it.only = function(title){
-            return origItOnly.apply(origIt,arguments);
+        context.it.only = function(title) {
+            addToIt(title);
+            return origItOnly.apply(origIt, arguments);
         }
-        context.it.skip = function(title){
-            return origItSkip.apply(origIt,arguments);
+        context.it.skip = function(title) {
+            addToIt(title);
+            return origItSkip.apply(origIt, arguments);
         }
     });
 }

@@ -620,12 +620,14 @@ export type TestResultsDelta = {
 }
 
 export type TestSuitePosition = {
+    title: string;
     /**
      * The last origin in the file
      */
     testLogPosition: TestLogPosition;
 }
 export type TestItPosition = {
+    title: string;
     /**
      * The last origin in the file
      */
