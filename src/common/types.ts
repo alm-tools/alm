@@ -618,3 +618,16 @@ export type TestResultsDelta = {
     clearedModules: string[];
     initial: boolean;
 }
+
+export type TestSuitePosition = {
+    /**
+     * The last origin in the file
+     */
+    testLogPosition: TestLogPosition;
+}
+export type TestItPosition = {
+    /**
+     * The last origin in the file
+     */
+    testLogPosition: TestLogPosition;
+}

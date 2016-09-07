@@ -7,7 +7,7 @@
 
 /** Our only import */
 import * as common from "./instrumenterCommon";
-import {TestLog} from "./instrumenterCommon";
+import {TestLog, TestSuitePosition, TestItPosition} from "./instrumenterCommon";
 const {stringify, makeStack, makeTestLogPosition, stackFromCaller} = common;
 
 /**
@@ -38,14 +38,17 @@ console.error = addToLogs;
 const filePath = process.argv[process.argv.length - 1];
 /* Send logs to the data file */
 process.on('exit', ()=> {
-    common.writeDataFile(filePath, {logs})
+    common.writeDataFile(filePath, {logs,suites,its})
 })
 
 
 /**
  * Intercept all calls to describe and it
- * TODO: tested to note down positions
  */
+/** The positions */
+const suites: TestSuitePosition[] = [];
+const its: TestItPosition[] = [];
+/** The interceptor */
 var Mocha = require('mocha');
 const origBDD = Mocha.interfaces["bdd"];
 Mocha.interfaces["bdd"] = function(suite) {

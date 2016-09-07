@@ -3,7 +3,7 @@
  * So don't depend on any other `js` / `ts` (althought it might just work fine)
  */
 import * as types from "../../../../common/types";
-export {TestLog} from "../../../../common/types";
+export {TestLog, TestSuitePosition, TestItPosition} from "../../../../common/types";
 import {stringify, parse} from "../../../../common/json";
 export {stringify} from "../../../../common/json";
 import { writeFile, readFile, deleteFile, consistentPath } from "../../../utils/fsu";
@@ -90,6 +90,8 @@ export const stackFromCaller = () => makeStack((new Error() as any).stack)
 const getDataFilePath = (filePath:string) => filePath + '_almTestData.json';
 export type DataFileContents = {
     logs: types.TestLog[]
+    suites: types.TestSuitePosition[],
+    its: types.TestItPosition[],
 }
 export const writeDataFile = (filePath: string, contents: DataFileContents) => {
     const dataFilePath = getDataFilePath(filePath);
@@ -99,7 +101,9 @@ export const writeDataFile = (filePath: string, contents: DataFileContents) => {
 export const readAndDeleteDataFile = (filePath: string) => {
     const dataFilePath = getDataFilePath(filePath);
     const result: DataFileContents = parse<DataFileContents>(readFile(dataFilePath)).data || {
-        logs: []
+        logs: [],
+        suites: [],
+        its: []
     };
     deleteFile(dataFilePath);
     return result;
