@@ -88,11 +88,18 @@ export function setup(editor: Editor): { dispose: () => void } {
             return `${keyForMonacoDifferentiation} - ${JSON.stringify(result)}`;
         },
         onAdd: (result) => {
+            const disposible = new events.CompositeDisposible();
             /**
-             * TODO: tested do something for passing ones
-             * Nothing for passing ones yet
+             * TODO: tested show pass fail in the editor. Prefer in gutter
              */
-            if (!result.error) return {dispose:()=>null};
+
+
+            /**
+             * Show stacks for error ones
+             */
+            if (!result.error) { // No stack for passing ones :)
+                return disposible;
+            }
 
             let detailsStringifiedAndJoined =
                 result.error.stack
@@ -116,7 +123,8 @@ export function setup(editor: Editor): { dispose: () => void } {
                 position: result.error.testLogPosition.lastPositionInFile,
                 heightInLines: detailsStringifiedAndJoined.split('\n').length + 1,
             });
-            return widgetDispose;
+            disposible.add(widgetDispose);
+            return disposible;
         },
         onRemove: (result, state) => state.dispose(),
     });
