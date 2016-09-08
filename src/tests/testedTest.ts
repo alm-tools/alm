@@ -24,7 +24,12 @@ describe("Level.1 Suite", () => {
     });
 
     it("Level.1.2 should fail", () => {
-        throw new Error("Fail")
+        /**
+         * Instead of return a reject promise of an `error`
+         * Return a rejected promise of a `string`.
+         * We don't have a stack trace in this case
+         */
+        return Promise.reject('Error without stack');
     });
 
     it.skip("Level.1.3 skipped", ()=> {
