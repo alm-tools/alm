@@ -6,7 +6,7 @@ import * as cp from "child_process";
 import * as utils from "../../../../common/utils";
 import * as fsu from "../../../utils/fsu";
 import * as json from "../../../../common/json";
-import {makeStack, readAndDeleteDataFile, makeTestLogPosition} from "./instrumenterCommon";
+import {makeStack, readAndDeleteDataFile, makeTestLogPositionFromMochaError} from "./instrumenterCommon";
 
 const tsNodeCompilerOptions = JSON.stringify({
     /**
@@ -206,7 +206,7 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
             return types.TestStatus.Fail;
         }
 
-        const makeTestError = (test: Test): types.TestError => {
+        const makeTestError = (test: Test, positionOfTestInFile: EditorPosition): types.TestError => {
             if (!Object.keys(test.err).length) {
                 return undefined;
             }
@@ -218,7 +218,7 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
             /**
              * Position
              */
-            const testLogPosition = makeTestLogPosition(cfg.filePath, stack);
+            const testLogPosition = makeTestLogPositionFromMochaError(cfg.filePath, stack, positionOfTestInFile);
 
             const testError: types.TestError = {
                 testLogPosition,
@@ -229,12 +229,14 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
             return testError;
         }
 
+        const testLogPosition = instrumentationData.its.find(it => it.title === test.title).testLogPosition;
+
         const testResult: types.TestResult = {
             description: test.title,
-            testLogPostion: instrumentationData.its.find(it => it.title === test.title).testLogPosition,
+            testLogPosition,
             status: testStatus(test),
             durationMs: test.duration,
-            error: makeTestError(test)
+            error: makeTestError(test, testLogPosition.lastPositionInFile)
         }
 
         /** Add to the suite  */

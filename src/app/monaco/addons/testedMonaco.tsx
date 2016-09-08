@@ -126,7 +126,7 @@ export function setup(editor: Editor): { dispose: () => void } {
                 getPosition: () => {
                     return {
                         position: {
-                            lineNumber: result.testLogPostion.lastPositionInFile.line + 1,
+                            lineNumber: result.testLogPosition.lastPositionInFile.line + 1,
                             column: /** Show in start of line to keep it easier to scan with eye */ 1
                         },
                         preference: [

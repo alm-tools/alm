@@ -551,7 +551,7 @@ export type TestError = {
 export type TestResult = {
     description: string;
     status: TestStatus;
-    testLogPostion: TestLogPosition;
+    testLogPosition: TestLogPosition;
 
     /** None if skipped */
     durationMs?: number;

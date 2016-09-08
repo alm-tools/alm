@@ -73,6 +73,33 @@ export const makeTestLogPosition = (filePath: string, stack: types.TestErrorStac
     return result;
 }
 
+/**
+ * When we care about the last log point in the file.
+ */
+export const makeTestLogPositionFromMochaError = (
+    filePath: string,
+    stack: types.TestErrorStack,
+    /**
+     * The stack might not actually contain any reference to file path
+     * This happens e.g. when one throws a `string` instead of `error` in mocha.
+     * So this is the position we use in such cases
+     */
+    positionIfFilePathNotFound: EditorPosition
+): types.TestLogPosition => {
+    const tipOfTheStack = stack[0];
+
+    const lastPositionInFile = stack.find(s => s.filePath === filePath)
+    ? stack.find(s => s.filePath === filePath).position
+    : positionIfFilePathNotFound;
+
+    const result: types.TestLogPosition = {
+        isActualLastInFile: tipOfTheStack.filePath === filePath,
+        lastPositionInFile,
+        stack
+    }
+    return result;
+}
+
 /** Utility to get stack */
 export const stackFromCaller = () => makeStack((new Error() as any).stack)
     /**
