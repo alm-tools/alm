@@ -90,9 +90,54 @@ export function setup(editor: Editor): { dispose: () => void } {
         onAdd: (result) => {
             const disposible = new events.CompositeDisposible();
             /**
-             * TODO: tested show pass fail in the editor. Prefer in gutter
+             * Show pass fail in the editor.
+             * Would prefer in gutter but monaco doesn't allow multiple gutters.
+             * So adding them inline as circles.
+             * They move to the gutter based on our column setting ;)
              */
-
+            let dotRendered =
+                <div className={`hint--right ${
+                    result.status === types.TestStatus.Success ? "hint--success"
+                    : result.status === types.TestStatus.Fail ? "hint--error"
+                    : "hint--info"
+                }`}
+                style={{
+                    cursor: 'pointer',
+                    padding: '0px 5px',
+                    color:
+                        result.status === types.TestStatus.Success ? styles.successColor
+                        : result.status === types.TestStatus.Fail ? styles.errorColor
+                        : styles.highlightColor
+                }}
+                data-hint={
+                    result.status === types.TestStatus.Success ? "Test Success"
+                    : result.status === types.TestStatus.Fail ? `Test Fail: ${result.error.message}`
+                    : "Test Skipped"
+                }>
+                    ●
+                </div>;
+            let dotNode = document.createElement('div');
+            ReactDOM.render(dotRendered, dotNode);
+            const widget: monaco.editor.IContentWidget = {
+                allowEditorOverflow: true,
+                getId: () => `${keyForMonacoDifferentiation} - dot - ${JSON.stringify(result)}`,
+                getDomNode: () => dotNode,
+                getPosition: () => {
+                    return {
+                        position: {
+                            lineNumber: result.testLogPostion.lastPositionInFile.line + 1,
+                            column: /** Show in start of line to keep it easier to scan with eye */ 1
+                        },
+                        preference: [
+                            monaco.editor.ContentWidgetPositionPreference.EXACT
+                        ]
+                    }
+                }
+            }
+            editor.addContentWidget(widget);
+            disposible.add({
+                dispose: () => editor.removeContentWidget(widget)
+            })
 
             /**
              * Show stacks for error ones
