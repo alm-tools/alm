@@ -8,6 +8,7 @@ import * as types from "../../../common/types";
 import * as json from "../../../common/json";
 import * as fstyle from "../../base/fstyle";
 import * as styles from "../../styles/styles";
+import {Icon} from "../../components/icon";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 type IDisposable = events.Disposable;
@@ -114,7 +115,7 @@ export function setup(editor: Editor): { dispose: () => void } {
                     : result.status === types.TestStatus.Fail ? `Test Fail: ${result.error.message}`
                     : "Test Skipped"
                 }>
-                    ●
+                    <Icon name="bug"/>
                 </div>;
             let dotNode = document.createElement('div');
             ReactDOM.render(dotRendered, dotNode);
