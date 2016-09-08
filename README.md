@@ -16,7 +16,7 @@
 ## Requirements
 
 * Chrome
-* NodeJS v5
+* NodeJS v5.10.1+
 
 ## Usage
 
