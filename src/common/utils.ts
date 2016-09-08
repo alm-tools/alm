@@ -490,6 +490,20 @@ export function timer() {
 }
 
 /**
+ * Returns a nice conversion of milliseconds into seconds / mintues as needed
+ */
+export function formatMilliseconds(ms: number): string {
+    if (ms < 1000) return `${ms}ms`;
+
+    const s = ms / 1000;
+    if (s < 60) {
+        return `${s.toPrecision(2)}s`;
+    }
+    const m = s / 60;
+    return `${m.toPrecision(2)}min`
+}
+
+/**
  * If you add a new schema make sure you download its schema as well
  */
 export const supportedAutocompleteConfigFileNames: { [fileName: string]: boolean } = {
