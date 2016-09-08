@@ -335,8 +335,6 @@ namespace MonacoInlineWidget {
          */
         /** The widget jumps the cursor position. Don't do that */
         const position = config.editor.getPosition();
-        /** Also jumps scroll position */
-        const scrollTop = config.editor.getScrollTop();
 
         /** Add  */
         const widget = new MyMarkerWidget(config);
@@ -345,9 +343,6 @@ namespace MonacoInlineWidget {
          * Restore stuff after adding
          */
         config.editor.setPosition(position);
-        setTimeout(()=> {
-            config.editor.setScrollTop(scrollTop);
-        })
 
         return widget;
     }
