@@ -38,6 +38,11 @@ let mochaExec = (filePath:string) => {
             '--require', instrumentationPath,
             '--reporter', 'json',
             /**
+             * Without this we get `/test.ts` instead of `/full/path/to/test.ts`
+             * in the `error.stack` for failed tests
+             */
+            '--full-trace',
+            /**
              * NOTE: the location of `filePath` in args is used by the instrumenter
              * -1
              */
@@ -209,17 +214,6 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
 
             const message = err.message;
             const stack = makeStack(err.stack);
-
-            /**
-             * On mac mocha (or tsnode or source-map-support?)
-             * is returning an error stack that doesn't have full filePath :-/
-             * so we need it to resolve it correctly.
-             */
-            stack.forEach(item => {
-                if (item.filePath.indexOf('/') === -1) {
-                    item.filePath = fsu.resolve(utils.getDirectory(cfg.filePath), item.filePath);
-                }
-            });
 
             /**
              * Position
