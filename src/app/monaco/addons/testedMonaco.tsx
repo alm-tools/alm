@@ -115,7 +115,7 @@ export function setup(editor: Editor): { dispose: () => void } {
                     : result.status === types.TestStatus.Fail ? `Test Fail: ${result.error.message}`
                     : "Test Skipped"
                 }>
-                    <Icon name="bug"/>
+                    <Icon name={styles.icons.tested}/>
                 </div>;
             let dotNode = document.createElement('div');
             ReactDOM.render(dotRendered, dotNode);

@@ -220,7 +220,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                         opacity: this.props.testedWorking.working ? 1 : 0.5,
                     }
                 )}>
-                    <Icon name="bug" spin={this.props.testedWorking.working}/>
+                    <Icon name={styles.icons.tested} spin={this.props.testedWorking.working}/>
             </span>
             {
                 failing

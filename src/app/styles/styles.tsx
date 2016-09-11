@@ -10,6 +10,13 @@ export const monokaiBackgroundColor = '#272822';
 export const monokaiTextColor = "#e6db74"; // The color of strings
 
 /**
+ * FA Icon names used in the application
+ */
+export const icons = {
+    tested: 'futbol-o'
+}
+
+/**
  * A background color that looks nice over the "editor" background black
  */
 export const blackHighlightColor = "#1C1D18"
