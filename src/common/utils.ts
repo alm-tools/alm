@@ -497,10 +497,10 @@ export function formatMilliseconds(ms: number): string {
 
     const s = ms / 1000;
     if (s < 60) {
-        return `${s.toPrecision(2)}s`;
+        return `${s.toFixed(2)}s`;
     }
     const m = s / 60;
-    return `${m.toPrecision(2)}min`
+    return `${m.toFixed(2)}min`
 }
 
 /**
