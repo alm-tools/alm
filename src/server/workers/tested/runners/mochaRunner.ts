@@ -8,6 +8,19 @@ import * as fsu from "../../../utils/fsu";
 import * as json from "../../../../common/json";
 import {makeStack, readAndDeleteDataFile, makeTestLogPositionFromMochaError} from "./instrumenterCommon";
 
+
+/**
+ * Uses position of mocha to figure out the trailing stack after mocha
+ */
+const nodeModulesFolder = fsu.travelUpTheDirectoryTreeTillYouFind(__dirname, "node_modules");
+export const stackAfterMocha = (stack: types.TestErrorStack) => {
+    return stack;
+    /** TODO: tested */
+    // const index = stack.findIndex(s => s.filePath.startsWith(nodeModulesFolder));
+    // if (index === -1) return stack;
+    // return stack.slice(0, index);
+}
+
 const tsNodeCompilerOptions = JSON.stringify({
     /**
      * Keep getting "cannot write file" ts / ts-node errors otherwise
@@ -25,7 +38,6 @@ const tsNodeCompilerOptions = JSON.stringify({
 /** Main utility function to execute a command */
 let mochaExec = (filePath:string) => {
     /** Find key paths */
-    const nodeModulesFolder = fsu.travelUpTheDirectoryTreeTillYouFind(__dirname, "node_modules");
     const tsNodePath = `${nodeModulesFolder}/ts-node`;
     const mochaPath = `${nodeModulesFolder}/mocha/bin/_mocha`;
     const instrumentationPath = __dirname + '/mochaInstrumenter.ts';
@@ -213,7 +225,7 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
             const err = test.err as Err;
 
             const message = err.message;
-            const stack = makeStack(err.stack);
+            const stack = stackAfterMocha(makeStack(err.stack));
 
             /**
              * Position

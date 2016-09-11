@@ -8,7 +8,7 @@
 /** Our only import */
 import * as common from "./instrumenterCommon";
 import {TestLog, TestSuitePosition, TestItPosition} from "./instrumenterCommon";
-const {stringify, makeStack, makeTestLogPosition, stackFromCaller} = common;
+const {stringify, makeTestLogPosition, stackFromCaller} = common;
 
 /**
  * Collects all our logs

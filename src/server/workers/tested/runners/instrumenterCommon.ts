@@ -6,7 +6,7 @@ import * as types from "../../../../common/types";
 export {TestLog, TestSuitePosition, TestItPosition} from "../../../../common/types";
 import {stringify, parse} from "../../../../common/json";
 export {stringify} from "../../../../common/json";
-import { writeFile, readFile, deleteFile, consistentPath } from "../../../utils/fsu";
+import { writeFile, readFile, deleteFile, consistentPath, travelUpTheDirectoryTreeTillYouFind } from "../../../utils/fsu";
 
 /**
 Error: Fail
@@ -107,7 +107,6 @@ export const stackFromCaller = () => makeStack((new Error() as any).stack)
      * Skip another as its the function calling us
      */
     .slice(2);
-
 
 /**
  * We use the file to pass information from
