@@ -323,6 +323,8 @@ namespace MonacoInlineWidget {
             this._parentContainer.tabIndex = 0;
             this._parentContainer.setAttribute('role', 'tooltip');
             this._parentContainer.appendChild(this.config.domNode);
+            /** Because sometimes monaco is leaving text hanging around */
+            this._parentContainer.style.backgroundColor = styles.monokaiBackgroundColor;
         }
 
         public dispose() {

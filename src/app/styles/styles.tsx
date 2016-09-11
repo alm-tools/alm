@@ -6,6 +6,7 @@ export let warningColor = '#f6d675'; // Color from CodeMirror `lint.css` warning
 export let successColor = '#00c990';
 export let highlightColor = "#6edeef";
 export let selectedBackgroundColor = '#444';
+export const monokaiBackgroundColor = '#272822';
 
 /**
  * A background color that looks nice over the "editor" background black
