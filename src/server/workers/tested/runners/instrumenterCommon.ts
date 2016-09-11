@@ -93,7 +93,7 @@ export const makeTestLogPositionFromMochaError = (
     : positionIfFilePathNotFound;
 
     const result: types.TestLogPosition = {
-        isActualLastInFile: tipOfTheStack.filePath === filePath,
+        isActualLastInFile: !!tipOfTheStack && tipOfTheStack.filePath === filePath,
         lastPositionInFile,
         stack
     }

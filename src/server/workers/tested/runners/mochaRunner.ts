@@ -14,11 +14,9 @@ import {makeStack, readAndDeleteDataFile, makeTestLogPositionFromMochaError} fro
  */
 const nodeModulesFolder = fsu.travelUpTheDirectoryTreeTillYouFind(__dirname, "node_modules");
 export const stackAfterMocha = (stack: types.TestErrorStack) => {
-    return stack;
-    /** TODO: tested */
-    // const index = stack.findIndex(s => s.filePath.startsWith(nodeModulesFolder));
-    // if (index === -1) return stack;
-    // return stack.slice(0, index);
+    const index = stack.findIndex(s => s.filePath.startsWith(nodeModulesFolder));
+    if (index === -1) return stack;
+    return stack.slice(0, index);
 }
 
 const tsNodeCompilerOptions = JSON.stringify({
