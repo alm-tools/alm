@@ -22,6 +22,7 @@ const lineSeperator = '\n———————————————\n';
 
 namespace TestedMonacoStyles {
     const overlayCommon = {
+        padding: '0px 10px',
         whiteSpace: 'pre',
         pointerEvents: 'none',
 
