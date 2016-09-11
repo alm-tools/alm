@@ -147,13 +147,17 @@ export function setup(editor: Editor): { dispose: () => void } {
                 return disposible;
             }
 
-            let detailsStringifiedAndJoined =
+            let trailingStackStringifiedAndJoined =
                 result.error.stack
                     /** Remove the first one as that is where we will show the error */
                     .slice(1)
                     .map((a) => `${a.filePath}:${a.position.line + 1}:${a.position.ch + 1}`)
                     .join(lineSeperator);
-            detailsStringifiedAndJoined = `${result.error.message}${lineSeperator}${detailsStringifiedAndJoined}`
+
+            const detailsStringifiedAndJoined = result.error.message +
+                (trailingStackStringifiedAndJoined
+                    ? `${lineSeperator}${trailingStackStringifiedAndJoined}`
+                    : '');
 
             let nodeRendered =
                 <div className={TestedMonacoStyles.errorStackOverlayClassName}>
