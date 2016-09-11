@@ -111,7 +111,7 @@ export function travelUpTheDirectoryTreeTillYouFind(startDir: string, fileOrDire
         }
 
         if (fs.existsSync(potentialFile)) { // found it
-            return potentialFile;
+            return consistentPath(potentialFile);
         }
         else { // go up
             var before = startDir;
