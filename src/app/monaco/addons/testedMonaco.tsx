@@ -203,7 +203,10 @@ export function setup(editor: Editor): { dispose: () => void } {
          * For those not found delete them
          * For those new add them.
          */
+        const editorTop = editor.getScrollTop();
         deltaLogWidgets.delta(thisModule.logs);
+        /** Our inline log widgets jump the scroll position. So we need to restore it :-/ */
+        setTimeout(()=>editor.setScrollTop(editorTop));
 
         /** Also show the test results */
         deltaTestResultsWidgets.delta(thisModule.testResults);
