@@ -7,6 +7,7 @@ export let successColor = '#00c990';
 export let highlightColor = "#6edeef";
 export let selectedBackgroundColor = '#444';
 export const monokaiBackgroundColor = '#272822';
+export const monokaiTextColor = "#e6db74"; // The color of strings
 
 /**
  * A background color that looks nice over the "editor" background black

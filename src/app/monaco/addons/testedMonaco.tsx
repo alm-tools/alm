@@ -38,7 +38,7 @@ namespace TestedMonacoStyles {
     export const logOverlayClassName = fstyle.style(
         overlayCommon,
         {
-            color: styles.highlightColor,
+            color: styles.monokaiTextColor,
         }
     );
 
@@ -74,7 +74,7 @@ export function setup(editor: Editor): { dispose: () => void } {
 
             const widgetDispose = MonacoInlineWidget.add({
                 editor,
-                frameColor: styles.highlightColor,
+                frameColor: styles.monokaiTextColor,
                 domNode: node,
                 position: log.testLogPosition.lastPositionInFile,
                 heightInLines: argsStringifiedAndJoined.split('\n').length + 1,
