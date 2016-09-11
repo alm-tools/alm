@@ -203,23 +203,7 @@ export function setup(editor: Editor): { dispose: () => void } {
          * For those not found delete them
          * For those new add them.
          */
-        const position = editor.getPosition();
-        const revealPosition = editor.revealPosition;
-        const revealLine = editor.revealLine;
-        editor.revealPosition = () => null;
-        editor.revealLine = () => null;
         deltaLogWidgets.delta(thisModule.logs);
-        /**
-         * Our inline log widgets jump the scroll position. So we needed disable and restore these functions :-/
-         * Also some of these are called asyncly for some reason.
-         * See code in ZoneWidget._showImpl
-         */
-        setTimeout(() => {
-            editor.setPosition(position);
-            editor.revealPosition = revealPosition;
-            editor.revealLine = revealLine;
-        });
-
 
         /** Also show the test results */
         deltaTestResultsWidgets.delta(thisModule.testResults);
@@ -347,8 +331,25 @@ namespace MonacoInlineWidget {
     }
 
     export function add(config: Config): { dispose: () => void } {
+        const editor = config.editor;
+
+        const position = editor.getPosition();
+        const revealPosition = editor.revealPosition;
+        const revealLine = editor.revealLine;
+        editor.revealPosition = () => null;
+        editor.revealLine = () => null;
+
         /** Add  */
         const widget = new MyMarkerWidget(config);
+
+        /**
+         * Our inline log widgets jump the scroll position. So we needed disable and restore these functions :-/
+         * Also some of these are called asyncly for some reason.
+         * See code in ZoneWidget._showImpl
+         */
+        editor.setPosition(position);
+        editor.revealPosition = revealPosition;
+        editor.revealLine = revealLine;
 
         return widget;
     }
