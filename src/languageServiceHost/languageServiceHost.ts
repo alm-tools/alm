@@ -419,6 +419,14 @@ export class LanguageServiceHost extends LSHost {
         super.editScript(fileName, minChar, limChar, newText);
     }
 
+    /*
+     * LS host can optionally implement these methods to support getImportModuleCompletionsAtPosition.
+     * Without these methods, only completions for ambient modules will be provided.
+     */
+    readDirectory = ts.sys ? ts.sys.readDirectory : undefined;
+    readFile = ts.sys ? ts.sys.readFile: undefined;
+    fileExists = ts.sys ? ts.sys.fileExists: undefined;
+
     /**
      * We allow incremental loading of resources.
      * Needed for node_modules and for stuff like `user types a require statement`
