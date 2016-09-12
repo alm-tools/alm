@@ -53,7 +53,7 @@ const makeReactKeyOutOfPosition = (position: EditorPosition) => {
     return position.line + ':' + position.ch;
 }
 const formatStats = (stats: types.TestContainerStats): string => {
-    return `Σ: ${stats.testCount} (✓: ${stats.passCount}, ✘: ${stats.failCount}, ◌: ${stats.skipCount}) ⏱: ${utils.formatMilliseconds(stats.durationMs)}`
+    return `Σ: ${stats.testCount} (✓: ${stats.passCount}, ✘: ${stats.failCount}, ◎: ${stats.skipCount}) ${utils.formatMilliseconds(stats.durationMs)}`
 }
 
 export class TestedView extends ui.BaseComponent<Props, State> {
