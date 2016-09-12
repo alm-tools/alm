@@ -32,19 +32,13 @@ export interface State {
     testedWorking?: types.Working;
 }
 
-export namespace DocumentationViewStyles {
-    export const header = fstyle.style({
+export namespace TestedViewStyles {
+    export const headerClassName = fstyle.style({
+        fontWeight: 'bold',
         cursor: 'pointer',
         '&:hover': {
             textDecoration: 'underline'
         }
-    });
-
-    export const folderName = fstyle.style({
-        padding: "2px",
-        fontSize: '.5em',
-        '-webkitUserSelect': 'none',
-        maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis'
     });
 }
 
@@ -178,8 +172,8 @@ export class TestedView extends ui.BaseComponent<Props, State> {
                 <div
                     key={i}
                     title={fp}
-                    style={{
-                        cursor: 'pointer', paddingTop: '2px', paddingBottom: '2px', paddingLeft: '2px',
+                    className={TestedViewStyles.headerClassName}
+                    style={{paddingTop: '2px', paddingBottom: '2px', paddingLeft: '2px',
                         color: failing ? styles.errorColor : styles.successColor,
                         backgroundColor: this.state.selected === fp ? styles.selectedBackgroundColor: 'transparent'
                     }}
@@ -225,20 +219,55 @@ export class TestedView extends ui.BaseComponent<Props, State> {
 
     renderSuite(suite: types.TestSuiteResult) {
         return <div key={makeReactKeyOutOfPosition(suite.testLogPosition.lastPositionInFile)} style={{
-            fontSize: '.8em',
+            fontSize: '13px',
             border: '1px solid grey',
             marginTop:'5px', padding: '5px'
         }}>
-            <Icon name={styles.icons.testedSuite}/> <span style={{
-                cursor: 'pointer', textDecoration: 'underline',
-            }}>
-                {suite.description}
-            </span>
-            <gls.SmallVerticalSpace space={10}/>
-            Location {suite.testLogPosition.lastPositionInFile.line + 1}:{suite.testLogPosition.lastPositionInFile.ch + 1}
+
+            <gls.InlineBlock style={{
+                    color: !!suite.stats.failCount ? styles.errorColor
+                        : !!suite.stats.passCount ? styles.successColor
+                        : styles.highlightColor
+                }}>
+                <Icon name={styles.icons.testedSuite}/> <span
+                className={TestedViewStyles.headerClassName}
+                onClick={()=>this.openTestLogPositionInSelectedModule(suite.testLogPosition)}>
+                    {suite.description}
+                </span>
+            </gls.InlineBlock>
             <gls.SmallVerticalSpace space={10}/>
             {formatStats(suite.stats)}
+            <gls.SmallVerticalSpace space={10}/>
+            {suite.tests.map(s=>this.renderTest(s))}
+            <gls.SmallVerticalSpace space={10}/>
+            {suite.suites.map(s=>this.renderSuite(s))}
         </div>
+    }
+
+    renderTest(test: types.TestResult) {
+        return <div key={makeReactKeyOutOfPosition(test.testLogPosition.lastPositionInFile) }>
+            <gls.InlineBlock
+                style={{
+                    color: test.status === types.TestStatus.Success ? styles.successColor
+                        : test.status === types.TestStatus.Fail ? styles.errorColor
+                            : styles.highlightColor
+                }}>
+                <Icon name={styles.icons.testedTest}/> <span
+                className={TestedViewStyles.headerClassName}
+                onClick={() => this.openTestLogPositionInSelectedModule(test.testLogPosition) }>
+                    {test.description}
+                </span>
+            </gls.InlineBlock>
+            &nbsp;&nbsp;<gls.InlineBlock style={{fontSize: '10px'}}>{test.durationMs != undefined ? utils.formatMilliseconds(test.durationMs) : ''}</gls.InlineBlock>
+        </div>
+    }
+
+    openTestLogPositionInSelectedModule = (pos: types.TestLogPosition) => {
+        const filePath = this.state.selected;
+        commands.doOpenOrFocusFile.emit({
+            filePath,
+            position: pos.lastPositionInFile,
+        })
     }
 
     handleNodeClick = (node: types.DocumentedType) => {

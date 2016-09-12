@@ -1,6 +1,6 @@
 import * as csx from '../base/csx';
 
-export const textColor = '#AAA';
+export const textColor = '#BBB';
 export let errorColor = '#f92672';
 export let warningColor = '#f6d675'; // Color from CodeMirror `lint.css` warning squiggly color
 export let successColor = '#00c990';
