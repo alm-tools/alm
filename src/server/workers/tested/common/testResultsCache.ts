@@ -86,12 +86,12 @@ export class TestResultsCache {
             }
         });
 
-        // Send out the delta
-        this.testResultsDelta.emit(delta);
-
         // Preserve for future delta
         this.last = Object.create(null);
         Object.keys(this.current).map(fp => this.last[fp] = this.current[fp]);
+
+        // Send out the delta
+        this.testResultsDelta.emit(delta);
     }, 250);
 
     /** The passed results are considered the only ones. All else is cleared */
