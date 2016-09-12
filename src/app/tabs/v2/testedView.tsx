@@ -53,7 +53,7 @@ const makeReactKeyOutOfPosition = (position: EditorPosition) => {
     return position.line + ':' + position.ch;
 }
 const formatStats = (stats: types.TestContainerStats): string => {
-    return `Total: ${stats.testCount}, Pass: ${stats.passCount}, Fail: ${stats.failCount}, Skip: ${stats.skipCount}, Duration: ${utils.formatMilliseconds(stats.durationMs)}`
+    return `Σ: ${stats.testCount} (✓: ${stats.passCount}, ✘: ${stats.failCount}, ◌: ${stats.skipCount}) ⏱: ${utils.formatMilliseconds(stats.durationMs)}`
 }
 
 export class TestedView extends ui.BaseComponent<Props, State> {
@@ -202,7 +202,8 @@ export class TestedView extends ui.BaseComponent<Props, State> {
                 style={{
                     color: someFailing ? styles.errorColor : styles.successColor
                 }}
-            >Total: {test.stats.testCount}, Pass: {test.stats.passCount}, Fail: {test.stats.failCount}, Skip: {test.stats.failCount}, Duration: {test.stats.durationMs}ms
+            >
+                {formatStats(test.stats)}
             </div>
             <div>
                 FilePath: <span style={{
