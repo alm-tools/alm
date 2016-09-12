@@ -302,7 +302,11 @@ export var toggleSemanticView = new UICommand({
 export const launchTsFlow = new UICommand({
     description: "Launch TypeScript flow based programming",
     context: CommandContext.Global,
-})
+});
+export var doOpenTestResultsView = new UICommand({
+    description: "Test Results View",
+    context: CommandContext.Global,
+});
 
 /**
  * Cursor history

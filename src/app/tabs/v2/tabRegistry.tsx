@@ -14,6 +14,7 @@ import {FindAndReplaceView} from "./findAndReplaceMulti";
 import {DocumentationView} from "./documentationView";
 import {UmlView} from "./umlView";
 import {TsFlowView} from "./tsFlowView";
+import {TestedView} from "./testedView";
 
 type ComponentConstructor = { new (props: tab.TabProps): ui.BaseComponent<tab.TabProps,any> };
 
@@ -80,7 +81,13 @@ export const tabs = {
         protocol: 'tsflow',
         searchSupport: TabSearchSupport.None,
         getTitle: (url) => `TSFlow ${utils.getFileName(url)}`,
-        component: TsFlowView,        
+        component: TsFlowView,
+    },
+    tested: {
+        protocol: 'tested',
+        searchSupport: TabSearchSupport.None,
+        getTitle: (url) => `Tests`,
+        component: TestedView,
     },
 }
 let _ensuretabsType: {[protocol:string]:TabConfig} = tabs;

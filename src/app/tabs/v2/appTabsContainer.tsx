@@ -533,6 +533,12 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             const url = `${protocol}://Documentation`;
             openOrFocusSingletonTab({ protocol, url });
         });
+        /** Tested view */
+        commands.doOpenTestResultsView.on(()=>{
+            const protocol = tabRegistry.tabs.tested.protocol;
+            const url = `${protocol}://Tested`;
+            openOrFocusSingletonTab({ protocol, url });
+        });
         /** Find and replace multi */
         commands.findAndReplaceMulti.on((e) => {
             const protocol = tabRegistry.tabs.farm.protocol;
