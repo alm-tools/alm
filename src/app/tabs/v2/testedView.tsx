@@ -176,7 +176,7 @@ export class TestedView extends ui.BaseComponent<Props, State> {
                         backgroundColor: this.state.selected === fp ? styles.selectedBackgroundColor: 'transparent'
                     }}
                     onClick={() => this.handleModuleSelected(item) }>
-                    <Icon name="rocket" /> {fileName} ({failing ? item.stats.failCount : item.stats.passCount}/{totalThatRan})
+                    <Icon name="file-text-o" /> {fileName} ({failing ? item.stats.failCount : item.stats.passCount}/{totalThatRan})
                 </div>
             )
         });
