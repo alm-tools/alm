@@ -561,7 +561,7 @@ export type TestResult = {
 }
 export type TestSuiteResult = {
     description: string;
-    testLogPostion: TestLogPosition;
+    testLogPosition: TestLogPosition;
 
     stats: TestContainerStats;
 

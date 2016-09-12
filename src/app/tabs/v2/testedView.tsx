@@ -48,6 +48,11 @@ export namespace DocumentationViewStyles {
     });
 }
 
+/** Utility */
+const makeReactKeyOutOfPosition = (position: EditorPosition) => {
+    return position.line + ':' + position.ch;
+}
+
 export class TestedView extends ui.BaseComponent<Props, State> {
 
     constructor(props: Props) {
@@ -208,7 +213,16 @@ export class TestedView extends ui.BaseComponent<Props, State> {
                     });
                 }}>{filePath}</span>
             </div>
+            <gls.Content>
+                {test.suites.map(s=>this.renderSuite(s))}
+            </gls.Content>
         </gls.ContentVerticalContentPadded>
+    }
+
+    renderSuite(suite: types.TestSuiteResult) {
+        return <div key={makeReactKeyOutOfPosition(suite.testLogPosition.lastPositionInFile)}>
+            {suite.description}
+        </div>
     }
 
     handleNodeClick = (node: types.DocumentedType) => {

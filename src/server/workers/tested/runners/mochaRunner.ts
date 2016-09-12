@@ -166,7 +166,7 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
         let currentSuite: types.TestSuiteResult = {
             description,
             /** Setup later when we have the *right* description */
-            testLogPostion: null,
+            testLogPosition: null,
             suites: [],
             tests: [],
             stats: {
@@ -195,7 +195,7 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
         }
 
         /** Fixup the test log position now that we have the right description */
-        currentSuite.testLogPostion = suitePositions.find(s => s.title == currentSuite.description).testLogPosition;
+        currentSuite.testLogPosition = suitePositions.find(s => s.title == currentSuite.description).testLogPosition;
 
         /** Return */
         return currentSuite;
