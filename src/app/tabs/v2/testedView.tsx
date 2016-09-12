@@ -201,16 +201,11 @@ export class TestedView extends ui.BaseComponent<Props, State> {
             <div
                 style={{
                     color: someFailing ? styles.errorColor : styles.successColor
-                }}
-            >
-                {formatStats(test.stats)}
+                }}>
+                <gls.InlineBlock> {formatStats(test.stats)} </gls.InlineBlock>
             </div>
-            <div>
-                FilePath: <span style={{
-                    textDecoration: 'underline',
-                    cursor: 'pointer',
-                    fontSize: '.8em'
-                }}
+            <div className={TestedViewStyles.clickable} style={{fontSize: '.8em', textDecoration: 'underline'}}>
+                <span
                 onClick={()=>{
                     commands.doOpenOrFocusFile.emit({
                         filePath: filePath,
@@ -224,16 +219,17 @@ export class TestedView extends ui.BaseComponent<Props, State> {
     }
 
     renderSuite(suite: types.TestSuiteResult) {
+        const color = !!suite.stats.failCount ? styles.errorColor
+            : !!suite.stats.passCount ? styles.successColor
+            : styles.highlightColor;
         return <div key={makeReactKeyOutOfPosition(suite.testLogPosition.lastPositionInFile)} style={{
             fontSize: '13px',
-            border: '1px solid grey',
+            border: `1px solid ${color}`,
             marginTop:'5px', padding: '5px'
         }}>
 
             <gls.InlineBlock style={{
-                    color: !!suite.stats.failCount ? styles.errorColor
-                        : !!suite.stats.passCount ? styles.successColor
-                        : styles.highlightColor
+                    color: color
                 }}>
                 <Icon name={styles.icons.testedSuite}/> <span
                 className={TestedViewStyles.headerClassName}
