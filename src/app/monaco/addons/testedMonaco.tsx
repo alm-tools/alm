@@ -184,11 +184,6 @@ export function setup(editor: Editor): { dispose: () => void } {
         let filePath: string = editor.filePath;
         let model: monaco.editor.IModel = editor.getModel();
 
-        /**
-         * TODO: tested
-         * show logs in this file inline
-         * show logs in external files still inline but also show the *trailing* stack
-         */
         const allResults = testResultsCache.getResults();
         const thisModule = allResults[filePath];
         if (!thisModule) {
@@ -207,6 +202,9 @@ export function setup(editor: Editor): { dispose: () => void } {
          * For those found update them
          * For those not found delete them
          * For those new add them.
+         *
+         * show logs in this file inline
+         * show logs in external files still inline
          */
         deltaLogWidgets.delta(thisModule.logs);
 
