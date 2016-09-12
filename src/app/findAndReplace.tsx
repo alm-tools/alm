@@ -1,6 +1,6 @@
 import React = require("react");
 var ReactDOM = require('react-dom');
-import csx = require('csx');
+import csx = require('./base/csx');
 import {BaseComponent} from "./ui";
 import * as ui from "./ui";
 import * as utils from "../common/utils";
@@ -12,7 +12,7 @@ import {Icon} from "./components/icon";
 import * as tabRegistry from "./tabs/v2/tabRegistry";
 import {tabState,tabStateChanged} from "./tabs/v2/appTabsContainer";
 import * as fstyle from "./base/fstyle";
-import {extend} from "csx";
+import {extend} from "./base/csx";
 
 let {inputBlackStyleBase} = styles.Input;
 const inputBlackClassName = fstyle.style(inputBlackStyleBase);

@@ -5,7 +5,7 @@ import * as monacoUtils from "../monacoUtils";
 import * as state from "../../state/state";
 import * as selectListView from "../../selectListView";
 import * as React from "react";
-import * as csx from "csx";
+import * as csx from '../../base/csx';
 
 import CommonEditorRegistry = monaco.CommonEditorRegistry;
 import IEditorActionDescriptorData = monaco.IEditorActionDescriptorData;

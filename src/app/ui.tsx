@@ -3,7 +3,7 @@
  */
 export import React = require("react");
 export import ReactDOM = require("react-dom");
-export import csx = require('csx');
+import * as csx from './base/csx';
 import {CompositeDisposible} from "../common/events";
 export import $ = require("jquery");
 

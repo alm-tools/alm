@@ -1,5 +1,5 @@
 import React = require("react");
-import csx = require('csx');
+import * as csx from './base/csx';
 import {BaseComponent} from "./ui";
 import {connect} from "react-redux";
 import * as ui from "./ui";

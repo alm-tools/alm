@@ -2,7 +2,7 @@ import utils = require("../common/utils");
 import styles = require("./styles/styles");
 import React = require("react");
 import ReactDOMServer = require("react-dom/server");
-import csx = require('csx');
+import csx = require('./base/csx');
 import {BaseComponent} from "./ui";
 import * as ui from "./ui";
 import {cast,server} from "../socket/socketClient";

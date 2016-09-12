@@ -1,4 +1,4 @@
-import csx = require('csx');
+import * as csx from '../base/csx';
 
 export const textColor = '#AAA';
 export let errorColor = '#f92672';

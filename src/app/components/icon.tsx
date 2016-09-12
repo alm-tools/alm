@@ -1,5 +1,5 @@
 import React = require("react");
-import csx = require('csx');
+import csx = require('../base/csx');
 import {BaseComponent} from "../ui";
 import * as ui from "../ui";
 import * as pure from "../../common/pure";

@@ -4,7 +4,7 @@
  * We we have `docu`, the single point of useful inforation but only at the cursor location
  */
 import * as ui from "../../ui";
-import csx = require("csx");
+import * as csx from '../../base/csx';
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as state from "../../state/state";

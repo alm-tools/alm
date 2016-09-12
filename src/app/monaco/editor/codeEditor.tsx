@@ -1,5 +1,5 @@
 import * as ui from "../../ui";
-import * as csx from "csx";
+import * as csx from '../../base/csx';
 import * as React from "react";
 import {cast, server} from "../../../socket/socketClient";
 import * as docCache from "../model/docCache";

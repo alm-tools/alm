@@ -11,7 +11,7 @@ import * as tab from "./tab";
 import * as tabRegistry from "./tabRegistry";
 import * as commands from "../../commands/commands";
 import * as utils from "../../../common/utils";
-import csx = require('csx');
+import * as csx from '../../base/csx';
 import {createId} from "../../../common/utils";
 
 import * as types from "../../../common/types";
