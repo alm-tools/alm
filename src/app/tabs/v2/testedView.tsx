@@ -130,24 +130,26 @@ export class TestedView extends ui.BaseComponent<Props, State> {
         const testResultsStats = testResultsCache.getStats();
         const failing = !!testResultsStats.failCount;
         const totalThatRan = testResultsStats.passCount + testResultsStats.failCount;
-        const testStatsRendered = !!testResultsStats.testCount && <span
-            className="hint--bottom-left"
-            data-hint={`Test Total: ${testResultsStats.testCount}, Pass: ${testResultsStats.passCount}, Fail: ${testResultsStats.failCount}, Skip: ${testResultsStats.skipCount}, Duration: ${utils.formatMilliseconds(testResultsStats.durationMs)}`}
-            onClick={()=>{
-                console.log(testResultsStats);
-                console.log(testResultsCache.getResults());
-            }}>
+        const summary = `Total: ${testResultsStats.testCount}, Pass: ${testResultsStats.passCount}, Fail: ${testResultsStats.failCount}, Skip: ${testResultsStats.skipCount}, Duration: ${utils.formatMilliseconds(testResultsStats.durationMs)}`;
+        const testStatsRendered = !!testResultsStats.testCount && <span>
             {
                 failing
-                ? <span style={{ color: styles.errorColor, fontWeight: 'bold'}}><Icon name={styles.icons.tested}/> {testResultsStats.failCount}/{totalThatRan} Failing</span>
-                : <span style={{ color: styles.successColor, fontWeight: 'bold'}}><Icon name={styles.icons.tested}/> {testResultsStats.passCount}/{totalThatRan} Passed</span>
+                ? <span style={{ color: styles.errorColor, fontWeight: 'bold'}}>
+                    <Icon name={styles.icons.tested}/> {testResultsStats.failCount}/{totalThatRan} Tests Failing
+                </span>
+                : <span style={{ color: styles.successColor, fontWeight: 'bold'}}>
+                <Icon name={styles.icons.tested}/> {testResultsStats.passCount}/{totalThatRan} Tests Passed
+                </span>
             }
         </span>
         return (
             <gls.ContentHorizontal>
-                <gls.Flex/>
                 <gls.Content>
                     {testStatsRendered}
+                </gls.Content>
+                <gls.Flex/>
+                <gls.Content>
+                    {summary}
                 </gls.Content>
             </gls.ContentHorizontal>
         );
