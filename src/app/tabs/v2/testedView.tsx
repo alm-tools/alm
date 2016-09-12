@@ -18,6 +18,7 @@ import * as gls from "../../base/gls";
 import * as fstyle from "../../base/fstyle";
 import {MarkDown} from "../../markdown/markdown";
 import {testResultsCache} from "../../clientTestResultsCache";
+import {Icon} from "../../components/icon";
 
 import {blackHighlightColor} from "../../styles/styles";
 
@@ -25,6 +26,7 @@ export interface Props extends tab.TabProps {
 }
 export interface State {
     tests?: types.TestSuitesByFilePath;
+    testResultsStats?: types.TestContainerStats;
     selected?: types.TestModule | null;
 }
 
@@ -96,38 +98,72 @@ export class TestedView extends ui.BaseComponent<Props, State> {
                 tabIndex={0}
                 style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll, {color: styles.textColor}) }
                 onKeyPress={this.handleKey}>
-                <div style={{overflow: 'hidden', padding:'10px 0px 10px 10px', display: 'flex'}}>
-                    <gls.FlexHorizontal style={{}}>
-                        <gls.Content style={{ width: '200px', overflow: 'auto' }}>
-                            <typeIcon.SectionHeader text="Files"/>
-                            <gls.SmallVerticalSpace/>
-                            {
-                                this.renderFiles()
-                            }
-                        </gls.Content>
-                        <gls.FlexVertical style={{marginLeft: '5px', overflow: 'auto'}}>
-                            {
-                                this.state.selected
-                                ? this.renderSelectedNode()
-                                : 'Select a module from the left to view results 🌹'
-                            }
-                        </gls.FlexVertical>
-                    </gls.FlexHorizontal>
-
-                </div>
+                <gls.FlexVertical style={{ overflow: 'hidden', padding: '10px'}}>
+                    {this.renderHeader() }
+                    <gls.SmallVerticalSpace/>
+                    <gls.FlexVertical>
+                        <gls.FlexHorizontal>
+                            <gls.ContentVertical style={{ overflow: 'auto', backgroundColor: styles.blackHighlightColor, padding: '10px', width: '200px' }}>
+                                {
+                                    this.renderFiles()
+                                }
+                            </gls.ContentVertical>
+                            <gls.SmallHorizontalSpace/>
+                            <gls.FlexVertical style={{ overflow: 'auto', backgroundColor: styles.blackHighlightColor, padding: '10px' }}>
+                                {
+                                    this.state.selected
+                                        ? this.renderSelectedNode()
+                                        : 'Select a module from the left to view results 🌹'
+                                }
+                            </gls.FlexVertical>
+                        </gls.FlexHorizontal>
+                    </gls.FlexVertical>
+                </gls.FlexVertical>
             </div>
+        );
+    }
+
+    renderHeader(){
+        if (!this.state.testResultsStats) {
+            return <div>No test runs yet.</div>
+        }
+        const testResultsStats = testResultsCache.getStats();
+        const failing = !!testResultsStats.failCount;
+        const totalThatRan = testResultsStats.passCount + testResultsStats.failCount;
+        const testStatsRendered = !!testResultsStats.testCount && <span
+            className="hint--bottom-left"
+            data-hint={`Test Total: ${testResultsStats.testCount}, Pass: ${testResultsStats.passCount}, Fail: ${testResultsStats.failCount}, Skip: ${testResultsStats.skipCount}, Duration: ${utils.formatMilliseconds(testResultsStats.durationMs)}`}
+            onClick={()=>{
+                console.log(testResultsStats);
+                console.log(testResultsCache.getResults());
+            }}>
+            {
+                failing
+                ? <span style={{ color: styles.errorColor, fontWeight: 'bold'}}>{testResultsStats.failCount}/{totalThatRan} Failing</span>
+                : <span style={{ color: styles.successColor, fontWeight: 'bold'}}>{testResultsStats.passCount}/{totalThatRan} Passed</span>
+            }
+        </span>
+        return (
+            <gls.ContentHorizontal>
+                <gls.Flex/>
+                <gls.Content>
+                    {testStatsRendered}
+                </gls.Content>
+            </gls.ContentHorizontal>
         );
     }
 
     renderFiles(){
         return Object.keys(this.state.tests).map((fp, i) => {
             const item = this.state.tests[fp];
+            const fileName = utils.getFileName(fp);
             return (
                 <div
-                    title={item.filePath}
                     key={i}
+                    title={fp}
                     style={{ cursor: 'pointer', paddingTop: '2px', paddingBottom: '2px', paddingLeft: '2px' }}
-                    onClick={() => this.handleRootSelected(item) }>
+                    onClick={() => this.handleModuleSelected(item) }>
+                    {fileName}
                 </div>
             )
         });
@@ -153,7 +189,7 @@ export class TestedView extends ui.BaseComponent<Props, State> {
         });
     }
 
-    handleRootSelected = (node: types.TestModule) => {
+    handleModuleSelected = (node: types.TestModule) => {
         this.setState({ selected: node });
     }
 
@@ -166,7 +202,8 @@ export class TestedView extends ui.BaseComponent<Props, State> {
 
     loadData = () => {
         const results = testResultsCache.getResults();
-        this.setState({tests: results});
+        const testResultsStats = testResultsCache.getStats();
+        this.setState({tests: results, testResultsStats});
     }
 
     /**
