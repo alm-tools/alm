@@ -27,7 +27,7 @@ export interface Props extends tab.TabProps {
 export interface State {
     tests?: types.TestSuitesByFilePath;
     testResultsStats?: types.TestContainerStats;
-    selected?: types.TestModule | null;
+    selected?: string | null;
 }
 
 export namespace DocumentationViewStyles {
@@ -157,13 +157,18 @@ export class TestedView extends ui.BaseComponent<Props, State> {
         return Object.keys(this.state.tests).map((fp, i) => {
             const item = this.state.tests[fp];
             const fileName = utils.getFileName(fp);
+            const failing = !!item.stats.failCount;
+            const totalThatRan =  item.stats.passCount + item.stats.failCount;
             return (
                 <div
                     key={i}
                     title={fp}
-                    style={{ cursor: 'pointer', paddingTop: '2px', paddingBottom: '2px', paddingLeft: '2px' }}
+                    style={{
+                        cursor: 'pointer', paddingTop: '2px', paddingBottom: '2px', paddingLeft: '2px',
+                        color: failing ? styles.errorColor : styles.successColor
+                    }}
                     onClick={() => this.handleModuleSelected(item) }>
-                    {fileName}
+                    {fileName} ({failing ? item.stats.failCount : item.stats.passCount}/{totalThatRan})
                 </div>
             )
         });
@@ -171,15 +176,20 @@ export class TestedView extends ui.BaseComponent<Props, State> {
 
     renderSelectedNode() {
         const node = this.state.selected;
-        return this.renderNode(node);
-    }
-
-    renderNode(node: types.TestModule, i = 0) {
-        return (
-            <div key={i} style={{paddingTop: '5px'}}>
-                {node.filePath}
+        const test = this.state.tests[node];
+        if (!test) {
+            return <div>The selected filePath: {node} is no longer in the test restuls</div>
+        }
+        const someFailing = !!test.stats.failCount;
+        return <gls.ContentVerticalContentPadded padding={10}>
+            <div
+                style={{
+                    color: someFailing ? styles.errorColor : styles.successColor
+                }}
+            >Total: {test.stats.testCount}, Pass: {test.stats.passCount}, Fail: {test.stats.failCount}, Skip: {test.stats.failCount}, Duration: {test.stats.durationMs}ms
             </div>
-        );
+            <div>FilePath: {node}</div>
+        </gls.ContentVerticalContentPadded>
     }
 
     handleNodeClick = (node: types.DocumentedType) => {
@@ -190,7 +200,7 @@ export class TestedView extends ui.BaseComponent<Props, State> {
     }
 
     handleModuleSelected = (node: types.TestModule) => {
-        this.setState({ selected: node });
+        this.setState({ selected: node.filePath });
     }
 
     handleKey = (e: any) => {
