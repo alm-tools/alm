@@ -4,12 +4,18 @@
 
 type Type = 'string' | 'boolean' | 'number' | 'object' | 'array';
 
-export const types = {
-    string: 'string' as Type,
-    boolean: 'boolean' as Type,
-    number: 'number' as Type,
-    object: 'object' as Type,
-    array: 'array' as Type,
+export const types: {
+    string: 'string',
+    boolean: 'boolean',
+    number: 'number',
+    object: 'object',
+    array: 'array',
+} = {
+    string: 'string',
+    boolean: 'boolean',
+    number: 'number',
+    object: 'object',
+    array: 'array',
 }
 
 export interface MemberDefinition {
