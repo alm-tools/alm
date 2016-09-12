@@ -52,6 +52,9 @@ export namespace DocumentationViewStyles {
 const makeReactKeyOutOfPosition = (position: EditorPosition) => {
     return position.line + ':' + position.ch;
 }
+const formatStats = (stats: types.TestContainerStats): string => {
+    return `Total: ${stats.testCount}, Pass: ${stats.passCount}, Fail: ${stats.failCount}, Skip: ${stats.skipCount}, Duration: ${utils.formatMilliseconds(stats.durationMs)}`
+}
 
 export class TestedView extends ui.BaseComponent<Props, State> {
 
@@ -140,7 +143,7 @@ export class TestedView extends ui.BaseComponent<Props, State> {
         const failing = !!testResultsStats.failCount;
         const totalThatRan = testResultsStats.passCount + testResultsStats.failCount;
         const working = this.state.testedWorking && this.state.testedWorking.working;
-        const summary = `Total: ${testResultsStats.testCount}, Pass: ${testResultsStats.passCount}, Fail: ${testResultsStats.failCount}, Skip: ${testResultsStats.skipCount}, Duration: ${utils.formatMilliseconds(testResultsStats.durationMs)}`;
+        const summary = formatStats(testResultsStats);
         const testStatsRendered = !!testResultsStats.testCount && <span>
             {
                 failing
@@ -220,8 +223,20 @@ export class TestedView extends ui.BaseComponent<Props, State> {
     }
 
     renderSuite(suite: types.TestSuiteResult) {
-        return <div key={makeReactKeyOutOfPosition(suite.testLogPosition.lastPositionInFile)}>
-            {suite.description}
+        return <div key={makeReactKeyOutOfPosition(suite.testLogPosition.lastPositionInFile)} style={{
+            fontSize: '.8em',
+            border: '1px solid grey',
+            marginTop:'5px', padding: '5px'
+        }}>
+            <Icon name={styles.icons.testedSuite}/> <span style={{
+                cursor: 'pointer', textDecoration: 'underline',
+            }}>
+                {suite.description}
+            </span>
+            <gls.SmallVerticalSpace space={10}/>
+            Location {suite.testLogPosition.lastPositionInFile.line + 1}:{suite.testLogPosition.lastPositionInFile.ch + 1}
+            <gls.SmallVerticalSpace space={10}/>
+            {formatStats(suite.stats)}
         </div>
     }
 
