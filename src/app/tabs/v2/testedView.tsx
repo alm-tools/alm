@@ -40,6 +40,12 @@ export namespace TestedViewStyles {
             textDecoration: 'underline'
         }
     });
+    export const clickable = fstyle.style({
+        cursor: 'pointer',
+        '&:hover': {
+            textDecoration: 'underline'
+        }
+    });
 }
 
 /** Utility */
@@ -266,11 +272,11 @@ export class TestedView extends ui.BaseComponent<Props, State> {
                     backgroundColor: 'black'
                 }}>
                     <gls.ContentVerticalContentPadded padding={10}>
-                        <div style={{color: styles.errorColor}}>{test.error.message}</div>
+                        <div><Clipboard text={test.error.message}/> {test.error.message}</div>
                         {!!test.error.testLogPosition.stack.length && test.error.testLogPosition.stack.map(s => {
-                            return <div key={makeReactKeyOutOfPosition(s.position)} style={{fontSize: '10px'}}>
+                            return <div key={makeReactKeyOutOfPosition(s.position)} style={{fontSize: '11px'}} onClick={()=>this.openFilePathPosition(s)}>
                                 <Icon name="eye"/>
-                                &nbsp;&nbsp;<gls.InlineBlock className={TestedViewStyles.headerClassName}>{s.filePath}:{s.position.line + 1}:{s.position.ch + 1}</gls.InlineBlock>
+                                &nbsp;&nbsp;<gls.InlineBlock className={TestedViewStyles.clickable}>{s.filePath}:{s.position.line + 1}:{s.position.ch + 1}</gls.InlineBlock>
                             </div>
                         }) }
                     </gls.ContentVerticalContentPadded>
@@ -285,6 +291,10 @@ export class TestedView extends ui.BaseComponent<Props, State> {
             filePath,
             position: pos.lastPositionInFile,
         })
+    }
+
+    openFilePathPosition = (fpPos: types.FilePathPosition) => {
+        commands.doOpenOrFocusFile.emit(fpPos);
     }
 
     handleNodeClick = (node: types.DocumentedType) => {
