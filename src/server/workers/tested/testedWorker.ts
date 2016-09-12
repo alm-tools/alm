@@ -31,8 +31,6 @@ namespace Worker {
     }
 
     export const fileSaved: typeof contract.worker.fileSaved = (data) => {
-        /** TODO: tested new test file added to the directory */
-
         if (data.filePath.toLowerCase().endsWith(configFileName)){
             TestedWorkerImplementation.restart();
         }

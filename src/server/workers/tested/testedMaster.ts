@@ -41,12 +41,33 @@ export const {worker} = sw.startWorker({
 
 import * as fmc from "../../disk/fileModelCache";
 import * as wd from "../../disk/workingDir";
+import * as activeProjectConfig from "../../disk/activeProjectConfig";
 export const sync = () => worker.init({workingDir: wd.getProjectRoot()});
 export function start() {
     /** Start up the working with working dir */
     wd.projectRootUpdated.on(sync);
     sync();
 
-    // only saved ones as linter reads directly from disk and works on whole file contents
-    fmc.didStatusChange.on((update) => update.saved && worker.fileSaved({ filePath: update.filePath }));
+    /** File save */
+    fmc.didStatusChange.on((update) => {
+        // saved ones as worker reads directly from disk and works on whole file contents
+        update.saved && worker.fileSaved({ filePath: update.filePath })
+
+        /**
+         * If a saved file is in the compilation context we should really run all tests
+         * untill we have a better dependency analysis
+         */
+        activeProjectConfig.projectFilePathsUpdated.current().then(res => {
+            if (res.filePaths.some(fp => fp === update.filePath)){
+                sync();
+            }
+        });
+    });
+
+    /**
+     * New test file added to the directory
+     * NOTE: it works because new test files should also be a part of the compilation context
+     * And that triggers a file paths update ;)
+     */
+    activeProjectConfig.projectFilePathsUpdated.on(sync);
 }
