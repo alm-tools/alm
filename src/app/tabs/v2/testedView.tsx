@@ -17,18 +17,15 @@ import * as typeIcon from "../../components/typeIcon";
 import * as gls from "../../base/gls";
 import * as fstyle from "../../base/fstyle";
 import {MarkDown} from "../../markdown/markdown";
+import {testResultsCache} from "../../clientTestResultsCache";
 
 import {blackHighlightColor} from "../../styles/styles";
 
 export interface Props extends tab.TabProps {
 }
 export interface State {
-    files?: types.DocumentedType[];
-    selected?: types.DocumentedType | null;
-    filtered?: types.DocumentedType[];
-    filter?: string;
-
-    selectedDoesNotMatchFilter?: boolean;
+    tests?: types.TestSuitesByFilePath;
+    selected?: types.TestModule | null;
 }
 
 export namespace DocumentationViewStyles {
@@ -51,68 +48,24 @@ export class TestedView extends ui.BaseComponent<Props, State> {
 
     constructor(props: Props) {
         super(props);
-        this.filePath = utils.getFilePathFromUrl(props.url);
         this.state = {
-            filtered: [],
-            files: [],
-            selected: null,
+            tests: Object.create(null),
+            selected: null
         };
     }
 
-    refs: {
-        [string: string]: any;
-        root: HTMLDivElement;
-        graphRoot: HTMLDivElement;
-        controlRoot: HTMLDivElement;
-    }
-
-    filePath: string;
     componentDidMount() {
 
         /**
-         * Initial load + load on project change
+         * Initial load + load on result change
          */
         this.loadData();
         this.disposible.add(
-            cast.activeProjectFilePathsUpdated.on(() => {
+            testResultsCache.testResultsDelta.on(() => {
                 this.loadData();
             })
         );
 
-        /**
-         * If a file is selected and it gets edited, reload the file module information
-         */
-        const isFilePathOfSignificance = (filePath:string) => !!this.state.selected && this.state.selected.location.filePath === filePath;
-        const reloadSelectedDebounced = utils.debounce((filePath) => {
-            if (!isFilePathOfSignificance(filePath)) return;
-            server.getUpdatedModuleInformation({
-                filePath
-            }).then((res)=>{
-                if (!isFilePathOfSignificance(filePath)) return;
-                const files = this.state.files.map(f => { return (f.location.filePath === filePath) ? res : f });
-                this.setState({ files, selected: res });
-                this.filter();
-            })
-        }, 3000);
-        this.disposible.add(
-            commands.fileContentsChanged.on((res) => {
-                if (!isFilePathOfSignificance(res.filePath)) return;
-                reloadSelectedDebounced(res.filePath);
-            })
-        );
-
-        /**
-         * Handle focus to inform tab container
-         */
-        const focused = () => {
-            this.props.onFocused();
-        }
-        this.refs.root.addEventListener('focus', focused);
-        this.disposible.add({
-            dispose: () => {
-                this.refs.root.removeEventListener('focus', focused);
-            }
-        })
 
         // Listen to tab events
         const api = this.props.api;
@@ -131,10 +84,15 @@ export class TestedView extends ui.BaseComponent<Props, State> {
         this.disposible.add(api.search.replaceAll.on(this.search.replaceAll));
     }
 
+    ctrls: {
+        root?: HTMLDivElement
+    }  = {};
+
     render() {
         return (
             <div
-                ref="root"
+                ref={(root)=>this.ctrls.root = root}
+                onFocus={this.props.onFocused}
                 tabIndex={0}
                 style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll, {color: styles.textColor}) }
                 onKeyPress={this.handleKey}>
@@ -149,20 +107,10 @@ export class TestedView extends ui.BaseComponent<Props, State> {
                         </gls.Content>
                         <gls.FlexVertical style={{marginLeft: '5px', overflow: 'auto'}}>
                             {
-                                this.state.selected && this.state.selectedDoesNotMatchFilter &&
-                                <gls.Content style={{backgroundColor: '#111', padding: '5px'}}>
-                                    Note: Nothing in the selected module matches the filter, so showing it all
-                                </gls.Content>
-                            }
-                            {
                                 this.state.selected
                                 ? this.renderSelectedNode()
-                                : 'Select a module from the left to view its documentation 🌹'
+                                : 'Select a module from the left to view results 🌹'
                             }
-                            <div style={{marginTop: '10px', marginRight: '10px'}}>
-                                <hr/>
-                                <typeIcon.TypeIconLegend />
-                            </div>
                         </gls.FlexVertical>
                     </gls.FlexHorizontal>
 
@@ -172,54 +120,16 @@ export class TestedView extends ui.BaseComponent<Props, State> {
     }
 
     renderFiles(){
-        /** For two items in different file paths we render the folder name in between */
-        const toRender: {
-            folder?: string,
-            type?: types.DocumentedType,
-        }[] = [];
-
-        let lastKnownFolder = ''
-        this.state.filtered.forEach(type => {
-            const folder = utils.getDirectory(type.name);
-            if (folder !== lastKnownFolder){
-                toRender.push({
-                    folder
-                });
-                lastKnownFolder = folder;
-            }
-            toRender.push({
-                type
-            });
-        });
-
-        return toRender.map((item, i) => {
-            if (item.type){
-                const file = item.type;
-                const name = utils.getFileName(file.name);
-                const backgroundColor = this.state.selected && this.state.selected.name === file.name
-                    ? blackHighlightColor
-                    : 'transparent';
-                return (
-                    <div
-                        title={file.name}
-                        key={i}
-                        style={{ cursor: 'pointer', backgroundColor, paddingTop: '2px', paddingBottom: '2px', paddingLeft: '2px' }}
-                        onClick={() => this.handleRootSelected(file)}>
-                        <typeIcon.DocumentedTypeHeader name={name} icon={file.icon}/>
-                    </div>
-                )
-            }
-            else {
-                const folder = item.folder;
-                return (
-                    <div
-                        title={folder}
-                        key={i}
-                        className={DocumentationViewStyles.folderName}>
-                        {folder}
-                    </div>
-                )
-            }
+        return Object.keys(this.state.tests).map((fp, i) => {
+            const item = this.state.tests[fp];
+            return (
+                <div
+                    title={item.filePath}
+                    key={i}
+                    style={{ cursor: 'pointer', paddingTop: '2px', paddingBottom: '2px', paddingLeft: '2px' }}
+                    onClick={() => this.handleRootSelected(item) }>
+                </div>
+            )
         });
     }
 
@@ -228,24 +138,10 @@ export class TestedView extends ui.BaseComponent<Props, State> {
         return this.renderNode(node);
     }
 
-    renderNode(node: types.DocumentedType, i = 0) {
+    renderNode(node: types.TestModule, i = 0) {
         return (
             <div key={i} style={{paddingTop: '5px'}}>
-                <gls.InlineBlock className={DocumentationViewStyles.header} onClick={()=>this.handleNodeClick(node)}>
-                    <typeIcon.DocumentedTypeHeader name={node.name} icon={node.icon} />
-                </gls.InlineBlock>
-                {
-                    node.comment &&
-                    <div style={{ padding: '5px', backgroundColor: blackHighlightColor}}>
-                        <MarkDown markdown={node.comment}/>
-                    </div>
-                }
-                {
-                    node.subItems && !!node.subItems.length &&
-                    <div style={{ border: '1px solid grey', marginTop:'5px', padding: '5px' }}>
-                        {node.subItems.map((n, i) => this.renderNode(n, i)) }
-                    </div>
-                }
+                {node.filePath}
             </div>
         );
     }
@@ -257,9 +153,8 @@ export class TestedView extends ui.BaseComponent<Props, State> {
         });
     }
 
-    handleRootSelected = (node: types.DocumentedType) => {
+    handleRootSelected = (node: types.TestModule) => {
         this.setState({ selected: node });
-        setTimeout(() => this.filter());
     }
 
     handleKey = (e: any) => {
@@ -270,62 +165,8 @@ export class TestedView extends ui.BaseComponent<Props, State> {
     }
 
     loadData = () => {
-        server.getTopLevelModuleNames({}).then(res => {
-            this.setState({files:res.files, selected: null});
-            this.filter();
-        })
-    }
-
-    filter = () => {
-        const filter = (this.state.filter || '').toLowerCase();
-        if (!filter) {
-            const filtered = this.state.files;
-            const selected = this.state.selected && filtered.find(f => f.name == this.state.selected.name);
-            this.setState({ filtered, selected, selectedDoesNotMatchFilter: false });
-            return;
-        }
-
-        /**
-         * Does the name match or does some subItem name match
-         */
-        const doesNameMatchRecursive = (type: types.DocumentedType) => {
-            return type.name.toLowerCase().indexOf(filter) !== -1 || type.subItems.some(t => doesNameMatchRecursive(t));
-        }
-
-        /**
-         * Only leaves in the subItems that match
-         */
-        const mapChildrenRecursive = (item: types.DocumentedType) => {
-            let subItems =
-                item.subItems
-                    .filter(doesNameMatchRecursive)
-                    .map(mapChildrenRecursive);
-            const result: types.DocumentedType = {
-                name: item.name,
-                icon: item.icon,
-                comment: item.comment,
-                location: item.location,
-                subItems,
-            }
-            return result;
-        }
-
-        const filtered =
-            this.state.files
-                .filter(f => {
-                    return doesNameMatchRecursive(f);
-                })
-                .map(mapChildrenRecursive);
-        this.setState({filtered})
-
-        // Also filter inside the selected if possible
-        const selected = this.state.selected && filtered.find(f => f.name == this.state.selected.name);
-        if (this.state.selected && !selected) {
-            this.setState({selectedDoesNotMatchFilter: true});
-        }
-        else {
-            this.setState({ selected, selectedDoesNotMatchFilter: false });
-        }
+        const results = testResultsCache.getResults();
+        this.setState({tests: results});
     }
 
     /**
@@ -336,7 +177,7 @@ export class TestedView extends ui.BaseComponent<Props, State> {
     }
 
     focus = () => {
-        this.refs.root.focus();
+        this.ctrls.root.focus();
     }
 
     save = () => {
@@ -350,13 +191,9 @@ export class TestedView extends ui.BaseComponent<Props, State> {
 
     search = {
         doSearch: (options: FindOptions) => {
-            this.setState({ filter: options.query });
-            this.filter();
         },
 
         hideSearch: () => {
-            this.setState({ filter: '' });
-            this.filter();
         },
 
         findNext: (options: FindOptions) => {
