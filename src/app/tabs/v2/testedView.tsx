@@ -245,7 +245,7 @@ export class TestedView extends ui.BaseComponent<Props, State> {
     }
 
     renderTest(test: types.TestResult) {
-        return <div key={makeReactKeyOutOfPosition(test.testLogPosition.lastPositionInFile) }>
+        return <div key={makeReactKeyOutOfPosition(test.testLogPosition.lastPositionInFile) } style={{padding: '5px'}}>
             <gls.InlineBlock
                 style={{
                     color: test.status === types.TestStatus.Success ? styles.successColor
@@ -259,6 +259,23 @@ export class TestedView extends ui.BaseComponent<Props, State> {
                 </span>
             </gls.InlineBlock>
             &nbsp;&nbsp;<gls.InlineBlock style={{fontSize: '10px'}}>{test.durationMs != undefined ? utils.formatMilliseconds(test.durationMs) : ''}</gls.InlineBlock>
+            {
+                test.status === types.TestStatus.Fail && <div style={{
+                    padding: '5px',
+                    margin: '5px',
+                    backgroundColor: 'black'
+                }}>
+                    <gls.ContentVerticalContentPadded padding={10}>
+                        <div style={{color: styles.errorColor}}>{test.error.message}</div>
+                        {!!test.error.testLogPosition.stack.length && test.error.testLogPosition.stack.map(s => {
+                            return <div key={makeReactKeyOutOfPosition(s.position)} style={{fontSize: '10px'}}>
+                                <Icon name="eye"/>
+                                &nbsp;&nbsp;<gls.InlineBlock className={TestedViewStyles.headerClassName}>{s.filePath}:{s.position.line + 1}:{s.position.ch + 1}</gls.InlineBlock>
+                            </div>
+                        }) }
+                    </gls.ContentVerticalContentPadded>
+                </div>
+            }
         </div>
     }
 
