@@ -19,6 +19,7 @@ import * as fstyle from "../../base/fstyle";
 import {MarkDown} from "../../markdown/markdown";
 import {testResultsCache} from "../../clientTestResultsCache";
 import {Icon} from "../../components/icon";
+import * as state from "../../state/state";
 
 import {blackHighlightColor} from "../../styles/styles";
 
@@ -28,6 +29,7 @@ export interface State {
     tests?: types.TestSuitesByFilePath;
     testResultsStats?: types.TestContainerStats;
     selected?: string | null;
+    testedWorking?: types.Working;
 }
 
 export namespace DocumentationViewStyles {
@@ -67,7 +69,9 @@ export class TestedView extends ui.BaseComponent<Props, State> {
                 this.loadData();
             })
         );
-
+        this.disposible.add(state.subscribeSub(s=>s.testedWorking, (testedWorking)=>{
+            this.setState({testedWorking});
+        }));
 
         // Listen to tab events
         const api = this.props.api;
@@ -130,15 +134,16 @@ export class TestedView extends ui.BaseComponent<Props, State> {
         const testResultsStats = testResultsCache.getStats();
         const failing = !!testResultsStats.failCount;
         const totalThatRan = testResultsStats.passCount + testResultsStats.failCount;
+        const working = this.state.testedWorking && this.state.testedWorking.working;
         const summary = `Total: ${testResultsStats.testCount}, Pass: ${testResultsStats.passCount}, Fail: ${testResultsStats.failCount}, Skip: ${testResultsStats.skipCount}, Duration: ${utils.formatMilliseconds(testResultsStats.durationMs)}`;
         const testStatsRendered = !!testResultsStats.testCount && <span>
             {
                 failing
                 ? <span style={{ color: styles.errorColor, fontWeight: 'bold'}}>
-                    <Icon name={styles.icons.tested}/> {testResultsStats.failCount}/{totalThatRan} Tests Failing
+                    <Icon name={styles.icons.tested} spin={!!working}/> {testResultsStats.failCount}/{totalThatRan} Tests Failing
                 </span>
                 : <span style={{ color: styles.successColor, fontWeight: 'bold'}}>
-                <Icon name={styles.icons.tested}/> {testResultsStats.passCount}/{totalThatRan} Tests Passed
+                    <Icon name={styles.icons.tested} spin={!!working}/> {testResultsStats.passCount}/{totalThatRan} Tests Passed
                 </span>
             }
         </span>
