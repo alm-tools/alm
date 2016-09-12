@@ -139,8 +139,8 @@ export class TestedView extends ui.BaseComponent<Props, State> {
             }}>
             {
                 failing
-                ? <span style={{ color: styles.errorColor, fontWeight: 'bold'}}>{testResultsStats.failCount}/{totalThatRan} Failing</span>
-                : <span style={{ color: styles.successColor, fontWeight: 'bold'}}>{testResultsStats.passCount}/{totalThatRan} Passed</span>
+                ? <span style={{ color: styles.errorColor, fontWeight: 'bold'}}><Icon name={styles.icons.tested}/> {testResultsStats.failCount}/{totalThatRan} Failing</span>
+                : <span style={{ color: styles.successColor, fontWeight: 'bold'}}><Icon name={styles.icons.tested}/> {testResultsStats.passCount}/{totalThatRan} Passed</span>
             }
         </span>
         return (
@@ -165,20 +165,21 @@ export class TestedView extends ui.BaseComponent<Props, State> {
                     title={fp}
                     style={{
                         cursor: 'pointer', paddingTop: '2px', paddingBottom: '2px', paddingLeft: '2px',
-                        color: failing ? styles.errorColor : styles.successColor
+                        color: failing ? styles.errorColor : styles.successColor,
+                        backgroundColor: this.state.selected === fp ? styles.selectedBackgroundColor: 'transparent'
                     }}
                     onClick={() => this.handleModuleSelected(item) }>
-                    {fileName} ({failing ? item.stats.failCount : item.stats.passCount}/{totalThatRan})
+                    <Icon name="rocket" /> {fileName} ({failing ? item.stats.failCount : item.stats.passCount}/{totalThatRan})
                 </div>
             )
         });
     }
 
     renderSelectedNode() {
-        const node = this.state.selected;
-        const test = this.state.tests[node];
+        const filePath = this.state.selected;
+        const test = this.state.tests[filePath];
         if (!test) {
-            return <div>The selected filePath: {node} is no longer in the test restuls</div>
+            return <div>The selected filePath: {filePath} is no longer in the test restuls</div>
         }
         const someFailing = !!test.stats.failCount;
         return <gls.ContentVerticalContentPadded padding={10}>
@@ -188,7 +189,18 @@ export class TestedView extends ui.BaseComponent<Props, State> {
                 }}
             >Total: {test.stats.testCount}, Pass: {test.stats.passCount}, Fail: {test.stats.failCount}, Skip: {test.stats.failCount}, Duration: {test.stats.durationMs}ms
             </div>
-            <div>FilePath: {node}</div>
+            <div>
+                FilePath: <span style={{
+                    textDecoration: 'underline',
+                    cursor: 'pointer',
+                    fontSize: '.8em'
+                }}
+                onClick={()=>{
+                    commands.doOpenOrFocusFile.emit({
+                        filePath: filePath,
+                    });
+                }}>{filePath}</span>
+            </div>
         </gls.ContentVerticalContentPadded>
     }
 
