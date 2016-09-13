@@ -47,3 +47,10 @@ And then connect your component:
 
 ## Global state that comes from server
 We setup such state in `main.tsx` basically setting it initially and updating it on new data recieved from server. e.g. The updated errors in the current project.
+
+## More
+
+If you are looking for using these ideas in your own projects, Daniel has been kind enough to write up a project that does more and in a more decoupled (multiple disconnected reducers) way:
+
+* Docs http://danielearwicker.github.io/Immuto_Strongly_Typed_Redux_Composition.html
+* Library https://github.com/danielearwicker/immuto
