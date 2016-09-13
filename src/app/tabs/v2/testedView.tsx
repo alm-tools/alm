@@ -179,12 +179,13 @@ export class TestedView extends ui.BaseComponent<Props, State> {
                     key={i}
                     title={fp}
                     className={TestedViewStyles.headerClassName}
-                    style={{paddingTop: '2px', paddingBottom: '2px', paddingLeft: '2px',
+                    style={csx.extend({
+                        paddingTop: '2px', paddingBottom: '2px', paddingLeft: '2px',
                         color: failing ? styles.errorColor : styles.successColor,
-                        backgroundColor: this.state.selected === fp ? styles.selectedBackgroundColor: 'transparent'
-                    }}
+                        backgroundColor: this.state.selected === fp ? styles.selectedBackgroundColor: 'transparent',
+                    }, styles.ellipsis)}
                     onClick={() => this.handleModuleSelected(item) }>
-                    <Icon name="file-text-o" /> {fileName} ({failing ? item.stats.failCount : item.stats.passCount}/{totalThatRan})
+                    <Icon name="file-text-o" /> ({failing ? item.stats.failCount : item.stats.passCount}/{totalThatRan}) {fileName}
                 </div>
             )
         });
