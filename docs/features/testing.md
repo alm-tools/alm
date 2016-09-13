@@ -4,13 +4,14 @@ Having your test results integrated into the IDE is a feature that can greatly e
 
 ## Configuration
 
-Add a simple `alm.json` at the root working directory of your project:
+Add a simple `alm.json` at the root working directory of your project e.g.:
 
 ```json
 {
   "tests": {
     "include": [
-      "./src/tests/**/*"
+      "./src/tests/**/*_spec.ts",
+      "./src/tests/**/*_spec.tsx"
     ]
   }
 }
@@ -23,7 +24,24 @@ Testing is automatically enabled if such a file is detected and disabled otherwi
 
 ## Status bar
 
-If testing is enabled we show you the test count / fails / passes in the status bar.
+If a testing configuration is detected in `alm.json` we run the tests and show you the test count / fails / passes in the status bar.
+
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/tested/statusBarIcon.png)
+
+## Inline
+`console.log` and errors are shown inline in the editor.
+
+> TIP: you can use a test file to quickly test out some TypeScript you are writing ;)
+
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/tested/testedOverview.gif)
+
+## Gutter
+We show test statuses in the editor gutter ⚽.
+
+## Test Results View
+Clicking on the status bar section for testing or running the `Test Results View` command opens up a test browser.
+
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/tested/liveUpdates.gif)
 
 ## Running without alm
 
