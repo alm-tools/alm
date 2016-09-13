@@ -338,11 +338,14 @@ export function stringEnum(x){
     Object.keys(x).map((key) => x[key] = key);
 }
 
-/** Just adds your intercept function to be called whenever the original function in called */
-export function intercepted<T extends Function>(config: {context:any;orig:T;intercept:T}):T{
-    return function(){
+/**
+ * Just adds your intercept function to be called whenever the original function is called
+ * Calls your function *before* the original is called
+ */
+export function intercepted<T extends Function>(config: { context: any; orig: T; intercept: T }): T {
+    return function() {
         config.intercept.apply(null, arguments);
-        return config.orig.apply(config.context,arguments);
+        return config.orig.apply(config.context, arguments);
     } as any;
 }
 
@@ -487,12 +490,27 @@ export function timer() {
 }
 
 /**
+ * Returns a nice conversion of milliseconds into seconds / mintues as needed
+ */
+export function formatMilliseconds(ms: number): string {
+    if (ms < 1000) return `${ms}ms`;
+
+    const s = ms / 1000;
+    if (s < 60) {
+        return `${s.toFixed(2)}s`;
+    }
+    const m = s / 60;
+    return `${m.toFixed(2)}min`
+}
+
+/**
  * If you add a new schema make sure you download its schema as well
  */
 export const supportedAutocompleteConfigFileNames: { [fileName: string]: boolean } = {
     'tsconfig.json': true,
     'package.json': true,
     'tslint.json': true,
+    'alm.json': true,
 }
 /**
  * Files for which we have autocomplete intelligence

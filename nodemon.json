@@ -1,6 +1,7 @@
 {
     "ignore": [
         "src/app/*",
-        "tests/*"
+        "tests/*",
+        "alm.json"
     ]
 }

@@ -1,6 +1,6 @@
 import React = require("react");
 import ReactDOM = require("react-dom");
-import csx = require('csx');
+import * as csx from '../../base/csx';
 import * as ui from "../../ui";
 import * as utils from "../../../common/utils";
 import * as styles from "../../styles/styles";

@@ -1,0 +1,45 @@
+{
+	"title": "JSON schema for the tested configuration files",
+	"$schema": "http://json-schema.org/draft-04/schema#",
+
+	"type": "object",
+	"additionalProperties": true,
+
+	"definitions": {
+        "includeDefinition": {
+          "properties": {
+            "include": {
+              "description": "Specifies a list of glob patterns that match files to be included in compilation.",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uri"
+              }
+            }
+          }
+        },
+        "excludeDefinition": {
+          "properties": {
+            "exclude": {
+              "description": "Specifies a list globs that need to be excluded from compilation. The 'exclude' property only affects the files included via the 'include' property",
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uri"
+              }
+            }
+          }
+        }
+    },
+
+    "properties": {
+		"tests": {
+			"description": "The directory where the codelytics rules live",
+			"type": "object",
+            "anyOf": [
+              { "$ref": "#/definitions/includeDefinition" },
+              { "$ref": "#/definitions/excludeDefinition" }
+            ]
+		}
+	}
+}

@@ -22,6 +22,7 @@ import * as activeProjectConfig from "../server/disk/activeProjectConfig";
 
 import {errorsCache} from "../server/globalErrorCacheServer";
 import * as projectServiceMaster from "../server/workers/lang/projectServiceMaster";
+import {testCache, working as testedWorking} from "../server/workers/tested/testedMaster";
 
 namespace Server {
     export var echo: typeof contract.server.echo = (data, client) => {
@@ -153,6 +154,13 @@ namespace Server {
     }
 
     /**
+     * Tested
+     */
+    export var getTestResults:typeof contract.server.getTestResults = (data) => {
+        return resolve(testCache.getResults());
+    }
+
+    /**
      * Project service
      */
     export var getCompletionsAtPosition: typeof contract.server.getCompletionsAtPosition = (query) => {
@@ -275,6 +283,10 @@ export function register(app: http.Server | https.Server) {
 
     /** Errors */
     errorsCache.errorsDelta.pipe(cast.errorsDelta);
+
+    /** Tested */
+    testCache.testResultsDelta.pipe(cast.testResultsDelta);
+    testedWorking.pipe(cast.testedWorking);
 
     /** FARM */
     findAndReplaceMultiService.farmResultsUpdated.pipe(cast.farmResultsUpdated);

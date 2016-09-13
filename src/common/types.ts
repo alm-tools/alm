@@ -527,3 +527,111 @@ export interface MonacoActionInformation {
 export type Working = {
     working: boolean
 }
+
+/**
+ * Tested
+ */
+export enum TestStatus {
+    NotRunYet = 1,
+    Fail,
+    Success,
+    Skipped,
+}
+export type TestErrorStack = FilePathPosition[];
+export type TestLogPosition = {
+    lastPositionInFile: EditorPosition;
+    isActualLastInFile: boolean;
+    stack: TestErrorStack;
+}
+export type TestError = {
+    testLogPosition: TestLogPosition;
+    message: string;
+    stack: TestErrorStack;
+}
+export type TestResult = {
+    description: string;
+    status: TestStatus;
+    testLogPosition: TestLogPosition;
+
+    /** None if skipped */
+    durationMs?: number;
+
+    /** Only in case of test failure */
+    error?: TestError;
+}
+export type TestSuiteResult = {
+    description: string;
+    testLogPosition: TestLogPosition;
+
+    stats: TestContainerStats;
+
+    /** Can have other TestSuites or Tests */
+    suites: TestSuiteResult[];
+    tests: TestResult[];
+}
+export type TestLog = {
+    /**
+     * The log might not be pointing to the same file. We should still show it against
+     * `this` spec execution
+     */
+    testLogPosition: TestLogPosition;
+    /**
+     * Arguments.
+     * Note: they will be stringified and unstringified by the time they make it to the UI
+     */
+    args: any[];
+}
+/** The root of any testing system is a test file */
+export type TestModule = {
+    filePath: string;
+
+    /** From instrumentation */
+    logs: TestLog[];
+
+    /**
+     * Also contained in the `suites`
+     * But raised up for better module level overview
+     */
+    testResults: TestResult[];
+
+    /** Present once its been run */
+    suites: TestSuiteResult[];
+    stats: TestContainerStats;
+}
+
+/** Both modules and suites are test containers and have these stats */
+export type TestContainerStats = {
+    testCount: number;
+
+    passCount: number;
+    failCount: number;
+    skipCount: number;
+
+    /** milliseconds */
+    durationMs: number;
+};
+
+export type TestSuitesByFilePath = {
+    [filePath: string]: TestModule;
+}
+/** We just push the modules that have updated */
+export type TestResultsDelta = {
+    updatedModuleMap: TestSuitesByFilePath,
+    clearedModules: string[];
+    initial: boolean;
+}
+
+export type TestSuitePosition = {
+    title: string;
+    /**
+     * The last origin in the file
+     */
+    testLogPosition: TestLogPosition;
+}
+export type TestItPosition = {
+    title: string;
+    /**
+     * The last origin in the file
+     */
+    testLogPosition: TestLogPosition;
+}

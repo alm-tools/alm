@@ -1,7 +1,7 @@
 require('./robocop.css');
 
 import React = require("react");
-import csx = require('csx');
+import * as csx from '../base/csx';
 import {BaseComponent} from "../ui";
 import * as ui from "../ui";
 import * as utils from "../../common/utils";

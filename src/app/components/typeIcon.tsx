@@ -42,7 +42,7 @@ const _typeIconLocations: { [key: number]: { x: number, y: number } } = iconLoca
 import * as ui from "../ui";
 import * as React from "react";
 import * as pure from "../../common/pure";
-import * as csx from "csx";
+import * as csx from '../base/csx';
 import * as styles from "../styles/styles";
 
 interface Props {

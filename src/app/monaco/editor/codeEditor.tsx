@@ -1,5 +1,5 @@
 import * as ui from "../../ui";
-import * as csx from "csx";
+import * as csx from '../../base/csx';
 import * as React from "react";
 import {cast, server} from "../../../socket/socketClient";
 import * as docCache from "../model/docCache";
@@ -14,6 +14,7 @@ import * as quickFix from "../addons/quickFix";
 import * as linter from "../addons/linter";
 import * as docblockr from "../addons/dockblockr";
 import * as doctor from "../addons/doctor";
+import * as testedMonaco from "../addons/testedMonaco";
 
 // The monokai theme
 require('./monokai.css');
@@ -132,6 +133,11 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             // linter
             // NOTE: done here because it depends on model :)
             this.disposible.add(linter.setup(this.editor));
+
+            /** Tested */
+            if (!this.props.readOnly) {
+                this.disposible.add(testedMonaco.setup(this.editor));
+            }
 
             // Mark as ready and do anything that was waiting for ready to occur 🌹
             this.afterReadyQueue.forEach(cb=>cb());

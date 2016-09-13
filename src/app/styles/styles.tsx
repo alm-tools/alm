@@ -1,11 +1,22 @@
-import csx = require('csx');
+import * as csx from '../base/csx';
 
-export const textColor = '#AAA';
+export const textColor = '#BBB';
 export let errorColor = '#f92672';
 export let warningColor = '#f6d675'; // Color from CodeMirror `lint.css` warning squiggly color
 export let successColor = '#00c990';
 export let highlightColor = "#6edeef";
 export let selectedBackgroundColor = '#444';
+export const monokaiBackgroundColor = '#272822';
+export const monokaiTextColor = "#e6db74"; // The color of strings
+
+/**
+ * FA Icon names used in the application
+ */
+export const icons = {
+    tested: 'futbol-o',
+    testedSuite: 'pagelines', // http://fontawesome.io/icon/pagelines/
+    testedTest: 'leaf',// http://fontawesome.io/icon/leaf/
+}
 
 /**
  * A background color that looks nice over the "editor" background black

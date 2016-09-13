@@ -11,7 +11,7 @@ import * as tab from "./tab";
 import * as tabRegistry from "./tabRegistry";
 import * as commands from "../../commands/commands";
 import * as utils from "../../../common/utils";
-import csx = require('csx');
+import * as csx from '../../base/csx';
 import {createId} from "../../../common/utils";
 
 import * as types from "../../../common/types";
@@ -531,6 +531,12 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         commands.toggleDocumentationBrowser.on(()=>{
             const protocol = tabRegistry.tabs.documentation.protocol;
             const url = `${protocol}://Documentation`;
+            openOrFocusSingletonTab({ protocol, url });
+        });
+        /** Tested view */
+        commands.doOpenTestResultsView.on(()=>{
+            const protocol = tabRegistry.tabs.tested.protocol;
+            const url = `${protocol}://Tested`;
             openOrFocusSingletonTab({ protocol, url });
         });
         /** Find and replace multi */

@@ -21,6 +21,7 @@ import * as settings from "./state/settings";
 import * as clientSession from "./state/clientSession";
 import * as types from "../common/types";
 import {errorsCache} from "./globalErrorCacheClient";
+import {testResultsCache} from "./clientTestResultsCache";
 
 import {server, cast, pendingRequestsChanged, connectionStatusChanged} from "../socket/socketClient";
 var Modal = require('react-modal');
@@ -75,6 +76,12 @@ const afterLoaded = () => {
         }
         errorsCache.applyDelta(errorsDelta);
     });
+    server.getTestResults({}).then((results)=>{
+        testResultsCache.setResults(results);
+    });
+    cast.testResultsDelta.on((testResultsDelta) => {
+        testResultsCache.applyTestResultsDelta(testResultsDelta);
+    });
     pendingRequestsChanged.on((r)=>{
         state.setPendingRequests(r.pending);
     });
@@ -123,6 +130,9 @@ const afterLoaded = () => {
     });
     cast.tsWorking.on(res => {
         state.setTSWorking(res);
+    });
+    cast.testedWorking.on(res => {
+        state.setTestedWorking(res);
     });
     commands.sync.on(()=>{
         server.sync({});

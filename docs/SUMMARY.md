@@ -23,6 +23,7 @@
   * [HTML to TSX](/features/html-to-tsx.md)
   * [JSON to TypeScript](/features/json-to-dts.md)
   * [JavaScript Support](/features/javascript.md)
+  * [Testing](/features/testing.md)
   * [Documentation Writing](/features/docblockr.md)
 * [Configuration](/config/README.md)
   * [Editor Config](/config/editorconfig.md)

@@ -1,8 +1,8 @@
 import {server} from "../socket/socketClient";
 import * as types from "../common/types";
 import React = require("react");
+import * as csx from './base/csx';
 import ReactDOM = require("react-dom");
-import csx = require('csx');
 import {BaseComponent} from "./ui";
 import * as ui from "./ui";
 import * as utils from "../common/utils";

@@ -2,7 +2,7 @@ import utils = require("../common/utils");
 import styles = require("./styles/styles");
 import React = require("react");
 import ReactDOMServer = require("react-dom/server");
-import csx = require('csx');
+import * as csx from './base/csx';
 import {BaseComponent} from "./ui";
 import * as ui from "./ui";
 import {cast,server} from "../socket/socketClient";
@@ -19,6 +19,7 @@ import {connect} from "react-redux";
 import {StoreState,expandErrors,collapseErrors} from "./state/state";
 import * as state from "./state/state";
 import {errorsCache} from "./globalErrorCacheClient";
+import {testResultsCache} from "./clientTestResultsCache";
 
 
 let notificationKeyboardStyle = {
@@ -31,14 +32,17 @@ let notificationKeyboardStyle = {
 const ouputStatusStyle = csx.extend(styles.noSelect, {fontSize:'.6rem'});
 
 const activeProjectContainerStyle = csx.extend(
-    styles.statusBarSection, styles.hand,
+    styles.statusBarSection,
+    styles.hand,
+    styles.noSelect,
     {
         border: '1px solid grey',
         paddingTop: '2px',
         paddingBottom: '2px',
         paddingLeft: '4px',
         paddingRight: '4px',
-        fontSize: '.7rem'
+        fontSize: '.7rem',
+        marginTop: '1px',
     }
 );
 
@@ -54,6 +58,7 @@ export interface Props {
     errorsDisplayMode?: types.ErrorsDisplayMode;
     errorsFilter?: string;
     tsWorking?: types.Working;
+    testedWorking?: types.Working;
 }
 export interface State {
 }
@@ -77,6 +82,7 @@ export var statusBar: StatusBar;
         errorsDisplayMode: state.errorsDisplayMode,
         errorsFilter: state.errorsFilter,
         tsWorking: state.tsWorking,
+        testedWorking: state.testedWorking,
     };
 })
 export class StatusBar extends BaseComponent<Props, State>{
@@ -90,6 +96,7 @@ export class StatusBar extends BaseComponent<Props, State>{
         statusBar = this;
         tabStateChanged.on(()=>this.forceUpdate());
         errorsCache.errorsDelta.on(() => this.forceUpdate());
+        testResultsCache.testResultsDelta.on(() => this.forceUpdate());
     }
 
     render() {
@@ -97,7 +104,7 @@ export class StatusBar extends BaseComponent<Props, State>{
         let filePath = tab && utils.getFilePathFromUrl(tab.url);
         let protocol = tab && utils.getFilePathAndProtocolFromUrl(tab.url).protocol;
 
-        const hasActiveProject = this.props.activeProject
+        const activeProjectDetails = this.props.activeProject
             ?<span
                 className="hint--top-right"
                 data-hint="Active Project path. Click to open project file"
@@ -190,6 +197,37 @@ export class StatusBar extends BaseComponent<Props, State>{
         const errorFilteringActive = this.props.errorsDisplayMode !== types.ErrorsDisplayMode.all || this.props.errorsFilter.trim();
         const errorsFilteredCount = tabState.errorsByFilePathFiltered().errorsFlattened.length;
 
+        /** Tested */
+        const testResultsStats = testResultsCache.getStats();
+        const failing = !!testResultsStats.failCount;
+        const totalThatRan = testResultsStats.passCount + testResultsStats.failCount;
+        const testStatsRendered = !!testResultsStats.testCount && <span
+            className="hint--top-right"
+            data-hint={`Test Total: ${testResultsStats.testCount}, Pass: ${testResultsStats.passCount}, Fail: ${testResultsStats.failCount}, Skip: ${testResultsStats.skipCount}, Duration: ${utils.formatMilliseconds(testResultsStats.durationMs)}`}
+            style={csx.extend(activeProjectContainerStyle)}
+            onClick={()=>{
+                commands.doOpenTestResultsView.emit({});
+            }}>
+            <span
+                style={csx.extend(
+                    styles.noSelect,
+                    failing ? styles.statusBarError : styles.statusBarSuccess,
+                    styles.hand,
+                    {
+                        marginRight: '5px',
+                        transition: '.4s color, .4s opacity',
+                        opacity: this.props.testedWorking.working ? 1 : 0.5,
+                    }
+                )}>
+                    <Icon name={styles.icons.tested} spin={this.props.testedWorking.working}/>
+            </span>
+            {
+                failing
+                ? <span style={{ color: styles.errorColor, fontWeight: 'bold'}}>{testResultsStats.failCount}/{totalThatRan} fail</span>
+                : <span style={{ color: styles.successColor, fontWeight: 'bold'}}>{testResultsStats.passCount}/{totalThatRan} pass</span>
+            }
+        </span>
+
         return (
             <div>
                 <div style={csx.extend(styles.statusBar,csx.horizontal,csx.center, styles.noWrap)}>
@@ -204,8 +242,20 @@ export class StatusBar extends BaseComponent<Props, State>{
                             {errorFilteringActive && <span>( {errorsFilteredCount} <Icon name="filter"/>)</span>}
                         </span>
                     </span>
+                    <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand) }>
+                        <span
+                            className={this.props.tsWorking.working ? "hint--left hint--success" : "hint--right"}
+                            data-hint={this.props.tsWorking.working ? "TS Worker Busy" : "TS Worker Idle"}
+                            style={{
+                                color: this.props.tsWorking.working ? 'white' : 'grey',
+                                transition: 'color .4s'
+                            }}>
+                            <Icon name="rocket"/>
+                        </span>
+                    </span>
+                    {testStatsRendered}
                     {fileTreeToggleRendered}
-                    {hasActiveProject}
+                    {activeProjectDetails}
                     {inActiveProjectSection}
                     {filePath
                         ?<span
@@ -238,17 +288,6 @@ export class StatusBar extends BaseComponent<Props, State>{
                         {this.props.socketConnected?
                              <span className="hint--left hint--success" data-hint="Connected to server"> <Icon style={{color:styles.successColor, cursor:'pointer'}} name="flash" onClick={()=>ui.notifySuccessNormalDisappear("Connected to alm server")}/></span>
                             :<span className="hint--left hint--error" data-hint="Disconnected from server"> <Icon style={{color:styles.errorColor, cursor:'pointer'}} name="spinner" spin={true} onClick={()=>ui.notifyWarningNormalDisappear("Disconneted from alm server")}/></span>}
-                    </span>
-                    <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand) }>
-                        <span
-                            className={this.props.tsWorking.working ? "hint--left hint--success" : "hint--left"}
-                            data-hint={this.props.tsWorking.working ? "TS Worker Busy" : "TS Worker Idle"}
-                            style={{
-                                color: this.props.tsWorking.working ? 'white' : 'grey',
-                                transition: 'color .4s'
-                            }}>
-                            TS
-                        </span>
                     </span>
                     <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)}>
                         <span style={{paddingRight: '2px'} as any} onClick={this.giveStar} className="hint--left" data-hint={`If you like it then you should have put a star on it 🌟. Also, go here for support. Version: ${serverState.version}`}>🌟</span>

@@ -7,6 +7,8 @@
     "alm": "./bin/alm"
   },
   "scripts": {
+    "start": "nodemon",
+    "alm": "alm -o",
     "test": "echo \"Testing is just build at the moment, run from prepublish\"",
     "clean": "rm ./src/public/build/bundle.js",
     "prepublish": "bash ./scripts/prepublish.sh",
@@ -16,6 +18,7 @@
     "uts": "npm install typescript@next tslint@next byots@latest --save --save-exact && npm run tsc",
     "umonaco": "npm install monaco@latest monaco-css@latest monaco-languages@latest --save --save-exact && npm run tsc",
     "ureact": "npm install react@latest react-dom@latest --save-dev --save-exact",
+    "utest": "npm install ts-node@latest mocha@latest --save --save-exact && npm run tsc",
     "preversion": "npm run tsc",
     "postversion": "git push --follow-tags",
     "mochaw": "mocha ./src/tests -w"
@@ -52,6 +55,7 @@
     "glob": "^7.0.5",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
+    "mocha": "3.0.2",
     "monaco": "1.201608152240.0",
     "monaco-css": "1.1.2",
     "monaco-languages": "0.3.1",
@@ -63,14 +67,15 @@
     "ora": "^0.2.0",
     "rimraf": "^2.4.2",
     "socket.io": "^1.3.6",
-    "tslint": "3.15.1",
-    "typescript": "2.1.0-dev.20160809",
+    "ts-node": "1.3.0",
+    "tslint": "3.15.0-dev.0",
+    "typescript": "2.1.0-dev.20160912",
     "update-notifier": "1.0.2"
   },
   "devDependencies": {
+    "alm": "latest",
     "clipboard": "^1.4.2",
     "css-loader": "^0.24.0",
-    "csx": "4.0.0",
     "d3": "^3.5.12",
     "file-loader": "^0.8.4",
     "font-awesome": "^4.4.0",
@@ -85,6 +90,7 @@
     "marked": "^0.3.5",
     "mocha": "^2.4.5",
     "mousetrap": "^1.5.3",
+    "nodemon": "1.10.2",
     "normalize.css": "^3.0.3",
     "onresize": "^1.0.1",
     "react": "15.3.1",

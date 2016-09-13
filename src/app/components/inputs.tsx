@@ -1,4 +1,4 @@
-import * as csx from "csx";
+import * as csx from "../base/csx";
 import {textColor} from "../styles/styles";
 import * as React from "react";
 import * as ui from "../ui";

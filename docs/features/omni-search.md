@@ -1,11 +1,11 @@
 
 A unified search input for the following:
 
-* [File Search](#file-search)
 * [Command Search](#command-search)
-* [Project Search](#project-search)
-* [Symbol Search](#symbol-search)
 * [Project FilePath Search](#project-filepath-search)
+* [Symbol Search](#symbol-search)
+* [File Search](#file-search)
+* [Project Search](#project-search)
 
 ## Command Search
 

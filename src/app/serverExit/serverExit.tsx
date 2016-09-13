@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as Modal from "react-modal";
 import * as ui from "../ui";
-import * as csx from "csx";
+import * as csx from "../base/csx";
 import {cast, server} from "../../socket/socketClient";
 
 export class ServerExit extends ui.BaseComponent<{}, { isOpen }>{

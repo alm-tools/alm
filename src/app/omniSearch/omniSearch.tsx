@@ -1,6 +1,6 @@
 import React = require("react");
 import ReactDOM = require("react-dom");
-import csx = require('csx');
+import * as csx from '../base/csx';
 import {BaseComponent} from "../ui";
 import * as ui from "../ui";
 import Modal = require('react-modal');

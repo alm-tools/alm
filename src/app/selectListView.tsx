@@ -4,7 +4,7 @@
  */
 import React = require("react");
 var ReactDOM = require("react-dom");
-import csx = require('csx');
+import csx = require('./base/csx');
 import {BaseComponent} from "./ui";
 import * as ui from "./ui";
 import Modal = require('react-modal');

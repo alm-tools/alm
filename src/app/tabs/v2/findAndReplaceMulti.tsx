@@ -1,5 +1,5 @@
 import * as ui from "../../ui";
-import * as csx from "csx";
+import * as csx from "../../base/csx";
 import * as React from "react";
 var ReactDOM = require("react-dom");
 import * as tab from "./tab";

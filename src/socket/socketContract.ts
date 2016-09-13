@@ -53,6 +53,11 @@ export var server = {
     getErrors: {} as QRFunction<{}, ErrorsByFilePath>,
 
     /**
+     * Tested
+     */
+    getTestResults: {} as QRFunction<{}, types.TestSuitesByFilePath>,
+
+    /**
      * Project Service
      */
     getCompletionsAtPosition: {} as QRFunction<Types.GetCompletionsAtPositionQuery, Types.GetCompletionsAtPositionResponse>,
@@ -157,6 +162,10 @@ export var cast = {
 
     /** Errors for a file path */
     errorsDelta: new TypedEvent<ErrorCacheDelta>(),
+
+    /** Tested */
+    testResultsDelta: new TypedEvent<types.TestResultsDelta>(),
+    testedWorking: new TypedEvent<types.Working>(),
 
     /** TS analysis taking place */
     tsWorking: new TypedEvent<types.Working>(),
