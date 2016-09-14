@@ -76,7 +76,7 @@
     "alm": "latest",
     "clipboard": "^1.4.2",
     "css-loader": "^0.24.0",
-    "d3": "^3.5.12",
+    "d3": "^4.2.3",
     "file-loader": "^0.8.4",
     "font-awesome": "^4.4.0",
     "free-style": "^1.2.0",
