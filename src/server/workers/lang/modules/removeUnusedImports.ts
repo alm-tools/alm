@@ -9,7 +9,9 @@ export const removeUnusedImports = (filePath: string, service: ts.LanguageServic
      * - For used ones it removes them
      *   - If all the ones from a ES6 Named import are unused the whole import is removed
      */
-    const imports = getImports(service.getProgram().getSourceFile(filePath));
+    const sourceFile = service.getProgram().getSourceFile(filePath);
+    const imports = getImports(sourceFile);
+    const unUsedImports = imports.filter((imp) => !isIdentifierUsed(imp.identifier, sourceFile, service));
 }
 
 
@@ -68,4 +70,9 @@ function getImports(searchNode: ts.SourceFile) {
         }
     });
     return results;
+}
+
+function isIdentifierUsed(identifer: ts.Identifier, sourceFile: ts.SourceFile, service: ts.LanguageService) {
+    const highlights = service.getDocumentHighlights(sourceFile.fileName, identifer.pos, [sourceFile.fileName]) || [];
+    return highlights.length > 1;
 }
