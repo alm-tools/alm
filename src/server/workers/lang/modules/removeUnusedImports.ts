@@ -17,10 +17,14 @@ type ImportSearchResult = {
     type: 'es6NamedImport',
     identifier: ts.Identifier,
 }
-| {
-    type:'es6NamespaceImport',
-    identifier: ts.Identifier,
-};
+    | {
+        type: 'es6NamespaceImport',
+        identifier: ts.Identifier,
+    }
+    | {
+        type: 'importEqual',
+        identifier: ts.Identifier,
+    };
 function getImports(searchNode: ts.SourceFile) {
     const results: ImportSearchResult[] = [];
     ts.forEachChild(searchNode, node => {
@@ -56,7 +60,11 @@ function getImports(searchNode: ts.SourceFile) {
             }
         }
         else if (node.kind === ts.SyntaxKind.ImportEqualsDeclaration) { // import =
-            // TODO
+            const importEqual = node as ts.ImportEqualsDeclaration;
+            results.push({
+                type: 'importEqual',
+                identifier: importEqual.name,
+            })
         }
     });
     return results;
