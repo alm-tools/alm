@@ -15,6 +15,7 @@ import * as renameVariable from "../monaco/codeResults/renameVariable";
 import * as blaster from "../monaco/addons/blaster";
 import * as quickFix from "../monaco/addons/quickFix";
 import * as repl from "../monaco/addons/repl";
+import * as removeUnusedImports from "../monaco/addons/removeUnusedImports";
 const ensureImport =
     gitStatus
     || jumpy
@@ -29,6 +30,7 @@ const ensureImport =
     || blaster
     || quickFix
     || repl
+    || removeUnusedImports
     ;
 
 /**
