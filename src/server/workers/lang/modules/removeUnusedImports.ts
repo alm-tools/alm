@@ -13,7 +13,10 @@ export const removeUnusedImports = (filePath: string, service: ts.LanguageServic
 }
 
 
-type ImportSearchResult = {}; // TODO type
+type ImportSearchResult = {
+    type: 'es6NamedImport',
+    value: ts.ImportSpecifier,
+}; // TODO type
 function getImports(searchNode: ts.SourceFile) {
     const results: ImportSearchResult[] = [];
     ts.forEachChild(searchNode, node => {
@@ -25,7 +28,11 @@ function getImports(searchNode: ts.SourceFile) {
             /** Is it a named import */
             if (namedBindings.kind === ts.SyntaxKind.NamedImports) {
                 const namedImports = (namedBindings as ts.NamedImports);
-                // namedImports.
+                const themNames = namedImports.elements;
+                themNames.forEach(i => results.push({
+                    type: 'es6NamedImport',
+                    value: i
+                }));
             }
             /** Or a namespace import */
             else if (namedBindings.kind === ts.SyntaxKind.NamespaceImport) {
