@@ -77,7 +77,8 @@ function getImports(searchNode: ts.SourceFile) {
     return results;
 }
 
-function isIdentifierUsed(identifer: ts.Identifier, sourceFile: ts.SourceFile, service: ts.LanguageService) {
-    const highlights = service.getDocumentHighlights(sourceFile.fileName, identifer.pos, [sourceFile.fileName]) || [];
+function isIdentifierUsed(identifier: ts.Identifier, sourceFile: ts.SourceFile, service: ts.LanguageService) {
+    const highlights = service.getDocumentHighlights(sourceFile.fileName, identifier.pos, [sourceFile.fileName]) || [];
+    console.log({text: identifier.text, uses: highlights.length}); // DEBUG
     return highlights.length > 1;
 }
