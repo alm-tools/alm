@@ -186,14 +186,11 @@ export class MainPanel extends BaseComponent<Props, State>{
     }
 
     handleDrag = (evt, ui: {
-        node: Node, position: {
-            // lastX + deltaX === clientX
-            deltaX: number, deltaY: number,
-            lastX: number, lastY: number,
-            clientX: number, clientY: number
-        }
+        node: Node,
+        deltaX: number, deltaY: number,
+        lastX: number, lastY: number,
     }) => {
-        this.setState({ height: utils.rangeLimited({ num: this.state.height - ui.position.deltaY, min: 100, max: window.innerHeight - 100 }) });
+        this.setState({ height: utils.rangeLimited({ num: this.state.height - ui.deltaY, min: 100, max: window.innerHeight - 100 }) });
     };
 
     handleStop = () => {

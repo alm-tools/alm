@@ -820,14 +820,11 @@ export class FileTree extends BaseComponent<Props, State>{
     }
 
     handleDrag = (evt, ui: {
-        node: Node, position: {
-            // lastX + deltaX === clientX
-            deltaX: number, deltaY: number,
-            lastX: number, lastY: number,
-            clientX: number, clientY: number
-        }
+        node: Node
+        deltaX: number, deltaY: number,
+        lastX: number, lastY: number,
     }) => {
-        this.setState({ width: ui.position.clientX + resizerWidth });
+        this.setState({ width: ui.deltaX + ui.lastX + resizerWidth });
     };
 
     handleDragStop = () => {
