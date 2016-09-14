@@ -16,7 +16,11 @@ export const removeUnusedImports = (filePath: string, service: ts.LanguageServic
 type ImportSearchResult = {
     type: 'es6NamedImport',
     identifier: ts.Identifier,
-}; // TODO type
+}
+| {
+    type:'es6NamespaceImport',
+    identifier: ts.Identifier,
+};
 function getImports(searchNode: ts.SourceFile) {
     const results: ImportSearchResult[] = [];
     ts.forEachChild(searchNode, node => {
@@ -42,6 +46,10 @@ function getImports(searchNode: ts.SourceFile) {
             /** Or a namespace import */
             else if (namedBindings.kind === ts.SyntaxKind.NamespaceImport) {
                 const namespaceImport = (namedBindings as ts.NamespaceImport);
+                results.push({
+                    type: 'es6NamespaceImport',
+                    identifier: namespaceImport.name,
+                })
             }
             else {
                 console.error('ERRRRRRRRR: found an unaccounted ES6 import type')
