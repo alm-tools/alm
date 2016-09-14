@@ -1,7 +1,9 @@
+import * as types from '../../../../common/types';
+
 /**
  * Removes unused imports (both import/require and ES6)
  */
-export const removeUnusedImports = (filePath: string, service: ts.LanguageService) => {
+export const removeUnusedImports = (filePath: string, service: ts.LanguageService): types.RefactoringsByFilePath => {
     /**
      * Plan:
      * - First finds all the imports in the file
@@ -12,6 +14,9 @@ export const removeUnusedImports = (filePath: string, service: ts.LanguageServic
     const sourceFile = service.getProgram().getSourceFile(filePath);
     const imports = getImports(sourceFile);
     const unUsedImports = imports.filter((imp) => !isIdentifierUsed(imp.identifier, sourceFile, service));
+
+    /** TODO: removeUnusedImports */
+    return Object.create(null);
 }
 
 

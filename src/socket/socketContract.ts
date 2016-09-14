@@ -78,6 +78,7 @@ export var server = {
     getSemanticTree: {} as QRFunction<Types.GetSemanticTreeQuery, Types.GetSemanticTreeReponse>,
     getOccurrencesAtPosition: {} as QRFunction<Types.GetOccurancesAtPositionQuery, Types.GetOccurancesAtPositionResponse>,
     getFormattingEditsAfterKeystroke: {} as QRFunction<Types.FormattingEditsAfterKeystrokeQuery, Types.FormattingEditsAfterKeystrokeResponse>,
+    removeUnusedImports: {} as QRFunction<Types.FilePathQuery, types.RefactoringsByFilePath>,
 
     /**
      * Documentation Browser

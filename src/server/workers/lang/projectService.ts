@@ -333,6 +333,13 @@ export function getFormattingEditsAfterKeystroke(query: Types.FormattingEditsAft
     return resolve({edits});
 }
 
+import {removeUnusedImports as removeUnusedImportsCore} from './modules/removeUnusedImports';
+export function removeUnusedImports(query: Types.FilePathQuery): Promise<types.RefactoringsByFilePath> {
+    let project = getProject(query.filePath);
+    const {languageServiceHost, languageService} = project;
+    return resolve(removeUnusedImportsCore(query.filePath, languageService));
+}
+
 /**
  * Symbol search
  */

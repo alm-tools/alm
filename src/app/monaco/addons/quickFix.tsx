@@ -170,7 +170,7 @@ class QuickFixAction extends EditorAction {
                     filePath: cm.filePath,
                     position: cm._lastQuickFixInformation.position
                 }).then((res)=>{
-                    // TODO: apply refactorings
+                    // apply refactorings
                     // console.log('Apply refactorings:', res.refactorings); // DEBUG
                     uix.API.applyRefactorings(res.refactorings);
                 });

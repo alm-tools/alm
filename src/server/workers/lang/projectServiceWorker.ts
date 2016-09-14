@@ -75,6 +75,7 @@ namespace Worker {
     export var getSemanticTree : typeof contract.worker.getSemanticTree = projectService.getSemanticTree;
     export var getOccurrencesAtPosition : typeof contract.worker.getOccurrencesAtPosition = projectService.getOccurrencesAtPosition;
     export var getFormattingEditsAfterKeystroke : typeof contract.worker.getFormattingEditsAfterKeystroke = projectService.getFormattingEditsAfterKeystroke;
+    export var removeUnusedImports : typeof contract.worker.removeUnusedImports = projectService.removeUnusedImports;
 
     /**
      * Documentation Browser

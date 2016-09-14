@@ -38,6 +38,7 @@ export var worker = {
     getSemanticTree: {} as typeof socketContract.server.getSemanticTree,
     getOccurrencesAtPosition: {} as typeof socketContract.server.getOccurrencesAtPosition,
     getFormattingEditsAfterKeystroke: {} as typeof socketContract.server.getFormattingEditsAfterKeystroke,
+    removeUnusedImports: {} as typeof socketContract.server.removeUnusedImports,
 
     /** Documentation browser */
     getTopLevelModuleNames: {} as typeof socketContract.server.getTopLevelModuleNames,

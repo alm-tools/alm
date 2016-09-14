@@ -186,6 +186,7 @@ namespace Server {
     export var getSemanticTree: typeof contract.server.getSemanticTree = projectServiceMaster.worker.getSemanticTree;
     export var getOccurrencesAtPosition: typeof contract.server.getOccurrencesAtPosition = projectServiceMaster.worker.getOccurrencesAtPosition;
     export var getFormattingEditsAfterKeystroke: typeof contract.server.getFormattingEditsAfterKeystroke = projectServiceMaster.worker.getFormattingEditsAfterKeystroke;
+    export var removeUnusedImports: typeof contract.server.removeUnusedImports = projectServiceMaster.worker.removeUnusedImports;
 
     /**
      * Documentation browser

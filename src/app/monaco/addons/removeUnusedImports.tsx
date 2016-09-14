@@ -1,5 +1,7 @@
 import * as ui from "../../ui";
 import * as monacoUtils from "../monacoUtils";
+import { server } from "../../../socket/socketClient";
+import * as uix from '../../uix';
 
 import CommonEditorRegistry = monaco.CommonEditorRegistry;
 import IEditorActionDescriptorData = monaco.IEditorActionDescriptorData;
@@ -35,10 +37,11 @@ class RemoveUnusedImportsAction extends EditorAction {
     public run(accessor:ServicesAccessor, editor:ICommonCodeEditor): void | TPromise<void> {
         let filePath = editor.filePath;
         let selection = editor.getSelection();
-        /**
-         * TODO: removeUnusedImports
-         */
-
+        server.removeUnusedImports({filePath: editor.filePath}).then((refactorings) => {
+            // apply refactorings
+            // console.log('Apply refactorings:', refactorings); // DEBUG
+            uix.API.applyRefactorings(refactorings);
+        });
 	}
 }
 
