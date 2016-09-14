@@ -15,7 +15,7 @@ export const removeUnusedImports = (filePath: string, service: ts.LanguageServic
 
 type ImportSearchResult = {
     type: 'es6NamedImport',
-    value: ts.ImportSpecifier,
+    identifier: ts.Identifier,
 }; // TODO type
 function getImports(searchNode: ts.SourceFile) {
     const results: ImportSearchResult[] = [];
@@ -31,7 +31,12 @@ function getImports(searchNode: ts.SourceFile) {
                 const themNames = namedImports.elements;
                 themNames.forEach(i => results.push({
                     type: 'es6NamedImport',
-                    value: i
+                    /**
+                     * Always has `name`
+                     * If "foo" then foo is name
+                     * If "foo as bar" the foo is name and bar is `propertyName`
+                     * */
+                    identifier: i.name
                 }));
             }
             /** Or a namespace import */
