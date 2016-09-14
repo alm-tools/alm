@@ -78,7 +78,10 @@ function getImports(searchNode: ts.SourceFile) {
 }
 
 function isIdentifierUsed(identifier: ts.Identifier, sourceFile: ts.SourceFile, service: ts.LanguageService) {
-    const highlights = service.getDocumentHighlights(sourceFile.fileName, identifier.pos, [sourceFile.fileName]) || [];
-    console.log({text: identifier.text, uses: highlights.length}); // DEBUG
+    const highlights = service.getOccurrencesAtPosition(sourceFile.fileName, identifier.getStart()) || [];
+    // console.log({uses: highlights.length, text: identifier.text}); // DEBUG
+    
+    // TODO: removeUnusedImports don't count usages that are in other imports
+    // E.g. `import {foo}` & `import {foo as bar}`
     return highlights.length > 1;
 }
