@@ -15,6 +15,8 @@ export const removeUnusedImports = (filePath: string, service: ts.LanguageServic
     const imports = getImports(sourceFile);
     const unUsedImports = imports.filter((imp) => !isIdentifierUsed(imp.identifier, sourceFile, service));
 
+    // unUsedImports.forEach(ui => console.log(ui.identifier.text)) // DEBUG
+
     /** TODO: removeUnusedImports */
     return Object.create(null);
 }
@@ -79,9 +81,31 @@ function getImports(searchNode: ts.SourceFile) {
 
 function isIdentifierUsed(identifier: ts.Identifier, sourceFile: ts.SourceFile, service: ts.LanguageService) {
     const highlights = service.getOccurrencesAtPosition(sourceFile.fileName, identifier.getStart()) || [];
-    // console.log({uses: highlights.length, text: identifier.text}); // DEBUG
-    
-    // TODO: removeUnusedImports don't count usages that are in other imports
-    // E.g. `import {foo}` & `import {foo as bar}`
-    return highlights.length > 1;
+    // console.log({highlights: highlights.length, text: identifier.text}); // DEBUG
+
+    /**
+     * Filter out usages in imports
+     * don't count usages that are in other imports
+     * E.g. `import {foo}` & `import {foo as bar}`
+     * Also makes it easy to get *only* true usages (not even a single import) count ;)
+     */
+    const nodes = highlights.map(h => ts.getTokenAtPosition(sourceFile, h.textSpan.start));
+    const trueUsages = nodes.filter(n => !isNodeInAnImport(n));
+
+    // console.log({trueUsages: trueUsages.length, text: identifier.text}); // DEBUG
+
+    return !!trueUsages.length;
+}
+
+function isNodeInAnImport(node: ts.Node) {
+    while (node.parent) {
+        if (
+            node.kind === ts.SyntaxKind.ImportDeclaration
+            || node.kind === ts.SyntaxKind.ImportEqualsDeclaration
+        ) {
+            return true;
+        }
+        node = node.parent;
+    }
+    return false;
 }
