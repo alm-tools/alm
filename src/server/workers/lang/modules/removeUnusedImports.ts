@@ -1,4 +1,5 @@
 import * as types from '../../../../common/types';
+import {createMap} from "../../../../common/utils";
 
 /**
  * Removes unused imports (both import/require and ES6)
@@ -8,8 +9,8 @@ export const removeUnusedImports = (filePath: string, service: ts.LanguageServic
      * Plan:
      * - First finds all the imports in the file
      * - Then checks if they have any usages (using document highlighting).
-     * - For used ones it removes them
-     *   - If all the ones from a ES6 Named import are unused the whole import is removed
+     * - For unused ones it removes them
+     *   - If all the ones from a ES6 Named import are unused the whole import should be removed
      */
     const sourceFile = service.getProgram().getSourceFile(filePath);
     const imports = getImports(sourceFile);
@@ -17,23 +18,95 @@ export const removeUnusedImports = (filePath: string, service: ts.LanguageServic
 
     // unUsedImports.forEach(ui => console.log(ui.identifier.text)) // DEBUG
 
-    /** TODO: removeUnusedImports */
-    return Object.create(null);
+    /**
+     * Remove the non es6Named imports
+     */
+    const refactorings: types.Refactoring[] = unUsedImports
+        .filter(ui => ui.type !== 'es6NamedImport')
+        .map(ui => {
+        const refactoring: types.Refactoring = {
+            filePath,
+            span: ui.toRemove,
+            newText: ''
+        };
+        return refactoring;
+    })
+
+    /**
+     * ES6 named imports
+     */
+    /** Since imports are all at the root level. It is safe to assume no duplications */
+    const identifiersMarkedForRemoval = createMap(unUsedImports.map(ui => ui.identifier.text));
+    const wholeSectionRemovedMap: { [start_length: string]: boolean } = Object.create(null);
+    unUsedImports
+        .forEach((ui)=>{
+            /**
+             * Not using `Array.prototype.filter` as it doesn't work with TypeScirpt's discriminated unions
+             * Hence this ugly `if`
+             */
+            if (ui.type === 'es6NamedImport') {
+                const {siblings, wholeToRemove} = ui;
+                const start_length = `${wholeToRemove.start}_${wholeToRemove.length}`;
+                if (wholeSectionRemovedMap[start_length]) {
+                    // Already marked for removal. Move on
+                    return;
+                }
+                if (!siblings.some(s => !identifiersMarkedForRemoval[s.text])) {
+                    // remove all.
+                    const refactoring: types.Refactoring = {
+                        filePath,
+                        span: wholeToRemove,
+                        newText: ''
+                    };
+                    refactorings.push(refactoring);
+                    /** Mark as analyzed */
+                    wholeSectionRemovedMap[start_length] = true;
+                }
+                else {
+                    const refactoring: types.Refactoring = {
+                        filePath,
+                        span: ui.toRemove,
+                        newText: ''
+                    };
+                    refactorings.push(refactoring);
+                }
+            }
+        });
+
+    return types.getRefactoringsByFilePath(refactorings);
 }
 
 
-type ImportSearchResult = {
+type ES6NamedImport = {
     type: 'es6NamedImport',
     identifier: ts.Identifier,
+    toRemove: ts.TextSpan,
+
+    /**
+     * If all sibligs are also to be removed
+     * we should remove the whole
+     */
+    siblings: ts.Identifier[],
+    wholeToRemove: ts.TextSpan,
 }
-    | {
+
+type ES6NamespaceImport = {
         type: 'es6NamespaceImport',
         identifier: ts.Identifier,
-    }
-    | {
+        toRemove: ts.TextSpan,
+}
+
+type ImportEqual = {
         type: 'importEqual',
         identifier: ts.Identifier,
-    };
+        toRemove: ts.TextSpan,
+    }
+
+type ImportSearchResult =
+    ES6NamedImport
+    | ES6NamespaceImport
+    | ImportEqual;
+
 function getImports(searchNode: ts.SourceFile) {
     const results: ImportSearchResult[] = [];
     ts.forEachChild(searchNode, node => {
@@ -45,16 +118,45 @@ function getImports(searchNode: ts.SourceFile) {
             /** Is it a named import */
             if (namedBindings.kind === ts.SyntaxKind.NamedImports) {
                 const namedImports = (namedBindings as ts.NamedImports);
-                const themNames = namedImports.elements;
-                themNames.forEach(i => results.push({
-                    type: 'es6NamedImport',
-                    /**
-                     * Always has `name`
-                     * If "foo" then foo is name
-                     * If "foo as bar" the foo is name and bar is `propertyName`
-                     * */
-                    identifier: i.name
-                }));
+                const importSpecifiers = namedImports.elements;
+
+                /**
+                 * Also store the information about whole for potential use
+                 * if all siblings end up needing removal
+                 */
+                const siblings = importSpecifiers.map(importSpecifier => importSpecifier.name);
+                const wholeToRemove = {
+                    start: importDeclaration.getFullStart(),
+                    length: importDeclaration.getFullWidth()
+                }
+
+                importSpecifiers.forEach((importSpecifier, i) => {
+                    const result: ES6NamedImport = {
+                        type: 'es6NamedImport',
+                        /**
+                         * If "foo" then foo is name
+                         * If "foo as bar" the foo is name and bar is `propertyName`
+                         * The whole thing is `importSpecifier`
+                         * */
+                        identifier: importSpecifier.name,
+                        toRemove: {
+                            start: importSpecifier.getFullStart(),
+                            length: importSpecifier.getFullWidth()
+                        },
+
+                        siblings,
+                        wholeToRemove,
+                    };
+                    /** Also we need to get the trailing coma if any */
+                    if (i !== (importSpecifiers.length -1)){
+                        const next = importSpecifiers[i + 1];
+                        const toRemove = result.toRemove;
+
+                        toRemove.length =
+                            next.getFullStart() - toRemove.start;
+                    }
+                    results.push(result);
+                });
             }
             /** Or a namespace import */
             else if (namedBindings.kind === ts.SyntaxKind.NamespaceImport) {
@@ -62,6 +164,10 @@ function getImports(searchNode: ts.SourceFile) {
                 results.push({
                     type: 'es6NamespaceImport',
                     identifier: namespaceImport.name,
+                    toRemove: {
+                        start: importDeclaration.getFullStart(),
+                        length: importDeclaration.getFullWidth()
+                    },
                 })
             }
             else {
@@ -73,6 +179,10 @@ function getImports(searchNode: ts.SourceFile) {
             results.push({
                 type: 'importEqual',
                 identifier: importEqual.name,
+                toRemove: {
+                    start: importEqual.getFullStart(),
+                    length: importEqual.getFullWidth()
+                },
             })
         }
     });
