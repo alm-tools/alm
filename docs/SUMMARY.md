@@ -25,6 +25,7 @@
   * [JavaScript Support](/features/javascript.md)
   * [Testing](/features/testing.md)
   * [Documentation Writing](/features/docblockr.md)
+  * [Remove Unused Imports](/features/removeUnusedImports.md)
 * [Configuration](/config/README.md)
   * [Editor Config](/config/editorconfig.md)
   * [tsconfig.json](/config/tsconfig.md)
