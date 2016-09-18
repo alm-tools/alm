@@ -45,10 +45,6 @@ export class Blaster {
         measureCanvas();
     }
 
-    lastTime = 0;
-    shakeTime = 0;
-    shakeTimeMax = 0;
-    shakeIntensity = 5;
     loop = () => {
         // If unmounted stop
         if (this.detached) return;
@@ -57,25 +53,7 @@ export class Blaster {
         requestAnimationFrame(this.loop);
 
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.drawShake();
         this.drawParticles();
-    }
-
-    drawShake() {
-        // get the time past the previous frame
-        var current_time = new Date().getTime();
-        var last_time;
-        if (!this.lastTime) last_time = current_time;
-        var dt = (current_time - this.lastTime) / 1000;
-        this.lastTime = current_time;
-
-        if (this.shakeTime > 0) {
-            this.shakeTime -= dt;
-            var magnitude = (this.shakeTime / this.shakeTimeMax) * this.shakeIntensity;
-            var shakeX = random(-magnitude, magnitude);
-            var shakeY = random(-magnitude, magnitude);
-            this.cm.getDomNode().style.transform = 'translate(' + shakeX + 'px,' + shakeY + 'px)';
-        }
     }
 
     particles: Particle[] = [];
@@ -121,10 +99,6 @@ export class Blaster {
         this.ctx.arc(particle.x - particle.size / 2, particle.y - particle.size / 2, particle.size, 0, 2 * Math.PI);
         this.ctx.fill();
     }
-
-    throttledShake = utils.throttle((time) => {
-        this.shakeTime = this.shakeTimeMax = time;
-    }, 100);
 
     // spawn particles
     PARTICLE_NUM_RANGE = { min: 5, max: 10 };
@@ -190,9 +164,6 @@ export class Blaster {
     }
 
     handleChange = (change: Change) => {
-        // setup shake
-        this.throttledShake(0.3);
-
         // setup particles
         if (change.text) {
             this.throttledSpawnParticles(Effect.Add);
