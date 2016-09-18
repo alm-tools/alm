@@ -9,6 +9,7 @@
     * [Build](/features/build.md)
   * [AutoComplete](/features/autocomplete.md)
   * [Error Analysis](/features/errors.md)
+  * [Formatting](/features/formatting.md)
   * [Linting](/features/lint.md)
   * [Git](/features/git.md)
   * [File Tree View](/features/tree.md)
