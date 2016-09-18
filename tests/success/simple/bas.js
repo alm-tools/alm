@@ -8,9 +8,8 @@ var foo_1 = require("./foo");
 var bar = foo_1.foo;
 function test(x, y, z) {
 }
-var dom = React.createElement("div", null, 
-    React.createElement("img", null)
-);
+var dom = React.createElement("div", null,
+    React.createElement("img", null));
 var Test = (function () {
     function Test() {
         this.foo = 123;
@@ -31,7 +30,7 @@ var GenericTest = (function () {
 var Comp = function (props) {
     return React.createElement("div", null, props.text);
 };
-var comp = React.createElement(Comp, {text: "hello world"});
+var comp = React.createElement(Comp, { text: "hello world" });
 var Bas = (function (_super) {
     __extends(Bas, _super);
     function Bas() {
