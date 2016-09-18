@@ -38,7 +38,13 @@ let mochaExec = (filePath:string) => {
     /** Find key paths */
     const tsNodePath = `${nodeModulesFolder}/ts-node`;
     const mochaPath = `${nodeModulesFolder}/mocha/bin/_mocha`;
-    const instrumentationPath = __dirname + '/mochaInstrumenter.ts';
+    /**
+     * We use the `.js` instrumenter because
+     *  - `ts-node` is wired to ignore compiling `.ts` files in `node_modules`
+     *  - alm will be inside `node_modules` when users install it
+     *  - Fortunately `.js` files will exist after deployment.
+     */
+    const instrumentationPath = __dirname + '/mochaInstrumenter.js';
 
     /** Execute this */
     const toExec
