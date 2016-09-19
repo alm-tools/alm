@@ -185,7 +185,7 @@ export function readDiskSessionsFile() {
         './App-UI/src'
     ].map(x => x + '/tsconfig.json');
     if (commandLine.getOptions().init) {
-        sessionFileContents.relativePathToTsconfig = './';
+        sessionFileContents.relativePathToTsconfig = './tsconfig.json';
         // Write the tsconfig.json file
         tsconfig.createProjectRootSync(workingDir.getProjectRoot());
         writeDiskSessionFile(sessionFileContents);
