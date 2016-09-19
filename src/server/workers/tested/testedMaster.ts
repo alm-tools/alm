@@ -1,7 +1,7 @@
 import * as sw from "../../utils/simpleWorker";
 import * as types from "../../../common/types";
 import * as contract from "./testedContract";
-import {resolve} from "../../../common/utils";
+import {resolve, debounce} from "../../../common/utils";
 import {TypedEvent} from "../../../common/events";
 
 /** This is were we push the errors */
@@ -42,11 +42,14 @@ export const {worker} = sw.startWorker({
 import * as fmc from "../../disk/fileModelCache";
 import * as wd from "../../disk/workingDir";
 import * as activeProjectConfig from "../../disk/activeProjectConfig";
-export const sync = () => worker.init({workingDir: wd.getProjectRoot()});
+/**
+ * Some things e.g. filePaths updated happen a lot.
+ * So debounce this
+ */
+const syncDebounced = debounce(()=>worker.init({workingDir: wd.getProjectRoot()}), 500);
 export function start() {
     /** Start up the working with working dir */
-    wd.projectRootUpdated.on(sync);
-    sync();
+    wd.projectRootUpdated.on(syncDebounced);
 
     /** File save */
     fmc.didStatusChange.on((update) => {
@@ -59,15 +62,16 @@ export function start() {
          */
         activeProjectConfig.projectFilePathsUpdated.current().then(res => {
             if (res.filePaths.some(fp => fp === update.filePath)){
-                sync();
+                syncDebounced();
             }
         });
     });
 
     /**
      * New test file added to the directory
-     * NOTE: it works because new test files should also be a part of the compilation context
-     * And that triggers a file paths update ;)
+     * NOTE: it works because
+     *  - new test files should also be a part of the compilation context
+     *    And that triggers a file paths update ;)
      */
-    activeProjectConfig.projectFilePathsUpdated.on(sync);
+    activeProjectConfig.projectFilePathsUpdated.on(syncDebounced);
 }
