@@ -131,10 +131,10 @@ new GetPort().startPortSearch(clOptions.port, (port) => {
         }
         const host = clOptions.host in {'localhost':true,'127.0.0.1':true,'0.0.0.0': true} ? 'localhost' : clOptions.host;
         const url = `http://${host}:${port}`;
-        console.log(`DASHBOARD:`, chalk.green(url));
         if (clOptions.open) {
             open(url);
         }
+        console.log(`DASHBOARD:`, clOptions.open ? "(launched in browser)" : chalk.magenta("(Please open in chrome)"), chalk.green(url));
         listeningAtUrl.emit({ url });
         serverStarted.started();
     });
