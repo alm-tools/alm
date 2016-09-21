@@ -168,7 +168,17 @@ export namespace GetProject {
         let proj = ifCurrent(filePath);
 
         if (!proj) {
-            console.error(types.errors.CALLED_WHEN_NO_ACTIVE_PROJECT_FOR_FILE_PATH, filePath);
+            /** This is happening for invalid cases so added some debug assistance */
+            const isThereAnActiveProject = !!currentProject;
+            const filePathsCount = isThereAnActiveProject ? currentProject.getProjectSourceFiles().length : 0;
+            console.log(
+                {
+                    error: types.errors.CALLED_WHEN_NO_ACTIVE_PROJECT_FOR_FILE_PATH,
+                    filePath,
+                    isThereAnActiveProject,
+                    filePathsCount
+                }
+            );
             throw new Error(types.errors.CALLED_WHEN_NO_ACTIVE_PROJECT_FOR_FILE_PATH);
         }
 
