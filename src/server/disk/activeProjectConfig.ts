@@ -25,8 +25,11 @@ import * as fsu from "../utils/fsu";
 /**
  * Global variables
  */
-/** The active project name */
-let activeProjectConfigDetails: AvailableProjectConfig = null;
+/**
+ * The active project name
+ * Warning: `export`ed only to allow us to check if there is some details on ts crash restart
+ */
+export let activeProjectConfigDetails: AvailableProjectConfig = null;
 export let activeProjectConfigDetailsUpdated = new TypedEvent<AvailableProjectConfig>();
 
 /** Only if the file is valid will we end up here */

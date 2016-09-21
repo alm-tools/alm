@@ -10,10 +10,15 @@ export var resolve: typeof Promise.resolve = Promise.resolve.bind(Promise);
 export function startWorker<TWorker>(config:{
     workerPath: string,
     workerContract: TWorker,
-    masterImplementation: any
+    masterImplementation: any,
+    /**
+     * We automatially restart the worker if it crashes
+     * After that is done, you can do reinitialization in this if you want
+     */
+    onCrashRestart?: ()=>any,
 }): { parent: Parent; worker: TWorker } {
     var parent = new Parent();
-    parent.startWorker(config.workerPath, showError, []);
+    parent.startWorker(config.workerPath, showError, [], config.onCrashRestart || (()=>null));
 
     function showError(error: Error) {
         if (error) {
@@ -288,7 +293,12 @@ export class Parent extends RequesterResponder {
     private stopped = false;
 
     /** start worker */
-    startWorker(childJsPath: string, terminalError: (e: Error) => any, customArguments: string[] = []) {
+    startWorker(
+        childJsPath: string,
+        terminalError: (e: Error) => any,
+        customArguments: string[] = [],
+        onCrashRestart: () => any
+    ) {
         try {
             const fileName = path.basename(childJsPath);
             this.child = cp.fork(
@@ -324,7 +334,8 @@ export class Parent extends RequesterResponder {
 
                 // If orphaned then Definitely restart
                 if (code === orphanExitCode) {
-                    this.startWorker(childJsPath, terminalError, customArguments);
+                    this.startWorker(childJsPath, terminalError, customArguments, onCrashRestart);
+                    onCrashRestart();
                 }
                 // If we got ENOENT. Restarting will not help.
                 else if (this.gotENOENTonSpawnNode) {
@@ -333,7 +344,8 @@ export class Parent extends RequesterResponder {
                 // We haven't found a reson to not start worker yet
                 else {
                     console.log(`${fileName} worker restarting. Don't know why it stopped with code:`, code);
-                    this.startWorker(childJsPath, terminalError, customArguments);
+                    this.startWorker(childJsPath, terminalError, customArguments, onCrashRestart);
+                    onCrashRestart();
                 }
             });
         } catch (err) {

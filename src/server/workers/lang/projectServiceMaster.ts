@@ -69,17 +69,27 @@ const _checkTypes: typeof contract.master = Master;
 export const {worker} = sw.startWorker({
     workerPath: __dirname + '/projectServiceWorker',
     workerContract: contract.worker,
-    masterImplementation: Master
+    masterImplementation: Master,
+    onCrashRestart: ()=> {
+        /** TS Crashed. Send down the data again if any */
+        if (activeProjectConfig.activeProjectConfigDetails) {
+            sendActiveProjectDownToWorker(activeProjectConfig.activeProjectConfigDetails);
+        }
+    }
 });
+
+const sendActiveProjectDownToWorker = (activeProjectConfigDetails: types.AvailableProjectConfig) => {
+    const projectData = projectDataLoader.getProjectDataLoaded(activeProjectConfigDetails);
+    worker.setActiveProjectConfigDetails({ projectData });
+}
 
 // Subscribe and send down the stuff we need to send to the worker based on our state
 import * as activeProjectConfig  from "../../disk/activeProjectConfig";
 import * as fileListingMaster from "../fileListing/fileListingMaster";
 export function start() {
-    activeProjectConfig.activeProjectConfigDetailsUpdated.on((activeProjectConfigDetails) => {
-        const projectData = projectDataLoader.getProjectDataLoaded(activeProjectConfigDetails);
-        worker.setActiveProjectConfigDetails({ projectData });
-    });
+    /** When active project changes send down the data */
+    activeProjectConfig.activeProjectConfigDetailsUpdated.on(sendActiveProjectDownToWorker);
+
     fileListingMaster.fileListingDelta.on((delta) => activeProjectConfig.fileListingDelta(delta));
     fmc.didEdits.on((edits) => worker.fileEdited(edits));
     fmc.savedFileChangedOnDisk.on((update) => worker.fileChangedOnDisk(update));
