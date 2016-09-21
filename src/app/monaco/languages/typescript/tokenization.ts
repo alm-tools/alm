@@ -106,10 +106,11 @@ function tokenize(bracketTypeTable: { [i: number]: string }, tokenTypeTable: { [
     var isTypeScript = state.language === Language.TypeScript;
 
 	if (isTypeScript) {
+        // Note: we are still keeping the classiferCache in sync (from docCache)
+        // But disabled using it here for pref + requirement to use it for hovers
         // WARNING: we might eventually use the js language to tokenize stuff like `hovers`
         // So probably only use this function for .ts files
         // Alternatively we could create a new language 'jshover' and use that for hovers etc
-        // Also ts is really slow for big js files ;)
 		return tokenizeTs(state, ret, text);
 	}
 
