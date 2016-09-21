@@ -55,7 +55,10 @@ const _checkTypes: typeof contract.master = Master;
 export const {worker} = sw.startWorker({
     workerPath: __dirname + '/fileListingWorker',
     workerContract: contract.worker,
-    masterImplementation: Master
+    masterImplementation: Master,
+    onCrashRestart: ()=> {
+        start();
+    }
 });
 
 export function start() {
