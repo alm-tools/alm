@@ -147,7 +147,7 @@ namespace LinterImplementation {
         }
         catch (err) {
             console.log(linterMessagePrefix, 'Invalid config:', configurationPath);
-            errorCache.setErrorsByFilePaths([configurationPath], [utils.makeBlandError(configurationPath, err.message)]);
+            errorCache.setErrorsByFilePaths([configurationPath], [types.makeBlandError(configurationPath, err.message)]);
             return;
         }
         /** Also need to setup the rules directory */
@@ -186,7 +186,7 @@ namespace LinterImplementation {
 
         /** Used to push to the errorCache */
         const filePaths: string[] = [];
-        let errors: CodeError[] = [];
+        let errors: types.CodeError[] = [];
 
         const time = timer();
         /** create the Linter for each file and get its output */
@@ -253,7 +253,7 @@ namespace LinterImplementation {
     }
 
     /** Utility */
-    function lintErrorToCodeError(lintError: RuleFailure, contents: string): CodeError {
+    function lintErrorToCodeError(lintError: RuleFailure, contents: string): types.CodeError {
         const start = lintError.getStartPosition().getLineAndCharacter();
         const end = lintError.getEndPosition().getLineAndCharacter();
         const preview = contents.substring(
@@ -261,7 +261,7 @@ namespace LinterImplementation {
             lintError.getEndPosition().getPosition()
         );
 
-        const result: CodeError = {
+        const result: types.CodeError = {
             filePath: lintError.getFileName(),
             message: lintError.getFailure(),
             from: {

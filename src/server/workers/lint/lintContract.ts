@@ -10,5 +10,5 @@ export const worker = {
 
 export const master = {
     /** Linter sends out errors */
-    receiveErrorCacheDelta: {} as sw.QRFunction<ErrorCacheDelta, {}>,
+    receiveErrorCacheDelta: {} as sw.QRFunction<types.ErrorCacheDelta, {}>,
 }

@@ -50,7 +50,7 @@ export var server = {
     /**
      * Error stuff
      */
-    getErrors: {} as QRFunction<{}, ErrorsByFilePath>,
+    getErrors: {} as QRFunction<{}, types.ErrorsByFilePath>,
 
     /**
      * Tested
@@ -162,7 +162,7 @@ export var cast = {
     editorOptionsChanged: new TypedEvent<{ filePath: string, editorOptions: types.EditorOptions }>(),
 
     /** Errors for a file path */
-    errorsDelta: new TypedEvent<ErrorCacheDelta>(),
+    errorsDelta: new TypedEvent<types.ErrorCacheDelta>(),
 
     /** Tested */
     testResultsDelta: new TypedEvent<types.TestResultsDelta>(),
@@ -273,7 +273,7 @@ export namespace Types {
                 to: EditorPosition
             }
         },
-        errors?: CodeError[]
+        errors?: types.CodeError[]
     }
 
     /**

@@ -154,7 +154,7 @@ export class MainPanel extends BaseComponent<Props, State>{
     }
 
     renderErrors() {
-        const errorsToRender: ErrorsByFilePath = tabState.errorsByFilePathFiltered().errorsByFilePath;
+        const errorsToRender: types.ErrorsByFilePath = tabState.errorsByFilePathFiltered().errorsByFilePath;
         return (
             <div style={{overflow:'auto'}}>{
             Object.keys(errorsToRender)
@@ -177,7 +177,7 @@ export class MainPanel extends BaseComponent<Props, State>{
         }
     }
 
-    openErrorLocation = (error: CodeError) => {
+    openErrorLocation = (error: types.CodeError) => {
         gotoHistory.gotoError(error);
     }
 
@@ -211,13 +211,13 @@ export class MainPanel extends BaseComponent<Props, State>{
  */
 namespace ErrorRenders {
 
-    const openErrorLocation = (error: CodeError) => {
+    const openErrorLocation = (error: types.CodeError) => {
         gotoHistory.gotoError(error);
     }
 
     interface ErrorsForFilePathProps {
         filePath: string,
-        errors: CodeError[]
+        errors: types.CodeError[]
     }
 
     export class ErrorsForFilePath extends React.Component<ErrorsForFilePathProps, {}> {
@@ -254,7 +254,7 @@ namespace ErrorRenders {
         }
     }
 
-    export class SingleError extends React.Component<{error:CodeError},{}>{
+    export class SingleError extends React.Component<{error:types.CodeError},{}>{
         shouldComponentUpdate = pure.shouldComponentUpdate;
 
         render() {

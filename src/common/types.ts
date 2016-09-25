@@ -635,3 +635,57 @@ export type TestItPosition = {
      */
     testLogPosition: TestLogPosition;
 }
+
+//////////////////////
+// Error cache
+//////////////////////
+export interface CodeError {
+    filePath: string;
+    from: EditorPosition;
+    to: EditorPosition;
+    message: string;
+    preview: string;
+    level: 'warning'|'error';
+}
+
+export interface ErrorsByFilePath {
+    [filePath: string]: CodeError[];
+}
+
+/**
+ * We don't send all the errors to front end continuously.
+ * But we do still tell the total count.
+ */
+export interface LimitedErrorsUpdate {
+    errorsByFilePath: ErrorsByFilePath;
+    totalCount: number;
+    syncCount: number;
+    tooMany: boolean;
+}
+
+/**
+ * Allows true syncing of one cache with another
+ */
+export type ErrorCacheDelta = {
+    added: ErrorsByFilePath;
+    removed: ErrorsByFilePath;
+    initial: boolean;
+}
+
+/** Lots of things don't have a good error. But we would like to be consistent even with simple errors */
+export function makeBlandError(filePath: string, error: string): CodeError {
+    return {
+        filePath,
+        from: {
+            line: 0,
+            ch: 0
+        },
+        to: {
+            line: 0,
+            ch: 0
+        },
+        message: error,
+        preview: null,
+        level: 'error'
+    }
+}

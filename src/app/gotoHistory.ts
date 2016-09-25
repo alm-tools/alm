@@ -3,7 +3,8 @@ import * as state from "./state/state";
 import * as commands from "./commands/commands";
 import * as utils from "../common/utils";
 import {tabState, tabStateChanged} from "./tabs/v2/appTabsContainer";
-import {errorsCache} from "./globalErrorCacheClient";
+import { errorsCache } from "./globalErrorCacheClient";
+import * as types from '../common/types';
 
 /** Interfaces used by GotoHistory feature */
 interface GotoPosition {
@@ -44,7 +45,7 @@ tabStateChanged.on(reloadErrorsInOpenFiles);
  * Use this to keep the *lastPosition* in error list in sync
  * A bit fugly because there might be multiple errors in the same location but works good enough
  */
-export function gotoError(error: CodeError){
+export function gotoError(error: types.CodeError){
     commands.doOpenOrFocusFile.emit({filePath:error.filePath,position:error.from});
     errorsInOpenFiles.lastIndex = indexOf(errorsInOpenFiles.members,(member)=>{
         return member.filePath == error.filePath && member.line == error.from.line && member.col == error.from.ch;

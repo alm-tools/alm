@@ -1,3 +1,5 @@
+import * as types from './types';
+
 export interface ParsedData<T> {
     /** only if valid */
     data?: T;
@@ -77,7 +79,7 @@ export function stringify(object: Object, eol: string = '\n'): string {
     return value;
 }
 
-export function parseErrorToCodeError(filePath: string, error: ParseError) : CodeError {
+export function parseErrorToCodeError(filePath: string, error: ParseError) : types.CodeError {
     return {
         filePath,
         from: error.from,

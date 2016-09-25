@@ -13,5 +13,5 @@ export const master = {
     /** Sends out test resuts */
     receiveTestResultsDelta: {} as sw.QRFunction<types.TestResultsDelta, {}>,
     /** Sends out errors for config / file exceptions */
-    receiveErrorCacheDelta: {} as sw.QRFunction<ErrorCacheDelta, {}>,
+    receiveErrorCacheDelta: {} as sw.QRFunction<types.ErrorCacheDelta, {}>,
 }

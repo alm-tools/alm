@@ -11,11 +11,10 @@ import * as types from "../../../common/types";
 import {errorsCache} from "./cache/tsErrorsCache";
 const {setErrorsByFilePaths, clearErrors, clearErrorsForFilePath} = errorsCache;
 import {diagnosticToCodeError} from "./modules/building";
-import {makeBlandError} from "../../../common/utils";
 import {TypedEvent} from "../../../common/events";
 import equal = require('deep-equal');
 import * as chalk from "chalk";
-import {AvailableProjectConfig} from "../../../common/types";
+import {AvailableProjectConfig,makeBlandError} from "../../../common/types";
 import * as fsu from "../../utils/fsu";
 
 import {master as masterType} from "./projectServiceContract";

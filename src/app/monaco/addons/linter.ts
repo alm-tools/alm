@@ -7,6 +7,7 @@
  */
 import * as events from "../../../common/events";
 import * as state from "../../state/state";
+import * as types from '../../../common/types';
 import {errorsCache} from "../../globalErrorCacheClient";
 type IDisposable = events.Disposable;
 type Editor = monaco.editor.ICodeEditor;
@@ -20,7 +21,7 @@ const gutterDecorationOptions: monaco.editor.IModelDecorationOptions = {
 };
 
 
-function codeErrorToMonacoError(codeError: CodeError): monaco.editor.IMarkerData {
+function codeErrorToMonacoError(codeError: types.CodeError): monaco.editor.IMarkerData {
     return {
         severity: codeError.level === 'error' ? monaco.Severity.Error : monaco.Severity.Warning,
         message: codeError.message,

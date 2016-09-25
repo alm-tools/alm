@@ -287,24 +287,6 @@ export function selectMany<T>(arr: T[][]): T[] {
     return result;
 }
 
-/** Lots of things don't have a good error. But we would like to be consistent even with simple errors */
-export function makeBlandError(filePath: string, error: string): CodeError {
-    return {
-        filePath,
-        from: {
-            line: 0,
-            ch: 0
-        },
-        to: {
-            line: 0,
-            ch: 0
-        },
-        message: error,
-        preview: null,
-        level: 'error'
-    }
-}
-
 /** From `file://filePath` to `filePath` */
 export function getFilePathFromUrl(url: string) {
     let {filePath} = getFilePathAndProtocolFromUrl(url);

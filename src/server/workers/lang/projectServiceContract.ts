@@ -70,7 +70,7 @@ export var master = {
     getOpenFilePaths: {} as sw.QRFunction<{}, string[]>,
 
     // Sinks for important events
-    receiveErrorCacheDelta: {} as sw.QRFunction<ErrorCacheDelta, {}>,
+    receiveErrorCacheDelta: {} as sw.QRFunction<types.ErrorCacheDelta, {}>,
     receiveFileOutputStatusUpdate: {} as sw.QRFunction<types.JSOutputStatus, {}>,
     receiveCompleteOutputStatusCacheUpdate: {} as sw.QRFunction<types.JSOutputStatusCache, {}>,
     receiveLiveBuildResults: {} as sw.QRFunction<types.LiveBuildResults, {}>,

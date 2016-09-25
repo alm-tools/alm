@@ -2,10 +2,11 @@ import * as fmc from "../../../disk/fileModelCache";
 import * as fsu from "../../../utils/fsu";
 import fs = require('fs');
 import * as json from "../../../../common/json";
-import {makeBlandError,reverseKeysAndValues, uniq, extend, isJs} from "../../../../common/utils";
-import {PackageJsonParsed, TsconfigJsonParsed, TypeScriptConfigFileDetails} from "../../../../common/types";
+import {reverseKeysAndValues, uniq, extend, isJs} from "../../../../common/utils";
+import {makeBlandError, PackageJsonParsed, TsconfigJsonParsed, TypeScriptConfigFileDetails} from "../../../../common/types";
 import {increaseCompilationContext, getDefinitionsForNodeModules} from "./compilationContextExpander";
-import {validate} from "./tsconfigValidation";
+import { validate } from "./tsconfigValidation";
+import * as types from '../../../../common/types';
 
 /**
  * The CompilerOptions as read from a `tsconfig.json` file.
@@ -120,7 +121,7 @@ export var errors = {
 };
 export interface ProjectFileErrorDetails {
     projectFilePath: string;
-    error: CodeError;
+    error: types.CodeError;
 }
 
 import path = require('path');
@@ -188,7 +189,7 @@ export function getDefaultInMemoryProject(srcFile: string): TypeScriptConfigFile
  * Use this to bootstrap the UI for what project the user might want to work on.
  * Note: Definition files (.d.ts) are considered thier own project
  */
-type GetProjectSyncResponse = { error?: CodeError, result?: TypeScriptConfigFileDetails };
+type GetProjectSyncResponse = { error?: types.CodeError, result?: TypeScriptConfigFileDetails };
 export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
 
     if (!fsu.existsSync(pathOrSrcFile)) {

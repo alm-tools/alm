@@ -1,6 +1,7 @@
 import {TypedEvent} from "../../common/events";
 import {createMapByKey, debounce, selectMany} from "../../common/utils";
 import equal = require('deep-equal');
+import {CodeError, ErrorCacheDelta, ErrorsByFilePath,LimitedErrorsUpdate} from '../../common/types';
 
 // What we use to identify a unique error
 const errorKey = (error:CodeError)=>`${error.from.line}:${error.from.ch}:${error.message}`;

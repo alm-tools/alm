@@ -4,9 +4,10 @@ import path = require('path');
 import fs = require('fs');
 import {makeAbsoluteIfNeeded} from "../../../disk/workingDir";
 import {consistentPath} from "../../../utils/fsu";
-import {createMap} from "../../../../common/utils";
+import { createMap } from "../../../../common/utils";
+import * as types from '../../../../common/types';
 
-export function diagnosticToCodeError(diagnostic: ts.Diagnostic): CodeError {
+export function diagnosticToCodeError(diagnostic: ts.Diagnostic): types.CodeError {
 
     let preview = '';
     let filePath = '';

@@ -1183,8 +1183,8 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
          * TODO: this function is a bit heavy so can use some caching
          */
         errorsByFilePathFiltered: (): {
-            errorsFlattened: CodeError[],
-            errorsByFilePath: ErrorsByFilePath
+            errorsFlattened: types.CodeError[],
+            errorsByFilePath: types.ErrorsByFilePath
         } => {
             const allState = state.getState();
             const filter = allState.errorsFilter.trim();

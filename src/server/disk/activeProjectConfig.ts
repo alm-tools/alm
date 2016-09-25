@@ -56,7 +56,7 @@ export const incrementallyAddedFile = (filePath: string) => {
  */
 import {ErrorsCache} from "../utils/errorsCache";
 export const errorsInTsconfig = new ErrorsCache();
-function setErrorsInTsconfig(filePath:string, errors:CodeError[]){
+function setErrorsInTsconfig(filePath:string, errors:types.CodeError[]){
     console.log('TSCONFIG: Error', errors[0].message);
     errorsInTsconfig.setErrorsByFilePaths([filePath], errors);
 }

@@ -317,7 +317,7 @@ export class StatusBar extends BaseComponent<Props, State>{
         }
     }
 
-    openErrorLocation = (error: CodeError) => {
+    openErrorLocation = (error: types.CodeError) => {
         commands.doOpenOrFocusFile.emit({ filePath: error.filePath, position: error.from });
     }
 

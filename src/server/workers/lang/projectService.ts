@@ -156,7 +156,7 @@ export function quickInfo(query: Types.QuickInfoQuery): Promise<Types.QuickInfoR
 }
 
 /** Utility */
-function positionErrors(query: Types.FilePathPositionQuery): CodeError[] {
+function positionErrors(query: Types.FilePathPositionQuery): types.CodeError[] {
     let project = getProject(query.filePath);
     if (!project.includesSourceFile(query.filePath)) {
         return [];

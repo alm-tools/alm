@@ -27,40 +27,6 @@ interface Error {
     details?: any;
 }
 
-
-interface CodeError {
-    filePath: string;
-    from: EditorPosition;
-    to: EditorPosition;
-    message: string;
-    preview: string;
-    level: 'warning'|'error';
-}
-
-interface ErrorsByFilePath {
-    [filePath: string]: CodeError[];
-}
-
-/**
- * We don't send all the errors to front end continuously.
- * But we do still tell the total count.
- */
-interface LimitedErrorsUpdate {
-    errorsByFilePath: ErrorsByFilePath;
-    totalCount: number;
-    syncCount: number;
-    tooMany: boolean;
-}
-
-/**
- * Allows true syncing of one cache with another
- */
-type ErrorCacheDelta = {
-    added: ErrorsByFilePath;
-    removed: ErrorsByFilePath;
-    initial: boolean;
-}
-
 /**
  * Find and replace (FAR) related stuff
  */
