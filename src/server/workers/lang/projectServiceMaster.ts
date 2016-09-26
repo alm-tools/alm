@@ -73,6 +73,7 @@ export const {worker} = sw.startWorker({
     onCrashRestart: ()=> {
         /** TS Crashed. Send down the data again if any */
         if (activeProjectConfig.activeProjectConfigDetails) {
+            errorsCache.clearErrorsForSource('projectService');
             sendActiveProjectDownToWorker(activeProjectConfig.activeProjectConfigDetails);
         }
     }

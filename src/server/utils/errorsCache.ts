@@ -1,7 +1,7 @@
 import {TypedEvent} from "../../common/events";
 import {createMapByKey, debounce, selectMany} from "../../common/utils";
 import equal = require('deep-equal');
-import {CodeError, ErrorCacheDelta, ErrorsByFilePath,LimitedErrorsUpdate} from '../../common/types';
+import {CodeError, ErrorCacheDelta, ErrorsByFilePath,LimitedErrorsUpdate,CodeErrorSource} from '../../common/types';
 
 // What we use to identify a unique error
 const errorKey = (error:CodeError)=>`${error.from.line}:${error.from.ch}:${error.message}`;
@@ -190,6 +190,17 @@ export class ErrorsCache {
     /** Utility to provide a semantic name to *clearing errors*  */
     public clearErrorsForFilePath = (filePath: string) => {
         this._errorsByFilePath[filePath] = [];
+        this.sendErrors();
+    }
+
+    /** If a source goes down (crashes) and it comes back we want to clear any knowledge of previous errors by source */
+    public clearErrorsForSource = (source: CodeErrorSource) => {
+        const errorsByFilePath: ErrorsByFilePath = Object.create(null);
+        for (let filePath in this._errorsByFilePath) {
+            let errors = this._errorsByFilePath[filePath];
+            errorsByFilePath[filePath] = errors.filter(e=>e.source !== source);
+        }
+        this._errorsByFilePath = errorsByFilePath;
         this.sendErrors();
     }
 
