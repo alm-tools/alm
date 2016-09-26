@@ -22,6 +22,7 @@ export function diagnosticToCodeError(diagnostic: ts.Diagnostic): types.CodeErro
     }
 
     return {
+        source: 'projectService',
         filePath,
         from: { line: startPosition.line, ch: startPosition.character },
         to: { line: endPosition.line, ch: endPosition.character },

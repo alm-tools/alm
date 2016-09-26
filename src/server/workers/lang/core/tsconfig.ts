@@ -194,7 +194,7 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
 
     if (!fsu.existsSync(pathOrSrcFile)) {
         return {
-            error: makeBlandError(pathOrSrcFile, errors.GET_PROJECT_INVALID_PATH)
+            error: makeBlandError(pathOrSrcFile, errors.GET_PROJECT_INVALID_PATH, 'tsconfig')
         }
     }
 
@@ -209,7 +209,7 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
     catch (e) {
         let err: Error = e;
         if (err.message == "not found") {
-            let bland = makeBlandError(fsu.consistentPath(pathOrSrcFile), errors.GET_PROJECT_NO_PROJECT_FOUND);
+            let bland = makeBlandError(fsu.consistentPath(pathOrSrcFile), errors.GET_PROJECT_NO_PROJECT_FOUND, 'tsconfig');
             return {
                 error: bland
             };
@@ -225,7 +225,7 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
         var projectFileTextContent = fmc.getOrCreateOpenFile(projectFile).getContents();
     } catch (ex) {
         return {
-            error: makeBlandError(pathOrSrcFile, errors.GET_PROJECT_FAILED_TO_OPEN_PROJECT_FILE)
+            error: makeBlandError(pathOrSrcFile, errors.GET_PROJECT_FAILED_TO_OPEN_PROJECT_FILE, 'tsconfig')
         }
     }
     let res = json.parse(projectFileTextContent);
@@ -233,7 +233,7 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
         projectSpec = res.data;
     }
     else {
-        let bland = json.parseErrorToCodeError(projectFilePath,res.error);
+        let bland = json.parseErrorToCodeError(projectFilePath, res.error, 'tsconfig');
         return { error: bland };
     }
 
@@ -242,16 +242,16 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
 
     // Additional global level validations
     if (projectSpec.files && projectSpec.exclude) {
-        let bland = makeBlandError(projectFilePath, 'You cannot use both "files" and "exclude" in tsconfig.json');
+        let bland = makeBlandError(projectFilePath, 'You cannot use both "files" and "exclude" in tsconfig.json', 'tsconfig');
         return { error: bland };
     }
     if (projectSpec.compilerOptions.allowJs && !projectSpec.compilerOptions.outDir) {
-        let bland = makeBlandError(projectFilePath, 'You must use an `outDir` if you are using `allowJs` in tsconfig.json');
+        let bland = makeBlandError(projectFilePath, 'You must use an `outDir` if you are using `allowJs` in tsconfig.json', 'tsconfig');
         return { error: bland };
     }
     if (projectSpec.compilerOptions.allowJs && projectSpec.compilerOptions.allowNonTsExtensions) {
         // Bad because otherwise all `package.json`s in the `files` start to give *JavaScript parsing* errors.
-        let bland = makeBlandError(projectFilePath, 'If you are using `allowJs` you should not specify `allowNonTsExtensions` in tsconfig.json');
+        let bland = makeBlandError(projectFilePath, 'If you are using `allowJs` you should not specify `allowNonTsExtensions` in tsconfig.json', 'tsconfig');
         return { error: bland };
     }
 
@@ -266,7 +266,7 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
     }
     catch (ex) {
         return {
-            error: makeBlandError(projectFilePath,ex.message)
+            error: makeBlandError(projectFilePath, ex.message, 'tsconfig')
         }
     }
 
@@ -301,7 +301,7 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
     var validationResult = validate(projectSpec.compilerOptions);
     if (validationResult.errorMessage) {
         return {
-            error: makeBlandError(projectFilePath, validationResult.errorMessage)
+            error: makeBlandError(projectFilePath, validationResult.errorMessage, 'tsconfig')
         };
     }
 

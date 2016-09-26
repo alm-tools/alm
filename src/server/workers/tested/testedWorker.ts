@@ -128,7 +128,7 @@ namespace TestedWorkerImplementation {
         if (parsed.error){
             errorCache.setErrorsByFilePaths(
                 [testedJsonFilePath],
-                [parseErrorToCodeError(testedJsonFilePath,parsed.error)]
+                [parseErrorToCodeError(testedJsonFilePath, parsed.error, 'tested')]
             );
             return;
         }

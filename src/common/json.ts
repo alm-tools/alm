@@ -79,8 +79,9 @@ export function stringify(object: Object, eol: string = '\n'): string {
     return value;
 }
 
-export function parseErrorToCodeError(filePath: string, error: ParseError) : types.CodeError {
+export function parseErrorToCodeError(filePath: string, error: ParseError, source: types.CodeErrorSource) : types.CodeError {
     return {
+        source,
         filePath,
         from: error.from,
         to: error.to,

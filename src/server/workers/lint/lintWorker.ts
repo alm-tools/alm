@@ -147,7 +147,7 @@ namespace LinterImplementation {
         }
         catch (err) {
             console.log(linterMessagePrefix, 'Invalid config:', configurationPath);
-            errorCache.setErrorsByFilePaths([configurationPath], [types.makeBlandError(configurationPath, err.message)]);
+            errorCache.setErrorsByFilePaths([configurationPath], [types.makeBlandError(configurationPath, err.message, 'linter')]);
             return;
         }
         /** Also need to setup the rules directory */
@@ -262,6 +262,7 @@ namespace LinterImplementation {
         );
 
         const result: types.CodeError = {
+            source: 'linter',
             filePath: lintError.getFileName(),
             message: lintError.getFailure(),
             from: {

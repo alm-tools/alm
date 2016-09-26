@@ -639,7 +639,14 @@ export type TestItPosition = {
 //////////////////////
 // Error cache
 //////////////////////
+export type CodeErrorSource =
+    'tsconfig'
+    | 'projectService'
+    | 'linter'
+    | 'tested'
+
 export interface CodeError {
+    source: CodeErrorSource;
     filePath: string;
     from: EditorPosition;
     to: EditorPosition;
@@ -673,8 +680,9 @@ export type ErrorCacheDelta = {
 }
 
 /** Lots of things don't have a good error. But we would like to be consistent even with simple errors */
-export function makeBlandError(filePath: string, error: string): CodeError {
+export function makeBlandError(filePath: string, error: string, source: CodeErrorSource): CodeError {
     return {
+        source,
         filePath,
         from: {
             line: 0,
