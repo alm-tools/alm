@@ -55,7 +55,7 @@
     "glob": "^7.0.5",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
-    "mocha": "3.0.2",
+    "mocha": "3.1.0",
     "monaco": "1.201608152240.0",
     "monaco-css": "1.1.2",
     "monaco-languages": "0.3.1",
