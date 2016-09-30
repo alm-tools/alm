@@ -5,7 +5,10 @@ The JavaScript support is just as good as the TypeScript support, because TypeSc
 ```json
 {
   "compilerOptions": {
-    "allowJs": true
+    "allowJs": true,
+    "outDir": "./dist"
   }
 }
 ```
+
+> Note: `outDir` is required with `allowJs` because you don't want to overwrite your JS source by mistake 🌹.
