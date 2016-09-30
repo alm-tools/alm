@@ -39,6 +39,11 @@ export class Project {
         this.languageService = ts.createLanguageService(this.languageServiceHost, ts.createDocumentRegistry());
     }
 
+
+    public getAllSourceFiles(): ts.SourceFile[] {
+        return this.languageService.getProgram().getSourceFiles();
+    }
+
     /**
      * all files
      * - except lib.d.ts
@@ -48,16 +53,16 @@ export class Project {
     public getProjectSourceFiles(): ts.SourceFile[] {
         var libFileLookup = createMap(typescriptDir.getDefaultLibFilePaths(this.configFile.project.compilerOptions));
         var files
-            = this.languageService.getProgram().getSourceFiles().filter(x=> !libFileLookup[x.fileName]);
+            = this.getAllSourceFiles().filter(x=> !libFileLookup[x.fileName]);
         return files;
     }
 
     public getSourceFile(filePath: string): ts.SourceFile | undefined {
-        return this.getProjectSourceFiles().find(f => f.fileName === filePath);
+        return this.getAllSourceFiles().find(f => f.fileName === filePath);
     }
 
     public includesSourceFile(filePath: string) {
-        return (this.configFile.project.files.filter((f) => f === filePath).length === 1);
+        return (this.getAllSourceFiles().filter((f) => f.fileName === filePath).length === 1);
     }
 
     /**
