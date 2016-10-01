@@ -284,7 +284,10 @@ function getStyleForToken(
         case ClassificationType.identifier:
             let lastToken = line.substr(0, startIndex).trim();
 
-            if (
+            if (token.string === "undefined") {
+                return 'keyword';
+            }
+            else if (
 				lastToken.endsWith('let')
 				|| lastToken.endsWith('const')
 				|| lastToken.endsWith('var')) {
