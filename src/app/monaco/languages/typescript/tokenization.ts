@@ -238,6 +238,9 @@ function getStyleForToken(
 	let nextStr: string; // setup only if needed
 	const loadNextStr = () => nextStr || (nextStr = line.substr(startIndex + token.string.length).replace(/\s+/g, ''));
 
+    /** used for both variable and its puncutation */
+    const decoratorClassification = 'punctuation.tag';
+
     switch (token.classificationType) {
         case ClassificationType.numericLiteral:
             return 'constant.numeric';
@@ -287,6 +290,12 @@ function getStyleForToken(
             if (token.string === "undefined") {
                 return 'keyword';
             }
+            else if (lastToken.endsWith('@')){
+                return decoratorClassification;
+            }
+            else if (lastToken.endsWith('type')){
+                return 'variable-2';
+            }
             else if (
 				lastToken.endsWith('let')
 				|| lastToken.endsWith('const')
@@ -331,6 +340,8 @@ function getStyleForToken(
             	return 'delimiter.parenthesis';
 			if (token.string === '=>')
 				return 'operator.keyword';
+            if (token.string === '@')
+                return decoratorClassification;
 			return 'bracket';
         case ClassificationType.jsxOpenTagName:
         case ClassificationType.jsxCloseTagName:

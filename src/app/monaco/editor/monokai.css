@@ -59,3 +59,5 @@
 /** Don't want italic or underline */
 .monaco-editor.vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.support.type { font-style: normal; }
 .monaco-editor.vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.entity.name.class { text-decoration: none; }
+/** variable-2 doesn't exist. We use it for identifiers in type positions */
+.monaco-editor.vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .variable-2 { color: #9effff; }
