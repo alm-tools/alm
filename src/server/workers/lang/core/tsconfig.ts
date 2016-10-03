@@ -256,6 +256,13 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
     }
 
     /**
+     * Always add `outDir`(if any) to exclude
+     */
+    if (projectSpec.compilerOptions.outDir){
+        projectSpec.exclude = (projectSpec.exclude || []).concat(projectSpec.compilerOptions.outDir);
+    }
+
+    /**
      * Finally expand whatever needs expanding
      * See : https://github.com/TypeStrong/tsconfig/issues/19
      */
