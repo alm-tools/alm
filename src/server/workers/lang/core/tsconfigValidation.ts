@@ -69,7 +69,7 @@ const compilerOptionsValidation: simpleValidator.ValidationInfo = {
     target: { type: types.string, validValues: ['es3', 'es5', 'es6', 'es2015'] },
     traceResolution: { type: types.boolean },
     types: { type: types.array, sub: { type: types.string } },
-    typesRoot: { type: types.string },
+    typeRoots: { type: types.array, sub: { type: types.string } },
     typesSearchPaths: { type: types.array, sub: { type: types.string } },
     version: { type: types.boolean },
     watch: { type: types.boolean },

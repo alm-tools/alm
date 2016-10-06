@@ -89,7 +89,7 @@ interface CompilerOptions {
     target?: string;
     traceResolution?: boolean;
     types?: string[];
-    typesRoot?: string;
+    typeRoots?: string[];
     typesSearchPaths?: string[];
     version?: boolean;
     watch?: boolean;
