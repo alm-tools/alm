@@ -1,13 +1,15 @@
+
+
 # The best IDE for TypeScript
 
 [![Join the chat at  gitter][gitter-image]][gitter-url]
 
-> With great languages come great development tools.
+> This project is powered by github 🌟s ^ go ahead and [star it please](https://github.com/alm-tools/alm/stargazers).
 
 [![Build Status][travis-image]][travis-url]
 [![NPM version][npm-image]][npm-url]
 
-> Semantic releases start once 🌟 count > 1000. Don't forget to share 🌹
+> With great languages come great development tools 🌹.
 
 ## Why
 
