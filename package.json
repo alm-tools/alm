@@ -113,7 +113,8 @@
   "greenkeeper": {
     "ignore": [
       "d3",
-      "jquery"
+      "jquery",
+      "react-modal"
     ]
   }
 }
