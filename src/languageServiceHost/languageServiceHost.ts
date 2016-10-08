@@ -425,7 +425,24 @@ export class LanguageServiceHost extends LSHost {
      */
     readDirectory = ts.sys ? ts.sys.readDirectory : undefined;
     readFile = ts.sys ? ts.sys.readFile: undefined;
-    fileExists = ts.sys ? ts.sys.fileExists: undefined;
+    fileExists = ts.sys ? ts.sys.fileExists : undefined;
+
+    /**
+     * getDirectories is also required for full import and type reference completions.
+     * Without it defined, certain completions will not be provided
+     */
+    getDirectories = ts.sys ? ts.sys.getDirectories : undefined;
+
+    /** For @types expansion */
+    directoryExists = ts.sys ? ts.sys.directoryExists : undefined;
+    getCurrentDirectory() {
+        /**
+         * TODO: use the same path as the path of tsconfig.json (if any)
+         * `undefined` is handled correctly in the compiler source :
+         * https://github.com/Microsoft/TypeScript/blob/02493de5ccd9e8c4c901bb154ba584dee392bd14/src/compiler/moduleNameResolver.ts#L98
+         */
+        return undefined;
+    }
 
     /**
      * We allow incremental loading of resources.
