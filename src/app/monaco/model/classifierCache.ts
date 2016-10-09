@@ -12,7 +12,14 @@ import * as lsh from "../../../languageServiceHost/languageServiceHost";
 const languageServiceHost = new lsh.LanguageServiceHost(undefined);
 const languageService = ts.createLanguageService(languageServiceHost);
 
+/**
+ * ts syntax highlighter doesn't handle bom correctly so fix that
+ */
+const BOM_CHAR_CODE = 65279;
+const hasBom: { [filePath: string]: boolean } = Object.create(null);
+
 export function addFile(filePath: string, contents: string) {
+    hasBom[filePath] = contents.charCodeAt(0) === BOM_CHAR_CODE;
     languageServiceHost.addScript(filePath, contents);
 }
 export function removeFile(filePath: string){
@@ -32,6 +39,8 @@ export function getPositionOfLineAndCharacter(filePath: string, line: number, ch
 }
 
 export function getClassificationsForLine(filePath: string, lineStart: number, string: string): ClassifiedSpan[] {
+
+    const offsetForBom = hasBom[filePath] ? -1 : 0;
 
     // don't need this for monaco!
     /**
@@ -64,7 +73,11 @@ export function getClassificationsForLine(filePath: string, lineStart: number, s
 
     // Trim to the query region
     classifications = classifications
-        .map((c,i)=> {
+        .map((c, i) => {
+
+            // Compensate each token for bom
+            c.textSpan.start += offsetForBom;
+
             // completely outside the range on the left
             if ((c.textSpan.start + c.textSpan.length) <= lineStart) {
                 return null;
