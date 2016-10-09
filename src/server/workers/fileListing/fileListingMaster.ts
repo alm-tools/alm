@@ -26,10 +26,7 @@ namespace Master {
     }
 
     export const abort: typeof contract.master.abort = (q) => {
-        console.log(chalk.red(`Exiting: Permission error when trying to list ${q.filePath}.
-- Start the IDE in a project folder (e.g. '/your/project')
-- Check access to the path`
-));
+        console.log(chalk.red(q.errorMessage));
         emitServerExit();
         return Promise.resolve({});
     }

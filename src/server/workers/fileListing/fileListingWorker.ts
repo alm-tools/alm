@@ -12,6 +12,8 @@ import {TypedEvent}  from "../../../common/events";
 import * as types from "../../../common/types";
 import * as chalk from "chalk";
 
+const maxFileCount = 100000;
+
 /** A Map for faster live calculations */
 type LiveList = { [filePath: string]: types.FilePathType };
 /** The directory to watch */
@@ -166,8 +168,16 @@ namespace Worker {
                 list.forEach(entry => liveList[entry.filePath] = entry.type);
                 sendNewFileList();
             });
+            let matchLength = 0
             /** Still send the listing while globbing so user gets immediate feedback */
             mg.on('match', (match) => {
+                matchLength++;
+
+                if (matchLength > maxFileCount) {
+                    abortDueToTooManyFiles();
+                    return;
+                }
+
                 let p = fsu.resolve(cwd, match);
                 if (mg.cache[p]) {
                     if (ignoreThisPathThatGlobGivesForUnknownReasons(match)) {
@@ -289,8 +299,18 @@ function checkGlobbingError(err: any) {
         (err.code == 'EPERM' /*win*/ || err.code == 'EACCES' /*mac*/)
     ) {
         abortGlobbing = true;
-        master.abort({filePath: err.path});
+        const errorMessage = `Exiting: Permission error when trying to list ${err.path}.
+- Start the IDE in a project folder (e.g. '/your/project')
+- Check access to the path`
+
+        master.abort({ errorMessage });
     }
+}
+function abortDueToTooManyFiles() {
+    abortGlobbing = true;
+    const errorMessage = `Exiting: Too many files in folder. Currently we limit to ${maxFileCount}.
+- Start the IDE in a project folder (e.g. '/your/project')`;
+    master.abort({ errorMessage });
 }
 process.on('error',()=>{
     console.log('here');

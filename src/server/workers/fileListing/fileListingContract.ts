@@ -15,5 +15,5 @@ export const master = {
     increment: {} as sw.QRFunction<{ num: number }, { num: number }>,
     fileListUpdated: {} as sw.QRFunction<({ filePaths: types.FilePath[], completed: boolean }), any>,
     fileListingDelta: {} as sw.QRFunction<types.FileListingDelta, any>,
-    abort: {} as sw.QRFunction<{ filePath: string }, {}>,
+    abort: {} as sw.QRFunction<{ errorMessage: string }, {}>,
 }
