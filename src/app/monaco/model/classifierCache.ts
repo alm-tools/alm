@@ -28,7 +28,8 @@ export function removeFile(filePath: string){
 export function editFile(filePath: string, codeEdit: CodeEdit) {
     languageServiceHost.applyCodeEdit(filePath, codeEdit.from, codeEdit.to, codeEdit.newText);
 }
-export function setContents(filePath:string, contents:string){
+export function setContents(filePath: string, contents: string) {
+    hasBom[filePath] = contents.charCodeAt(0) === BOM_CHAR_CODE;
     languageServiceHost.setContents(filePath,contents);
 }
 export function getLineAndCharacterOfPosition(filePath: string, pos: number): EditorPosition {
