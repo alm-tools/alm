@@ -9,7 +9,7 @@
 import {TypedEvent} from "../../../common/events";
 import * as lsh from "../../../languageServiceHost/languageServiceHost";
 
-const languageServiceHost = new lsh.LanguageServiceHost();
+const languageServiceHost = new lsh.LanguageServiceHost(undefined);
 const languageService = ts.createLanguageService(languageServiceHost);
 
 export function addFile(filePath: string, contents: string) {

@@ -88,7 +88,7 @@ namespace LinterImplementation {
         /**
          * Create the program
          */
-        const languageServiceHost = new LanguageServiceHost(projectData.configFile.project.compilerOptions);
+        const languageServiceHost = new LanguageServiceHost(undefined, projectData.configFile.project.compilerOptions);
 
         // Add all the files
         projectData.filePathWithContents.forEach(({filePath, contents}) => {

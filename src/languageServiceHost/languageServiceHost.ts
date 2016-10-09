@@ -238,8 +238,12 @@ export class LSHost implements ts.LanguageServiceHost {
     filenameToScript: ts.FileMap<ScriptInfo>;
     roots: ScriptInfo[] = [];
 
-    /** BAS: added compilation settings as an option */
-    constructor(public compilerOptions = defaultCompilerOptions) {
+    /**
+     * BAS: add configuration arguments
+     * - projectDirectory,
+     * - compilerOptions
+     */
+    constructor(public projectDirectory: string | undefined, public compilerOptions = defaultCompilerOptions) {
         this.filenameToScript = createFileMap<ScriptInfo>();
     }
 
@@ -274,10 +278,9 @@ export class LSHost implements ts.LanguageServiceHost {
         return this.getScriptInfo(filename).svc.latestVersion().toString();
     }
 
-    // BAS We work with full paths
-    getCurrentDirectory(): string {
-        return "";
-    }
+    // BAS : wired to config. Needed for proper `@types` expansion.
+    // See the child class `LanguageServiceHost` implementation below (with more comments).
+    getCurrentDirectory = () => this.projectDirectory;
 
     getScriptIsOpen(filename: string) {
         return this.getScriptInfo(filename).isOpen;
@@ -433,15 +436,17 @@ export class LanguageServiceHost extends LSHost {
      */
     getDirectories = ts.sys ? ts.sys.getDirectories : undefined;
 
-    /** For @types expansion */
+    /**
+     * For @types expansion, these two functions are needed.
+     */
     directoryExists = ts.sys ? ts.sys.directoryExists : undefined;
-    getCurrentDirectory() {
+    getCurrentDirectory = () => {
         /**
          * TODO: use the same path as the path of tsconfig.json (if any)
          * `undefined` is handled correctly in the compiler source :
          * https://github.com/Microsoft/TypeScript/blob/02493de5ccd9e8c4c901bb154ba584dee392bd14/src/compiler/moduleNameResolver.ts#L98
          */
-        return undefined;
+        return this.projectDirectory;
     }
 
     /**

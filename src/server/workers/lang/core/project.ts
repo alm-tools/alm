@@ -24,7 +24,7 @@ export class Project {
     constructor(projectData: types.ProjectDataLoaded) {
         this.configFile = projectData.configFile;
 
-        this.languageServiceHost = new LanguageServiceHost(projectData.configFile.project.compilerOptions);
+        this.languageServiceHost = new LanguageServiceHost(projectData.configFile.projectFilePath, projectData.configFile.project.compilerOptions);
 
         // Add all the files
         projectData.filePathWithContents.forEach(({filePath,contents}) => {

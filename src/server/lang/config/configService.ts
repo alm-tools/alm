@@ -24,7 +24,7 @@ class Project {
     languageService: ts.LanguageService;
     languageServiceHost: lsh.LanguageServiceHost;
     constructor() {
-        this.languageServiceHost = new lsh.LanguageServiceHost({
+        this.languageServiceHost = new lsh.LanguageServiceHost(undefined, {
             allowNonTsExtensions: true,
             allowJs: true,
             noLib: true, // Will result in lots of errors but we don't want lib.d.ts completions
