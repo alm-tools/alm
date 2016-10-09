@@ -163,9 +163,13 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
     		    }
     		}));
 
-            let editCameFromServerCount = 0;
+            /**
+             * We ignore edit notifications from monaco if *we* did the edit e.g.
+             * - if the server sent the edit and we applied it.
+             */
+            let countOfEditNotificationsToIgnore = 0;
 
-            /** This is used for monaco edit operation counting purposes */
+            /** This is used for monaco edit operation version counting purposes */
             let editorOperationCounter = 0;
 
             // setup to push doc changes to server
@@ -176,10 +180,11 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                 // if this edit is happening
                 // because *we edited it due to a server request*
                 // we should exit
-                if (editCameFromServerCount) {
-                    editCameFromServerCount--;
+                if (countOfEditNotificationsToIgnore) {
+                    countOfEditNotificationsToIgnore--;
                     return;
                 }
+
                 let codeEdit: CodeEdit = {
                     from: { line: evt.range.startLineNumber - 1, ch: evt.range.startColumn - 1 },
                     to: { line: evt.range.endLineNumber - 1, ch: evt.range.endColumn - 1 },
@@ -223,7 +228,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                         }
 
                         /** Mark as ignoring before applying the edit */
-                        editCameFromServerCount++;
+                        countOfEditNotificationsToIgnore++;
                         doc.pushEditOperations([], [editOperation], null);
                     }
                 });
@@ -246,7 +251,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
                     if (isJsOrTsFile) { classifierCache.setContents(filePath, res.contents); }
 
                     // Note that we use *mark as coming from server* so we don't go into doc.change handler later on :)
-                    editCameFromServerCount++;
+                    countOfEditNotificationsToIgnore++;
 
                     // NOTE: we don't do `setValue` as
                     // - that creates a new tokenizer (we would need to use `window.creatingModelFilePath`)
