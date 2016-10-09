@@ -165,7 +165,7 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
 
             let editCameFromServerCount = 0;
 
-            /** This is used for monaco edit operation counting purposes */
+            /** This is used for monaco edit operation version counting purposes */
             let editorOperationCounter = 0;
 
             // setup to push doc changes to server
