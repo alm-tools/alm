@@ -58,7 +58,7 @@
     "mocha": "3.1.1",
     "monaco": "1.201608152240.0",
     "monaco-css": "1.1.2",
-    "monaco-languages": "0.3.1",
+    "monaco-languages": "0.5.0",
     "multimatch": "^2.1.0",
     "mv": "^2.1.1",
     "ncp": "^2.0.0",
