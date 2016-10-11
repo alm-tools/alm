@@ -114,7 +114,9 @@
     "ignore": [
       "d3",
       "jquery",
-      "react-modal"
+      "react-modal",
+      "monaco",
+      "typescript"
     ]
   }
 }
