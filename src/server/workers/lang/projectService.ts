@@ -483,7 +483,7 @@ export function getJSOutputStatus(query: Types.FilePathQuery, autoEmit = true): 
         || !jsFile;
 
     let state
-        = !jsFile
+        = noJsFile
             ? types.JSOutputState.NoJSFile
                 : getContents(jsFile.filePath) === jsFile.contents
                     ? types.JSOutputState.JSUpToDate
