@@ -181,10 +181,8 @@ export interface JSOutputStatus {
 }
 /** The JS file can only be in one of these states */
 export enum JSOutputState {
-    /** As it is from the TypeScript language service. Either emit is blocked or compiler options are noEmit */
-    EmitSkipped = 1,
-    /** If emit not skipped perhaps there isn't a JS file emit for this (e.g .d.ts files) */
-    NoJSFile,
+    /** If emit skipped (Either emit is blocked or compiler options are noEmit) or perhaps there isn't a JS file emit for this (e.g .d.ts files) */
+    NoJSFile = 1,
     /** If JS file then its one of these */
     JSUpToDate,
     JSOutOfDate,

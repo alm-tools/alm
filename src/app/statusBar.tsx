@@ -166,8 +166,7 @@ export class StatusBar extends BaseComponent<Props, State>{
             && <span style={styles.statusBarSection}>
                 <span style={csx.extend(ouputStatusStyle)}>
                 {
-                    fileOutputState === types.JSOutputState.EmitSkipped ? null
-                    : fileOutputState === types.JSOutputState.NoJSFile ? null
+                    fileOutputState === types.JSOutputState.NoJSFile ? null
                     : fileOutputState === types.JSOutputState.JSOutOfDate ? <span style={csx.extend(styles.statusBarError,{transition: 'color .5s', cursor:'pointer'})} onClick={openOutputJSFile}>❌ JS Outdated</span>
                     : <span style={csx.extend(styles.statusBarSuccess,{transition: 'color .5s', cursor:'pointer'})} onClick={openOutputJSFile}>✓ JS Current</span>
                 }

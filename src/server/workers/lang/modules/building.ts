@@ -36,8 +36,24 @@ export function diagnosticToCodeError(diagnostic: ts.Diagnostic): types.CodeErro
  * Raw signifies the fact that the output is not being written anywhere
  * WARNING: only call if proj contains the filePath
  */
-export function getRawOutput(proj: project.Project, filePath: string): ts.EmitOutput {
+export function getRawJsOutput(proj: project.Project, filePath: string): {
+    filePath: string,
+    contents: string,
+} | undefined {
     let services = proj.languageService;
+
     let output: ts.EmitOutput = services.getEmitOutput(filePath);
-    return output;
+
+    /** We only care about the js output */
+    const jsFile = output.outputFiles.filter(x => x.name.endsWith(".js"))[0];
+    if (!jsFile) return;
+
+    /**
+     * Simple transpile based js output because getEmitOuput's js is a bit broken at the moment
+     */
+    const rawTextOutput = ts.transpile(services.getNonBoundSourceFile(filePath).getFullText(), proj.configFile.project.compilerOptions);
+    return {
+        filePath: jsFile.name,
+        contents: rawTextOutput
+    }
 }

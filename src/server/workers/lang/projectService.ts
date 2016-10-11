@@ -458,7 +458,7 @@ export function getAST(query: Types.GetASTQuery): Promise<Types.GetASTResponse> 
 /**
  * JS Ouput
  */
-import {getRawOutput} from "./modules/building";
+import {getRawJsOutput} from "./modules/building";
 export function getJSOutputStatus(query: Types.FilePathQuery, autoEmit = true): types.GetJSOutputStatusResponse {
     const project = activeProject.GetProject.ifCurrent(query.filePath);
     if (!project) {
@@ -466,8 +466,7 @@ export function getJSOutputStatus(query: Types.FilePathQuery, autoEmit = true): 
             inActiveProject: false
         }
     }
-    const output: ts.EmitOutput = getRawOutput(project, query.filePath);
-    const jsFile = output.outputFiles.filter(x => x.name.endsWith(".js"))[0];
+    const jsFile = getRawJsOutput(project, query.filePath);
 
     /**
      * We just read/write from disk for now
@@ -484,11 +483,9 @@ export function getJSOutputStatus(query: Types.FilePathQuery, autoEmit = true): 
         || !jsFile;
 
     let state
-        = output.emitSkipped
-            ? types.JSOutputState.EmitSkipped
-            : noJsFile
-                ? types.JSOutputState.NoJSFile
-                : getContents(jsFile.name) === jsFile.text
+        = !jsFile
+            ? types.JSOutputState.NoJSFile
+                : getContents(jsFile.filePath) === jsFile.contents
                     ? types.JSOutputState.JSUpToDate
                     : types.JSOutputState.JSOutOfDate;
 
@@ -496,14 +493,14 @@ export function getJSOutputStatus(query: Types.FilePathQuery, autoEmit = true): 
      * If the state is JSOutOfDate we can easily fix that to bring it up to date for `compileOnSave`
      */
     if (autoEmit && state === types.JSOutputState.JSOutOfDate && project.configFile.project.compileOnSave !== false) {
-        setContents(jsFile.name, jsFile.text);
+        setContents(jsFile.filePath, jsFile.contents);
         state = types.JSOutputState.JSUpToDate;
     }
 
     const outputStatus: types.JSOutputStatus = {
         inputFilePath: query.filePath,
         state,
-        outputFilePath: jsFile && jsFile.name
+        outputFilePath: jsFile && jsFile.filePath
     };
 
     return {
