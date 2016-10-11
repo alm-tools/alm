@@ -190,34 +190,42 @@ namespace LinterImplementation {
 
         const time = timer();
         /** create the Linter for each file and get its output */
-        utils.cancellableForEach({
-            cancellationToken,
-            items: sourceFiles,
-            cb: (sf => {
-                const filePath = sf.fileName;
-                const contents = sf.getFullText();
+        utils
+            .cancellableForEach({
+                cancellationToken,
+                items: sourceFiles,
+                cb: (sf => {
+                    const filePath = sf.fileName;
+                    const contents = sf.getFullText();
 
 
-                const linter = new Linter(filePath, contents, linterConfig.linterConfig, lintprogram);
-                const lintResult = linter.lint();
+                    const linter = new Linter(filePath, contents, linterConfig.linterConfig, lintprogram);
+                    const lintResult = linter.lint();
 
-                filePaths.push(filePath);
-                if (lintResult.failureCount) {
-                    // console.log(linterMessagePrefix, filePath, lintResult.failureCount); // DEBUG
-                    errors = errors.concat(
-                        lintResult.failures.map(
-                            le => lintErrorToCodeError(le, contents)
-                        )
-                    );
-                }
+                    filePaths.push(filePath);
+                    if (lintResult.failureCount) {
+                        // console.log(linterMessagePrefix, filePath, lintResult.failureCount); // DEBUG
+                        errors = errors.concat(
+                            lintResult.failures.map(
+                                le => lintErrorToCodeError(le, contents)
+                            )
+                        );
+                    }
+                })
             })
-        }).then((res) => {
-            /** Push to errorCache */
-            errorCache.setErrorsByFilePaths(filePaths, errors);
-            console.log(linterMessagePrefix, 'Lint complete', time.seconds);
-        }).catch((e) => {
-            console.log(linterMessagePrefix, 'Lint cancelled');
-        });
+            .then((res) => {
+                /** Push to errorCache */
+                errorCache.setErrorsByFilePaths(filePaths, errors);
+                console.log(linterMessagePrefix, 'Lint complete', time.seconds);
+            })
+            .catch((e) => {
+                if (e === utils.cancelled) {
+                    console.log(linterMessagePrefix, 'Lint cancelled');
+                }
+                else {
+                    console.log(linterMessagePrefix, 'Linter crashed', e);
+                }
+            });
     }
 
     export function fileSaved({filePath}:{filePath:string}) {
