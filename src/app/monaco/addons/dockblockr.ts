@@ -42,7 +42,7 @@ export function setup(editor: Editor): { dispose: () => void } {
                     const codeSnippet = new monaco.CodeSnippet(snippets[snippetKey]);
                     const overwriteBefore = snippetKey.length;
                     const overwriteAfter = 0;
-                    monaco.getSnippetController(editor).run(codeSnippet, overwriteBefore, overwriteAfter);
+                    monaco.SnippetController.get(editor).run(codeSnippet, overwriteBefore, overwriteAfter);
 
                     // Don't run any other snippets :)
                     return;
