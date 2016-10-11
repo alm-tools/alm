@@ -51,7 +51,11 @@ export function getRawJsOutput(proj: project.Project, filePath: string): {
     /**
      * Simple transpile based js output because getEmitOuput's js is a bit broken at the moment
      */
-    const rawTextOutput = ts.transpile(services.getNonBoundSourceFile(filePath).getFullText(), proj.configFile.project.compilerOptions);
+    const rawTextOutput = ts.transpile(
+        services.getNonBoundSourceFile(filePath).getFullText(),
+        proj.configFile.project.compilerOptions,
+        filePath
+    );
     return {
         filePath: jsFile.name,
         contents: rawTextOutput
