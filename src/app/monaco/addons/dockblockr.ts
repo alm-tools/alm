@@ -39,10 +39,10 @@ export function setup(editor: Editor): { dispose: () => void } {
                     e.stopPropagation();
 
                     /** Insert the snippet */
-                    const codeSnippet = new monaco.CodeSnippet(snippets[snippetKey]);
+                    const codeSnippet = monaco.CodeSnippet.fromInternal(snippets[snippetKey]);
                     const overwriteBefore = snippetKey.length;
                     const overwriteAfter = 0;
-                    monaco.SnippetController.get(editor).run(codeSnippet, overwriteBefore, overwriteAfter);
+                    monaco.SnippetController.get(editor).run(codeSnippet, overwriteBefore, overwriteAfter, true);
 
                     // Don't run any other snippets :)
                     return;
