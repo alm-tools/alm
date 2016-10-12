@@ -13,4 +13,6 @@ Some functions
 ## Completions Sorting 
 In `Suggest.ts` : determines the overall sorting of completion items : https://github.com/Microsoft/vscode/blob/1889442ff090ef8170814a98698506300962dbba/src/vs/editor/contrib/suggest/common/suggest.ts#L142
 
-Then in `completionModel.ts` `_createCachedState` : https://github.com/Microsoft/vscode/blob/1889442ff090ef8170814a98698506300962dbba/src/vs/editor/contrib/suggest/common/completionModel.ts#L110 determines the ordered `filteredItems`.  
+Then in `completionModel.ts` `_createCachedState` : https://github.com/Microsoft/vscode/blob/1889442ff090ef8170814a98698506300962dbba/src/vs/editor/contrib/suggest/common/completionModel.ts#L110 filters these into `filteredItems`
+
+`_createCachedState` also stores the `_topScoreIdx` and that is used to set the focus as the completion model comes up.
