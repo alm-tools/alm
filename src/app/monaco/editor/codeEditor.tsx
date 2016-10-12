@@ -83,7 +83,9 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 			readOnly: false, // Never readonly ... even for readonly editors. Otherwise monaco doesn't highlight active line :)
 			scrollBeyondLastLine: false, // Don't scroll by mouse where you can't scroll by keyboard :)
 			formatOnType: true,
-			contextmenu: false, // Disable context menu till we have it actually useful
+            contextmenu: false, // Disable context menu till we have it actually useful
+            /** Move snippet suggestions to the bottom */
+            snippetSuggestions: 'bottom',
 			/** Since everything else in our UI is Square */
 			roundedSelection: false,
             /** For git status, find results, errors */
