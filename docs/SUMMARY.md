@@ -37,6 +37,7 @@
   * [File Listing](/contributing/file-listing.md)
   * [Syntax Highlighting](/contributing/syntax.md)
   * [Document Syncing](/contributing/document.md)
+  * [Monaco](/contributing/monaco.md)
   * [Deployment](/contributing/deployment.md)
   * [Redux](/contributing/redux.md)
   * [Errors](/contributing/errors.md)
