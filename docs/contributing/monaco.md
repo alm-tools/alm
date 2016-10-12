@@ -9,3 +9,8 @@ Some functions
 (editor:Editor) => editor['cursor'].trigger('jumpy','cursorRight'),
 (editor:Editor) => editor['cursor'].trigger('jumpy','cursorUp'),
 ```
+
+## Completions Sorting 
+In `Suggest.ts` : determines the overall sorting of completion items : https://github.com/Microsoft/vscode/blob/1889442ff090ef8170814a98698506300962dbba/src/vs/editor/contrib/suggest/common/suggest.ts#L142
+
+Then in `completionModel.ts` `_createCachedState` : https://github.com/Microsoft/vscode/blob/1889442ff090ef8170814a98698506300962dbba/src/vs/editor/contrib/suggest/common/completionModel.ts#L110 determines the ordered `filteredItems`.  
