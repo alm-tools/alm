@@ -145,23 +145,26 @@ new GetPort().startPortSearch(clOptions.port, (port) => {
  */
 import * as serverState from "./serverState";
 serverState.addRoute(app);
-const pkg = require('../package.json');
-const version = pkg.version;
-console.log(`Version: ${version}`)
-serverState.setServerState({ version });
-const notifier = require('update-notifier')({
-  pkg,
-  // updateCheckInterval: 0 // DEBUG
-});
-notifier.notify({
-    defer: false
-});
-if (notifier.update) {
-    const update: {
-        latest: string;
-        current: string;
-        type: 'latest' | 'major' | 'minor' | 'patch' | 'prerelease' | 'build';
-        name: string;
-    } = notifier.update;
-    serverState.setServerState({ update, version });
+/** Does not exist when we run from `./node_modules/alm_src` */
+if (fs.existsSync(__dirname + '/../package.json')) {
+    const pkg = require('../package.json');
+    const version = pkg.version;
+    console.log(`Version: ${version}`)
+    serverState.setServerState({ version });
+    const notifier = require('update-notifier')({
+      pkg,
+      // updateCheckInterval: 0 // DEBUG
+    });
+    notifier.notify({
+        defer: false
+    });
+    if (notifier.update) {
+        const update: {
+            latest: string;
+            current: string;
+            type: 'latest' | 'major' | 'minor' | 'patch' | 'prerelease' | 'build';
+            name: string;
+        } = notifier.update;
+        serverState.setServerState({ update, version });
+    }
 }

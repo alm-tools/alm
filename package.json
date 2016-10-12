@@ -8,7 +8,8 @@
   },
   "scripts": {
     "start": "nodemon",
-    "alm": "alm -o",
+    "alm": "node ./node_modules/alm_src/server -o",
+    "ualm": "rm -rf ./node_modules/alm_src && cp -rf ./src ./node_modules/alm_src",
     "test": "echo \"Testing is just build at the moment, run from prepublish\"",
     "clean": "rm ./src/public/build/bundle.js",
     "prepublish": "bash ./scripts/prepublish.sh",
@@ -73,7 +74,6 @@
     "update-notifier": "1.0.2"
   },
   "devDependencies": {
-    "alm": "latest",
     "clipboard": "^1.4.2",
     "css-loader": "^0.24.0",
     "d3": "^3.5.12",

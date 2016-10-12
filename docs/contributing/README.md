@@ -31,7 +31,10 @@ Once you have `npm start` running, if you edit any front-end ts file our Webpack
 
 # IDE
 
-We use alm to develop alm. Run `npm run alm` to launch a last published version of alm to develop alm.
+We use alm to develop alm.
+
+* ONCE (or whenever you want an update): Run `npm run ualm` to copy the current alm copy to node_modules
+* Run `npm run alm` to launch alm to develop alm.
 
 You are free to use some other IDE if you want. You can run `npm run tscw` to run the TypeScript in the background in watch mode and use your favorite IDE in the foreground.
 
