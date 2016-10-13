@@ -31,7 +31,10 @@ let gitCmdBetter = (...args: string[]): Promise<string> => {
         child.stderr.on('data', (data) => {
             /**
              * NOTE: reason for not using reject:
-             * `git push origin head` sends data to stderr! WTF.
+             * `git push origin head`
+             * sends data to stderr! WTF.
+             * tells you `origin` -> remote address e.g. (To https://github.com/alm-tools/alm.git)
+             * tells you `head` -> branch details e.g (0cb6cae..2fe075b  HEAD -> bas/gitAddCommitAndPush)
              */
             output.push(data.toString());
         });
