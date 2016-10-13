@@ -143,6 +143,6 @@ export const gitAddAllCommitAndPush = async (query: types.GitAddAllCommitAndPush
         return {};
     }
     catch (ex) {
-        return { error: ex.message };
+        return { error: ex.message.toString() };
     }
 }
