@@ -29,7 +29,8 @@ let gitCmdBetter = (...args: string[]): Promise<string> => {
         });
 
         child.stderr.on('data', (data) => {
-            reject({message:data});
+            console.log("on Error channel:", data.toString());
+            reject({message:data.toString()});
         });
 
         child.on('close', (code) => {
@@ -143,6 +144,6 @@ export const gitAddAllCommitAndPush = async (query: types.GitAddAllCommitAndPush
         return {};
     }
     catch (ex) {
-        return { error: ex.message.toString() };
+        return { error: ex.message };
     }
 }
