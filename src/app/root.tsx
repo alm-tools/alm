@@ -31,12 +31,14 @@ import * as gotoHistory from "./gotoHistory";
 import * as clipboardRing from "./clipboardRing";
 import * as configCreator from "./configCreator/configCreator";
 import * as settings from "./settings/settings";
-import * as openFileFromServerDisk from "./openFileFromServerDisk/openFileFromServerDisk";
+import * as openFileFromServerDisk from "./commands/general/openFileFromServerDisk";
+import * as gitAddAllCommitAndPush from "./commands/general/gitAddAllCommitAndPush";
 var ensureImport =
     gotoHistory
     || configCreator
     || settings
     || openFileFromServerDisk
+    || gitAddAllCommitAndPush
     || clipboardRing;
 
 export interface State {

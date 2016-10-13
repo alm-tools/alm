@@ -1,6 +1,6 @@
-import * as commands from "../commands/commands";
-import * as ui from "../ui";
-import * as selectListView from "../selectListView";
+import * as commands from "../commands";
+import * as ui from "../../ui";
+import * as selectListView from "../../selectListView";
 
 commands.openFileFromDisk.on(() => {
     ui.comingSoon("Open a file from the server disk");
