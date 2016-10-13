@@ -104,9 +104,12 @@ export const gitAddAllCommitAndPush = async (query: types.GitAddAllCommitAndPush
     try {
         /** Why -A : http://stackoverflow.com/a/26039014/390330http://stackoverflow.com/a/26039014/390330 */
         const addResult = await gitCmd('add', '-A');
+        console.log({addResult});
         const commitResult = await gitCmd('commit', '-m', query.message);
+        console.log({commitResult});
         /** Push current branch : http://stackoverflow.com/a/20922141/390330 */
         const pushResult = await gitCmd('push', 'origin', 'HEAD');
+        console.log({pushResult});
         return {};
     }
     catch (ex) {
