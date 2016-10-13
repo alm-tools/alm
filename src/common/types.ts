@@ -338,9 +338,15 @@ export type GitDiff = {
 export type GitAddAllCommitAndPushQuery = {
     message: string;
 }
-export type GitAddAllCommitAndPushResult = {
-    error?: string;
-}
+export type GitAddAllCommitAndPushResult
+    = {
+        type: 'error';
+        error: string;
+    }
+    | {
+        type: 'success'
+        log: string;
+    };
 
 /**
  * Errors

@@ -5,6 +5,7 @@ import * as cp from "child_process";
 import * as wd from "../../disk/workingDir";
 import * as fmc from "../../disk/fileModelCache";
 import * as types from "../../../common/types";
+import {stringify} from '../../../common/json';
 
 /** Main utility function to execute a command */
 let gitCmd = (...args: string[]): Promise<string> => {
@@ -138,18 +139,18 @@ export const gitAddAllCommitAndPush = async (query: types.GitAddAllCommitAndPush
          * error: pathspec \'when\' did not match any file(s) known to git.\nerror: pathspec \'done\' did not match any file(s) known to git.\n
          */
         if (commitResult.startsWith('error')) {
-            return { error: commitResult };
+            return { type: 'error', error: commitResult };
         }
 
         /** Push current branch : http://stackoverflow.com/a/20922141/390330 */
         const pushResult = await gitCmdBetter('push', 'origin', 'HEAD');
 
         /** We need to actually parse this to make sure nothing went bad. Just being hopeful for now */
-        console.log({ addResult, commitResult, pushResult }); // DEBUG
+        const log = stringify({ addResult, commitResult, pushResult });
 
-        return {};
+        return { type: 'success', log };
     }
     catch (ex) {
-        return { error: ex.message };
+        return { type: 'error', error: ex.message };
     }
 }

@@ -11,11 +11,12 @@ commands.gitAddAllCommitAndPush.on(() => {
             server
                 .gitAddAllCommitAndPush({ message })
                 .then(res => {
-                    if (res.error) {
+                    if (res.type === 'error') {
                         ui.notifyWarningNormalDisappear(`Git Failed:${res.error}`);
                     }
                     else {
                         ui.notifySuccessNormalDisappear("Git: Commands ran to completion successfully.");
+                        ui.notifySuccessNormalDisappear(res.log);
                     }
                 });
         },
