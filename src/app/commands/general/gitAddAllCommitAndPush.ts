@@ -7,11 +7,17 @@ commands.gitAddAllCommitAndPush.on(() => {
     inputDialog.open({
         header: 'Git: Add all the files, commit with the following message, and push',
         onOk: (message) => {
-            server.gitAddAllCommitAndPush({ message }).then(res => {
-                if (res.error) {
-                    ui.notifyWarningNormalDisappear(`Failed:${res.error}`);
-                }
-            });
+            ui.notifyInfoNormalDisappear("Sending commands");
+            server
+                .gitAddAllCommitAndPush({ message })
+                .then(res => {
+                    if (res.error) {
+                        ui.notifyWarningNormalDisappear(`Failed:${res.error}`);
+                    }
+                    else {
+                        ui.notifyInfoNormalDisappear("Commands ran to completion successfully.");
+                    }
+                });
         },
         onEsc: () => null,
     })

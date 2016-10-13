@@ -104,12 +104,22 @@ export const gitAddAllCommitAndPush = async (query: types.GitAddAllCommitAndPush
     try {
         /** Why -A : http://stackoverflow.com/a/26039014/390330http://stackoverflow.com/a/26039014/390330 */
         const addResult = await gitCmd('add', '-A');
-        console.log({addResult});
         const commitResult = await gitCmd('commit', '-m', query.message);
-        console.log({commitResult});
+
+        /**
+         * Sample:
+         * error: pathspec \'when\' did not match any file(s) known to git.\nerror: pathspec \'done\' did not match any file(s) known to git.\n
+         */
+        if (commitResult.startsWith('error')) {
+            return { error: commitResult };
+        }
+
         /** Push current branch : http://stackoverflow.com/a/20922141/390330 */
         const pushResult = await gitCmd('push', 'origin', 'HEAD');
-        console.log({pushResult});
+
+        /** We need to actually parse this to make sure nothing went bad. Just being hopeful for now */
+        console.log({ addResult, commitResult, pushResult }); // DEBUG
+
         return {};
     }
     catch (ex) {
