@@ -29,8 +29,11 @@ let gitCmdBetter = (...args: string[]): Promise<string> => {
         });
 
         child.stderr.on('data', (data) => {
-            console.log("on Error channel:", data.toString());
-            reject({message:data.toString()});
+            /**
+             * NOTE: reason for not using reject:
+             * `git push origin head` sends data to stderr! WTF.
+             */
+            output.push(data.toString());
         });
 
         child.on('close', (code) => {
@@ -136,10 +139,10 @@ export const gitAddAllCommitAndPush = async (query: types.GitAddAllCommitAndPush
         }
 
         /** Push current branch : http://stackoverflow.com/a/20922141/390330 */
-        // const pushResult = await gitCmdBetter('push', 'origin', 'HEAD');
+        const pushResult = await gitCmdBetter('push', 'origin', 'HEAD');
 
         /** We need to actually parse this to make sure nothing went bad. Just being hopeful for now */
-        console.log({ addResult, commitResult }); // DEBUG
+        console.log({ addResult, commitResult, pushResult }); // DEBUG
 
         return {};
     }
