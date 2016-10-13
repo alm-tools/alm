@@ -136,10 +136,10 @@ export const gitAddAllCommitAndPush = async (query: types.GitAddAllCommitAndPush
         }
 
         /** Push current branch : http://stackoverflow.com/a/20922141/390330 */
-        const pushResult = await gitCmdBetter('push', 'origin', 'HEAD');
+        // const pushResult = await gitCmdBetter('push', 'origin', 'HEAD');
 
         /** We need to actually parse this to make sure nothing went bad. Just being hopeful for now */
-        console.log({ addResult, commitResult, pushResult }); // DEBUG
+        console.log({ addResult, commitResult }); // DEBUG
 
         return {};
     }
