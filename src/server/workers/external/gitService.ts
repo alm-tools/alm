@@ -18,6 +18,26 @@ let gitCmd = (...args: string[]): Promise<string> => {
     });
 }
 
+/** Main utility function to execute a command */
+let gitCmdBetter = (...args: string[]): Promise<string> => {
+    return new Promise<string>((resolve, reject) => {
+        const child = cp.spawn('git', args, { cwd: wd.getProjectRoot() });
+
+        const output: string[] = [];
+        child.stdout.on('data', (data) => {
+            output.push(data.toString());
+        });
+
+        child.stderr.on('data', (data) => {
+            reject({message:data});
+        });
+
+        child.on('close', (code) => {
+            resolve(output.join(''));
+        });
+    });
+}
+
 export function gitStatus(args: {}): Promise<string> {
     return gitCmd('status');
 }
@@ -103,8 +123,8 @@ export function gitDiff(args: { filePath: string }): Promise<types.GitDiff> {
 export const gitAddAllCommitAndPush = async (query: types.GitAddAllCommitAndPushQuery): Promise<types.GitAddAllCommitAndPushResult> => {
     try {
         /** Why -A : http://stackoverflow.com/a/26039014/390330http://stackoverflow.com/a/26039014/390330 */
-        const addResult = await gitCmd('add', '-A');
-        const commitResult = await gitCmd('commit', '-m', query.message);
+        const addResult = await gitCmdBetter('add', '-A');
+        const commitResult = await gitCmdBetter('commit', '--message', query.message);
 
         /**
          * Sample:
@@ -115,7 +135,7 @@ export const gitAddAllCommitAndPush = async (query: types.GitAddAllCommitAndPush
         }
 
         /** Push current branch : http://stackoverflow.com/a/20922141/390330 */
-        const pushResult = await gitCmd('push', 'origin', 'HEAD');
+        const pushResult = await gitCmdBetter('push', 'origin', 'HEAD');
 
         /** We need to actually parse this to make sure nothing went bad. Just being hopeful for now */
         console.log({ addResult, commitResult, pushResult }); // DEBUG
