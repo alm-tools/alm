@@ -99,3 +99,17 @@ export function gitDiff(args: { filePath: string }): Promise<types.GitDiff> {
         }
     });
 }
+
+export const gitAddAllCommitAndPush = async (query: types.GitAddAllCommitAndPushQuery): Promise<types.GitAddAllCommitAndPushResult> => {
+    try {
+        /** Why -A : http://stackoverflow.com/a/26039014/390330http://stackoverflow.com/a/26039014/390330 */
+        const addResult = await gitCmd('add', '-A');
+        const commitResult = await gitCmd('commit', '-m', query.message);
+        /** Push current branch : http://stackoverflow.com/a/20922141/390330 */
+        const pushResult = await gitCmd('push', 'origin', 'HEAD');
+        return {};
+    }
+    catch (ex) {
+        return { error: ex.message };
+    }
+}
