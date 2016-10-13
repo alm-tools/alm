@@ -335,6 +335,18 @@ export type GitDiff = {
     removed: number[];
     modified: GitDiffSpan[];
 }
+export type GitAddAllCommitAndPushQuery = {
+    message: string;
+}
+export type GitAddAllCommitAndPushResult
+    = {
+        type: 'error';
+        error: string;
+    }
+    | {
+        type: 'success'
+        log: string;
+    };
 
 /**
  * Errors

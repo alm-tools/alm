@@ -453,6 +453,14 @@ export const openSettingsFile = new UICommand({
 })
 
 /**
+ * Git
+ */
+export const gitAddAllCommitAndPush = new UICommand({
+    description: 'Git: Add all, Commit and Push',
+    context: CommandContext.Global
+})
+
+/**
  * Registration
  */
 export function register() {

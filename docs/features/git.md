@@ -17,3 +17,9 @@ New sections as green, modifications as yellow, and deletions as red dots.
 We also show these in the scroll bar so you know exactly what you have touched in the file.
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/gitStatusScrollbar.png)
+
+## Git add all, commit and push
+
+This is what you mostly do all the time. So a handy dandy command exists for it.
+
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/git/gitAddAllCommitAndPush.gif)
