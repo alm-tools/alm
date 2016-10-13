@@ -15,8 +15,8 @@ commands.gitAddAllCommitAndPush.on(() => {
                         ui.notifyWarningNormalDisappear(`Git Failed:${res.error}`);
                     }
                     else {
-                        ui.notifySuccessNormalDisappear("Git: Commands ran to completion successfully.");
                         ui.notifySuccessNormalDisappear(res.log);
+                        ui.notifySuccessNormalDisappear("Git: Commands ran to completion successfully.");
                     }
                 });
         },
