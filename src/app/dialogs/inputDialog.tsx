@@ -58,8 +58,11 @@ export class InputDialog extends BaseComponent<Props, State>{
         this.onOk = options.onOk;
         this.onEsc = options.onEsc;
 
-        this.refs.mainInput.focus();
-        this.refs.mainInput.value = options.filterValue || '';
+        /** When we come here from another modal the input takes a while to load */
+        setTimeout(() => {
+            this.refs.mainInput.focus();
+            this.refs.mainInput.value = options.filterValue || '';
+        });
     }
 
     refs: {
