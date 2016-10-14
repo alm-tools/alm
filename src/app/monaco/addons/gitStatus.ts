@@ -10,6 +10,7 @@
 // };
 
 import * as typestyle from "typestyle";
+import * as commands from '../../commands/commands';
 /**
  * Some styles
  */
@@ -146,5 +147,6 @@ export function setup(editor: Editor): { dispose: () => void } {
     const disposible = new CompositeDisposible();
     disposible.add(editor.onDidFocusEditor(handleFocus));
     disposible.add(editor.onDidChangeModelContent(refreshGitStatusDebounced));
+    disposible.add(commands.gitStatusNeedsRefresh.on(refreshGitStatus));
     return disposible;
 }

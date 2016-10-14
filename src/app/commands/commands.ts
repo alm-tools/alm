@@ -459,6 +459,8 @@ export const gitAddAllCommitAndPush = new UICommand({
     description: 'Git: Add all, Commit and Push',
     context: CommandContext.Global
 })
+/** Whenever status might be invalid */
+export const gitStatusNeedsRefresh = new events.TypedEvent<{}>();
 
 /**
  * Registration

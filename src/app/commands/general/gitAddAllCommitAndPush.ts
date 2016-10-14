@@ -18,6 +18,7 @@ commands.gitAddAllCommitAndPush.on(() => {
                         ui.notifySuccessNormalDisappear(res.log);
                         ui.notifySuccessNormalDisappear("Git: Commands ran to completion successfully.");
                     }
+                    commands.gitStatusNeedsRefresh.emit({});
                 });
         },
         onEsc: () => null,
