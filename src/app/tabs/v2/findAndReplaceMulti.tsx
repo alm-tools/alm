@@ -19,7 +19,7 @@ import * as pure from "../../../common/pure";
 import * as buttons from "../../components/buttons";
 import * as types from "../../../common/types";
 import * as gls from "../../base/gls";
-import * as fstyle from "../../base/fstyle";
+import * as typestyle from "typestyle";
 
 type NodeDisplay = Types.NodeDisplay;
 let EOL = '\n';
@@ -31,10 +31,10 @@ import {inputCodeStyle, searchOptionsLabelStyle}
 from "../../findAndReplace";
 
 let {inputBlackStyleBase} = styles.Input;
-const inputBlackClassName = fstyle.style(inputBlackStyleBase);
+const inputBlackClassName = typestyle.style(inputBlackStyleBase);
 
 namespace ResultsStyles {
-    export const rootClassName = fstyle.style(
+    export const rootClassName = typestyle.style(
         csx.flex,
         csx.scroll,
         styles.padded1,
@@ -70,7 +70,7 @@ namespace ResultsStyles {
         backgroundColor: styles.selectedBackgroundColor
     };
 
-    export const noFocusClassName = fstyle.style(
+    export const noFocusClassName = typestyle.style(
         {
             '&:focus': {
                 outline: 'none'

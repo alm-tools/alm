@@ -21,7 +21,7 @@ import * as clipboard from "./components/clipboard";
 import * as pure from "../common/pure";
 import {tabState} from "./tabs/v2/appTabsContainer";
 import * as settings from "./state/settings";
-import * as fstyle from "./base/fstyle";
+import * as typestyle from "typestyle";
 type TruthTable = utils.TruthTable;
 
 
@@ -77,7 +77,7 @@ let treeListStyle = {
     padding:'3px',
 }
 
-let treeScrollClassName = fstyle.style({
+let treeScrollClassName = typestyle.style({
     border: '1px solid grey',
     '&:focus': {
         outline: 'none',
@@ -85,7 +85,7 @@ let treeScrollClassName = fstyle.style({
     }
 })
 
-let treeItemClassName = fstyle.style({
+let treeItemClassName = typestyle.style({
     whiteSpace: 'nowrap',
     cursor:'pointer',
     padding: '3px',

@@ -2,7 +2,7 @@ import * as csx from "../base/csx";
 import {textColor} from "../styles/styles";
 import * as React from "react";
 import * as ui from "../ui";
-import * as fstyle from "../base/fstyle";
+import * as typestyle from "typestyle";
 
 const activeStyle =  {
     backgroundImage: 'linear-gradient(#353434, #7B7B7B)',
@@ -11,7 +11,7 @@ const activeStyle =  {
 const disabledStyle =  {
     opacity: '.5',
 }
-const buttonBlackClassName = fstyle.style(
+const buttonBlackClassName = typestyle.style(
     csx.flexRoot,
     {
         fontFamily:'sans-serif',

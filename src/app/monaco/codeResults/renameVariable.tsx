@@ -16,9 +16,9 @@ import {Robocop} from "../../components/robocop";
 import * as docCache from "../model/docCache";
 import {CodeEditor} from "../editor/codeEditor";
 import {RefactoringsByFilePath, Refactoring} from "../../../common/types";
-import * as fstyle from "../../base/fstyle";
+import * as typestyle from "typestyle";
 
-const inputClassName = fstyle.style(styles.modal.inputStyleBase);
+const inputClassName = typestyle.style(styles.modal.inputStyleBase);
 
 export interface Props {
     info: Types.GetRenameInfoResponse;

@@ -9,7 +9,7 @@
 //     }
 // };
 
-import * as fstyle from "../../base/fstyle";
+import * as typestyle from "typestyle";
 /**
  * Some styles
  */
@@ -18,7 +18,7 @@ import * as fstyle from "../../base/fstyle";
 const colorInOverView = 'rgba(0, 122, 204, 0.6)';
 
 const addedColor = '#008A00';
-const addedClassName = fstyle.style({
+const addedClassName = typestyle.style({
     borderLeft: `3px solid ${addedColor}`,
     marginLeft: `5px`
 });
@@ -32,7 +32,7 @@ const addedDecorationOptions: monaco.editor.IModelDecorationOptions = {
     }
 };
 const modifiedColor = 'yellow';
-const modifiedClassName = fstyle.style({
+const modifiedClassName = typestyle.style({
     borderLeft: `3px solid ${modifiedColor}`,
     marginLeft: `5px`
 });
@@ -46,7 +46,7 @@ const modifiedDecorationOptions: monaco.editor.IModelDecorationOptions = {
     }
 };
 const removedColor = '#00ccff';
-const removedClassName = fstyle.style({
+const removedClassName = typestyle.style({
     borderLeft: `3px solid ${removedColor}`,
     marginLeft: `5px`
 });

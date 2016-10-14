@@ -15,7 +15,7 @@ import * as onresize from "onresize";
 import {Clipboard} from "../../components/clipboard";
 import * as typeIcon from "../../components/typeIcon";
 import * as gls from "../../base/gls";
-import * as fstyle from "../../base/fstyle";
+import * as typestyle from "typestyle";
 import {MarkDown} from "../../markdown/markdown";
 
 const {blackHighlightColor} = styles;
@@ -29,7 +29,7 @@ export interface State {
 }
 
 export namespace UmlViewStyles {
-    export const classNameHeaderSection = fstyle.style({
+    export const classNameHeaderSection = typestyle.style({
         border: '1px solid grey',
         padding: '5px',
 
@@ -40,7 +40,7 @@ export namespace UmlViewStyles {
         }
     });
 
-    export const classMemberSection = fstyle.style({
+    export const classMemberSection = typestyle.style({
         // Common with header
         border: '1px solid grey',
         padding: '5px',

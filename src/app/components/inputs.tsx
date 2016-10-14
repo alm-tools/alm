@@ -3,9 +3,9 @@ import {textColor} from "../styles/styles";
 import * as React from "react";
 import * as ui from "../ui";
 import * as styles from "../styles/styles";
-import * as fstyle from "../base/fstyle";
+import * as typestyle from "typestyle";
 
-const inputBlackClassName = fstyle.style(styles.modal.inputStyleBase, {
+const inputBlackClassName = typestyle.style(styles.modal.inputStyleBase, {
     fontSize: '.7rem',
     lineHeight: '.7rem',
     fontFamily: 'sans-serif',

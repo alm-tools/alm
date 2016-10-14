@@ -11,11 +11,11 @@ import * as styles from "../../styles/styles";
 import * as onresize from "onresize";
 import {ErrorMessage} from "../errorMessage";
 import {Clipboard} from "../../components/clipboard";
-import * as fstyle from "../../base/fstyle";
+import * as typestyle from "typestyle";
 
 import {Types} from "../../../socket/socketContract";
 
-export const noFocusOutlineClassName = fstyle.style(styles.noFocusOutlineBase);
+export const noFocusOutlineClassName = typestyle.style(styles.noFocusOutlineBase);
 
 type NodeDisplay = Types.NodeDisplay;
 let EOL = '\n';

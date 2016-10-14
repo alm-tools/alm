@@ -11,11 +11,11 @@ import {connect} from "react-redux";
 import {Icon} from "./components/icon";
 import * as tabRegistry from "./tabs/v2/tabRegistry";
 import {tabState,tabStateChanged} from "./tabs/v2/appTabsContainer";
-import * as fstyle from "./base/fstyle";
+import * as typestyle from "typestyle";
 import {extend} from "./base/csx";
 
 let {inputBlackStyleBase} = styles.Input;
-const inputBlackClassName = fstyle.style(inputBlackStyleBase);
+const inputBlackClassName = typestyle.style(inputBlackStyleBase);
 
 export let inputCodeStyle = {
     fontFamily: 'monospace',

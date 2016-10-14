@@ -15,7 +15,7 @@ import * as onresize from "onresize";
 import {Clipboard} from "../../components/clipboard";
 import * as typeIcon from "../../components/typeIcon";
 import * as gls from "../../base/gls";
-import * as fstyle from "../../base/fstyle";
+import * as typestyle from "typestyle";
 import {MarkDown} from "../../markdown/markdown";
 
 import {blackHighlightColor} from "../../styles/styles";
@@ -32,14 +32,14 @@ export interface State {
 }
 
 export namespace DocumentationViewStyles {
-    export const header = fstyle.style({
+    export const header = typestyle.style({
         cursor: 'pointer',
         '&:hover': {
             textDecoration: 'underline'
         }
     });
 
-    export const folderName = fstyle.style({
+    export const folderName = typestyle.style({
         padding: "2px",
         fontSize: '.5em',
         '-webkitUserSelect': 'none',

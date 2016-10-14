@@ -15,7 +15,7 @@ import * as onresize from "onresize";
 import {Clipboard} from "../../components/clipboard";
 import * as typeIcon from "../../components/typeIcon";
 import * as gls from "../../base/gls";
-import * as fstyle from "../../base/fstyle";
+import * as typestyle from "typestyle";
 import {MarkDown} from "../../markdown/markdown";
 import {testResultsCache} from "../../clientTestResultsCache";
 import {Icon} from "../../components/icon";
@@ -33,14 +33,14 @@ export interface State {
 }
 
 export namespace TestedViewStyles {
-    export const headerClassName = fstyle.style({
+    export const headerClassName = typestyle.style({
         fontWeight: 'bold',
         cursor: 'pointer',
         '&:hover': {
             textDecoration: 'underline'
         }
     });
-    export const clickable = fstyle.style({
+    export const clickable = typestyle.style({
         cursor: 'pointer',
         '&:hover': {
             textDecoration: 'underline'

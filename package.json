@@ -1,6 +1,6 @@
 {
   "name": "alm",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "description": "The best IDE for TypeScript",
   "main": "src/server.js",
   "bin": {
@@ -79,7 +79,6 @@
     "d3": "^3.5.12",
     "file-loader": "^0.8.4",
     "font-awesome": "^4.4.0",
-    "free-style": "^2.0.0",
     "golden-layout": "^1.5.1",
     "hint.css": "^2.0.0",
     "http-proxy": "^1.11.1",
@@ -101,6 +100,7 @@
     "redux": "3.5.2",
     "style-loader": "^0.12.3",
     "toastr": "^2.1.2",
+    "typestyle": "0.0.8",
     "url-loader": "^0.5.6",
     "viewerjs": "^0.4.0",
     "webpack": "^1.11.0",

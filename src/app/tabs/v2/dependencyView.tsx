@@ -11,7 +11,7 @@ import * as $ from "jquery";
 import * as styles from "../../styles/styles";
 import * as onresize from "onresize";
 import {Clipboard} from "../../components/clipboard";
-import * as fstyle from "../../base/fstyle";
+import * as typestyle from "typestyle";
 
 type FileDependency = Types.FileDependency;
 let EOL = '\n';
@@ -39,7 +39,7 @@ let controlRightStyle = {
 
     pointerEvents: 'all',
 }
-let controlItemClassName = fstyle.style({
+let controlItemClassName = typestyle.style({
     pointerEvents:'auto',
 
     padding:'.4rem',

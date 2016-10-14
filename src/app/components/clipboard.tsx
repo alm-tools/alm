@@ -2,7 +2,7 @@ import React = require("react");
 import * as csx from '../base/csx';
 import {BaseComponent} from "../ui";
 import * as ui from "../ui";
-import * as fstyle from "../base/fstyle";
+import * as typestyle from "typestyle";
 
 export interface Props {
     text: string;
@@ -11,7 +11,7 @@ export interface State {
 
 }
 
-let buttonClassName = fstyle.style({
+let buttonClassName = typestyle.style({
     height: '18px',
     padding: '2px 3px',
     display: 'inline-flex',

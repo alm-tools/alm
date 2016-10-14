@@ -16,11 +16,11 @@ import {Types} from "../../../socket/socketContract";
 import * as commands from "../../commands/commands";
 import * as monacoUtils from "../monacoUtils";
 import {errorsCache} from "../../globalErrorCacheClient";
-import * as fstyle from "../../base/fstyle";
+import * as typestyle from "typestyle";
 
 type Editor = monaco.editor.ICodeEditor;
 
-let docuClassName = fstyle.style(
+let docuClassName = typestyle.style(
     csx.newLayer,
     {
         zIndex: 1, // To come over the editor

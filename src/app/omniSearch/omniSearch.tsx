@@ -17,9 +17,9 @@ import {AvailableProjectConfig} from "../../common/types";
 import {Robocop} from "../components/robocop";
 import * as utils from "../../common/utils";
 import {tabState} from "../tabs/v2/appTabsContainer";
-import * as fstyle from "../base/fstyle";
+import * as typestyle from "typestyle";
 
-const inputClassName = fstyle.style(styles.modal.inputStyleBase);
+const inputClassName = typestyle.style(styles.modal.inputStyleBase);
 
 /** Stuff shared by the select list view */
 import {renderMatchedSegments, getFilteredItems} from ".././selectListView";

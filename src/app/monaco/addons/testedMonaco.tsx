@@ -6,7 +6,7 @@ import * as events from "../../../common/events";
 import * as utils from "../../../common/utils";
 import * as types from "../../../common/types";
 import * as json from "../../../common/json";
-import * as fstyle from "../../base/fstyle";
+import * as typestyle from "typestyle";
 import * as styles from "../../styles/styles";
 import {Icon} from "../../components/icon";
 import * as React from "react";
@@ -36,14 +36,14 @@ namespace TestedMonacoStyles {
         lineHeight: '22px',
     }
 
-    export const logOverlayClassName = fstyle.style(
+    export const logOverlayClassName = typestyle.style(
         overlayCommon,
         {
             color: styles.monokaiTextColor,
         }
     );
 
-    export const errorStackOverlayClassName = fstyle.style(
+    export const errorStackOverlayClassName = typestyle.style(
         overlayCommon,
         {
             color: styles.errorColor,

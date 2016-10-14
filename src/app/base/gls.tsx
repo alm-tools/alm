@@ -4,7 +4,7 @@
  */
 import * as csx from './csx';
 import { vendorPrefixed } from './csx';
-import * as fstyle from './fstyle';
+import * as typestyle from 'typestyle';
 import * as React from "react";
 
 
@@ -50,16 +50,16 @@ SmallVerticalSpace.displayName = "SmallHorizontalSpace";
 interface PrimitiveProps extends React.HTMLProps<HTMLDivElement> { };
 
 namespace ClassNames {
-  export const content = fstyle.style(vendorPrefixed.content);
-  export const flex = fstyle.style(vendorPrefixed.pass, vendorPrefixed.flex);
-  export const flexScrollY = fstyle.style(vendorPrefixed.pass, vendorPrefixed.flex, vendorPrefixed.vertical, { overflowY: 'auto' });
-  export const pass = fstyle.style(vendorPrefixed.pass);
-  export const contentVertical = fstyle.style(vendorPrefixed.content, vendorPrefixed.vertical);
-  export const contentVerticalCentered = fstyle.style(vendorPrefixed.content, vendorPrefixed.vertical, vendorPrefixed.center);
-  export const contentHorizontal = fstyle.style(vendorPrefixed.content, vendorPrefixed.horizontal);
-  export const contentHorizontalCentered = fstyle.style(vendorPrefixed.content, vendorPrefixed.horizontal, vendorPrefixed.center);
-  export const flexVertical = fstyle.style(vendorPrefixed.flex, vendorPrefixed.vertical, { maxWidth: '100%' /*normalizing browser bugs*/ });
-  export const flexHorizontal = fstyle.style(vendorPrefixed.flex, vendorPrefixed.horizontal);
+  export const content = typestyle.style(vendorPrefixed.content);
+  export const flex = typestyle.style(vendorPrefixed.pass, vendorPrefixed.flex);
+  export const flexScrollY = typestyle.style(vendorPrefixed.pass, vendorPrefixed.flex, vendorPrefixed.vertical, { overflowY: 'auto' });
+  export const pass = typestyle.style(vendorPrefixed.pass);
+  export const contentVertical = typestyle.style(vendorPrefixed.content, vendorPrefixed.vertical);
+  export const contentVerticalCentered = typestyle.style(vendorPrefixed.content, vendorPrefixed.vertical, vendorPrefixed.center);
+  export const contentHorizontal = typestyle.style(vendorPrefixed.content, vendorPrefixed.horizontal);
+  export const contentHorizontalCentered = typestyle.style(vendorPrefixed.content, vendorPrefixed.horizontal, vendorPrefixed.center);
+  export const flexVertical = typestyle.style(vendorPrefixed.flex, vendorPrefixed.vertical, { maxWidth: '100%' /*normalizing browser bugs*/ });
+  export const flexHorizontal = typestyle.style(vendorPrefixed.flex, vendorPrefixed.horizontal);
 }
 
 /**
@@ -82,7 +82,7 @@ Content.displayName = "Content";
  * Takes as much space as it needs, no more, no less
  */
 export const InlineBlock = (props: PrimitiveProps) => {
-  const style = fstyle.extend({ display: 'inline-block' }, props.style || {});
+  const style = csx.extend({ display: 'inline-block' }, props.style || {});
   return (
     <div data-comment="InlineBlock" {...props} style={style}>
       {props.children}

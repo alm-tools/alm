@@ -13,9 +13,9 @@ import {cast, server} from "../../socket/socketClient";
 import * as commands from "../commands/commands";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
 import * as utils from "../../common/utils";
-import * as fstyle from "../base/fstyle";
+import * as typestyle from "typestyle";
 
-const inputClassName = fstyle.style(styles.modal.inputStyleBase);
+const inputClassName = typestyle.style(styles.modal.inputStyleBase);
 
 /** The singleton dialog instance */
 export var inputDialog: InputDialog;

@@ -13,7 +13,7 @@ import * as utils from "../../../common/utils";
 import {server} from "../../../socket/socketClient";
 import {Types} from "../../../socket/socketContract";
 import * as commands from "../../commands/commands";
-import * as fstyle from "../../base/fstyle";
+import * as typestyle from "typestyle";
 import * as styles from "../../styles/styles";
 import {shouldComponentUpdate} from "../../../common/pure";
 import {gotoPosition} from "../../monaco/monacoUtils";
@@ -43,7 +43,7 @@ namespace SemanticViewStyles {
         }
     } as any;
 
-    export const nodeClass = fstyle.style(csx.extend(styles.ellipsis, {
+    export const nodeClass = typestyle.style(csx.extend(styles.ellipsis, {
         paddingTop: '2px',
         paddingBottom: '3px',
         paddingLeft: '2px',
@@ -62,7 +62,7 @@ namespace SemanticViewStyles {
         }
     }));
 
-    export const selectedNodeClass = fstyle.style({
+    export const selectedNodeClass = typestyle.style({
         border: '1px solid grey',
         backgroundColor: styles.blackHighlightColor,
         '&:hover': {
