@@ -459,6 +459,10 @@ export const gitAddAllCommitAndPush = new UICommand({
     description: 'Git: Add all, Commit and Push',
     context: CommandContext.Global
 })
+export const gitFetchLatestAndRebase = new UICommand({
+    description: 'Git: Fetch + Pull latest, and rebase any local commits',
+    context: CommandContext.Global
+})
 /** Whenever status might be invalid */
 export const gitStatusNeedsRefresh = new events.TypedEvent<{}>();
 

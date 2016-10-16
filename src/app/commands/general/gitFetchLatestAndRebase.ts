@@ -3,8 +3,7 @@ import * as ui from "../../ui";
 import { inputDialog } from "../../dialogs/inputDialog";
 import { server } from '../../../socket/socketClient';
 
-commands.gitAddAllCommitAndPush.on(() => {
-
+commands.gitFetchLatestAndRebase.on(() => {
     ui.notifyInfoNormalDisappear("Git: Sending commands. Will notify when complete.");
     server
         .gitFetchLatestAndRebase({})

@@ -33,12 +33,14 @@ import * as configCreator from "./configCreator/configCreator";
 import * as settings from "./settings/settings";
 import * as openFileFromServerDisk from "./commands/general/openFileFromServerDisk";
 import * as gitAddAllCommitAndPush from "./commands/general/gitAddAllCommitAndPush";
+import * as gitFetchLatestAndRebase from "./commands/general/gitFetchLatestAndRebase";
 var ensureImport =
     gotoHistory
     || configCreator
     || settings
     || openFileFromServerDisk
     || gitAddAllCommitAndPush
+    || gitFetchLatestAndRebase
     || clipboardRing;
 
 export interface State {
