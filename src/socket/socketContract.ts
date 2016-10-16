@@ -109,7 +109,8 @@ export var server = {
     gitStatus: {} as QRFunction<{},string>,
     gitReset: {} as QRFunction<{filePath:string},string>,
     gitDiff: {} as QRFunction<{filePath:string},types.GitDiff>,
-    gitAddAllCommitAndPush: {} as QRFunction<types.GitAddAllCommitAndPushQuery,types.GitAddAllCommitAndPushResult>,
+    gitAddAllCommitAndPush: {} as QRFunction<types.GitAddAllCommitAndPushQuery, types.GitAddAllCommitAndPushResult>,
+    gitFetchLatestAndRebase: {} as QRFunction<{}, types.GitAddAllCommitAndPushResult>,
 
     /**
      * NPM Service

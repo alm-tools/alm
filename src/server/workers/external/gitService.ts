@@ -154,3 +154,18 @@ export const gitAddAllCommitAndPush = async (query: types.GitAddAllCommitAndPush
         return { type: 'error', error: ex.message };
     }
 }
+
+export const gitFetchLatestAndRebase = async (query: {}): Promise<types.GitAddAllCommitAndPushResult> => {
+    try {
+        const fetchResult = await gitCmdBetter('fetch', 'origin');
+        const pullWithRebaseResult = await gitCmdBetter('pull', '--rebase');
+
+        /** We need to actually parse this to make sure nothing went bad. Just being hopeful for now */
+        const log = stringify({ fetchResult, pullWithRebaseResult });
+
+        return { type: 'success', log };
+    }
+    catch (ex) {
+        return { type: 'error', error: ex.message };
+    }
+}

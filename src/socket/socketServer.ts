@@ -223,6 +223,7 @@ namespace Server {
     export var gitReset : typeof contract.server.gitReset = gitService.gitReset;
     export var gitDiff: typeof contract.server.gitDiff = gitService.gitDiff;
     export var gitAddAllCommitAndPush : typeof contract.server.gitAddAllCommitAndPush = gitService.gitAddAllCommitAndPush;
+    export var gitFetchLatestAndRebase : typeof contract.server.gitFetchLatestAndRebase = gitService.gitFetchLatestAndRebase;
 
     /**
      * NPM service
