@@ -121,7 +121,7 @@ export function setup(editor: Editor): { dispose: () => void } {
             let dotNode = document.createElement('div');
             ReactDOM.render(dotRendered, dotNode);
             const widget: monaco.editor.IContentWidget = {
-                allowEditorOverflow: true,
+                allowEditorOverflow: false,
                 getId: () => `${keyForMonacoDifferentiation} - dot - ${JSON.stringify(result)}`,
                 getDomNode: () => dotNode,
                 getPosition: () => {
