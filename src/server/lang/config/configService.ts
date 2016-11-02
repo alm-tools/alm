@@ -178,7 +178,7 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
      * Make completions json friendly
      */
     completionsToReturn.forEach(c => {
-        if (c.name !== "false" || c.name !== "true") {
+        if (c.name !== "false" && c.name !== "true") {
             c.name = `"${c.name}"`
         }
     });
