@@ -243,7 +243,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                     </span>
                     <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand) }>
                         <span
-                            className={this.props.tsWorking.working ? "hint--left hint--success" : "hint--right"}
+                            className={this.props.tsWorking.working ? "hint--right hint--success" : "hint--right"}
                             data-hint={this.props.tsWorking.working ? "TS Worker Busy" : "TS Worker Idle"}
                             style={{
                                 color: this.props.tsWorking.working ? 'white' : 'grey',
