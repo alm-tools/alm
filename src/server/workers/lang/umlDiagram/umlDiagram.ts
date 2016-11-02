@@ -227,13 +227,13 @@ function transformClassIndexSignature(node: ts.IndexSignatureDeclaration, source
 /** Visibility */
 function getVisibility(node: ts.Node): types.UMLClassMemberVisibility {
     if (node.modifiers) {
-        if (hasModifierSet(node.modifiers.flags, ts.NodeFlags.Protected)) {
+        if (hasModifierSet(node.modifiers, ts.ModifierFlags.Protected)) {
             return types.UMLClassMemberVisibility.Protected;
-        } else if (hasModifierSet(node.modifiers.flags, ts.NodeFlags.Private)) {
+        } else if (hasModifierSet(node.modifiers, ts.ModifierFlags.Private)) {
             return types.UMLClassMemberVisibility.Private;
-        } else if (hasModifierSet(node.modifiers.flags, ts.NodeFlags.Public)) {
+        } else if (hasModifierSet(node.modifiers, ts.ModifierFlags.Public)) {
             return types.UMLClassMemberVisibility.Public;
-        } else if (hasModifierSet(node.modifiers.flags, ts.NodeFlags.Export)) {
+        } else if (hasModifierSet(node.modifiers, ts.ModifierFlags.Export)) {
             return types.UMLClassMemberVisibility.Public;
         }
     }
@@ -249,7 +249,7 @@ function getVisibility(node: ts.Node): types.UMLClassMemberVisibility {
 /** Lifetime */
 function getLifetime(node: ts.Node): types.UMLClassMemberLifetime {
     if (node.modifiers) {
-        if (hasModifierSet(node.modifiers.flags, ts.NodeFlags.Static)) {
+        if (hasModifierSet(node.modifiers, ts.ModifierFlags.Static)) {
             return types.UMLClassMemberLifetime.Static;
         }
     }
@@ -257,6 +257,6 @@ function getLifetime(node: ts.Node): types.UMLClassMemberLifetime {
 }
 
 /** Just checks if a flag is set */
-function hasModifierSet(value: number, modifier: number) {
-    return (value & modifier) === modifier;
+function hasModifierSet(modifiers: ts.NodeArray<ts.Modifier>, modifier: number) {
+    return modifiers.some(value => (value.flags & modifier) === modifier);
 }

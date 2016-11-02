@@ -4,7 +4,7 @@ import {TypedEvent} from "../common/events";
 let toPath = ts.toPath;
 import Path = ts.Path;
 import LineIndex = liner.LineIndex;
-let copyListRemovingItem = ts.copyListRemovingItem;
+let unorderedRemoveItem = ts.unorderedRemoveItem;
 interface ILineInfo extends liner.ILineInfo { }
 let createFileMap = ts.createFileMap;
 /** BAS : a function I added, useful as we are working without true fs host */
@@ -302,7 +302,7 @@ export class LSHost implements ts.LanguageServiceHost {
     removeRoot(info: ScriptInfo) {
         if (!this.filenameToScript.contains(info.path)) {
             this.filenameToScript.remove(info.path);
-            this.roots = copyListRemovingItem(info, this.roots);
+            unorderedRemoveItem(this.roots, info)
         }
     }
 
