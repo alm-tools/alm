@@ -42,7 +42,7 @@ export function npmLatest({pack}: { pack: string }): Promise<{ description?: str
         .then(function(response) {
             return response.json()
         })
-        .then(function(obj) {
+        .then(function(obj:any) {
             let result: {
                 description?: string,
                 version?: string

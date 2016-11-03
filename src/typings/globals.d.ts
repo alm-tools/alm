@@ -44,3 +44,8 @@ interface ReferenceDetails {
     position: EditorPosition;
     span: ts.TextSpan;
 }
+
+/** Will delete this some day */
+interface PromiseDeferred<T> {
+    promise: Promise<T>; resolve(value: T): any; reject(error: T): any;
+}

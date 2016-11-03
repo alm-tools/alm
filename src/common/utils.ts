@@ -569,11 +569,9 @@ const makeCancelable = <T>(promise:Promise<T>) => {
     promise.then((val) =>
       hasCanceled_ ? reject({isCanceled: true}) : resolve(val)
     );
-    // https://github.com/Microsoft/TypeScript/issues/12006
-    promise.catch((error) => {
+    promise.catch((error) =>
       hasCanceled_ ? reject({ isCanceled: true }) : reject(error)
-      return undefined;
-    });
+    );
   });
 
   return {
