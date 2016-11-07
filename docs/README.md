@@ -13,6 +13,6 @@ This guide is divided into three sections.
 * A full **feature guide**
 * A **contributing guide** along with **design documentation**.
 
-The intension is that you read these step by step, dropping off and going out to build your next amazing application at whatever point you want 🌹
+The intention is that you read these step by step, dropping off and going out to build your next amazing application at whatever point you want 🌹
 
 * [Quick Start](/quickstart.md)
