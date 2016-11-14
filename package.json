@@ -95,7 +95,7 @@
     "react-dom": "15.3.2",
     "react-draggable": "2.2.2",
     "react-modal": "1.2.1",
-    "react-redux": "4.4.5",
+    "react-redux": "4.4.6",
     "react-toggle": "2.1.1",
     "redux": "3.5.2",
     "style-loader": "^0.12.3",
