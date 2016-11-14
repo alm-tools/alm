@@ -36,7 +36,7 @@ const inputBlackClassName = typestyle.style(inputBlackStyleBase);
 namespace ResultsStyles {
     export const rootClassName = typestyle.style(
         csx.flex,
-        csx.scroll,
+        csx.scroll as any,
         styles.padded1,
         {
             border: '1px solid grey',

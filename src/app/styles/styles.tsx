@@ -26,7 +26,7 @@ export const blackHighlightColor = "#1C1D18"
 /**
  * If you expect a child to scroll you need to tell it that I will not give you a scroll bar
  */
-export var someChildWillScroll = {
+export var someChildWillScroll: NestedCSSProperties = {
     overflow: 'hidden'
 }
 

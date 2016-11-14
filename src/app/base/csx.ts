@@ -397,7 +397,7 @@ export namespace vendorPrefixed {
     alignSelf: 'center',
   };
 
-  export var center = {
+  export var center: any = {
     '-webkit-align-items': 'center',
     alignItems: 'center'
   };
