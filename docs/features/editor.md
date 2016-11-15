@@ -48,6 +48,6 @@ You can cycle paste through the stuff that you copied / cut from the IDE. `Shift
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/clipboardRing.gif)
 
 ## Blaster
-Because why not. `Ctrl|⌘ + Shift + O` to toggle.
+Because why not. `Ctrl|⌘ + Alt + O` to toggle.
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/blaster.gif)
