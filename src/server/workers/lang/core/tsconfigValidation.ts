@@ -52,7 +52,7 @@ const compilerOptionsValidation: simpleValidator.ValidationInfo = {
     outDir: { type: types.string },
     paths: { type: types.object },
     preserveConstEnums: { type: types.boolean },
-    pretty: { type: types.string },
+    pretty: { type: types.boolean },
     reactNamespace: { type: types.string },
     removeComments: { type: types.boolean },
     rootDir: { type: types.string },
