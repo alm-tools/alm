@@ -5,8 +5,8 @@ export let errorColor = '#f92672';
 export let warningColor = '#f6d675'; // Color from CodeMirror `lint.css` warning squiggly color
 export let successColor = '#00c990';
 export let highlightColor = "#6edeef";
-export let selectedBackgroundColor = '#444';
-export const monokaiBackgroundColor = '#272822';
+export let selectedBackgroundColor = '#3f3f46';
+export const monokaiBackgroundColor = '#1e1e1e';
 export const monokaiTextColor = "#e6db74"; // The color of strings
 
 /**

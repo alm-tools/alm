@@ -16,14 +16,14 @@ let buttonClassName = typestyle.style({
     padding: '2px 3px',
     display: 'inline-flex',
     cursor: 'pointer',
-    backgroundImage: 'linear-gradient(#7B7B7B, #353434)',
-    border: '1px solid #464646',
+    background: 'transparent',
+    border: '0px solid #464646',
     borderRadius: '3px',
     userSelect: 'none',
     outline: '0px',
 
     '&:active': {
-        backgroundImage: 'linear-gradient(#353434, #7B7B7B)',
+        background: '#464646',
     }
 });
 

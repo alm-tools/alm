@@ -102,9 +102,9 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
              * Also the default change by OS.
              * I prefer consistency so going with custom font everywhere
              */
-            fontFamily: 'consolas, menlo, monospace',
+            fontFamily: 'Menlo, Monaco, Courier New, monospace',
             /** Also make the font a bit bigger */
-            fontSize: 16,
+            fontSize: 12,
         }, []);
 		this.editor.filePath = this.props.filePath;
 

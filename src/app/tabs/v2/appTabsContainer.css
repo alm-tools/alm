@@ -72,16 +72,43 @@
 
 /* We add a `.alm_selected` class to the tru active tab */
 .lm_tab.alm_selected {
-    color: #6edeef;
+    color: #6edeef;    
 }
 
 /* Further tab styling */
 .lm_tab {
     transition: color .2s;
-    font-weight: bold;
+    font-weight: 600;
 }
+
+.lm_header {
+    height: 29px !important;
+    background: #252526;
+}
+
+.lm_header .lm_tab {
+    font-family: Open Sans, Segoe UI, sans-serif;
+    background: #2d2d2d;
+    color: #959595;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    margin-right: 0px;
+    box-shadow: none;
+    border-right: 1px solid #403f3f;
+
+}
+.lm_items {
+    border-top: 1px solid #403f3f;
+} 
+
 .lm_tab.lm_active {
     /*color: #6edeef;*/
+    background: #1e1e1e;
+}
+.lm_header .lm_tab.lm_active{
+    box-shadow: none;
+
 }
 
 /*
@@ -92,7 +119,7 @@
 .lm_content {
     display: flex;
     /* also make the background like code mirror monokai */
-    background-color: #272822;
+    background-color: #1e1e1e;
 }
 
 /**
@@ -128,5 +155,5 @@
     left:0;
     display: flex;
     pointer-events: none;
-    background-color: #272822;
+    background-color: #1e1e1e;
 }

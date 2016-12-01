@@ -1,3 +1,5 @@
+require('./fileTree.css');
+
 import {server} from "../socket/socketClient";
 import * as types from "../common/types";
 import React = require("react");
@@ -65,7 +67,7 @@ export interface State {
 
 let resizerWidth = 5;
 let resizerStyle = {
-    background: 'radial-gradient(#444,transparent)',
+    background: '#333',
     width: resizerWidth+'px',
     cursor:'ew-resize',
     color: '#666',
@@ -73,12 +75,13 @@ let resizerStyle = {
 
 let treeListStyle = {
     color: '#eee',
-    fontSize:'.7rem',
-    padding:'3px',
+    fontSize:'.9rem',
+    padding:'0px',
+    fontFamily: 'Open Sans, Segoe UI, sans-serif'
 }
 
 let treeScrollClassName = typestyle.style({
-    border: '1px solid grey',
+    borderBottom: '1px solid #333',
     '&:focus': {
         outline: 'none',
         border: '1px solid ' + styles.highlightColor
@@ -118,9 +121,7 @@ let currentSelectedItemCopyStyle = {
     cursor: 'pointer',
     marginLeft: '2px',
     fontSize: '.6rem',
-    fontWeight: 'bold',
-    color: '#CCC',
-    textShadow: '0 0 3px rgba(255, 255, 255, 0.5)',
+    color: '#666',
 }
 
 let helpRowStyle = {
@@ -738,7 +739,7 @@ export class FileTree extends BaseComponent<Props, State>{
                     {this.props.filePathsCompleted || <Robocop/>}
                     {
                         singlePathSelected
-                        && <div style={csx.extend(csx.content, csx.horizontal, csx.center, csx.centerJustified, { paddingTop: '5px', paddingBottom: '5px', width: this.state.width - 15+'px'})}>
+                        && <div style={csx.extend(csx.content, csx.horizontal, csx.center, { paddingTop: '5px', paddingLeft: '5px', paddingBottom: '5px', width: this.state.width - 15+'px'})}>
                             <clipboard.Clipboard ref='copypath' text={singlePathSelected}/>
                             <span
                                 className="hint--top"

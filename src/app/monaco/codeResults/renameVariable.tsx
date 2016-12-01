@@ -41,7 +41,7 @@ let validationErrorStyle = {
 
 let summaryStyle = {
     padding: '5px',
-    backgroundColor: '#222',
+    backgroundColor: '#1e1e1e',
     color: '#CCC',
     fontSize: '.8rem',
 }
