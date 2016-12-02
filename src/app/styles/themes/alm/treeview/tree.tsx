@@ -59,7 +59,9 @@ export let currentSelectedItemCopyStyle = {
     cursor: 'pointer',
     marginLeft: '2px',
     fontSize: '.6rem',
-    color: '#666',
+    fontWeight: 'bold',
+    color: '#CCC',
+    textShadow: '0 0 3px rgba(255, 255, 255, 0.5)',
 }
 
 export let helpRowStyle = {
@@ -87,3 +89,9 @@ export let clippy = {
     width: '12px',
     height: '12px'
 }
+
+export let clipboardPathStyle = csx.extend(
+    csx.centerJustified,
+    {paddingTop: '5px',
+    paddingBottom: '5px'}
+)

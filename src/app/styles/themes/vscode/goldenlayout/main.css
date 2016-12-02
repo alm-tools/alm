@@ -83,6 +83,7 @@
 .lm_header {
     height: 29px !important;
     background: #252526;
+    overflow: visible !important;
 }
 
 .lm_header .lm_tab {

@@ -4,7 +4,6 @@ import * as csx from '../../../../base/csx';
 import * as baseStyles from "../base";
 
 export let resizerWidth = 5;
-
 export let resizerStyle = {
     background: '#333',
     width: resizerWidth+'px',
@@ -25,7 +24,7 @@ export let treeScrollClassName = typestyle.style({
         outline: 'none',
         border: '1px solid ' + baseStyles.highlightColor
     }
-},baseStyles.scrollBars)
+})
 
 export let treeItemClassName = typestyle.style({
     whiteSpace: 'nowrap',
@@ -60,7 +59,9 @@ export let currentSelectedItemCopyStyle = {
     cursor: 'pointer',
     marginLeft: '2px',
     fontSize: '.6rem',
-    color: '#666',
+    fontWeight: 'bold',
+    color: '#CCC',
+    textShadow: '0 0 3px rgba(255, 255, 255, 0.5)',
 }
 
 export let helpRowStyle = {
@@ -73,14 +74,14 @@ export let clipboardButtonClassName = typestyle.style({
     padding: '2px 3px',
     display: 'inline-flex',
     cursor: 'pointer',
-    background: 'transparent',
-    border: '0px solid #464646',
+    backgroundImage: 'linear-gradient(#7B7B7B, #353434)',
+    border: '1px solid #464646',
     borderRadius: '3px',
     userSelect: 'none',
     outline: '0px',
 
     '&:active': {
-        background: '#464646',
+        backgroundImage: 'linear-gradient(#353434, #7B7B7B)',
     }
 });
 
@@ -88,3 +89,10 @@ export let clippy = {
     width: '12px',
     height: '12px'
 }
+
+export let clipboardPathStyle = csx.extend(
+    csx.centerJustified,
+    {paddingTop: '5px',
+    paddingBottom: '5px'}
+)
+

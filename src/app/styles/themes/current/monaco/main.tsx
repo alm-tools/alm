@@ -11,7 +11,7 @@ import * as baseStyles from "../base";
  * Also the default change by OS.
  * I prefer consistency so going with custom font everywhere
  */
-export let fontFamily = 'Menlo, Monaco, Courier New, monospace';
+export let fontFamily = 'consolas, menlo, monospace';
 
 /** Also make the font a bit bigger */
-export let fontSize = 12;
+export let fontSize = 16;

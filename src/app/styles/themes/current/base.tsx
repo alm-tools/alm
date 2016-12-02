@@ -302,17 +302,15 @@ export const ellipsis = {
  * body bg
  */
 
-cssRule('body',{ backgroundColor: '#252526'})
+cssRule('body',{ backgroundColor: '#272822 !important'})
 
 /**
  * Scroll bar for chrome
  */
 
-cssRule('::-webkit-scrollbar',{ width: '8px', height: '8px' })
-cssRule('::-webkit-scrollbar-track',{ backgroundColor: 'transparent' })
-cssRule('::-webkit-scrollbar-thumb',{ background: 'rgba(121, 121, 121, .2)',
-        border: '0px none #ffffff',
-        borderRadius: '0px',
-         })
-cssRule('::-webkit-scrollbar-thumb:hover',{background: 'rgba(121, 121, 121, .5)'})
+cssRule('::-webkit-scrollbar',{ width: '8px' })
+cssRule('::-webkit-scrollbar-track',{ '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.3)', backgroundColor: 'transparent' })
+cssRule('::-webkit-scrollbar-thumb',{ boxShadow: 'inset  0 0 6px rgba(0,0,0,.7)',backgroundColor: '#555' })
 cssRule('::-webkit-scrollbar-corner',{ background: 'transparent' })
+
+

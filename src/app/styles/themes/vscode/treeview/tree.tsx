@@ -88,3 +88,9 @@ export let clippy = {
     width: '12px',
     height: '12px'
 }
+
+export let clipboardPathStyle = {
+    paddingTop: '5px',
+    paddingLeft: '5px',
+    paddingBottom: '5px'
+}
