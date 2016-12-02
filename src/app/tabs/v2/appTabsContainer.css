@@ -78,7 +78,7 @@
 /* Further tab styling */
 .lm_tab {
     transition: color .2s;
-    font-weight: 600;
+    
 }
 
 .lm_header {
@@ -87,7 +87,7 @@
 }
 
 .lm_header .lm_tab {
-    font-family: Open Sans, Segoe UI, sans-serif;
+    font-family: 'Helvetica', 'Segoe UI', sans-serif;
     background: #2d2d2d;
     color: #959595;
     height: 24px;
@@ -103,12 +103,11 @@
 } 
 
 .lm_tab.lm_active {
-    /*color: #6edeef;*/
+    color: #EEE;
     background: #1e1e1e;
 }
 .lm_header .lm_tab.lm_active{
     box-shadow: none;
-
 }
 
 /*
