@@ -6,7 +6,10 @@ import ReactDOM = require("react-dom");
 import {BaseComponent} from "./ui";
 import * as ui from "./ui";
 import * as utils from "../common/utils";
-import * as styles from "./styles/styles";
+
+import * as baseStyles from "./styles/themes/current/base";
+import * as treeStyles from "./styles/themes/current/treeview/tree";
+
 import * as state from "./state/state";
 import {connect} from "react-redux";
 import {StoreState} from "./state/state";
@@ -63,70 +66,6 @@ export interface State {
     readonly selectedPaths?: SelectedPaths;
 }
 
-let resizerWidth = 5;
-let resizerStyle = {
-    background: 'radial-gradient(#444,transparent)',
-    width: resizerWidth+'px',
-    cursor:'ew-resize',
-    color: '#666',
-}
-
-let treeListStyle = {
-    color: '#eee',
-    fontSize:'.7rem',
-    padding:'3px',
-}
-
-let treeScrollClassName = typestyle.style({
-    border: '1px solid grey',
-    '&:focus': {
-        outline: 'none',
-        border: '1px solid ' + styles.highlightColor
-    }
-})
-
-let treeItemClassName = typestyle.style({
-    whiteSpace: 'nowrap',
-    cursor:'pointer',
-    padding: '3px',
-    userSelect: 'none',
-    fontSize: '.9em',
-    opacity: .8,
-    '&:focus': {
-        outline: 'none',
-    }
-})
-
-let treeItemSelectedStyle = {
-    backgroundColor:styles.selectedBackgroundColor,
-}
-
-let treeItemInProjectStyle = {
-    color: 'rgb(0, 255, 183)',
-    opacity: 1,
-}
-
-let treeItemIsGeneratedStyle = {
-    fontSize: '.6em'
-}
-
-let currentSelectedItemCopyStyle = {
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'pre', // Prevents wrapping
-
-    cursor: 'pointer',
-    marginLeft: '2px',
-    fontSize: '.6rem',
-    fontWeight: 'bold',
-    color: '#CCC',
-    textShadow: '0 0 3px rgba(255, 255, 255, 0.5)',
-}
-
-let helpRowStyle = {
-    margin: '5px',
-    lineHeight: '18px'
-}
 
 @connect((state: StoreState): Props => {
     return {
@@ -730,57 +669,57 @@ export class FileTree extends BaseComponent<Props, State>{
         return (
             <div ref={this.refNames.__treeroot} className="alm-tree-root" style={csx.extend(csx.flexRoot, csx.horizontal, { width: this.state.width, zIndex: 6 }, hideStyle)}>
 
-                <div style={csx.extend(csx.flex, csx.vertical, treeListStyle, styles.someChildWillScroll, csx.newLayerParent)}>
-                    <div ref={this.refNames.__treeViewScroll} className={treeScrollClassName} style={csx.extend(csx.flex, csx.scroll)} tabIndex={0}
+                <div style={csx.extend(csx.flex, csx.vertical, treeStyles.treeListStyle, baseStyles.someChildWillScroll, csx.newLayerParent)}>
+                    <div ref={this.refNames.__treeViewScroll} className={treeStyles.treeScrollClassName} style={csx.extend(csx.flex, csx.scroll)} tabIndex={0}
                         onFocus={()=>this.setState({treeScrollHasFocus: true})} onBlur={()=>this.setState({treeScrollHasFocus: false})}>
                         {this.renderDir(this.state.treeRoot)}
                     </div>
                     {this.props.filePathsCompleted || <Robocop/>}
                     {
                         singlePathSelected
-                        && <div style={csx.extend(csx.content, csx.horizontal, csx.center, csx.centerJustified, { paddingTop: '5px', paddingBottom: '5px', width: this.state.width - 15+'px'})}>
+                        && <div style={csx.extend(csx.content, csx.horizontal, csx.center, treeStyles.clipboardPathStyle,{ width: this.state.width - 15+'px'})}>
                             <clipboard.Clipboard ref='copypath' text={singlePathSelected}/>
                             <span
                                 className="hint--top"
                                 data-hint="Click to copy the file path to clipboard"
                                 data-clipboard-text={singlePathSelected}
-                                style={currentSelectedItemCopyStyle}
+                                style={treeStyles.currentSelectedItemCopyStyle}
                                 onClick={()=>ui.notifyInfoQuickDisappear("Path copied to clipboard")}>
                                     {singlePathSelected}
                             </span>
                         </div>
                     }
                     <div style={csx.extend(csx.content,csx.centerCenter, {fontSize: '.7em', lineHeight: '2em', opacity: helpOpacity, transition: 'opacity .2s'})}>
-                        <span>Tap <span style={styles.Tip.keyboardShortCutStyle}>H</span> to toggle tree view help</span>
+                        <span>Tap <span style={baseStyles.Tip.keyboardShortCutStyle}>H</span> to toggle tree view help</span>
                     </div>
                     {
                         this.state.showHelp
                         && <div style={csx.extend(csx.newLayer, csx.centerCenter, csx.flex, {background: 'rgba(0,0,0,.7)'})}
                             onClick={()=>this.setState({showHelp:false})}>
                             <div style={csx.extend(csx.flexRoot, csx.vertical)}>
-                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>ESC</span> to hide help</div>
-                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>A</span> to add a file</div>
-                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>Shift + A</span> to add a folder</div>
-                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>D</span> to duplicate file / folder</div>
-                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>M</span> to move file / folder</div>
-                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>R</span> to rename file / folder</div>
-                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>C</span> to copy path to clipboard</div>
-                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>O</span> to open in explorer/finder</div>
-                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>T</span> to change .js to .ts</div>
-                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>J</span> to change .ts to .js</div>
-                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>arrow keys</span> to browse</div>
-                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>del or backspace</span> to delete</div>
-                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>enter</span> to open file / expand dir</div>
-                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>{commands.modName} + \</span> to toggle tree view</div>
-                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>Shift + {commands.modName} + \</span> to locate open file in view</div>
-                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}> {commands.modName} + 0</span> to focus on tree view</div>
+                                <div style={treeStyles.helpRowStyle}>Tap <span style={baseStyles.Tip.keyboardShortCutStyle}>ESC</span> to hide help</div>
+                                <div style={treeStyles.helpRowStyle}>Tap <span style={baseStyles.Tip.keyboardShortCutStyle}>A</span> to add a file</div>
+                                <div style={treeStyles.helpRowStyle}>Tap <span style={baseStyles.Tip.keyboardShortCutStyle}>Shift + A</span> to add a folder</div>
+                                <div style={treeStyles.helpRowStyle}>Tap <span style={baseStyles.Tip.keyboardShortCutStyle}>D</span> to duplicate file / folder</div>
+                                <div style={treeStyles.helpRowStyle}>Tap <span style={baseStyles.Tip.keyboardShortCutStyle}>M</span> to move file / folder</div>
+                                <div style={treeStyles.helpRowStyle}>Tap <span style={baseStyles.Tip.keyboardShortCutStyle}>R</span> to rename file / folder</div>
+                                <div style={treeStyles.helpRowStyle}>Tap <span style={baseStyles.Tip.keyboardShortCutStyle}>C</span> to copy path to clipboard</div>
+                                <div style={treeStyles.helpRowStyle}>Tap <span style={baseStyles.Tip.keyboardShortCutStyle}>O</span> to open in explorer/finder</div>
+                                <div style={treeStyles.helpRowStyle}>Tap <span style={baseStyles.Tip.keyboardShortCutStyle}>T</span> to change .js to .ts</div>
+                                <div style={treeStyles.helpRowStyle}>Tap <span style={baseStyles.Tip.keyboardShortCutStyle}>J</span> to change .ts to .js</div>
+                                <div style={treeStyles.helpRowStyle}>Tap <span style={baseStyles.Tip.keyboardShortCutStyle}>arrow keys</span> to browse</div>
+                                <div style={treeStyles.helpRowStyle}>Tap <span style={baseStyles.Tip.keyboardShortCutStyle}>del or backspace</span> to delete</div>
+                                <div style={treeStyles.helpRowStyle}>Tap <span style={baseStyles.Tip.keyboardShortCutStyle}>enter</span> to open file / expand dir</div>
+                                <div style={treeStyles.helpRowStyle}>Tap <span style={baseStyles.Tip.keyboardShortCutStyle}>{commands.modName} + \</span> to toggle tree view</div>
+                                <div style={treeStyles.helpRowStyle}>Tap <span style={baseStyles.Tip.keyboardShortCutStyle}>Shift + {commands.modName} + \</span> to locate open file in view</div>
+                                <div style={treeStyles.helpRowStyle}>Tap <span style={baseStyles.Tip.keyboardShortCutStyle}> {commands.modName} + 0</span> to focus on tree view</div>
                             </div>
                         </div>
                     }
                 </div>
 
                 <DraggableCore onDrag={this.handleDrag} onStop={this.handleDragStop}>
-                    <div style={csx.extend(csx.flexRoot, csx.centerCenter, resizerStyle)}><Icon name="ellipsis-v"/></div>
+                    <div style={csx.extend(csx.flexRoot, csx.centerCenter, treeStyles.resizerStyle)}><Icon name="ellipsis-v"/></div>
                 </DraggableCore>
 
             </div>
@@ -824,7 +763,7 @@ export class FileTree extends BaseComponent<Props, State>{
         deltaX: number, deltaY: number,
         lastX: number, lastY: number,
     }) => {
-        this.setState({ width: ui.deltaX + ui.lastX + resizerWidth });
+        this.setState({ width: ui.deltaX + ui.lastX + treeStyles.resizerWidth });
     };
 
     handleDragStop = () => {
@@ -992,11 +931,11 @@ export namespace TreeNode {
         render(){
             let {item,depth,expanded} = this.props;
             let icon = expanded ? 'folder-open' : 'folder';
-            let selectedStyle = this.props.selected ? treeItemSelectedStyle : {};
-            let inProjectStyle = this.props.activeProjectFilePathTruthTable[item.filePath] ? treeItemInProjectStyle : {};
+            let selectedStyle = this.props.selected ? treeStyles.treeItemSelectedStyle : {};
+            let inProjectStyle = this.props.activeProjectFilePathTruthTable[item.filePath] ? treeStyles.treeItemInProjectStyle : {};
 
             return (
-                <div className={treeItemClassName} style={csx.extend(selectedStyle, inProjectStyle)} key={item.filePath} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleToggleDir(evt,item) }>
+                <div className={treeStyles.treeItemClassName} style={csx.extend(selectedStyle, inProjectStyle)} key={item.filePath} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleToggleDir(evt,item) }>
                     <div style={{ marginLeft: depth * 10 }}> <Icon name={icon}/> {item.name}</div>
                 </div>
             );
@@ -1069,8 +1008,8 @@ export namespace TreeNode {
         render() {
             const filePath = this.props.item.filePath;
 
-            let selectedStyle = this.props.selected ? treeItemSelectedStyle : {};
-            let inProjectStyle = this.props.activeProjectFilePathTruthTable[filePath] ? treeItemInProjectStyle : {};
+            let selectedStyle = this.props.selected ? treeStyles.treeItemSelectedStyle : {};
+            let inProjectStyle = this.props.activeProjectFilePathTruthTable[filePath] ? treeStyles.treeItemInProjectStyle : {};
 
             /** Determine if generated */
             let isGenerated = false;
@@ -1082,10 +1021,10 @@ export namespace TreeNode {
                 const tsxName = noExtName + '.tsx';
                 isGenerated = !!this.props.activeProjectFilePathTruthTable[tsName] || !!this.props.activeProjectFilePathTruthTable[tsxName];
             }
-            let isGeneratedStyle = isGenerated ? treeItemIsGeneratedStyle : {};
+            let isGeneratedStyle = isGenerated ? treeStyles.treeItemIsGeneratedStyle : {};
 
             return (
-                <div className={treeItemClassName} style={csx.extend(selectedStyle, inProjectStyle, isGeneratedStyle)} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleSelectFile(evt, this.props.item) }>
+                <div className={treeStyles.treeItemClassName} style={csx.extend(selectedStyle, inProjectStyle, isGeneratedStyle)} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleSelectFile(evt, this.props.item) }>
                     <div style={{ marginLeft: this.props.depth * 10 }}><FileNameBasedIcon fileName={this.props.item.name}/></div>
                 </div>
             );

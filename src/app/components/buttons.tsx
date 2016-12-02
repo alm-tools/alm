@@ -1,5 +1,5 @@
 import * as csx from "../base/csx";
-import {textColor} from "../styles/styles";
+import {textColor} from "../styles/themes/current/base";
 import * as React from "react";
 import * as ui from "../ui";
 import * as typestyle from "typestyle";

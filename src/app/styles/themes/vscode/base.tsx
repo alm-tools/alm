@@ -1,12 +1,13 @@
-import * as csx from '../base/csx';
+import * as csx from '../../../base/csx';
+import {cssRule} from 'typestyle';
 
 export const textColor = '#BBB';
 export let errorColor = '#f92672';
 export let warningColor = '#f6d675'; // Color from CodeMirror `lint.css` warning squiggly color
 export let successColor = '#00c990';
 export let highlightColor = "#6edeef";
-export let selectedBackgroundColor = '#444';
-export const monokaiBackgroundColor = '#272822';
+export let selectedBackgroundColor = '#3f3f46';
+export const monokaiBackgroundColor = '#1e1e1e';
 export const monokaiTextColor = "#e6db74"; // The color of strings
 
 /**
@@ -296,3 +297,23 @@ export const ellipsis = {
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap'
 }
+
+
+/**
+ * body bg
+ */
+
+cssRule('body',{ backgroundColor: '#252526 !important'})
+
+/**
+ * Scroll bar for chrome
+ */
+
+cssRule('::-webkit-scrollbar',{ width: '8px', height: '8px' })
+cssRule('::-webkit-scrollbar-track',{ backgroundColor: 'transparent' })
+cssRule('::-webkit-scrollbar-thumb',{ background: 'rgba(121, 121, 121, .2)',
+        border: '0px none #ffffff',
+        borderRadius: '0px',
+         })
+cssRule('::-webkit-scrollbar-thumb:hover',{background: 'rgba(121, 121, 121, .5)'})
+cssRule('::-webkit-scrollbar-corner',{ background: 'transparent' })

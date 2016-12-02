@@ -4,14 +4,14 @@ import * as csx from '../../base/csx';
 import {BaseComponent} from "../../ui";
 import * as ui from "../../ui";
 import * as utils from "../../../common/utils";
-import * as styles from "../../styles/styles";
+import * as styles from "../../styles/themes/current/base";
 import * as state from "../../state/state";
 import * as uix from "../../uix";
 import * as commands from "../../commands/commands";
 import Modal = require('react-modal');
 import {server} from "../../../socket/socketClient";
 import {Types} from "../../../socket/socketContract";
-import {modal} from "../../styles/styles";
+import {modal} from "../../styles/themes/current/base";
 import {Robocop} from "../../components/robocop";
 import * as docCache from "../model/docCache";
 import {CodeEditor} from "../editor/codeEditor";
@@ -41,7 +41,7 @@ let validationErrorStyle = {
 
 let summaryStyle = {
     padding: '5px',
-    backgroundColor: '#222',
+    backgroundColor: '#1e1e1e',
     color: '#CCC',
     fontSize: '.8rem',
 }

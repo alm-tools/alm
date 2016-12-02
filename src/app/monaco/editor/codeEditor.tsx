@@ -16,10 +16,12 @@ import * as docblockr from "../addons/dockblockr";
 import * as doctor from "../addons/doctor";
 import * as testedMonaco from "../addons/testedMonaco";
 
+import * as monacoStyles from "../../styles/themes/current/monaco/main";
+
 // The monokai theme
 require('./monokai.css');
 // Any other style modifications
-require('./codeEditor.css');
+require('../../styles/themes/current/monaco/codeEditor.css');
 
 /**
  * We extend the monaco editor
@@ -102,9 +104,9 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
              * Also the default change by OS.
              * I prefer consistency so going with custom font everywhere
              */
-            fontFamily: 'consolas, menlo, monospace',
+            fontFamily: monacoStyles.fontFamily,
             /** Also make the font a bit bigger */
-            fontSize: 16,
+            fontSize: monacoStyles.fontSize,
         }, []);
 		this.editor.filePath = this.props.filePath;
 

@@ -183,7 +183,7 @@ export class Doctor extends ui.BaseComponent<Props,State> {
                 </div>;
              comment = doctorInfo.quickInfo.comment &&
                 <div style={doctorRow}>
-                    <div style={{background:'#222', padding: '3px', fontFamily:'monospace'} as any}>{doctorInfo.quickInfo.comment}</div>
+                    <div style={{background:'#1e1e1e', padding: '3px', fontFamily:'monospace'} as any}>{doctorInfo.quickInfo.comment}</div>
                 </div>;
         }
         if (doctorInfo && doctorInfo.references && doctorInfo.references.length){

@@ -3,7 +3,7 @@ import * as csx from '../base/csx';
 import {BaseComponent} from "../ui";
 import * as ui from "../ui";
 import * as utils from "../../common/utils";
-import * as styles from "../styles/styles";
+import * as styles from "../styles/themes/current/base";
 import * as commands from "../commands/commands";
 
 export interface Props {

@@ -10,7 +10,7 @@ import {Types} from "../../../socket/socketContract";
 import * as types from "../../../common/types";
 import {IconType} from "../../../common/types";
 import * as $ from "jquery";
-import * as styles from "../../styles/styles";
+import * as styles from "../../styles/themes/current/base";
 import * as onresize from "onresize";
 import {Clipboard} from "../../components/clipboard";
 import * as typeIcon from "../../components/typeIcon";

@@ -14,7 +14,7 @@ import {server} from "../../../socket/socketClient";
 import {Types} from "../../../socket/socketContract";
 import * as commands from "../../commands/commands";
 import * as typestyle from "typestyle";
-import * as styles from "../../styles/styles";
+import * as styles from "../../styles/themes/current/base";
 import {shouldComponentUpdate} from "../../../common/pure";
 import {gotoPosition} from "../../monaco/monacoUtils";
 

@@ -1,5 +1,5 @@
 import utils = require("../common/utils");
-import styles = require("./styles/styles");
+import styles = require("./styles/themes/current/base");
 import React = require("react");
 import ReactDOMServer = require("react-dom/server");
 import * as csx from './base/csx';

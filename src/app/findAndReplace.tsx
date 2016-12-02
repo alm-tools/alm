@@ -4,7 +4,7 @@ import csx = require('./base/csx');
 import {BaseComponent} from "./ui";
 import * as ui from "./ui";
 import * as utils from "../common/utils";
-import * as styles from "./styles/styles";
+import * as styles from "./styles/themes/current/base";
 import * as state from "./state/state";
 import * as commands from "./commands/commands";
 import {connect} from "react-redux";
