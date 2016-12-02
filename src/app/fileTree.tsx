@@ -670,7 +670,7 @@ export class FileTree extends BaseComponent<Props, State>{
             <div ref={this.refNames.__treeroot} className="alm-tree-root" style={csx.extend(csx.flexRoot, csx.horizontal, { width: this.state.width, zIndex: 6 }, hideStyle)}>
 
                 <div style={csx.extend(csx.flex, csx.vertical, treeStyles.treeListStyle, baseStyles.someChildWillScroll, csx.newLayerParent)}>
-                    <div ref={this.refNames.__treeViewScroll} className={treeStyles.treeScrollClassName} style={csx.extend(csx.flex, csx.scroll,baseStyles.scrollBars)} tabIndex={0}
+                    <div ref={this.refNames.__treeViewScroll} className={treeStyles.treeScrollClassName} style={csx.extend(csx.flex, csx.scroll)} tabIndex={0}
                         onFocus={()=>this.setState({treeScrollHasFocus: true})} onBlur={()=>this.setState({treeScrollHasFocus: false})}>
                         {this.renderDir(this.state.treeRoot)}
                     </div>
