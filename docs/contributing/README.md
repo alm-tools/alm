@@ -1,5 +1,7 @@
 > Our goal with this project is to have a super simple + low barrier to entry for development. All you should need is nodejs + git. There should be be no complexity in the development setup or workflow 🌹
 
+NOTE: if you plan to work on a new feature please ask on gitter first https://gitter.im/alm-tools/alm. We are focused on a great default UX with limited customizability so not all features will be accepted.
+
 # Requirements
 You need:
 
