@@ -1,0 +1,76 @@
+/**
+ * The hover widget
+ */
+.monaco-editor-hover.monaco-editor-background div:first-child {
+    /* Just center the whole thing better */
+    margin-left: 1px;
+}
+/*
+ * Make the hover border color a bit better
+ */
+.monaco-editor.vs-dark .monaco-editor-hover {
+    border-color: #CCC;
+}
+/* Make the code in the hover look different */
+/* Code Block */
+.monaco-editor.vs-dark .monaco-editor-hover [data-code] {
+    /* WARNING: errors also come through as code blocks so be careful styling this */
+    margin: 3px 0;
+}
+/* Code inline */
+.monaco-editor.vs-dark .monaco-editor-hover code {
+    padding: 0 3px;
+    background-color: #555;
+}
+
+/* Make the bracket match pop out more */
+.monaco-editor.vs-dark .bracket-match {
+    background-color: rgba(100, 100, 100, 0.3);
+}
+
+/* Hide the find and replace widget as we have our own UI */
+.editor-widget.find-widget {
+    display: none !important;
+}
+
+/* Make the current find result pop out more */
+.cdr.currentFindMatch {
+    /* The current needs to pop out more so add a border */
+    border: 1px solid white;
+    /* The current should have the same color as the rest */
+    background-color: #6D4F3A;
+}
+
+/*
+ * fix the line number cursors (the svg is horrible)
+ * https://github.com/Microsoft/vscode/issues/7569
+ */
+.monaco-editor .margin-view-overlays .line-numbers {
+    cursor: pointer;
+}
+.monaco-editor.mac .margin-view-overlays .line-numbers {
+    cursor: pointer;
+}
+
+/*
+ * Match the goto next error to our desired styles.
+ * NOTE: this styles all zone widgets but works fine as we only left inline widgets for goto next error
+ */
+.monaco-editor .zone-widget .zone-widget-container:focus {
+    outline: none;
+}
+/* Also style the text in the goto next error to be better */
+.monaco-editor .zone-widget .zone-widget-container .block.title {
+    font-family: monospace;
+    padding-top: 2px;
+}
+
+.monaco-editor.vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .monaco-editor-background {
+    background-color: #1e1e1e; 
+}
+
+.monaco-editor.vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .glyph-margin {
+    background-color: #1e1e1e; 
+}
+
+.monaco-editor.vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .current-line { background-color: rgba(40, 42, 46, 1); }

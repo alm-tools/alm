@@ -298,6 +298,11 @@ export const ellipsis = {
     whiteSpace: 'nowrap'
 }
 
+/**
+ * body bg
+ */
+
+cssRule('body',{ backgroundColor: '#252526'})
 
 /**
  * Scroll bar for chrome

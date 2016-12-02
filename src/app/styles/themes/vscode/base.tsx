@@ -300,6 +300,12 @@ export const ellipsis = {
 
 
 /**
+ * body bg
+ */
+
+cssRule('body',{ backgroundColor: '#252526'})
+
+/**
  * Scroll bar for chrome
  */
 

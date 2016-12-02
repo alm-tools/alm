@@ -1,5 +1,3 @@
-require('./fileTree.css');
-
 import {server} from "../socket/socketClient";
 import * as types from "../common/types";
 import React = require("react");
