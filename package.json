@@ -75,7 +75,7 @@
   },
   "devDependencies": {
     "clipboard": "^1.4.2",
-    "css-loader": "^0.24.0",
+    "css-loader": "^0.26.1",
     "d3": "^3.5.12",
     "file-loader": "^0.8.4",
     "font-awesome": "^4.4.0",
