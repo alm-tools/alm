@@ -25,7 +25,7 @@ export let treeScrollClassName = typestyle.style({
         outline: 'none',
         border: '1px solid ' + baseStyles.highlightColor
     }
-},baseStyles.scrollBars)
+})
 
 export let treeItemClassName = typestyle.style({
     whiteSpace: 'nowrap',
