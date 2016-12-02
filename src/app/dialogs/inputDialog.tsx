@@ -7,7 +7,7 @@ import * as csx from '../base/csx';
 import {BaseComponent} from "../ui";
 import * as ui from "../ui";
 import Modal = require('react-modal');
-import * as styles from "../styles/styles";
+import * as styles from "../styles/themes/current/base";
 import {debounce, createMap, rangeLimited, getFileName} from "../../common/utils";
 import {cast, server} from "../../socket/socketClient";
 import * as commands from "../commands/commands";

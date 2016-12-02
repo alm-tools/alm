@@ -1,4 +1,5 @@
-import * as csx from '../base/csx';
+import * as csx from '../../../base/csx';
+import {cssRule} from 'typestyle';
 
 export const textColor = '#BBB';
 export let errorColor = '#f92672';
@@ -296,3 +297,17 @@ export const ellipsis = {
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap'
 }
+
+
+/**
+ * Scroll bar for chrome
+ */
+
+cssRule('::-webkit-scrollbar',{ width: '8px', height: '8px' })
+cssRule('::-webkit-scrollbar-track',{ backgroundColor: 'transparent' })
+cssRule('::-webkit-scrollbar-thumb',{ background: 'rgba(121, 121, 121, .2)',
+        border: '0px none #ffffff',
+        borderRadius: '0px',
+         })
+cssRule('::-webkit-scrollbar-thumb:hover',{background: 'rgba(121, 121, 121, .5)'})
+cssRule('::-webkit-scrollbar-corner',{ background: 'transparent' })

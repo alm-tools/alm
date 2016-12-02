@@ -8,7 +8,7 @@ import * as utils from "../../../common/utils";
 import * as d3 from "d3";
 import {Types} from "../../../socket/socketContract";
 import * as $ from "jquery";
-import * as styles from "../../styles/styles";
+import * as styles from "../../styles/themes/current/base";
 import * as onresize from "onresize";
 import {Clipboard} from "../../components/clipboard";
 import * as typestyle from "typestyle";

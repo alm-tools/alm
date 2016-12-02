@@ -10,7 +10,7 @@ import * as csx from './base/csx';
 import {AppTabsContainer} from "./tabs/v2/appTabsContainer";
 import * as commands from "./commands/commands";
 var Modal = require('react-modal');
-import * as styles from "./styles/styles";
+import * as styles from "./styles/themes/current/base";
 import {cast, server} from "../socket/socketClient";
 import {match, filter as fuzzyFilter} from "fuzzaldrin";
 import {debounce,createMap,rangeLimited,getFileName} from "../common/utils";

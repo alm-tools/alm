@@ -1,0 +1,157 @@
+/* dont support popout / maximize / close all tabs */
+.lm_controls {
+    display: none;
+}
+/*
+ * The vertical/horizontal drag handle was too tall/wide
+ * It was interfering with tab selection (vertical) and scrolling (horizontal)
+ */
+.lm_splitter.lm_vertical .lm_drag_handle {
+    top: 0px;
+    height: 5px;
+}
+.lm_splitter.lm_horizontal .lm_drag_handle {
+    left: 0px;
+    width: 5px;
+}
+
+/* Change the close tab icon */
+.lm_header .lm_tab .lm_close_tab {
+    background-image: none;
+    top: 2px;
+}
+.lm_close_tab:before {
+    content: '\F00D'; /* cross */
+    font-family: FontAwesome;
+}
+
+/* Add a tab number */
+.alm_jumpIndex {
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    background: #ad5000;
+    color:#fff;
+    font-weight: bold;
+    z-index: 4;
+    padding: 2px 5px;
+    border-radius: 50px;
+}
+.lm_active .alm_jumpIndex {
+  background: #ee7813;
+}
+/* Add a tab jump move help */
+.alm_tabMove {
+    position: absolute;
+    right: calc(50% - 200px);
+    top: calc(50% - 5em);
+    background: #333;
+    color:#DDD;
+    font-weight: bold;
+    z-index: 1000;
+    padding: 15px 10px;
+    border-radius: 4px;
+    border: 3px solid #999;
+    text-align: center;
+    opacity: .8;
+}
+.alm_tabMove div {
+    padding: 5px 0px;
+}
+.alm_tabMove .keyStrokeStyle {
+   font-size: 0.9rem;
+   background: #111;
+   padding-top: 1px;
+   padding-bottom: 1px;
+   padding-left: 4px;
+   padding-right: 4px;
+   border-radius: 5px;
+   border: 2px solid;
+}
+
+/* We add a `.alm_selected` class to the tru active tab */
+.lm_tab.alm_selected {
+    color: #6edeef;    
+}
+
+/* Further tab styling */
+.lm_tab {
+    transition: color .2s;
+    
+}
+
+.lm_header {
+    height: 29px !important;
+    background: #252526;
+}
+
+.lm_header .lm_tab {
+    font-family: 'Helvetica', 'Segoe UI', sans-serif;
+    background: #2d2d2d;
+    color: #959595;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    margin-right: 0px;
+    box-shadow: none;
+    border-right: 1px solid #403f3f;
+
+}
+.lm_items {
+    border-top: 1px solid #403f3f;
+} 
+
+.lm_tab.lm_active {
+    color: #EEE;
+    background: #1e1e1e;
+}
+.lm_header .lm_tab.lm_active{
+    box-shadow: none;
+}
+
+/*
+ * Make golden layout content flex based (this is the continer for items)
+ * golden layout already gives it an explicit height / width
+ * so with just making it a flex continer the children (our tabs) just work ;)
+ */
+.lm_content {
+    display: flex;
+    /* also make the background like code mirror monokai */
+    background-color: #1e1e1e;
+}
+
+/**
+ * Force the lm_splitter to be above other tab stuff
+ */
+.lm_splitter {
+    z-index: 2;
+}
+
+/**
+ * Force the lm_dropTargetIndicator to be above other tab stuff
+ */
+.lm_dropTargetIndicator {
+    z-index: 2;
+}
+
+/**
+ * Style the tab based on saved state
+ */
+.lm_tab.unsaved {
+}
+.lm_tab.unsaved .lm_close_tab:before {
+    content: '\F1CD'; /* life-ring */
+    font-family: FontAwesome;
+}
+
+/* Show Tips */
+.alm_tipRoot {
+    position: absolute;
+    top:0;
+    bottom:0;
+    right:0;
+    left:0;
+    display: flex;
+    pointer-events: none;
+    background-color: #1e1e1e;
+}

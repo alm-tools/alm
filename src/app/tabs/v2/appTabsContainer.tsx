@@ -16,7 +16,9 @@ import {createId} from "../../../common/utils";
 
 import * as types from "../../../common/types";
 import {connect} from "react-redux";
-import * as styles from "../../styles/styles";
+
+import * as baseStyles from "../../styles/themes/current/base";
+
 import {Tips} from "./../tips";
 import {Icon} from "../../components/icon";
 import {cast, server} from "../../../socket/socketClient";
@@ -60,7 +62,7 @@ interface GLProps extends React.Props<any>{
 }
 
 /** Some additional styles */
-require('./appTabsContainer.css')
+require('../../styles/themes/current/goldenlayout/main.css')
 
 
 export interface Props {

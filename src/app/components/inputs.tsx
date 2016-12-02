@@ -1,8 +1,8 @@
 import * as csx from "../base/csx";
-import {textColor} from "../styles/styles";
+import {textColor} from "../styles/themes/current/base";
 import * as React from "react";
 import * as ui from "../ui";
-import * as styles from "../styles/styles";
+import * as styles from "../styles/themes/current/base";
 import * as typestyle from "typestyle";
 
 const inputBlackClassName = typestyle.style(styles.modal.inputStyleBase, {

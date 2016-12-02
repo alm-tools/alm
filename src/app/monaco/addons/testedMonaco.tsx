@@ -7,7 +7,7 @@ import * as utils from "../../../common/utils";
 import * as types from "../../../common/types";
 import * as json from "../../../common/json";
 import * as typestyle from "typestyle";
-import * as styles from "../../styles/styles";
+import * as styles from "../../styles/themes/current/base";
 import {Icon} from "../../components/icon";
 import * as React from "react";
 import * as ReactDOM from "react-dom";

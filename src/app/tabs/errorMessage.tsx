@@ -6,7 +6,7 @@ import * as ui from "../ui";
 import * as csx from '../base/csx';
 import * as React from "react";
 import * as pure from "../../common/pure";
-import * as styles from "../styles/styles";
+import * as styles from "../styles/themes/current/base";
 
 export class ErrorMessage extends React.Component<{text:string},{}>{
     shouldComponentUpdate = pure.shouldComponentUpdate;
