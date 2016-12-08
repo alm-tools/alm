@@ -72,7 +72,7 @@ const useHttps = clOptions.httpskey && clOptions.httpscert;
 // Create express app and http|https server
 const app = express();
 const server = useHttps
-    ? https.createServer({ key: clOptions.httpskey, cert: clOptions.httpscert }, app)
+    ? https.createServer({ key: fs.readFileSync(clOptions.httpskey), cert: fs.readFileSync(clOptions.httpscert) }, app)
     : http.createServer(app);
 
 // Basic auth
