@@ -71,7 +71,7 @@
     "ts-node": "1.7.2",
     "tslint": "3.15.1",
     "typescript": "2.2.0-dev.20161113",
-    "update-notifier": "1.0.2"
+    "update-notifier": "1.0.3"
   },
   "devDependencies": {
     "clipboard": "^1.4.2",
