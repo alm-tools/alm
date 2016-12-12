@@ -31,9 +31,9 @@ export function getRawComment(node: ts.Node, sourceFile: ts.SourceFile): string 
         }
     }
 
-    var comments = ts.getJsDocComments(node, sourceFile);
+    var comments = ts.getCommentsFromJSDoc(node);
     if (comments && comments.length) {
-        var comment: ts.CommentRange;
+        var comment: string;
         if (node.kind == ts.SyntaxKind.SourceFile) {
             if (comments.length == 1) return null;
             comment = comments[0];
@@ -41,7 +41,7 @@ export function getRawComment(node: ts.Node, sourceFile: ts.SourceFile): string 
             comment = comments[comments.length - 1];
         }
 
-        return sourceFile.text.substring(comment.pos, comment.end);
+        return comment;
     } else {
         return null;
     }

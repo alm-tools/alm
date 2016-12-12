@@ -38,10 +38,10 @@ export class SimpleRedux<State>{
         this._listeners[usefulNameForDebugging] = (state: State, payload: Payload): State => {
             let sub = select(state);
             for (var key in state) {
-                if (state[key] == sub) break;
+                if (state[key] == sub as any) break;
             }
             let newSub = reducer(sub, payload);
-            state[key] = newSub;
+            state[key] = newSub as any;
             return state;
         };
 
@@ -79,10 +79,10 @@ export class SimpleRedux<State>{
     private _extendState(state: State, newState: State): State {
         let result = {};
         for (let key in state) {
-            result[key] = state[key];
+            result[key as any] = state[key] as any;
         }
         for (let key in newState) {
-            result[key] = newState[key];
+            result[key as any] = newState[key] as any;
         }
         return result as State;
     }
@@ -97,7 +97,7 @@ export class SimpleRedux<State>{
             result[id] = complete[id];
         }
         for (let id in fields) {
-            result[id] = fields[id];
+            result[id] = fields[id] as any;
         }
         return result;
     }
