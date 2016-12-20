@@ -549,8 +549,13 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         commands.ensureLiveDemoTab.on((e) => {
             const protocol = tabRegistry.tabs.livedemo.protocol;
             const url = `${protocol}://${e.filePath}`;
+
+            const currentTabId = this.selectedTabInstance && this.selectedTabInstance.id;
             openOrFocusSingletonTab({ protocol, url });
             this.moveCurrentTabRightIfAny();
+            if (currentTabId) {
+                this.tabState.triggerFocusAndSetAsSelected(currentTabId)
+            }
         });
         commands.closeDemoTab.on(e => {
             // If tab is open we just close it
