@@ -550,6 +550,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             const protocol = tabRegistry.tabs.livedemo.protocol;
             const url = `${protocol}://Live Demo`;
             openOrFocusSingletonTab({ protocol, url });
+            this.moveCurrentTabRightIfAny();
         });
         /** AST view */
         let getCurrentFilePathOrWarn = () => {
