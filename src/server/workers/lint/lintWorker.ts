@@ -20,6 +20,7 @@ import { ErrorsCache } from "../../utils/errorsCache";
 
 /** Bring in tslint */
 import * as LinterLocal from "tslint";
+/** The linter currently in use */
 let Linter = LinterLocal;
 /** Tslint typings. Only use in type annotations */
 import { IConfigurationFile } from "../../../../node_modules/tslint/lib/configuration";
@@ -36,7 +37,8 @@ namespace Worker {
     export const setProjectData: typeof contract.worker.setProjectData = (data) => {
         /** Load a local linter if any */
         const basedir = utils.getDirectory(data.configFile.projectFilePath);
-        return getLocalLinter(basedir).then(() => {
+        return getLocalLinter(basedir).then((linter) => {
+            Linter = linter;
             LinterImplementation.setProjectData(data);
             return {};
         })
@@ -301,7 +303,7 @@ namespace LinterImplementation {
 const TSLINT_MODULE_NAME = 'tslint';
 import * as requireResolve from 'resolve';
 function getLocalLinter(basedir: string) {
-    return new Promise(resolve =>
+    return new Promise<typeof LinterLocal>(resolve =>
         requireResolve(TSLINT_MODULE_NAME, { basedir },
             (err, linterPath, pkg) => {
                 let linter;
