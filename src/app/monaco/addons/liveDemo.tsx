@@ -1,7 +1,7 @@
 import * as commands from "../../commands/commands";
 import * as ui from "../../ui";
 import { inputDialog } from "../../dialogs/inputDialog";
-import { server } from '../../../socket/socketClient';
+import { server, cast } from '../../../socket/socketClient';
 import { API } from '../../uix';
 import * as utils from '../../../common/utils';
 
@@ -17,3 +17,13 @@ commands.enableLiveDemo.on(() => {
 commands.disableLiveDemo.on(() => {
 
 });
+
+cast.liveDemoData.on((data) => {
+    // TODO: demo
+    console.log('DATA',data.data);
+})
+cast.clearLiveDemo.on((data) => {
+    // TODO: demo
+    console.log('clear');
+})
+

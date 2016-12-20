@@ -309,6 +309,8 @@ export function register(app: http.Server | https.Server) {
     projectServiceMaster.liveBuildResults.pipe(cast.liveBuildResults);
 
     /** Live demo */
+    demoMaster.liveDemoData.pipe(cast.liveDemoData);
+    demoMaster.clearLiveDemo.pipe(cast.clearLiveDemo);
 
     /** TS Working */
     projectServiceMaster.working.pipe(cast.tsWorking);
