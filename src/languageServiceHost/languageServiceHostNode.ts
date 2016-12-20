@@ -6,6 +6,7 @@ import * as typescriptDir from '../server/workers/lang/core/typeScriptDir';
  */
 export class LanguageServiceHost extends lsh.LanguageServiceHost {
     getDefaultLibFileName = () => {
-        return typescriptDir.getDefaultLibFilePaths(this.compilerOptions)[0];
+        /** TypeScript doesn't handle `undefined` here gracefully, but it handles an empty string just fine */
+        return typescriptDir.getDefaultLibFilePaths(this.compilerOptions)[0] || '';
     }
 }
