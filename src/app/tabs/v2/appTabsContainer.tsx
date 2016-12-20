@@ -904,15 +904,15 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         const id = tabConfig.id;
         // mouse down because we want tab state to change even if user initiates a drag
         tab.on('mousedown', (evt) => {
-            // But not if the user is clicking the close button
-            const closeButtonClicked = evt.target && evt.target.className == "lm_close_tab";
-            if (closeButtonClicked) {
-                return;
-            }
             // if the user is center clicking, close the tab
             const centerClick = evt.button === 1;
             if (centerClick) {
                 tab.find('.lm_close_tab').trigger('click');
+                return;
+            }
+            // But not if the user is clicking the close button
+            const closeButtonClicked = evt.target && evt.target.className == "lm_close_tab";
+            if (closeButtonClicked) {
                 return;
             }
             this.tabState.selectTab(id);
