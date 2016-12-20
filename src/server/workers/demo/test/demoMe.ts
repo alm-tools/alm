@@ -1,4 +1,5 @@
 /**
  * This file exists to manually test live demo
  */
-console.log('hello world');
+import { log } from './foo';
+log("Hello world");
