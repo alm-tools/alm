@@ -13,7 +13,7 @@ commands.enableLiveDemo.on(() => {
     }
     const filePath = ceditor.editor.filePath;
     server.enableLiveDemo({ filePath });
-    commands.ensureLiveDemoTab.emit({});
+    commands.ensureLiveDemoTab.emit({filePath});
 });
 
 commands.disableLiveDemo.on(() => {

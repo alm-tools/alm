@@ -548,7 +548,7 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
         /** Live demo view */
         commands.ensureLiveDemoTab.on((e) => {
             const protocol = tabRegistry.tabs.livedemo.protocol;
-            const url = `${protocol}://Live Demo`;
+            const url = `${protocol}://${e.filePath}`;
             openOrFocusSingletonTab({ protocol, url });
             this.moveCurrentTabRightIfAny();
         });

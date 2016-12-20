@@ -29,19 +29,22 @@ export interface Props extends tab.TabProps {
 export interface State {
 }
 
-const startOfOutput = '--Start of output--\n';
+const startOfOutput = '--START--\n';
 
 export class LiveDemoView extends ui.BaseComponent<Props, State> {
     output = startOfOutput;
-    constructor(props) {
+    filePath = '';
+    constructor(props:Props) {
         super(props);
         this.state = {
         };
+        this.filePath = utils.getFilePathFromUrl(props.url);
     }
     componentDidMount() {
         /**
          * Initial load + load on project change
          */
+        server.enableLiveDemo({ filePath: this.filePath });
         this.disposible.add(
             cast.liveDemoData.on((data) => {
                 this.output = this.output + data.data;

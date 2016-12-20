@@ -428,7 +428,7 @@ export var doOpenOrActivateFileTab = new events.TypedEvent<{ filePath: string }>
 /** Needed to toggle output js file. We toggle and also do not steal focus */
 export var doToggleFileTab = new events.TypedEvent<{ filePath: string }>();
 /** Needed to ensure that a demo view is open */
-export var ensureLiveDemoTab = new events.TypedEvent<{}>();
+export var ensureLiveDemoTab = new events.TypedEvent<{ filePath: string }>();
 export var closeDemoTab = new events.TypedEvent<{}>();
 
 /**
