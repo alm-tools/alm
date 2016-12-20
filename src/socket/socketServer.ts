@@ -23,7 +23,7 @@ import * as activeProjectConfig from "../server/disk/activeProjectConfig";
 import { errorsCache } from "../server/globalErrorCacheServer";
 import * as projectServiceMaster from "../server/workers/lang/projectServiceMaster";
 import { testCache, working as testedWorking } from "../server/workers/tested/testedMaster";
-import * as demoMaster from '../server/workers/demo/demoMaster';
+import * as demoService from '../server/workers/external/demoService';
 
 namespace Server {
     export var echo: typeof contract.server.echo = (data, client) => {
@@ -220,8 +220,8 @@ namespace Server {
     /**
      * Live demo
      */
-    export const enableLiveDemo = demoMaster.enableLiveDemo;
-    export const disableLiveDemo = demoMaster.disableLiveDemo;
+    export const enableLiveDemo = demoService.WorkerImplementation.enableLiveDemo;
+    export const disableLiveDemo = demoService.WorkerImplementation.disableLiveDemo;
 
     /**
      * Git service
@@ -309,11 +309,11 @@ export function register(app: http.Server | https.Server) {
     projectServiceMaster.liveBuildResults.pipe(cast.liveBuildResults);
 
     /** Live demo */
-    demoMaster.liveDemoData.pipe(cast.liveDemoData);
-    demoMaster.clearLiveDemo.pipe(cast.clearLiveDemo);
-    fmc.didStatusChange.on(e => {
-        if (e.filePath === demoMaster.currentFilePath) {
-            demoMaster.enableLiveDemo({filePath: e.filePath});
+    demoService.WorkerImplementation.liveDemoData.pipe(cast.liveDemoData);
+    demoService.WorkerImplementation.clearLiveDemo.pipe(cast.clearLiveDemo);
+    fmc.didEdits.on(e => {
+        if (e.filePath === demoService.WorkerImplementation.currentFilePath) {
+            demoService.WorkerImplementation.enableLiveDemo({ filePath: e.filePath });
         }
     })
 

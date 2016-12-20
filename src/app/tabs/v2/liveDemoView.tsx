@@ -42,7 +42,6 @@ export class LiveDemoView extends ui.BaseComponent<Props, State> {
         /**
          * Initial load + load on project change
          */
-        this.loadData();
         this.disposible.add(
             cast.liveDemoData.on((data) => {
                 this.output = this.output + data.data;
@@ -90,20 +89,12 @@ export class LiveDemoView extends ui.BaseComponent<Props, State> {
     handleKey = (e: any) => {
         let unicode = e.charCode;
         if (String.fromCharCode(unicode).toLowerCase() === "r") {
-            this.loadData();
+
         }
     }
 
     filter = () => {
         // TODO:
-    }
-
-    loadData = () => {
-        // TODO:
-        // server.getTopLevelModuleNames({}).then(res => {
-        //     this.setState({files:res.files, selected: null});
-        //     this.filter();
-        // })
     }
 
     /**
