@@ -311,8 +311,8 @@ export function register(app: http.Server | https.Server) {
     /** Live demo */
     demoService.WorkerImplementation.liveDemoData.pipe(cast.liveDemoData);
     demoService.WorkerImplementation.clearLiveDemo.pipe(cast.clearLiveDemo);
-    fmc.didEdits.on(e => {
-        if (e.filePath === demoService.WorkerImplementation.currentFilePath) {
+    fmc.didStatusChange.on(e => {
+        if (e.saved && e.filePath === demoService.WorkerImplementation.currentFilePath) {
             demoService.WorkerImplementation.enableLiveDemo({ filePath: e.filePath });
         }
     })

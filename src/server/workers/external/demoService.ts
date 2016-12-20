@@ -81,7 +81,7 @@ export namespace WorkerImplementation {
     export const clearLiveDemo = new TypedEvent<{}>();
     export const liveDemoData = new TypedEvent<{ data: string }>();
 
-    export const enableLiveDemo = utils.debounce(({filePath}: { filePath: string }) => {
+    export const enableLiveDemo = ({filePath}: { filePath: string }) => {
         console.log(workerPrefix, `Started on filePath: ${filePath}`);
         if (executor) {
             executor.dispose();
@@ -92,7 +92,7 @@ export namespace WorkerImplementation {
         });
         currentFilePath = filePath;
         return Promise.resolve({})
-    },1000);
+    };
     export const disableLiveDemo = () => {
         if (executor) {
             clearLiveDemo.emit({});
