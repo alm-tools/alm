@@ -65,7 +65,7 @@ class FileExecutor {
 
         child.on('close', (code) => {
             if (this.disposed) return;
-            cb('--END--');
+            cb('---END---');
             console.log(workerPrefix, 'process ended');
         });
     }

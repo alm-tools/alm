@@ -82,8 +82,8 @@ export class LiveDemoView extends ui.BaseComponent<Props, State> {
                 style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll, { color: styles.textColor })}
                 onKeyPress={this.handleKey}
                 onFocus={this.props.onFocused}>
-                <div style={{ overflow: 'hidden', padding: '10px', display: 'flex' }}>
-                    <pre>{this.output}</pre>
+                <div style={{ overflow: 'hidden', display: 'flex', padding: '10px' }}>
+                    <pre style={{overflow: 'auto', display:'flex', flex: '1', margin: '0px' }}>{this.output}</pre>
                 </div>
             </div>
         );
