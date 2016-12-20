@@ -7,81 +7,54 @@ import * as ui from "../../ui";
 import * as csx from "../../base/csx";
 import * as React from "react";
 import * as tab from "./tab";
-import {server, cast} from "../../../socket/socketClient";
+import { server, cast } from "../../../socket/socketClient";
 import * as commands from "../../commands/commands";
 import * as utils from "../../../common/utils";
 import * as d3 from "d3";
-import {Types} from "../../../socket/socketContract";
+import { Types } from "../../../socket/socketContract";
 import * as types from "../../../common/types";
-import {IconType} from "../../../common/types";
+import { IconType } from "../../../common/types";
 import * as $ from "jquery";
 import * as styles from "../../styles/styles";
 import * as onresize from "onresize";
-import {Clipboard} from "../../components/clipboard";
+import { Clipboard } from "../../components/clipboard";
 import * as typeIcon from "../../components/typeIcon";
 import * as gls from "../../base/gls";
 import * as typestyle from "typestyle";
-import {MarkDown} from "../../markdown/markdown";
+import { MarkDown } from "../../markdown/markdown";
+import * as ReactDOM from 'react-dom';
 
 export interface Props extends tab.TabProps {
 }
 export interface State {
-    filter?: string;
 }
 
-export class LiveDemoView extends ui.BaseComponent<Props, State> {
+const startOfOutput = '--Start of output--\n';
 
-    constructor(props: Props) {
+export class LiveDemoView extends ui.BaseComponent<Props, State> {
+    output = startOfOutput;
+    constructor(props) {
         super(props);
-        this.filePath = utils.getFilePathFromUrl(props.url);
         this.state = {
-            filter: ''
         };
     }
-
-    refs: {
-        [string: string]: any;
-        root: HTMLDivElement;
-        graphRoot: HTMLDivElement;
-        controlRoot: HTMLDivElement;
-    }
-
-    filePath: string;
     componentDidMount() {
-
         /**
          * Initial load + load on project change
          */
         this.loadData();
         this.disposible.add(
-            cast.activeProjectFilePathsUpdated.on(() => {
-                this.loadData();
+            cast.liveDemoData.on((data) => {
+                this.output = this.output + data.data;
+                this.forceUpdate();
             })
         );
-
-        /**
-         * If a file is selected and it gets edited, reload the file module information
-         */
-        const loadDataDebounced = utils.debounce(this.loadData, 3000);
         this.disposible.add(
-            commands.fileContentsChanged.on((res) => {
-                if (this.filePath !== res.filePath) return;
-                loadDataDebounced();
+            cast.clearLiveDemo.on((data) => {
+                this.output = startOfOutput;
+                this.forceUpdate();
             })
         );
-
-        /**
-         * Handle focus to inform tab container
-         */
-        const focused = () => {
-            this.props.onFocused();
-        }
-        this.refs.root.addEventListener('focus', focused);
-        this.disposible.add({
-            dispose: () => {
-                this.refs.root.removeEventListener('focus', focused);
-            }
-        })
 
         // Listen to tab events
         const api = this.props.api;
@@ -103,12 +76,12 @@ export class LiveDemoView extends ui.BaseComponent<Props, State> {
     render() {
         return (
             <div
-                ref="root"
                 tabIndex={0}
-                style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll, {color: styles.textColor}) }
-                onKeyPress={this.handleKey}>
-                <div style={{overflow: 'hidden', padding:'10px', display: 'flex'}}>
-
+                style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll, { color: styles.textColor })}
+                onKeyPress={this.handleKey}
+                onFocus={this.props.onFocused}>
+                <div style={{ overflow: 'hidden', padding: '10px', display: 'flex' }}>
+                    <pre>{this.output}</pre>
                 </div>
             </div>
         );
@@ -141,7 +114,7 @@ export class LiveDemoView extends ui.BaseComponent<Props, State> {
     }
 
     focus = () => {
-        this.refs.root.focus();
+        (ReactDOM.findDOMNode(this) as any).focus();
     }
 
     save = () => {
@@ -155,11 +128,9 @@ export class LiveDemoView extends ui.BaseComponent<Props, State> {
 
     search = {
         doSearch: (options: FindOptions) => {
-            this.setState({ filter: options.query });
         },
 
         hideSearch: () => {
-            this.setState({ filter: '' });
         },
 
         findNext: (options: FindOptions) => {
@@ -178,14 +149,3 @@ export class LiveDemoView extends ui.BaseComponent<Props, State> {
         }
     }
 }
-
-
-
-cast.liveDemoData.on((data) => {
-    // TODO: demo
-    console.log('DATA',data.data);
-})
-cast.clearLiveDemo.on((data) => {
-    // TODO: demo
-    console.log('clear');
-})
