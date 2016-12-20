@@ -311,6 +311,11 @@ export function register(app: http.Server | https.Server) {
     /** Live demo */
     demoMaster.liveDemoData.pipe(cast.liveDemoData);
     demoMaster.clearLiveDemo.pipe(cast.clearLiveDemo);
+    fmc.didStatusChange.on(e => {
+        if (e.filePath === demoMaster.currentFilePath) {
+            demoMaster.enableLiveDemo({filePath: e.filePath});
+        }
+    })
 
     /** TS Working */
     projectServiceMaster.working.pipe(cast.tsWorking);

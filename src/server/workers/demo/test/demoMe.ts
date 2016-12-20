@@ -3,3 +3,4 @@
  */
 import { log } from './foo';
 log("Hello world");
+log("Hello world");

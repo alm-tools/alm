@@ -2,6 +2,7 @@ import * as sw from "../../utils/simpleWorker";
 import * as contract from "./demoContract";
 import { TypedEvent } from '../../../common/events';
 
+export let currentFilePath = '';
 export const clearLiveDemo = new TypedEvent<{}>();
 export const liveDemoData = new TypedEvent<{ data: string }>();
 
@@ -24,8 +25,11 @@ export const {worker} = sw.startWorker({
     workerContract: contract.worker,
     masterImplementation: Master
 });
-export function start() {
-    // Any optional initilization on worker;
+export const enableLiveDemo: typeof worker.enableLiveDemo = (data) => {
+    currentFilePath = data.filePath;
+    return worker.enableLiveDemo(data);
+};
+export const disableLiveDemo: typeof worker.disableLiveDemo = (data) => {
+    currentFilePath = '';
+    return worker.disableLiveDemo(data);
 }
-export const enableLiveDemo =  worker.enableLiveDemo;
-export const disableLiveDemo =  worker.disableLiveDemo;
