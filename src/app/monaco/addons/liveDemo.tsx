@@ -17,15 +17,5 @@ commands.enableLiveDemo.on(() => {
 });
 
 commands.disableLiveDemo.on(() => {
-
+    commands.closeDemoTab.emit({});
 });
-
-cast.liveDemoData.on((data) => {
-    // TODO: demo
-    console.log('DATA',data.data);
-})
-cast.clearLiveDemo.on((data) => {
-    // TODO: demo
-    console.log('clear');
-})
-

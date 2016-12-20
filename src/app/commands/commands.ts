@@ -429,6 +429,7 @@ export var doOpenOrActivateFileTab = new events.TypedEvent<{ filePath: string }>
 export var doToggleFileTab = new events.TypedEvent<{ filePath: string }>();
 /** Needed to ensure that a demo view is open */
 export var ensureLiveDemoTab = new events.TypedEvent<{}>();
+export var closeDemoTab = new events.TypedEvent<{}>();
 
 /**
  * Other tab types

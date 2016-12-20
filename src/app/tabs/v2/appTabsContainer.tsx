@@ -552,6 +552,17 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             openOrFocusSingletonTab({ protocol, url });
             this.moveCurrentTabRightIfAny();
         });
+        commands.closeDemoTab.on(e => {
+            // If tab is open we just close it
+            const protocol = tabRegistry.tabs.livedemo.protocol;
+            const existing = this.tabs.find(t => {
+                return utils.getFilePathAndProtocolFromUrl(t.url).protocol == protocol;
+            });
+            if (existing) {
+                this.tabState.closeTabById(existing.id);
+                return;
+            }
+        });
         /** AST view */
         let getCurrentFilePathOrWarn = () => {
             let tab = this.tabState.getSelectedTab();

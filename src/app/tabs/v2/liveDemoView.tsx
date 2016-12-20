@@ -178,3 +178,14 @@ export class LiveDemoView extends ui.BaseComponent<Props, State> {
         }
     }
 }
+
+
+
+cast.liveDemoData.on((data) => {
+    // TODO: demo
+    console.log('DATA',data.data);
+})
+cast.clearLiveDemo.on((data) => {
+    // TODO: demo
+    console.log('clear');
+})
