@@ -7,16 +7,17 @@ import * as tab from "./tab";
 import * as ui from "../../ui";
 
 /** Various tabs  */
-import {Code} from "./codeTab";
-import {ASTView} from "./astView";
-import {DependencyView} from "./dependencyView";
-import {FindAndReplaceView} from "./findAndReplaceMulti";
-import {DocumentationView} from "./documentationView";
-import {UmlView} from "./umlView";
-import {TsFlowView} from "./tsFlowView";
-import {TestedView} from "./testedView";
+import { Code } from "./codeTab";
+import { ASTView } from "./astView";
+import { DependencyView } from "./dependencyView";
+import { FindAndReplaceView } from "./findAndReplaceMulti";
+import { DocumentationView } from "./documentationView";
+import { UmlView } from "./umlView";
+import { TsFlowView } from "./tsFlowView";
+import { TestedView } from "./testedView";
+import { LiveDemoView } from './liveDemoView';
 
-type ComponentConstructor = { new (props: tab.TabProps): ui.BaseComponent<tab.TabProps,any> };
+type ComponentConstructor = { new (props: tab.TabProps): ui.BaseComponent<tab.TabProps, any> };
 
 /**
  * Tabs get to choose how much they want to integrate with search
@@ -30,7 +31,7 @@ export enum TabSearchSupport {
 interface TabConfig {
     protocol: string;
     searchSupport: TabSearchSupport;
-    getTitle(url:string): string;
+    getTitle(url: string): string;
     component: ComponentConstructor;
 }
 
@@ -44,31 +45,31 @@ export const tabs = {
     ast: {
         protocol: 'ast',
         searchSupport: TabSearchSupport.None,
-        getTitle: (url)=> `AST ${utils.getFileName(url)}`,
+        getTitle: (url) => `AST ${utils.getFileName(url)}`,
         component: ASTView,
     },
     astfull: {
         protocol: 'astfull',
         searchSupport: TabSearchSupport.None,
-        getTitle: (url)=> `AST Full ${utils.getFileName(url)}`,
+        getTitle: (url) => `AST Full ${utils.getFileName(url)}`,
         component: ASTView,
     },
     dependency: {
         protocol: 'dependency',
         searchSupport: TabSearchSupport.Basic,
-        getTitle: ()=> 'Dependency View',
+        getTitle: () => 'Dependency View',
         component: DependencyView,
     },
     farm: { // find and replace multi
         protocol: 'farm',
         searchSupport: TabSearchSupport.None,
-        getTitle: (url)=> `Find In Project`,
+        getTitle: (url) => `Find In Project`,
         component: FindAndReplaceView,
     },
     documentation: {
         protocol: 'documentation',
         searchSupport: TabSearchSupport.Basic,
-        getTitle: (url)=> `Documentation`,
+        getTitle: (url) => `Documentation`,
         component: DocumentationView,
     },
     uml: {
@@ -89,8 +90,14 @@ export const tabs = {
         getTitle: (url) => `Tests`,
         component: TestedView,
     },
+    livedemo: {
+        protocol: 'livedemo',
+        searchSupport: TabSearchSupport.None,
+        getTitle: () => 'Live Demo',
+        component: LiveDemoView
+    }
 }
-let _ensuretabsType: {[protocol:string]:TabConfig} = tabs;
+let _ensuretabsType: { [protocol: string]: TabConfig } = tabs;
 
 export function getTabConfigs() {
     return Object.keys(tabs).map((protocol) => ({ protocol, config: tabs[protocol] }));

@@ -545,6 +545,12 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
             const url = `${protocol}://Find And Replace`;
             openOrFocusSingletonTab({ protocol, url });
         });
+        /** Live demo view */
+        commands.ensureLiveDemoTab.on((e) => {
+            const protocol = tabRegistry.tabs.livedemo.protocol;
+            const url = `${protocol}://Live Demo`;
+            openOrFocusSingletonTab({ protocol, url });
+        });
         /** AST view */
         let getCurrentFilePathOrWarn = () => {
             let tab = this.tabState.getSelectedTab();

@@ -9,9 +9,11 @@ commands.enableLiveDemo.on(() => {
     const ceditor = API.getFocusedCodeEditorIfAny();
     if (!ceditor || !utils.isTs(ceditor.editor.filePath)) {
         ui.notifyWarningNormalDisappear('Your current tab needs to be a TypeScript file');
+        return;
     }
     const filePath = ceditor.editor.filePath;
     server.enableLiveDemo({ filePath });
+    commands.ensureLiveDemoTab.emit({});
 });
 
 commands.disableLiveDemo.on(() => {
