@@ -14,7 +14,7 @@ import * as contract from "./lintContract";
 import {resolve, timer} from "../../../common/utils";
 import * as utils from "../../../common/utils";
 import * as types from "../../../common/types";
-import {LanguageServiceHost} from "../../../languageServiceHost/languageServiceHost";
+import {LanguageServiceHost} from "../../../languageServiceHost/languageServiceHostNode";
 import {isFileInTypeScriptDir} from "../lang/core/typeScriptDir";
 import {ErrorsCache} from "../../utils/errorsCache";
 

@@ -4,6 +4,7 @@ import {selectMany,createMap}  from "../../../../common/utils";
 import * as types from "../../../../common/types";
 import * as typescriptDir from "./typeScriptDir";
 import * as utils from "../../../../common/utils";
+import { LanguageServiceHost } from '../../../../languageServiceHost/languageServiceHostNode';
 
 import {master as masterType} from "../projectServiceContract";
 let master: typeof masterType;
@@ -11,7 +12,6 @@ export function setMaster(m: typeof masterType) {
     master = m;
 }
 
-import * as lsh from "../../../../languageServiceHost/languageServiceHost";
 
 /**
  * Wraps up `langaugeService` `languageServiceHost` and `projectFile` in a single package
@@ -124,11 +124,4 @@ export class Project {
                 });
         });
     }
-}
-
-/**
- * Similar to the base, just adds stuff that uses `require.resolve` to load lib.d.ts
- */
-export class LanguageServiceHost extends lsh.LanguageServiceHost {
-    getDefaultLibFileName = () => typescriptDir.getDefaultLibFilePaths(this.compilerOptions)[0];
 }
