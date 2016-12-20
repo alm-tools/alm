@@ -11,6 +11,7 @@ commands.enableLiveDemo.on(() => {
         ui.notifyWarningNormalDisappear('Your current tab needs to be a TypeScript file');
     }
     const filePath = ceditor.editor.filePath;
+    server.enableLiveDemo({ filePath });
 });
 
 commands.disableLiveDemo.on(() => {
