@@ -5,24 +5,25 @@
 /**
  * Load up TypeScript
  */
-import * as byots  from "byots";
+import * as byots from "byots";
 const ensureImport = byots;
 
 import * as sw from "../../utils/simpleWorker";
 import * as contract from "./lintContract";
 
-import {resolve, timer} from "../../../common/utils";
+import { resolve, timer } from "../../../common/utils";
 import * as utils from "../../../common/utils";
 import * as types from "../../../common/types";
-import {LanguageServiceHost} from "../../../languageServiceHost/languageServiceHostNode";
-import {isFileInTypeScriptDir} from "../lang/core/typeScriptDir";
-import {ErrorsCache} from "../../utils/errorsCache";
+import { LanguageServiceHost } from "../../../languageServiceHost/languageServiceHostNode";
+import { isFileInTypeScriptDir } from "../lang/core/typeScriptDir";
+import { ErrorsCache } from "../../utils/errorsCache";
 
 /** Bring in tslint */
-import * as Linter from "tslint";
+import * as LinterLocal from "tslint";
+let Linter = LinterLocal;
 /** Tslint typings. Only use in type annotations */
-import {IConfigurationFile} from "../../../../node_modules/tslint/lib/configuration";
-import {RuleFailure} from "../../../../node_modules/tslint/lib/language/rule/rule";
+import { IConfigurationFile } from "../../../../node_modules/tslint/lib/configuration";
+import { RuleFailure } from "../../../../node_modules/tslint/lib/language/rule/rule";
 
 /**
  * Horrible file access :)
@@ -33,8 +34,12 @@ const linterMessagePrefix = `[LINT]`
 
 namespace Worker {
     export const setProjectData: typeof contract.worker.setProjectData = (data) => {
-        LinterImplementation.setProjectData(data);
-        return resolve({});
+        /** Load a local linter if any */
+        const basedir = utils.getDirectory(data.configFile.projectFilePath);
+        return getLocalLinter(basedir).then(() => {
+            LinterImplementation.setProjectData(data);
+            return {};
+        })
     }
     export const fileSaved: typeof contract.worker.fileSaved = (data) => {
         LinterImplementation.fileSaved(data);
@@ -141,7 +146,7 @@ namespace LinterImplementation {
         }
 
         /** We have our configuration file. Now lets convert it to configuration :) */
-        let configuration:IConfigurationFile;
+        let configuration: IConfigurationFile;
         try {
             configuration = Linter.loadConfigurationFromPath(configurationPath);
         }
@@ -228,12 +233,12 @@ namespace LinterImplementation {
             });
     }
 
-    export function fileSaved({filePath}:{filePath:string}) {
-        if (!linterConfig){
+    export function fileSaved({filePath}: { filePath: string }) {
+        if (!linterConfig) {
             return;
         }
         /** tslint : do the whole thing */
-        if (filePath.endsWith('tslint.json')){
+        if (filePath.endsWith('tslint.json')) {
             loadLintConfigAndLint();
             return;
         }
@@ -286,4 +291,31 @@ namespace LinterImplementation {
         }
         return result;
     }
+}
+
+
+/**
+ * From
+ * https://github.com/AtomLinter/linter-tslint/blob/2c8e99da92f9f2392adf26f5dd49d78a1a4ef753/lib/main.js
+ */
+const TSLINT_MODULE_NAME = 'tslint';
+import * as requireResolve from 'resolve';
+function getLocalLinter(basedir: string) {
+    return new Promise(resolve =>
+        requireResolve(TSLINT_MODULE_NAME, { basedir },
+            (err, linterPath, pkg) => {
+                let linter;
+                if (!err && pkg && /^3|4\./.test(pkg.version)) {
+                    if (pkg.version.startsWith('3')) {
+                        linter = require(linterPath);
+                    } else if (pkg.version.startsWith('4')) {
+                        linter = (require(linterPath) as any).Linter;
+                    }
+                } else {
+                    linter = LinterLocal;
+                }
+                return resolve(linter);
+            },
+        ),
+    );
 }
