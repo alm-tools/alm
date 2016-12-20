@@ -13,3 +13,5 @@ Here we mention some of the dependencies and what we use them for:
 
 * `mocha`
 * `ts-node`
+
+`source-map-support` is needed by `ts-node`. We should not need to have it as a dependency but pinned to fix https://github.com/alm-tools/alm/issues/330
