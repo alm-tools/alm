@@ -1,6 +1,6 @@
 describe("Level.1 Suite", () => {
     describe("Level.2 Suite", () => {
-        it("Level.2.1 should pass", ()=> {
+        it("Level.2.1 should pass", () => {
 
         });
 
@@ -13,14 +13,14 @@ describe("Level.1 Suite", () => {
             callAlwaysThrow();
         });
 
-        it.skip("Level.2.3 skipped", ()=> {
+        it.skip("Level.2.3 skipped", () => {
             throw new Error("Fail")
         });
     })
 
     it("Level.1.1 should pass", () => {
         const something = 456;
-        console.log('over here as well', { something }, "another","Yeah baby totally");
+        console.log('over here as well', { something }, "another", "Yeah baby totally");
     });
 
     it("Level.1.2 should fail", () => {
@@ -32,7 +32,14 @@ describe("Level.1 Suite", () => {
         return Promise.reject('Error without stack');
     });
 
-    it.skip("Level.1.3 skipped", ()=> {
+    it.skip("Level.1.3 skipped", () => {
         throw new Error("Fail")
+    });
+});
+
+describe("Level.1 Empty Suite", () => {
+    describe("Level.2 Suite", () => {
+        it("Level.2 test", () => {
+        });
     });
 })

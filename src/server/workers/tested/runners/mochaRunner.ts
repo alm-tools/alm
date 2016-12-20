@@ -200,8 +200,19 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
             suites.push(currentSuite);
         }
 
-        /** Fixup the test log position now that we have the right description */
-        currentSuite.testLogPosition = suitePositions.find(s => s.title == currentSuite.description).testLogPosition;
+        /**
+         * Fixup the test log position now that we have the right description
+         */
+        let matchInSuitePosition = suitePositions.find(s => s.title == currentSuite.description);
+        if (!matchInSuitePosition) {
+            /**
+             * if there no test in the outer position then the description can still be wrong
+             * aka `outerSuite innerSuite` (instead of `innerSuite`)
+             * In this case just match against some suitePosition that has a title starting with the description
+             **/
+            matchInSuitePosition = suitePositions.find(s => currentSuite.description.endsWith(s.title));
+        }
+        currentSuite.testLogPosition = matchInSuitePosition.testLogPosition;
 
         /** Return */
         return currentSuite;
@@ -209,7 +220,6 @@ export function parseMochaJSON(cfg: { output: string, filePath: string }): types
 
     tests.forEach(test => {
         const suiteDescription = test.fullTitle.substr(0, test.fullTitle.length - test.title.length).trim();
-
         const suite = getOrCreateSuite(suiteDescription, instrumentationData.suites);
 
         const testStatus = (test: Test): types.TestStatus => {
