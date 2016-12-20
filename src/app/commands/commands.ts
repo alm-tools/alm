@@ -155,6 +155,14 @@ export var toggleOutputJS = new UICommand({
     description: "TypeScript: Toggle output js file",
     context: CommandContext.Global,
 });
+export var enableLiveDemo = new UICommand({
+    description: "TypeScript: Demo file",
+    context: CommandContext.Global,
+});
+export var disableLiveDemo = new UICommand({
+    description: "TypeScript: Demo stop",
+    context: CommandContext.Global,
+});
 
 /**
  * Tab indexing

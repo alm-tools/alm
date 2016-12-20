@@ -5,7 +5,7 @@ import https = require("https");
 import * as fsu from "../server/utils/fsu";
 import * as flm from "../server/workers/fileListing/fileListingMaster";
 import * as workingDir from "../server/disk/workingDir";
-import {FileModel} from "../server/disk/fileModel";
+import { FileModel } from "../server/disk/fileModel";
 import * as gitService from "../server/workers/external/gitService";
 import * as npmService from "../server/workers/external/npmService";
 import * as findAndReplaceMultiService from "../server/workers/external/findAndReplaceMultiService";
@@ -14,15 +14,16 @@ import * as settings from "../server/disk/settings";
 import * as serverDiskService from "../server/workers/external/serverDiskService";
 import * as session from "../server/disk/session";
 import * as utils from "../common/utils";
-import {onServerExit} from "./serverExit";
+import { onServerExit } from "./serverExit";
 let resolve = sls.resolve;
 
 import * as fmc from "../server/disk/fileModelCache";
 import * as activeProjectConfig from "../server/disk/activeProjectConfig";
 
-import {errorsCache} from "../server/globalErrorCacheServer";
+import { errorsCache } from "../server/globalErrorCacheServer";
 import * as projectServiceMaster from "../server/workers/lang/projectServiceMaster";
-import {testCache, working as testedWorking} from "../server/workers/tested/testedMaster";
+import { testCache, working as testedWorking } from "../server/workers/tested/testedMaster";
+import * as demoMaster from '../server/workers/demo/demoMaster';
 
 namespace Server {
     export var echo: typeof contract.server.echo = (data, client) => {
@@ -36,7 +37,7 @@ namespace Server {
     }
 
     export var filePaths: typeof contract.server.filePaths = (data) => {
-        return flm.filePathsUpdated.current().then(res=> ({ filePaths: res.filePaths, completed: res.completed, rootDir: res.rootDir }));
+        return flm.filePathsUpdated.current().then(res => ({ filePaths: res.filePaths, completed: res.completed, rootDir: res.rootDir }));
     }
 
     export var makeAbsolute: typeof contract.server.makeAbsolute = (data) => {
@@ -86,18 +87,18 @@ namespace Server {
         return resolve({ error: null });
     }
     export var duplicateDir: typeof contract.server.duplicateDir = (data) => {
-        return fmc.duplicateDir(data).then(error=>{
-            return {error};
+        return fmc.duplicateDir(data).then(error => {
+            return { error };
         });
     }
     export var movePath: typeof contract.server.movePath = (data) => {
-        return fmc.movePath(data).then(error=>{
-            return {error};
+        return fmc.movePath(data).then(error => {
+            return { error };
         });
     }
     export var launchDirectory: typeof contract.server.launchDirectory = (data) => {
-        return fmc.launchDirectory(data).then(error=>{
-            return {error};
+        return fmc.launchDirectory(data).then(error => {
+            return { error };
         });
     }
 
@@ -156,7 +157,7 @@ namespace Server {
     /**
      * Tested
      */
-    export var getTestResults:typeof contract.server.getTestResults = (data) => {
+    export var getTestResults: typeof contract.server.getTestResults = (data) => {
         return resolve(testCache.getResults());
     }
 
@@ -166,22 +167,22 @@ namespace Server {
     export var getCompletionsAtPosition: typeof contract.server.getCompletionsAtPosition = (query) => {
         return projectServiceMaster.worker.getCompletionsAtPosition(query);
     }
-    export var quickInfo : typeof contract.server.quickInfo = (query) => {
+    export var quickInfo: typeof contract.server.quickInfo = (query) => {
         return projectServiceMaster.worker.quickInfo(query);
     }
-    export var getCompletionEntryDetails : typeof contract.server.getCompletionEntryDetails = projectServiceMaster.worker.getCompletionEntryDetails;
-    export var getRenameInfo : typeof contract.server.getRenameInfo = projectServiceMaster.worker.getRenameInfo;
-    export var getDefinitionsAtPosition : typeof contract.server.getDefinitionsAtPosition = projectServiceMaster.worker.getDefinitionsAtPosition;
-    export var getDoctorInfo : typeof contract.server.getDoctorInfo = projectServiceMaster.worker.getDoctorInfo;
-    export var getReferences : typeof contract.server.getReferences = projectServiceMaster.worker.getReferences;
-    export var formatDocument : typeof contract.server.formatDocument = projectServiceMaster.worker.formatDocument;
-    export var formatDocumentRange : typeof contract.server.formatDocumentRange = projectServiceMaster.worker.formatDocumentRange;
-    export var getNavigateToItems : typeof contract.server.getNavigateToItems = projectServiceMaster.worker.getNavigateToItems;
-    export var getNavigateToItemsForFilePath : typeof contract.server.getNavigateToItemsForFilePath = projectServiceMaster.worker.getNavigateToItemsForFilePath;
-    export var getDependencies : typeof contract.server.getDependencies = projectServiceMaster.worker.getDependencies;
-    export var getAST : typeof contract.server.getAST = projectServiceMaster.worker.getAST;
-    export var getQuickFixes : typeof contract.server.getQuickFixes = projectServiceMaster.worker.getQuickFixes;
-    export var applyQuickFix : typeof contract.server.applyQuickFix = projectServiceMaster.worker.applyQuickFix;
+    export var getCompletionEntryDetails: typeof contract.server.getCompletionEntryDetails = projectServiceMaster.worker.getCompletionEntryDetails;
+    export var getRenameInfo: typeof contract.server.getRenameInfo = projectServiceMaster.worker.getRenameInfo;
+    export var getDefinitionsAtPosition: typeof contract.server.getDefinitionsAtPosition = projectServiceMaster.worker.getDefinitionsAtPosition;
+    export var getDoctorInfo: typeof contract.server.getDoctorInfo = projectServiceMaster.worker.getDoctorInfo;
+    export var getReferences: typeof contract.server.getReferences = projectServiceMaster.worker.getReferences;
+    export var formatDocument: typeof contract.server.formatDocument = projectServiceMaster.worker.formatDocument;
+    export var formatDocumentRange: typeof contract.server.formatDocumentRange = projectServiceMaster.worker.formatDocumentRange;
+    export var getNavigateToItems: typeof contract.server.getNavigateToItems = projectServiceMaster.worker.getNavigateToItems;
+    export var getNavigateToItemsForFilePath: typeof contract.server.getNavigateToItemsForFilePath = projectServiceMaster.worker.getNavigateToItemsForFilePath;
+    export var getDependencies: typeof contract.server.getDependencies = projectServiceMaster.worker.getDependencies;
+    export var getAST: typeof contract.server.getAST = projectServiceMaster.worker.getAST;
+    export var getQuickFixes: typeof contract.server.getQuickFixes = projectServiceMaster.worker.getQuickFixes;
+    export var applyQuickFix: typeof contract.server.applyQuickFix = projectServiceMaster.worker.applyQuickFix;
     export var build: typeof contract.server.build = projectServiceMaster.worker.build;
     export var getSemanticTree: typeof contract.server.getSemanticTree = projectServiceMaster.worker.getSemanticTree;
     export var getOccurrencesAtPosition: typeof contract.server.getOccurrencesAtPosition = projectServiceMaster.worker.getOccurrencesAtPosition;
@@ -191,17 +192,17 @@ namespace Server {
     /**
      * Documentation browser
      */
-    export var getTopLevelModuleNames : typeof contract.server.getTopLevelModuleNames = projectServiceMaster.worker.getTopLevelModuleNames;
-    export var getUpdatedModuleInformation : typeof contract.server.getUpdatedModuleInformation = projectServiceMaster.worker.getUpdatedModuleInformation;
+    export var getTopLevelModuleNames: typeof contract.server.getTopLevelModuleNames = projectServiceMaster.worker.getTopLevelModuleNames;
+    export var getUpdatedModuleInformation: typeof contract.server.getUpdatedModuleInformation = projectServiceMaster.worker.getUpdatedModuleInformation;
 
     /** UML Diagram */
-    export var getUmlDiagramForFile : typeof contract.server.getUmlDiagramForFile = projectServiceMaster.worker.getUmlDiagramForFile;
+    export var getUmlDiagramForFile: typeof contract.server.getUmlDiagramForFile = projectServiceMaster.worker.getUmlDiagramForFile;
 
     /** tsFlow */
-    export var getFlowRoots : typeof contract.server.getFlowRoots = projectServiceMaster.worker.getFlowRoots;
+    export var getFlowRoots: typeof contract.server.getFlowRoots = projectServiceMaster.worker.getFlowRoots;
 
     /** live analysis */
-    export var getLiveAnalysis : typeof contract.server.getLiveAnalysis = projectServiceMaster.worker.getLiveAnalysis;
+    export var getLiveAnalysis: typeof contract.server.getLiveAnalysis = projectServiceMaster.worker.getLiveAnalysis;
 
     /**
      * Output Status
@@ -217,13 +218,19 @@ namespace Server {
     export const getJSOutputStatus: typeof contract.server.getJSOutputStatus = projectServiceMaster.worker.getJSOutputStatus;
 
     /**
+     * Live demo
+     */
+    export const enableLiveDemo = demoMaster.enableLiveDemo;
+    export const disableLiveDemo = demoMaster.disableLiveDemo;
+
+    /**
      * Git service
      */
-    export var gitStatus : typeof contract.server.gitStatus = gitService.gitStatus;
-    export var gitReset : typeof contract.server.gitReset = gitService.gitReset;
+    export var gitStatus: typeof contract.server.gitStatus = gitService.gitStatus;
+    export var gitReset: typeof contract.server.gitReset = gitService.gitReset;
     export var gitDiff: typeof contract.server.gitDiff = gitService.gitDiff;
-    export var gitAddAllCommitAndPush : typeof contract.server.gitAddAllCommitAndPush = gitService.gitAddAllCommitAndPush;
-    export var gitFetchLatestAndRebase : typeof contract.server.gitFetchLatestAndRebase = gitService.gitFetchLatestAndRebase;
+    export var gitAddAllCommitAndPush: typeof contract.server.gitAddAllCommitAndPush = gitService.gitAddAllCommitAndPush;
+    export var gitFetchLatestAndRebase: typeof contract.server.gitFetchLatestAndRebase = gitService.gitFetchLatestAndRebase;
 
     /**
      * NPM service
@@ -233,9 +240,9 @@ namespace Server {
     /**
      * FARM
      */
-    export var startFarming : typeof contract.server.startFarming = findAndReplaceMultiService.startFarming;
-    export var stopFarmingIfRunning : typeof contract.server.stopFarmingIfRunning = findAndReplaceMultiService.stopFarmingIfRunning;
-    export var farmResults: typeof contract.server.farmResults = (query:{}) => findAndReplaceMultiService.farmResultsUpdated.current();
+    export var startFarming: typeof contract.server.startFarming = findAndReplaceMultiService.startFarming;
+    export var stopFarmingIfRunning: typeof contract.server.stopFarmingIfRunning = findAndReplaceMultiService.stopFarmingIfRunning;
+    export var farmResults: typeof contract.server.farmResults = (query: {}) => findAndReplaceMultiService.farmResultsUpdated.current();
 
     /**
      * Config creator
@@ -245,7 +252,7 @@ namespace Server {
     /**
      * Settings
      */
-    export const getSettingsFilePath: typeof contract.server.getSettingsFilePath = (query:{}) => Promise.resolve({filePath:settings.getSettingsFilePath()});
+    export const getSettingsFilePath: typeof contract.server.getSettingsFilePath = (query: {}) => Promise.resolve({ filePath: settings.getSettingsFilePath() });
 
     /**
      * Server Disk Service
@@ -295,11 +302,13 @@ export function register(app: http.Server | https.Server) {
     findAndReplaceMultiService.farmResultsUpdated.pipe(cast.farmResultsUpdated);
 
     /** JS Output Status */
-    cast.liveBuildResults.emit({builtCount:0,totalCount:0}); // for initial joiners
+    cast.liveBuildResults.emit({ builtCount: 0, totalCount: 0 }); // for initial joiners
     cast.completeOutputStatusCacheUpdated.emit({}); // for initial joiners
     projectServiceMaster.fileOutputStatusUpdated.pipe(cast.fileOutputStatusUpdated);
     projectServiceMaster.completeOutputStatusCacheUpdated.pipe(cast.completeOutputStatusCacheUpdated);
     projectServiceMaster.liveBuildResults.pipe(cast.liveBuildResults);
+
+    /** Live demo */
 
     /** TS Working */
     projectServiceMaster.working.pipe(cast.tsWorking);

@@ -1,7 +1,7 @@
 import * as sl from "../socketLib/socketLib";
-import {QRFunction, QRServerFunction, TypedEvent} from "../socketLib/socketLib";
+import { QRFunction, QRServerFunction, TypedEvent } from "../socketLib/socketLib";
 import * as types from "../common/types";
-import {AvailableProjectConfig} from "../common/types";
+import { AvailableProjectConfig } from "../common/types";
 
 /**
  * Consists of the following contracts
@@ -27,9 +27,9 @@ export var server = {
     addFile: {} as QRFunction<{ filePath: string }, { error?: string }>,
     addFolder: {} as QRFunction<{ filePath: string }, { error?: string }>,
     deleteFromDisk: {} as QRFunction<{ files: string[], dirs: string[] }, { errors?: { filePath: string, error: string }[] }>,
-    duplicateFile: {} as QRFunction<{ src: string, dest: string }, { error: string}>,
-    duplicateDir: {} as QRFunction<{ src: string, dest: string }, { error: string}>,
-    movePath: {} as QRFunction<{ src: string, dest: string }, { error: string}>, // both files / folders
+    duplicateFile: {} as QRFunction<{ src: string, dest: string }, { error: string }>,
+    duplicateDir: {} as QRFunction<{ src: string, dest: string }, { error: string }>,
+    movePath: {} as QRFunction<{ src: string, dest: string }, { error: string }>, // both files / folders
     launchDirectory: {} as QRFunction<{ filePath: string }, { error: string }>, // both files / folders
 
     /**
@@ -39,8 +39,8 @@ export var server = {
     getActiveProjectConfigDetails: {} as QRFunction<{}, AvailableProjectConfig>,
     setActiveProjectConfigDetails: {} as QRFunction<AvailableProjectConfig, {}>,
     isFilePathInActiveProject: {} as QRFunction<{ filePath: string }, { inActiveProject: boolean }>,
-    setOpenUITabs: {} as QRFunction<{ sessionId: string, tabLayout: types.TabLayout, selectedTabId: string|null }, {}>,
-    getOpenUITabs: {} as QRFunction<{ sessionId: string }, { tabLayout: types.TabLayout, selectedTabId: string|null }>,
+    setOpenUITabs: {} as QRFunction<{ sessionId: string, tabLayout: types.TabLayout, selectedTabId: string | null }, {}>,
+    getOpenUITabs: {} as QRFunction<{ sessionId: string }, { tabLayout: types.TabLayout, selectedTabId: string | null }>,
     activeProjectFilePaths: {} as QRFunction<{}, { filePaths: string[] }>,
     sync: {} as QRFunction<{}, {}>,
     setSetting: {} as QRFunction<{ sessionId: string, settingId: string, value: any }, {}>,
@@ -104,40 +104,46 @@ export var server = {
     getJSOutputStatus: {} as QRFunction<Types.FilePathQuery, types.GetJSOutputStatusResponse>,
 
     /**
+     * Live demo
+     */
+    enableLiveDemo: {} as QRFunction<{ filePath: string }, {}>,
+    disableLiveDemo: {} as QRFunction<{}, {}>,
+
+    /**
      * Git service
      */
-    gitStatus: {} as QRFunction<{},string>,
-    gitReset: {} as QRFunction<{filePath:string},string>,
-    gitDiff: {} as QRFunction<{filePath:string},types.GitDiff>,
+    gitStatus: {} as QRFunction<{}, string>,
+    gitReset: {} as QRFunction<{ filePath: string }, string>,
+    gitDiff: {} as QRFunction<{ filePath: string }, types.GitDiff>,
     gitAddAllCommitAndPush: {} as QRFunction<types.GitAddAllCommitAndPushQuery, types.GitAddAllCommitAndPushResult>,
     gitFetchLatestAndRebase: {} as QRFunction<{}, types.GitAddAllCommitAndPushResult>,
 
     /**
      * NPM Service
      */
-    npmLatest: {} as QRFunction<{pack:string},{ description?: string, version?: string }>,
+    npmLatest: {} as QRFunction<{ pack: string }, { description?: string, version?: string }>,
 
     /**
      * FARM
      */
     startFarming: {} as QRFunction<Types.FarmConfig, {}>,
     stopFarmingIfRunning: {} as QRFunction<{}, {}>,
-    farmResults: {} as QRFunction<{},Types.FarmNotification>,
+    farmResults: {} as QRFunction<{}, Types.FarmNotification>,
 
     /**
      * Config creator
      */
-    createEditorconfig: {} as QRFunction<{}, {alreadyPresent:string}>,
+    createEditorconfig: {} as QRFunction<{}, { alreadyPresent: string }>,
 
     /**
      * Settings
      */
-    getSettingsFilePath: {} as QRFunction<{}, {filePath: string}>,
+    getSettingsFilePath: {} as QRFunction<{}, { filePath: string }>,
 
     /**
      * Server Disk Service
      */
-    getDirItems: {} as QRFunction<{dirPath: string}, {dirItems: types.FilePath[]}>,
+    getDirItems: {} as QRFunction<{ dirPath: string }, { dirItems: types.FilePath[] }>,
 }
 
 export var client = {
@@ -149,7 +155,7 @@ export var cast = {
     hello: new TypedEvent<{ text: string }>(),
 
     /** If the file worker notices a change */
-    filePathsUpdated: new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string; completed:boolean }>(),
+    filePathsUpdated: new TypedEvent<{ filePaths: types.FilePath[]; rootDir: string; completed: boolean }>(),
 
     /** If an open and already saved file changes on disk  */
     savedFileChangedOnDisk: new TypedEvent<{ filePath: string; contents: string }>(),
@@ -158,7 +164,7 @@ export var cast = {
     didEdits: new TypedEvent<{ filePath: string, edits: CodeEdit[] }>(),
 
     /** If any of the file status changes */
-    didStatusChange: new TypedEvent<{ filePath: string, saved: boolean, eol: string}>(),
+    didStatusChange: new TypedEvent<{ filePath: string, saved: boolean, eol: string }>(),
 
     /** If file editor options change */
     editorOptionsChanged: new TypedEvent<{ filePath: string, editorOptions: types.EditorOptions }>(),
@@ -180,7 +186,7 @@ export var cast = {
     activeProjectConfigDetailsUpdated: new TypedEvent<AvailableProjectConfig>(),
 
     /** Active project files */
-    activeProjectFilePathsUpdated: new TypedEvent<{filePaths:string[]}>(),
+    activeProjectFilePathsUpdated: new TypedEvent<{ filePaths: string[] }>(),
 
     /** FARM */
     farmResultsUpdated: new TypedEvent<Types.FarmNotification>(),
@@ -189,6 +195,10 @@ export var cast = {
     fileOutputStatusUpdated: new TypedEvent<types.JSOutputStatus>(),
     completeOutputStatusCacheUpdated: new TypedEvent<types.JSOutputStatusCache>(),
     liveBuildResults: new TypedEvent<types.LiveBuildResults>(),
+
+    /** Live demo */
+    clearLiveDemo: new TypedEvent<{}>(),
+    liveDemoData: new TypedEvent<{ data: string }>(),
 
     /** Server quit */
     serverExiting: new TypedEvent<{}>(),
@@ -220,7 +230,7 @@ export namespace Types {
      * FARM:
      * Find and Replace Multiple
      */
-    export type FarmResultsByFilePath = {[filePath:string]: FarmResultDetails[]};
+    export type FarmResultsByFilePath = { [filePath: string]: FarmResultDetails[] };
     export interface FarmResultDetails {
         filePath: string;
         /** 1 based at the moment ... todo Change it to 0 based */
@@ -228,12 +238,12 @@ export namespace Types {
         preview: string;
     }
     export interface FarmConfig {
-         query: string;
-         isRegex: boolean;
-         isFullWord: boolean;
-         isCaseSensitive: boolean;
-         globs: string[];
-     }
+        query: string;
+        isRegex: boolean;
+        isFullWord: boolean;
+        isCaseSensitive: boolean;
+        globs: string[];
+    }
     export interface FarmNotification {
         completed: boolean;
         results: Types.FarmResultDetails[];
@@ -255,7 +265,7 @@ export namespace Types {
     }
 
     export interface GetCompletionEntryDetailsQuery {
-        filePath:string, position: number, label: string
+        filePath: string, position: number, label: string
     }
     export interface GetCompletionEntryDetailsResponse {
         display: string, comment: string
@@ -384,19 +394,19 @@ export namespace Types {
     /**
      * AST View
      */
-     export enum ASTMode {
-         /** ts.forEachChild() */
-         visitor,
-         /** node.getChildren() */
-         children,
-     }
-     export interface GetASTQuery extends FilePathQuery {
-         mode: ASTMode;
-     }
-     export interface GetASTResponse {
-         root?: NodeDisplay
-     }
-     export interface NodeDisplay {
+    export enum ASTMode {
+        /** ts.forEachChild() */
+        visitor,
+        /** node.getChildren() */
+        children,
+    }
+    export interface GetASTQuery extends FilePathQuery {
+        mode: ASTMode;
+    }
+    export interface GetASTResponse {
+        root?: NodeDisplay
+    }
+    export interface NodeDisplay {
         kind: string;
         children: NodeDisplay[];
 
@@ -463,7 +473,7 @@ export namespace Types {
     /**
      * Get occurances
      */
-    export interface GetOccurancesAtPositionQuery extends FilePathEditorPositionQuery {}
+    export interface GetOccurancesAtPositionQuery extends FilePathEditorPositionQuery { }
     export interface GetOccurancesAtPositionResult {
         filePath: string;
         start: EditorPosition;
