@@ -84,7 +84,7 @@ const bundleDevTimeProxy = () => {
             hot: true,
 
             // The rest is terminal configurations
-            quiet: false,
+            quiet: true,
             noInfo: true,
             stats: {
                 colors: true
