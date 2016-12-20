@@ -52,6 +52,7 @@ class FileExecutor {
                 TS_NODE_DISABLE_WARNINGS: true,
             }
         });
+        this.child = child;
 
         child.stdout.on('data', (data) => {
             if (this.disposed) return;
@@ -69,9 +70,14 @@ class FileExecutor {
             console.log(workerPrefix, 'process ended');
         });
     }
-    disposed = false;
+    private disposed = false;
+    private child?: cp.ChildProcess;
     dispose() {
         this.disposed = true;
+        if (this.child) {
+            this.child.kill('SIGINT');
+            this.child = undefined;
+        }
     }
 }
 
