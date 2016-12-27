@@ -590,7 +590,7 @@ export function getQuickFixes(query: Types.GetQuickFixesQuery): Promise<Types.Ge
     const tsCodeFixes = project.languageService.getCodeFixesAtPosition(query.filePath, query.position, query.position, info.positionErrors.map(e => e.code));
     if (tsCodeFixes.length) {
         tsCodeFixes.forEach((fix, i) => {
-            fixes.push({
+            fixes.unshift({
                 key: `${tsCodefixPrefix}${i}`, display: fix.description
             })
         })

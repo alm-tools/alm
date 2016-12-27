@@ -3,8 +3,6 @@ import {QuickFix} from "./quickFix";
  * This exists to register the quick fixes
  */
 import {AddClassMember} from "./quickFixes/addClassMember";
-import {AddImportFromStatement} from "./quickFixes/addImportFromStatement";
-import {AddImportStatement} from "./quickFixes/addImportStatement";
 import {EqualsToEquals} from "./quickFixes/equalsToEquals";
 import {ExtractVariable} from "./quickFixes/extractVariable";
 import {QuotesToQuotes} from "./quickFixes/quotesToQuotes";
@@ -15,8 +13,6 @@ import {ImplementInterface} from "./quickFixes/implementInterface";
 import {SingleLineCommentToJsdoc} from "./quickFixes/singleLineCommentToJsdoc";
 export var allQuickFixes: QuickFix[] = [
     new AddClassMember(),
-    new AddImportFromStatement(),
-    new AddImportStatement(),
     new EqualsToEquals(),
     new ExtractVariable(),
     new StringConcatToTemplate(),

@@ -33,7 +33,7 @@ Convert string concatenations to a template string
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/quickFix/equalsToEquals.gif)
 
 ## Import file
-If the file prefix matches
+If an error can be fixed by importing a module
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/quickFix/addImportStatement.gif)
 
