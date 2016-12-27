@@ -4,18 +4,18 @@
  * Errors etc are pushed automatically from `activeProject` and do not belong here :)
  */
 
-import {Project} from "./core/project";
+import { Project } from "./core/project";
 import * as activeProject from "./activeProject";
 let getProject = activeProject.GetProject.ifCurrentOrErrorOut;
 
-import {Types} from "../../../socket/socketContract";
+import { Types } from "../../../socket/socketContract";
 import * as types from "../../../common/types";
 
 import * as utils from "../../../common/utils";
 let {resolve} = utils;
 import * as fsu from "../../utils/fsu";
-import {errorsCache} from "./cache/tsErrorsCache";
-import {getPathCompletionsForAutocomplete} from "./modules/getPathCompletions";
+import { errorsCache } from "./cache/tsErrorsCache";
+import { getPathCompletionsForAutocomplete } from "./modules/getPathCompletions";
 
 export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQuery): Promise<Types.GetCompletionsAtPositionResponse> {
     const {filePath, position, prefix} = query;
@@ -115,7 +115,7 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
 export function getCompletionEntryDetails(query: Types.GetCompletionEntryDetailsQuery): Promise<Types.GetCompletionEntryDetailsResponse> {
     const project = getProject(query.filePath);
     const service = project.languageService;
-    const {filePath,position,label} = query;
+    const {filePath, position, label} = query;
 
     const completionDetails = project.languageService.getCompletionEntryDetails(filePath, position, label);
 
@@ -135,7 +135,7 @@ export function getCompletionEntryDetails(query: Types.GetCompletionEntryDetails
 export function quickInfo(query: Types.QuickInfoQuery): Promise<Types.QuickInfoResponse> {
     let project = getProject(query.filePath);
     const {languageServiceHost} = project;
-    const errors = positionErrors({filePath: query.filePath, position: query.position});
+    const errors = positionErrors({ filePath: query.filePath, position: query.position });
     var info = project.languageService.getQuickInfoAtPosition(query.filePath, query.position);
     if (!info && !errors.length) {
         return Promise.resolve({ valid: false });
@@ -225,7 +225,7 @@ export function getDefinitionsAtPosition(query: Types.GetDefinitionsAtPositionQu
     });
 }
 
-import {getLangHelp} from "./modules/langHelp";
+import { getLangHelp } from "./modules/langHelp";
 export function getDoctorInfo(query: Types.GetDoctorInfoQuery): Promise<Types.GetDoctorInfoResponse> {
     let project = getProject(query.filePath);
     let filePath = query.filePath;
@@ -295,7 +295,7 @@ export function formatDocument(query: Types.FormatDocumentQuery): Promise<Types.
         return result;
     });
 
-    return resolve({edits});
+    return resolve({ edits });
 }
 export function formatDocumentRange(query: Types.FormatDocumentRangeQuery): Promise<Types.FormatDocumentRangeResponse> {
     let project = getProject(query.filePath);
@@ -311,7 +311,7 @@ export function formatDocumentRange(query: Types.FormatDocumentRangeQuery): Prom
         return result;
     });
 
-    return resolve({edits});
+    return resolve({ edits });
 }
 
 export function getFormattingEditsAfterKeystroke(query: Types.FormattingEditsAfterKeystrokeQuery): Promise<Types.FormattingEditsAfterKeystrokeResponse> {
@@ -330,10 +330,10 @@ export function getFormattingEditsAfterKeystroke(query: Types.FormattingEditsAft
         return result;
     });
 
-    return resolve({edits});
+    return resolve({ edits });
 }
 
-import {removeUnusedImports as removeUnusedImportsCore} from './modules/removeUnusedImports';
+import { removeUnusedImports as removeUnusedImportsCore } from './modules/removeUnusedImports';
 export function removeUnusedImports(query: Types.FilePathQuery): Promise<types.RefactoringsByFilePath> {
     let project = getProject(query.filePath);
     const {languageServiceHost, languageService} = project;
@@ -427,7 +427,7 @@ export function getNavigateToItemsForFilePath(query: { filePath: string }): Prom
 /**
  * Dependency View
  */
-import {getProgramDependencies} from "./modules/programDependencies";
+import { getProgramDependencies } from "./modules/programDependencies";
 export function getDependencies(query: {}): Promise<Types.GetDependenciesResponse> {
     let project = activeProject.GetProject.getCurrentIfAny();
     var links = getProgramDependencies(project.configFile, project.languageService.getProgram());
@@ -437,7 +437,7 @@ export function getDependencies(query: {}): Promise<Types.GetDependenciesRespons
 /**
  * AST View
  */
-import {astToText, astToTextFull} from "./modules/astToText";
+import { astToText, astToTextFull } from "./modules/astToText";
 export function getAST(query: Types.GetASTQuery): Promise<Types.GetASTResponse> {
     let project = getProject(query.filePath);
     var service = project.languageService;
@@ -458,7 +458,7 @@ export function getAST(query: Types.GetASTQuery): Promise<Types.GetASTResponse> 
 /**
  * JS Ouput
  */
-import {getRawJsOutput} from "./modules/building";
+import { getRawJsOutput } from "./modules/building";
 export function getJSOutputStatus(query: Types.FilePathQuery, autoEmit = true): types.GetJSOutputStatusResponse {
     const project = activeProject.GetProject.ifCurrent(query.filePath);
     if (!project) {
@@ -485,9 +485,9 @@ export function getJSOutputStatus(query: Types.FilePathQuery, autoEmit = true): 
     let state
         = noJsFile
             ? types.JSOutputState.NoJSFile
-                : getContents(jsFile.filePath) === jsFile.contents
-                    ? types.JSOutputState.JSUpToDate
-                    : types.JSOutputState.JSOutOfDate;
+            : getContents(jsFile.filePath) === jsFile.contents
+                ? types.JSOutputState.JSUpToDate
+                : types.JSOutputState.JSOutOfDate;
 
     /**
      * If the state is JSOutOfDate we can easily fix that to bring it up to date for `compileOnSave`
@@ -512,9 +512,9 @@ export function getJSOutputStatus(query: Types.FilePathQuery, autoEmit = true): 
 /**
  * Get Quick Fix
  */
-import {QuickFix, QuickFixQueryInformation} from "./quickFix/quickFix";
+import { QuickFix, QuickFixQueryInformation } from "./quickFix/quickFix";
 import * as qf from "./quickFix/quickFix";
-import {allQuickFixes} from "./quickFix/quickFixRegistry";
+import { allQuickFixes } from "./quickFix/quickFixRegistry";
 function getDiagnositcsByFilePath(query: Types.FilePathQuery) {
     let project = getProject(query.filePath);
     var diagnostics = project.languageService.getSyntacticDiagnostics(query.filePath);
@@ -567,12 +567,13 @@ function getInfoForQuickFixAnalysis(query: Types.GetQuickFixesQuery): QuickFixQu
     };
 }
 
+const tsCodefixPrefix = 'CodeFix:';
 export function getQuickFixes(query: Types.GetQuickFixesQuery): Promise<Types.GetQuickFixesResponse> {
-    let project = getProject(query.filePath);
-    var info = getInfoForQuickFixAnalysis(query);
+    const project = getProject(query.filePath);
+    const info = getInfoForQuickFixAnalysis(query);
 
     // We let the quickFix determine if it wants provide any fixes for this file
-    var fixes = allQuickFixes
+    const fixes = allQuickFixes
         .map(x => {
             var canProvide = x.canProvideFix(info);
             if (!canProvide)
@@ -582,13 +583,52 @@ export function getQuickFixes(query: Types.GetQuickFixesQuery): Promise<Types.Ge
         })
         .filter(x => !!x);
 
+    /**
+     * TS Code fixes
+     * They comes with the `changes` on query. So we use that on `get` as well as `apply`
+     */
+    const tsCodeFixes = project.languageService.getCodeFixesAtPosition(query.filePath, query.position, query.position, info.positionErrors.map(e => e.code));
+    if (tsCodeFixes.length) {
+        tsCodeFixes.forEach((fix, i) => {
+            fixes.push({
+                key: `${tsCodefixPrefix}${i}`, display: fix.description
+            })
+        })
+    }
+
     return resolve({ fixes });
 }
 export function applyQuickFix(query: Types.ApplyQuickFixQuery): Promise<Types.ApplyQuickFixResponse> {
-    var fix = allQuickFixes.filter(x => x.key == query.key)[0];
-    var info = getInfoForQuickFixAnalysis(query);
-    var res = fix.provideFix(info);
-    var refactorings = qf.getRefactoringsByFilePath(res);
+    const info = getInfoForQuickFixAnalysis(query);
+
+    /**
+     * If TS Code fix
+     */
+    if (query.key.startsWith(tsCodefixPrefix)) {
+        /** Find the code fix */
+        let project = getProject(query.filePath);
+        const tsCodeFixes = project.languageService.getCodeFixesAtPosition(query.filePath, query.position, query.position, info.positionErrors.map(e => e.code));
+        const index = +query.key.substr(tsCodefixPrefix.length);
+        const tsCodeFix = tsCodeFixes[index];
+
+        /** Map code fix to refactoring */
+        const refactorings: types.Refactoring[] = [];
+        tsCodeFix.changes.forEach(change => {
+            change.textChanges.forEach(tc => {
+                const res: types.Refactoring = {
+                    filePath: change.fileName,
+                    newText: tc.newText,
+                    span: tc.span
+                };
+                refactorings.push(res);
+            });
+        });
+
+        return resolve({ refactorings: qf.getRefactoringsByFilePath(refactorings) });
+    }
+    const fix = allQuickFixes.filter(x => x.key == query.key)[0];
+    const res = fix.provideFix(info);
+    const refactorings = qf.getRefactoringsByFilePath(res);
     return resolve({ refactorings });
 }
 
@@ -661,7 +701,7 @@ function flattenNavBarItems(items: ts.NavigationBarItem[]): ts.NavigationBarItem
     }
 
     // Flatten into the map
-    items.forEach(item => addToMap(item,root));
+    items.forEach(item => addToMap(item, root));
 
     // Now restore based on child pointers
     results.forEach(item => {
@@ -708,12 +748,12 @@ export function getSemanticTree(query: Types.GetSemanticTreeQuery): Promise<Type
 /**
  * Document highlights
  */
-export function getOccurrencesAtPosition(query: Types.GetOccurancesAtPositionQuery) : Promise<Types.GetOccurancesAtPositionResponse> {
+export function getOccurrencesAtPosition(query: Types.GetOccurancesAtPositionQuery): Promise<Types.GetOccurancesAtPositionResponse> {
     let project = getProject(query.filePath);
     const {languageServiceHost} = project;
     const position = languageServiceHost.getPositionOfLineAndCharacter(query.filePath, query.editorPosition.line, query.editorPosition.ch);
     const tsresults = project.languageService.getOccurrencesAtPosition(query.filePath, position) || [];
-    const results: Types.GetOccurancesAtPositionResult[] = tsresults.map(res=>{
+    const results: Types.GetOccurancesAtPositionResult[] = tsresults.map(res => {
         const result: Types.GetOccurancesAtPositionResult = {
             filePath: res.fileName,
             isWriteAccess: res.isWriteAccess,
@@ -722,5 +762,5 @@ export function getOccurrencesAtPosition(query: Types.GetOccurancesAtPositionQue
         }
         return result;
     });
-    return resolve({results});
+    return resolve({ results });
 }
