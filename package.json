@@ -16,7 +16,7 @@
     "resume": "bash ./scripts/resume.sh",
     "tsc": "tsc -p ./src",
     "tscw": "tsc -p ./src -w",
-    "uts": "npm install typescript@next tslint@3.x byots@latest --save --save-exact && npm run tsc",
+    "uts": "npm install typescript@next tslint@4.x byots@latest --save --save-exact && npm run tsc",
     "umonaco": "npm install monaco@latest monaco-css@latest monaco-languages@latest --save --save-exact && npm run tsc",
     "ureact": "npm install react@latest react-dom@latest --save-dev --save-exact",
     "utest": "npm install ts-node@latest mocha@latest --save --save-exact && npm run tsc",
@@ -71,7 +71,7 @@
     "socket.io": "^1.3.6",
     "source-map-support": "0.4.3",
     "ts-node": "1.7.2",
-    "tslint": "3.15.1",
+    "tslint": "4.2.0",
     "typescript": "2.2.0-dev.20161211",
     "update-notifier": "1.0.2"
   },

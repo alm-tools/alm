@@ -19,12 +19,11 @@ import { isFileInTypeScriptDir } from "../lang/core/typeScriptDir";
 import { ErrorsCache } from "../../utils/errorsCache";
 
 /** Bring in tslint */
-import * as LinterLocal from "tslint";
+import { Configuration, RuleFailure, Linter as LinterLocal } from "tslint";
 /** The linter currently in use */
 let Linter = LinterLocal;
-/** Tslint typings. Only use in type annotations */
+/** TSLint types only used in options */
 import { IConfigurationFile } from "../../../../node_modules/tslint/lib/configuration";
-import { RuleFailure } from "../../../../node_modules/tslint/lib/language/rule/rule";
 
 /**
  * Horrible file access :)
@@ -205,11 +204,15 @@ namespace LinterImplementation {
                     const filePath = sf.fileName;
                     const contents = sf.getFullText();
 
-
-                    const linter = new Linter(filePath, contents, linterConfig.linterConfig, lintprogram);
-                    const lintResult = linter.lint();
+                    const linter = new Linter({
+                        rulesDirectory: linterConfig.linterConfig.rulesDirectory,
+                        fix: false,
+                    }, lintprogram);
+                    linter.lint(filePath, contents, linterConfig.linterConfig.configuration);
+                    const lintResult = linter.getResult();
 
                     filePaths.push(filePath);
+
                     if (lintResult.failureCount) {
                         // console.log(linterMessagePrefix, filePath, lintResult.failureCount); // DEBUG
                         errors = errors.concat(
@@ -307,12 +310,8 @@ function getLocalLinter(basedir: string) {
         requireResolve(TSLINT_MODULE_NAME, { basedir },
             (err, linterPath, pkg) => {
                 let linter;
-                if (!err && pkg && /^3|4\./.test(pkg.version)) {
-                    if (pkg.version.startsWith('3')) {
-                        linter = require(linterPath);
-                    } else if (pkg.version.startsWith('4')) {
-                        linter = (require(linterPath) as any).Linter;
-                    }
+                if (!err && pkg && /^4\./.test(pkg.version)) {
+                    linter = (require(linterPath) as any).Linter;
                 } else {
                     linter = LinterLocal;
                 }
