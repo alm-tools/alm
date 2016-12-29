@@ -21,7 +21,7 @@ const keyForMonacoDifferentiation = "alm_tested"
 const lineSeperator = '\n———————————————\n';
 
 namespace TestedMonacoStyles {
-    const overlayCommon = {
+    const overlayCommon: typestyle.types.NestedCSSProperties = {
         padding: '0px 10px',
         whiteSpace: 'pre',
         pointerEvents: 'none',

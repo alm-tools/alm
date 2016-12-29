@@ -2,23 +2,23 @@ import * as ui from "../../ui";
 import * as csx from '../../base/csx';
 import * as React from "react";
 import * as tab from "./tab";
-import {server, cast} from "../../../socket/socketClient";
+import { server, cast } from "../../../socket/socketClient";
 import * as commands from "../../commands/commands";
 import * as utils from "../../../common/utils";
 import * as d3 from "d3";
-import {Types} from "../../../socket/socketContract";
+import { Types } from "../../../socket/socketContract";
 import * as types from "../../../common/types";
-import {IconType} from "../../../common/types";
+import { IconType } from "../../../common/types";
 import * as $ from "jquery";
 import * as styles from "../../styles/styles";
 import * as onresize from "onresize";
-import {Clipboard} from "../../components/clipboard";
+import { Clipboard } from "../../components/clipboard";
 import * as typeIcon from "../../components/typeIcon";
 import * as gls from "../../base/gls";
 import * as typestyle from "typestyle";
-import {MarkDown} from "../../markdown/markdown";
+import { MarkDown } from "../../markdown/markdown";
 
-import {blackHighlightColor} from "../../styles/styles";
+import { blackHighlightColor } from "../../styles/styles";
 
 export interface Props extends tab.TabProps {
 }
@@ -34,15 +34,17 @@ export interface State {
 export namespace DocumentationViewStyles {
     export const header = typestyle.style({
         cursor: 'pointer',
-        '&:hover': {
-            textDecoration: 'underline'
+        $nest: {
+            '&:hover': {
+                textDecoration: 'underline'
+            }
         }
     });
 
     export const folderName = typestyle.style({
         padding: "2px",
         fontSize: '.5em',
-        '-webkitUserSelect': 'none',
+        '-webkit-user-select': 'none',
         maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis'
     });
 }
@@ -82,12 +84,12 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
         /**
          * If a file is selected and it gets edited, reload the file module information
          */
-        const isFilePathOfSignificance = (filePath:string) => !!this.state.selected && this.state.selected.location.filePath === filePath;
+        const isFilePathOfSignificance = (filePath: string) => !!this.state.selected && this.state.selected.location.filePath === filePath;
         const reloadSelectedDebounced = utils.debounce((filePath) => {
             if (!isFilePathOfSignificance(filePath)) return;
             server.getUpdatedModuleInformation({
                 filePath
-            }).then((res)=>{
+            }).then((res) => {
                 if (!isFilePathOfSignificance(filePath)) return;
                 const files = this.state.files.map(f => { return (f.location.filePath === filePath) ? res : f });
                 this.setState({ files, selected: res });
@@ -136,31 +138,31 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
             <div
                 ref="root"
                 tabIndex={0}
-                style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll, {color: styles.textColor}) }
+                style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll, { color: styles.textColor })}
                 onKeyPress={this.handleKey}>
-                <div style={{overflow: 'hidden', padding:'10px 0px 10px 10px', display: 'flex'}}>
+                <div style={{ overflow: 'hidden', padding: '10px 0px 10px 10px', display: 'flex' }}>
                     <gls.FlexHorizontal style={{}}>
                         <gls.Content style={{ width: '200px', overflow: 'auto' }}>
-                            <typeIcon.SectionHeader text="Files"/>
-                            <gls.SmallVerticalSpace/>
+                            <typeIcon.SectionHeader text="Files" />
+                            <gls.SmallVerticalSpace />
                             {
                                 this.renderFiles()
                             }
                         </gls.Content>
-                        <gls.FlexVertical style={{marginLeft: '5px', overflow: 'auto'}}>
+                        <gls.FlexVertical style={{ marginLeft: '5px', overflow: 'auto' }}>
                             {
                                 this.state.selected && this.state.selectedDoesNotMatchFilter &&
-                                <gls.Content style={{backgroundColor: '#111', padding: '5px'}}>
+                                <gls.Content style={{ backgroundColor: '#111', padding: '5px' }}>
                                     Note: Nothing in the selected module matches the filter, so showing it all
                                 </gls.Content>
                             }
                             {
                                 this.state.selected
-                                ? this.renderSelectedNode()
-                                : 'Select a module from the left to view its documentation 🌹'
+                                    ? this.renderSelectedNode()
+                                    : 'Select a module from the left to view its documentation 🌹'
                             }
-                            <div style={{marginTop: '10px', marginRight: '10px'}}>
-                                <hr/>
+                            <div style={{ marginTop: '10px', marginRight: '10px' }}>
+                                <hr />
                                 <typeIcon.TypeIconLegend />
                             </div>
                         </gls.FlexVertical>
@@ -171,7 +173,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
         );
     }
 
-    renderFiles(){
+    renderFiles() {
         /** For two items in different file paths we render the folder name in between */
         const toRender: {
             folder?: string,
@@ -181,7 +183,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
         let lastKnownFolder = ''
         this.state.filtered.forEach(type => {
             const folder = utils.getDirectory(type.name);
-            if (folder !== lastKnownFolder){
+            if (folder !== lastKnownFolder) {
                 toRender.push({
                     folder
                 });
@@ -193,7 +195,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
         });
 
         return toRender.map((item, i) => {
-            if (item.type){
+            if (item.type) {
                 const file = item.type;
                 const name = utils.getFileName(file.name);
                 const backgroundColor = this.state.selected && this.state.selected.name === file.name
@@ -205,7 +207,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                         key={i}
                         style={{ cursor: 'pointer', backgroundColor, paddingTop: '2px', paddingBottom: '2px', paddingLeft: '2px' }}
                         onClick={() => this.handleRootSelected(file)}>
-                        <typeIcon.DocumentedTypeHeader name={name} icon={file.icon}/>
+                        <typeIcon.DocumentedTypeHeader name={name} icon={file.icon} />
                     </div>
                 )
             }
@@ -230,20 +232,20 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
 
     renderNode(node: types.DocumentedType, i = 0) {
         return (
-            <div key={i} style={{paddingTop: '5px'}}>
-                <gls.InlineBlock className={DocumentationViewStyles.header} onClick={()=>this.handleNodeClick(node)}>
+            <div key={i} style={{ paddingTop: '5px' }}>
+                <gls.InlineBlock className={DocumentationViewStyles.header} onClick={() => this.handleNodeClick(node)}>
                     <typeIcon.DocumentedTypeHeader name={node.name} icon={node.icon} />
                 </gls.InlineBlock>
                 {
                     node.comment &&
-                    <div style={{ padding: '5px', backgroundColor: blackHighlightColor}}>
-                        <MarkDown markdown={node.comment}/>
+                    <div style={{ padding: '5px', backgroundColor: blackHighlightColor }}>
+                        <MarkDown markdown={node.comment} />
                     </div>
                 }
                 {
                     node.subItems && !!node.subItems.length &&
-                    <div style={{ border: '1px solid grey', marginTop:'5px', padding: '5px' }}>
-                        {node.subItems.map((n, i) => this.renderNode(n, i)) }
+                    <div style={{ border: '1px solid grey', marginTop: '5px', padding: '5px' }}>
+                        {node.subItems.map((n, i) => this.renderNode(n, i))}
                     </div>
                 }
             </div>
@@ -271,7 +273,7 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
 
     loadData = () => {
         server.getTopLevelModuleNames({}).then(res => {
-            this.setState({files:res.files, selected: null});
+            this.setState({ files: res.files, selected: null });
             this.filter();
         })
     }
@@ -316,12 +318,12 @@ export class DocumentationView extends ui.BaseComponent<Props, State> {
                     return doesNameMatchRecursive(f);
                 })
                 .map(mapChildrenRecursive);
-        this.setState({filtered})
+        this.setState({ filtered })
 
         // Also filter inside the selected if possible
         const selected = this.state.selected && filtered.find(f => f.name == this.state.selected.name);
         if (this.state.selected && !selected) {
-            this.setState({selectedDoesNotMatchFilter: true});
+            this.setState({ selectedDoesNotMatchFilter: true });
         }
         else {
             this.setState({ selected, selectedDoesNotMatchFilter: false });

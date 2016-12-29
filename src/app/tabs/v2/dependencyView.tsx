@@ -2,15 +2,15 @@ import * as ui from "../../ui";
 import * as csx from "../../base/csx";
 import * as React from "react";
 import * as tab from "./tab";
-import {server,cast} from "../../../socket/socketClient";
+import { server, cast } from "../../../socket/socketClient";
 import * as commands from "../../commands/commands";
 import * as utils from "../../../common/utils";
 import * as d3 from "d3";
-import {Types} from "../../../socket/socketContract";
+import { Types } from "../../../socket/socketContract";
 import * as $ from "jquery";
 import * as styles from "../../styles/styles";
 import * as onresize from "onresize";
-import {Clipboard} from "../../components/clipboard";
+import { Clipboard } from "../../components/clipboard";
 import * as typestyle from "typestyle";
 
 type FileDependency = Types.FileDependency;
@@ -24,14 +24,14 @@ require('./dependencyView.less');
 export interface Props extends tab.TabProps {
 }
 export interface State {
-    cycles:string[][];
+    cycles: string[][];
 }
 
 let controlRootStyle = {
-    pointerEvents:'none',
+    pointerEvents: 'none',
 }
 let controlRightStyle = {
-    width:'200px',
+    width: '200px',
     padding: '10px',
 
     overflow: 'auto',
@@ -40,17 +40,19 @@ let controlRightStyle = {
     pointerEvents: 'all',
 }
 let controlItemClassName = typestyle.style({
-    pointerEvents:'auto',
+    pointerEvents: 'auto',
 
-    padding:'.4rem',
-    transition:'background .2s',
+    padding: '.4rem',
+    transition: 'background .2s',
     background: 'rgba(200,200,200,.05)',
-    '&:hover':{
-        background: 'rgba(200,200,200,.25)',
+    $nest: {
+        '&:hover': {
+            background: 'rgba(200,200,200,.25)',
+        }
     }
 })
 let cycleHeadingStyle = {
-    fontSize:'1.2rem',
+    fontSize: '1.2rem',
 }
 
 export class DependencyView extends ui.BaseComponent<Props, State> {
@@ -60,7 +62,7 @@ export class DependencyView extends ui.BaseComponent<Props, State> {
         super(props);
         this.filePath = utils.getFilePathFromUrl(props.url);
         this.state = {
-            cycles:[]
+            cycles: []
         };
     }
 
@@ -76,7 +78,7 @@ export class DependencyView extends ui.BaseComponent<Props, State> {
         this.loadData();
 
         this.disposible.add(
-            cast.activeProjectConfigDetailsUpdated.on(()=>{
+            cast.activeProjectConfigDetailsUpdated.on(() => {
                 this.loadData();
             })
         );
@@ -112,14 +114,14 @@ export class DependencyView extends ui.BaseComponent<Props, State> {
         let hasCycles = !!this.state.cycles.length;
 
         let cyclesMessages = hasCycles
-            ? this.state.cycles.map((cycle,i)=>{
+            ? this.state.cycles.map((cycle, i) => {
                 let cycleText = cycle.join(' ⬅️ ');
                 return (
                     <div key={i} className={controlItemClassName}>
-                        <div style={cycleHeadingStyle}> {i+1}) Cycle <Clipboard text={cycleText} /></div>
+                        <div style={cycleHeadingStyle}> {i + 1}) Cycle <Clipboard text={cycleText} /></div>
                         <div>
                             {cycleText}
-                       </div>
+                        </div>
                     </div>
                 );
             })
@@ -129,9 +131,9 @@ export class DependencyView extends ui.BaseComponent<Props, State> {
             <div
                 ref="root" tabIndex={0}
                 className="dependency-view"
-                style={csx.extend(csx.vertical,csx.flex, csx.newLayerParent, styles.someChildWillScroll)}
+                style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll)}
                 onKeyPress={this.handleKey}>
-                <div ref="graphRoot" style={csx.extend(csx.vertical,csx.flex)}>
+                <div ref="graphRoot" style={csx.extend(csx.vertical, csx.flex)}>
                     {/* Graph goes here */}
                 </div>
 
@@ -139,15 +141,15 @@ export class DependencyView extends ui.BaseComponent<Props, State> {
                     style={csx.extend(csx.newLayer, csx.horizontal, csx.endJustified, controlRootStyle)}>
                     <div style={csx.extend(csx.vertical, controlRightStyle)}>
                         <div className={`control-zoom ${controlItemClassName}`}>
-                            <a className="control-zoom-in" href="#" title="Zoom in" onClick={this.zoomIn}/>
-                            <a className="control-zoom-out" href="#" title="Zoom out" onClick={this.zoomOut}/>
-                            <a className="control-fit" href="#" title="Fit" onClick={this.zoomFit}/>
+                            <a className="control-zoom-in" href="#" title="Zoom in" onClick={this.zoomIn} />
+                            <a className="control-zoom-out" href="#" title="Zoom out" onClick={this.zoomOut} />
+                            <a className="control-fit" href="#" title="Fit" onClick={this.zoomFit} />
                         </div>
                         {cyclesMessages}
                     </div>
-               </div>
+                </div>
 
-               <div data-comment="Tip" style={csx.extend(styles.Tip.root,csx.content)}>
+                <div data-comment="Tip" style={csx.extend(styles.Tip.root, csx.content)}>
                     Tap <span style={styles.Tip.keyboardShortCutStyle}>R</span> to refresh
                </div>
 
@@ -155,9 +157,9 @@ export class DependencyView extends ui.BaseComponent<Props, State> {
         );
     }
 
-    handleKey = (e:any)=>{
+    handleKey = (e: any) => {
         let unicode = e.charCode;
-        if (String.fromCharCode(unicode).toLowerCase() === "r"){
+        if (String.fromCharCode(unicode).toLowerCase() === "r") {
             this.loadData();
         }
     }
@@ -169,30 +171,30 @@ export class DependencyView extends ui.BaseComponent<Props, State> {
             this.graphRenderer = new GraphRenderer({
                 dependencies: res.links,
                 measureSizeRoot: $(this.refs.root),
-                graphRoot:$(this.refs.graphRoot),
-                display:(node) => {
+                graphRoot: $(this.refs.graphRoot),
+                display: (node) => {
                 }
             });
 
             // get the cycles
             let cycles = this.graphRenderer.d3Graph.cycles();
-            this.setState({cycles});
+            this.setState({ cycles });
         });
     }
 
-    zoomIn = (e:React.SyntheticEvent) => {
+    zoomIn = (e: React.SyntheticEvent) => {
         e.preventDefault();
         if (!this.graphRenderer) return;
 
         this.graphRenderer.zoomIn();
     }
-    zoomOut = (e:React.SyntheticEvent) => {
+    zoomOut = (e: React.SyntheticEvent) => {
         e.preventDefault();
         if (!this.graphRenderer) return;
 
         this.graphRenderer.zoomOut();
     }
-    zoomFit = (e:React.SyntheticEvent) => {
+    zoomFit = (e: React.SyntheticEvent) => {
         e.preventDefault();
         if (!this.graphRenderer) return;
 
@@ -262,12 +264,12 @@ var prefixes = {
 
 class GraphRenderer {
     graph: d3.Selection<any>;
-    links:d3.Selection<d3.layout.force.Link<d3.layout.force.Node>>;
-    nodes:d3.Selection<d3.layout.force.Node>;
-    text:d3.Selection<d3.layout.force.Node>;
+    links: d3.Selection<d3.layout.force.Link<d3.layout.force.Node>>;
+    nodes: d3.Selection<d3.layout.force.Node>;
+    text: d3.Selection<d3.layout.force.Node>;
 
     zoom: d3.behavior.Zoom<{}>;
-    layout: d3.layout.Force<d3.layout.force.Link<d3.layout.force.Node>,d3.layout.force.Node>;
+    layout: d3.layout.Force<d3.layout.force.Link<d3.layout.force.Node>, d3.layout.force.Node>;
 
     graphWidth = 0;
     graphHeight = 0;
@@ -275,12 +277,12 @@ class GraphRenderer {
     d3Graph: D3Graph;
     svgRoot: d3.Selection<any>;
 
-    constructor(public config:{
+    constructor(public config: {
         dependencies: FileDependency[],
         measureSizeRoot: JQuery,
         graphRoot: JQuery,
         display: (content: FileDependency) => any
-    }){
+    }) {
         var d3Root = d3.select(config.graphRoot[0]);
         let self = this;
 
@@ -296,7 +298,7 @@ class GraphRenderer {
         this.d3Graph = new D3Graph(d3links);
 
         // setup weights based on degrees
-        Object.keys(d3NodeLookup).forEach(name=> {
+        Object.keys(d3NodeLookup).forEach(name => {
             var node = d3NodeLookup[name];
             node.weight = self.d3Graph.avgDeg(node);
         })
@@ -304,7 +306,7 @@ class GraphRenderer {
         // Setup zoom
         this.zoom = d3.behavior.zoom()
             .scale(0.4)
-            .scaleExtent([.1,6])
+            .scaleExtent([.1, 6])
             .on("zoom", onZoomChanged);
 
         this.svgRoot = d3Root.append("svg")
@@ -495,14 +497,14 @@ class GraphRenderer {
             this.nodes.classed('filtered-out', true);
             this.links.classed('filtered-out', true);
             this.text.classed('filtered-out', true);
-            let filteredNodes = this.graph.selectAll(`circle[data-name*="${this.htmlName({ name: val }) }"]`);
+            let filteredNodes = this.graph.selectAll(`circle[data-name*="${this.htmlName({ name: val })}"]`);
             filteredNodes.classed('filtered-out', false);
-            var filteredLinks = this.graph.selectAll(`[data-source*="${this.htmlName({ name: val }) }"][data-target*="${this.htmlName({ name: val }) }"]`);
+            var filteredLinks = this.graph.selectAll(`[data-source*="${this.htmlName({ name: val })}"][data-target*="${this.htmlName({ name: val })}"]`);
             filteredLinks.classed('filtered-out', false);
-            let filteredText = this.graph.selectAll(`text[data-name*="${this.htmlName({ name: val }) }"]`);
+            let filteredText = this.graph.selectAll(`text[data-name*="${this.htmlName({ name: val })}"]`);
             filteredText.classed('filtered-out', false);
         }
-    },250);
+    }, 250);
 
     clearFilter = () => {
         this.nodes.classed('filtered-out', false);
@@ -523,7 +525,7 @@ class GraphRenderer {
     }
 
     centerGraph = () => {
-        var centerTranslate:[number,number] = [
+        var centerTranslate: [number, number] = [
             (this.graphWidth / 4),
             (this.graphHeight / 4),
         ];
@@ -577,7 +579,7 @@ class GraphRenderer {
         return object.name.replace(/(\.|\/)/gi, '-');
     }
 
-    private transitionScale(){
+    private transitionScale() {
         this.graph.transition()
             .duration(500)
             .attr("transform", "translate(" + this.zoom.translate() + ")" + " scale(" + this.zoom.scale() + ")");
@@ -599,7 +601,7 @@ class D3Graph {
     private targetsBySourceName: TargetBySourceName = {};
     private circularPaths: string[][] = [];
     constructor(private links: D3Link[]) {
-        links.forEach(l=> {
+        links.forEach(l => {
             if (!this.inDegLookup[l.target.name]) this.inDegLookup[l.target.name] = 2;
             else this.inDegLookup[l.target.name]++;
 

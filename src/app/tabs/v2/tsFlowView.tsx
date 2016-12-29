@@ -7,21 +7,21 @@ import * as ui from "../../ui";
 import * as csx from '../../base/csx';
 import * as React from "react";
 import * as tab from "./tab";
-import {server, cast} from "../../../socket/socketClient";
+import { server, cast } from "../../../socket/socketClient";
 import * as commands from "../../commands/commands";
 import * as utils from "../../../common/utils";
 import * as d3 from "d3";
-import {Types} from "../../../socket/socketContract";
+import { Types } from "../../../socket/socketContract";
 import * as types from "../../../common/types";
-import {IconType} from "../../../common/types";
+import { IconType } from "../../../common/types";
 import * as $ from "jquery";
 import * as styles from "../../styles/styles";
 import * as onresize from "onresize";
-import {Clipboard} from "../../components/clipboard";
+import { Clipboard } from "../../components/clipboard";
 import * as typeIcon from "../../components/typeIcon";
 import * as gls from "../../base/gls";
 import * as typestyle from "typestyle";
-import {MarkDown} from "../../markdown/markdown";
+import { MarkDown } from "../../markdown/markdown";
 
 export interface Props extends tab.TabProps {
 }
@@ -32,15 +32,17 @@ export interface State {
 export namespace DocumentationViewStyles {
     export const header = typestyle.style({
         cursor: 'pointer',
-        '&:hover': {
-            textDecoration: 'underline'
+        $nest: {
+            '&:hover': {
+                textDecoration: 'underline'
+            }
         }
     });
 
     export const folderName = typestyle.style({
         padding: "2px",
         fontSize: '.5em',
-        '-webkitUserSelect': 'none',
+        '-webkit-user-select': 'none',
         maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis'
     });
 }
@@ -121,9 +123,9 @@ export class TsFlowView extends ui.BaseComponent<Props, State> {
             <div
                 ref="root"
                 tabIndex={0}
-                style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll, {color: styles.textColor}) }
+                style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll, { color: styles.textColor })}
                 onKeyPress={this.handleKey}>
-                <div style={{overflow: 'hidden', padding:'10px', display: 'flex'}}>
+                <div style={{ overflow: 'hidden', padding: '10px', display: 'flex' }}>
 
                 </div>
             </div>

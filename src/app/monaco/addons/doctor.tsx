@@ -8,20 +8,20 @@ import * as csx from '../../base/csx';
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as state from "../../state/state";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import * as clipboard from "../../components/clipboard";
 import * as utils from "../../../common/utils";
-import {server} from "../../../socket/socketClient";
-import {Types} from "../../../socket/socketContract";
+import { server } from "../../../socket/socketClient";
+import { Types } from "../../../socket/socketContract";
 import * as commands from "../../commands/commands";
 import * as monacoUtils from "../monacoUtils";
-import {errorsCache} from "../../globalErrorCacheClient";
+import { errorsCache } from "../../globalErrorCacheClient";
 import * as typestyle from "typestyle";
 
 type Editor = monaco.editor.ICodeEditor;
 
 let docuClassName = typestyle.style(
-    csx.newLayer,
+    csx.newLayer as any,
     {
         zIndex: 1, // To come over the editor
         color: '#DDD',
@@ -50,8 +50,10 @@ let docuClassName = typestyle.style(
 
         opacity: 0.7, // Light as this is not the user's focus
         transition: 'opacity .2s',
-        '&:hover': {
-            opacity: 1
+        $nest: {
+            '&:hover': {
+                opacity: 1
+            }
         }
     }
 );
@@ -101,7 +103,7 @@ interface State {
         showDoctor: state.showDoctor,
     };
 })
-export class Doctor extends ui.BaseComponent<Props,State> {
+export class Doctor extends ui.BaseComponent<Props, State> {
     constructor(props) {
         super(props);
         this.state = {};
@@ -109,11 +111,11 @@ export class Doctor extends ui.BaseComponent<Props,State> {
     componentWillUnmount() {
         super.componentWillUnmount();
     }
-    componentWillReceiveProps(props:Props){
-        if (props.showDoctor && !this.props.showDoctor){
+    componentWillReceiveProps(props: Props) {
+        if (props.showDoctor && !this.props.showDoctor) {
             this.handleCursorActivity();
         }
-        if (!this.props.cm && props.cm){
+        if (!this.props.cm && props.cm) {
             this.disposible.add(props.cm.onDidChangeCursorPosition(this.handleCursorActivity));
         }
     }
@@ -134,7 +136,7 @@ export class Doctor extends ui.BaseComponent<Props,State> {
         }
 
         let sel = cm.getSelection();
-        const cursor = {line: sel.startLineNumber - 1, ch: sel.startColumn - 1};
+        const cursor = { line: sel.startLineNumber - 1, ch: sel.startColumn - 1 };
         const isCursorInTopHalf = monacoUtils.isCursorInTopHalf(cm);
         if (isCursorInTopHalf) {
             this.setState({ onBottom: true, cursor, doctorInfo: null, searching: true });
@@ -151,73 +153,73 @@ export class Doctor extends ui.BaseComponent<Props,State> {
         if (!state.inActiveProjectFilePath(this.props.filePath)) return;
 
         let cm = this.props.cm;
-        server.getDoctorInfo({ filePath: this.props.filePath, editorPosition: this.state.cursor }).then(res=>{
+        server.getDoctorInfo({ filePath: this.props.filePath, editorPosition: this.state.cursor }).then(res => {
             this.setState({ doctorInfo: res, searching: false });
         });
 
     }, 1000);
 
-    render(){
-        if (!this.props.showDoctor || !this.state.singleCursor || !this.state.cursor){
+    render() {
+        if (!this.props.showDoctor || !this.state.singleCursor || !this.state.cursor) {
             return <div />;
         }
 
         if (!state.inActiveProjectFilePath(this.props.filePath)) {
-            return <div/>;
+            return <div />;
         }
 
         let rawErrors = errorsCache.getErrorsForFilePath(this.props.filePath);
-        let errors = rawErrors.filter(re=> re.from.line == this.state.cursor.line).filter(re=> re.from.ch <= this.state.cursor.ch && this.state.cursor.ch <= re.to.ch);
+        let errors = rawErrors.filter(re => re.from.line == this.state.cursor.line).filter(re => re.from.ch <= this.state.cursor.ch && this.state.cursor.ch <= re.to.ch);
 
-        let positionStyle = this.state.onBottom?docuOnBottomStyle:docuOnTopStyle;
+        let positionStyle = this.state.onBottom ? docuOnBottomStyle : docuOnTopStyle;
 
         let doctorInfo = this.state.doctorInfo;
         let typeInfo: JSX.Element;
         let comment: JSX.Element;
         let references: JSX.Element;
         let definitions: JSX.Element;
-        if (doctorInfo && doctorInfo.quickInfo){
-             typeInfo = <div style={doctorRow}>
-                    <strong>SIG</strong>&nbsp;
-                    <strong style={{fontFamily:'monospace'}}>{doctorInfo.quickInfo.name}</strong>
-                </div>;
-             comment = doctorInfo.quickInfo.comment &&
+        if (doctorInfo && doctorInfo.quickInfo) {
+            typeInfo = <div style={doctorRow}>
+                <strong>SIG</strong>&nbsp;
+                    <strong style={{ fontFamily: 'monospace' }}>{doctorInfo.quickInfo.name}</strong>
+            </div>;
+            comment = doctorInfo.quickInfo.comment &&
                 <div style={doctorRow}>
-                    <div style={{background:'#222', padding: '3px', fontFamily:'monospace'} as any}>{doctorInfo.quickInfo.comment}</div>
+                    <div style={{ background: '#222', padding: '3px', fontFamily: 'monospace' } as any}>{doctorInfo.quickInfo.comment}</div>
                 </div>;
         }
-        if (doctorInfo && doctorInfo.references && doctorInfo.references.length){
+        if (doctorInfo && doctorInfo.references && doctorInfo.references.length) {
             references = <div style={doctorRow}>
                 <strong>REF</strong>{' '}
                 {doctorInfo.references.map(item => {
                     return (
                         <span style={fileLinkStyle}
-                        key={item.filePath+item.position.line}
-                        onClick={()=>this.openLocation(item.filePath,item.position)}
-                        >{utils.getFileName(item.filePath) + ":" + (item.position.line + 1)}</span>
+                            key={item.filePath + item.position.line}
+                            onClick={() => this.openLocation(item.filePath, item.position)}
+                            >{utils.getFileName(item.filePath) + ":" + (item.position.line + 1)}</span>
                     )
                 })}
             </div>
         }
-        if (doctorInfo && doctorInfo.definitions && doctorInfo.definitions.length){
+        if (doctorInfo && doctorInfo.definitions && doctorInfo.definitions.length) {
             definitions = <div style={doctorRow}>
                 <strong>DEF</strong>{' '}
                 {doctorInfo.definitions.map(item => {
                     return (
                         <span style={fileLinkStyle}
-                        key={item.filePath+item.position.line}
-                        onClick={()=>this.openLocation(item.filePath,item.position)}
-                        >{utils.getFileName(item.filePath) + ":" + (item.position.line + 1)}</span>
+                            key={item.filePath + item.position.line}
+                            onClick={() => this.openLocation(item.filePath, item.position)}
+                            >{utils.getFileName(item.filePath) + ":" + (item.position.line + 1)}</span>
                     )
                 })}
             </div>
         }
-        if (doctorInfo && doctorInfo.langHelp){
+        if (doctorInfo && doctorInfo.langHelp) {
             definitions = <div style={doctorRow}>
                 <strong>{doctorInfo.langHelp.displayName}</strong>{' '}
                 <span
                     style={fileLinkStyle}
-                    onClick={()=>window.open(doctorInfo.langHelp.help,'_blank')}>
+                    onClick={() => window.open(doctorInfo.langHelp.help, '_blank')}>
                     More
                 </span>
             </div>
@@ -225,32 +227,32 @@ export class Doctor extends ui.BaseComponent<Props,State> {
 
         return <div className={docuClassName} style={csx.extend(positionStyle, csx.vertical)}>
             <div style={csx.vertical}>
-            {
-                errors.map(e=>{
-                    return <div style={{padding:'5px'} as any} key={e.from.ch}>
-                        🐛({e.from.line+1}:{e.from.ch+1}) {e.message}
-                        {' '}<clipboard.Clipboard text={`${e.filePath}:${e.from.line+1} ${e.message}`}/>
-                    </div>;
-                })
-            }
-            {
-                typeInfo
-            }
-            {
-                comment
-            }
-            {
-                references
-            }
-            {
-                definitions
-            }
-            {
-                this.state.searching && <i>Searching...</i>
-            }
-            {
-                this.state.doctorInfo && !this.state.doctorInfo.valid && <i>Nothing worthwhile</i>
-            }
+                {
+                    errors.map(e => {
+                        return <div style={{ padding: '5px' } as any} key={e.from.ch}>
+                            🐛({e.from.line + 1}:{e.from.ch + 1}) {e.message}
+                            {' '}<clipboard.Clipboard text={`${e.filePath}:${e.from.line + 1} ${e.message}`} />
+                        </div>;
+                    })
+                }
+                {
+                    typeInfo
+                }
+                {
+                    comment
+                }
+                {
+                    references
+                }
+                {
+                    definitions
+                }
+                {
+                    this.state.searching && <i>Searching...</i>
+                }
+                {
+                    this.state.doctorInfo && !this.state.doctorInfo.valid && <i>Nothing worthwhile</i>
+                }
             </div>
         </div>;
 

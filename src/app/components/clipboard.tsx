@@ -1,6 +1,6 @@
 import React = require("react");
 import * as csx from '../base/csx';
-import {BaseComponent} from "../ui";
+import { BaseComponent } from "../ui";
 import * as ui from "../ui";
 import * as typestyle from "typestyle";
 
@@ -22,8 +22,10 @@ let buttonClassName = typestyle.style({
     userSelect: 'none',
     outline: '0px',
 
-    '&:active': {
-        backgroundImage: 'linear-gradient(#353434, #7B7B7B)',
+    $nest: {
+        '&:active': {
+            backgroundImage: 'linear-gradient(#353434, #7B7B7B)',
+        }
     }
 });
 
@@ -33,10 +35,10 @@ let clippy = {
 }
 
 export class Clipboard extends BaseComponent<Props, State>{
-    render(){
+    render() {
         return (
-            <button className={buttonClassName} style={csx.extend(csx.center)} data-clipboard-text={this.props.text} onClick={(event)=>event.stopPropagation() || ui.notifyInfoQuickDisappear("Copied")}>
-                <img src="assets/clippy.svg" style={clippy}/>
+            <button className={buttonClassName} style={csx.extend(csx.center)} data-clipboard-text={this.props.text} onClick={(event) => event.stopPropagation() || ui.notifyInfoQuickDisappear("Copied")}>
+                <img src="assets/clippy.svg" style={clippy} />
             </button>
         );
     }

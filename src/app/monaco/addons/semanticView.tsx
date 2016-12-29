@@ -7,16 +7,16 @@ import * as csx from '../../base/csx';
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import * as state from "../../state/state";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import * as clipboard from "../../components/clipboard";
 import * as utils from "../../../common/utils";
-import {server} from "../../../socket/socketClient";
-import {Types} from "../../../socket/socketContract";
+import { server } from "../../../socket/socketClient";
+import { Types } from "../../../socket/socketContract";
 import * as commands from "../../commands/commands";
 import * as typestyle from "typestyle";
 import * as styles from "../../styles/styles";
-import {shouldComponentUpdate} from "../../../common/pure";
-import {gotoPosition} from "../../monaco/monacoUtils";
+import { shouldComponentUpdate } from "../../../common/pure";
+import { gotoPosition } from "../../monaco/monacoUtils";
 
 type Editor = monaco.editor.ICommonCodeEditor;
 
@@ -65,8 +65,10 @@ namespace SemanticViewStyles {
     export const selectedNodeClass = typestyle.style({
         border: '1px solid grey',
         backgroundColor: styles.blackHighlightColor,
-        '&:hover': {
-            backgroundColor: styles.blackHighlightColor
+        $nest: {
+            '&:hover': {
+                backgroundColor: styles.blackHighlightColor
+            }
         }
     });
 }
@@ -107,13 +109,13 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
         if (!this.props.editor && props.editor) {
             /** Initial data load */
             let sel = props.editor.getSelection();
-            const cursor = {line: sel.startLineNumber - 1, ch: sel.endLineNumber - 1};
+            const cursor = { line: sel.startLineNumber - 1, ch: sel.endLineNumber - 1 };
             this.setState({ cursor });
             this.reloadData();
 
             const reloadDataDebounced = utils.debounce(this.reloadData, 3000);
-            this.disposible.add(commands.fileContentsChanged.on(e=>{
-                if (e.filePath === props.filePath && this.props.showSemanticView){
+            this.disposible.add(commands.fileContentsChanged.on(e => {
+                if (e.filePath === props.filePath && this.props.showSemanticView) {
                     reloadDataDebounced();
                 }
             }));
@@ -124,13 +126,13 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
             }));
 
             this.handleCursorActivity(props.editor);
-            this.disposible.add(props.editor.onDidChangeCursorSelection(()=>this.handleCursorActivity()));
+            this.disposible.add(props.editor.onDidChangeCursorSelection(() => this.handleCursorActivity()));
         }
         /**
          * If just hidden and we have an editor, then the editor needs resizing
          */
         if (!props.showSemanticView && this.props.showSemanticView && this.props.editor) {
-            this.afterComponentDidUpdate(()=>{
+            this.afterComponentDidUpdate(() => {
                 this.relayoutEditor();
             });
         }
@@ -144,11 +146,11 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
 
 
         let sel = editor.getSelection();
-        const cursor = {line: sel.startLineNumber - 1, ch: sel.startColumn - 1};
+        const cursor = { line: sel.startLineNumber - 1, ch: sel.startColumn - 1 };
         /** If first call OR cursor moved */
         if (!this.state.cursor || (this.state.cursor && this.state.cursor.line !== cursor.line)) {
             this.setState({ cursor });
-            this.afterComponentDidUpdate(()=>{
+            this.afterComponentDidUpdate(() => {
                 // Scroll to select node in view if any
                 const ref = this.refs[this.selectedRef] as HTMLDivElement;
                 if (ref) {
@@ -164,11 +166,11 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
         }
 
         if (!state.inActiveProjectFilePath(this.props.filePath)) {
-            return <div/>;
+            return <div />;
         }
 
         return <div style={SemanticViewStyles.root}>
-            {this.state.tree.map(node => this.renderNode(node, 0)) }
+            {this.state.tree.map(node => this.renderNode(node, 0))}
         </div>;
     }
 
@@ -180,11 +182,11 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
             ref={ref}
             key={node.text}
             className={SemanticViewStyles.nodeClass + ' ' + isSelected}
-            style={{color}}
-            onClick={ (event) => { this.gotoNode(node); event.stopPropagation(); } }
+            style={{ color }}
+            onClick={(event) => { this.gotoNode(node); event.stopPropagation(); } }
             data-start={node.start.line} data-end={node.end.line}>
-            {ui.indent(indent) }
-            <span style={{fontFamily:'FontAwesome'}}>{this.getIconForKind(node.kind)}</span> {node.text}
+            {ui.indent(indent)}
+            <span style={{ fontFamily: 'FontAwesome' }}>{this.getIconForKind(node.kind)}</span> {node.text}
         </div>].concat(node.subNodes.map(sn => this.renderNode(sn, indent + 1)));
     }
 
@@ -222,15 +224,15 @@ export class SemanticView extends ui.BaseComponent<Props, State> {
         if (!state.inActiveProjectFilePath(this.props.filePath)) return;
 
         server.getSemanticTree({ filePath: this.props.filePath }).then(res => {
-            this.afterComponentDidUpdate(()=>{
+            this.afterComponentDidUpdate(() => {
                 // also relayout the editor if the last width is not the same as new width
                 const newWidth = ReactDOM.findDOMNode(this).clientWidth;
-                if (this.lastWidth !== newWidth){
+                if (this.lastWidth !== newWidth) {
                     this.relayoutEditor();
                     this.lastWidth = newWidth;
                 }
             })
-            this.setState({tree: res.nodes});
+            this.setState({ tree: res.nodes });
         });
     }
 

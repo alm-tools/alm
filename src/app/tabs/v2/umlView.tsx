@@ -2,21 +2,21 @@ import * as ui from "../../ui";
 import * as csx from "../../base/csx";
 import * as React from "react";
 import * as tab from "./tab";
-import {server, cast} from "../../../socket/socketClient";
+import { server, cast } from "../../../socket/socketClient";
 import * as commands from "../../commands/commands";
 import * as utils from "../../../common/utils";
 import * as d3 from "d3";
-import {Types} from "../../../socket/socketContract";
+import { Types } from "../../../socket/socketContract";
 import * as types from "../../../common/types";
-import {IconType} from "../../../common/types";
+import { IconType } from "../../../common/types";
 import * as $ from "jquery";
 import * as styles from "../../styles/styles";
 import * as onresize from "onresize";
-import {Clipboard} from "../../components/clipboard";
+import { Clipboard } from "../../components/clipboard";
 import * as typeIcon from "../../components/typeIcon";
 import * as gls from "../../base/gls";
 import * as typestyle from "typestyle";
-import {MarkDown} from "../../markdown/markdown";
+import { MarkDown } from "../../markdown/markdown";
 
 const {blackHighlightColor} = styles;
 
@@ -35,8 +35,10 @@ export namespace UmlViewStyles {
 
         /** A nice clickable look */
         cursor: 'pointer',
-        '&:hover': {
-            textDecoration: 'underline'
+        $nest: {
+            '&:hover': {
+                textDecoration: 'underline'
+            }
         }
     });
 
@@ -45,8 +47,10 @@ export namespace UmlViewStyles {
         border: '1px solid grey',
         padding: '5px',
         cursor: 'pointer',
-        '&:hover': {
-            textDecoration: 'underline'
+        $nest: {
+            '&:hover': {
+                textDecoration: 'underline'
+            }
         },
 
         // To eat top border
@@ -132,27 +136,27 @@ export class UmlView extends ui.BaseComponent<Props, State> {
             <div
                 ref="root"
                 tabIndex={0}
-                style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll, {color: styles.textColor}) }
+                style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll, { color: styles.textColor })}
                 onKeyPress={this.handleKey}>
-                <div style={{overflow: 'hidden', padding:'10px 0px 10px 10px', display: 'flex'}}>
+                <div style={{ overflow: 'hidden', padding: '10px 0px 10px 10px', display: 'flex' }}>
                     <gls.FlexHorizontal style={{}}>
                         <gls.Content style={{ minWidth: '150px', maxWidth: '250px', overflow: 'auto' }}>
-                            <typeIcon.SectionHeader text="Classes"/>
-                            <gls.SmallVerticalSpace/>
+                            <typeIcon.SectionHeader text="Classes" />
+                            <gls.SmallVerticalSpace />
                             {
                                 this.state.classes.length
-                                ? this.renderClasses()
-                                : "No classes in file"
+                                    ? this.renderClasses()
+                                    : "No classes in file"
                             }
                         </gls.Content>
-                        <gls.FlexVertical style={{marginLeft: '5px', overflow: 'auto'}}>
+                        <gls.FlexVertical style={{ marginLeft: '5px', overflow: 'auto' }}>
                             {
                                 this.state.selected
-                                ? this.renderSelectedClass()
-                                : 'Select a class from the left to view its diagram 🌹 🎼'
+                                    ? this.renderSelectedClass()
+                                    : 'Select a class from the left to view its diagram 🌹 🎼'
                             }
-                            <div style={{marginTop: '10px', marginRight: '10px'}}>
-                                <hr/>
+                            <div style={{ marginTop: '10px', marginRight: '10px' }}>
+                                <hr />
                                 <typeIcon.TypeIconClassDiagramLegend />
                             </div>
                         </gls.FlexVertical>
@@ -162,7 +166,7 @@ export class UmlView extends ui.BaseComponent<Props, State> {
         );
     }
 
-    renderClasses()  {
+    renderClasses() {
         return this.state.classes.map((c, i) => {
             const backgroundColor = this.state.selected && this.state.selected.name === c.name
                 ? blackHighlightColor
@@ -172,8 +176,8 @@ export class UmlView extends ui.BaseComponent<Props, State> {
                     title={c.name + ' ' + c.location.position.line}
                     key={i}
                     style={{ cursor: 'pointer', backgroundColor, paddingTop: '2px', paddingBottom: '2px', paddingLeft: '2px' }}
-                    onClick={() => this.handleClassSelected(c) }>
-                    <typeIcon.DocumentedTypeHeader name={c.name} icon={c.icon}/>
+                    onClick={() => this.handleClassSelected(c)}>
+                    <typeIcon.DocumentedTypeHeader name={c.name} icon={c.icon} />
                 </div>
             );
         });
@@ -181,29 +185,29 @@ export class UmlView extends ui.BaseComponent<Props, State> {
 
     renderSelectedClass() {
         const c = this.state.selected;
-        return <gls.Content style={{textAlign: 'center'}}>
-            <code style={{fontWeight: 'bold'}}>{c.name}</code>
-            <gls.SmallVerticalSpace/>
+        return <gls.Content style={{ textAlign: 'center' }}>
+            <code style={{ fontWeight: 'bold' }}>{c.name}</code>
+            <gls.SmallVerticalSpace />
             {this.renderClass(c)}
         </gls.Content>
     }
 
     renderClass(c: types.UMLClass) {
-        const renderSection = (section,i) => {
-            return <div key={i} style={{border:'1px solid grey', padding: '5px', marginTop: '-1px'}}>
+        const renderSection = (section, i) => {
+            return <div key={i} style={{ border: '1px solid grey', padding: '5px', marginTop: '-1px' }}>
                 {section}
             </div>
         }
         return (
-            <gls.Content style={{textAlign: 'center'}}>
-                <gls.InlineBlock style={{paddingTop:'1px'}}>
-                    <div className={UmlViewStyles.classNameHeaderSection} onClick={()=>this.handleGotoTypeLocation(c.location)}>
-                        <typeIcon.DocumentedTypeHeader name={c.name} icon={c.icon}/>
+            <gls.Content style={{ textAlign: 'center' }}>
+                <gls.InlineBlock style={{ paddingTop: '1px' }}>
+                    <div className={UmlViewStyles.classNameHeaderSection} onClick={() => this.handleGotoTypeLocation(c.location)}>
+                        <typeIcon.DocumentedTypeHeader name={c.name} icon={c.icon} />
                     </div>
                     {
-                        c.members.map((m,i)=>{
-                            return <div key={i} className={UmlViewStyles.classMemberSection} onClick={()=>this.handleGotoTypeLocation(m.location)}>
-                                <typeIcon.DocumentedTypeHeader name={m.name} icon={m.icon} visibility={m.visibility} lifetime={m.lifetime} override={!!m.override}/>
+                        c.members.map((m, i) => {
+                            return <div key={i} className={UmlViewStyles.classMemberSection} onClick={() => this.handleGotoTypeLocation(m.location)}>
+                                <typeIcon.DocumentedTypeHeader name={m.name} icon={m.icon} visibility={m.visibility} lifetime={m.lifetime} override={!!m.override} />
                             </div>
                         })
                     }
@@ -242,7 +246,7 @@ export class UmlView extends ui.BaseComponent<Props, State> {
     }
 
     loadData = () => {
-        server.getUmlDiagramForFile({filePath: this.filePath}).then(res => {
+        server.getUmlDiagramForFile({ filePath: this.filePath }).then(res => {
             // Preserve selected
             let selected = this.state.selected && res.classes.find(c => c.name === this.state.selected.name);
             // otherwise auto select first

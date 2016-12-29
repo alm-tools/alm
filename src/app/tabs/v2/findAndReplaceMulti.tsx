@@ -3,18 +3,18 @@ import * as csx from "../../base/csx";
 import * as React from "react";
 var ReactDOM = require("react-dom");
 import * as tab from "./tab";
-import {server, cast} from "../../../socket/socketClient";
+import { server, cast } from "../../../socket/socketClient";
 import * as commands from "../../commands/commands";
 import * as utils from "../../../common/utils";
 import * as d3 from "d3";
 import * as $ from "jquery";
 import * as styles from "../../styles/styles";
 import * as onresize from "onresize";
-import {Clipboard} from "../../components/clipboard";
-import {Types} from "../../../socket/socketContract";
-import {Icon} from "../../components/icon";
+import { Clipboard } from "../../components/clipboard";
+import { Types } from "../../../socket/socketContract";
+import { Icon } from "../../components/icon";
 import * as Mousetrap from "mousetrap";
-import {Robocop} from "../../components/robocop";
+import { Robocop } from "../../components/robocop";
 import * as pure from "../../../common/pure";
 import * as buttons from "../../components/buttons";
 import * as types from "../../../common/types";
@@ -27,8 +27,8 @@ let EOL = '\n';
 /**
  * The styles
  */
-import {inputCodeStyle, searchOptionsLabelStyle}
-from "../../findAndReplace";
+import { inputCodeStyle, searchOptionsLabelStyle }
+    from "../../findAndReplace";
 
 let {inputBlackStyleBase} = styles.Input;
 const inputBlackClassName = typestyle.style(inputBlackStyleBase);
@@ -40,9 +40,11 @@ namespace ResultsStyles {
         styles.padded1,
         {
             border: '1px solid grey',
-            '&:focus': {
-                outline: 'none',
-                border: '1px solid ' + styles.highlightColor,
+            $nest: {
+                '&:focus': {
+                    outline: 'none',
+                    border: '1px solid ' + styles.highlightColor,
+                }
             }
         }
     );
@@ -55,7 +57,7 @@ namespace ResultsStyles {
             fontWeight: 'bold',
             color: styles.textColor,
             background: 'black',
-            border:'2px solid grey',
+            border: '2px solid grey',
         }
     );
 
@@ -72,8 +74,10 @@ namespace ResultsStyles {
 
     export const noFocusClassName = typestyle.style(
         {
-            '&:focus': {
-                outline: 'none'
+            $nest: {
+                '&:focus': {
+                    outline: 'none'
+                }
             }
         }
     )
@@ -85,7 +89,7 @@ namespace ResultsStyles {
 export interface Props extends tab.TabProps {
 }
 export interface State {
-    completed?:boolean;
+    completed?: boolean;
     results?: Types.FarmResultDetails[];
     config?: Types.FarmConfig;
     farmResultByFilePath?: Types.FarmResultsByFilePath;
@@ -121,7 +125,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
             farmResultByFilePath: {},
 
             collapsedState: {},
-            selected:{},
+            selected: {},
         };
     }
 
@@ -149,7 +153,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
         server.farmResults({}).then(res => {
             this.parseResults(res);
         });
-        this.disposible.add(cast.farmResultsUpdated.on(res=>{
+        this.disposible.add(cast.farmResultsUpdated.on(res => {
             this.parseResults(res);
         }));
 
@@ -164,21 +168,21 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
                 this.setSelected(this.state.results[0].filePath, -1);
             }
         }
-        handlers.bind('up',()=>{
+        handlers.bind('up', () => {
             // initial state
             if (!this.state.results || !this.state.results.length) return false;
-            if (!this.state.selected.filePath){
+            if (!this.state.selected.filePath) {
                 selectFirst();
                 return false;
             }
             /** If we have an actual line go to previous or filePath */
-            if (this.state.selected.line !== -1){
+            if (this.state.selected.line !== -1) {
                 const relevantResults = this.state.farmResultByFilePath[this.state.selected.filePath];
                 const indexInResults
                     = relevantResults
-                        .map(x=>x.line)
+                        .map(x => x.line)
                         .indexOf(this.state.selected.line);
-                if (indexInResults === 0){
+                if (indexInResults === 0) {
                     this.setSelected(this.state.selected.filePath, -1)
                 }
                 else {
@@ -194,7 +198,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
                 let filePathIndex = filePaths.indexOf(this.state.selected.filePath);
                 if (filePathIndex === 0) return false;
                 let previousFilePath = filePaths[filePathIndex - 1];
-                if (this.state.collapsedState[previousFilePath]){
+                if (this.state.collapsedState[previousFilePath]) {
                     this.setSelected(previousFilePath, -1);
                 }
                 else {
@@ -204,7 +208,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
             }
             return false;
         });
-        handlers.bind('down',()=>{
+        handlers.bind('down', () => {
             if (!this.state.results || !this.state.results.length) return false;
             if (!this.state.selected.filePath) {
                 selectFirst();
@@ -214,7 +218,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
                 (collaped) go to next filePath if any
                 (expanded) go to first child */
             if (this.state.selected.line === -1) {
-                if (this.state.collapsedState[this.state.selected.filePath]){
+                if (this.state.collapsedState[this.state.selected.filePath]) {
                     let filePaths = Object.keys(this.state.farmResultByFilePath);
                     let filePathIndex = filePaths.indexOf(this.state.selected.filePath);
                     if (filePathIndex === filePaths.length - 1) return false;
@@ -250,7 +254,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
             if (!this.state.results || !this.state.results.length) return false;
             if (!this.state.selected.filePath) return false;
             this.state.collapsedState[this.state.selected.filePath] = true;
-            this.setState({collapsedState: this.state.collapsedState});
+            this.setState({ collapsedState: this.state.collapsedState });
             this.setSelected(this.state.selected.filePath, -1);
             return false;
         });
@@ -258,10 +262,10 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
             /** Expand only if a filePath root is currently selected  */
             if (!this.state.results || !this.state.results.length) return false;
             this.state.collapsedState[this.state.selected.filePath] = false;
-            this.setState({collapsedState: this.state.collapsedState});
+            this.setState({ collapsedState: this.state.collapsedState });
             return false;
         });
-        handlers.bind('enter',()=>{
+        handlers.bind('enter', () => {
             /** Enter always takes you into the filePath */
             if (!this.state.results || !this.state.results.length) return false;
             if (!this.state.selected.filePath) {
@@ -312,7 +316,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
         let rendered = (
             <div
                 className={ResultsStyles.noFocusClassName}
-                style={csx.extend(csx.vertical, csx.flex, styles.someChildWillScroll) }>
+                style={csx.extend(csx.vertical, csx.flex, styles.someChildWillScroll)}>
                 <div ref="results" tabIndex={0} className={ResultsStyles.rootClassName}>
                     {
                         hasSearch
@@ -320,7 +324,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
                             : <div style={ResultsStyles.header}>No Search</div>
                     }
                 </div>
-                <div style={csx.extend(csx.content, styles.padded1) }>
+                <div style={csx.extend(csx.content, styles.padded1)}>
                     {
                         this.renderSearchControls()
                     }
@@ -342,7 +346,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
                                 className={inputBlackClassName}
                                 style={csx.extend(inputCodeStyle, csx.flex)}
                                 onKeyDown={this.findKeyDownHandler}
-                                onChange={this.findChanged} defaultValue={''}/>
+                                onChange={this.findChanged} defaultValue={''} />
                         </div>
                     </div>
                     <div style={csx.content}>
@@ -351,7 +355,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
                                 <ui.Toggle
                                     tabIndex={3}
                                     ref="regex"
-                                    onChange={this.handleRegexChange}/>
+                                    onChange={this.handleRegexChange} />
                                 <span style={searchOptionsLabelStyle}>
                                     .*
                                 </span>
@@ -360,7 +364,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
                                 <ui.Toggle
                                     tabIndex={4}
                                     ref="caseInsensitive"
-                                    onChange={this.handleCaseSensitiveChange}/>
+                                    onChange={this.handleCaseSensitiveChange} />
                                 <span style={searchOptionsLabelStyle}>
                                     Aa
                                 </span>
@@ -370,9 +374,9 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
                                     tabIndex={5}
                                     ref="fullWord"
                                     onKeyDown={this.fullWordKeyDownHandler}
-                                    onChange={this.handleFullWordChange}/>
+                                    onChange={this.handleFullWordChange} />
                                 <span style={searchOptionsLabelStyle}>
-                                    <Icon name="text-width"/>
+                                    <Icon name="text-width" />
                                 </span>
                             </label>
                         </div>
@@ -380,13 +384,13 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
                 </div>
                 <div style={styles.Tip.root}>
                     <div>
-                    Controls:
+                        Controls:
                     {' '}<span style={styles.Tip.keyboardShortCutStyle}>Esc</span> to focus on results
                     {' '}<span style={styles.Tip.keyboardShortCutStyle}>Enter</span> to start/restart search
                     {' '}<span style={styles.Tip.keyboardShortCutStyle}>Toggle 🔘 switches</span> start/restart search
                     </div>
                     <div>
-                    Results:
+                        Results:
                     {' '}<span style={styles.Tip.keyboardShortCutStyle}>Up/Down</span> to go through results
                     {' '}<span style={styles.Tip.keyboardShortCutStyle}>Enter</span> to open a search result
                     </div>
@@ -402,14 +406,14 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
         );
     }
 
-    renderSearchResults(){
+    renderSearchResults() {
         let filePaths = Object.keys(this.state.farmResultByFilePath);
         let queryRegex = this.state.queryRegex;
         let queryRegexStr = (this.state.queryRegex && this.state.queryRegex.toString()) || '';
         queryRegexStr = queryRegexStr && ` (Query : ${queryRegexStr}) `
 
         return (
-            <div style={csx.extend(csx.flex, styles.errorsPanel.main, {userSelect:'none'}) }>
+            <div style={csx.extend(csx.flex, styles.errorsPanel.main, { userSelect: 'none' })}>
                 <div style={csx.extend(ResultsStyles.header, csx.horizontal)}>
                     Total Results ({this.state.results.length})
                     {
@@ -418,40 +422,40 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
                     }
                     {
                         !this.state.completed &&
-                            <span>
-                                <gls.SmallHorizontalSpace/>
-                                <buttons.ButtonBlack
-                                    key="button"
-                                    onClick={this.cancelAnyRunningSearch}
-                                    text={"Cancel"}/>
-                            </span>
+                        <span>
+                            <gls.SmallHorizontalSpace />
+                            <buttons.ButtonBlack
+                                key="button"
+                                onClick={this.cancelAnyRunningSearch}
+                                text={"Cancel"} />
+                        </span>
                     }
 
-                    <span style={csx.flex}/>
+                    <span style={csx.flex} />
                     {queryRegexStr}
                 </div>
                 {
                     filePaths.map((filePath, i) => {
-                            let results = this.state.farmResultByFilePath[filePath];
-                            let selectedRoot = filePath === this.state.selected.filePath && this.state.selected.line == -1
-                            let selectedResultLine =
-                                filePath === this.state.selected.filePath ? this.state.selected.line : -2 /* -2 means not selected */;
+                        let results = this.state.farmResultByFilePath[filePath];
+                        let selectedRoot = filePath === this.state.selected.filePath && this.state.selected.line == -1
+                        let selectedResultLine =
+                            filePath === this.state.selected.filePath ? this.state.selected.line : -2 /* -2 means not selected */;
 
-                            return (
-                                <FileResults.FileResults
-                                    key={i}
-                                    ref={filePath}
-                                    filePath={filePath}
-                                    results={results}
-                                    queryRegex={this.state.queryRegex}
-                                    expanded={!this.state.collapsedState[filePath]}
-                                    onClickFilePath={this.toggleFilePathExpansion}
-                                    openSearchResult={this.openSearchResult}
-                                    selectedRoot={selectedRoot}
-                                    selectedResultLine={selectedResultLine}
+                        return (
+                            <FileResults.FileResults
+                                key={i}
+                                ref={filePath}
+                                filePath={filePath}
+                                results={results}
+                                queryRegex={this.state.queryRegex}
+                                expanded={!this.state.collapsedState[filePath]}
+                                onClickFilePath={this.toggleFilePathExpansion}
+                                openSearchResult={this.openSearchResult}
+                                selectedRoot={selectedRoot}
+                                selectedResultLine={selectedResultLine}
                                 />
-                            );
-                        })
+                        );
+                    })
                 }
             </div>
         );
@@ -459,7 +463,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
 
     toggleFilePathExpansion = (filePath: string) => {
         this.state.collapsedState[filePath] = !this.state.collapsedState[filePath];
-        this.setState({collapsedState: this.state.collapsedState, selected:{filePath,line:-1}});
+        this.setState({ collapsedState: this.state.collapsedState, selected: { filePath, line: -1 } });
     }
 
     /**
@@ -538,8 +542,8 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
 
         this.setState({
             // Clear previous search
-            collapsedState:{},
-            selected:{},
+            collapsedState: {},
+            selected: {},
             // Set new results preemptively
             results: [],
             config,
@@ -552,14 +556,14 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
             completed: false,
             farmResultByFilePath: {},
         });
-    },100);
+    }, 100);
 
     cancelAnyRunningSearch = () => {
         server.stopFarmingIfRunning({});
     };
 
     /** Parses results as they come and puts them into the state */
-    parseResults(response:Types.FarmNotification){
+    parseResults(response: Types.FarmNotification) {
         // Convert as needed
         // console.log(response); // DEBUG
         let results = response.results;
@@ -585,7 +589,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
 
     openSearchResult = (filePath: string, line: number) => {
         commands.doOpenOrFocusFile.emit({ filePath, position: { line: line - 1, ch: 0 } });
-        this.setSelected(filePath,line);
+        this.setSelected(filePath, line);
     }
 
     setSelected = (filePath: string, line: number) => {
@@ -594,7 +598,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
     }
 
     focusFilePath = (filePath: string, line: number) => {
-        this.resultRef(filePath).focus(filePath,line);
+        this.resultRef(filePath).focus(filePath, line);
     };
 
     /**
@@ -605,7 +609,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
     }
 
     /** Allows us to focus on input on certain keystrokes instead of search results */
-    focusOnInput = () => setTimeout(()=>this.findInput().focus(),500);
+    focusOnInput = () => setTimeout(() => this.findInput().focus(), 500);
     focus = () => {
         this.refs.results.focus();
     }
@@ -647,12 +651,12 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
 
 namespace FileResults {
     export interface Props {
-        filePath:string;
-        results:Types.FarmResultDetails[];
+        filePath: string;
+        results: Types.FarmResultDetails[];
 
         expanded: boolean;
-        onClickFilePath: (filePath:string) => any;
-        openSearchResult: (filePath:string, line: number) => any;
+        onClickFilePath: (filePath: string) => any;
+        openSearchResult: (filePath: string, line: number) => any;
 
         selectedRoot: boolean;
         selectedResultLine: number;
@@ -661,17 +665,17 @@ namespace FileResults {
     }
     export interface State {
     }
-    export class FileResults extends React.Component<Props,State>{
+    export class FileResults extends React.Component<Props, State>{
         shouldComponentUpdate = pure.shouldComponentUpdate;
 
-        render(){
+        render() {
 
             let selectedStyle = this.props.selectedRoot
                 ? ResultsStyles.selected
                 : {};
 
             return (
-                <div onClick={()=>this.props.onClickFilePath(this.props.filePath)}>
+                <div onClick={() => this.props.onClickFilePath(this.props.filePath)}>
                     <div
                         ref={this.props.filePath + ':' + -1}
                         tabIndex={0}
@@ -681,20 +685,20 @@ namespace FileResults {
                                 selectedStyle,
                                 styles.errorsPanel.filePath,
                                 {
-                                    margin:'8px 0px',
+                                    margin: '8px 0px',
                                     padding: '3px'
                                 }
                             )
                         }>
-                        {!this.props.expanded ? "+" : "-" } {this.props.filePath} ({this.props.results.length})
+                        {!this.props.expanded ? "+" : "-"} {this.props.filePath} ({this.props.results.length})
                     </div>
-                    {!this.props.expanded ? <noscript/> : this.renderResultsForFilePath(this.props.results) }
+                    {!this.props.expanded ? <noscript /> : this.renderResultsForFilePath(this.props.results)}
                 </div>
             );
         }
 
-        renderResultsForFilePath = (results:Types.FarmResultDetails[]) => {
-            return results.map((result,i)=>{
+        renderResultsForFilePath = (results: Types.FarmResultDetails[]) => {
+            return results.map((result, i) => {
                 let selectedStyle = this.props.selectedResultLine === result.line
                     ? ResultsStyles.selected
                     : {};
@@ -717,23 +721,23 @@ namespace FileResults {
                                 selectedStyle
                             )
                         }
-                        onClick={(e) => {e.stopPropagation(); this.props.openSearchResult(result.filePath, result.line)} }>
-                        {utils.padLeft((result.line).toString(),6)} : <span style={ResultsStyles.preview}>{this.renderMatched(result.preview,this.props.queryRegex)}</span>
+                        onClick={(e) => { e.stopPropagation(); this.props.openSearchResult(result.filePath, result.line) } }>
+                        {utils.padLeft((result.line).toString(), 6)} : <span style={ResultsStyles.preview}>{this.renderMatched(result.preview, this.props.queryRegex)}</span>
                     </div>
                 );
             })
         }
 
-        focus(filePath:string, line:number){
-            let dom = this.refs[this.props.filePath+':'+line] as HTMLDivElement;
+        focus(filePath: string, line: number) {
+            let dom = this.refs[this.props.filePath + ':' + line] as HTMLDivElement;
             dom.scrollIntoViewIfNeeded(false);
         }
 
-        renderMatched(preview: string, queryRegex: RegExp){
+        renderMatched(preview: string, queryRegex: RegExp) {
             let matched = this.getMatchedSegments(preview, queryRegex);
-            let matchedStyle = {fontWeight:'bold', color:'#66d9ef'};
+            let matchedStyle = { fontWeight: 'bold', color: '#66d9ef' };
             return matched.map((item, i) => {
-                return <span key={i} style={item.matched?matchedStyle:{}}>{item.str}</span>;
+                return <span key={i} style={item.matched ? matchedStyle : {}}>{item.str}</span>;
             });
         }
 
@@ -744,10 +748,10 @@ namespace FileResults {
 
             var match;
             let previewCollectedIndex = 0;
-            let collectUnmatched = (matchStart:number, matchLength: number) => {
+            let collectUnmatched = (matchStart: number, matchLength: number) => {
                 if (previewCollectedIndex < matchStart) {
                     result.push({
-                        str:preview.substring(previewCollectedIndex,matchStart),
+                        str: preview.substring(previewCollectedIndex, matchStart),
                         matched: false
                     });
                     previewCollectedIndex = (matchStart + matchLength);

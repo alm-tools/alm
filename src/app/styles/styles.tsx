@@ -1,4 +1,5 @@
 import * as csx from '../base/csx';
+import { types } from 'typestyle';
 
 export const textColor = '#BBB';
 export let errorColor = '#f92672';
@@ -26,7 +27,7 @@ export const blackHighlightColor = "#1C1D18"
 /**
  * If you expect a child to scroll you need to tell it that I will not give you a scroll bar
  */
-export var someChildWillScroll: NestedCSSProperties = {
+export var someChildWillScroll: types.NestedCSSProperties = {
     overflow: 'hidden'
 }
 
@@ -222,7 +223,7 @@ export namespace modal {
 
         border: '3px solid #3C3C3C',
         transition: 'border .2s',
-        '&:focus':{
+        '&:focus': {
             boxShadow: '0px 0px 1px 1px #3C3C3C'
         }
     }
@@ -252,7 +253,7 @@ export namespace Input {
         padding: '2px',
         border: '2px solid #3C3C3C',
         transition: 'border .2s',
-        '&:focus':{
+        '&:focus': {
             border: '2px solid #0099E0',
             boxShadow: '0px 0px 1px 1px #0099E0'
         }
@@ -281,7 +282,7 @@ export namespace Tip {
  * For when you don't want anything on focus
  */
 export const noFocusOutlineBase = {
-    "&:focus":{
+    "&:focus": {
         outline: 'none'
     }
 }

@@ -1,25 +1,25 @@
-import {server} from "../socket/socketClient";
+import { server } from "../socket/socketClient";
 import * as types from "../common/types";
 import React = require("react");
 import * as csx from './base/csx';
 import ReactDOM = require("react-dom");
-import {BaseComponent} from "./ui";
+import { BaseComponent } from "./ui";
 import * as ui from "./ui";
 import * as utils from "../common/utils";
 import * as styles from "./styles/styles";
 import * as state from "./state/state";
-import {connect} from "react-redux";
-import {StoreState} from "./state/state";
-import {Icon} from "./components/icon";
+import { connect } from "react-redux";
+import { StoreState } from "./state/state";
+import { Icon } from "./components/icon";
 import * as commands from "./commands/commands";
 let {DraggableCore} = ui;
-import {getDirectory,getFileName} from "../common/utils";
-import {Robocop} from "./components/robocop";
-import {inputDialog} from "./dialogs/inputDialog";
+import { getDirectory, getFileName } from "../common/utils";
+import { Robocop } from "./components/robocop";
+import { inputDialog } from "./dialogs/inputDialog";
 import * as Mousetrap from "mousetrap";
 import * as clipboard from "./components/clipboard";
 import * as pure from "../common/pure";
-import {tabState} from "./tabs/v2/appTabsContainer";
+import { tabState } from "./tabs/v2/appTabsContainer";
 import * as settings from "./state/settings";
 import * as typestyle from "typestyle";
 type TruthTable = utils.TruthTable;
@@ -39,14 +39,14 @@ interface TreeDirItem {
     name: string;
     filePath: string;
     subDirs: TreeDirItem[];
-    files : TreeFileItem[];
+    files: TreeFileItem[];
 }
 interface TreeFileItem {
     name: string;
     filePath: string;
 }
-type SelectedPaths = { [filePath: string]: {isDir:boolean} };
-type SelectedPathsReadonly = { readonly [filePath: string]: {isDir:boolean} };
+type SelectedPaths = { [filePath: string]: { isDir: boolean } };
+type SelectedPathsReadonly = { readonly[filePath: string]: { isDir: boolean } };
 let dirSelected = { isDir: true };
 let fileSelected = { isDir: false };
 
@@ -59,46 +59,50 @@ export interface State {
 
     treeScrollHasFocus?: boolean;
 
-     // TODO: support multiple selections at some point, hence a dict
+    // TODO: support multiple selections at some point, hence a dict
     readonly selectedPaths?: SelectedPaths;
 }
 
 let resizerWidth = 5;
 let resizerStyle = {
     background: 'radial-gradient(#444,transparent)',
-    width: resizerWidth+'px',
-    cursor:'ew-resize',
+    width: resizerWidth + 'px',
+    cursor: 'ew-resize',
     color: '#666',
 }
 
 let treeListStyle = {
     color: '#eee',
-    fontSize:'.7rem',
-    padding:'3px',
+    fontSize: '.7rem',
+    padding: '3px',
 }
 
 let treeScrollClassName = typestyle.style({
     border: '1px solid grey',
-    '&:focus': {
-        outline: 'none',
-        border: '1px solid ' + styles.highlightColor
+    $nest: {
+        '&:focus': {
+            outline: 'none',
+            border: '1px solid ' + styles.highlightColor
+        }
     }
 })
 
 let treeItemClassName = typestyle.style({
     whiteSpace: 'nowrap',
-    cursor:'pointer',
+    cursor: 'pointer',
     padding: '3px',
     userSelect: 'none',
     fontSize: '.9em',
     opacity: .8,
-    '&:focus': {
-        outline: 'none',
+    $nest: {
+        '&:focus': {
+            outline: 'none',
+        }
     }
 })
 
 let treeItemSelectedStyle = {
-    backgroundColor:styles.selectedBackgroundColor,
+    backgroundColor: styles.selectedBackgroundColor,
 }
 
 let treeItemInProjectStyle = {
@@ -143,10 +147,10 @@ export class FileTree extends BaseComponent<Props, State>{
     // shouldComponentUpdate = pure.shouldComponentUpdate;
 
     /** makes it easier to lookup directories */
-    dirLookup:{[dirPath:string]:TreeDirItem} = {};
+    dirLookup: { [dirPath: string]: TreeDirItem } = {};
     loading: boolean = true; // guilty till proven innocent
 
-    constructor(props: Props){
+    constructor(props: Props) {
         super(props);
         this.state = {
             width: 200,
@@ -172,7 +176,7 @@ export class FileTree extends BaseComponent<Props, State>{
             this.setState({ width });
         });
 
-        let handleFocusRequestBasic = (shown:boolean)=>{
+        let handleFocusRequestBasic = (shown: boolean) => {
             if (!shown) {
                 state.expandFileTree({});
             }
@@ -185,14 +189,14 @@ export class FileTree extends BaseComponent<Props, State>{
             return false;
         }
 
-        this.disposible.add(commands.esc.on(()=>{
-            if (this.state.showHelp){
-                this.setState({showHelp: false});
-                setTimeout(()=>this.focusOnPath(this.state.treeRoot.filePath),150);
+        this.disposible.add(commands.esc.on(() => {
+            if (this.state.showHelp) {
+                this.setState({ showHelp: false });
+                setTimeout(() => this.focusOnPath(this.state.treeRoot.filePath), 150);
             }
         }));
 
-        this.disposible.add(commands.treeViewToggle.on(()=>{
+        this.disposible.add(commands.treeViewToggle.on(() => {
             const shown = this.props.fileTreeShown;
             shown ? state.collapseFileTree({}) : state.expandFileTree({});
             if (!shown) {
@@ -203,12 +207,12 @@ export class FileTree extends BaseComponent<Props, State>{
             }
         }));
 
-        this.disposible.add(commands.treeViewRevealActiveFile.on(()=>{
+        this.disposible.add(commands.treeViewRevealActiveFile.on(() => {
             if (!this.props.fileTreeShown) {
                 state.expandFileTree({});
             }
             let selectedTab = tabState.getSelectedTab();
-            if (selectedTab && selectedTab.url.startsWith('file://')){
+            if (selectedTab && selectedTab.url.startsWith('file://')) {
                 let filePath = utils.getFilePathFromUrl(selectedTab.url);
 
                 // expand the tree to make sure this file is visible
@@ -219,17 +223,17 @@ export class FileTree extends BaseComponent<Props, State>{
                 let expanded: TruthTable = {};
                 expanded[root] = true;
                 for (let portion of dirPortionsAfterRoot) {
-                    runningPortion = runningPortion+'/'+portion;
+                    runningPortion = runningPortion + '/' + portion;
                     let fullPath = root + runningPortion;
                     expanded[fullPath] = true;
                 }
-                let expansionState = csx.extend(this.state.expansionState,expanded) as TruthTable;
+                let expansionState = csx.extend(this.state.expansionState, expanded) as TruthTable;
 
                 // also only select this node
                 let selectedPaths: SelectedPaths = {
                     [filePath]: fileSelected
                 };
-                this.setState({expansionState,selectedPaths});
+                this.setState({ expansionState, selectedPaths });
                 this.focusOnPath(filePath);
             }
             else {
@@ -238,7 +242,7 @@ export class FileTree extends BaseComponent<Props, State>{
             return false;
         }));
 
-        this.disposible.add(commands.treeViewFocus.on(()=>{
+        this.disposible.add(commands.treeViewFocus.on(() => {
             handleFocusRequestBasic(this.props.fileTreeShown);
         }));
 
@@ -248,25 +252,25 @@ export class FileTree extends BaseComponent<Props, State>{
          */
         let goDownToSmallestSelection = () => {
             let selectedFilePaths = Object.keys(this.state.selectedPaths);
-            if (selectedFilePaths.length == 0){
+            if (selectedFilePaths.length == 0) {
                 let selectedPaths: SelectedPaths = {
                     [this.state.treeRoot.filePath]: fileSelected
                 };
-                this.setState({selectedPaths});
+                this.setState({ selectedPaths });
             }
             else if (selectedFilePaths.length > 1) {
                 let path = selectedFilePaths[selectedFilePaths.length - 1];
                 let selectedPaths: SelectedPaths = {
-                    [path] : this.state.selectedPaths[path]
+                    [path]: this.state.selectedPaths[path]
                 };
-                this.setState({selectedPaths});
+                this.setState({ selectedPaths });
             }
             else {
                 // already single selection :)
             }
             let selectedFilePath = Object.keys(this.state.selectedPaths)[0];
             let selectedFilePathDetails = this.state.selectedPaths[selectedFilePath];
-            return {selectedFilePath,isDir:selectedFilePathDetails.isDir};
+            return { selectedFilePath, isDir: selectedFilePathDetails.isDir };
         }
 
         /**
@@ -281,18 +285,18 @@ export class FileTree extends BaseComponent<Props, State>{
             }
 
             let selectedFilePathDetails = this.state.selectedPaths[last];
-            return {filePath:last,isDir:selectedFilePathDetails.isDir};
+            return { filePath: last, isDir: selectedFilePathDetails.isDir };
         }
 
         /** Utility : set an item as the only selected */
         let setAsOnlySelectedNoFocus = (filePath: string, isDir: boolean) => {
             let selectedPaths: SelectedPaths = {
-                [filePath] : {isDir}
+                [filePath]: { isDir }
             };
-            this.setState({selectedPaths});
+            this.setState({ selectedPaths });
         }
-        let setAsOnlySelected = (filePath:string, isDir:boolean) => {
-            setAsOnlySelectedNoFocus(filePath,isDir);
+        let setAsOnlySelected = (filePath: string, isDir: boolean) => {
+            setAsOnlySelectedNoFocus(filePath, isDir);
             this.focusOnPath(filePath);
         }
 
@@ -305,7 +309,7 @@ export class FileTree extends BaseComponent<Props, State>{
         /**
          * file action handlers
          */
-        handlers.bind(commands.treeAddFile.config.keyboardShortcut,()=>{
+        handlers.bind(commands.treeAddFile.config.keyboardShortcut, () => {
             if (this.loading) return;
             let lastSelected = getLastSelected();
             let dirPath = lastSelected.isDir ? lastSelected.filePath : utils.getDirectory(lastSelected.filePath);
@@ -324,7 +328,7 @@ export class FileTree extends BaseComponent<Props, State>{
             });
             return false;
         });
-        handlers.bind(commands.treeAddFolder.config.keyboardShortcut,()=>{
+        handlers.bind(commands.treeAddFolder.config.keyboardShortcut, () => {
             if (this.loading) return;
             let lastSelected = getLastSelected();
             let dirPath = lastSelected.isDir ? lastSelected.filePath : utils.getDirectory(lastSelected.filePath);
@@ -343,10 +347,10 @@ export class FileTree extends BaseComponent<Props, State>{
             });
             return false;
         });
-        handlers.bind(commands.treeDuplicateFile.config.keyboardShortcut,()=>{
+        handlers.bind(commands.treeDuplicateFile.config.keyboardShortcut, () => {
             if (this.loading) return;
             let selection = goDownToSmallestSelection();
-            if (!selection){
+            if (!selection) {
                 ui.notifyInfoNormalDisappear('Nothing selected');
                 return false;
             }
@@ -357,10 +361,10 @@ export class FileTree extends BaseComponent<Props, State>{
                     header: "Enter a new directory name",
                     onOk: (value: string) => {
                         let filePath = value;
-                        server.duplicateDir({src:selection.selectedFilePath,dest:filePath});
+                        server.duplicateDir({ src: selection.selectedFilePath, dest: filePath });
                         setAsOnlySelectedNoFocus(filePath, true);
                         this.state.expansionState[filePath] = true;
-                        this.setState({expansionState: this.state.expansionState});
+                        this.setState({ expansionState: this.state.expansionState });
                     },
                     onEsc: () => {
                         setTimeout(handleFocusRequestBasic, 150);
@@ -373,8 +377,8 @@ export class FileTree extends BaseComponent<Props, State>{
                     header: "Enter a new file name",
                     onOk: (value: string) => {
                         let filePath = value;
-                        server.duplicateFile({src:selection.selectedFilePath,dest:filePath});
-                        commands.doOpenOrFocusFile.emit({filePath:filePath});
+                        server.duplicateFile({ src: selection.selectedFilePath, dest: filePath });
+                        commands.doOpenOrFocusFile.emit({ filePath: filePath });
                         setAsOnlySelectedNoFocus(filePath, false);
                     },
                     onEsc: () => {
@@ -386,10 +390,10 @@ export class FileTree extends BaseComponent<Props, State>{
 
             return false;
         });
-        handlers.bind([commands.treeMoveFile.config.keyboardShortcut, commands.treeRenameFile.config.keyboardShortcut],()=>{
+        handlers.bind([commands.treeMoveFile.config.keyboardShortcut, commands.treeRenameFile.config.keyboardShortcut], () => {
             if (this.loading) return;
             let selection = goDownToSmallestSelection();
-            if (!selection){
+            if (!selection) {
                 ui.notifyInfoNormalDisappear('Nothing selected');
                 return false;
             }
@@ -398,23 +402,23 @@ export class FileTree extends BaseComponent<Props, State>{
                 header: "Enter a new location",
                 onOk: (value: string) => {
                     let filePath = value;
-                    server.movePath({src:selection.selectedFilePath,dest:filePath}).then(res=>{
+                    server.movePath({ src: selection.selectedFilePath, dest: filePath }).then(res => {
 
-                        if (res.error){
+                        if (res.error) {
                             ui.notifyWarningNormalDisappear("Failed to move: " + res.error);
                             return;
                         }
 
-                        if (selection.isDir){
+                        if (selection.isDir) {
                             setAsOnlySelectedNoFocus(filePath, true);
                             this.state.expansionState[filePath] = true;
-                            this.setState({expansionState: this.state.expansionState});
-                            commands.closeFilesDirs.emit({ files:[], dirs:[selection.selectedFilePath] });
+                            this.setState({ expansionState: this.state.expansionState });
+                            commands.closeFilesDirs.emit({ files: [], dirs: [selection.selectedFilePath] });
                         }
                         else {
-                            commands.doOpenOrFocusFile.emit({filePath:filePath});
+                            commands.doOpenOrFocusFile.emit({ filePath: filePath });
                             setAsOnlySelectedNoFocus(filePath, false);
-                            commands.closeFilesDirs.emit({ files:[selection.selectedFilePath], dirs:[] });
+                            commands.closeFilesDirs.emit({ files: [selection.selectedFilePath], dirs: [] });
                         }
                     });
                 },
@@ -426,25 +430,25 @@ export class FileTree extends BaseComponent<Props, State>{
 
             return false;
         });
-        handlers.bind([commands.treeDeleteFile.config.keyboardShortcut,"backspace"],()=>{
+        handlers.bind([commands.treeDeleteFile.config.keyboardShortcut, "backspace"], () => {
             if (this.loading) return;
             let selectedFilePaths = Object.keys(this.state.selectedPaths);
-            let selectedFilePathsDetails = selectedFilePaths.map(fp=>{
+            let selectedFilePathsDetails = selectedFilePaths.map(fp => {
                 return {
                     filePath: fp,
                     isDir: this.state.selectedPaths[fp].isDir
                 };
             });
 
-            if (selectedFilePaths.length == 0){
+            if (selectedFilePaths.length == 0) {
                 ui.notifyInfoNormalDisappear('Nothing selected');
                 return false;
             }
 
             inputDialog.open({
                 hideInput: true,
-                header:`Delete ${selectedFilePaths.length > 1 ? selectedFilePaths.length + ' items' : utils.getFileName(selectedFilePaths[0])}?`,
-                onOk:()=>{
+                header: `Delete ${selectedFilePaths.length > 1 ? selectedFilePaths.length + ' items' : utils.getFileName(selectedFilePaths[0])}?`,
+                onOk: () => {
                     // TODO: delete
                     let files = selectedFilePathsDetails.filter(x => !x.isDir).map(x => x.filePath);
                     let dirs = selectedFilePathsDetails.filter(x => x.isDir).map(x => x.filePath);
@@ -491,18 +495,18 @@ export class FileTree extends BaseComponent<Props, State>{
             let {selectedFilePath, isDir} = goDownToSmallestSelection();
             if (isDir) {
                 this.state.expansionState[selectedFilePath] = !this.state.expansionState[selectedFilePath];
-                this.setState({expansionState: this.state.expansionState});
+                this.setState({ expansionState: this.state.expansionState });
             } else {
                 commands.doOpenOrFocusFile.emit({ filePath: selectedFilePath });
             }
             return false;
         });
-        handlers.bind('up',()=>{
+        handlers.bind('up', () => {
             if (this.loading) return;
-            let {selectedFilePath,isDir} = goDownToSmallestSelection();
+            let {selectedFilePath, isDir} = goDownToSmallestSelection();
 
             // if root do nothing
-            if (selectedFilePath == this.state.treeRoot.filePath){
+            if (selectedFilePath == this.state.treeRoot.filePath) {
                 return;
             }
 
@@ -511,18 +515,18 @@ export class FileTree extends BaseComponent<Props, State>{
             let parentDirFilePath = utils.getDirectory(selectedFilePath);
             let parentDirTreeItem = this.dirLookup[parentDirFilePath];
             let indexInParentDir = isDir
-                                    ?parentDirTreeItem.subDirs.map(x=>x.filePath).indexOf(selectedFilePath)
-                                    :parentDirTreeItem.files.map(x=>x.filePath).indexOf(selectedFilePath);
+                ? parentDirTreeItem.subDirs.map(x => x.filePath).indexOf(selectedFilePath)
+                : parentDirTreeItem.files.map(x => x.filePath).indexOf(selectedFilePath);
 
             /** Goes to the bottom file / folder */
             let gotoBottomOfFolder = (closestDir: TreeDirItem) => {
-                while (true){
-                    if (!this.state.expansionState[closestDir.filePath]){ // if not expanded, we have a winner
-                        setAsOnlySelected(closestDir.filePath,true);
+                while (true) {
+                    if (!this.state.expansionState[closestDir.filePath]) { // if not expanded, we have a winner
+                        setAsOnlySelected(closestDir.filePath, true);
                         break;
                     }
                     if (closestDir.files.length) { // Lucky previous expanded dir has files, select last!
-                        setAsOnlySelected(closestDir.files[closestDir.files.length-1].filePath,false);
+                        setAsOnlySelected(closestDir.files[closestDir.files.length - 1].filePath, false);
                         break;
                     }
                     else if (closestDir.subDirs.length) { // does it have folders? ... check last folder next
@@ -530,18 +534,18 @@ export class FileTree extends BaseComponent<Props, State>{
                         continue;
                     }
                     else { // no folders no files ... we don't care if you are expanded or not
-                        setAsOnlySelected(closestDir.filePath,true);
+                        setAsOnlySelected(closestDir.filePath, true);
                         break;
                     }
                 }
             }
 
             // if first
-            if (indexInParentDir == 0){
-                if (isDir){
+            if (indexInParentDir == 0) {
+                if (isDir) {
                     setAsOnlySelected(parentDirFilePath, true);
                 }
-                else if (parentDirTreeItem.subDirs.length == 0){
+                else if (parentDirTreeItem.subDirs.length == 0) {
                     setAsOnlySelected(parentDirFilePath, true);
                 }
                 else {
@@ -549,12 +553,12 @@ export class FileTree extends BaseComponent<Props, State>{
                 }
             }
             // if this is not the first file in the folder select the previous file
-            else if (!isDir){
-                setAsOnlySelected(parentDirTreeItem.files[indexInParentDir-1].filePath, false);
+            else if (!isDir) {
+                setAsOnlySelected(parentDirTreeItem.files[indexInParentDir - 1].filePath, false);
             }
             // Else select the deepest item in the previous directory
             else {
-                let closestDir = parentDirTreeItem.subDirs[indexInParentDir-1];
+                let closestDir = parentDirTreeItem.subDirs[indexInParentDir - 1];
                 gotoBottomOfFolder(closestDir);
             }
             return false;
@@ -566,18 +570,18 @@ export class FileTree extends BaseComponent<Props, State>{
             /** Goes to next sibling on any (recursive) parent folder */
             let gotoNextSiblingHighUp = (treeItem: TreeDirItem) => {
                 // Special handling for root. Don't change selection :)
-                if (treeItem.filePath == this.state.treeRoot.filePath){
+                if (treeItem.filePath == this.state.treeRoot.filePath) {
                     return;
                 }
 
                 let parentDirFilePath = utils.getDirectory(treeItem.filePath);
                 let parentTreeItem = this.dirLookup[parentDirFilePath];
 
-                let indexInParent = parentTreeItem.subDirs.map(x=>x.filePath).indexOf(treeItem.filePath);
-                if (indexInParent !== (parentTreeItem.subDirs.length - 1)){ // If not last we have a winner
+                let indexInParent = parentTreeItem.subDirs.map(x => x.filePath).indexOf(treeItem.filePath);
+                if (indexInParent !== (parentTreeItem.subDirs.length - 1)) { // If not last we have a winner
                     setAsOnlySelected(parentTreeItem.subDirs[indexInParent + 1].filePath, true);
                 }
-                else if(parentTreeItem.files.length){ // if parent has files move on to files
+                else if (parentTreeItem.files.length) { // if parent has files move on to files
                     setAsOnlySelected(parentTreeItem.files[0].filePath, false);
                 }
                 else { // Look at next parent
@@ -602,10 +606,10 @@ export class FileTree extends BaseComponent<Props, State>{
             else { // for files
                 let parentDirFilePath = utils.getDirectory(selectedFilePath);
                 let parentTreeItem = this.dirLookup[parentDirFilePath];
-                let indexInParent = parentTreeItem.files.map(f=>f.filePath).indexOf(selectedFilePath);
+                let indexInParent = parentTreeItem.files.map(f => f.filePath).indexOf(selectedFilePath);
 
                 // if not last select next sibling
-                if (indexInParent !== (parentTreeItem.files.length - 1)){
+                if (indexInParent !== (parentTreeItem.files.length - 1)) {
                     setAsOnlySelected(parentTreeItem.files[indexInParent + 1].filePath, false);
                 }
                 // If is last go on to parent dir sibling algo
@@ -616,18 +620,18 @@ export class FileTree extends BaseComponent<Props, State>{
 
             return false;
         });
-        handlers.bind('left',()=>{
+        handlers.bind('left', () => {
             if (this.loading) return;
-            let {selectedFilePath,isDir} = goDownToSmallestSelection();
-            if (isDir){
+            let {selectedFilePath, isDir} = goDownToSmallestSelection();
+            if (isDir) {
                 // if expanded then collapse
-                if (this.state.expansionState[selectedFilePath]){
+                if (this.state.expansionState[selectedFilePath]) {
                     delete this.state.expansionState[selectedFilePath];
                     this.setState({ expansionState: this.state.expansionState });
                     return;
                 }
                 // if root ... leave
-                if (this.state.treeRoot.filePath == selectedFilePath){
+                if (this.state.treeRoot.filePath == selectedFilePath) {
                     return;
                 }
             }
@@ -647,8 +651,8 @@ export class FileTree extends BaseComponent<Props, State>{
             }
             return false;
         });
-        handlers.bind('h',()=>{
-            this.setState({showHelp:!this.state.showHelp});
+        handlers.bind('h', () => {
+            this.setState({ showHelp: !this.state.showHelp });
         });
         handlers.bind('c', () => {
             let copyButtonRef = this.ref('copypath');
@@ -663,7 +667,7 @@ export class FileTree extends BaseComponent<Props, State>{
         /**
          * TS to js and JS to ts
          */
-        handlers.bind('t', ()=> {
+        handlers.bind('t', () => {
             if (this.loading) return;
             let selection = goDownToSmallestSelection();
             if (!selection) {
@@ -682,13 +686,13 @@ export class FileTree extends BaseComponent<Props, State>{
             server.movePath({ src: filePath, dest: newFilePath }).then(res => {
                 commands.doOpenOrFocusFile.emit({ filePath: newFilePath });
                 setAsOnlySelectedNoFocus(newFilePath, false);
-                commands.closeFilesDirs.emit({ files:[filePath], dirs:[] });
+                commands.closeFilesDirs.emit({ files: [filePath], dirs: [] });
                 ui.notifySuccessNormalDisappear('File extension changed to be TypeScript');
             });
 
             return false;
         });
-        handlers.bind('j', ()=> {
+        handlers.bind('j', () => {
             if (this.loading) return;
             let selection = goDownToSmallestSelection();
             if (!selection) {
@@ -707,7 +711,7 @@ export class FileTree extends BaseComponent<Props, State>{
             server.movePath({ src: filePath, dest: newFilePath }).then(res => {
                 commands.doOpenOrFocusFile.emit({ filePath: newFilePath });
                 setAsOnlySelectedNoFocus(newFilePath, false);
-                commands.closeFilesDirs.emit({ files:[filePath], dirs:[] });
+                commands.closeFilesDirs.emit({ files: [filePath], dirs: [] });
                 ui.notifySuccessNormalDisappear('File extension changed to be JavaScript');
             });
 
@@ -715,7 +719,7 @@ export class FileTree extends BaseComponent<Props, State>{
         });
     }
     refNames = {
-        __treeroot:'__treeroot',
+        __treeroot: '__treeroot',
         __treeViewScroll: '__treeViewScroll',
     }
 
@@ -732,31 +736,31 @@ export class FileTree extends BaseComponent<Props, State>{
 
                 <div style={csx.extend(csx.flex, csx.vertical, treeListStyle, styles.someChildWillScroll, csx.newLayerParent)}>
                     <div ref={this.refNames.__treeViewScroll} className={treeScrollClassName} style={csx.extend(csx.flex, csx.scroll)} tabIndex={0}
-                        onFocus={()=>this.setState({treeScrollHasFocus: true})} onBlur={()=>this.setState({treeScrollHasFocus: false})}>
+                        onFocus={() => this.setState({ treeScrollHasFocus: true })} onBlur={() => this.setState({ treeScrollHasFocus: false })}>
                         {this.renderDir(this.state.treeRoot)}
                     </div>
-                    {this.props.filePathsCompleted || <Robocop/>}
+                    {this.props.filePathsCompleted || <Robocop />}
                     {
                         singlePathSelected
-                        && <div style={csx.extend(csx.content, csx.horizontal, csx.center, csx.centerJustified, { paddingTop: '5px', paddingBottom: '5px', width: this.state.width - 15+'px'})}>
-                            <clipboard.Clipboard ref='copypath' text={singlePathSelected}/>
+                        && <div style={csx.extend(csx.content, csx.horizontal, csx.center, csx.centerJustified, { paddingTop: '5px', paddingBottom: '5px', width: this.state.width - 15 + 'px' })}>
+                            <clipboard.Clipboard ref='copypath' text={singlePathSelected} />
                             <span
                                 className="hint--top"
                                 data-hint="Click to copy the file path to clipboard"
                                 data-clipboard-text={singlePathSelected}
                                 style={currentSelectedItemCopyStyle}
-                                onClick={()=>ui.notifyInfoQuickDisappear("Path copied to clipboard")}>
-                                    {singlePathSelected}
+                                onClick={() => ui.notifyInfoQuickDisappear("Path copied to clipboard")}>
+                                {singlePathSelected}
                             </span>
                         </div>
                     }
-                    <div style={csx.extend(csx.content,csx.centerCenter, {fontSize: '.7em', lineHeight: '2em', opacity: helpOpacity, transition: 'opacity .2s'})}>
+                    <div style={csx.extend(csx.content, csx.centerCenter, { fontSize: '.7em', lineHeight: '2em', opacity: helpOpacity, transition: 'opacity .2s' })}>
                         <span>Tap <span style={styles.Tip.keyboardShortCutStyle}>H</span> to toggle tree view help</span>
                     </div>
                     {
                         this.state.showHelp
-                        && <div style={csx.extend(csx.newLayer, csx.centerCenter, csx.flex, {background: 'rgba(0,0,0,.7)'})}
-                            onClick={()=>this.setState({showHelp:false})}>
+                        && <div style={csx.extend(csx.newLayer, csx.centerCenter, csx.flex, { background: 'rgba(0,0,0,.7)' })}
+                            onClick={() => this.setState({ showHelp: false })}>
                             <div style={csx.extend(csx.flexRoot, csx.vertical)}>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>ESC</span> to hide help</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>A</span> to add a file</div>
@@ -780,13 +784,13 @@ export class FileTree extends BaseComponent<Props, State>{
                 </div>
 
                 <DraggableCore onDrag={this.handleDrag} onStop={this.handleDragStop}>
-                    <div style={csx.extend(csx.flexRoot, csx.centerCenter, resizerStyle)}><Icon name="ellipsis-v"/></div>
+                    <div style={csx.extend(csx.flexRoot, csx.centerCenter, resizerStyle)}><Icon name="ellipsis-v" /></div>
                 </DraggableCore>
 
             </div>
         );
     }
-    renderDir(item:TreeDirItem,depth = 0) {
+    renderDir(item: TreeDirItem, depth = 0) {
         let expanded = this.state.expansionState[item.filePath];
         let sub = expanded ? this.renderDirSub(item, depth) : [];
         let selected = !!this.state.selectedPaths[item.filePath];
@@ -803,19 +807,19 @@ export class FileTree extends BaseComponent<Props, State>{
                 />].concat(sub)
         );
     }
-    renderDirSub(item:TreeDirItem, depth: number){
-        return item.subDirs.map(item => this.renderDir(item,depth+1))
-            .concat(item.files.map(file => this.renderFile(file,depth+1)));
+    renderDirSub(item: TreeDirItem, depth: number) {
+        return item.subDirs.map(item => this.renderDir(item, depth + 1))
+            .concat(item.files.map(file => this.renderFile(file, depth + 1)));
     }
-    renderFile(item:TreeFileItem,depth:number){
+    renderFile(item: TreeFileItem, depth: number) {
         let selected = !!this.state.selectedPaths[item.filePath];
         return (
             <TreeNode.File ref={item.filePath} key={item.filePath}
-            item={item}
-            depth={depth}
-            selected={selected}
-            handleSelectFile={this.handleSelectFile}
-            activeProjectFilePathTruthTable={this.props.activeProjectFilePathTruthTable}/>
+                item={item}
+                depth={depth}
+                selected={selected}
+                handleSelectFile={this.handleSelectFile}
+                activeProjectFilePathTruthTable={this.props.activeProjectFilePathTruthTable} />
         );
     }
 
@@ -832,8 +836,8 @@ export class FileTree extends BaseComponent<Props, State>{
         settings.fileTreeWidth.set(width);
     }
 
-    setupTree = (props:Props) => {
-        let filePaths = props.filePaths.filter(fp=> fp.type == types.FilePathType.File).map(fp=> fp.filePath);
+    setupTree = (props: Props) => {
+        let filePaths = props.filePaths.filter(fp => fp.type == types.FilePathType.File).map(fp => fp.filePath);
 
         // initial boot up
         if (!filePaths.length) {
@@ -852,7 +856,7 @@ export class FileTree extends BaseComponent<Props, State>{
         // Always expand root
         this.state.expansionState[rootDirPath] = true;
 
-        this.dirLookup= {};
+        this.dirLookup = {};
         this.dirLookup[rootDirPath] = rootDir;
 
         // if not found creates a new dir and set its parent
@@ -895,7 +899,7 @@ export class FileTree extends BaseComponent<Props, State>{
         this.setState({ treeRoot: rootDir, expansionState: this.state.expansionState });
 
         /** Also add the folders that may have no files */
-        let dirs = props.filePaths.filter(fp=> fp.type == types.FilePathType.Dir).map(fp=> fp.filePath);
+        let dirs = props.filePaths.filter(fp => fp.type == types.FilePathType.Dir).map(fp => fp.filePath);
         dirs.forEach(dirPath => {
             let treeDir = this.dirLookup[dirPath];
             if (!treeDir) {
@@ -910,16 +914,16 @@ export class FileTree extends BaseComponent<Props, State>{
         let filePathMap = utils.createMap(filePaths);
         let oldSelectedPaths = Object.keys(this.state.selectedPaths);
         let newSelectedPaths: SelectedPaths = {};
-        oldSelectedPaths.forEach(path=> {
+        oldSelectedPaths.forEach(path => {
             let isDir = this.state.selectedPaths[path].isDir;
             if (!filePathMap[path]) {
                 return;
             }
-            newSelectedPaths[path]= {isDir};
+            newSelectedPaths[path] = { isDir };
         });
         // If there is no selected path select the root
-        if (Object.keys(newSelectedPaths).length === 0){
-            newSelectedPaths[rootDirPath] = {isDir:true};
+        if (Object.keys(newSelectedPaths).length === 0) {
+            newSelectedPaths[rootDirPath] = { isDir: true };
         }
         this.setState({ selectedPaths: newSelectedPaths });
 
@@ -937,7 +941,7 @@ export class FileTree extends BaseComponent<Props, State>{
         }
     }
 
-    handleToggleDir = (evt:React.SyntheticEvent, item:TreeDirItem) => {
+    handleToggleDir = (evt: React.SyntheticEvent, item: TreeDirItem) => {
         evt.stopPropagation();
         let dirPath = item.filePath;
 
@@ -946,10 +950,10 @@ export class FileTree extends BaseComponent<Props, State>{
         }
         this.state.expansionState[dirPath] = !this.state.expansionState[dirPath];
 
-        this.setState({expansionState: this.state.expansionState, selectedPaths: selectedPaths });
+        this.setState({ expansionState: this.state.expansionState, selectedPaths: selectedPaths });
     }
 
-    handleSelectFile = (evt:React.SyntheticEvent,item:TreeFileItem) => {
+    handleSelectFile = (evt: React.SyntheticEvent, item: TreeFileItem) => {
         evt.stopPropagation();
         let filePath = item.filePath;
 
@@ -989,15 +993,15 @@ export namespace TreeNode {
             (this.refs['root'] as any).scrollIntoViewIfNeeded(false);
         }
 
-        render(){
-            let {item,depth,expanded} = this.props;
+        render() {
+            let {item, depth, expanded} = this.props;
             let icon = expanded ? 'folder-open' : 'folder';
             let selectedStyle = this.props.selected ? treeItemSelectedStyle : {};
             let inProjectStyle = this.props.activeProjectFilePathTruthTable[item.filePath] ? treeItemInProjectStyle : {};
 
             return (
-                <div className={treeItemClassName} style={csx.extend(selectedStyle, inProjectStyle)} key={item.filePath} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleToggleDir(evt,item) }>
-                    <div style={{ marginLeft: depth * 10 }}> <Icon name={icon}/> {item.name}</div>
+                <div className={treeItemClassName} style={csx.extend(selectedStyle, inProjectStyle)} key={item.filePath} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleToggleDir(evt, item)}>
+                    <div style={{ marginLeft: depth * 10 }}> <Icon name={icon} /> {item.name}</div>
                 </div>
             );
         }
@@ -1007,51 +1011,51 @@ export namespace TreeNode {
      * File Name Based Icon
      */
     class FileNameBasedIcon extends React.Component<{ fileName: string }, {}> {
-      shouldComponentUpdate = pure.shouldComponentUpdate;
-      render() {
-        const fileName = this.props.fileName.toLowerCase();
-        const ext = utils.getExt(fileName);
+        shouldComponentUpdate = pure.shouldComponentUpdate;
+        render() {
+            const fileName = this.props.fileName.toLowerCase();
+            const ext = utils.getExt(fileName);
 
-        // Default
-        let iconName = 'file-text-o';
+            // Default
+            let iconName = 'file-text-o';
 
-        if (ext == 'md') {
-            iconName = 'book';
-        }
-        else if (ext == 'json') {
-            iconName = 'database';
-        }
-        else if (ext == 'html' || ext == 'htm') {
-            iconName = 'file-code-o';
-        }
-        else if (ext == 'css' || ext == 'less' || ext == 'scss' || ext == 'sass'){
-            iconName = 'css3';
-        }
-        else if (ext.startsWith('git')) {
-            iconName = 'github';
-        }
-        else if (ext.endsWith('sh') || ext == 'bat' || ext == 'batch') {
-            iconName = 'terminal';
-        }
-        else if (ext.endsWith('coffee')) {
-            iconName = 'coffee';
-        }
-        else if (utils.isTs(fileName)) {
-            iconName = 'rocket';
-        }
-        else if (utils.isJs(fileName)) {
-            iconName = 'plane';
-        }
-        else if (utils.isImage(fileName)) {
-            iconName = 'file-image-o';
-        }
+            if (ext == 'md') {
+                iconName = 'book';
+            }
+            else if (ext == 'json') {
+                iconName = 'database';
+            }
+            else if (ext == 'html' || ext == 'htm') {
+                iconName = 'file-code-o';
+            }
+            else if (ext == 'css' || ext == 'less' || ext == 'scss' || ext == 'sass') {
+                iconName = 'css3';
+            }
+            else if (ext.startsWith('git')) {
+                iconName = 'github';
+            }
+            else if (ext.endsWith('sh') || ext == 'bat' || ext == 'batch') {
+                iconName = 'terminal';
+            }
+            else if (ext.endsWith('coffee')) {
+                iconName = 'coffee';
+            }
+            else if (utils.isTs(fileName)) {
+                iconName = 'rocket';
+            }
+            else if (utils.isJs(fileName)) {
+                iconName = 'plane';
+            }
+            else if (utils.isImage(fileName)) {
+                iconName = 'file-image-o';
+            }
 
-        const icon = <Icon name={iconName}/>;
+            const icon = <Icon name={iconName} />;
 
-        return <div>
-            {icon} {this.props.fileName}
-        </div>;
-      }
+            return <div>
+                {icon} {this.props.fileName}
+            </div>;
+        }
     }
 
     /** Renders the file item */
@@ -1074,8 +1078,7 @@ export namespace TreeNode {
 
             /** Determine if generated */
             let isGenerated = false;
-            if (filePath.endsWith('.js'))
-            {
+            if (filePath.endsWith('.js')) {
                 let noExtName = utils.removeExt(filePath);
                 if (filePath.endsWith('.js.map')) noExtName = utils.removeExt(noExtName);
                 const tsName = noExtName + '.ts';
@@ -1085,8 +1088,8 @@ export namespace TreeNode {
             let isGeneratedStyle = isGenerated ? treeItemIsGeneratedStyle : {};
 
             return (
-                <div className={treeItemClassName} style={csx.extend(selectedStyle, inProjectStyle, isGeneratedStyle)} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleSelectFile(evt, this.props.item) }>
-                    <div style={{ marginLeft: this.props.depth * 10 }}><FileNameBasedIcon fileName={this.props.item.name}/></div>
+                <div className={treeItemClassName} style={csx.extend(selectedStyle, inProjectStyle, isGeneratedStyle)} ref='root' tabIndex={-1} onClick={(evt) => this.props.handleSelectFile(evt, this.props.item)}>
+                    <div style={{ marginLeft: this.props.depth * 10 }}><FileNameBasedIcon fileName={this.props.item.name} /></div>
                 </div>
             );
         }
