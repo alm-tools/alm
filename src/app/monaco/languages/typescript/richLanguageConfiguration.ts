@@ -42,7 +42,7 @@ export const richLanguageConfiguration:monaco.languages.LanguageConfiguration = 
 	],
 
 	__electricCharacterSupport: {
-		docComment: {scope:'comment.doc', open:'/**', lineStart:' * ', close:' */'}
+		docComment: { open:'/**', close:' */'}
 	},
 
 	autoClosingPairs: [

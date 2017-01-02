@@ -239,7 +239,6 @@ function createOverlays(editor: Editor) {
 }
 
 import CommonEditorRegistry = monaco.CommonEditorRegistry;
-import IEditorActionDescriptorData = monaco.IEditorActionDescriptorData;
 import ICommonCodeEditor = monaco.ICommonCodeEditor;
 import TPromise = monaco.Promise;
 import EditorAction = monaco.EditorAction;

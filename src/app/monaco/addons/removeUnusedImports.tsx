@@ -4,7 +4,6 @@ import { server } from "../../../socket/socketClient";
 import * as uix from '../../uix';
 
 import CommonEditorRegistry = monaco.CommonEditorRegistry;
-import IEditorActionDescriptorData = monaco.IEditorActionDescriptorData;
 import ICommonCodeEditor = monaco.ICommonCodeEditor;
 import TPromise = monaco.Promise;
 import EditorAction = monaco.EditorAction;

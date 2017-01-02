@@ -8,7 +8,6 @@ import * as React from "react";
 import * as csx from '../../base/csx';
 
 import CommonEditorRegistry = monaco.CommonEditorRegistry;
-import IEditorActionDescriptorData = monaco.IEditorActionDescriptorData;
 import ICommonCodeEditor = monaco.ICommonCodeEditor;
 import TPromise = monaco.Promise;
 import EditorAction = monaco.EditorAction;

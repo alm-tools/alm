@@ -115,7 +115,6 @@ declare global {
 
 
 import CommonEditorRegistry = monaco.CommonEditorRegistry;
-import IEditorActionDescriptorData = monaco.IEditorActionDescriptorData;
 import ICommonCodeEditor = monaco.ICommonCodeEditor;
 import TPromise = monaco.Promise;
 import EditorAction = monaco.EditorAction;
