@@ -17,6 +17,7 @@ import * as quickFix from "../monaco/addons/quickFix";
 import * as repl from "../monaco/addons/repl";
 import * as removeUnusedImports from "../monaco/addons/removeUnusedImports";
 import * as liveDemo from '../monaco/addons/liveDemo';
+import * as formatBetter from '../monaco/addons/formatBetter';
 const ensureImport =
     gitStatus
     || jumpy
@@ -33,6 +34,7 @@ const ensureImport =
     || repl
     || removeUnusedImports
     || liveDemo
+    || formatBetter
     ;
 
 /**
