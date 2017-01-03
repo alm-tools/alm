@@ -624,39 +624,6 @@ export function applyQuickFix(query: Types.ApplyQuickFixQuery): Promise<Types.Ap
             });
         });
 
-        /**
-         * For each ts code fix its expected to request formatting as well
-         * https://github.com/Microsoft/TypeScript/issues/12249
-         * So add them to the refactorings
-         * CANT as the file hasn't been edited yet. Have to request from frontend :-/
-         **/
-        // tsCodeFix.changes.forEach(change => {
-        //     change.textChanges.forEach(tc => {
-        //         /** The end depends on the old text vs. the new text. But always greater than start (good enough) */
-        //         let end = tc.span.start + tc.newText.length - tc.span.length;
-        //         if (end < tc.span.start) end = tc.span.start;
-
-        //         let start = tc.span.start;
-
-        //         let tsresult = formatting.formatDocumentRangeUsingPos(project, change.fileName, start, end,
-        //             /**
-        //              * This is not 100% correct as the changed file can be different.
-        //              * But the likelyhood of the *other* project file having different formatting requirements is very low
-        //              **/
-        //             query.editorOptions
-        //         );
-        //         console.log(tsresult, change.fileName, tc.span, end);
-        //         tsresult.forEach(formatting => {
-        //             refactorings.push({
-        //                 filePath: change.fileName,
-        //                 newText: formatting.newText,
-        //                 span: formatting.span
-        //             });
-        //         })
-        //     });
-        // });
-
-
         return resolve({ refactorings: qf.getRefactoringsByFilePath(refactorings) });
     }
     const fix = allQuickFixes.filter(x => x.key == query.key)[0];
