@@ -167,7 +167,7 @@ class QuickFixAction extends EditorAction {
                     indentSize: cm.getModel().getOptions().tabSize,
                     additionalData: null,
                     filePath: cm.filePath,
-                    position: cm._lastQuickFixInformation.position
+                    position: cm._lastQuickFixInformation.position,
                 }).then((res)=>{
                     // apply refactorings
                     // console.log('Apply refactorings:', res.refactorings); // DEBUG

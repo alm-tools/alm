@@ -12,13 +12,13 @@ import { Types } from "../../../socket/socketContract";
 import * as types from "../../../common/types";
 
 import * as utils from "../../../common/utils";
-let {resolve} = utils;
+let { resolve } = utils;
 import * as fsu from "../../utils/fsu";
 import { errorsCache } from "./cache/tsErrorsCache";
 import { getPathCompletionsForAutocomplete } from "./modules/getPathCompletions";
 
 export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQuery): Promise<Types.GetCompletionsAtPositionResponse> {
-    const {filePath, position, prefix} = query;
+    const { filePath, position, prefix } = query;
     const project = getProject(query.filePath);
     const service = project.languageService;
     const languageServiceHost = project.languageServiceHost;
@@ -115,7 +115,7 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
 export function getCompletionEntryDetails(query: Types.GetCompletionEntryDetailsQuery): Promise<Types.GetCompletionEntryDetailsResponse> {
     const project = getProject(query.filePath);
     const service = project.languageService;
-    const {filePath, position, label} = query;
+    const { filePath, position, label } = query;
 
     const completionDetails = project.languageService.getCompletionEntryDetails(filePath, position, label);
 
@@ -134,7 +134,7 @@ export function getCompletionEntryDetails(query: Types.GetCompletionEntryDetails
 
 export function quickInfo(query: Types.QuickInfoQuery): Promise<Types.QuickInfoResponse> {
     let project = getProject(query.filePath);
-    const {languageServiceHost} = project;
+    const { languageServiceHost } = project;
     const errors = positionErrors({ filePath: query.filePath, position: query.position });
     var info = project.languageService.getQuickInfoAtPosition(query.filePath, query.position);
     if (!info && !errors.length) {
@@ -283,7 +283,7 @@ export function getReferences(query: Types.GetReferencesQuery): Promise<Types.Ge
 import * as formatting from "./modules/formatting";
 export function formatDocument(query: Types.FormatDocumentQuery): Promise<Types.FormatDocumentResponse> {
     let project = getProject(query.filePath);
-    const {languageServiceHost, languageService} = project;
+    const { languageServiceHost, languageService } = project;
 
     let tsresult = formatting.formatDocument(project, query.filePath, query.editorOptions);
     const edits = tsresult.map(res => {
@@ -299,7 +299,7 @@ export function formatDocument(query: Types.FormatDocumentQuery): Promise<Types.
 }
 export function formatDocumentRange(query: Types.FormatDocumentRangeQuery): Promise<Types.FormatDocumentRangeResponse> {
     let project = getProject(query.filePath);
-    const {languageServiceHost, languageService} = project;
+    const { languageServiceHost, languageService } = project;
 
     let tsresult = formatting.formatDocumentRange(project, query.filePath, query.from, query.to, query.editorOptions);
     const edits = tsresult.map(res => {
@@ -316,7 +316,7 @@ export function formatDocumentRange(query: Types.FormatDocumentRangeQuery): Prom
 
 export function getFormattingEditsAfterKeystroke(query: Types.FormattingEditsAfterKeystrokeQuery): Promise<Types.FormattingEditsAfterKeystrokeResponse> {
     let project = getProject(query.filePath);
-    const {languageServiceHost, languageService} = project;
+    const { languageServiceHost, languageService } = project;
     const position = languageServiceHost.getPositionOfLineAndCharacter(query.filePath, query.editorPosition.line, query.editorPosition.ch);
     const options = formatting.completeFormatCodeOptions(query.editorOptions, project.configFile.project.formatCodeOptions);
 
@@ -336,7 +336,7 @@ export function getFormattingEditsAfterKeystroke(query: Types.FormattingEditsAft
 import { removeUnusedImports as removeUnusedImportsCore } from './modules/removeUnusedImports';
 export function removeUnusedImports(query: Types.FilePathQuery): Promise<types.RefactoringsByFilePath> {
     let project = getProject(query.filePath);
-    const {languageServiceHost, languageService} = project;
+    const { languageServiceHost, languageService } = project;
     return resolve(removeUnusedImportsCore(query.filePath, languageService));
 }
 
@@ -624,6 +624,39 @@ export function applyQuickFix(query: Types.ApplyQuickFixQuery): Promise<Types.Ap
             });
         });
 
+        /**
+         * For each ts code fix its expected to request formatting as well
+         * https://github.com/Microsoft/TypeScript/issues/12249
+         * So add them to the refactorings
+         * CANT as the file hasn't been edited yet. Have to request from frontend :-/
+         **/
+        // tsCodeFix.changes.forEach(change => {
+        //     change.textChanges.forEach(tc => {
+        //         /** The end depends on the old text vs. the new text. But always greater than start (good enough) */
+        //         let end = tc.span.start + tc.newText.length - tc.span.length;
+        //         if (end < tc.span.start) end = tc.span.start;
+
+        //         let start = tc.span.start;
+
+        //         let tsresult = formatting.formatDocumentRangeUsingPos(project, change.fileName, start, end,
+        //             /**
+        //              * This is not 100% correct as the changed file can be different.
+        //              * But the likelyhood of the *other* project file having different formatting requirements is very low
+        //              **/
+        //             query.editorOptions
+        //         );
+        //         console.log(tsresult, change.fileName, tc.span, end);
+        //         tsresult.forEach(formatting => {
+        //             refactorings.push({
+        //                 filePath: change.fileName,
+        //                 newText: formatting.newText,
+        //                 span: formatting.span
+        //             });
+        //         })
+        //     });
+        // });
+
+
         return resolve({ refactorings: qf.getRefactoringsByFilePath(refactorings) });
     }
     const fix = allQuickFixes.filter(x => x.key == query.key)[0];
@@ -750,7 +783,7 @@ export function getSemanticTree(query: Types.GetSemanticTreeQuery): Promise<Type
  */
 export function getOccurrencesAtPosition(query: Types.GetOccurancesAtPositionQuery): Promise<Types.GetOccurancesAtPositionResponse> {
     let project = getProject(query.filePath);
-    const {languageServiceHost} = project;
+    const { languageServiceHost } = project;
     const position = languageServiceHost.getPositionOfLineAndCharacter(query.filePath, query.editorPosition.line, query.editorPosition.ch);
     const tsresults = project.languageService.getOccurrencesAtPosition(query.filePath, position) || [];
     const results: Types.GetOccurancesAtPositionResult[] = tsresults.map(res => {

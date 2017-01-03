@@ -26,3 +26,8 @@ export function formatDocumentRange(proj: project.Project, filePath: string, sta
     var textChanges = proj.languageService.getFormattingEditsForRange(filePath, st, ed, formatCodeOptions);
     return textChanges;
 }
+export function formatDocumentRangeUsingPos(proj: project.Project, filePath: string, st: number, ed: number, editorOptions: types.EditorOptions) {
+    const formatCodeOptions = completeFormatCodeOptions(editorOptions, proj.configFile.project.formatCodeOptions);
+    var textChanges = proj.languageService.getFormattingEditsForRange(filePath, st, ed, formatCodeOptions);
+    return textChanges;
+}
