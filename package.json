@@ -94,7 +94,7 @@
     "normalize.css": "^5.0.0",
     "onresize": "^1.0.1",
     "react": "15.3.2",
-    "react-dom": "15.3.2",
+    "react-dom": "15.4.2",
     "react-draggable": "2.2.2",
     "react-modal": "1.2.1",
     "react-redux": "4.4.5",
