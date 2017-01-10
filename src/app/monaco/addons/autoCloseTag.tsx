@@ -121,23 +121,28 @@ function getCloseTag(filePath: string, position: number): string | null {
 
     const collectTags = (node: ts.Node) => {
         if (ts.isJsxOpeningElement(node)) {
-            if (node.getStart() > position) return;
+            if (node.getStart() >= position) return;
+
+            if (node.getStart() === (position - 1)) {
+                /**
+                 * This is actually just
+                 * <div><>
+                 *       ^ parsed as an opening
+                 */
+                return;
+            }
+
             opens.push(node);
         }
         if (ts.isJsxClosingElement(node)) {
-            if (node.getStart() > position) return;
-            /**
-             * We don't want the last one as
-             * <div></
-             *       ^ TS parses this successfully as a closing!
-             */
-            if (node.getStart() == position && node.getFullText().trim() === '') return;
-
+            if (node.getStart() >= position) return;
             opens.pop();
         }
         ts.forEachChild(node, collectTags);
     }
     ts.forEachChild(sourceFile, collectTags);
+
+    // console.log(opens.map(o => o.getFullText())); // DEBUG
 
     if (opens.length) {
         const tabToClose = opens[opens.length - 1]; // close the last one first
