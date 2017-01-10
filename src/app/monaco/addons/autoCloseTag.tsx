@@ -16,7 +16,7 @@ export function setup(cm: Editor): { dispose: () => void } {
     const disposible = new CompositeDisposible();
     disposible.add(cm.onDidChangeModelContent((e) => {
         /** Close tag */
-        // insertAutoCloseTag(e, cm);
+        insertAutoCloseTag(e, cm);
     }));
 
     return disposible;
