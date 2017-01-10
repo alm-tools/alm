@@ -145,11 +145,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
             /** Auto close tag */
             const ext = utils.getExt(this.props.filePath);
-            if (
-                ext === 'jsx'
-                || ext === 'tsx'
-                || ext === 'html'
-            ) {
+            if (ext === 'tsx') {
                 this.disposible.add(autoCloseTag.setup(this.editor));
             }
 

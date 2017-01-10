@@ -12,7 +12,6 @@ type Editor = monaco.editor.ICodeEditor;
 type TextDocumentContentChangeEvent = monaco.editor.IModelContentChangedEvent2;
 
 export function setup(cm: Editor): { dispose: () => void } {
-
     const disposible = new CompositeDisposible();
     disposible.add(cm.onDidChangeModelContent((e) => {
         /** Close tag */
@@ -44,12 +43,22 @@ function insertAutoCloseTag(event: TextDocumentContentChangeEvent, editor: Edito
     }
 
     /** Yay, we have </ */
-    const textToSearchForCloseTag = text.substr(0, text.length - 1);
-    let closeTag = getCloseTag(textToSearchForCloseTag);
+    const textToSearchForCloseTag = text;
+    console.log('here', textToSearchForCloseTag);
+    let closeTag = '';
+    try {
+        closeTag = getCloseTag(textToSearchForCloseTag);
+    }
+    catch (ex) {
+        console.error('HERE');
+    }
 
     if (!closeTag) {
         return;
     }
+
+    console.log({ closeTag });
+
     /** Yay we have candidate closeTag like `</div>` */
 
 
@@ -126,13 +135,17 @@ function getCloseTag(text: string): string {
         let tag = isStartTag ? result[1] : result[1].substr(1);
         if (isStartTag) {
             stack.push(tag);
+            console.log("pushing");
         } else if (stack.length > 0) {
             let lastTag = stack[stack.length - 1];
             if (lastTag === tag) {
                 stack.pop()
+                console.log("popping");
             }
         }
+        console.log('iterationssss', stack.length, stack);
     }
+    console.log('out of iterations')
     if (stack.length > 0) {
         let closeTag = stack[stack.length - 1];
         if (text.substr(text.length - 2) === "</") {
