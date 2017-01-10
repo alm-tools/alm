@@ -139,10 +139,6 @@ function getCloseTag(filePath: string, position: number): string | null {
     }
     ts.forEachChild(sourceFile, collectTags);
 
-    // DEBUG
-    // console.log(opens, closes);
-    // console.log(opens.map(o=>o.getFullText()), closes.map(o=>o.getFullText()));
-
     if (opens.length) {
         const tabToClose = opens[opens.length - 1]; // close the last one first
         const tabToCloseFullText = tabToClose.getText(); // something like `<foo.Someting>`
