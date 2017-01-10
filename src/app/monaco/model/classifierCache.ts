@@ -38,6 +38,9 @@ export function getLineAndCharacterOfPosition(filePath: string, pos: number): Ed
 export function getPositionOfLineAndCharacter(filePath: string, line: number, ch: number): number {
     return languageServiceHost.getPositionOfLineAndCharacter(filePath, line, ch);
 }
+export function getSourceFile(filePath: string) {
+    return languageService.getNonBoundSourceFile(filePath);
+}
 
 export function getClassificationsForLine(filePath: string, lineStart: number, string: string): ClassifiedSpan[] {
 

@@ -42,25 +42,16 @@ function insertAutoCloseTag(event: TextDocumentContentChangeEvent, editor: Edito
         return;
     }
 
-    /** Yay, we have </ */
-    const textToSearchForCloseTag = text;
-    console.log('here', textToSearchForCloseTag);
-    let closeTag = '';
-    try {
-        closeTag = getCloseTag(textToSearchForCloseTag);
-    }
-    catch (ex) {
-        console.error('HERE');
-    }
+    /** Yay, we have </ See if we have a close tag ? */
+    let closeTag = getCloseTag(editor.filePath, editor.getModel().getOffsetAt({
+        lineNumber: originalRange.endLineNumber,
+        column: originalRange.endColumn
+    }));
 
     if (!closeTag) {
         return;
     }
-
-    console.log({ closeTag });
-
-    /** Yay we have candidate closeTag like `</div>` */
-
+    /** Yay we have candidate closeTag like `div` */
 
     /**
      * If the user already has a trailing `>` e.g.
@@ -70,13 +61,10 @@ function insertAutoCloseTag(event: TextDocumentContentChangeEvent, editor: Edito
      */
     const nextChars = getNext2Chars(editor, { lineNumber: originalRange.endLineNumber, column: originalRange.endColumn });
 
-    if (nextChars === "/>") {
-        /** Don't add the trailing `>` so `</div>` => `</div` */
-        closeTag = closeTag.substr(0, closeTag.length - 1);
+    /** If the next chars are not `/>` then we want to complete `>` for the user as well */
+    if (nextChars !== "/>") {
+        closeTag = closeTag + '>';
     }
-
-    /** What we really want is everything after `</` */
-    closeTag = closeTag.substr(2);
 
     /** Make edits */
     const startAt = editor.getModel().modifyPosition({
@@ -126,36 +114,41 @@ function getNext2Chars(editor: Editor, position: monaco.IPosition): string {
     return text;
 }
 
-function getCloseTag(text: string): string {
-    let regex = /<(\/?[a-zA-Z][a-zA-Z0-9:\-_.]*)(?:\s+[^<>]*?[^\s/<>=]+?)*?>/g;
-    let result = null;
-    let stack = [];
-    while ((result = regex.exec(text)) !== null) {
-        let isStartTag = result[1].substr(0, 1) !== "/";
-        let tag = isStartTag ? result[1] : result[1].substr(1);
-        if (isStartTag) {
-            stack.push(tag);
-            console.log("pushing");
-        } else if (stack.length > 0) {
-            let lastTag = stack[stack.length - 1];
-            if (lastTag === tag) {
-                stack.pop()
-                console.log("popping");
-            }
+import { getSourceFile } from '../model/classifierCache';
+function getCloseTag(filePath: string, position: number): string | null {
+    const sourceFile = getSourceFile(filePath);
+    const opens: ts.JsxOpeningElement[] = [];
+
+    const collectTags = (node: ts.Node) => {
+        if (ts.isJsxOpeningElement(node)) {
+            if (node.getStart() > position) return;
+            opens.push(node);
         }
-        console.log('iterationssss', stack.length, stack);
+        if (ts.isJsxClosingElement(node)) {
+            if (node.getStart() > position) return;
+            /**
+             * We don't want the last one as
+             * <div></
+             *       ^ TS parses this successfully as a closing!
+             */
+            if (node.getStart() == position && node.getFullText().trim() === '') return;
+
+            opens.pop();
+        }
+        ts.forEachChild(node, collectTags);
     }
-    console.log('out of iterations')
-    if (stack.length > 0) {
-        let closeTag = stack[stack.length - 1];
-        if (text.substr(text.length - 2) === "</") {
-            return closeTag + ">";
-        }
-        if (text.substr(text.length - 1) === "<") {
-            return "/" + closeTag + ">";
-        }
-        return "</" + closeTag + ">";
-    } else {
-        return null;
+    ts.forEachChild(sourceFile, collectTags);
+
+    // DEBUG
+    // console.log(opens, closes);
+    // console.log(opens.map(o=>o.getFullText()), closes.map(o=>o.getFullText()));
+
+    if (opens.length) {
+        const tabToClose = opens[opens.length - 1]; // close the last one first
+        const tabToCloseFullText = tabToClose.getText(); // something like `<foo.Someting>`
+        const tabKey = tabToCloseFullText.substr(1, tabToCloseFullText.length - 2); // `foo.something`
+        return tabKey;
     }
+
+    return null;
 }
