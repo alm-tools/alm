@@ -4,7 +4,6 @@ import {QuickFix} from "./quickFix";
  */
 import {AddClassMember} from "./quickFixes/addClassMember";
 import {EqualsToEquals} from "./quickFixes/equalsToEquals";
-import {ExtractVariable} from "./quickFixes/extractVariable";
 import {QuotesToQuotes} from "./quickFixes/quotesToQuotes";
 import {QuoteToTemplate} from "./quickFixes/quoteToTemplate";
 import {StringConcatToTemplate} from "./quickFixes/stringConcatToTemplate";
@@ -14,7 +13,6 @@ import {SingleLineCommentToJsdoc} from "./quickFixes/singleLineCommentToJsdoc";
 export var allQuickFixes: QuickFix[] = [
     new AddClassMember(),
     new EqualsToEquals(),
-    new ExtractVariable(),
     new StringConcatToTemplate(),
     new QuotesToQuotes(),
     new QuoteToTemplate(),
