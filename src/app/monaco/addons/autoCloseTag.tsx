@@ -59,9 +59,9 @@ function insertAutoCloseTag(event: TextDocumentContentChangeEvent, editor: Edito
      * after: <div><(pos)/>
      * Next chars will be `/>`
      */
-    let nextChar = getNext2Chars(editor, { lineNumber: originalRange.endLineNumber, column: originalRange.endColumn });
+    const nextChars = getNext2Chars(editor, { lineNumber: originalRange.endLineNumber, column: originalRange.endColumn });
 
-    if (nextChar === "/>") {
+    if (nextChars === "/>") {
         /** Don't add the trailing `>` so `</div>` => `</div` */
         closeTag = closeTag.substr(0, closeTag.length - 1);
     }
@@ -86,10 +86,14 @@ function insertAutoCloseTag(event: TextDocumentContentChangeEvent, editor: Edito
     });
 
     /** And advance the cursor */
-    const endAt = editor.getModel().modifyPosition({
+    let endAt = editor.getModel().modifyPosition({
         lineNumber: startAt.lineNumber,
         column: startAt.column
-    }, closeTag.length - 1);
+    }, closeTag.length);
+    if (nextChars === "/>") {
+        /** Advance one char more */
+        endAt = editor.getModel().modifyPosition(endAt, 1)
+    }
     /** Set timeout. Because it doesn't work otherwise */
     setTimeout(() => {
         editor.setSelection({
