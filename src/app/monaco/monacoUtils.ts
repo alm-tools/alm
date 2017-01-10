@@ -19,7 +19,6 @@ export function replaceSelection(config: {
         text: config.newText,
         range: selection,
         forceMoveMarkers: false,
-        isAutoWhitespaceEdit: false,
     }
 
     config.editor.getModel().pushEditOperations([], [editOperation], null);
