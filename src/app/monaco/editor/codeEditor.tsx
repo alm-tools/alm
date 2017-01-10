@@ -15,6 +15,8 @@ import * as linter from "../addons/linter";
 import * as docblockr from "../addons/dockblockr";
 import * as doctor from "../addons/doctor";
 import * as testedMonaco from "../addons/testedMonaco";
+import * as utils from '../../../common/utils';
+import * as autoCloseTag from '../addons/autoCloseTag';
 
 // The monokai theme
 require('./monokai.css');
@@ -139,6 +141,16 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             /** Tested */
             if (!this.props.readOnly) {
                 this.disposible.add(testedMonaco.setup(this.editor));
+            }
+
+            /** Auto close tag */
+            const ext = utils.getExt(this.props.filePath);
+            if (
+                ext === 'jsx'
+                || ext === 'tsx'
+                || ext === 'html'
+            ) {
+                this.disposible.add(autoCloseTag.setup(this.editor));
             }
 
             // Mark as ready and do anything that was waiting for ready to occur 🌹
