@@ -141,9 +141,8 @@ function getCloseTag(filePath: string, position: number): string | null {
 
     if (opens.length) {
         const tabToClose = opens[opens.length - 1]; // close the last one first
-        const tabToCloseFullText = tabToClose.getText(); // something like `<foo.Someting>`
-        const tabKey = tabToCloseFullText.substr(1, tabToCloseFullText.length - 2); // `foo.something`
-        return tabKey;
+        const tagName = tabToClose.tagName.getText(); // something like `foo.Someting`
+        return tagName;
     }
 
     return null;
