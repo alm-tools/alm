@@ -36,7 +36,14 @@ Once you have `npm start` running, if you edit any front-end ts file our Webpack
 We use alm to develop alm.
 
 * ONCE (or whenever you want an update): Run `npm run ualm` to copy the current alm copy to node_modules
+
+## Where you dev
+
 * Run `npm run alm` to launch alm to develop alm.
+
+## Where you test
+* Run `nodemon` in another window to start alm in live reload mode (note the port, normally 4445)
+* Open `http://localhost:4445/#new-session` to open the alm that is running in live reload mode (change port if needed based on previous step)
 
 You are free to use some other IDE if you want. You can run `npm run tscw` to run the TypeScript in the background in watch mode and use your favorite IDE in the foreground.
 
