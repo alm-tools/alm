@@ -209,6 +209,7 @@ function getCloseTagIfAtAnOpenOne(filePath: string, position: number): string | 
     let found: ts.JsxSelfClosingElement | null = null;
 
     const collectTags = (node: ts.Node) => {
+        if (found) return;
         /**
          * <div
          * Is actually parsed as a JSX self closing tag
