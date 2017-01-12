@@ -155,7 +155,7 @@ export function launchTerminal(data: { filePath: string }): Promise<string> {
         }
 
         else if (process.platform === 'win32') {
-            process.env.SHELL || process.env.COMSPEC || 'cmd.exe';
+            cp.execSync(`start cmd.exe /K "cd ${data.filePath}"`);
         }
         else {
             // http://stackoverflow.com/a/31737949/390330
