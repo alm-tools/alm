@@ -26,6 +26,29 @@ function insertAutoCloseTag(event: TextDocumentContentChangeEvent, editor: Edito
 
     /** User just did `<foo>` */
     if (event.text === ">") {
+
+        let text = editor.getModel().getValueInRange({
+            startLineNumber: 1,
+            startColumn: 1,
+            endLineNumber: originalRange.endLineNumber,
+            endColumn: originalRange.endColumn,
+        });
+
+        /**
+         * Check that its not
+         * `/>` (self closing)
+         * `=>` (arrow)
+         * `}>` (generic) ... hard cause `<foo bar={someting}>` is valid :-/
+         * By just checking is a char
+         **/
+        let lastChar = "";
+        if (text.length > 2) {
+            lastChar = text.substr(text.length - 1);
+        }
+        if (lastChar === "/" || lastChar === '=') {
+            return;
+        }
+
         let closeTag = getCloseTagIfAtAnOpenOne(editor.filePath, editor.getModel().getOffsetAt({
             lineNumber: originalRange.endLineNumber,
             column: originalRange.endColumn
