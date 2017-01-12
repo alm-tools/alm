@@ -224,7 +224,7 @@ function getCloseTagIfAtAnOpenOne(filePath: string, position: number): string | 
              * the `<another </` is what the jsx self closing tag contains
              * So if its a *self closing* tag with a start before and end after ... its a candidate
              */
-            if (!(node.getStart() <= position) && !(node.getEnd() >= position)) return;
+            if (!(node.getStart() <= position) || !(node.getEnd() >= position)) return;
 
             const fullText = node.getFullText().trim();
 
