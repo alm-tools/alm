@@ -101,6 +101,11 @@ namespace Server {
             return { error };
         });
     }
+    export var launchTerminal: typeof contract.server.launchTerminal = (data) => {
+        return fmc.launchTerminal(data).then(error => {
+            return { error };
+        });
+    }
 
     /**
      * Config stuff

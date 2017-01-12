@@ -1,16 +1,16 @@
 /**
  * All our interaction with the file system generally goes through here
  */
-import {FileModel} from "./fileModel";
-import {TypedEvent} from "../../common/events";
+import { FileModel } from "./fileModel";
+import { TypedEvent } from "../../common/events";
 import * as fsu from "../utils/fsu";
 import * as types from "../../common/types";
 
 export var savedFileChangedOnDisk = new TypedEvent<{ filePath: string; contents: string }>();
 export var didEdits = new TypedEvent<{ filePath: string; edits: CodeEdit[] }>();
 export var didStatusChange = new TypedEvent<types.FileStatus>();
-export var editorOptionsChanged = new TypedEvent<{filePath: string; editorOptions: types.EditorOptions}>();
-export var didOpenFile = new TypedEvent<{filePath: string, contents: string}>();
+export var editorOptionsChanged = new TypedEvent<{ filePath: string; editorOptions: types.EditorOptions }>();
+export var didOpenFile = new TypedEvent<{ filePath: string, contents: string }>();
 
 let openFiles: FileModel[] = [];
 export function getOpenFile(filePath: string) {
@@ -92,12 +92,12 @@ import * as mkdirp from "mkdirp";
 export function addFolder(filePath: string) {
     mkdirp.sync(filePath);
 }
-export function deleteFromDisk(data:{files: string[], dirs: string[]}) {
+export function deleteFromDisk(data: { files: string[], dirs: string[] }) {
     data.files.forEach(filePath => {
         var file = getOpenFile(filePath);
         if (file) {
             file.delete();
-            openFiles = openFiles.filter(f=> f.config.filePath !== filePath);
+            openFiles = openFiles.filter(f => f.config.filePath !== filePath);
         }
         else {
             fsu.deleteFile(filePath);
@@ -121,10 +121,10 @@ export function duplicateFile(data: { src: string, dest: string }) {
     fsu.writeFile(data.dest, contents);
 }
 
-import {ncp} from "ncp";
-export function duplicateDir(data:{ src: string, dest: string }) {
+import { ncp } from "ncp";
+export function duplicateDir(data: { src: string, dest: string }) {
     return new Promise<string>((resolve) => {
-        ncp(data.src,data.dest,(err)=>{
+        ncp(data.src, data.dest, (err) => {
             if (err) console.log('Move failed', err);
             resolve(JSON.stringify(err));
         });
@@ -132,7 +132,7 @@ export function duplicateDir(data:{ src: string, dest: string }) {
 }
 
 import * as mv from "mv";
-export function movePath(data:{ src: string, dest: string }): Promise<string> {
+export function movePath(data: { src: string, dest: string }): Promise<string> {
     return new Promise((resolve) => {
         mv(data.src, data.dest, { mkdirp: true, clobber: true }, (err) => {
             if (err) console.log('Move failed', err);
@@ -141,9 +141,26 @@ export function movePath(data:{ src: string, dest: string }): Promise<string> {
     });
 }
 import * as open from "open";
-export function launchDirectory(data:{ filePath: string }): Promise<string> {
+export function launchDirectory(data: { filePath: string }): Promise<string> {
     return new Promise((resolve) => {
         open(data.filePath);
         resolve({ error: null })
     });
+}
+export function launchTerminal(data: { filePath: string }): Promise<string> {
+    return new Promise((resolve) => {
+        open(detectPlatformShell() + ' ' + data.filePath);
+        resolve({ error: null })
+    });
+}
+function detectPlatformShell(): string {
+    if (process.platform === 'darwin') {
+        return process.env.SHELL || '/bin/bash';
+    }
+
+    if (process.platform === 'win32') {
+        return process.env.SHELL || process.env.COMSPEC || 'cmd.exe';
+    }
+
+    return process.env.SHELL || '/bin/sh';
 }

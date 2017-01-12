@@ -407,6 +407,11 @@ export let treeOpenInExplorerFinder = new UICommand({
     description: "Tree View: Open folder in explorer / finder",
     context: CommandContext.TreeView,
 });
+export let treeOpenInCmdTerminal = new UICommand({
+    keyboardShortcut: 'shift+o',    // natural
+    description: "Tree View: Open folder in cmd / terminal",
+    context: CommandContext.TreeView,
+});
 
 /**
  * General purpose file opening

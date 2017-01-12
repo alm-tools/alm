@@ -487,6 +487,25 @@ export class FileTree extends BaseComponent<Props, State>{
             return false;
         });
 
+        handlers.bind(commands.treeOpenInCmdTerminal.config.keyboardShortcut, () => {
+            if (this.loading) return;
+            let selection = goDownToSmallestSelection();
+            if (!selection) {
+                ui.notifyInfoNormalDisappear('Nothing selected');
+                return false;
+            }
+
+            let dirFilePath = selection.selectedFilePath;
+            if (!selection.isDir) {
+                dirFilePath = utils.getDirectory(dirFilePath);
+            }
+
+            server.launchTerminal({ filePath: dirFilePath });
+            ui.notifySuccessNormalDisappear(`Command to open cmd/terminal sent: ${dirFilePath}`);
+
+            return false;
+        });
+
         /**
          * navigation handlers
          */

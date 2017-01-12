@@ -31,6 +31,7 @@ export var server = {
     duplicateDir: {} as QRFunction<{ src: string, dest: string }, { error: string }>,
     movePath: {} as QRFunction<{ src: string, dest: string }, { error: string }>, // both files / folders
     launchDirectory: {} as QRFunction<{ filePath: string }, { error: string }>, // both files / folders
+    launchTerminal: {} as QRFunction<{ filePath: string }, { error: string }>, // both files / folders
 
     /**
      * config stuff
