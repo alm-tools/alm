@@ -789,6 +789,7 @@ export class FileTree extends BaseComponent<Props, State>{
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>R</span> to rename file / folder</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>C</span> to copy path to clipboard</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>O</span> to open in explorer/finder</div>
+                                <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>Shift + O</span> to open in cmd/terminal</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>T</span> to change .js to .ts</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>J</span> to change .ts to .js</div>
                                 <div style={helpRowStyle}>Tap <span style={styles.Tip.keyboardShortCutStyle}>arrow keys</span> to browse</div>
