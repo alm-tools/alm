@@ -147,20 +147,21 @@ export function launchDirectory(data: { filePath: string }): Promise<string> {
         resolve({ error: null })
     });
 }
+import * as cp from 'child_process';
 export function launchTerminal(data: { filePath: string }): Promise<string> {
     return new Promise((resolve) => {
-        open(detectPlatformShell() + ' ' + data.filePath);
+        if (process.platform === 'darwin') {
+            cp.execSync(`osascript -e 'tell application "Terminal" to activate' -e 'tell application "Terminal" to do script "cd ${data.filePath}"'`);
+        }
+
+        else if (process.platform === 'win32') {
+            process.env.SHELL || process.env.COMSPEC || 'cmd.exe';
+        }
+        else {
+            // http://stackoverflow.com/a/31737949/390330
+            console.error("We don't have a command for your OS. Would love for you to help us".red);
+        }
+
         resolve({ error: null })
     });
-}
-function detectPlatformShell(): string {
-    if (process.platform === 'darwin') {
-        return process.env.SHELL || '/bin/bash';
-    }
-
-    if (process.platform === 'win32') {
-        return process.env.SHELL || process.env.COMSPEC || 'cmd.exe';
-    }
-
-    return process.env.SHELL || '/bin/sh';
 }
