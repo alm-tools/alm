@@ -9,8 +9,7 @@
           "description": "If no 'files' or 'include' property is present in a tsconfig.json, the compiler defaults to including all files in the containing directory and subdirectories except those specified by 'exclude'. When a 'files' property is specified, only those files and those specified by 'include' are included.",
           "type": "array",
           "items": {
-            "type": "string",
-            "format": "uri"
+            "type": "string"
           }
         }
       }
@@ -18,11 +17,10 @@
     "excludeDefinition": {
       "properties": {
         "exclude": {
-          "description": "Specifies a list globs that need to be excluded from compilation. The 'exclude' property only affects the files included via the 'include' property and not the 'files' property.",
+          "description": "Specifies a list of files to be excluded from compilation. The 'exclude' property only affects the files included via the 'include' property and not the 'files' property. Glob patterns require TypeScript version 2.0 or later.",
           "type": "array",
           "items": {
-            "type": "string",
-            "format": "uri"
+            "type": "string"
           }
         }
       }
@@ -30,11 +28,10 @@
     "includeDefinition": {
       "properties": {
         "include": {
-          "description": "Specifies a list of glob patterns that match files to be included in compilation.",
+          "description": "Specifies a list of glob patterns that match files to be included in compilation. If no 'files' or 'include' property is present in a tsconfig.json, the compiler defaults to including all files in the containing directory and subdirectories except those specified by 'exclude'. Requires TypeScript version 2.0 or later.",
           "type": "array",
           "items": {
-            "type": "string",
-            "format": "uri"
+            "type": "string"
           }
         }
       }
@@ -47,12 +44,11 @@
         }
       }
     },
-    "enableAutoDiscoveryDefinition": {
+    "extendsDefinition": {
       "properties": {
-        "enableAutoDiscovery": {
-          "description": "",
-          "type": "boolean",
-          "default": "false"
+        "extends": {
+          "description": "Path to base configuration file to inherit from. Requires TypeScript version 2.1 or later.",
+          "type": "string"
         }
       }
     },
@@ -60,7 +56,7 @@
       "properties": {
         "compilerOptions": {
           "type": "object",
-          "description": "Instructs the TypeScript compiler how to compile .ts files",
+          "description": "Instructs the TypeScript compiler how to compile .ts files.",
           "properties": {
             "charset": {
               "description": "The character set of the input files.",
@@ -108,8 +104,7 @@
             },
             "mapRoot": {
               "description": "Specifies the location where debugger should locate map files instead of generated locations",
-              "type": "string",
-              "format": "uri"
+              "type": "string"
             },
             "module": {
               "description": "Specify module code generation: 'none', 'CommonJS', 'Amd', 'System', 'UMD', or 'es2015'.",
@@ -164,13 +159,11 @@
             },
             "outFile": {
               "description": "Concatenate and emit output to single file.",
-              "type": "string",
-              "format": "uri"
+              "type": "string"
             },
             "outDir": {
               "description": "Redirect output structure to the directory.",
-              "type": "string",
-              "format": "uri"
+              "type": "string"
             },
             "preserveConstEnums": {
               "description": "Do not erase const enum declarations in generated code.",
@@ -186,8 +179,7 @@
             },
             "rootDir": {
               "description": "Specifies the root directory of input files. Use to control the output directory structure with --outDir.",
-              "type": "string",
-              "format": "uri"
+              "type": "string"
             },
             "isolatedModules": {
               "description": "Unconditionally emit imports for unresolved files.",
@@ -199,8 +191,7 @@
             },
             "sourceRoot": {
               "description": "Specifies the location where debugger should locate TypeScript files instead of source locations.",
-              "type": "string",
-              "format": "uri"
+              "type": "string"
             },
             "suppressExcessPropertyErrors": {
               "description": "Suppress excess property checks for object literals.",
@@ -215,9 +206,9 @@
               "type": "boolean"
             },
             "target": {
-              "description": "Specify ECMAScript target version. Permitted values are 'es3', 'es5', or 'es2015'.",
+              "description": "Specify ECMAScript target version. Permitted values are 'es3', 'es5', 'es2015', 'es2016', 'es2017' or 'esnext'.",
               "type": "string",
-              "pattern": "^([eE][sS]([356]|(2015)))$",
+              "pattern": "^([eE][sS]([356]|(201[567])|[nN][eE][xX][tT]))$",
               "default": "es3"
             },
             "watch": {
@@ -259,9 +250,8 @@
               "type": "boolean"
             },
             "baseUrl": {
-              "description": "Base directory to resolve non absolute module names.",
-              "type": "string",
-              "format": "uri"
+              "description": "Base directory to resolve non-relative module names.",
+              "type": "string"
             },
             "paths": {
               "description": "Specify path mapping to be computed relative to baseUrl option.",
@@ -313,13 +303,60 @@
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [ "es5", "es6", "es2015", "es7", "es2016", "es2017", "dom", "webworker", "scripthost", "es2015.core", "es2015.collection", "es2015.generator", "es2015.iterable",
+                "enum": [ "es5", "es6", "es2015", "es7", "es2016", "es2017", "dom", "dom.iterable", "webworker", "scripthost", "es2015.core", "es2015.collection", "es2015.generator", "es2015.iterable",
                         "es2015.promise", "es2015.proxy", "es2015.reflect", "es2015.symbol", "es2015.symbol.wellknown", "es2016.array.include", "es2017.object", "es2017.sharedmemory" ]
               }
             },
             "strictNullChecks": {
               "description": "Enable strict null checks. Requires TypeScript version 2.0 or later.",
               "type": "boolean"
+            },
+            "maxNodeModuleJsDepth": {
+              "description": "The maximum dependency depth to search under node_modules and load JavaScript files. Only applicable with --allowJs.",
+              "type": "number",
+              "default": 0
+            },
+            "importHelpers": {
+              "description": "Import emit helpers (e.g. '__extends', '__rest', etc..) from tslib. Requires TypeScript version 2.1 or later.",
+              "type": "boolean"
+            },
+            "jsxFactory": {
+              "description": "Specify the JSX factory function to use when targeting react JSX emit, e.g. 'React.createElement' or 'h'. Requires TypeScript version 2.1 or later.",
+              "type": "string",
+              "default": "React.createElement"
+            },
+            "alwaysStrict": {
+              "description": "Parse in strict mode and emit 'use strict' for each source file. Requires TypeScript version 2.1 or later.",
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "typeAcquisitionDefinition": {
+      "properties": {
+        "typeAcquisition": {
+          "type": "object",
+          "description": "Auto type (.d.ts) acquisition options for this project. Requires TypeScript version 2.1 or later.",
+          "properties": {
+            "enable": {
+              "description": "Enable auto type acquisition",
+              "type": "boolean",
+              "default": false
+            },
+            "include": {
+              "description": "Specifies a list of type declarations to be included in auto type acquisition. Ex. [\"jquery\", \"lodash\"]",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "exclude": {
+              "description": "Specifies a list of type declarations to be excluded from auto type acquisition. Ex. [\"jquery\", \"lodash\"]",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             }
           }
         }
@@ -331,6 +368,8 @@
   "allOf": [
     { "$ref": "#/definitions/compilerOptionsDefinition" },
     { "$ref": "#/definitions/compileOnSaveDefinition" },
+    { "$ref": "#/definitions/typeAcquisitionDefinition" },
+    { "$ref": "#/definitions/extendsDefinition" },
     {
       "anyOf": [
         { "$ref": "#/definitions/filesDefinition" },
