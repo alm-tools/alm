@@ -239,7 +239,20 @@ function getCloseTagIfAtAnOpenOne(filePath: string, position: number): string | 
                  */
                 && !fullText.endsWith('</')) return;
 
-            found = node as ts.JsxSelfClosingElement;
+            if (found) {
+                const previous = found;
+
+                /** If it surrounds the position more tightly */
+                const delta = (position - node.getStart()) + (node.getEnd() - position);
+                const previousDelta = (position - previous.getStart()) + (previous.getEnd() - position);
+
+                if (delta < previousDelta) {
+                    found = node as ts.JsxSelfClosingElement;;
+                }
+            }
+            else {
+                found = node as ts.JsxSelfClosingElement;
+            }
         }
         ts.forEachChild(node, collectTags);
     }
