@@ -37,15 +37,17 @@ We use alm to develop alm.
 
 * ONCE (or whenever you want an update): Run `npm run ualm` to copy the current alm copy to node_modules
 
+You run two instances of alm, once where you dev, and one where you test what you have written.
+
 ## Where you dev
 
 * Run `npm run alm` to launch alm to develop alm.
 
-## Where you test
-* Run `nodemon` in another window to start alm in live reload mode (note the port, normally 4445)
-* Open `http://localhost:4445/#new-session` to open the alm that is running in live reload mode (change port if needed based on previous step)
+> You are free to use some other IDE if you want. You can run `npm run tscw` to run the TypeScript in the background in watch mode and use your favorite IDE in the foreground.
 
-You are free to use some other IDE if you want. You can run `npm run tscw` to run the TypeScript in the background in watch mode and use your favorite IDE in the foreground.
+## Where you test
+* Run `npm start` in another window to start alm in live reload mode (note the port, normally 4445)
+* Open `http://localhost:4445/#new-session` to open the alm that is running in live reload mode (change port if needed based on previous step)
 
 # Webpack
 All our front-end js gets minified into `bundle.js`. This is what gets npm deployed.
