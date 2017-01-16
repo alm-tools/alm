@@ -71,7 +71,7 @@
     "socket.io": "^1.3.6",
     "source-map-support": "0.4.3",
     "ts-node": "2.0.0",
-    "tslint": "4.2.0-dev.0",
+    "tslint": "4.3.0",
     "typescript": "2.2.0-dev.20161229",
     "update-notifier": "1.0.2"
   },
