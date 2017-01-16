@@ -70,7 +70,7 @@ const compilerOptionsValidation: simpleValidator.ValidationInfo = {
     suppressExcessPropertyErrors: { type: types.boolean },
     suppressImplicitAnyIndexErrors: { type: types.boolean },
     suppressOutputPathCheck: { type: types.boolean },
-    target: { type: types.string, validValues: ['es3', 'es5', 'es6', 'es2015'] },
+    target: { type: types.string, validValues: ['es3', 'es5', 'es6', 'es2015', 'es2016', 'es2017', 'esnext'] },
     traceResolution: { type: types.boolean },
     types: { type: types.array, sub: { type: types.string } },
     typeRoots: { type: types.array, sub: { type: types.string } },
