@@ -64,6 +64,7 @@ namespace Server {
     }
     export var saveFile: typeof contract.server.saveFile = (data) => {
         fmc.saveOpenFile(data.filePath);
+        fmc.serverGotExplicitSaveCommand.emit({ filePath: data.filePath });
         return resolve({});
     }
     export var getFileStatus: typeof contract.server.openFile = (data) => {

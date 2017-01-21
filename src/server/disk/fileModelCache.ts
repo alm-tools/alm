@@ -71,7 +71,6 @@ export function isFileOpen(filePath: string) {
 export function saveOpenFile(filePath: string) {
     let file = getOpenFile(filePath);
     file.save();
-    serverGotExplicitSaveCommand.emit({ filePath });
 }
 
 /**
