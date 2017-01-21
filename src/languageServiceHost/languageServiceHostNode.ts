@@ -9,4 +9,14 @@ export class LanguageServiceHost extends lsh.LanguageServiceHost {
         /** TypeScript doesn't handle `undefined` here gracefully, but it handles an empty string just fine */
         return typescriptDir.getDefaultLibFilePaths(this.compilerOptions)[0] || '';
     }
+
+    /** alm demo service */
+    addAlmDemo = () => {
+        this.addScript('alm.d.ts', `
+        declare namespace alm {
+            export function render(node:any): void;
+        }
+        `);
+        return this;
+    }
 }
