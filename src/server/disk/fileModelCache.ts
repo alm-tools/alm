@@ -6,11 +6,12 @@ import { TypedEvent } from "../../common/events";
 import * as fsu from "../utils/fsu";
 import * as types from "../../common/types";
 
-export var savedFileChangedOnDisk = new TypedEvent<{ filePath: string; contents: string }>();
-export var didEdits = new TypedEvent<{ filePath: string; edits: CodeEdit[] }>();
-export var didStatusChange = new TypedEvent<types.FileStatus>();
-export var editorOptionsChanged = new TypedEvent<{ filePath: string; editorOptions: types.EditorOptions }>();
-export var didOpenFile = new TypedEvent<{ filePath: string, contents: string }>();
+export const savedFileChangedOnDisk = new TypedEvent<{ filePath: string; contents: string }>();
+export const didEdits = new TypedEvent<{ filePath: string; edits: CodeEdit[] }>();
+export const didStatusChange = new TypedEvent<types.FileStatus>();
+export const editorOptionsChanged = new TypedEvent<{ filePath: string; editorOptions: types.EditorOptions }>();
+export const didOpenFile = new TypedEvent<{ filePath: string, contents: string }>();
+export const serverGotExplicitSaveCommand = new TypedEvent<{ filePath: string }>();
 
 let openFiles: FileModel[] = [];
 export function getOpenFile(filePath: string) {
@@ -70,6 +71,7 @@ export function isFileOpen(filePath: string) {
 export function saveOpenFile(filePath: string) {
     let file = getOpenFile(filePath);
     file.save();
+    serverGotExplicitSaveCommand.emit({ filePath });
 }
 
 /**
