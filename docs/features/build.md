@@ -29,11 +29,3 @@ As soon as you open or edit a TypeScript file we do an intelligent emit of the e
 `Ctrl|⌘ + M` compiles the selected TypeScript, transpiles it to JavaScript and then sends it to the browser (chrome) console.
 
 > Can be used even if `compileOnSave` is false ;)
-
-## Live demo a TypeScript file
-
-Run command `Demo file` to live test some TypeScript code. It is transpiled on the fly, executed in nodejs and output is shown back to you.
-
-![](https://cloud.githubusercontent.com/assets/874898/21340501/1fdd2742-c6db-11e6-9c7e-84a8c28a25f8.gif)
-
-> Stop demo by closing tab or running the command `Demo stop`.
