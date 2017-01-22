@@ -5,6 +5,7 @@ import { FileModel } from "./fileModel";
 import { TypedEvent } from "../../common/events";
 import * as fsu from "../utils/fsu";
 import * as types from "../../common/types";
+import * as chalk from 'chalk';
 
 export const savedFileChangedOnDisk = new TypedEvent<{ filePath: string; contents: string }>();
 export const didEdits = new TypedEvent<{ filePath: string; edits: CodeEdit[] }>();
@@ -160,7 +161,7 @@ export function launchTerminal(data: { filePath: string }): Promise<string> {
         }
         else {
             // http://stackoverflow.com/a/31737949/390330
-            console.error("We don't have a command for your OS. Would love for you to help us".red);
+            console.error(chalk.red("We don't have a command for your OS. Would love for you to help us"));
         }
 
         resolve({ error: null })

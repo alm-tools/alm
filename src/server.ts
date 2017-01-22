@@ -30,6 +30,8 @@ import * as session from "./server/disk/session";
 import * as chalk from "chalk";
 import * as utils from "./common/utils";
 import * as fsu from "./server/utils/fsu";
+import { liveDemoFolder } from './server/workers/external/demoReact/demoReactService';
+import * as types from './common/types';
 
 // `Where` to statically serve `what`
 const staticServing = {
@@ -42,6 +44,11 @@ const staticServing = {
     // - the path is ofcourse to the contribution file.
     '/vs/language/css': utils.getDirectory(fsu.consistentPath(require.resolve('monaco-css/release/min/monaco.contribution'))),
     '/vs/basic-languages/src': utils.getDirectory(fsu.consistentPath(require.resolve('monaco-languages/release/src/monaco.contribution'))),
+
+    /**
+     * Live demo
+     */
+    [types.liveDemoMountUrl]: liveDemoFolder,
 }
 
 /**

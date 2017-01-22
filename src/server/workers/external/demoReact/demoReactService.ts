@@ -1,6 +1,5 @@
 import { TypedEvent } from '../../../../common/events';
 import { kill } from '../../../utils/treeKill';
-import { getPort } from '../../../utils/getPort';
 import { appSettingsFolder } from '../../../disk/settings';
 import * as mkdirp from 'mkdirp';
 import * as fsu from '../../../utils/fsu';
@@ -11,7 +10,7 @@ const workerPrefix = `[DEMO-REACT]`;
 /**
  * This is where we write our index.html plus app.js
  */
-const liveDemoFolder = appSettingsFolder + '/liveDemoReact';
+export const liveDemoFolder = appSettingsFolder + '/liveDemoReact';
 mkdirp.sync(liveDemoFolder);
 
 /** Our index file name */
@@ -19,7 +18,7 @@ const outputFileName = liveDemoFolder + '/index.js';
 
 /** Our html template file */
 fsu.writeFile(liveDemoFolder + '/index.html',
-`
+    `
 <!DOCTYPE html>
 <html>
 <head>
@@ -39,12 +38,10 @@ fsu.writeFile(liveDemoFolder + '/index.html',
 
 export namespace WorkerImplementation {
     export let currentFilePath = '';
-    let demoPort: number = 4000;
-    export const reloadReactDemo = new TypedEvent<{ port: number }>();
+    export const reloadReactDemo = new TypedEvent<{}>();
 
     export const enableLiveDemo = async ({ filePath }: { filePath: string }) => {
         currentFilePath = filePath;
-        const port = await getPort(demoPort);
 
         await bundle({
             entryPointName: filePath,
@@ -52,10 +49,10 @@ export namespace WorkerImplementation {
             prod: false,
         });
 
-        console.log(workerPrefix, `Bundled. Input: ${filePath}, Port: ${port}, Output: ${outputFileName}`);
+        console.log(workerPrefix, `Input: ${filePath}`);
+        console.log(workerPrefix, `Output: ${outputFileName}`);
 
-
-        reloadReactDemo.emit({ port: port });
+        reloadReactDemo.emit({});
         return {};
     };
     export const disableLiveDemo = () => {

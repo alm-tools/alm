@@ -11,11 +11,12 @@ import * as utils from "../../../common/utils";
 import * as styles from "../../styles/styles";
 import * as ReactDOM from 'react-dom';
 import * as React from 'react';
+import * as types from '../../../common/types';
 
 export interface Props extends tab.TabProps {
 }
 export interface State {
-    port: number
+    attempt: number
 }
 
 const startOfOutput = '--START--\n';
@@ -26,15 +27,15 @@ export class LiveDemoReactView extends ui.BaseComponent<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            port: 4000
+            attempt:0
         };
         this.filePath = utils.getFilePathFromUrl(props.url);
     }
     componentDidMount() {
         server.enableLiveDemoReact({ filePath: this.filePath });
         this.disposible.add(
-            cast.reloadReactDemo.on(({ port }) => {
-                this.setState({ port });
+            cast.reloadReactDemo.on(({ }) => {
+                this.setState({ attempt: this.state.attempt + 1 });
             })
         );
 
@@ -62,13 +63,17 @@ export class LiveDemoReactView extends ui.BaseComponent<Props, State> {
                 style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll, { color: styles.textColor })}
                 onKeyPress={this.handleKey}
                 onFocus={this.props.onFocused}>
-                <iframe src={this.getIframeUrl()} style={{ height: '100%', width: '100%' }} />
+                <iframe src={this.getIframeUrl()} style={{
+                    height: '100%', width: '100%',
+                    border: 'none',
+                    backgroundColor: 'white',
+                }} />
             </div>
         );
     }
 
     private getIframeUrl = () => {
-        return `${window.location.protocol}//${window.location.hostname}:${this.state.port}`;
+        return `${window.location.protocol}//${window.location.hostname}:${window.location.port}${types.liveDemoMountUrl}/#${this.state.attempt}`;
     }
 
     handleKey = (e: any) => {

@@ -1,6 +1,5 @@
 /// <reference path="main/ambient/chalk/chalk.d.ts" />
 /// <reference path="main/ambient/chokidar/chokidar.d.ts" />
-/// <reference path="main/ambient/colors/colors.d.ts" />
 /// <reference path="main/ambient/cookie-parser/cookie-parser.d.ts" />
 /// <reference path="main/ambient/d3/d3.d.ts" />
 /// <reference path="main/ambient/express/express.d.ts" />

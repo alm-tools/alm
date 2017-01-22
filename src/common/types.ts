@@ -708,3 +708,8 @@ export function makeBlandError(filePath: string, error: string, source: CodeErro
         level: 'error'
     }
 }
+
+//////////////////////
+// Live react demo
+//////////////////////
+export const liveDemoMountUrl = '/demo';
