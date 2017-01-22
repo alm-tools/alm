@@ -3,6 +3,8 @@ import { kill } from '../../../utils/treeKill';
 import { getPort } from '../../../utils/getPort';
 import { appSettingsFolder } from '../../../disk/settings';
 import * as mkdirp from 'mkdirp';
+import * as fsu from '../../../utils/fsu';
+import { bundle } from './bundler/master';
 
 const workerPrefix = `[DEMO-REACT]`;
 
@@ -12,7 +14,11 @@ const workerPrefix = `[DEMO-REACT]`;
 const liveDemoFolder = appSettingsFolder + '/liveDemoReact';
 mkdirp.sync(liveDemoFolder);
 
-const appIndexTemplate = ({ jsFileName }: { jsFileName: string}) =>
+/** Our index file name */
+const outputFileName = liveDemoFolder + '/index.js';
+
+/** Our html template file */
+const appIndexTemplate = ({ }: {}) =>
     `
 <!DOCTYPE html>
 <html>
@@ -25,25 +31,30 @@ const appIndexTemplate = ({ jsFileName }: { jsFileName: string}) =>
 </head>
 <body>
   <div id="root"></div>
-  <script type="text/javascript" src="./${jsFileName}"></script>
+  <script type="text/javascript" src="./index.js"></script>
 </body>
 </html>
 `;
+fsu.writeFile(liveDemoFolder + '/index.html', appIndexTemplate({}));
 
 export namespace WorkerImplementation {
     export let currentFilePath = '';
     let demoPort: number = 4000;
     export const reloadReactDemo = new TypedEvent<{ port: number }>();
 
-    export const enableLiveDemo = ({ filePath }: { filePath: string }) => {
+    export const enableLiveDemo = async ({ filePath }: { filePath: string }) => {
         currentFilePath = filePath;
-        return getPort(demoPort).then(port => {
-            console.log(workerPrefix, `Started on filePath: ${filePath}, port: ${port}`);
+        const port = await getPort(demoPort)
+        console.log(workerPrefix, `Started on filePath: ${filePath}, port: ${port}`);
 
-            reloadReactDemo.emit({ port: port });
-
-            return {};
+        await bundle({
+            entryPointName: filePath,
+            outputFileName: outputFileName,
+            prod: false,
         });
+
+        reloadReactDemo.emit({ port: port });
+        return {};
     };
     export const disableLiveDemo = () => {
         // if (executor) {
