@@ -66,7 +66,7 @@ export class UICommand extends events.TypedEvent<{}>{
 /**
  * General purpose UI escape
  */
-export var esc = new UICommand({
+export const esc = new UICommand({
     keyboardShortcut: 'esc', // atom
     description: "Close any open dialogs and focus back to any open tab",
     context: CommandContext.Global,
@@ -75,13 +75,13 @@ export var esc = new UICommand({
 /**
  * Active list
  */
-export var gotoNext = new UICommand({
+export const gotoNext = new UICommand({
     keyboardShortcut: 'mod+f8', // atom
     description: "Main Panel : Goto next error in project",
     context: CommandContext.Global,
 });
 
-export var gotoPrevious = new UICommand({
+export const gotoPrevious = new UICommand({
     keyboardShortcut: 'mod+shift+f8', // atom
     description: "Main Panel : Goto previous error in project",
     context: CommandContext.Global,
@@ -90,36 +90,36 @@ export var gotoPrevious = new UICommand({
 /**
  * Tabs
  */
-export var nextTab = new UICommand({
+export const nextTab = new UICommand({
     keyboardShortcut: 'alt+k',
     description: "Tabs: Focus on the Next Tab",
     context: CommandContext.Global,
 });
-export var prevTab = new UICommand({
+export const prevTab = new UICommand({
     keyboardShortcut: 'alt+j',
     description: "Tabs: Focus on the Previous Tab",
     context: CommandContext.Global,
 });
-export var closeTab = new UICommand({
+export const closeTab = new UICommand({
     keyboardShortcut: 'alt+w', // c9
     description: "Tabs: Close current tab",
     context: CommandContext.Global,
 });
-export var undoCloseTab = new UICommand({
+export const undoCloseTab = new UICommand({
     keyboardShortcut: 'shift+alt+w', // Couldn't find IDEs that do this. c9/ca have this bound to close all tabs
     description: "Tabs: Undo close tab",
     context: CommandContext.Global,
 });
-export var saveTab = new UICommand({
+export const saveTab = new UICommand({
     keyboardShortcut: 'mod+s', // c9
     description: "Tabs: Save current tab",
     context: CommandContext.Global,
 });
-export var closeOtherTabs = new UICommand({
+export const closeOtherTabs = new UICommand({
     description: "Tabs: Close other tabs",
     context: CommandContext.Global,
 });
-export var closeAllTabs = new UICommand({
+export const closeAllTabs = new UICommand({
     description: "Tabs: Close all tabs",
     context: CommandContext.Global,
 });
@@ -128,11 +128,11 @@ export const jumpToTab = new UICommand({
     description: "Tabs: Jump to tab",
     context: CommandContext.Global,
 });
-export var duplicateTab = new UICommand({
+export const duplicateTab = new UICommand({
     description: "Tabs: Duplicate",
     context: CommandContext.Global,
 });
-export var duplicateWindow = new UICommand({
+export const duplicateWindow = new UICommand({
     description: "Window: Duplicate in a new browser window",
     context: CommandContext.Global,
 });
@@ -140,27 +140,35 @@ export var duplicateWindow = new UICommand({
 /**
  * Build / output js
  */
-export var sync = new UICommand({
+export const sync = new UICommand({
     keyboardShortcut: 'shift+f6',
     description: "TypeScript: Sync",
     context: CommandContext.Global,
 });
-export var build = new UICommand({
+export const build = new UICommand({
     keyboardShortcut: 'f6',
     description: "TypeScript: Build",
     context: CommandContext.Global,
 });
-export var toggleOutputJS = new UICommand({
+export const toggleOutputJS = new UICommand({
     keyboardShortcut: 'mod+shift+m', // atom
     description: "TypeScript: Toggle output js file",
     context: CommandContext.Global,
 });
-export var enableLiveDemo = new UICommand({
+export const enableLiveDemo = new UICommand({
     description: "TypeScript: Demo file",
     context: CommandContext.Global,
 });
-export var disableLiveDemo = new UICommand({
+export const disableLiveDemo = new UICommand({
     description: "TypeScript: Demo stop",
+    context: CommandContext.Global,
+});
+export const enableReactLiveDemo = new UICommand({
+    description: "TypeScript: Demo react file",
+    context: CommandContext.Global,
+});
+export const disableReactLiveDemo = new UICommand({
+    description: "TypeScript: Demo react stop",
     context: CommandContext.Global,
 });
 
@@ -168,47 +176,47 @@ export var disableLiveDemo = new UICommand({
  * Tab indexing
  * // c9, chrome, atom
  */
-export var gotoTab1 = new UICommand({
+export const gotoTab1 = new UICommand({
     keyboardShortcut: 'mod+1',
     description: "Tabs: Goto Tab 1",
     context: CommandContext.Global,
 });
-export var gotoTab2 = new UICommand({
+export const gotoTab2 = new UICommand({
     keyboardShortcut: 'mod+2',
     description: "Tabs: Goto Tab 2",
     context: CommandContext.Global,
 });
-export var gotoTab3 = new UICommand({
+export const gotoTab3 = new UICommand({
     keyboardShortcut: 'mod+3',
     description: "Tabs: Goto Tab 3",
     context: CommandContext.Global,
 });
-export var gotoTab4 = new UICommand({
+export const gotoTab4 = new UICommand({
     keyboardShortcut: 'mod+4',
     description: "Tabs: Goto Tab 4",
     context: CommandContext.Global,
 });
-export var gotoTab5 = new UICommand({
+export const gotoTab5 = new UICommand({
     keyboardShortcut: 'mod+5',
     description: "Tabs: Goto Tab 5",
     context: CommandContext.Global,
 });
-export var gotoTab6 = new UICommand({
+export const gotoTab6 = new UICommand({
     keyboardShortcut: 'mod+6',
     description: "Tabs: Goto Tab 6",
     context: CommandContext.Global,
 });
-export var gotoTab7 = new UICommand({
+export const gotoTab7 = new UICommand({
     keyboardShortcut: 'mod+7',
     description: "Tabs: Goto Tab 7",
     context: CommandContext.Global,
 });
-export var gotoTab8 = new UICommand({
+export const gotoTab8 = new UICommand({
     keyboardShortcut: 'mod+8',
     description: "Tabs: Goto Tab 8",
     context: CommandContext.Global,
 });
-export var gotoTab9 = new UICommand({
+export const gotoTab9 = new UICommand({
     keyboardShortcut: 'mod+9',
     description: "Tabs: Goto Tab 9",
     context: CommandContext.Global,
@@ -217,27 +225,27 @@ export var gotoTab9 = new UICommand({
 /**
  * OmniSearch
  */
-export var omniFindFile = new UICommand({
+export const omniFindFile = new UICommand({
     keyboardShortcut: 'mod+o',  // atom,sublime
     description: "Find a file in the working directory",
     context: CommandContext.Global,
 });
-export var omniFindCommand = new UICommand({
+export const omniFindCommand = new UICommand({
     keyboardShortcut: 'mod+shift+p', // atom,sublime
     description: "Find a command",
     context: CommandContext.Global,
 });
-export var omniSelectProject = new UICommand({
+export const omniSelectProject = new UICommand({
     keyboardShortcut: 'alt+shift+p', // atom:projectmanager package
     description: "Find and set active project",
     context: CommandContext.Global,
 });
-export var omniProjectSymbols = new UICommand({
+export const omniProjectSymbols = new UICommand({
     keyboardShortcut: 'mod+shift+h',
     description: "Find Symbols (Hieroglyphs) in active project",
     context: CommandContext.Global,
 });
-export var omniProjectSourcefile = new UICommand({
+export const omniProjectSourcefile = new UICommand({
     keyboardShortcut: 'mod+p', //
     description: "Find Source File in active project",
     context: CommandContext.Global,
@@ -247,29 +255,29 @@ export var omniProjectSourcefile = new UICommand({
 /**
  * FAR find and replace
  */
-export var findAndReplace = new UICommand({
+export const findAndReplace = new UICommand({
     keyboardShortcut: 'mod+f', // atom,sublime,c9
     description: "Show find and replace dialog",
     context: CommandContext.Global,
 });
-export var findAndReplaceMulti = new UICommand({
+export const findAndReplaceMulti = new UICommand({
     keyboardShortcut: 'mod+shift+f', // atom,sublime,c9
     description: "Show find and replace in files",
     context: CommandContext.Global,
 });
-export var findNext = new UICommand({
+export const findNext = new UICommand({
     keyboardShortcut: 'f3', // atom,sublime
     description: "Find the next search result",
     context: CommandContext.Global,
 });
-export var findPrevious = new UICommand({
+export const findPrevious = new UICommand({
     keyboardShortcut: 'shift+f3', // atom,sublime
     description: "Find the previous search result",
     context: CommandContext.Global,
 });
-export var replaceNext = new events.TypedEvent<{ newText: string }>();
-export var replacePrevious = new events.TypedEvent<{ newText: string }>();
-export var replaceAll = new events.TypedEvent<{ newText: string }>();
+export const replaceNext = new events.TypedEvent<{ newText: string }>();
+export const replacePrevious = new events.TypedEvent<{ newText: string }>();
+export const replaceAll = new events.TypedEvent<{ newText: string }>();
 
 /**
  * Error panel
@@ -294,16 +302,16 @@ export let toggleDoctor = new UICommand({
     description: "Editor: Toggle Doctor",
     context: CommandContext.Global,
 });
-export var toggleDocumentationBrowser = new UICommand({
+export const toggleDocumentationBrowser = new UICommand({
     keyboardShortcut: 'mod+shift+\'', // Same as doctor with Shift
     description: "Documentation Browser: Open",
     context: CommandContext.Global,
 });
-export var doOpenUmlDiagram = new UICommand({
+export const doOpenUmlDiagram = new UICommand({
     description: "UML Class diagram",
     context: CommandContext.Global,
 });
-export var toggleSemanticView = new UICommand({
+export const toggleSemanticView = new UICommand({
     description: "Toggle Semantic View",
     context: CommandContext.Global,
 });
@@ -311,7 +319,7 @@ export const launchTsFlow = new UICommand({
     description: "Launch TypeScript flow based programming",
     context: CommandContext.Global,
 });
-export var doOpenTestResultsView = new UICommand({
+export const doOpenTestResultsView = new UICommand({
     description: "Test Results View",
     context: CommandContext.Global,
 });
@@ -333,19 +341,19 @@ export let nextCursorLocation = new UICommand({
 /**
  * Clipboard Ring
  */
-export var copy = new UICommand({
+export const copy = new UICommand({
     keyboardShortcut: 'mod+c', // atom
     description: "Copy",
     context: CommandContext.Global,
     allowDefault: true
 });
-export var cut = new UICommand({
+export const cut = new UICommand({
     keyboardShortcut: 'mod+x', // atom
     description: "Cut",
     context: CommandContext.Global,
     allowDefault: true
 });
-export var pasteFromRing = new UICommand({
+export const pasteFromRing = new UICommand({
     keyboardShortcut: 'mod+shift+v', // VS
     description: "PasteFromRing",
     context: CommandContext.Global,
@@ -417,37 +425,37 @@ export let treeOpenInCmdTerminal = new UICommand({
  * General purpose file opening
  * These are handled in appTabsContainer at the moment
  */
-export var doOpenFile = new events.TypedEvent<{ filePath: string, position?: EditorPosition }>();
-export var doOpenOrFocusFile = new events.TypedEvent<{ filePath: string, position?: EditorPosition }>();
-export var openFileFromDisk = new UICommand({
+export const doOpenFile = new events.TypedEvent<{ filePath: string, position?: EditorPosition }>();
+export const doOpenOrFocusFile = new events.TypedEvent<{ filePath: string, position?: EditorPosition }>();
+export const openFileFromDisk = new UICommand({
     keyboardShortcut: 'mod+shift+o',
     description: 'Open a file present on server disk',
     context: CommandContext.Global,
 });
 /** needed by cursor history */
-export var doOpenOrFocusTab = new events.TypedEvent<{ tabId: string, tabUrl: string, position: EditorPosition }>();
+export const doOpenOrFocusTab = new events.TypedEvent<{ tabId: string, tabUrl: string, position: EditorPosition }>();
 /** needed by file tree */
-export var closeFilesDirs = new events.TypedEvent<{ files: string[], dirs: string[] }>();
+export const closeFilesDirs = new events.TypedEvent<{ files: string[], dirs: string[] }>();
 /** Needed by file tree, activates the tab but doesn't change focus away from tree view */
-export var doOpenOrActivateFileTab = new events.TypedEvent<{ filePath: string }>();
+export const doOpenOrActivateFileTab = new events.TypedEvent<{ filePath: string }>();
 /** Needed to toggle output js file. We toggle and also do not steal focus */
-export var doToggleFileTab = new events.TypedEvent<{ filePath: string }>();
+export const doToggleFileTab = new events.TypedEvent<{ filePath: string }>();
 /** Needed to ensure that a demo view is open */
-export var ensureLiveDemoTab = new events.TypedEvent<{ filePath: string }>();
-export var closeDemoTab = new events.TypedEvent<{}>();
+export const ensureLiveDemoTab = new events.TypedEvent<{ filePath: string }>();
+export const closeDemoTab = new events.TypedEvent<{}>();
 
 /**
  * Other tab types
  */
-export var doOpenDependencyView = new UICommand({
+export const doOpenDependencyView = new UICommand({
     description: 'Open Dependency View',
     context: CommandContext.Global,
 });
-export var doOpenASTView = new UICommand({
+export const doOpenASTView = new UICommand({
     description: 'Open AST View',
     context: CommandContext.Global,
 });
-export var doOpenASTFullView = new UICommand({
+export const doOpenASTFullView = new UICommand({
     description: 'Open AST-Full View',
     context: CommandContext.Global,
 });
@@ -507,12 +515,12 @@ export function register() {
 /**
 * Straight out of codemirror.js
 */
-export var ios = /AppleWebKit/.test(navigator.userAgent) && /Mobile\/\w+/.test(navigator.userAgent);
-export var mac = ios || /Mac/.test(navigator.platform);
-export var windows = /win/i.test(navigator.platform);
+export const ios = /AppleWebKit/.test(navigator.userAgent) && /Mobile\/\w+/.test(navigator.userAgent);
+export const mac = ios || /Mac/.test(navigator.platform);
+export const windows = /win/i.test(navigator.platform);
 /** Nice display name for the mod by user platform */
-export var modName = mac ? '⌘' : 'Ctrl';
-let mod = mac ? 'Cmd' : 'Ctrl';
+export const modName = mac ? '⌘' : 'Ctrl';
+const mod = mac ? 'Cmd' : 'Ctrl';
 
 /**
  * Commands *we* authored.
