@@ -88,4 +88,4 @@ export function bundle(args: {
 }
 
 const {entryPointName, outputFileName, prod} = JSON.parse(process.argv[2]);
-bundle({ entryPointName, outputFileName, prod: prod === 'true' ? true : false });
+bundle({ entryPointName, outputFileName, prod});

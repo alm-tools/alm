@@ -44,14 +44,16 @@ export namespace WorkerImplementation {
 
     export const enableLiveDemo = async ({ filePath }: { filePath: string }) => {
         currentFilePath = filePath;
-        const port = await getPort(demoPort)
-        console.log(workerPrefix, `Started on filePath: ${filePath}, port: ${port}`);
+        const port = await getPort(demoPort);
 
         await bundle({
             entryPointName: filePath,
             outputFileName: outputFileName,
             prod: false,
         });
+
+        console.log(workerPrefix, `Bundled. Input: ${filePath}, Port: ${port}, Output: ${outputFileName}`);
+
 
         reloadReactDemo.emit({ port: port });
         return {};
