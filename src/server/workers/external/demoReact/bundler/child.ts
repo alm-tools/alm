@@ -27,6 +27,9 @@ export function bundle(args: {
             output: {
                 filename: args.outputFileName
             },
+            alias: {
+                'alm': __dirname + '/../client/alm.ts',
+            },
             resolve: {
                 extensions: ['', '.ts', '.tsx', '.js']
             },

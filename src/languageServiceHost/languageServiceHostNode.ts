@@ -13,7 +13,7 @@ export class LanguageServiceHost extends lsh.LanguageServiceHost {
     /** alm demo service */
     addAlmDemo = () => {
         this.addScript('alm.d.ts', `
-        declare namespace alm {
+        declare module "alm" {
             export function render(node:any): void;
         }
         `);

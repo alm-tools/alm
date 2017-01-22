@@ -3,8 +3,7 @@
  */
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-namespace alm {
-    export function render(content: any) {
-        ReactDOM.render(content, document.getElementById('root'));
-    }
+
+export function render(content: React.DOMElement<any>) {
+    ReactDOM.render(content, document.getElementById('root'));
 }
