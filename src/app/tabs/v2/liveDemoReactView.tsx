@@ -33,7 +33,7 @@ export class LiveDemoReactView extends ui.BaseComponent<Props, State> {
         server.enableLiveDemoReact({ filePath: this.filePath });
         this.disposible.add(
             cast.liveDemoBuildComplete.on(({ }) => {
-                console.log("reload")
+                // console.log("reload"); // DEBUG
                 this.iframe && this.iframe.contentWindow.location.reload();
             })
         );

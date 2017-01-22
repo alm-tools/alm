@@ -43,8 +43,8 @@ export namespace WorkerImplementation {
         currentFilePath = filePath;
 
         start({
-            entryFileName: filePath,
-            outputFileName: outputFileName,
+            entryFilePath: filePath,
+            outputFilePath: outputFileName,
         });
 
         console.log(workerPrefix, `Input: ${filePath}`);

@@ -23,8 +23,8 @@ const { worker, parent } = sw.startWorker({
 });
 
 export function start(config: {
-    entryFileName: string,
-    outputFileName: string,
+    entryFilePath: string,
+    outputFilePath: string,
 }) {
     worker.start(config);
 }

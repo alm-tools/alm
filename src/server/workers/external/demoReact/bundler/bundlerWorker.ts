@@ -18,22 +18,38 @@ export const { master } = sw.runWorker({
     masterContract: contract.master
 });
 
-const lastAttempt = {
-    entryFilePath: '',
-    webpack: ''
-}
+let lastAttempt: {
+    entryFilePath?: string,
+    compiler?: webpack.compiler.Compiler
+} = {};
 
 /**
  * Creates a webpack bundle
  */
 export function startLiveBundling(args: {
-    entryFileName: string,
-    outputFileName: string,
+    entryFilePath: string,
+    outputFilePath: string,
 }) {
 
-    if (!fs.existsSync(args.entryFileName)) {
+    const runCallback = function(err, stats) {
+        if (err) {
+            console.error("BUNDLING FAILED:", args);
+            console.error(err);
+            master.buildComplete({ type: 'error', error: JSON.stringify(err) });
+            return;
+        }
+        master.buildComplete({ type: 'success' });
+        return;
+    };
+
+    if (lastAttempt.entryFilePath === args.entryFilePath) {
+        lastAttempt.compiler.run(runCallback);
+        return;
+    }
+
+    if (!fs.existsSync(args.entryFilePath)) {
         /** Webpack ignores this siliently sadly so we need to catch it ourselves */
-        const error = `Entry point does not exist: ${args.entryFileName}`;
+        const error = `Entry point does not exist: ${args.entryFilePath}`;
         console.error(error);
         master.buildComplete({ type: 'error', error: error });
         return;
@@ -41,9 +57,9 @@ export function startLiveBundling(args: {
 
     const config = {
         devtool: 'source-map',
-        entry: args.entryFileName,
+        entry: args.entryFilePath,
         output: {
-            filename: args.outputFileName
+            filename: args.outputFilePath
         },
         resolve: {
             alias: {
@@ -84,14 +100,10 @@ export function startLiveBundling(args: {
     };
 
     const compiler = webpack(config);
-    compiler.run(function(err, stats) {
-        if (err) {
-            console.error("BUNDLING FAILED:", args);
-            console.error(err);
-            master.buildComplete({ type: 'error', error: JSON.stringify(err) });
-            return;
-        }
-        master.buildComplete({ type: 'success' });
-        return;
-    });
+    compiler.run(runCallback);
+
+    lastAttempt = {
+        compiler,
+        entryFilePath: args.entryFilePath
+    }
 }
