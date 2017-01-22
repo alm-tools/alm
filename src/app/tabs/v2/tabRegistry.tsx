@@ -16,6 +16,7 @@ import { UmlView } from "./umlView";
 import { TsFlowView } from "./tsFlowView";
 import { TestedView } from "./testedView";
 import { LiveDemoView } from './liveDemoView';
+import { LiveDemoReactView } from './liveDemoReactView';
 
 type ComponentConstructor = { new (props: tab.TabProps): ui.BaseComponent<tab.TabProps, any> };
 
@@ -95,6 +96,12 @@ export const tabs = {
         searchSupport: TabSearchSupport.None,
         getTitle: () => 'Live Demo',
         component: LiveDemoView
+    },
+    livedemoreact: {
+        protocol: 'livedemoreact',
+        searchSupport: TabSearchSupport.None,
+        getTitle: () => 'Live Demo React',
+        component: LiveDemoReactView
     }
 }
 let _ensuretabsType: { [protocol: string]: TabConfig } = tabs;

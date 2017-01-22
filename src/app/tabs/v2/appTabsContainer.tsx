@@ -568,6 +568,28 @@ export class AppTabsContainer extends ui.BaseComponent<Props, State>{
                 return;
             }
         });
+        commands.ensureLiveDemoReactTab.on((e) => {
+            const protocol = tabRegistry.tabs.livedemoreact.protocol;
+            const url = `${protocol}://${e.filePath}`;
+
+            const currentTabId = this.selectedTabInstance && this.selectedTabInstance.id;
+            openOrFocusSingletonTab({ protocol, url });
+            this.moveCurrentTabRightIfAny();
+            if (currentTabId) {
+                this.tabState.triggerFocusAndSetAsSelected(currentTabId)
+            }
+        });
+        commands.closeDemoReactTab.on(e => {
+            // If tab is open we just close it
+            const protocol = tabRegistry.tabs.livedemoreact.protocol;
+            const existing = this.tabs.find(t => {
+                return utils.getFilePathAndProtocolFromUrl(t.url).protocol == protocol;
+            });
+            if (existing) {
+                this.tabState.closeTabById(existing.id);
+                return;
+            }
+        });
         /** AST view */
         let getCurrentFilePathOrWarn = () => {
             let tab = this.tabState.getSelectedTab();

@@ -195,6 +195,9 @@ export function rangeLimited(args: { num: number, min: number, max: number, loop
 export const isTs = (filePath: string, ext = getExt(filePath)) => {
     return ext == 'ts' || ext == 'tsx';
 }
+export const isTsx = (filePath: string, ext = getExt(filePath)) => {
+    return ext == 'tsx';
+}
 export const isJs = (filePath: string, ext = getExt(filePath)) => {
     return ext == 'js' || ext == 'jsx';
 }

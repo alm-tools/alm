@@ -19,3 +19,18 @@ commands.enableLiveDemo.on(() => {
 commands.disableLiveDemo.on(() => {
     commands.closeDemoTab.emit({});
 });
+
+commands.enableLiveDemoReact.on(() => {
+    const ceditor = API.getFocusedCodeEditorIfAny();
+    if (!ceditor || !utils.isTsx(ceditor.editor.filePath)) {
+        ui.notifyWarningNormalDisappear('Your current tab needs to be a TypeScript tsx file');
+        return;
+    }
+    const filePath = ceditor.editor.filePath;
+    server.enableLiveDemo({ filePath });
+    commands.ensureLiveDemoTab.emit({filePath});
+});
+
+commands.disableLiveDemoReact.on(() => {
+    commands.closeDemoTab.emit({});
+});

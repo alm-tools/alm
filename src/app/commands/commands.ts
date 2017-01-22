@@ -163,11 +163,11 @@ export const disableLiveDemo = new UICommand({
     description: "TypeScript: Demo stop",
     context: CommandContext.Global,
 });
-export const enableReactLiveDemo = new UICommand({
+export const enableLiveDemoReact = new UICommand({
     description: "TypeScript: Demo react file",
     context: CommandContext.Global,
 });
-export const disableReactLiveDemo = new UICommand({
+export const disableLiveDemoReact = new UICommand({
     description: "TypeScript: Demo react stop",
     context: CommandContext.Global,
 });
@@ -443,6 +443,8 @@ export const doToggleFileTab = new events.TypedEvent<{ filePath: string }>();
 /** Needed to ensure that a demo view is open */
 export const ensureLiveDemoTab = new events.TypedEvent<{ filePath: string }>();
 export const closeDemoTab = new events.TypedEvent<{}>();
+export const ensureLiveDemoReactTab = new events.TypedEvent<{ filePath: string }>();
+export const closeDemoReactTab = new events.TypedEvent<{}>();
 
 /**
  * Other tab types

@@ -109,6 +109,8 @@ export var server = {
      */
     enableLiveDemo: {} as QRFunction<{ filePath: string }, {}>,
     disableLiveDemo: {} as QRFunction<{}, {}>,
+    enableLiveDemoReact: {} as QRFunction<{ filePath: string }, {}>,
+    disableLiveDemoReact: {} as QRFunction<{}, {}>,
 
     /**
      * Git service
@@ -200,6 +202,7 @@ export var cast = {
     /** Live demo */
     clearLiveDemo: new TypedEvent<{}>(),
     liveDemoData: new TypedEvent<{ data: string }>(),
+    reloadReactDemo: new TypedEvent<{ port: number }>(),
 
     /** Server quit */
     serverExiting: new TypedEvent<{}>(),

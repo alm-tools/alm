@@ -24,6 +24,7 @@ import { errorsCache } from "../server/globalErrorCacheServer";
 import * as projectServiceMaster from "../server/workers/lang/projectServiceMaster";
 import { testCache, working as testedWorking } from "../server/workers/tested/testedMaster";
 import * as demoService from '../server/workers/external/demoService';
+import * as demoReactService from '../server/workers/external/demoReact/demoReactService';
 
 namespace Server {
     export var echo: typeof contract.server.echo = (data, client) => {
@@ -228,6 +229,8 @@ namespace Server {
      */
     export const enableLiveDemo = demoService.WorkerImplementation.enableLiveDemo;
     export const disableLiveDemo = demoService.WorkerImplementation.disableLiveDemo;
+    export const enableLiveDemoReact = demoReactService.WorkerImplementation.enableLiveDemo;
+    export const disableLiveDemoReact = demoReactService.WorkerImplementation.disableLiveDemo;
 
     /**
      * Git service
@@ -317,9 +320,13 @@ export function register(app: http.Server | https.Server) {
     /** Live demo */
     demoService.WorkerImplementation.liveDemoData.pipe(cast.liveDemoData);
     demoService.WorkerImplementation.clearLiveDemo.pipe(cast.clearLiveDemo);
+    demoReactService.WorkerImplementation.reloadReactDemo.pipe(cast.reloadReactDemo);
     fmc.serverGotExplicitSaveCommand.on(e => {
         if (e.filePath === demoService.WorkerImplementation.currentFilePath) {
             demoService.WorkerImplementation.enableLiveDemo({ filePath: e.filePath });
+        }
+        if (e.filePath === demoReactService.WorkerImplementation.currentFilePath) {
+            demoReactService.WorkerImplementation.enableLiveDemo({ filePath: e.filePath });
         }
     })
 
