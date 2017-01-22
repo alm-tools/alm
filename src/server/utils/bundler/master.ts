@@ -9,7 +9,7 @@ import * as ts from 'typescript';
 let compiledOnceInThisRun = false;
 
 /** Main utility function to execute a command */
-let bundleCmd = (...args: string[]): Promise<string> => {
+let bundleCmd = (args: any): Promise<string> => {
     return new Promise((resolve, reject) => {
         const cwd = __dirname;
 
@@ -19,7 +19,7 @@ let bundleCmd = (...args: string[]): Promise<string> => {
             compiledOnceInThisRun = true;
         }
 
-        cp.execFile(process.execPath, [`${__dirname}/child.js`].concat(args), { cwd: cwd }, (err, stdout, stderr) => {
+        cp.execFile(process.execPath, [`${__dirname}/child.js`].concat([JSON.stringify(args)]), { cwd: cwd }, (err, stdout, stderr) => {
             if (stderr.toString().trim().length) {
                 return reject(stderr.toString());
             }
@@ -36,5 +36,5 @@ export function bundle(args: {
     outputFileName: string,
     prod: boolean
 }) {
-    return bundleCmd(args.entryPointName, args.outputFileName, args.prod.toString());
+    return bundleCmd(args);
 }

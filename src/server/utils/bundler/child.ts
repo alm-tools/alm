@@ -84,5 +84,5 @@ export function bundle(args: {
     });
 }
 
-const [entryPointName, outputFileName, prod] = process.argv.slice(2);
+const {entryPointName, outputFileName, prod} = JSON.parse(process.argv[2]);
 bundle({ entryPointName, outputFileName, prod: prod === 'true' ? true : false });
