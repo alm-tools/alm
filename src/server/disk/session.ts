@@ -29,10 +29,10 @@ export function getDefaultOrNewSession(sessionId: string): types.SessionOnDisk {
      * if session id then search (but if none create)
      */
     // if none create
-    const ifNoneCreate = (session: types.SessionOnDisk) => {
+    const ifNoneCreate = (session: types.SessionOnDisk, id = utils.createId()) => {
         if (!session){
             session = {
-                id: utils.createId(),
+                id,
                 tabLayout: {
                     type: 'stack',
                     width: 100,
@@ -52,7 +52,7 @@ export function getDefaultOrNewSession(sessionId: string): types.SessionOnDisk {
     }
     let session: types.SessionOnDisk;
     if (commandLine.getOptions().debug) {
-        session = ifNoneCreate(sessions.find(session=>session.id === types.urlHashDebugSession));
+        session = ifNoneCreate(sessions.find(session=>session.id === types.urlHashDebugSession), types.urlHashDebugSession);
     }
     else if (!sessionId || sessionId === types.urlHashNormal) {
         session = ifNoneCreate(sessions[0]);
