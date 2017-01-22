@@ -74,7 +74,8 @@
     "ts-node": "2.0.0",
     "tslint": "4.3.0-dev.0",
     "typescript": "2.2.0-dev.20170116",
-    "update-notifier": "1.0.2"
+    "update-notifier": "1.0.2",
+    "webpack": "^1.11.0"
   },
   "devDependencies": {
     "clipboard": "^1.4.2",
@@ -106,7 +107,6 @@
     "typestyle": "0.24.0",
     "url-loader": "^0.5.6",
     "viewerjs": "^0.4.0",
-    "webpack": "^1.11.0",
     "webpack-dev-server": "^1.10.1"
   },
   "engines": {
