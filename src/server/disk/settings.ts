@@ -24,7 +24,7 @@ Windows XP - 'C:\Documents and Settings\User\Application Data'
 Linux - `/home/bas/.local/share` (http://askubuntu.com/a/14536/7327)
  */
 const userDataDir = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + '/Library/Preferences' : process.env.HOME + '/.local/share');
-const appSettingsFolder = userDataDir + '/alm';
+export const appSettingsFolder = userDataDir + '/alm';
 mkdirp.sync(appSettingsFolder);
 const settingsFilePath = appSettingsFolder + '/settingsV1.json';
 

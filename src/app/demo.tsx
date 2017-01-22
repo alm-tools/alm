@@ -3,4 +3,3 @@ import { render } from 'alm';
 
 
 render(<div>HelloWorld</div>);
-

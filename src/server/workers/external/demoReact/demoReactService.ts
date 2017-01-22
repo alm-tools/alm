@@ -1,8 +1,12 @@
 import { TypedEvent } from '../../../../common/events';
 import { kill } from '../../../utils/treeKill';
 import { getPort } from '../../../utils/getPort';
+import { appSettingsFolder } from '../../../disk/settings';
+import * as mkdirp from 'mkdirp';
 
 const workerPrefix = `[DEMO-REACT]`;
+const liveDemoFolder = appSettingsFolder + '/liveDemoReact';
+mkdirp.sync(liveDemoFolder);
 
 export namespace WorkerImplementation {
     export let currentFilePath = '';
