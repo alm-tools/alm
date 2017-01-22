@@ -6,20 +6,15 @@ const workerPrefix = `[DEMO-REACT]`;
 
 export namespace WorkerImplementation {
     export let currentFilePath = '';
-    export const clearLiveDemo = new TypedEvent<{}>();
-    export const liveDemoData = new TypedEvent<{ data: string }>();
+    let demoPort: number = 4000;
+    export const reloadReactDemo = new TypedEvent<{port: number}>();
 
     export const enableLiveDemo = ({filePath}: { filePath: string }) => {
         console.log(workerPrefix, `Started on filePath: ${filePath}`);
-        // if (executor) {
-        //     executor.dispose();
-        // }
-        clearLiveDemo.emit({});
-        // executor = new FileExecutor(filePath, (data) => {
-        //     liveDemoData.emit({ data });
-        // });
         currentFilePath = filePath;
-        return Promise.resolve({})
+        return getPort(demoPort).then(res => {
+            reloadReactDemo.emit({ port: res });
+        });
     };
     export const disableLiveDemo = () => {
         // if (executor) {
