@@ -114,8 +114,8 @@ registerImgServerWithExpress(app);
 export const listeningAtUrl = new TypedEvent<{url:string}>();
 
 // Start listening
-import {GetPort} from './server/utils/getPort';
-new GetPort().startPortSearch(clOptions.port, (port) => {
+import {getPort} from './server/utils/getPort';
+getPort(clOptions.port).then((port) => {
     /** If the user *did* specify a port and we end up not using it */
     if (clOptions.port !== cl.defaultPort
         && port !== clOptions.port) {

@@ -7,7 +7,7 @@ import path = require('path');
 import fs = require('fs');
 import express = require('express');
 import * as utils from "../common/utils";
-import {GetPort} from './utils/getPort';
+import {getPort} from './utils/getPort';
 
 const devtimeDetectionFile = __dirname + '/devtime.txt';
 
@@ -32,7 +32,7 @@ const bundleDevTimeProxy = () => {
         });
     }
 
-    new GetPort().startPortSearch(8888, (port) => {
+    getPort(8888).then((port) => {
 
         // console.log('found port', port); // DEBUG
 

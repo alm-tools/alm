@@ -1,6 +1,6 @@
 import { TypedEvent } from '../../../../common/events';
 import { kill } from '../../../utils/treeKill';
-import { GetPort } from '../../../utils/getPort';
+import { getPort } from '../../../utils/getPort';
 
 const workerPrefix = `[DEMO-REACT]`;
 

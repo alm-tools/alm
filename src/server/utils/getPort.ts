@@ -6,21 +6,15 @@
 
 import * as http from 'http';
 
-export class GetPort {
-    // The next port we will try
-    portrange = 4444;
-    startPortSearch = (startPort: number, cb: (port: number) => void) => {
-        this.portrange = startPort;
-        this.getPort(cb);
-    }
-    private getPort = (cb) => {
-        var port = this.portrange;
-        this.portrange += 1;
+export const getPort = (startPort: number = 4444): Promise<number> => {
+    const tryGetPort = (cb: (num: number) => void) => {
+        var port = startPort;
+        startPort += 1;
 
         var server = http.createServer(() => null);
 
         server.on('error', (err) => {
-            this.getPort(cb);
+            tryGetPort(cb);
         });
         server.listen(port, '0.0.0.0', (err) => {
             // Found one!
@@ -30,4 +24,9 @@ export class GetPort {
             server.close();
         });
     }
-}
+
+    let resolve: (num: number) => void;
+    const prom = new Promise<number>(res => resolve = res);
+    tryGetPort(resolve);
+    return prom;
+};
