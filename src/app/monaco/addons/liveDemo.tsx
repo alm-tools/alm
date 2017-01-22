@@ -27,10 +27,10 @@ commands.enableLiveDemoReact.on(() => {
         return;
     }
     const filePath = ceditor.editor.filePath;
-    server.enableLiveDemo({ filePath });
-    commands.ensureLiveDemoTab.emit({filePath});
+    server.enableLiveDemoReact({ filePath });
+    commands.ensureLiveDemoReactTab.emit({filePath});
 });
 
 commands.disableLiveDemoReact.on(() => {
-    commands.closeDemoTab.emit({});
+    commands.closeDemoReactTab.emit({});
 });
