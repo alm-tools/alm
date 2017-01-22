@@ -15,6 +15,7 @@ import * as React from 'react';
 export interface Props extends tab.TabProps {
 }
 export interface State {
+    port: number
 }
 
 const startOfOutput = '--START--\n';
@@ -22,17 +23,18 @@ const startOfOutput = '--START--\n';
 export class LiveDemoReactView extends ui.BaseComponent<Props, State> {
     output = startOfOutput;
     filePath = '';
-    constructor(props:Props) {
+    constructor(props: Props) {
         super(props);
         this.state = {
+            port: 4000
         };
         this.filePath = utils.getFilePathFromUrl(props.url);
     }
     componentDidMount() {
         server.enableLiveDemoReact({ filePath: this.filePath });
         this.disposible.add(
-            cast.reloadReactDemo.on((data) => {
-                this.forceUpdate();
+            cast.reloadReactDemo.on(({ port }) => {
+                this.setState({ port });
             })
         );
 
@@ -61,10 +63,14 @@ export class LiveDemoReactView extends ui.BaseComponent<Props, State> {
                 onKeyPress={this.handleKey}
                 onFocus={this.props.onFocused}>
                 <div style={{ overflow: 'hidden', display: 'flex', padding: '10px' }}>
-                    <div>TODO: the iframe</div>
+                    <div>TODO: the iframe {this.getIframeUrl()}</div>
                 </div>
             </div>
         );
+    }
+
+    private getIframeUrl = () => {
+        return `${window.location.protocol}//${window.location.hostname}:${this.state.port}`;
     }
 
     handleKey = (e: any) => {
@@ -111,13 +117,13 @@ export class LiveDemoReactView extends ui.BaseComponent<Props, State> {
         findPrevious: (options: FindOptions) => {
         },
 
-        replaceNext: ({newText}: { newText: string }) => {
+        replaceNext: ({ newText }: { newText: string }) => {
         },
 
-        replacePrevious: ({newText}: { newText: string }) => {
+        replacePrevious: ({ newText }: { newText: string }) => {
         },
 
-        replaceAll: ({newText}: { newText: string }) => {
+        replaceAll: ({ newText }: { newText: string }) => {
         }
     }
 }
