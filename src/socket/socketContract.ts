@@ -202,7 +202,7 @@ export var cast = {
     /** Live demo */
     clearLiveDemo: new TypedEvent<{}>(),
     liveDemoData: new TypedEvent<{ data: string }>(),
-    reloadReactDemo: new TypedEvent<{ }>(),
+    liveDemoBuildComplete: new TypedEvent<types.LiveDemoBuildResult>(),
 
     /** Server quit */
     serverExiting: new TypedEvent<{}>(),

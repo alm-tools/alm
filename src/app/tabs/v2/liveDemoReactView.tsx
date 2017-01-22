@@ -32,7 +32,7 @@ export class LiveDemoReactView extends ui.BaseComponent<Props, State> {
     componentDidMount() {
         server.enableLiveDemoReact({ filePath: this.filePath });
         this.disposible.add(
-            cast.reloadReactDemo.on(({ }) => {
+            cast.liveDemoBuildComplete.on(({ }) => {
                 console.log("reload")
                 this.iframe && this.iframe.contentWindow.location.reload();
             })

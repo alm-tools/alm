@@ -3,7 +3,7 @@ import { kill } from '../../../utils/treeKill';
 import { appSettingsFolder } from '../../../disk/settings';
 import * as mkdirp from 'mkdirp';
 import * as fsu from '../../../utils/fsu';
-import { bundle } from './bundler/master';
+import { start } from './bundler/bundlerMaster';
 
 const workerPrefix = `[DEMO-REACT]`;
 
@@ -38,21 +38,18 @@ fsu.writeFile(liveDemoFolder + '/index.html',
 
 export namespace WorkerImplementation {
     export let currentFilePath = '';
-    export const reloadReactDemo = new TypedEvent<{}>();
 
     export const enableLiveDemo = async ({ filePath }: { filePath: string }) => {
         currentFilePath = filePath;
 
-        await bundle({
-            entryPointName: filePath,
+        start({
+            entryFileName: filePath,
             outputFileName: outputFileName,
-            prod: false,
         });
 
         console.log(workerPrefix, `Input: ${filePath}`);
         console.log(workerPrefix, `Output: ${outputFileName}`);
 
-        reloadReactDemo.emit({});
         return {};
     };
     export const disableLiveDemo = () => {

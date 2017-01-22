@@ -15,6 +15,7 @@ import * as serverDiskService from "../server/workers/external/serverDiskService
 import * as session from "../server/disk/session";
 import * as utils from "../common/utils";
 import { onServerExit } from "./serverExit";
+import * as bundlerMaster from '../server/workers/external/demoReact/bundler/bundlerMaster';
 let resolve = sls.resolve;
 
 import * as fmc from "../server/disk/fileModelCache";
@@ -320,7 +321,7 @@ export function register(app: http.Server | https.Server) {
     /** Live demo */
     demoService.WorkerImplementation.liveDemoData.pipe(cast.liveDemoData);
     demoService.WorkerImplementation.clearLiveDemo.pipe(cast.clearLiveDemo);
-    demoReactService.WorkerImplementation.reloadReactDemo.pipe(cast.reloadReactDemo);
+    bundlerMaster.liveDemoBuildComplete.pipe(cast.liveDemoBuildComplete);
     fmc.serverGotExplicitSaveCommand.on(e => {
         if (e.filePath === demoService.WorkerImplementation.currentFilePath) {
             demoService.WorkerImplementation.enableLiveDemo({ filePath: e.filePath });

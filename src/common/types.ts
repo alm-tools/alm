@@ -370,7 +370,7 @@ export interface NavigateToItem {
     fileName: string;
 }
 export interface GetNavigateToItemsResponse {
-   items: NavigateToItem[];
+    items: NavigateToItem[];
 }
 
 /**
@@ -663,7 +663,7 @@ export interface CodeError {
     to: EditorPosition;
     message: string;
     preview: string;
-    level: 'warning'|'error';
+    level: 'warning' | 'error';
 }
 
 export interface ErrorsByFilePath {
@@ -713,3 +713,12 @@ export function makeBlandError(filePath: string, error: string, source: CodeErro
 // Live react demo
 //////////////////////
 export const liveDemoMountUrl = '/demo';
+
+export type LiveDemoBuildResult =
+    {
+        type: 'success'
+    }
+    | {
+        type: 'error',
+        error: string
+    }
