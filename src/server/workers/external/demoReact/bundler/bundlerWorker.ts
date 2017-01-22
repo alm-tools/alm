@@ -18,6 +18,11 @@ export const { master } = sw.runWorker({
     masterContract: contract.master
 });
 
+const lastAttempt = {
+    entryFilePath: '',
+    webpack: ''
+}
+
 /**
  * Creates a webpack bundle
  */

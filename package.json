@@ -78,6 +78,7 @@
     "webpack": "^1.11.0"
   },
   "devDependencies": {
+    "@types/webpack": "2.1.0",
     "clipboard": "^1.4.2",
     "css-loader": "^0.24.0",
     "d3": "^3.5.12",

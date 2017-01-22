@@ -15,19 +15,16 @@ namespace Master {
 // Ensure that the namespace follows the contract
 const _checkTypes: typeof contract.master = Master;
 
-let stopPrevious = () => { };
+// launch worker
+const { worker, parent } = sw.startWorker({
+    workerPath: __dirname + '/bundlerWorker',
+    workerContract: contract.worker,
+    masterImplementation: Master
+});
+
 export function start(config: {
     entryFileName: string,
     outputFileName: string,
 }) {
-    stopPrevious();
-    // launch worker
-    const { worker, parent } = sw.startWorker({
-        workerPath: __dirname + '/bundlerWorker',
-        workerContract: contract.worker,
-        masterImplementation: Master
-    });
-    stopPrevious = () => parent.stopWorker();
-
     worker.start(config);
 }
