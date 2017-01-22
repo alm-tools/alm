@@ -3,6 +3,7 @@ import * as cp from 'child_process';
 import * as fsu from '../../utils/fsu';
 import * as utils from '../../../common/utils';
 import { TypedEvent } from '../../../common/events';
+import { kill } from '../../utils/treeKill';
 
 const workerPrefix = `[DEMO]`;
 const nodeModulesFolder = fsu.travelUpTheDirectoryTreeTillYouFind(__dirname, "node_modules");
@@ -75,7 +76,7 @@ class FileExecutor {
     dispose() {
         this.disposed = true;
         if (this.child) {
-            this.child.kill('SIGINT');
+            kill(this.child.pid);
             this.child = undefined;
         }
     }
