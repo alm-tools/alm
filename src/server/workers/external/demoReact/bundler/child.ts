@@ -27,11 +27,11 @@ export function bundle(args: {
             output: {
                 filename: args.outputFileName
             },
-            alias: {
-                'alm': __dirname + '/../client/alm.ts',
-            },
             resolve: {
-                extensions: ['', '.ts', '.tsx', '.js']
+                alias: {
+                    'alm': __dirname + '/../client/alm.ts',
+                },
+                extensions: ['', '.ts', '.tsx', '.js'],
             },
             module: {
                 loaders: [
@@ -87,5 +87,5 @@ export function bundle(args: {
     });
 }
 
-const {entryPointName, outputFileName, prod} = JSON.parse(process.argv[2]);
-bundle({ entryPointName, outputFileName, prod});
+const { entryPointName, outputFileName, prod } = JSON.parse(process.argv[2]);
+bundle({ entryPointName, outputFileName, prod });

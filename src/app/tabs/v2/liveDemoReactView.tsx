@@ -16,7 +16,6 @@ import * as types from '../../../common/types';
 export interface Props extends tab.TabProps {
 }
 export interface State {
-    attempt: number
 }
 
 const startOfOutput = '--START--\n';
@@ -27,7 +26,6 @@ export class LiveDemoReactView extends ui.BaseComponent<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            attempt:0
         };
         this.filePath = utils.getFilePathFromUrl(props.url);
     }
@@ -35,7 +33,8 @@ export class LiveDemoReactView extends ui.BaseComponent<Props, State> {
         server.enableLiveDemoReact({ filePath: this.filePath });
         this.disposible.add(
             cast.reloadReactDemo.on(({ }) => {
-                this.setState({ attempt: this.state.attempt + 1 });
+                console.log("reload")
+                this.iframe && this.iframe.contentWindow.location.reload();
             })
         );
 
@@ -56,6 +55,8 @@ export class LiveDemoReactView extends ui.BaseComponent<Props, State> {
         this.disposible.add(api.search.replaceAll.on(this.search.replaceAll));
     }
 
+    iframe?: HTMLIFrameElement;
+
     render() {
         return (
             <div
@@ -63,7 +64,7 @@ export class LiveDemoReactView extends ui.BaseComponent<Props, State> {
                 style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll, { color: styles.textColor })}
                 onKeyPress={this.handleKey}
                 onFocus={this.props.onFocused}>
-                <iframe src={this.getIframeUrl()} style={{
+                <iframe ref={ref => this.iframe = ref} src={this.getIframeUrl()} style={{
                     height: '100%', width: '100%',
                     border: 'none',
                     backgroundColor: 'white',
@@ -73,7 +74,7 @@ export class LiveDemoReactView extends ui.BaseComponent<Props, State> {
     }
 
     private getIframeUrl = () => {
-        return `${window.location.protocol}//${window.location.hostname}:${window.location.port}${types.liveDemoMountUrl}/#${this.state.attempt}`;
+        return `${window.location.protocol}//${window.location.hostname}:${window.location.port}${types.liveDemoMountUrl}/`;
     }
 
     handleKey = (e: any) => {
