@@ -62,9 +62,7 @@ export class LiveDemoReactView extends ui.BaseComponent<Props, State> {
                 style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll, { color: styles.textColor })}
                 onKeyPress={this.handleKey}
                 onFocus={this.props.onFocused}>
-                <div style={{ overflow: 'hidden', display: 'flex', padding: '10px' }}>
-                    <div>TODO: the iframe {this.getIframeUrl()}</div>
-                </div>
+                <iframe src={this.getIframeUrl()} style={{ height: '100%', width: '100%' }} />
             </div>
         );
     }
