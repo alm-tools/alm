@@ -51,7 +51,10 @@ export function getDefaultOrNewSession(sessionId: string): types.SessionOnDisk {
         }
     }
     let session: types.SessionOnDisk;
-    if (!sessionId || sessionId === types.urlHashNormal) {
+    if (commandLine.getOptions().debug) {
+        session = ifNoneCreate(sessions.find(session=>session.id === types.urlHashDebugSession));
+    }
+    else if (!sessionId || sessionId === types.urlHashNormal) {
         session = ifNoneCreate(sessions[0]);
     }
     else if (sessionId === types.urlHashNewSession) {

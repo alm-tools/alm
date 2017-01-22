@@ -134,10 +134,7 @@ getPort(clOptions.port).then((port) => {
         if (clOptions.open) {
             open(url);
         }
-        else if (clOptions.debug) {
-            open(url + '/#11111111-1111-4111-1111-111111111111');
-        }
-        console.log(`DASHBOARD:`, (clOptions.open || clOptions.debug) ? "(launched in browser)" : chalk.magenta("(Please open in chrome)"), chalk.green(url));
+        console.log(`DASHBOARD:`, (clOptions.open) ? "(launched in browser)" : chalk.magenta("(Please open in chrome)"), chalk.green(url));
         listeningAtUrl.emit({ url });
         serverStarted.started();
     });

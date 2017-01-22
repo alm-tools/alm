@@ -21,6 +21,7 @@ export const errors = {
  */
 export const urlHashNormal = "root";
 export const urlHashNewSession = "new-session";
+export const urlHashDebugSession = "debug";
 
 /**
  * FARM : Don't want to crash by running out of memory / ui preference

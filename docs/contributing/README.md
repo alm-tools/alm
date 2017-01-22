@@ -39,7 +39,7 @@ You run two instances of alm, once where you dev, and one where you test what yo
 > You are free to use some other IDE if you want. You can run `npm run tscw` to run the TypeScript in the background in watch mode and use your favorite IDE in the foreground.
 
 ## Where you test
-* Run `npm start` in another window to start alm in live reload mode
+* Run `npm start` in another window to start alm in live reload mode. Open the url mentioned in the console.
 
 # Webpack
 All our front-end js gets minified into `bundle.js`. This is what gets npm deployed.
