@@ -18,8 +18,8 @@ mkdirp.sync(liveDemoFolder);
 const outputFileName = liveDemoFolder + '/index.js';
 
 /** Our html template file */
-const appIndexTemplate = ({ }: {}) =>
-    `
+fsu.writeFile(liveDemoFolder + '/index.html',
+`
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,8 +34,8 @@ const appIndexTemplate = ({ }: {}) =>
   <script type="text/javascript" src="./index.js"></script>
 </body>
 </html>
-`;
-fsu.writeFile(liveDemoFolder + '/index.html', appIndexTemplate({}));
+`
+);
 
 export namespace WorkerImplementation {
     export let currentFilePath = '';
