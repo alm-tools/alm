@@ -12,7 +12,7 @@ const defaultHost = '0.0.0.0';
 
 const minimistOpts: minimist.Opts = {
     string: ['dir', 'config', 'host', 'httpskey', 'httpscert', 'auth'],
-    boolean: ['open', 'safe', 'init', 'build'],
+    boolean: ['open', 'safe', 'init', 'build', 'debug'],
     alias: {
         't': ['port'],
         'd': ['dir'],
@@ -43,6 +43,7 @@ var argv: {
     httpskey?: string;
     httpscert?: string;
     auth?: string;
+    debug?: boolean;
     _?: string[];
 } = minimist(process.argv.slice(2), minimistOpts);
 
@@ -61,6 +62,7 @@ interface CommandLineOptions {
     httpscert?: string;
 
     auth?: string;
+    debug?: boolean;
 }
 export let getOptions = utils.once((): CommandLineOptions => {
     protectAgainstLongStringsWithSingleDash();
@@ -78,6 +80,7 @@ export let getOptions = utils.once((): CommandLineOptions => {
         httpskey: argv.httpskey,
         httpscert: argv.httpscert,
         auth: argv.auth,
+        debug: argv.debug,
     }
     if (typeof options.port !== 'number') {
         options.port = defaultPort;
@@ -129,13 +132,13 @@ export let getOptions = utils.once((): CommandLineOptions => {
 /**
  * E.g. the user does `-user` instead of `--user`
  */
-function protectAgainstLongStringsWithSingleDash(){
-    const singleDashMatchers:string[] =
+function protectAgainstLongStringsWithSingleDash() {
+    const singleDashMatchers: string[] =
         (minimistOpts.string as string[]).concat(minimistOpts.boolean as string[])
-        .map(x=>'-' + x);
+            .map(x => '-' + x);
     const args = process.argv.slice(2);
-    const didUserTypeWithJustOneDash = args.filter(arg=>singleDashMatchers.some(ss=>ss==arg));
-    if (didUserTypeWithJustOneDash.length){
+    const didUserTypeWithJustOneDash = args.filter(arg => singleDashMatchers.some(ss => ss == arg));
+    if (didUserTypeWithJustOneDash.length) {
         console.log(chalk.red('You provided the following arguments with a single dash (-foo). You probably meant to provide double dashes (--foo)'), didUserTypeWithJustOneDash);
         process.exit(1);
     }

@@ -7,7 +7,7 @@
     "alm": "./bin/alm"
   },
   "scripts": {
-    "start": "nodemon",
+    "start": "nodemon src/server.js --debug",
     "alm": "node ./node_modules/alm_src/server -o",
     "ualm": "rm -rf ./node_modules/alm_src && cp -rf ./src ./node_modules/alm_src",
     "test": "echo \"Testing is just build at the moment, run from prepublish\"",

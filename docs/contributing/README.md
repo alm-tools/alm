@@ -14,13 +14,6 @@ git clone https://github.com/alm-tools/alm.git
 cd alm
 npm install
 ```
-
-Now just run. It will start `alm` using nodemon:
-
-```
-npm start
-```
-
 Also you can use this *build* version of `alm` on another folder e.g. `your project` (i.e not our folder with our test files) simply by running:
 
 ```
@@ -46,8 +39,7 @@ You run two instances of alm, once where you dev, and one where you test what yo
 > You are free to use some other IDE if you want. You can run `npm run tscw` to run the TypeScript in the background in watch mode and use your favorite IDE in the foreground.
 
 ## Where you test
-* Run `npm start` in another window to start alm in live reload mode (note the port, normally 4445)
-* Open `http://localhost:4445/#new-session` to open the alm that is running in live reload mode (change port if needed based on previous step)
+* Run `npm start` in another window to start alm in live reload mode
 
 # Webpack
 All our front-end js gets minified into `bundle.js`. This is what gets npm deployed.
