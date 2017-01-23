@@ -259,7 +259,16 @@ function getCloseTagIfAtAnOpenOne(filePath: string, position: number): string | 
     ts.forEachChild(sourceFile, collectTags);
 
     if (found) {
-        return found.tagName.getText();
+        /**
+         * For
+         * <div|Hello
+         * We want <div only. But tag name full text gives us `<divHello`.
+         * So fix it by simply only giving `<div` text before position
+         */
+        const tagName = found.tagName;
+        const start = found.tagName.getStart();
+        const end = position;
+        return sourceFile.getFullText().substring(start, end);
     }
 
     return null;
