@@ -29,7 +29,9 @@ fsu.writeFile(liveDemoFolder + '/index.html',
     <title>ALM Live React Demo</title>
 </head>
 <body>
-  <div id="root"></div>
+  <div id="root">
+    <div style="font-family: arial">Waiting for call to render...</div>
+  </div>
   <script type="text/javascript" src="./index.js"></script>
 </body>
 </html>
