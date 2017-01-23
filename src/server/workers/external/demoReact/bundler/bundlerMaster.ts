@@ -1,13 +1,13 @@
 import * as sw from "../../../../utils/simpleWorker";
 import * as contract from "./bundlerContract";
 import { TypedEvent } from '../../../../../common/events';
-import { LiveDemoBuildResult } from '../../../../../common/types';
+import { LiveDemoBundleResult } from '../../../../../common/types';
 
 /** Emitted everytime a build completes */
-export const liveDemoBuildComplete = new TypedEvent<LiveDemoBuildResult>();
+export const liveDemoBuildComplete = new TypedEvent<LiveDemoBundleResult>();
 
 namespace Master {
-    export const buildComplete: typeof contract.master.buildComplete = async (q) => {
+    export const bundleStatus: typeof contract.master.bundleStatus = async (q) => {
         liveDemoBuildComplete.emit(q);
         return {};
     }

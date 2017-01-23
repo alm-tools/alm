@@ -6,5 +6,5 @@ export const worker = {
 }
 
 export const master = {
-    buildComplete: {} as sw.QRFunction<types.LiveDemoBuildResult, {  }>,
+    bundleStatus: {} as sw.QRFunction<types.LiveDemoBundleResult, {  }>,
 }

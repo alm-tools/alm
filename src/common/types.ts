@@ -714,8 +714,11 @@ export function makeBlandError(filePath: string, error: string, source: CodeErro
 //////////////////////
 export const liveDemoMountUrl = '/demo';
 
-export type LiveDemoBuildResult =
-    {
+export type LiveDemoBundleResult =
+    | {
+        type: 'bundling'
+    }
+    | {
         type: 'success'
     }
     | {

@@ -35,14 +35,15 @@ export function startLiveBundling(args: {
         if (err) {
             console.error("BUNDLING FAILED:", args);
             console.error(err);
-            master.buildComplete({ type: 'error', error: JSON.stringify(err) });
+            master.bundleStatus({ type: 'error', error: JSON.stringify(err) });
             return;
         }
-        master.buildComplete({ type: 'success' });
+        master.bundleStatus({ type: 'success' });
         return;
     };
 
     if (lastAttempt.entryFilePath === args.entryFilePath) {
+        master.bundleStatus({ type: 'bundling' });
         lastAttempt.compiler.run(runCallback);
         return;
     }
@@ -51,7 +52,7 @@ export function startLiveBundling(args: {
         /** Webpack ignores this siliently sadly so we need to catch it ourselves */
         const error = `Entry point does not exist: ${args.entryFilePath}`;
         console.error(error);
-        master.buildComplete({ type: 'error', error: error });
+        master.bundleStatus({ type: 'error', error: error });
         return;
     }
 
@@ -100,6 +101,7 @@ export function startLiveBundling(args: {
     };
 
     const compiler = webpack(config);
+    master.bundleStatus({ type: 'bundling' });
     compiler.run(runCallback);
 
     lastAttempt = {
