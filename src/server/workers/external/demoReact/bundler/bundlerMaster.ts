@@ -28,7 +28,7 @@ const { worker, parent } = sw.startWorker({
 
 export function start(config: {
     entryFilePath: string,
-    outputFilePath: string,
+    outputDirPath: string,
 }) {
     worker.start(config);
 }
@@ -44,6 +44,8 @@ mkdirp.sync(liveDemoFolder);
 
 /** Our index file name */
 const outputFileName = liveDemoFolder + '/index.js';
+/** The alm file name */
+const outputAlmName = liveDemoFolder + '/alm.js';
 
 /** Our html template file */
 fsu.writeFile(liveDemoFolder + '/index.html',
@@ -69,6 +71,7 @@ fsu.writeFile(liveDemoFolder + '/index.html',
         if (waitingForRender){ waitingForRender.style.opacity = "1"; }
     }, 2000);
   </script>
+  <script type="text/javascript" src="./alm.js"></script>
   <script type="text/javascript" src="./index.js"></script>
 </body>
 </html>
@@ -81,14 +84,17 @@ export namespace ExternalAPI {
     export const enableLiveDemo = async ({ filePath }: { filePath: string }) => {
         currentFilePath = filePath;
 
+        fsu.writeFile(outputAlmName, `
+        console.log("Placeholder alm file while build is in progress");
+        `);
         fsu.writeFile(outputFileName, `
         document.getElementById('root').innerHTML = '';
-        console.log("Placeholder file while build is in progress");
+        console.log("Placeholder index file while build is in progress");
         `);
 
         start({
             entryFilePath: filePath,
-            outputFilePath: outputFileName,
+            outputDirPath: liveDemoFolder,
         });
 
         console.log(workerPrefix, `Input: ${filePath}`);

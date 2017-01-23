@@ -40,7 +40,7 @@ const compilerOptions = {
  */
 export function startLiveBundling(args: {
     entryFilePath: string,
-    outputFilePath: string,
+    outputDirPath: string,
 }) {
 
     const runCallback = function(err, stats) {
@@ -70,14 +70,14 @@ export function startLiveBundling(args: {
 
     const config = {
         devtool: 'source-map',
-        entry: args.entryFilePath,
+        entry: {
+            alm: __dirname + '/../client/alm.ts',
+            index: args.entryFilePath,
+        },
         output: {
-            filename: args.outputFilePath
+            filename: `${args.outputDirPath}/[name].js`
         },
         resolve: {
-            alias: {
-                'alm': __dirname + '/../client/alm.ts',
-            },
             extensions: ['', '.ts', '.tsx', '.js'],
         },
         module: {

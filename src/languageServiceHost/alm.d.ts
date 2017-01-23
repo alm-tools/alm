@@ -1,3 +1,3 @@
-declare module "alm" {
+declare namespace alm {
     export function render(node:any): void;
 }

@@ -13,6 +13,10 @@ window.onerror = function() {
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-export function render(content: React.DOMElement<any>) {
-    ReactDOM.render(content, root);
+namespace alm {
+    export function render(content: React.DOMElement<any>) {
+        ReactDOM.render(content, root);
+    }
 }
+(window as any).alm = alm;
+
