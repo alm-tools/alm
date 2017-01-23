@@ -73,6 +73,7 @@ export function startLiveBundling(args: {
                 { test: /\.tsx?$/, loader: 'ts-loader' }
             ]
         },
+        cache: false,
         /** Decrease noise */
         stats: {
             hash: false, version: false, timings: false, assets: false,
