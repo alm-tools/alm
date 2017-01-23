@@ -37,16 +37,15 @@ export class LiveDemoReactView extends ui.BaseComponent<Props, State> {
         this.filePath = utils.getFilePathFromUrl(props.url);
     }
     componentDidMount() {
-        server.enableLiveDemoReact({ filePath: this.filePath });
         this.disposible.add(
             cast.liveDemoBuildComplete.on((status) => {
-                // console.log("reload"); // DEBUG
                 this.setState({ status });
                 if (status.type === 'success') {
                     this.reload();
                 }
             })
         );
+        server.enableLiveDemoReact({ filePath: this.filePath });
 
         // Listen to tab events
         const api = this.props.api;
@@ -106,7 +105,8 @@ export class LiveDemoReactView extends ui.BaseComponent<Props, State> {
     }
 
     private reload = () => {
-        this.iframe && this.iframe.contentWindow.location.reload();
+        // console.log("reload"); // DEBUG
+        if (this.iframe) this.iframe.src = this.getIframeUrl();
     }
 
     private getIframeUrl = () => {
