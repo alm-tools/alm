@@ -14,7 +14,6 @@ import * as gotoDefinition from "../monaco/codeResults/gotoDefinition";
 import * as renameVariable from "../monaco/codeResults/renameVariable";
 import * as blaster from "../monaco/addons/blaster";
 import * as quickFix from "../monaco/addons/quickFix";
-import * as repl from "../monaco/addons/repl";
 import * as removeUnusedImports from "../monaco/addons/removeUnusedImports";
 import * as liveDemo from '../monaco/addons/liveDemo';
 import * as formatBetter from '../monaco/addons/formatBetter';
@@ -31,7 +30,6 @@ const ensureImport =
     || renameVariable
     || blaster
     || quickFix
-    || repl
     || removeUnusedImports
     || liveDemo
     || formatBetter
