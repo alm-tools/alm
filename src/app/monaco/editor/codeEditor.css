@@ -4,6 +4,9 @@
 .monaco-editor.vs-dark .glyph-margin { background-color: rgba(39, 40, 34, 1); }
 .monaco-editor.vs-dark .monaco-editor-background { background-color: rgba(39, 40, 34, 1); }
 
+/** Current line */
+.monaco-editor.vs-dark .view-overlays .current-line { border: 2px solid rgba(96, 95, 84, .5); }
+
 /* 
  * Want a brighter selected text 
  * (especially as monaco doesn't keep the line highlighted once you have some text selected) 

@@ -1,7 +1,7 @@
 import * as ui from "../../ui";
 import * as csx from '../../base/csx';
 import * as React from "react";
-import {cast, server} from "../../../socket/socketClient";
+import { cast, server } from "../../../socket/socketClient";
 import * as docCache from "../model/docCache";
 import * as types from "../../../common/types";
 import * as cursorHistory from "../../cursorHistory";
@@ -32,7 +32,7 @@ export const monokai: IThemeRule[] = [
     { token: 'comment', foreground: '75715e' },
 
     { token: 'string', foreground: 'e6db74' },
-	{ token: 'support.property-value.string.value.json', foreground: 'e6db74' },
+    { token: 'support.property-value.string.value.json', foreground: 'e6db74' },
 
     { token: 'constant.numeric', foreground: 'ae81ff' },
     { token: 'constant.language', foreground: 'ae81ff' },
@@ -45,8 +45,8 @@ export const monokai: IThemeRule[] = [
     { token: 'storage', foreground: 'aae354' },
     { token: 'storage.type', foreground: '66d9ef', fontStyle: 'italic' },
 
-    { token: 'entity.name.class', foreground: 'a6e22e'  },
-    { token: 'entity.other', foreground: 'a6e22e'  },
+    { token: 'entity.name.class', foreground: 'a6e22e' },
+    { token: 'entity.other', foreground: 'a6e22e' },
     { token: 'entity.name.function', foreground: 'a6e22e' },
     { token: 'entity.name.tag', foreground: 'f92672' },
     { token: 'entity.other.attribute-name', foreground: 'a6e22e' },
@@ -81,66 +81,66 @@ declare global {
             interface ICommonCodeEditor {
                 /** keep `filePath` */
                 filePath?: string;
-			}
-		}
-	}
+            }
+        }
+    }
 }
 
 interface Props {
-	onFocusChange?: (focused: boolean) => any;
-	readOnly?: boolean;
-	filePath: string;
+    onFocusChange?: (focused: boolean) => any;
+    readOnly?: boolean;
+    filePath: string;
 
     /** This is the only property we allow changing dynamically. Helps with rendering the same file path for different previews */
     preview?: ts.TextSpan;
 }
 
-export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, loading?: boolean}>{
-	constructor(props){
-		super(props);
+export class CodeEditor extends ui.BaseComponent<Props, { isFocused?: boolean, loading?: boolean }>{
+    constructor(props) {
+        super(props);
 
-		this.state = {
-			isFocused: false,
-			loading: true,
-		};
-	}
+        this.state = {
+            isFocused: false,
+            loading: true,
+        };
+    }
 
     // TODO: mon
-	editor: monaco.editor.ICodeEditor;
-	refs: {
-		[string: string]: any;
-		codeEditor: HTMLDivElement;
-	}
+    editor: monaco.editor.ICodeEditor;
+    refs: {
+        [string: string]: any;
+        codeEditor: HTMLDivElement;
+    }
 
-	/** Ready after the doc is loaded */
-	ready = false;
-	afterReadyQueue:{():void}[] = [];
-	/** If already ready it execs ... otherwise waits */
-	afterReady = (cb:()=>void) => {
-		if (this.ready) cb();
-		else {
-			this.afterReadyQueue.push(cb);
-		}
-	}
+    /** Ready after the doc is loaded */
+    ready = false;
+    afterReadyQueue: { (): void }[] = [];
+    /** If already ready it execs ... otherwise waits */
+    afterReady = (cb: () => void) => {
+        if (this.ready) cb();
+        else {
+            this.afterReadyQueue.push(cb);
+        }
+    }
 
-	componentDidMount () {
+    componentDidMount() {
         var mountNode = this.refs.codeEditor;
         const { filePath } = this.props;
 
         this.editor = monaco.editor.create(mountNode, {
             value: '...',
             theme: 'monokai',
-			folding: true,
-			autoClosingBrackets: true,
-			wrappingColumn: 0,
-			readOnly: false, // Never readonly ... even for readonly editors. Otherwise monaco doesn't highlight active line :)
-			scrollBeyondLastLine: false, // Don't scroll by mouse where you can't scroll by keyboard :)
-			formatOnType: true,
+            folding: true,
+            autoClosingBrackets: true,
+            wrappingColumn: 0,
+            readOnly: false, // Never readonly ... even for readonly editors. Otherwise monaco doesn't highlight active line :)
+            scrollBeyondLastLine: false, // Don't scroll by mouse where you can't scroll by keyboard :)
+            formatOnType: true,
             contextmenu: false, // Disable context menu till we have it actually useful
             /** Move snippet suggestions to the bottom */
             snippetSuggestions: 'bottom',
-			/** Since everything else in our UI is Square */
-			roundedSelection: false,
+            /** Since everything else in our UI is Square */
+            roundedSelection: false,
             /** For git status, find results, errors */
             overviewRulerLanes: 3,
             /** Don't reserve too much space for line numbers */
@@ -159,25 +159,25 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             /** Also make the font a bit bigger */
             fontSize: 16,
         }, []);
-		this.editor.filePath = filePath;
+        this.editor.filePath = filePath;
 
-		// Utility to load editor options
-		const loadEditorOptions = (editorOptions:types.EditorOptions) => {
-		    // Feels consistent with https://code.visualstudio.com/Docs/customization/userandworkspace
-		    this.editor.getModel().updateOptions({
-				insertSpaces: editorOptions.convertTabsToSpaces,
-				tabSize: editorOptions.tabSize
-			});
-		}
+        // Utility to load editor options
+        const loadEditorOptions = (editorOptions: types.EditorOptions) => {
+            // Feels consistent with https://code.visualstudio.com/Docs/customization/userandworkspace
+            this.editor.getModel().updateOptions({
+                insertSpaces: editorOptions.convertTabsToSpaces,
+                tabSize: editorOptions.tabSize
+            });
+        }
 
-		this.disposible.add(cast.editorOptionsChanged.on((res) => {
-		    if (res.filePath === this.props.filePath){
-		        loadEditorOptions(res.editorOptions);
-		    }
-		}));
+        this.disposible.add(cast.editorOptionsChanged.on((res) => {
+            if (res.filePath === this.props.filePath) {
+                loadEditorOptions(res.editorOptions);
+            }
+        }));
 
         // load up the doc
-        docCache.getLinkedDoc(this.props.filePath, this.editor).then(({doc, editorOptions}) => {
+        docCache.getLinkedDoc(this.props.filePath, this.editor).then(({ doc, editorOptions }) => {
             // Load editor options
             loadEditorOptions(editorOptions);
 
@@ -201,13 +201,13 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             }
 
             // Mark as ready and do anything that was waiting for ready to occur 🌹
-            this.afterReadyQueue.forEach(cb=>cb());
-			this.ready = true;
-			this.setState({loading:false});
-		})
+            this.afterReadyQueue.forEach(cb => cb());
+            this.ready = true;
+            this.setState({ loading: false });
+        })
 
-		this.disposible.add(this.editor.onDidFocusEditor(this.focusChanged.bind(this, true)));
-		this.disposible.add(this.editor.onDidBlurEditor(this.focusChanged.bind(this, false)));
+        this.disposible.add(this.editor.onDidFocusEditor(this.focusChanged.bind(this, true)));
+        this.disposible.add(this.editor.onDidBlurEditor(this.focusChanged.bind(this, false)));
 
         // cursor history
         if (!this.props.readOnly) {
@@ -227,52 +227,52 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
         // Docblockr
         this.disposible.add(docblockr.setup(this.editor));
-	}
+    }
 
-	componentWillUnmount () {
-		super.componentWillUnmount();
+    componentWillUnmount() {
+        super.componentWillUnmount();
         docCache.removeLinkedDoc(this.props.filePath, this.editor);
-		this.editor.dispose();
-		this.editor = null;
-	}
+        this.editor.dispose();
+        this.editor = null;
+    }
 
     firstFocus = true;
-	focus = () => {
-		if (!this.ready && this.firstFocus) {
-			this.firstFocus = false;
-			this.afterReadyQueue.push(()=>{
-				this.resize();
-				this.focus();
-			});
-		}
-        else if (this.editor) {
-			this.editor.focus();
+    focus = () => {
+        if (!this.ready && this.firstFocus) {
+            this.firstFocus = false;
+            this.afterReadyQueue.push(() => {
+                this.resize();
+                this.focus();
+            });
         }
-	}
+        else if (this.editor) {
+            this.editor.focus();
+        }
+    }
 
     resize = () => {
         if (this.editor) {
-			const before = this.editor.getDomNode().scrollHeight;
+            const before = this.editor.getDomNode().scrollHeight;
             this.refresh();
-			const after = this.editor.getDomNode().scrollHeight;
-			const worthRestoringScrollPosition = (after !== before) && (after != 0);
+            const after = this.editor.getDomNode().scrollHeight;
+            const worthRestoringScrollPosition = (after !== before) && (after != 0);
 
-			/** Restore last scroll position on refresh after a blur */
-			if (this.lastScrollPosition != undefined && worthRestoringScrollPosition) {
-				setTimeout(()=>{
-					this.editor.setScrollTop(this.lastScrollPosition);
+            /** Restore last scroll position on refresh after a blur */
+            if (this.lastScrollPosition != undefined && worthRestoringScrollPosition) {
+                setTimeout(() => {
+                    this.editor.setScrollTop(this.lastScrollPosition);
                     // console.log(this.props.filePath, before, after, worthRestoringScrollPosition, this.lastScrollPosition); // DEBUG
-					this.lastScrollPosition = undefined;
-				})
-			}
-		}
+                    this.lastScrollPosition = undefined;
+                })
+            }
+        }
     }
 
-	lastScrollPosition: number | undefined = undefined;
-	willBlur() {
-		this.lastScrollPosition = this.editor.getScrollTop();
-		// console.log('Storing:', this.props.filePath, this.lastScrollPosition); // DEBUG
-	}
+    lastScrollPosition: number | undefined = undefined;
+    willBlur() {
+        this.lastScrollPosition = this.editor.getScrollTop();
+        // console.log('Storing:', this.props.filePath, this.lastScrollPosition); // DEBUG
+    }
 
     gotoPosition = (position: EditorPosition) => {
         this.afterReady(() => {
@@ -294,8 +294,8 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         this.setState({
             isFocused: focused
         });
-		this.props.onFocusChange && this.props.onFocusChange(focused);
-	}
+        this.props.onFocusChange && this.props.onFocusChange(focused);
+    }
 
     getValue() {
         this.editor.getValue();
@@ -304,22 +304,22 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 	/**
 	 * used to seed the initial search if coming out of hidden
 	 */
-	getSelectionSearchString(): string | undefined {
-		let selection = this.editor.getSelection();
+    getSelectionSearchString(): string | undefined {
+        let selection = this.editor.getSelection();
 
-		if (selection.startLineNumber === selection.endLineNumber) {
-			if (selection.isEmpty()) {
-				let wordAtPosition = this.editor.getModel().getWordAtPosition(selection.getStartPosition());
-				if (wordAtPosition) {
-					return wordAtPosition.word;
-				}
-			} else {
-				return this.editor.getModel().getValueInRange(selection);
-			}
-		}
+        if (selection.startLineNumber === selection.endLineNumber) {
+            if (selection.isEmpty()) {
+                let wordAtPosition = this.editor.getModel().getWordAtPosition(selection.getStartPosition());
+                if (wordAtPosition) {
+                    return wordAtPosition.word;
+                }
+            } else {
+                return this.editor.getModel().getValueInRange(selection);
+            }
+        }
 
-		return undefined;
-	}
+        return undefined;
+    }
 
     search = (options: FindOptions) => {
         search.commands.search(this.editor, options);
@@ -341,9 +341,9 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         search.commands.replaceNext(this.editor, newText);
     }
 
-	replacePrevious = (newText: string) => {
-		search.commands.replacePrevious(this.editor, newText);
-	}
+    replacePrevious = (newText: string) => {
+        search.commands.replacePrevious(this.editor, newText);
+    }
 
     replaceAll = (newText: string) => {
         search.commands.replaceAll(this.editor, newText);
@@ -352,45 +352,45 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
     handleCursorActivity = () => {
         let cursor = this.editor.getSelection();
         cursorHistory.addEntry({
-			line: cursor.startLineNumber - 1,
-			ch: cursor.startColumn - 1,
-		});
+            line: cursor.startLineNumber - 1,
+            ch: cursor.startColumn - 1,
+        });
     };
 
-	render () {
-		var className = 'ReactCodeEditor';
-		if (this.state.isFocused) {
-			className += ' ReactCodeEditor--focused';
+    render() {
+        var className = 'ReactCodeEditor';
+        if (this.state.isFocused) {
+            className += ' ReactCodeEditor--focused';
         }
         const loadingStyle = {
             position: 'absolute', top: '45%', left: '45%', zIndex: 1,
-			color: '#999',
-			border: '5px solid #999',
-			borderRadius: '5px',
-			fontSize:'2rem',
-			padding: '5px',
-			transition: '.2s opacity',
-			opacity: this.state.loading ? 1: 0,
-			pointerEvents: 'none',
+            color: '#999',
+            border: '5px solid #999',
+            borderRadius: '5px',
+            fontSize: '2rem',
+            padding: '5px',
+            transition: '.2s opacity',
+            opacity: this.state.loading ? 1 : 0,
+            pointerEvents: 'none',
         };
-		return (
-			<div className={className} style={csx.extend(csx.horizontal,csx.flex,{position:'relative', maxWidth:'100%'})}>
-                {!this.props.readOnly && <doctor.Doctor cm={this.editor} filePath={this.props.filePath}/>}
+        return (
+            <div className={className} style={csx.extend(csx.horizontal, csx.flex, { position: 'relative', maxWidth: '100%' })}>
+                {!this.props.readOnly && <doctor.Doctor cm={this.editor} filePath={this.props.filePath} />}
                 <div style={loadingStyle}>LOADING</div>
                 <div ref="codeEditor" style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }} />
-                {!this.props.readOnly && <semanticView.SemanticView editor={this.editor} filePath={this.props.filePath}/>}
-			</div>
-		);
-	}
+                {!this.props.readOnly && <semanticView.SemanticView editor={this.editor} filePath={this.props.filePath} />}
+            </div>
+        );
+    }
 
-    componentWillReceiveProps(nextProps:Props){
+    componentWillReceiveProps(nextProps: Props) {
         // If next props are getting a preview then old props had them too (based on how we use preview)
         if (nextProps.preview && nextProps.preview.start !== this.props.preview.start) {
             this.gotoPreview(nextProps.preview);
         }
     }
 
-    gotoPreview(preview: ts.TextSpan){
+    gotoPreview(preview: ts.TextSpan) {
         // Re-layout as for preview style editors monaco seems to render faster than CSS 🌹
         this.editor.layout();
 
