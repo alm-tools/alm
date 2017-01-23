@@ -122,6 +122,8 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
 
 	componentDidMount () {
         var mountNode = this.refs.codeEditor;
+        const { filePath } = this.props;
+
         this.editor = monaco.editor.create(mountNode, {
             value: '...',
             theme: 'monokai',
@@ -154,7 +156,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
             /** Also make the font a bit bigger */
             fontSize: 16,
         }, []);
-		this.editor.filePath = this.props.filePath;
+		this.editor.filePath = filePath;
 
 		// Utility to load editor options
 		const loadEditorOptions = (editorOptions:types.EditorOptions) => {
