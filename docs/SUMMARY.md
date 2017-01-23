@@ -25,6 +25,7 @@
   * [JSON to TypeScript](/features/json-to-dts.md)
   * [JavaScript Support](/features/javascript.md)
   * [Live Demo](/features/live-demo.md)
+  * [Live Demo React](/features/live-demo-react.md)
   * [Testing](/features/testing.md)
   * [Documentation Writing](/features/docblockr.md)
   * [Remove Unused Imports](/features/removeUnusedImports.md)
