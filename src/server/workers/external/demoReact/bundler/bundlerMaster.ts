@@ -12,6 +12,7 @@ export const liveDemoBuildComplete = new TypedEvent<LiveDemoBundleResult>();
 namespace Master {
     export const bundleStatus: typeof contract.master.bundleStatus = async (q) => {
         liveDemoBuildComplete.emit(q);
+        console.log(workerPrefix, `Update: ${q.type}`);
         return {};
     }
 }
@@ -58,8 +59,16 @@ fsu.writeFile(liveDemoFolder + '/index.html',
 </head>
 <body>
   <div id="root">
-      <div style="font-family: arial">...waiting for render...</div>
+      <div id="waiting-for-render" style="font-family: arial; opacity: 0; transition: opacity 1s;">
+      ...make sure you call render in your demo file...
+      </div>
   </div>
+  <script>
+    setTimeout(function(){
+        var waitingForRender = document.getElementById('waiting-for-render');
+        if (waitingForRender){ waitingForRender.style.opacity = "1"; }
+    }, 2000);
+  </script>
   <script type="text/javascript" src="./index.js"></script>
 </body>
 </html>
@@ -72,7 +81,10 @@ export namespace ExternalAPI {
     export const enableLiveDemo = async ({ filePath }: { filePath: string }) => {
         currentFilePath = filePath;
 
-        fsu.writeFile(outputFileName, 'console.log("Placeholder file while build is in progress")');
+        fsu.writeFile(outputFileName, `
+        document.getElementById('root').innerHTML = '';
+        console.log("Placeholder file while build is in progress");
+        `);
 
         start({
             entryFilePath: filePath,
@@ -80,8 +92,6 @@ export namespace ExternalAPI {
         });
 
         console.log(workerPrefix, `Input: ${filePath}`);
-        console.log(workerPrefix, `Output: ${outputFileName}`);
-
         return {};
     };
     export const disableLiveDemo = () => {
