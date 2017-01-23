@@ -30,7 +30,9 @@ export const monokai: IThemeRule[] = [
     { token: '', foreground: 'f8f8f2' },
 
     { token: 'comment', foreground: '75715e' },
+
     { token: 'string', foreground: 'e6db74' },
+	{ token: 'support.property-value.string.value.json', foreground: 'e6db74' },
 
     { token: 'constant.numeric', foreground: 'ae81ff' },
     { token: 'constant.language', foreground: 'ae81ff' },
@@ -38,6 +40,7 @@ export const monokai: IThemeRule[] = [
     { token: 'constant.other', foreground: 'ae81ff' },
 
     { token: 'keyword', foreground: 'f92672' },
+    { token: 'support.property-value.keyword.json', foreground: 'f92672' },
 
     { token: 'storage', foreground: 'aae354' },
     { token: 'storage.type', foreground: '66d9ef', fontStyle: 'italic' },
