@@ -12,10 +12,14 @@ import * as styles from "../../styles/styles";
 import * as ReactDOM from 'react-dom';
 import * as React from 'react';
 import * as types from '../../../common/types';
+import * as gls from '../../base/gls';
+import { style } from 'typestyle';
+import { ButtonBlack } from "../../components/buttons";
 
 export interface Props extends tab.TabProps {
 }
 export interface State {
+    status: types.LiveDemoBundleResult
 }
 
 const startOfOutput = '--START--\n';
@@ -26,15 +30,19 @@ export class LiveDemoReactView extends ui.BaseComponent<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
+            status: {
+                type: 'bundling'
+            }
         };
         this.filePath = utils.getFilePathFromUrl(props.url);
     }
     componentDidMount() {
         server.enableLiveDemoReact({ filePath: this.filePath });
         this.disposible.add(
-            cast.liveDemoBuildComplete.on(({ }) => {
+            cast.liveDemoBuildComplete.on((status) => {
                 // console.log("reload"); // DEBUG
-                this.iframe && this.iframe.contentWindow.location.reload();
+                this.setState({ status });
+                this.reload();
             })
         );
 
@@ -58,19 +66,45 @@ export class LiveDemoReactView extends ui.BaseComponent<Props, State> {
     iframe?: HTMLIFrameElement;
 
     render() {
+        const type = this.state.status.type;
+        const color = type === 'bundling'
+            ? 'yellow'
+            : type === 'success'
+                ? '#0f0'
+                : 'red';
+
         return (
             <div
                 tabIndex={0}
                 style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll, { color: styles.textColor })}
                 onKeyPress={this.handleKey}
                 onFocus={this.props.onFocused}>
+                <div className={style({ height: '30px' }, csx.horizontal, csx.content, csx.center as any, csx.Box.padding(5))}>
+                    <div>
+                        <svg height={"10px"} width={"10px"} viewBox="0 0 10 10" style={{
+                            boxShadow: `0px 0px 28px 0px ${color}`
+                        }}>
+                            <circle fill={color} r={5} cx={5} cy={5} />
+                        </svg>
+                    </div>
+                    <div style={{ color: '#999', marginLeft: '5px' }}>
+                        {this.state.status.type}
+                    </div>
+                    <gls.Flex />
+                    <ButtonBlack text="reload" onClick={this.reload} />
+                </div>
                 <iframe ref={ref => this.iframe = ref} src={this.getIframeUrl()} style={{
-                    height: '100%', width: '100%',
+                    height: 'calc(100% - 30px)',
+                    width: '100%',
                     border: 'none',
                     backgroundColor: 'white',
                 }} />
             </div>
         );
+    }
+
+    private reload = () => {
+        this.iframe && this.iframe.contentWindow.location.reload();
     }
 
     private getIframeUrl = () => {
