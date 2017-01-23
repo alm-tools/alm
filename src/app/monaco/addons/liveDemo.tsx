@@ -12,7 +12,6 @@ commands.enableLiveDemo.on(() => {
         return;
     }
     const filePath = ceditor.editor.filePath;
-    server.enableLiveDemo({ filePath });
     commands.ensureLiveDemoTab.emit({filePath});
 });
 
@@ -27,7 +26,6 @@ commands.enableLiveDemoReact.on(() => {
         return;
     }
     const filePath = ceditor.editor.filePath;
-    server.enableLiveDemoReact({ filePath });
     commands.ensureLiveDemoReactTab.emit({filePath});
 });
 
