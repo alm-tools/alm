@@ -58,6 +58,7 @@ fsu.writeFile(liveDemoFolder + '/index.html',
 </head>
 <body>
   <div id="root">
+      <div style="font-family: arial">...waiting for render...</div>
   </div>
   <script type="text/javascript" src="./index.js"></script>
 </body>
@@ -70,6 +71,8 @@ export namespace ExternalAPI {
 
     export const enableLiveDemo = async ({ filePath }: { filePath: string }) => {
         currentFilePath = filePath;
+
+        fsu.writeFile(outputFileName, 'console.log("Placeholder file while build is in progress")');
 
         start({
             entryFilePath: filePath,
