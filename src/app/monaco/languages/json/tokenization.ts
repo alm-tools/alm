@@ -11,7 +11,9 @@ import json = require('./core/jsonc-parser');
 export function createTokenizationSupport(supportComments: boolean): monaco.languages.TokensProvider {
     return {
         getInitialState: () => new JSONState(null, null, false),
-        tokenize: (line, state, offsetDelta?, stopAtOffset?) => tokenize(supportComments, line, <JSONState>state, offsetDelta, stopAtOffset)
+        tokenize: (line, state) => {
+            return tokenize(supportComments, line, <JSONState>state, undefined, undefined)
+        }
     };
 }
 

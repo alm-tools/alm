@@ -19,7 +19,10 @@ declare global {
     module monaco {
         module editor {
             interface IReadOnlyModel {
-                /** keep `filePath` */
+                /**
+                 * keep `filePath`
+                 * Beyond other things, it is critical to our tokenizer.
+                 **/
                 filePath?: string;
                 /**
                  * add a list of editors
@@ -34,16 +37,6 @@ declare global {
             interface ICodeEditor {
             }
         }
-    }
-}
-
-/**
- * I haven't found a way to send the `tokenizer` the filePath
- * But `getInitialState` is reliably called immediately after `creatModel` so we can path this info through global
- */
-declare global {
-    interface Window {
-        creatingModelFilePath?: string;
     }
 }
 
@@ -148,8 +141,6 @@ function getOrCreateDoc(filePath: string): Promise<DocPromiseResult> {
              }
 
             // create the doc
-            // console.log("1 CACHE A: ", filePath); // DEBUG
-            window.creatingModelFilePath = filePath;
             const doc = monaco.editor.createModel(res.contents, language);
             doc.setEOL(monaco.editor.EndOfLineSequence.LF); // The true eol is only with the file model at the backend. The frontend doesn't care 🌹
 

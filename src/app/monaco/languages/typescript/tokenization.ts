@@ -21,17 +21,15 @@ export function createTokenizationSupport(language:Language): monaco.languages.T
 
 	return {
         getInitialState: function() {
-            // console.log("2 STATE", window.creatingModelFilePath); // DEBUG
             return new State({
                 language,
                 eolState: ts.EndOfLineState.None,
                 inJsDocComment: false,
-                filePath: window.creatingModelFilePath,
                 lineNumber: 0,
                 lineStartIndex: 0,
             });
         },
-		tokenize: (line, state) => tokenize(bracketTypeTable, tokenTypeTable, classifier, <State> state, line)
+		tokenize: (line, state, filePath) => tokenize(bracketTypeTable, tokenTypeTable, classifier, <State> state, line, filePath)
 	};
 }
 
@@ -46,15 +44,13 @@ class State implements monaco.languages.IState {
 	public language: Language;
 	public eolState: ts.EndOfLineState;
 	public inJsDocComment: boolean;
-    public filePath: string;
     public lineNumber: number;
     public lineStartIndex: number;
 
-    constructor(config: { language: Language, eolState: ts.EndOfLineState, inJsDocComment: boolean, filePath: string, lineNumber: number, lineStartIndex: number }) {
+    constructor(config: { language: Language, eolState: ts.EndOfLineState, inJsDocComment: boolean, lineNumber: number, lineStartIndex: number }) {
         this.language = config.language;
         this.eolState = config.eolState;
         this.inJsDocComment = config.inJsDocComment;
-        this.filePath = config.filePath;
         this.lineNumber = config.lineNumber;
         this.lineStartIndex = config.lineStartIndex;
 	}
@@ -72,7 +68,6 @@ class State implements monaco.languages.IState {
         }
         return this.eolState === other.eolState
             && this.inJsDocComment === other.inJsDocComment
-            && this.filePath === other.filePath
             && this.lineNumber === other.lineNumber
             && this.lineStartIndex === other.lineStartIndex
             ;
@@ -80,7 +75,7 @@ class State implements monaco.languages.IState {
 }
 
 function tokenize(bracketTypeTable: { [i: number]: string }, tokenTypeTable: { [i: number]: string },
-	classifier: ts.Classifier, state: State, text: string): monaco.languages.ILineTokens {
+    classifier: ts.Classifier, state: State, text: string, filePath?: string): monaco.languages.ILineTokens {
 
 	// Create result early and fill in tokens
 	var ret = {
@@ -89,7 +84,6 @@ function tokenize(bracketTypeTable: { [i: number]: string }, tokenTypeTable: { [
             language: state.language,
             eolState: ts.EndOfLineState.None,
             inJsDocComment: false,
-            filePath: state.filePath,
             lineNumber: state.lineNumber + 1,
             lineStartIndex: state.lineStartIndex + text.length + 1,
         })
@@ -112,7 +106,7 @@ function tokenize(bracketTypeTable: { [i: number]: string }, tokenTypeTable: { [
         // WARNING: we might eventually use the js language to tokenize stuff like `hovers`
         // So probably only use this function for .ts files
         // Alternatively we could create a new language 'jshover' and use that for hovers etc
-		return tokenizeTs(state, ret, text);
+		return tokenizeTs(state, ret, text, filePath);
 	}
 
 	if (!isTypeScript && checkSheBang(0, text, appendFn)) {
@@ -201,14 +195,14 @@ function checkSheBang(deltaOffset: number, line: string, appendFn: (startIndex: 
 }
 
 
-function tokenizeTs(state: State, ret: {tokens: monaco.languages.IToken[], endState: State}, text: string) : monaco.languages.ILineTokens {
-	const classifications = classifierCache.getClassificationsForLine(state.filePath, state.lineStartIndex, text);
+function tokenizeTs(state: State, ret: {tokens: monaco.languages.IToken[], endState: State}, text: string, filePath: string) : monaco.languages.ILineTokens {
+	const classifications = classifierCache.getClassificationsForLine(filePath, state.lineStartIndex, text);
 	// DEBUG classifications
 	// console.log('%c'+text,"font-size: 20px");
 	// console.table(classifications.map(c=> ({ str: c.string, cls: c.classificationTypeName,startInLine:c.startInLine })));
 
 	let startIndex = 0;
-    const lineHasJSX = state.filePath.endsWith('x') && classifications.some(classification => {
+    const lineHasJSX = filePath.endsWith('x') && classifications.some(classification => {
 		return classification.classificationType === ts.ClassificationType.jsxOpenTagName
         || classification.classificationType === ts.ClassificationType.jsxCloseTagName
         || classification.classificationType === ts.ClassificationType.jsxSelfClosingTagName
