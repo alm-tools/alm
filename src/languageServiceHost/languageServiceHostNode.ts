@@ -11,6 +11,29 @@ export class LanguageServiceHost extends lsh.LanguageServiceHost {
         return typescriptDir.getDefaultLibFilePaths(this.compilerOptions)[0] || '';
     }
 
+    getScriptSnapshot(fileName: string): ts.IScriptSnapshot {
+        let snap = super.getScriptSnapshot(fileName);
+        if (!snap) {
+            // This script should be a part of the project if it exists
+            // But we only do this in the server
+            if (typeof process !== "undefined" && typeof require !== "undefined") {
+                if (require('fs').existsSync(fileName)) {
+                    try {
+                        /** Just because the file exists doesn't mean we can *read* it. Hence the try */
+                        const contents = require('fs').readFileSync(fileName, 'utf8');
+                        this.addScript(fileName, contents);
+                        snap = super.getScriptSnapshot(fileName);
+                        this.incrementallyAddedFile.emit({filePath:fileName});
+                    }
+                    catch (e) {
+
+                    }
+                }
+            }
+        }
+        return snap;
+    }
+
     /** alm demo service */
     addAlmDemo = () => {
         this.addScript('alm.d.ts', fs.readFileSync(__dirname + '/alm.d.ts').toString());

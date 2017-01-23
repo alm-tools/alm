@@ -454,27 +454,4 @@ export class LanguageServiceHost extends LSHost {
      * Needed for node_modules and for stuff like `user types a require statement`
      */
     incrementallyAddedFile = new TypedEvent<{filePath: string}>();
-
-    getScriptSnapshot(fileName: string): ts.IScriptSnapshot {
-        let snap = super.getScriptSnapshot(fileName);
-        if (!snap) {
-            // This script should be a part of the project if it exists
-            // But we only do this in the server
-            if (typeof process !== "undefined" && typeof require !== "undefined") {
-                if (require('fs').existsSync(fileName)) {
-                    try {
-                        /** Just because the file exists doesn't mean we can *read* it. Hence the try */
-                        const contents = require('fs').readFileSync(fileName, 'utf8');
-                        this.addScript(fileName, contents);
-                        snap = super.getScriptSnapshot(fileName);
-                        this.incrementallyAddedFile.emit({filePath:fileName});
-                    }
-                    catch (e) {
-
-                    }
-                }
-            }
-        }
-        return snap;
-    }
 }
