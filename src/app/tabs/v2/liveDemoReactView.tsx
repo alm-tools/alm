@@ -42,7 +42,9 @@ export class LiveDemoReactView extends ui.BaseComponent<Props, State> {
             cast.liveDemoBuildComplete.on((status) => {
                 // console.log("reload"); // DEBUG
                 this.setState({ status });
-                this.reload();
+                if (status.type === 'success') {
+                    this.reload();
+                }
             })
         );
 
