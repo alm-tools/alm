@@ -92,7 +92,7 @@ export class JSONCompletion {
 				if (!proposed[suggestion.label]) {
 					proposed[suggestion.label] = true;
 					if (overwriteRange) {
-						suggestion.textEdit = TextEdit.replace(overwriteRange, suggestion.insertText);
+						suggestion.textEdit = TextEdit.replace(overwriteRange, suggestion.insertText.toString());
 						suggestion.filterText = filterText;
 					}
 

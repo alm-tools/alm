@@ -4,6 +4,9 @@
  */
 /** Some types */
 type Editor = monaco.editor.ICommonCodeEditor;
+type CommonFindController = any;
+type FindStartFocusAction = any;
+type FindModelBoundToEditorModel = any;
 
 declare global {
     module monaco {
@@ -29,13 +32,13 @@ export let commands = {
 }
 
 const startSearch = (editor: Editor, query: FindOptions) => {
-    const ctrl = getSearchCtrl(editor);
+    const ctrl = hackyGetSearchCtrl(editor);
     if (!ctrl.getState().isRevealed) {
         ctrl.start({
             forceRevealReplace: true,
             seedSearchStringFromSelection: false,
             seedSearchScopeFromSelection: false,
-            shouldFocus: FindStartFocusAction.NoFocusChange,
+            shouldFocus: 0, /* FindStartFocusAction.NoFocusChange */
             shouldAnimate: false,
         });
     }
@@ -44,11 +47,11 @@ const startSearch = (editor: Editor, query: FindOptions) => {
     // set other options as well
 };
 const hideSearch = (editor: Editor) => {
-    const ctrl = getSearchCtrl(editor);
+    const ctrl = hackyGetSearchCtrl(editor);
     ctrl.closeFindWidget();
 };
 const findNextIfNotAlreadyDoing = (editor: Editor, query: FindOptions) => {
-    const ctrl = getSearchCtrl(editor);
+    const ctrl = hackyGetSearchCtrl(editor);
     if (!ctrl.getState().isRevealed) {
         startSearch(editor,query);
     }
@@ -57,7 +60,7 @@ const findNextIfNotAlreadyDoing = (editor: Editor, query: FindOptions) => {
     }
 }
 const findPreviousIfNotAlreadyDoing = (editor: Editor, query: FindOptions) => {
-    const ctrl = getSearchCtrl(editor);
+    const ctrl = hackyGetSearchCtrl(editor);
     if (!ctrl.getState().isRevealed) {
         startSearch(editor,query);
     }
@@ -66,7 +69,7 @@ const findPreviousIfNotAlreadyDoing = (editor: Editor, query: FindOptions) => {
     }
 };
 const simpleReplaceNext = (editor: Editor, newText:string) => {
-    const ctrl = getSearchCtrl(editor);
+    const ctrl = hackyGetSearchCtrl(editor);
 
     // Set new text
     hackySetReplaceText(ctrl, newText);
@@ -75,7 +78,7 @@ const simpleReplaceNext = (editor: Editor, newText:string) => {
     ctrl.replace();
 };
 const simpleReplacePrevious = (editor: Editor, newText: string) => {
-    const ctrl = getSearchCtrl(editor);
+    const ctrl = hackyGetSearchCtrl(editor);
 
     // Set new text
     hackySetReplaceText(ctrl,newText);
@@ -84,7 +87,7 @@ const simpleReplacePrevious = (editor: Editor, newText: string) => {
     hackyReplacePrevious(editor, ctrl, newText);
 };
 const simpleReplaceAll = (editor: Editor, newText: string) => {
-    const ctrl = getSearchCtrl(editor);
+    const ctrl = hackyGetSearchCtrl(editor);
 
     // Set new text
     hackySetReplaceText(ctrl,newText);
@@ -97,8 +100,12 @@ const simpleReplaceAll = (editor: Editor, newText: string) => {
 /**
  * Our interactions with monaco
  */
-const getSearchCtrl = (editor: Editor) => {
-    return CommonFindController.getFindController(editor);
+const hackyGetSearchCtrl = (editor: Editor) => {
+    /**
+     * HACK
+     * https://github.com/Microsoft/vscode/blob/814f92341aa9d3f772b17bf6d46a4e04f2c96959/src/vs/editor/contrib/find/common/findController.ts#L52-L54
+     */
+    return editor.getContribution('editor.contrib.findController') as any;
 };
 const hackySetReplaceText = (ctrl: CommonFindController, newText: string) => {
     // HACK to inject at new text:
@@ -110,7 +117,7 @@ const hackyReplacePrevious = (editor: Editor, ctrl: CommonFindController, newTex
     // HACK: get the model
     const model: FindModelBoundToEditorModel = (ctrl as any)._model;
     // HACK: the following is pretty much a duplicate of `replace` from model
-    // HACK: we made public a few `model` functions 
+    // HACK: we made public a few `model` functions
     // But for actions we delegate to `ctrl` ;)
     if (!model._hasMatches()) {
         return;
@@ -125,6 +132,3 @@ const hackyReplacePrevious = (editor: Editor, ctrl: CommonFindController, newTex
         ctrl.moveToPrevMatch();
     }
 }
-
-import {CommonFindController, FindStartFocusAction} from "./findController";
-import {FindModelBoundToEditorModel} from "./findModel";

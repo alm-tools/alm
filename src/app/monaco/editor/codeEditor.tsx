@@ -18,10 +18,56 @@ import * as testedMonaco from "../addons/testedMonaco";
 import * as utils from '../../../common/utils';
 import * as autoCloseTag from '../addons/autoCloseTag';
 
-// The monokai theme
-require('./monokai.css');
 // Any other style modifications
 require('./codeEditor.css');
+
+/**
+ * The monokai theme
+ * Reference : https://github.com/Microsoft/vscode/blob/d296b8e5b28925ea2df109baa2487c1d26f6ff3c/src/vs/editor/common/standalone/themes.ts
+ */
+import IThemeRule = monaco.editor.IThemeRule;
+export const monokai: IThemeRule[] = [
+    { token: '', foreground: 'f8f8f2' },
+
+    { token: 'comment', foreground: '75715e' },
+    { token: 'string', foreground: 'e6db74' },
+
+    { token: 'constant.numeric', foreground: 'ae81ff' },
+    { token: 'constant.language', foreground: 'ae81ff' },
+    { token: 'constant.character', foreground: 'ae81ff' },
+    { token: 'constant.other', foreground: 'ae81ff' },
+
+    { token: 'keyword', foreground: 'f92672' },
+
+    { token: 'storage', foreground: 'aae354' },
+    { token: 'storage.type', foreground: '66d9ef', fontStyle: 'italic' },
+
+    { token: 'entity.name.class', foreground: 'a6e22e'  },
+    { token: 'entity.other', foreground: 'a6e22e'  },
+    { token: 'entity.name.function', foreground: 'a6e22e' },
+    { token: 'entity.name.tag', foreground: 'f92672' },
+    { token: 'entity.other.attribute-name', foreground: 'a6e22e' },
+
+    { token: 'variable', foreground: 'f8f8f2' },
+    { token: 'variable.parameter', foreground: 'fd971f', fontStyle: 'italic' },
+
+    { token: 'support.function', foreground: '66d9ef' },
+    { token: 'support.constant', foreground: '66d9ef' },
+    { token: 'support.type', foreground: '66d9ef' },
+    { token: 'support.class', foreground: '66d9ef', fontStyle: 'italic' },
+
+    /** We use qualifier for `const`, `var`, `private` etc. */
+    { token: 'qualifier', foreground: '00d0ff' },
+    /* `def` does not exist. We like to use it for variable definitions */
+    { token: 'def', foreground: 'fd971f' },
+    /** variable-2 doesn't exist. We use it for identifiers in type positions */
+    { token: 'variable-2', foreground: '9effff' },
+];
+monaco.editor.defineTheme('monokai', {
+    base: 'vs-dark',
+    inherit: true,
+    rules: monokai
+});
 
 /**
  * We extend the monaco editor
@@ -78,7 +124,7 @@ export class CodeEditor extends ui.BaseComponent<Props,{isFocused?:boolean, load
         var mountNode = this.refs.codeEditor;
         this.editor = monaco.editor.create(mountNode, {
             value: '...',
-            theme: 'vs-dark vscode-theme-monokai-themes-Monokai-tmTheme',
+            theme: 'monokai',
 			folding: true,
 			autoClosingBrackets: true,
 			wrappingColumn: 0,

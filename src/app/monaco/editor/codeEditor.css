@@ -1,4 +1,18 @@
 /**
+ * Monokai background
+ */
+.monaco-editor.vs-dark .glyph-margin { background-color: rgba(39, 40, 34, 1); }
+.monaco-editor.vs-dark .monaco-editor-background { background-color: rgba(39, 40, 34, 1); }
+
+/* 
+ * Want a brighter selected text 
+ * (especially as monaco doesn't keep the line highlighted once you have some text selected) 
+ */
+.monaco-editor.vs-dark .view-overlays.focused .selected-text { 
+  background-color: rgba(152, 139, 3, 0.4); 
+}
+
+/**
  * The hover widget
  */
 .monaco-editor-hover.monaco-editor-background div:first-child {
