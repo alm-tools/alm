@@ -4,7 +4,9 @@
 const root = document.getElementById('root');
 
 window.onerror = function() {
-    root.innerHTML = "<div style='font-family: arial'>Unhandled error in the built app. Please check console.</div>";
+    root.innerHTML = `
+<div style='font-family: arial'>Unhandled error in the built app. Please check the browser console.</div>
+    `.trim();
     console.error(arguments);
 }
 
