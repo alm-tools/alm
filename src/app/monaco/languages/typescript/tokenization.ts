@@ -20,7 +20,8 @@ export function createTokenizationSupport(language:Language): monaco.languages.T
 		tokenTypeTable = language === Language.TypeScript ? tsTokenTypeTable : jsTokenTypeTable;
 
 	return {
-		getInitialState: function() {
+        getInitialState: function() {
+            // console.log("2 STATE", window.creatingModelFilePath); // DEBUG
             return new State({
                 language,
                 eolState: ts.EndOfLineState.None,
