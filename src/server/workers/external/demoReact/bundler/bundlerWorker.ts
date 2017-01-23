@@ -23,6 +23,18 @@ let lastAttempt: {
     compiler?: webpack.compiler.Compiler
 } = {};
 
+
+const compilerOptions = {
+    "jsx": "react",
+    "target": "es5",
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "lib": [
+        "es6",
+        "dom"
+    ]
+};
+
 /**
  * Creates a webpack bundle
  */
@@ -88,16 +100,7 @@ export function startLiveBundling(args: {
          * Effectively what would be in each app tsconfig.json
          **/
         ts: {
-            compilerOptions: {
-                "jsx": "react",
-                "target": "es5",
-                "moduleResolution": "node",
-                "experimentalDecorators": true,
-                "lib": [
-                    "es6",
-                    "dom"
-                ]
-            }
+            compilerOptions
         }
     };
 
