@@ -12,7 +12,6 @@ export const didEdits = new TypedEvent<{ filePath: string; edits: CodeEdit[] }>(
 export const didStatusChange = new TypedEvent<types.FileStatus>();
 export const editorOptionsChanged = new TypedEvent<{ filePath: string; editorOptions: types.EditorOptions }>();
 export const didOpenFile = new TypedEvent<{ filePath: string, contents: string }>();
-export const serverGotExplicitSaveCommand = new TypedEvent<{ filePath: string }>();
 
 let openFiles: FileModel[] = [];
 export function getOpenFile(filePath: string) {

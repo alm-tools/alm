@@ -30,7 +30,7 @@ import * as session from "./server/disk/session";
 import * as chalk from "chalk";
 import * as utils from "./common/utils";
 import * as fsu from "./server/utils/fsu";
-import { liveDemoFolder } from './server/workers/external/demoReact/demoReactService';
+import { liveDemoFolder } from './server/workers/external/demoReact/bundler/bundlerMaster';
 import * as types from './common/types';
 
 // `Where` to statically serve `what`

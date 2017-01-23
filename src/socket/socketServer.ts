@@ -14,6 +14,7 @@ import * as settings from "../server/disk/settings";
 import * as serverDiskService from "../server/workers/external/serverDiskService";
 import * as session from "../server/disk/session";
 import * as utils from "../common/utils";
+import { TypedEvent } from '../common/events';
 import { onServerExit } from "./serverExit";
 import * as bundlerMaster from '../server/workers/external/demoReact/bundler/bundlerMaster';
 let resolve = sls.resolve;
@@ -25,7 +26,8 @@ import { errorsCache } from "../server/globalErrorCacheServer";
 import * as projectServiceMaster from "../server/workers/lang/projectServiceMaster";
 import { testCache, working as testedWorking } from "../server/workers/tested/testedMaster";
 import * as demoService from '../server/workers/external/demoService';
-import * as demoReactService from '../server/workers/external/demoReact/demoReactService';
+import * as demoReactService from '../server/workers/external/demoReact/bundler/bundlerMaster';
+export const serverGotExplicitSaveCommand = new TypedEvent<{ filePath: string }>();
 
 namespace Server {
     export var echo: typeof contract.server.echo = (data, client) => {
@@ -66,7 +68,7 @@ namespace Server {
     }
     export var saveFile: typeof contract.server.saveFile = (data) => {
         fmc.saveOpenFile(data.filePath);
-        fmc.serverGotExplicitSaveCommand.emit({ filePath: data.filePath });
+        serverGotExplicitSaveCommand.emit({ filePath: data.filePath });
         return resolve({});
     }
     export var getFileStatus: typeof contract.server.openFile = (data) => {
@@ -230,8 +232,8 @@ namespace Server {
      */
     export const enableLiveDemo = demoService.WorkerImplementation.enableLiveDemo;
     export const disableLiveDemo = demoService.WorkerImplementation.disableLiveDemo;
-    export const enableLiveDemoReact = demoReactService.WorkerImplementation.enableLiveDemo;
-    export const disableLiveDemoReact = demoReactService.WorkerImplementation.disableLiveDemo;
+    export const enableLiveDemoReact = demoReactService.ExternalAPI.enableLiveDemo;
+    export const disableLiveDemoReact = demoReactService.ExternalAPI.disableLiveDemo;
 
     /**
      * Git service
@@ -322,12 +324,12 @@ export function register(app: http.Server | https.Server) {
     demoService.WorkerImplementation.liveDemoData.pipe(cast.liveDemoData);
     demoService.WorkerImplementation.clearLiveDemo.pipe(cast.clearLiveDemo);
     bundlerMaster.liveDemoBuildComplete.pipe(cast.liveDemoBuildComplete);
-    fmc.serverGotExplicitSaveCommand.on(e => {
+    serverGotExplicitSaveCommand.on(e => {
         if (e.filePath === demoService.WorkerImplementation.currentFilePath) {
             demoService.WorkerImplementation.enableLiveDemo({ filePath: e.filePath });
         }
-        if (e.filePath === demoReactService.WorkerImplementation.currentFilePath) {
-            demoReactService.WorkerImplementation.enableLiveDemo({ filePath: e.filePath });
+        if (e.filePath === demoReactService.ExternalAPI.currentFilePath) {
+            demoReactService.ExternalAPI.enableLiveDemo({ filePath: e.filePath });
         }
     })
 
