@@ -3,4 +3,4 @@ You quickly render a component using react to see how it would behave like using
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/demoReact.gif)
 
-> It is even better if you write your React components as Pure JS components (e.g. using something like [TypeStyle](http://typestyle.io/)
+> It is even better if you write your React components as Pure JS components e.g. using something like [TypeStyle](http://typestyle.io/)
