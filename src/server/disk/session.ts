@@ -30,7 +30,7 @@ export function getDefaultOrNewSession(sessionId: string): types.SessionOnDisk {
      */
     // if none create
     const ifNoneCreate = (session: types.SessionOnDisk, id = utils.createId()) => {
-        if (!session){
+        if (!session) {
             session = {
                 id,
                 tabLayout: {
@@ -52,10 +52,10 @@ export function getDefaultOrNewSession(sessionId: string): types.SessionOnDisk {
     }
     let session: types.SessionOnDisk;
     if (commandLine.getOptions().debug) {
-        session = ifNoneCreate(sessions.find(session=>session.id === types.urlHashDebugSession), types.urlHashDebugSession);
+        session = ifNoneCreate(sessions.find(session => session.id === types.urlHashDebugSession), types.urlHashDebugSession);
     }
     else if (!sessionId || sessionId === types.urlHashNormal) {
-        session = ifNoneCreate(sessions[0]);
+        session = ifNoneCreate(sessions.filter(s => s.id !== types.urlHashDebugSession)[0]);
     }
     else if (sessionId === types.urlHashNewSession) {
         session = sessions[0]; // last used is always on top
@@ -73,7 +73,7 @@ export function getDefaultOrNewSession(sessionId: string): types.SessionOnDisk {
         }
     }
     else {
-        session = ifNoneCreate(sessions.find(session=>session.id === sessionId));
+        session = ifNoneCreate(sessions.find(session => session.id === sessionId));
     }
 
     /**
@@ -224,7 +224,7 @@ function writeDiskSession(session: types.SessionOnDisk) {
     writeDiskSessionFile(sessionFileContents);
 }
 
-function writeDiskSessionFile(sessionFileContents: types.SessionsFileContents){
+function writeDiskSessionFile(sessionFileContents: types.SessionsFileContents) {
     fsu.writeFile(sessionFile, json.stringify(sessionFileContents));
 }
 
@@ -233,7 +233,7 @@ export function setTsconfigPath(tsconfigFilePath: string) {
     sessionFileContents.relativePathToTsconfig = workingDir.makeRelative(tsconfigFilePath);
     writeDiskSessionFile(sessionFileContents);
 }
-export function setOpenUITabs(sessionId: string, layout: types.TabLayout, selectedTabId: string|null) {
+export function setOpenUITabs(sessionId: string, layout: types.TabLayout, selectedTabId: string | null) {
     let session = getDefaultOrNewSession(sessionId);
     session.tabLayout = uiToDiskTabLayout(layout);
     session.selectedTabId = selectedTabId;
