@@ -262,7 +262,9 @@ namespace Worker {
         let watcher = chokidar.watch(directoryUnderWatch, {
             /** Don't care about initial as we did that using glob as its faster */
             ignoreInitial: true,
-            // For fixing file permission errors on windows. Someday.
+            // For fixing file permission errors on windows.
+            // Recommended here : https://github.com/paulmillr/chokidar/issues/446
+            // Someday.
             // Not enabled because the CPU useage goes *way* up.
             // /**
             //  * Use polling, otherwise other files get locked
