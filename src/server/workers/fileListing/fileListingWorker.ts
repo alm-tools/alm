@@ -259,7 +259,23 @@ namespace Worker {
         }
 
         /** Create watcher */
-        let watcher = chokidar.watch(directoryUnderWatch, { ignoreInitial: true });
+        let watcher = chokidar.watch(directoryUnderWatch, {
+            /** Don't care about initial as we did that using glob as its faster */
+            ignoreInitial: true,
+            // For fixing file permission errors on windows. Someday.
+            // Not enabled because the CPU useage goes *way* up.
+            // /**
+            //  * Use polling, otherwise other files get locked
+            //  * e.g. `npm install foo` will fail sadly on windows
+            //  */
+            // usePolling: true,
+            // /**
+            //  * Because we have `usePolling` the external process will most likely work
+            //  * However *we* might not be able to stat a file temporarily when its open
+            //  * e.g. *immediately* after an external `npm install` on windows we get a perm error.
+            //  */
+            // ignorePermissionErrors: true,
+        });
 
         // Just the ones that impact file listing
         // https://github.com/paulmillr/chokidar#methods--events
