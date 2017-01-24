@@ -721,6 +721,7 @@ export type LiveDemoData =
     }
     | {
         type: 'end'
+        code: number
     };
 //////////////////////
 // Live react demo

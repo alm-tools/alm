@@ -29,7 +29,7 @@ import { style } from 'typestyle';
 export interface Props extends tab.TabProps {
 }
 export interface State {
-    status: 'running' | 'done'
+    status: 'running' | 'done' | 'error'
 }
 
 export class LiveDemoView extends ui.BaseComponent<Props, State> {
@@ -58,7 +58,7 @@ export class LiveDemoView extends ui.BaseComponent<Props, State> {
                     this.forceUpdate();
                 }
                 else if (data.type === 'end') {
-                    this.setState({ status: 'done' });
+                    this.setState({ status: !data.code ? 'done' : 'error' });
                 }
                 else {
                     const _ensure: never = data;
@@ -86,7 +86,11 @@ export class LiveDemoView extends ui.BaseComponent<Props, State> {
     render() {
         const color = this.state.status === 'running'
             ? '#0f0'
-            : '#999';
+            : this.state.status === 'done'
+                ? '#999'
+                /** Error */
+                : 'red';
+
 
         return (
             <div

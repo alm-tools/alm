@@ -68,7 +68,7 @@ class FileExecutor {
 
         child.on('close', (code) => {
             if (this.disposed) return;
-            cb({type: 'end'});
+            cb({type: 'end', code});
             console.log(workerPrefix, 'process ended');
         });
     }
@@ -102,7 +102,7 @@ export namespace WorkerImplementation {
     };
     export const disableLiveDemo = () => {
         if (executor) {
-            liveDemoData.emit({ type: 'end' });
+            liveDemoData.emit({ type: 'end', code: 0 });
             executor.dispose();
             executor = undefined;
             currentFilePath = '';

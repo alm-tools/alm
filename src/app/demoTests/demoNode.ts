@@ -2,7 +2,7 @@
  * This file exists to manually test live demo
  */
 import { log } from './foo';
-// log("Hello world");
+// fail("Hello world");
 log("Hello world");
 log("Hello world");
 log("Hello world");
@@ -13,10 +13,8 @@ log("Hello world");
 log("Hello world");
 log("Hello world");
 log("Hello world");
-log("Hello world");
-// log("Hello world");
-setTimeout(() => {
 
+setTimeout(() => {
     log("Hello world");
     log("Hello world");
     log("Hello world");
