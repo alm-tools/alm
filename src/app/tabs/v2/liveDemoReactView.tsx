@@ -15,6 +15,7 @@ import * as types from '../../../common/types';
 import * as gls from '../../base/gls';
 import { style } from 'typestyle';
 import { ButtonBlack } from "../../components/buttons";
+import { Indicator } from '../../components/indicator';
 
 export interface Props extends tab.TabProps {
 }
@@ -22,10 +23,7 @@ export interface State {
     status: types.LiveDemoBundleResult
 }
 
-const startOfOutput = '--START--\n';
-
 export class LiveDemoReactView extends ui.BaseComponent<Props, State> {
-    output = startOfOutput;
     filePath = '';
     constructor(props: Props) {
         super(props);
@@ -82,11 +80,7 @@ export class LiveDemoReactView extends ui.BaseComponent<Props, State> {
                 onFocus={this.props.onFocused}>
                 <div className={style({ height: '30px' }, csx.horizontal, csx.content, csx.center as any, csx.Box.padding(5))}>
                     <div>
-                        <svg height={"10px"} width={"10px"} viewBox="0 0 10 10" style={{
-                            boxShadow: `0px 0px 28px 0px ${color}`
-                        }}>
-                            <circle fill={color} r={5} cx={5} cy={5} />
-                        </svg>
+                        <Indicator color={color} />
                     </div>
                     <div style={{ color: '#999', marginLeft: '5px' }}>
                         {this.state.status.type}

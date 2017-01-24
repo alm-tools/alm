@@ -23,20 +23,22 @@ import * as gls from "../../base/gls";
 import * as typestyle from "typestyle";
 import { MarkDown } from "../../markdown/markdown";
 import * as ReactDOM from 'react-dom';
+import { Indicator } from '../../components/indicator';
+import { style } from 'typestyle';
 
 export interface Props extends tab.TabProps {
 }
 export interface State {
+    status: 'running' | 'done'
 }
 
-const startOfOutput = '--START--\n';
-
 export class LiveDemoView extends ui.BaseComponent<Props, State> {
-    output = startOfOutput;
+    output = '';
     filePath = '';
     constructor(props:Props) {
         super(props);
         this.state = {
+            status: 'running'
         };
         this.filePath = utils.getFilePathFromUrl(props.url);
     }
@@ -47,14 +49,20 @@ export class LiveDemoView extends ui.BaseComponent<Props, State> {
         server.enableLiveDemo({ filePath: this.filePath });
         this.disposible.add(
             cast.liveDemoData.on((data) => {
-                this.output = this.output + data.data;
-                this.forceUpdate();
-            })
-        );
-        this.disposible.add(
-            cast.clearLiveDemo.on((data) => {
-                this.output = startOfOutput;
-                this.forceUpdate();
+                if (data.type === 'start') {
+                    this.output = '';
+                    this.setState({ status: 'running' });
+                }
+                else if (data.type === 'data') {
+                    this.output = this.output + data.data;
+                    this.forceUpdate();
+                }
+                else if (data.type === 'end') {
+                    this.setState({ status: 'done' });
+                }
+                else {
+                    const _ensure: never = data;
+                }
             })
         );
 
@@ -76,14 +84,33 @@ export class LiveDemoView extends ui.BaseComponent<Props, State> {
     }
 
     render() {
+        const color = this.state.status === 'running'
+            ? '#0f0'
+            : '#999';
+
         return (
             <div
                 tabIndex={0}
                 style={csx.extend(csx.vertical, csx.flex, csx.newLayerParent, styles.someChildWillScroll, { color: styles.textColor })}
                 onKeyPress={this.handleKey}
                 onFocus={this.props.onFocused}>
-                <div style={{ overflow: 'hidden', display: 'flex', padding: '10px' }}>
-                    <pre style={{overflow: 'auto', display:'flex', flex: '1', margin: '0px' }}>{this.output}</pre>
+                <div style={{ overflow: 'hidden', display: 'flex', padding: '10px', flexDirection: 'column', height: '100%' }}>
+                    <div className={style({ height: '30px' }, csx.horizontal, csx.content, csx.center as any, csx.Box.padding(5))}>
+                        <div>
+                            <Indicator color={color} />
+                        </div>
+                        <div style={{ color: '#999', marginLeft: '10px' }}>
+                            {this.state.status}
+                        </div>
+                    </div>
+                    <pre style={{
+                        overflow: 'auto',
+                        display: 'flex',
+                        flex: '1',
+                        margin: '0px',
+                        padding: '5px',
+                        border: '1px solid #333',
+                    }}>{this.output}</pre>
                 </div>
             </div>
         );

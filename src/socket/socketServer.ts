@@ -322,7 +322,6 @@ export function register(app: http.Server | https.Server) {
 
     /** Live demo */
     demoService.WorkerImplementation.liveDemoData.pipe(cast.liveDemoData);
-    demoService.WorkerImplementation.clearLiveDemo.pipe(cast.clearLiveDemo);
     bundlerMaster.liveDemoBuildComplete.pipe(cast.liveDemoBuildComplete);
     serverGotExplicitSaveCommand.on(e => {
         if (e.filePath === demoService.WorkerImplementation.currentFilePath) {

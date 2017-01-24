@@ -200,8 +200,7 @@ export var cast = {
     liveBuildResults: new TypedEvent<types.LiveBuildResults>(),
 
     /** Live demo */
-    clearLiveDemo: new TypedEvent<{}>(),
-    liveDemoData: new TypedEvent<{ data: string }>(),
+    liveDemoData: new TypedEvent<types.LiveDemoData>(),
     liveDemoBuildComplete: new TypedEvent<types.LiveDemoBundleResult>(),
 
     /** Server quit */

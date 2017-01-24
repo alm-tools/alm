@@ -4,6 +4,7 @@ import * as fsu from '../../utils/fsu';
 import * as utils from '../../../common/utils';
 import { TypedEvent } from '../../../common/events';
 import { kill } from '../../utils/treeKill';
+import * as types from '../../../common/types';
 
 const workerPrefix = `[DEMO]`;
 const nodeModulesFolder = fsu.travelUpTheDirectoryTreeTillYouFind(__dirname, "node_modules");
@@ -22,7 +23,7 @@ const tsNodeCompilerOptions = JSON.stringify({
 });
 
 class FileExecutor {
-    constructor(filePath: string, private cb: (data: string) => void) {
+    constructor(filePath: string, private cb: (data: types.LiveDemoData) => void) {
         /** Find key paths */
         const tsNodePath = `${nodeModulesFolder}/ts-node/dist/bin.js`;
 
@@ -57,17 +58,17 @@ class FileExecutor {
 
         child.stdout.on('data', (data) => {
             if (this.disposed) return;
-            cb(data.toString());
+            cb({type: 'data' , data: data.toString()});
         });
 
         child.stderr.on('data', (data) => {
             if (this.disposed) return;
-            cb(data.toString());
+            cb({type: 'data' , data: data.toString()});
         });
 
         child.on('close', (code) => {
             if (this.disposed) return;
-            cb('---END---');
+            cb({type: 'end'});
             console.log(workerPrefix, 'process ended');
         });
     }
@@ -85,24 +86,23 @@ class FileExecutor {
 export namespace WorkerImplementation {
     let executor: FileExecutor | undefined;
     export let currentFilePath = '';
-    export const clearLiveDemo = new TypedEvent<{}>();
-    export const liveDemoData = new TypedEvent<{ data: string }>();
+    export const liveDemoData = new TypedEvent<types.LiveDemoData>();
 
     export const enableLiveDemo = ({filePath}: { filePath: string }) => {
         console.log(workerPrefix, `Started on filePath: ${filePath}`);
         if (executor) {
             executor.dispose();
         }
-        clearLiveDemo.emit({});
+        liveDemoData.emit({ type: 'start' });
         executor = new FileExecutor(filePath, (data) => {
-            liveDemoData.emit({ data });
+            liveDemoData.emit(data);
         });
         currentFilePath = filePath;
         return Promise.resolve({})
     };
     export const disableLiveDemo = () => {
         if (executor) {
-            clearLiveDemo.emit({});
+            liveDemoData.emit({ type: 'end' });
             executor.dispose();
             executor = undefined;
             currentFilePath = '';

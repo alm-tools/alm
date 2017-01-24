@@ -708,7 +708,20 @@ export function makeBlandError(filePath: string, error: string, source: CodeErro
         level: 'error'
     }
 }
-
+//////////////////////
+// Live Demo
+//////////////////////
+export type LiveDemoData =
+    | {
+        type: 'start'
+    }
+    | {
+        type: 'data'
+        data: string
+    }
+    | {
+        type: 'end'
+    };
 //////////////////////
 // Live react demo
 //////////////////////

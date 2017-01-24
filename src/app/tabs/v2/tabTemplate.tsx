@@ -39,13 +39,6 @@ export class LiveDemoView extends ui.BaseComponent<Props, State> {
         this.disposible.add(
             cast.liveDemoData.on((data) => {
                 // TODO: demo
-                console.log('DATA', data.data);
-            })
-        );
-        this.disposible.add(
-            cast.clearLiveDemo.on((data) => {
-                // TODO: demo
-                console.log('clear');
             })
         );
 
