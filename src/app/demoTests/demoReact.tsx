@@ -1,11 +1,12 @@
 import * as React from 'react';
 
-class Demo extends React.Component<{}, {}>{
-    render() {
-        return (
-            <div>Hello world!</div>
-        );
-    }
-}
+const SuccessButton
+    = (props) => (
+        <button
+            {...props}
+            style={{ color: 'green' }}
+        />
+    );
 
-render(<Demo/>);
+/** Quickly render the component to test it */
+render(<SuccessButton>Hello world</SuccessButton>);
