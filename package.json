@@ -78,6 +78,10 @@
     "webpack": "^1.11.0"
   },
   "devDependencies": {
+    "@types/electron": "^1.4.31",
+    "@types/node": "^7.0.4",
+    "@types/socket.io": "^1.4.27",
+    "@types/socket.io-client": "^1.4.29",
     "@types/webpack": "2.1.0",
     "clipboard": "^1.4.2",
     "css-loader": "^0.24.0",

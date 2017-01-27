@@ -307,7 +307,8 @@ export class Parent extends RequesterResponder {
                 { cwd: path.dirname(childJsPath), env: {} }
             );
 
-            this.child.on('error', (err) => {
+            this.child.on('error', (error) => {
+                const err = error as any;
                 if (err.code === "ENOENT" && err.path === this.node) {
                     this.gotENOENTonSpawnNode = true;
                 }
