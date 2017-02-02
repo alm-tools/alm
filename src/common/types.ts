@@ -19,8 +19,11 @@ export const errors = {
 /**
  * Some session constants
  */
+/** When a new server stats up */
 export const urlHashNormal = "root";
+/** When user requests a new window */
 export const urlHashNewSession = "new-session";
+/** When alm is started ni debug mode */
 export const urlHashDebugSession = "debug";
 
 /**
