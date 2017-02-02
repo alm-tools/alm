@@ -133,8 +133,12 @@ function uiToDiskTab(uiTab: types.TabInstance): types.TabInstanceOnDisk {
         additionalData: uiTab.additionalData,
     };
 }
-function diskToUITab(diskTab: types.TabInstanceOnDisk): types.TabInstance {
+function diskToUITab(diskTab: types.TabInstanceOnDisk): types.TabInstance | null {
     let url = workingDir.makeAbsoluteUrl(diskTab.relativeUrl);
+    const { filePath, protocol } = utils.getFilePathAndProtocolFromUrl(url);
+
+    if (protocol === 'file' && !fsu.existsSync(filePath)) return null;
+
     return {
         id: diskTab.id,
         url,
@@ -156,7 +160,7 @@ function diskToUITabLayout(diskLayout: types.TabLayoutOnDisk): types.TabLayout {
         type: diskLayout.type,
         width: diskLayout.width,
         height: diskLayout.height,
-        tabs: diskLayout.tabs.map(diskToUITab),
+        tabs: diskLayout.tabs.map(diskToUITab).filter(x => !!x),
         subItems: diskLayout.subItems.map(diskToUITabLayout),
         activeItemIndex: diskLayout.activeItemIndex,
     }
