@@ -153,7 +153,7 @@ const defaultCompilerOptions: ts.CompilerOptions = {
     removeComments: true,
     noLib: false,
     preserveConstEnums: true,
-    suppressImplicitAnyIndexErrors: true
+    suppressImplicitAnyIndexErrors: false
 };
 
 /**
