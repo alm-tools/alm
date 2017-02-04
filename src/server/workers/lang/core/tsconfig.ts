@@ -137,8 +137,9 @@ const invisibleFilesIncludeWithJS = ["./**/*.ts", "./**/*.tsx", "./**/*.js"];
 
 /**
  * What we use to
- * * create a new tsconfig on disk
- * * create an in memory project
+ * - create a new tsconfig on disk
+ * - create an in memory project
+ * - default values for a tsconfig file read from disk
  */
 const defaultCompilerOptions: ts.CompilerOptions = {
     target: ts.ScriptTarget.ES5,
