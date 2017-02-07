@@ -36,14 +36,13 @@ let currentProject: project.Project = null;
   * This is what the user should call if they want to manually sync as well
   */
 export function setActiveProjectConfigDetails(projectData: types.ProjectDataLoaded) {
-    cancelAnyPendingAnalysisAndMarkforRefreshingAllProjectDiagnostics();
     initialSync = true;
     activeProjectConfigDetails = projectData;
     currentProject = new project.Project(projectData);
 
     /** Refresh them errors */
     clearErrors();
-    refreshAllProjectDiagnostics();
+    cancelAnyPendingAnalysisAndMarkforRefreshingAllProjectDiagnostics();
 
     /** Return active project for any chaining */
     return currentProject;
