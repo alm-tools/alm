@@ -1,6 +1,6 @@
 {
   "name": "alm",
-  "version": "2.26.2",
+  "version": "2.27.0",
   "description": "The best IDE for TypeScript",
   "main": "src/server.js",
   "bin": {
