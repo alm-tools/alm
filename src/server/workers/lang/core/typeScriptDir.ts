@@ -25,8 +25,11 @@ export const getDefaultLibFilePaths = (options: ts.CompilerOptions): string[] =>
         return [];
     }
     if (options.lib) {
-        /** Note: this might need to be more fancy at some point. E.g. user types `es6.array` but we need to get `es2015.array` */
-        return options.lib.map((lib) => fileFromLibFolder(libToFileNameMap[lib]));
+        /**
+         * Note: this might need to be more fancy at some point.
+         *  E.g. user types `es6.array` but we need to get `es2015.array`
+         */
+        return options.lib.map((lib) => fileFromLibFolder(libToFileNameMap.get(lib)));
     }
     return [fileFromLibFolder(ts.getDefaultLibFileName(options))];
 }

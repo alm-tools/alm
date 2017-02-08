@@ -19,4 +19,3 @@
 /// <reference path="main/ambient/redux/redux.d.ts" />
 /// <reference path="main/ambient/serve-static/serve-static.d.ts" />
 /// <reference path="main/ambient/toastr/toastr.d.ts" />
-/// <reference path="main/ambient/whatwg-fetch/index.d.ts" />

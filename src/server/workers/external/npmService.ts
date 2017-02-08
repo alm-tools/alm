@@ -34,11 +34,11 @@ export function npmInfo(args: { packageName: string }): Promise<string> {
     return npmCmd('npm', 'info', args.packageName);
 }
 
-import * as fetch from "node-fetch";
+const _fetch:typeof fetch = require("node-fetch");
 export function npmLatest({pack}: { pack: string }): Promise<{ description?: string, version?: string }> {
     const queryUrl = 'http://registry.npmjs.org:80/' + encodeURIComponent(pack) + '/latest';
 
-    return fetch(queryUrl)
+    return (_fetch(queryUrl)
         .then(function(response) {
             return response.json()
         })
@@ -54,7 +54,7 @@ export function npmLatest({pack}: { pack: string }): Promise<{ description?: str
                 result.version = obj.version;
             }
             return result;
-        })
+        }) as any)
         .catch((error) => {
             return {description: `Failed to query info for ${pack}`};
         });

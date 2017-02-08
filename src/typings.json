@@ -20,7 +20,6 @@
     "react-dom": "github:DefinitelyTyped/DefinitelyTyped/react/react-dom.d.ts#bdaf2f0eb19edee26248c80bab4947e9b70e4217",
     "redux": "github:DefinitelyTyped/DefinitelyTyped/redux/redux.d.ts#273a567b0a0bcc34cbf2a2470b2febc95796b644",
     "serve-static": "github:DefinitelyTyped/DefinitelyTyped/serve-static/serve-static.d.ts#e95958ac847d9a343bdc8d7cbc796a5f6da29f71",
-    "toastr": "github:DefinitelyTyped/DefinitelyTyped/toastr/toastr.d.ts#62eedc3121a5e28c50473d2e4a9cefbcb9c3957f",
-    "whatwg-fetch": "registry:dt/whatwg-fetch#0.0.0+20160524142046"
+    "toastr": "github:DefinitelyTyped/DefinitelyTyped/toastr/toastr.d.ts#62eedc3121a5e28c50473d2e4a9cefbcb9c3957f"
   }
 }
