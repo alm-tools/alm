@@ -139,22 +139,19 @@ const invisibleFilesIncludeWithJS = ["./**/*.ts", "./**/*.tsx", "./**/*.js"];
  * What we use to
  * - create a new tsconfig on disk
  * - create an in memory project
- * - default values for a tsconfig file read from disk
+ * - default values for a tsconfig file read from disk. Therefore it must match ts defaults
  */
 const defaultCompilerOptions: ts.CompilerOptions = {
     target: ts.ScriptTarget.ES5,
     module: ts.ModuleKind.CommonJS,
     moduleResolution: ts.ModuleResolutionKind.NodeJs,
-    isolatedModules: false,
-    jsx: ts.JsxEmit.React,
-    experimentalDecorators: true,
-    emitDecoratorMetadata: true,
+    jsx: ts.JsxEmit.None,
+    experimentalDecorators: false,
+    emitDecoratorMetadata: false,
     declaration: false,
     noImplicitAny: false,
-    removeComments: true,
-    noLib: false,
-    preserveConstEnums: true,
-    suppressImplicitAnyIndexErrors: false
+    suppressImplicitAnyIndexErrors: false,
+    strictNullChecks: false,
 };
 
 /**
