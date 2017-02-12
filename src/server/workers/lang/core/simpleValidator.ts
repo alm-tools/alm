@@ -20,7 +20,8 @@ export const types: {
 
 export interface MemberDefinition {
     type: Type;
-    validValues?: string[];
+    /** Only relevent if type is `string` */
+    validStringValues?: string[];
     /** Only used if `type` is `object` or `array` */
     sub?: MemberDefinition;
 }
@@ -59,13 +60,6 @@ export class SimpleValidator {
             else {
                 const validationInfo = this.validationInfo[k];
                 const value: any = toValidate[k];
-                /** Do a valid values check */
-                if (validationInfo.validValues && validationInfo.validValues.length) {
-                    var validValues = validationInfo.validValues;
-                    if (!validValues.some(valid => valid.toLowerCase() === value.toLowerCase())) {
-                        errors.invalidValues.push(`Key: '${k}' has an invalid value: ${value}`);
-                    }
-                }
                 /** Do an array check */
                 if (validationInfo.type === 'array') {
                     if (!Array.isArray(value)){
@@ -83,6 +77,14 @@ export class SimpleValidator {
                 /** Do the primitive type check */
                 else if (typeof value !== validationInfo.type) {
                     errors.invalidValues.push(`Key: '${k}' has a value '${JSON.stringify(value)}' of an invalid type: ${typeof value}`)
+                }
+
+                /** Do a valid values check */
+                if (typeof value === 'string' && validationInfo.validStringValues && validationInfo.validStringValues.length) {
+                    var validValues = validationInfo.validStringValues;
+                    if (!validValues.some(valid => valid.toLowerCase() === value.toLowerCase())) {
+                        errors.invalidValues.push(`Key: '${k}' has an invalid value: ${value}`);
+                    }
                 }
             }
         });
