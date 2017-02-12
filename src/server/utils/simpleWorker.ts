@@ -110,6 +110,7 @@ class RequesterResponder {
             if (parsed.error) {
                 this.currentListeners[parsed.message][parsed.id].reject(parsed.error);
                 console.log(parsed.error);
+                console.log(`======================= STACK (${parsed.error.method}) ==========================`);
                 console.log(parsed.error.stack);
             }
             else {
