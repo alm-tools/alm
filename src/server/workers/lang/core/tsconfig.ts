@@ -352,7 +352,7 @@ export function createProjectRootSync(srcFolder: string, defaultOptions: ts.Comp
     var projectSpec: TypeScriptProjectRawSpecification = {};
     projectSpec.compilerOptions = tsToRawCompilerOptions(defaultOptions);
     projectSpec.compileOnSave = true;
-    projectSpec.exclude = ["node_modules", "typings/browser", "typings/browser.d.ts"];
+    projectSpec.exclude = ["node_modules"];
 
     fs.writeFileSync(projectFilePath, json.stringify(projectSpec, os.EOL));
     return getProjectSync(srcFolder);
