@@ -387,8 +387,8 @@ function getSymbolsForFile(project: Project, sourceFile: ts.SourceFile): types.N
 
     var items: types.NavigateToItem[] = [];
     let declarations = sourceFile.getNamedDeclarations();
-    for (let index in declarations) {
-        for (let declaration of declarations[index]) {
+    declarations.forEach((value: ts.Declaration[], key: string) => {
+        value.forEach(declaration => {
             let item: types.NavigateToItem = {
                 name: getDeclarationName(declaration),
                 kind: getNodeKind(declaration),
@@ -397,8 +397,8 @@ function getSymbolsForFile(project: Project, sourceFile: ts.SourceFile): types.N
                 position: project.languageServiceHost.getLineAndCharacterOfPosition(sourceFile.fileName, declaration.getStart())
             }
             items.push(item);
-        }
-    }
+        })
+    });
     return items;
 }
 
