@@ -2,9 +2,9 @@ import * as fmc from "../../../disk/fileModelCache";
 import * as fsu from "../../../utils/fsu";
 import fs = require('fs');
 import * as json from "../../../../common/json";
-import {reverseKeysAndValues, uniq, extend, isJs} from "../../../../common/utils";
-import {makeBlandError, PackageJsonParsed, TsconfigJsonParsed, TypeScriptConfigFileDetails} from "../../../../common/types";
-import {increaseCompilationContext, getDefinitionsForNodeModules} from "./compilationContextExpander";
+import { reverseKeysAndValues, uniq, extend, isJs } from "../../../../common/utils";
+import { makeBlandError, PackageJsonParsed, TsconfigJsonParsed, TypeScriptConfigFileDetails } from "../../../../common/types";
+import { increaseCompilationContext, getDefinitionsForNodeModules } from "./compilationContextExpander";
 import { validate } from "./tsconfigValidation";
 import * as types from '../../../../common/types';
 
@@ -167,7 +167,7 @@ export function getDefaultInMemoryProject(srcFile: string): TypeScriptConfigFile
     files = uniq(files.map(fsu.consistentPath));
 
     let project: TsconfigJsonParsed = {
-        compilerOptions: extend(defaultCompilerOptions,{ allowJs }),
+        compilerOptions: extend(defaultCompilerOptions, { allowJs }),
         files,
         typings: typings.ours.concat(typings.implicit),
         formatCodeOptions: formatting.defaultFormatCodeOptions(),
@@ -256,7 +256,7 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
     /**
      * Always add `outDir`(if any) to exclude
      */
-    if (projectSpec.compilerOptions.outDir){
+    if (projectSpec.compilerOptions.outDir) {
         projectSpec.exclude = (projectSpec.exclude || []).concat(projectSpec.compilerOptions.outDir);
     }
 
@@ -371,6 +371,9 @@ const typescriptEnumMap = {
         'es5': ts.ScriptTarget.ES5,
         'es6': ts.ScriptTarget.ES2015,
         'es2015': ts.ScriptTarget.ES2015,
+        'es2016': ts.ScriptTarget.ES2016,
+        'es2017': ts.ScriptTarget.ES2017,
+        'next': ts.ScriptTarget.ESNext,
         'latest': ts.ScriptTarget.Latest
     },
     module: {
@@ -387,8 +390,10 @@ const typescriptEnumMap = {
         'classic': ts.ModuleResolutionKind.Classic
     },
     jsx: {
+        'none': ts.JsxEmit.None,
         'preserve': ts.JsxEmit.Preserve,
-        'react': ts.JsxEmit.React
+        'react': ts.JsxEmit.React,
+        'react-native': ts.JsxEmit.ReactNative,
     },
     newLine: {
         'CRLF': ts.NewLineKind.CarriageReturnLineFeed,
@@ -474,7 +479,7 @@ function tsToRawCompilerOptions(compilerOptions: ts.CompilerOptions): CompilerOp
      * Convert enums to raw
      */
     Object.keys(compilerOptions).forEach((key) => {
-        if (typescriptEnumMap[key] && compilerOptions[key]) {
+        if (typescriptEnumMap[key] !== undefined && compilerOptions[key] !== undefined) {
             const value = compilerOptions[key] as string;
             const rawToTsMapForKey = typescriptEnumMap[key];
             const reverseMap = reverseKeysAndValues(rawToTsMapForKey);
