@@ -116,8 +116,8 @@ export var errors = {
     GET_PROJECT_FAILED_TO_OPEN_PROJECT_FILE: 'Failed to fs.readFileSync the project file',
     GET_PROJECT_PROJECT_FILE_INVALID_OPTIONS: 'Project file contains invalid options',
 
-    CREATE_FILE_MUST_EXIST: 'The Typescript file must exist on disk in order to create a project',
-    CREATE_PROJECT_ALREADY_EXISTS: 'Project file already exists',
+    CREATE_FOLDER_MUST_EXIST: 'The folder must exist on disk in order to create a tsconfig.json',
+    CREATE_PROJECT_ALREADY_EXISTS: 'tsconfig.json file already exists',
 };
 export interface ProjectFileErrorDetails {
     projectFilePath: string;
@@ -338,14 +338,12 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
 }
 
 /** Creates a project by source file location. Defaults are assumed unless overriden by the optional spec. */
-export function createProjectRootSync(srcFile: string, defaultOptions: ts.CompilerOptions = defaultCompilerOptions, overWrite = true) {
-    if (!fs.existsSync(srcFile)) {
-        throw new Error(errors.CREATE_FILE_MUST_EXIST);
+export function createProjectRootSync(srcFolder: string, defaultOptions: ts.CompilerOptions = defaultCompilerOptions, overWrite = true) {
+    if (!fs.existsSync(srcFolder)) {
+        throw new Error(errors.CREATE_FOLDER_MUST_EXIST);
     }
 
-    // Get directory
-    var dir = fs.lstatSync(srcFile).isDirectory() ? srcFile : path.dirname(srcFile);
-    var projectFilePath = path.normalize(dir + '/' + projectFileName);
+    var projectFilePath = path.normalize(srcFolder + '/' + projectFileName);
 
     if (!overWrite && fs.existsSync(projectFilePath))
         throw new Error(errors.CREATE_PROJECT_ALREADY_EXISTS);
@@ -357,7 +355,7 @@ export function createProjectRootSync(srcFile: string, defaultOptions: ts.Compil
     projectSpec.exclude = ["node_modules", "typings/browser", "typings/browser.d.ts"];
 
     fs.writeFileSync(projectFilePath, json.stringify(projectSpec, os.EOL));
-    return getProjectSync(srcFile);
+    return getProjectSync(srcFolder);
 }
 
 //////////////////////////////////////////////////////////////////////
