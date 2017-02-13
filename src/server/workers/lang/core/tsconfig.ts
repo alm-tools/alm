@@ -371,6 +371,7 @@ const typescriptEnumMap = {
         'es2015': ts.ScriptTarget.ES2015,
         'es2016': ts.ScriptTarget.ES2016,
         'es2017': ts.ScriptTarget.ES2017,
+        'esnext': ts.ScriptTarget.ESNext,
         'next': ts.ScriptTarget.ESNext,
         'latest': ts.ScriptTarget.Latest
     },
