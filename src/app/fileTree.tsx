@@ -22,6 +22,7 @@ import * as pure from "../common/pure";
 import { tabState } from "./tabs/v2/appTabsContainer";
 import * as settings from "./state/settings";
 import * as typestyle from "typestyle";
+import { throttle } from '../common/utils';
 type TruthTable = utils.TruthTable;
 
 
@@ -856,7 +857,7 @@ export class FileTree extends BaseComponent<Props, State>{
         settings.fileTreeWidth.set(width);
     }
 
-    setupTree = (props: Props) => {
+    setupTree = throttle((props: Props) => {
         let filePaths = props.filePaths.filter(fp => fp.type == types.FilePathType.File).map(fp => fp.filePath);
 
         // initial boot up
@@ -959,7 +960,7 @@ export class FileTree extends BaseComponent<Props, State>{
                 this.focusOnPath(this.state.treeRoot.filePath);
             }, 500);
         }
-    }
+    }, 1000);
 
     handleToggleDir = (evt: React.SyntheticEvent, item: TreeDirItem) => {
         evt.stopPropagation();
