@@ -305,7 +305,7 @@ export class Parent extends RequesterResponder {
             this.child = cp.fork(
                 childJsPath,
                 customArguments,
-                { cwd: path.dirname(childJsPath), env: {} }
+                { cwd: path.dirname(childJsPath), env: process.env }
             );
 
             this.child.on('error', (error) => {
