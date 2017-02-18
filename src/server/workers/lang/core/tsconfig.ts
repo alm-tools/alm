@@ -344,7 +344,20 @@ export function getProjectSync(pathOrSrcFile: string): GetProjectSyncResponse {
 }
 
 /** Creates a project by source file location. Defaults are assumed unless overriden by the optional spec. */
-export function createProjectRootSync(srcFolder: string, defaultOptions: ts.CompilerOptions = defaultCompilerOptions, overWrite = true) {
+export function createProjectRootSync(
+    srcFolder: string,
+    defaultOptions: ts.CompilerOptions = extend(defaultCompilerOptions, {
+        jsx: ts.JsxEmit.React,
+        declaration: true,
+        experimentalDecorators: true,
+        emitDecoratorMetadata: true,
+        outDir: 'lib',
+        lib: [
+            'dom',
+            'es2017',
+        ],
+    }),
+    overWrite = true) {
     if (!fs.existsSync(srcFolder)) {
         throw new Error(errors.CREATE_FOLDER_MUST_EXIST);
     }
@@ -359,6 +372,7 @@ export function createProjectRootSync(srcFolder: string, defaultOptions: ts.Comp
     projectSpec.compilerOptions = tsToRawCompilerOptions(defaultOptions);
     projectSpec.compileOnSave = true;
     projectSpec.exclude = ["node_modules"];
+    projectSpec.include = ["src"];
 
     fs.writeFileSync(projectFilePath, json.stringify(projectSpec, os.EOL));
     return getProjectSync(srcFolder);
