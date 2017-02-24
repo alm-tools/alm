@@ -265,6 +265,7 @@ function getStyleForToken(
                 case 'static':
                 case 'public':
                 case 'private':
+                case 'protected':
                 case 'get':
                 case 'set':
                     return 'qualifier';
