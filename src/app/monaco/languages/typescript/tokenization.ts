@@ -289,7 +289,10 @@ function getStyleForToken(
             else if (lastToken.endsWith('@')){
                 return decoratorClassification;
             }
-            else if (lastToken.endsWith('type')){
+            else if (
+                lastToken.endsWith('type')
+                || lastToken.endsWith('extends')
+            ) {
                 return 'variable-2';
             }
             else if (
