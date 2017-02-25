@@ -12,7 +12,7 @@ import { connect } from "react-redux";
 import { StoreState } from "./state/state";
 import { Icon } from "./components/icon";
 import * as commands from "./commands/commands";
-let {DraggableCore} = ui;
+let { DraggableCore } = ui;
 import { getDirectory, getFileName } from "../common/utils";
 import { Robocop } from "./components/robocop";
 import { inputDialog } from "./dialogs/inputDialog";
@@ -47,7 +47,7 @@ interface TreeFileItem {
     filePath: string;
 }
 type SelectedPaths = { [filePath: string]: { isDir: boolean } };
-type SelectedPathsReadonly = { readonly[filePath: string]: { isDir: boolean } };
+type SelectedPathsReadonly = { readonly [filePath: string]: { isDir: boolean } };
 let dirSelected = { isDir: true };
 let fileSelected = { isDir: false };
 
@@ -446,11 +446,16 @@ export class FileTree extends BaseComponent<Props, State>{
                 return false;
             }
 
+            if (selectedFilePaths.some(fp => fp == this.state.treeRoot.filePath)) {
+                ui.notifyWarningNormalDisappear(`You cannot delete the root working directory`);
+                return false;
+            }
+
+
             inputDialog.open({
                 hideInput: true,
                 header: `Delete ${selectedFilePaths.length > 1 ? selectedFilePaths.length + ' items' : utils.getFileName(selectedFilePaths[0])}?`,
                 onOk: () => {
-                    // TODO: delete
                     let files = selectedFilePathsDetails.filter(x => !x.isDir).map(x => x.filePath);
                     let dirs = selectedFilePathsDetails.filter(x => x.isDir).map(x => x.filePath);
                     server.deleteFromDisk({ files, dirs }).then(res => {
@@ -512,7 +517,7 @@ export class FileTree extends BaseComponent<Props, State>{
          */
         handlers.bind('enter', () => {
             if (this.loading) return;
-            let {selectedFilePath, isDir} = goDownToSmallestSelection();
+            let { selectedFilePath, isDir } = goDownToSmallestSelection();
             if (isDir) {
                 this.state.expansionState[selectedFilePath] = !this.state.expansionState[selectedFilePath];
                 this.setState({ expansionState: this.state.expansionState });
@@ -523,7 +528,7 @@ export class FileTree extends BaseComponent<Props, State>{
         });
         handlers.bind('up', () => {
             if (this.loading) return;
-            let {selectedFilePath, isDir} = goDownToSmallestSelection();
+            let { selectedFilePath, isDir } = goDownToSmallestSelection();
 
             // if root do nothing
             if (selectedFilePath == this.state.treeRoot.filePath) {
@@ -585,7 +590,7 @@ export class FileTree extends BaseComponent<Props, State>{
         });
         handlers.bind('down', () => {
             if (this.loading) return;
-            let {selectedFilePath, isDir} = goDownToSmallestSelection();
+            let { selectedFilePath, isDir } = goDownToSmallestSelection();
 
             /** Goes to next sibling on any (recursive) parent folder */
             let gotoNextSiblingHighUp = (treeItem: TreeDirItem) => {
@@ -642,7 +647,7 @@ export class FileTree extends BaseComponent<Props, State>{
         });
         handlers.bind('left', () => {
             if (this.loading) return;
-            let {selectedFilePath, isDir} = goDownToSmallestSelection();
+            let { selectedFilePath, isDir } = goDownToSmallestSelection();
             if (isDir) {
                 // if expanded then collapse
                 if (this.state.expansionState[selectedFilePath]) {
@@ -662,7 +667,7 @@ export class FileTree extends BaseComponent<Props, State>{
         });
         handlers.bind('right', () => {
             if (this.loading) return;
-            let {selectedFilePath, isDir} = goDownToSmallestSelection();
+            let { selectedFilePath, isDir } = goDownToSmallestSelection();
             if (isDir) {
                 // just expand
                 this.state.expansionState[selectedFilePath] = true;
@@ -825,7 +830,7 @@ export class FileTree extends BaseComponent<Props, State>{
                 expanded={expanded}
                 handleToggleDir={this.handleToggleDir}
                 activeProjectFilePathTruthTable={this.props.activeProjectFilePathTruthTable}
-                />].concat(sub)
+            />].concat(sub)
         );
     }
     renderDirSub(item: TreeDirItem, depth: number) {
@@ -1015,7 +1020,7 @@ export namespace TreeNode {
         }
 
         render() {
-            let {item, depth, expanded} = this.props;
+            let { item, depth, expanded } = this.props;
             let icon = expanded ? 'folder-open' : 'folder';
             let selectedStyle = this.props.selected ? treeItemSelectedStyle : {};
             let inProjectStyle = this.props.activeProjectFilePathTruthTable[item.filePath] ? treeItemInProjectStyle : {};
