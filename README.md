@@ -96,7 +96,7 @@ A key motivation for this project is to educate the community of about creating 
 
 MIT
 
-[docs]: https://basarat.gitbooks.io/alm/content/
+[docs]: https://alm-tools.gitbooks.io/alm/content/
 [contributing]: https://basarat.gitbooks.io/alm/content/contributing/
 [cover]: https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/cover_small.png
 [npm-image]: https://img.shields.io/npm/v/alm.svg?style=flat
