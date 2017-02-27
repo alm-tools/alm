@@ -13,7 +13,7 @@
 
 ## Why
 
-[Checkout the website](http://alm.tools) and if you need more reasons [we have them](https://basarat.gitbooks.io/alm/content/contributing/why.html).
+[Checkout the website](http://alm.tools) and if you need more reasons [we have them](https://alm-tools.gitbooks.io/alm/content/contributing/why.html).
 
 ## Requirements
 
@@ -97,7 +97,7 @@ A key motivation for this project is to educate the community of about creating 
 MIT
 
 [docs]: https://alm-tools.gitbooks.io/alm/content/
-[contributing]: https://basarat.gitbooks.io/alm/content/contributing/
+[contributing]: https://alm-tools.gitbooks.io/alm/content/contributing/
 [cover]: https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/cover_small.png
 [npm-image]: https://img.shields.io/npm/v/alm.svg?style=flat
 [npm-url]: https://npmjs.org/package/alm
