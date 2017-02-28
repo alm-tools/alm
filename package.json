@@ -72,7 +72,7 @@
     "source-map-support": "0.4.3",
     "ts-loader": "2.0.0",
     "ts-node": "2.0.0",
-    "tslint": "4.3.0-dev.0",
+    "tslint": "4.5.1",
     "typescript": "2.2.0-dev.20170207",
     "update-notifier": "1.0.2",
     "webpack": "^1.11.0"
