@@ -213,7 +213,7 @@ namespace LinterImplementation {
 
                     filePaths.push(filePath);
 
-                    if (lintResult.failureCount) {
+                    if (lintResult.errorCount || lintResult.warningCount) {
                         // console.log(linterMessagePrefix, filePath, lintResult.failureCount); // DEBUG
                         errors = errors.concat(
                             lintResult.failures.map(
