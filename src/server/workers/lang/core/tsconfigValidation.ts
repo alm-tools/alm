@@ -12,7 +12,7 @@ const compilerOptionsValidation: simpleValidator.ValidationInfo = {
     charset: { type: types.string },
     codepage: { type: types.number },
     declaration: { type: types.boolean },
-    declarationDir: { type: types.boolean },
+    declarationDir: { type: types.string },
     diagnostics: { type: types.boolean },
     emitBOM: { type: types.boolean },
     experimentalAsyncFunctions: { type: types.boolean },
