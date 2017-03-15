@@ -107,7 +107,7 @@
     "react-redux": "4.4.5",
     "react-toggle": "2.1.1",
     "redux": "3.5.2",
-    "style-loader": "^0.12.3",
+    "style-loader": "^0.14.0",
     "toastr": "^2.1.2",
     "typestyle": "1.1.1",
     "url-loader": "^0.5.6",
