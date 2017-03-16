@@ -35,7 +35,7 @@ export interface State {
 export class LiveDemoView extends ui.BaseComponent<Props, State> {
     output = '';
     filePath = '';
-    constructor(props:Props) {
+    constructor(props: Props) {
         super(props);
         this.state = {
             status: 'running'
@@ -65,6 +65,10 @@ export class LiveDemoView extends ui.BaseComponent<Props, State> {
                 }
             })
         );
+        this.disposible.add(commands.ensureLiveDemoTab.on(({ filePath }) => {
+            this.filePath = filePath;
+            server.enableLiveDemo({ filePath });
+        }));
 
         // Listen to tab events
         const api = this.props.api;
@@ -164,13 +168,13 @@ export class LiveDemoView extends ui.BaseComponent<Props, State> {
         findPrevious: (options: FindOptions) => {
         },
 
-        replaceNext: ({newText}: { newText: string }) => {
+        replaceNext: ({ newText }: { newText: string }) => {
         },
 
-        replacePrevious: ({newText}: { newText: string }) => {
+        replacePrevious: ({ newText }: { newText: string }) => {
         },
 
-        replaceAll: ({newText}: { newText: string }) => {
+        replaceAll: ({ newText }: { newText: string }) => {
         }
     }
 }

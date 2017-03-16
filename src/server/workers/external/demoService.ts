@@ -88,7 +88,7 @@ export namespace WorkerImplementation {
     export let currentFilePath = '';
     export const liveDemoData = new TypedEvent<types.LiveDemoData>();
 
-    export const enableLiveDemo = ({filePath}: { filePath: string }) => {
+    export const enableLiveDemo = ({ filePath }: { filePath: string }) => {
         console.log(workerPrefix, `Started on filePath: ${filePath}`);
         if (executor) {
             executor.dispose();
