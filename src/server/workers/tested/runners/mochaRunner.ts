@@ -6,7 +6,7 @@ import * as cp from "child_process";
 import * as utils from "../../../../common/utils";
 import * as fsu from "../../../utils/fsu";
 import * as json from "../../../../common/json";
-import {makeStack, readAndDeleteDataFile, makeTestLogPositionFromMochaError} from "./instrumenterCommon";
+import { makeStack, readAndDeleteDataFile, makeTestLogPositionFromMochaError } from "./instrumenterCommon";
 
 
 /**
@@ -34,7 +34,7 @@ const tsNodeCompilerOptions = JSON.stringify({
 });
 
 /** Main utility function to execute a command */
-let mochaExec = (filePath:string) => {
+let mochaExec = (filePath: string) => {
     /** Find key paths */
     const tsNodePath = `${nodeModulesFolder}/ts-node`;
     const mochaPath = `${nodeModulesFolder}/mocha/bin/_mocha`;
@@ -99,7 +99,13 @@ let mochaExec = (filePath:string) => {
         });
 
         child.on('close', (code) => {
-            resolve(parseMochaJSON({ output: output.join(''), filePath }));
+            if (code !== 0) {
+                console.error('MOCHA / TS-NODE existed with code 1');
+                reject('error');
+            }
+            else {
+                resolve(parseMochaJSON({ output: output.join(''), filePath }));
+            }
         });
     });
 }

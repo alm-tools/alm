@@ -3,9 +3,9 @@
  * So don't depend on any other `js` / `ts` (althought it might just work fine)
  */
 import * as types from "../../../../common/types";
-export {TestLog, TestSuitePosition, TestItPosition} from "../../../../common/types";
-import {stringify, parse} from "../../../../common/json";
-export {stringify} from "../../../../common/json";
+export { TestLog, TestSuitePosition, TestItPosition } from "../../../../common/types";
+import { stringify, parse } from "../../../../common/json";
+export { stringify } from "../../../../common/json";
 import { writeFile, readFile, deleteFile, consistentPath, travelUpTheDirectoryTreeTillYouFind } from "../../../utils/fsu";
 
 /**
@@ -30,7 +30,7 @@ export const makeStack = (raw: string): types.TestErrorStack => {
 
     /** For lines that have function name, they end with `)`. So detect and remove leading `(` for them */
     lines = lines.map(l => {
-        if (l.endsWith(')')){
+        if (l.endsWith(')')) {
             const withStartRemoved = l.substr(l.indexOf('(') + 1);
             const withEndRemoved = withStartRemoved.substr(0, withStartRemoved.length - 1);
             return withEndRemoved;
@@ -67,7 +67,8 @@ export const makeTestLogPosition = (filePath: string, stack: types.TestErrorStac
     const tipOfTheStack = stack[0];
     const result: types.TestLogPosition = {
         isActualLastInFile: tipOfTheStack.filePath === filePath,
-        lastPositionInFile: stack.find(s => s.filePath === filePath).position,
+        lastPositionInFile: stack.find(s => s.filePath === filePath) ? stack.find(s => s.filePath === filePath).position
+            : { line: 0, ch: 0 },
         stack
     }
     return result;
@@ -89,8 +90,8 @@ export const makeTestLogPositionFromMochaError = (
     const tipOfTheStack = stack[0];
 
     const lastPositionInFile = stack.find(s => s.filePath === filePath)
-    ? stack.find(s => s.filePath === filePath).position
-    : positionIfFilePathNotFound;
+        ? stack.find(s => s.filePath === filePath).position
+        : positionIfFilePathNotFound;
 
     const result: types.TestLogPosition = {
         isActualLastInFile: !!tipOfTheStack && tipOfTheStack.filePath === filePath,
@@ -113,7 +114,7 @@ export const stackFromCaller = () => makeStack((new Error() as any).stack)
  * - the instrumenter
  * - to the runner
  */
-const getDataFilePath = (filePath:string) => filePath + '_almTestData.json';
+const getDataFilePath = (filePath: string) => filePath + '_almTestData.json';
 export type DataFileContents = {
     logs: types.TestLog[]
     suites: types.TestSuitePosition[],
@@ -122,7 +123,7 @@ export type DataFileContents = {
 export const writeDataFile = (filePath: string, contents: DataFileContents) => {
     const dataFilePath = getDataFilePath(filePath);
     const contentsStr = stringify(contents);
-    writeFile(dataFilePath,contentsStr);
+    writeFile(dataFilePath, contentsStr);
 }
 export const readAndDeleteDataFile = (filePath: string) => {
     const dataFilePath = getDataFilePath(filePath);
