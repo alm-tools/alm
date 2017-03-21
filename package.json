@@ -75,7 +75,7 @@
     "tslint": "5.0.0-dev.0",
     "typescript": "2.3.0-dev.20170308",
     "update-notifier": "1.0.2",
-    "webpack": "^1.11.0"
+    "webpack": "^2.3.0"
   },
   "devDependencies": {
     "@types/electron": "^1.4.31",
