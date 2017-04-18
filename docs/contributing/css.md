@@ -18,9 +18,8 @@ Whenever possible prefer the Editor background color.
 
 * tips.tsx (in `appTabsContainer.css`).
 
-# FStyle
-
-We use free-style to manage our CSS in JS (TS). Just a bit of naming convention:
+# TypeStyle
+We use typestyle to manage our CSS in JS (TS). Just a bit of naming convention:
 
 * `**ClassName` : must be used in `className=` attribute
 * `**Base` : must be used to make a `ClassName`.
