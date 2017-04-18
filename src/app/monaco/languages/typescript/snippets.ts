@@ -94,7 +94,7 @@ export const defaultSnippets: TemplateConfig[] = [
     {
         "name": "function",
         "description": "function",
-        "template": "function {{}}({{}}) {\n\t{{}}\n}"
+        "template": "function {{name}}({{args}}) {\n\t{{}}\n}"
     },
     {
         "name": "new",
