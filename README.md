@@ -3,6 +3,8 @@
 # The best IDE for TypeScript
 
 [![Join the chat at  gitter][gitter-image]][gitter-url]
+[![TypeScript](https://badges.frapsoft.com/typescript/love/typescript.png?v=101)](https://github.com/ellerbrock/typescript-badges/)
+
 
 > This project is powered by github 🌟s ^ go ahead and [star it please](https://github.com/alm-tools/alm/stargazers).
 
