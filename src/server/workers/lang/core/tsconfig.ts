@@ -492,7 +492,7 @@ function rawToTsCompilerOptions(jsonOptions: CompilerOptions, projectDir: string
  * Compiler to Raw
  */
 function tsToRawCompilerOptions(compilerOptions: ts.CompilerOptions): CompilerOptions {
-    const jsonOptions = extend({}, compilerOptions);
+    const jsonOptions = extend({}, compilerOptions) as (ts.CompilerOptions & CompilerOptions);
 
     /**
      * Convert enums to raw

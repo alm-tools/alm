@@ -358,21 +358,11 @@ export function removeUnusedImports(query: Types.FilePathQuery): Promise<types.R
 function getSymbolsForFile(project: Project, sourceFile: ts.SourceFile): types.NavigateToItem[] {
     let getNodeKind = ts.getNodeKind;
     function getDeclarationName(declaration: ts.Declaration): string {
-        let result = getTextOfIdentifierOrLiteral(declaration.name);
-        if (result !== undefined) {
-            return result;
+        let result = ts.getNameOfDeclaration(declaration);
+        if (result === undefined) {
+            return '';
         }
-
-        if (declaration.name.kind === ts.SyntaxKind.ComputedPropertyName) {
-            let expr = (<ts.ComputedPropertyName>declaration.name).expression;
-            if (expr.kind === ts.SyntaxKind.PropertyAccessExpression) {
-                return (<ts.PropertyAccessExpression>expr).name.text;
-            }
-
-            return getTextOfIdentifierOrLiteral(expr);
-        }
-
-        return undefined;
+        return result.getText();
     }
     function getTextOfIdentifierOrLiteral(node: ts.Node) {
         if (node.kind === ts.SyntaxKind.Identifier ||
@@ -563,7 +553,9 @@ function getInfoForQuickFixAnalysis(query: Types.GetQuickFixesQuery): QuickFixQu
         service,
         typeChecker,
         filePath: query.filePath,
-        indentSize: query.indentSize
+        formatOptions: {
+            indentSize: query.indentSize
+        }
     };
 }
 
@@ -587,7 +579,7 @@ export function getQuickFixes(query: Types.GetQuickFixesQuery): Promise<Types.Ge
      * TS Code fixes
      * They comes with the `changes` on query. So we use that on `get` as well as `apply`
      */
-    const tsCodeFixes = project.languageService.getCodeFixesAtPosition(query.filePath, query.position, query.position, info.positionErrors.map(e => e.code));
+    const tsCodeFixes = project.languageService.getCodeFixesAtPosition(query.filePath, query.position, query.position, info.positionErrors.map(e => e.code), info.formatOptions);
     if (tsCodeFixes.length) {
         tsCodeFixes.forEach((fix, i) => {
             fixes.unshift({
@@ -607,7 +599,7 @@ export function applyQuickFix(query: Types.ApplyQuickFixQuery): Promise<Types.Ap
     if (query.key.startsWith(tsCodefixPrefix)) {
         /** Find the code fix */
         let project = getProject(query.filePath);
-        const tsCodeFixes = project.languageService.getCodeFixesAtPosition(query.filePath, query.position, query.position, info.positionErrors.map(e => e.code));
+        const tsCodeFixes = project.languageService.getCodeFixesAtPosition(query.filePath, query.position, query.position, info.positionErrors.map(e => e.code), info.formatOptions);
         const index = +query.key.substr(tsCodefixPrefix.length);
         const tsCodeFix = tsCodeFixes[index];
 

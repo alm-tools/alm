@@ -134,7 +134,7 @@ export function duplicateDir(data: { src: string, dest: string }) {
 
 import * as mv from "mv";
 export function movePath(data: { src: string, dest: string }): Promise<string> {
-    return new Promise((resolve) => {
+    return new Promise<string>((resolve) => {
         mv(data.src, data.dest, { mkdirp: true, clobber: true }, (err) => {
             if (err) console.log('Move failed', err);
             resolve(JSON.stringify(err));
@@ -142,15 +142,15 @@ export function movePath(data: { src: string, dest: string }): Promise<string> {
     });
 }
 import * as open from "open";
-export function launchDirectory(data: { filePath: string }): Promise<string> {
-    return new Promise((resolve) => {
+export function launchDirectory(data: { filePath: string }): Promise<{ error?: Error }> {
+    return new Promise<{ error?: Error }>((resolve) => {
         open(data.filePath);
         resolve({ error: null })
     });
 }
 import * as cp from 'child_process';
-export function launchTerminal(data: { filePath: string }): Promise<string> {
-    return new Promise((resolve) => {
+export function launchTerminal(data: { filePath: string }): Promise<{ error?: Error }> {
+    return new Promise<{ error?: Error }>((resolve) => {
         if (process.platform === 'darwin') {
             cp.execSync(`osascript -e 'tell application "Terminal" to activate' -e 'tell application "Terminal" to do script "cd ${data.filePath}"'`);
         }

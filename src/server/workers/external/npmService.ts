@@ -19,13 +19,13 @@ const getPackageJsonFilePath = () => {
 
 /** Main utility function to execute a command */
 let npmCmd = (...args: string[]): Promise<string> => {
-    return new Promise((resolve, reject) => {
+    return new Promise<string>((resolve, reject) => {
         const cwd = wd.getProjectRoot();
         cp.exec(`npm ${args.join(' ')}`, { cwd: cwd }, (err, stdout, stderr) => {
             if (stderr.toString().trim().length) {
                 return resolve(stderr.toString());
             }
-            return resolve(stdout);
+            return resolve(stdout.toString());
         });
     });
 }

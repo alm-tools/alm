@@ -9,12 +9,12 @@ import {stringify} from '../../../common/json';
 
 /** Main utility function to execute a command */
 let gitCmd = (...args: string[]): Promise<string> => {
-    return new Promise((resolve, reject) => {
+    return new Promise<string>((resolve, reject) => {
         cp.exec(`git ${args.join(' ')}`, { cwd: wd.getProjectRoot() }, (err, stdout, stderr) => {
             if (stderr.toString().trim().length) {
                 return resolve(stderr.toString());
             }
-            return resolve(stdout);
+            return resolve(stdout.toString());
         });
     });
 }
@@ -55,9 +55,10 @@ export function gitReset(args: { filePath: string }): Promise<string> {
     fmc.saveOpenFile(args.filePath);
     // Delay because if we reset the file immediately the ^ save
     // makes the *change* detection in file model view to ignore what happened.
-    return new Promise((resolve, reject) =>
+    return new Promise<string>((resolve, reject) =>
         setTimeout(() => {
-            gitCmd('checkout --', args.filePath).then(resolve, reject);
+            gitCmd('checkout --', args.filePath)
+                .then(resolve, reject);
         }, 500)
     );
 }

@@ -6,9 +6,9 @@ import * as utils from "../../../common/utils";
 
 import * as glob from "glob";
 import chokidar = require('chokidar');
-import {throttle} from "../../../common/utils";
+import { throttle } from "../../../common/utils";
 import path = require('path');
-import {TypedEvent}  from "../../../common/events";
+import { TypedEvent } from "../../../common/events";
 import * as types from "../../../common/types";
 import * as chalk from "chalk";
 
@@ -86,8 +86,8 @@ namespace Worker {
             // Unless of course this is the *initial* sending of file listing
             if (bufferedAdded.length || bufferedRemoved.length) {
                 master.fileListingDelta({
-                    addedFilePaths: bufferedAdded.filter(x=>filterName(x.filePath)),
-                    removedFilePaths: bufferedRemoved.filter(x=>filterName(x.filePath))
+                    addedFilePaths: bufferedAdded.filter(x => filterName(x.filePath)),
+                    removedFilePaths: bufferedRemoved.filter(x => filterName(x.filePath))
                 });
                 bufferedAdded = [];
                 bufferedRemoved = [];
@@ -106,7 +106,7 @@ namespace Worker {
          * No side effects in this function
          */
         const getListing = (dirPath: string): Promise<types.FilePath[]> => {
-            return new Promise((resolve) => {
+            return new Promise<types.FilePath[]>((resolve) => {
                 let mg = new glob.Glob('**', { cwd: dirPath, dot: true }, (e, globResult) => {
                     if (e) {
                         console.error('Globbing error:', e);
@@ -130,7 +130,7 @@ namespace Worker {
         (function() {
 
             /** These things are coming on a mac for some reason */
-            const ignoreThisPathThatGlobGivesForUnknownReasons = (filePath:string) => {
+            const ignoreThisPathThatGlobGivesForUnknownReasons = (filePath: string) => {
                 return filePath.includes('0.0.0.0') || (filePath.includes('[object Object]'))
             }
 
@@ -161,7 +161,7 @@ namespace Worker {
                         filePath: fsu.consistentPath(p),
                         type,
                     }
-                }).filter(x=>!!x);
+                }).filter(x => !!x);
 
                 // Initial search complete!
                 completed = true;
@@ -298,7 +298,7 @@ namespace Worker {
 // Ensure that the namespace follows the contract
 const _checkTypes: typeof contract.worker = Worker;
 // run worker
-export const {master} = sw.runWorker({
+export const { master } = sw.runWorker({
     workerImplementation: Worker,
     masterContract: contract.master
 });
@@ -330,7 +330,7 @@ function abortDueToTooManyFiles() {
 - Start the IDE in a project folder (e.g. '/your/project')`;
     master.abort({ errorMessage });
 }
-process.on('error',()=>{
+process.on('error', () => {
     console.log('here');
     process.exit();
 })

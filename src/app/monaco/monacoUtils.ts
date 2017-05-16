@@ -64,7 +64,7 @@ export function onlyLastCallWithDelay<T>(call: () => Promise<T>, token: monaco.C
     let delay = 500;
     let timeout: any;
 
-    const p = new Promise((resolve, reject) => {
+    const p = new Promise<T>((resolve, reject) => {
         const later = () => {
             if (token.isCancellationRequested) reject('cancelled');
             else {

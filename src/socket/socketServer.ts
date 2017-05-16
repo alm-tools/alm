@@ -55,7 +55,7 @@ namespace Server {
         let file = fmc.getOrCreateOpenFile(data.filePath, /*autoCreate*/ true);
         return resolve({ contents: file.getContents(), saved: file.saved(), editorOptions: file.editorOptions });
     }
-    export var closeFile: typeof contract.server.openFile = (data) => {
+    export var closeFile: typeof contract.server.closeFile = (data) => {
         fmc.closeOpenFile(data.filePath);
         return resolve({});
     }
@@ -71,7 +71,7 @@ namespace Server {
         serverGotExplicitSaveCommand.emit({ filePath: data.filePath });
         return resolve({});
     }
-    export var getFileStatus: typeof contract.server.openFile = (data) => {
+    export var getFileStatus: typeof contract.server.getFileStatus = (data) => {
         let file = fmc.getOrCreateOpenFile(data.filePath, /*autoCreate*/ true);
         return resolve({ saved: file.saved() });
     }
@@ -102,14 +102,10 @@ namespace Server {
         });
     }
     export var launchDirectory: typeof contract.server.launchDirectory = (data) => {
-        return fmc.launchDirectory(data).then(error => {
-            return { error };
-        });
+        return fmc.launchDirectory(data);
     }
     export var launchTerminal: typeof contract.server.launchTerminal = (data) => {
-        return fmc.launchTerminal(data).then(error => {
-            return { error };
-        });
+        return fmc.launchTerminal(data);
     }
 
     /**

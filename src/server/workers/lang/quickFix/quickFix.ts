@@ -20,7 +20,7 @@ export interface QuickFixQueryInformation {
     position: number;
     positionNode: ts.Node;
     filePath: string;
-    indentSize: number;
+    formatOptions: ts.FormatCodeSettings;
 
     /**
      * Either the previous or the current.

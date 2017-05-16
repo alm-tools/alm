@@ -51,7 +51,7 @@ export class ImplementInterface implements QuickFix {
         // And the correct indent
         var indentLength = info.service.getIndentationAtPosition(
             classTarget.getSourceFile().fileName, lastBrace.getStart(), info.project.configFile.project.formatCodeOptions);
-        var indent = Array(indentLength + info.indentSize + 1).join(' ');
+        var indent = Array(indentLength + info.formatOptions.indentSize + 1).join(' ');
 
         let refactorings: Refactoring[] = [];
 

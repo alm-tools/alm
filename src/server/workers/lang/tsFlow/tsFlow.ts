@@ -4,7 +4,7 @@
 /** Imports */
 import * as utils from "../../../../common/utils";
 import * as types from "../../../../common/types";
-import {getDocumentedTypeLocation} from "../modules/astUtils";
+import { getDocumentedTypeLocation } from "../modules/astUtils";
 
 /** We just use the *active* project if any */
 import * as activeProject from "../activeProject";
@@ -35,7 +35,7 @@ export function getFlowRoots(query: types.TsFlowRootQuery): Promise<types.TsFlow
     }
 
 
-    return utils.resolve({flowPoints});
+    return utils.resolve({ flowPoints });
 }
 
 
@@ -43,23 +43,6 @@ export function getFlowRoots(query: types.TsFlowRootQuery): Promise<types.TsFlow
  * Utility functions
  */
 let getNodeKind = ts.getNodeKind;
-function getDeclarationName(declaration: ts.Declaration): string {
-    let result = getTextOfIdentifierOrLiteral(declaration.name);
-    if (result !== undefined) {
-        return result;
-    }
-
-    if (declaration.name.kind === ts.SyntaxKind.ComputedPropertyName) {
-        let expr = (<ts.ComputedPropertyName>declaration.name).expression;
-        if (expr.kind === ts.SyntaxKind.PropertyAccessExpression) {
-            return (<ts.PropertyAccessExpression>expr).name.text;
-        }
-
-        return getTextOfIdentifierOrLiteral(expr);
-    }
-
-    return undefined;
-}
 function getTextOfIdentifierOrLiteral(node: ts.Node) {
     if (node.kind === ts.SyntaxKind.Identifier ||
         node.kind === ts.SyntaxKind.StringLiteral ||
@@ -69,4 +52,11 @@ function getTextOfIdentifierOrLiteral(node: ts.Node) {
     }
 
     return undefined;
+}
+function getDeclarationName(declaration: ts.Declaration): string {
+    let result = ts.getNameOfDeclaration(declaration);
+    if (result === undefined) {
+        return '';
+    }
+    return result.getText();
 }
