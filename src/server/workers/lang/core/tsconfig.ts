@@ -81,6 +81,7 @@ interface CompilerOptions {
     skipLibCheck?: boolean;
     sourceMap?: boolean;
     sourceRoot?: string;
+    strict?: boolean;
     strictNullChecks?: boolean;
     stripInternal?: boolean;
     suppressExcessPropertyErrors?: boolean;

@@ -61,6 +61,7 @@ const compilerOptionsValidation: simpleValidator.ValidationInfo = {
     removeComments: { type: types.boolean },
     rootDir: { type: types.string },
     rootDirs: { type: types.array, sub: { type: types.string } },
+    strict: { type: types.boolean },
     skipDefaultLibCheck: { type: types.boolean },
     skipLibCheck: { type: types.boolean },
     sourceMap: { type: types.boolean },
