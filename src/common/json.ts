@@ -11,6 +11,7 @@ export interface ParsedData<T> {
  * Over JSON.parse:
  * * allows BOM
  * * allows // comments
+ * * allows trailing and single line /* comments
  * * provides a typed error detail on parse error
  */
 export function parse<T>(str: string): ParsedData<T> {
@@ -23,7 +24,7 @@ export function parse<T>(str: string): ParsedData<T> {
             return '';
         }
         else {
-            return x;
+            return x.split('/*')[0];
         }
     });
 
