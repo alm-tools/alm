@@ -100,7 +100,7 @@
     "nodemon": "1.11.0",
     "normalize.css": "^5.0.0",
     "onresize": "^1.0.1",
-    "react": "15.3.2",
+    "react": "15.5.0",
     "react-dom": "15.3.2",
     "react-draggable": "2.2.2",
     "react-modal": "1.2.1",
