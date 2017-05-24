@@ -156,8 +156,9 @@ serverState.addRoute(app);
 if (fs.existsSync(__dirname + '/../package.json')) {
     const pkg = require('../package.json');
     const version = pkg.version;
-    console.log(`Version: ${version}`)
-    serverState.setServerState({ version });
+    const typescriptVersion = pkg.dependencies.typescript;
+    console.log(`Version: ${version}, TypeScript version: ${typescriptVersion}`)
+    serverState.setServerState({ version, typescriptVersion });
     const notifier = require('update-notifier')({
       pkg,
       // updateCheckInterval: 0 // DEBUG
@@ -172,6 +173,6 @@ if (fs.existsSync(__dirname + '/../package.json')) {
             type: 'latest' | 'major' | 'minor' | 'patch' | 'prerelease' | 'build';
             name: string;
         } = notifier.update;
-        serverState.setServerState({ update, version });
+        serverState.setServerState({ update, version, typescriptVersion });
     }
 }

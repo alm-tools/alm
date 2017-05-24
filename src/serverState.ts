@@ -8,10 +8,12 @@ export interface ServerState {
         type: 'latest' | 'major' | 'minor' | 'patch' | 'prerelease' | 'build';
         name: string;
     },
-    version: string
+    version: string,
+    typescriptVersion: string,
 }
 export let serverState: ServerState = {
-    version: '0.0.0'
+    version: '0.0.0',
+    typescriptVersion: '0.0.0',
 };
 export function setServerState(state: ServerState) {
     serverState = state;

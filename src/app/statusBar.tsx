@@ -289,7 +289,7 @@ export class StatusBar extends BaseComponent<Props, State>{
                             :<span className="hint--left hint--error" data-hint="Disconnected from server"> <Icon style={{color:styles.errorColor, cursor:'pointer'}} name="spinner" spin={true} onClick={()=>ui.notifyWarningNormalDisappear("Disconneted from alm server")}/></span>}
                     </span>
                     <span style={csx.extend(styles.statusBarSection, styles.noSelect, styles.hand)}>
-                        <span style={{paddingRight: '2px'} as any} onClick={this.giveStar} className="hint--left" data-hint={`If you like it then you should have put a star on it 🌟. Also, go here for support. Version: ${serverState.version}`}>🌟</span>
+                        <span style={{paddingRight: '2px'} as any} onClick={this.giveStar} className="hint--left" data-hint={`If you like it then you should have put a star on it 🌟. Also, go here for support. Version: ${serverState.version}, TypeScript version: ${serverState.typescriptVersion}`}>🌟</span>
                         <span onClick={this.giveRose} className="hint--left" data-hint="Your love keep this rose alive 🌹">🌹</span>
                     </span>
                     {updateRendered}
