@@ -33,7 +33,8 @@ export let commands = {
 
 const startSearch = (editor: Editor, query: FindOptions) => {
     const ctrl = hackyGetSearchCtrl(editor);
-    if (!ctrl.getState().isRevealed) {
+    const state = ctrl.getState();
+    if (!state.isRevealed) {
         ctrl.start({
             forceRevealReplace: true,
             seedSearchStringFromSelection: false,
@@ -41,9 +42,18 @@ const startSearch = (editor: Editor, query: FindOptions) => {
             shouldAnimate: false,
         });
     }
-    ctrl.setSearchString(query.query);
-    // TODO: mon
-    // set other options as well
+    const {
+        query: searchString,
+        isRegex,
+        isCaseSensitive,
+        isFullWord
+    } = query;
+    ctrl.setSearchString(searchString);
+    state.change({
+        isRegex: isRegex,
+        matchCase: isCaseSensitive,
+        wholeWord: isFullWord
+    });
 };
 const hideSearch = (editor: Editor) => {
     const ctrl = hackyGetSearchCtrl(editor);
@@ -108,7 +118,15 @@ const hackyGetSearchCtrl = (editor: Editor) => {
         replace(): void;
         replaceAll(): void;
         getState(): {
-            isRevealed: boolean
+            /**
+             * https://github.com/Microsoft/vscode/blob/755d45a10785bf5008f27e10a8d607c4443dbf0c/src/vs/editor/contrib/find/common/findState.ts#L49
+             */
+            isRevealed: boolean,
+            change(newState: {
+                matchCase: boolean,
+                isRegex: boolean,
+                wholeWord: boolean,
+            }): void,
         },
         start(findStartOptions: {
             forceRevealReplace: boolean;
