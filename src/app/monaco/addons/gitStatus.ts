@@ -1,21 +1,13 @@
-/** TIP */
-// static ADDED_DECORATION_OPTIONS: common.IModelDecorationOptions = {
-//     linesDecorationsClassName: 'git-dirty-added-diff-glyph',
-//     isWholeLine: true,
-//     overviewRuler: {
-//         color: 'rgba(0, 122, 204, 0.6)',
-//         darkColor: 'rgba(0, 122, 204, 0.6)',
-//         position: common.OverviewRulerLane.Left
-//     }
-// };
-
 import * as typestyle from "typestyle";
 import * as commands from '../../commands/commands';
 /**
  * Some styles
  */
 
-/** We have a unified color in overview as having three colors there is mentally overloading */
+/**
+ * We have a unified color in overview as
+ * having three colors there is mentally overloading
+ **/
 const colorInOverView = 'rgba(0, 122, 204, 0.6)';
 
 const addedColor = '#008A00';
@@ -71,34 +63,9 @@ export function setup(editor: Editor): { dispose: () => void } {
 
     const filePath = editor.filePath;
 
-    // this._editor.changeDecorations((changeAccessor: editorCommon.IModelDecorationsChangeAccessor) => {
-    //     if (this._highlightedDecorationId !== null) {
-    //         changeAccessor.changeDecorationOptions(this._highlightedDecorationId, FindDecorations.createFindMatchDecorationOptions(false));
-    //         this._highlightedDecorationId = null;
-    //     }
-    //     if (newCurrentDecorationId !== null) {
-    //         this._highlightedDecorationId = newCurrentDecorationId;
-    //         changeAccessor.changeDecorationOptions(this._highlightedDecorationId, FindDecorations.createFindMatchDecorationOptions(true));
-    //     }
-    // });
-
     let lastDecorations: string[] = [];
     const refreshGitStatus = () => {
         server.gitDiff({ filePath }).then((res) => {
-            // TODO: do the rest
-
-            // const decorationId = "something-for-addition"; // TODO: mon : this is probably wrong
-            //
-            // editor.changeDecorations((changeAccessor: monaco.editor.IModelDecorationsChangeAccessor) => {
-			// 	if (this._highlightedDecorationId !== null) {
-			// 		changeAccessor.changeDecorationOptions(this._highlightedDecorationId, FindDecorations.createFindMatchDecorationOptions(false));
-			// 		this._highlightedDecorationId = null;
-			// 	}
-			// 	if (newCurrentDecorationId !== null) {
-			// 		this._highlightedDecorationId = newCurrentDecorationId;
-			// 		changeAccessor.changeDecorationOptions(this._highlightedDecorationId, FindDecorations.createFindMatchDecorationOptions(true));
-			// 	}
-			// });
 
 			// Add to new
             const addedDecorations = res.added.map(added => {
