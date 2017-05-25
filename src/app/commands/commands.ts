@@ -497,7 +497,7 @@ export const gitStatusNeedsRefresh = new events.TypedEvent<{}>();
  */
 export function register() {
 
-    commandRegistry.forEach(c=> {
+    commandRegistry.forEach(c => {
         if (c.config.context == CommandContext.Global
             && c.config.keyboardShortcut) {
             Mousetrap.bindGlobal(c.config.keyboardShortcut, function() {
@@ -524,42 +524,10 @@ export const windows = /win/i.test(navigator.platform);
 export const modName = mac ? '⌘' : 'Ctrl';
 const mod = mac ? 'Cmd' : 'Ctrl';
 
-/**
- * Commands *we* authored.
- * For new commands there are the following more places you need to update:
- * - Commands that have keyboard shortcuts just add them to the keymap below
- * - Otherwise they are registered manually at the bottom of the file
- */
-export let additionalEditorCommands = {
-    // TODO: mon
-    // renameVariable: '',
-    // gotoDefinition: '',
-    // findReferences: '',
-    // format: '',
-    // toggleBlaster: '',
-    // gitSoftResetFile: '',
-    // goToLine: '',
-    // quickFix: '',
-    // gotoTypeScriptSymbol: '',
-}
-utils.stringEnum(additionalEditorCommands);
-
 /** Load editor actions + keymaps */
-import {getActions}  from "./monacoActionLoader";
+import { getActions } from "./monacoActionLoader";
 const actions = getActions();
 // console.log(actions); // DEBUG
-
-// TODO: mon
-// Our additionalEditorCommands
-// sublimeMap[`F2`] = additionalEditorCommands.renameVariable;
-// sublimeMap[`${mod}-B`] = additionalEditorCommands.gotoDefinition;
-// sublimeMap[`Shift-${mod}-B`] = additionalEditorCommands.findReferences;
-// sublimeMap[`${mod}-Alt-L`] = additionalEditorCommands.format;
-// sublimeMap[`${mod}-Alt-O`] = additionalEditorCommands.toggleBlaster;
-// sublimeMap[`${mod}-Alt-Z`] = additionalEditorCommands.gitSoftResetFile;
-// sublimeMap[`${mod}-G`] = additionalEditorCommands.goToLine;
-// sublimeMap[`${mod}-Y`] = additionalEditorCommands.gotoTypeScriptSymbol;
-// sublimeMap[`Alt-Enter`] = additionalEditorCommands.quickFix;
 
 if (mac) {
     // TODO: mon
@@ -603,7 +571,7 @@ console.table(
  * Instead it opens the browser history by mistake.
  * So we redirect it to redo for any open editor :)
  */
-Mousetrap.bindGlobal('mod+y',function(event:any){
+Mousetrap.bindGlobal('mod+y', function(event: any) {
     // If the focus is on editor than monaco already handles it
     // If we made it till here .... then ....
     // Prevent default

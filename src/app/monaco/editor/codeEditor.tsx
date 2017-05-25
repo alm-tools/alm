@@ -105,7 +105,6 @@ export class CodeEditor extends ui.BaseComponent<Props, { isFocused?: boolean, l
         };
     }
 
-    // TODO: mon
     editor: monaco.editor.ICodeEditor;
     refs: {
         [string: string]: any;
