@@ -37,7 +37,6 @@ const startSearch = (editor: Editor, query: FindOptions) => {
         ctrl.start({
             forceRevealReplace: true,
             seedSearchStringFromSelection: false,
-            seedSearchScopeFromSelection: false,
             shouldFocus: 0, /* FindStartFocusAction.NoFocusChange */
             shouldAnimate: false,
         });
@@ -53,7 +52,7 @@ const hideSearch = (editor: Editor) => {
 const findNextIfNotAlreadyDoing = (editor: Editor, query: FindOptions) => {
     const ctrl = hackyGetSearchCtrl(editor);
     if (!ctrl.getState().isRevealed) {
-        startSearch(editor,query);
+        startSearch(editor, query);
     }
     else {
         ctrl.moveToNextMatch();
@@ -62,13 +61,13 @@ const findNextIfNotAlreadyDoing = (editor: Editor, query: FindOptions) => {
 const findPreviousIfNotAlreadyDoing = (editor: Editor, query: FindOptions) => {
     const ctrl = hackyGetSearchCtrl(editor);
     if (!ctrl.getState().isRevealed) {
-        startSearch(editor,query);
+        startSearch(editor, query);
     }
     else {
         ctrl.moveToPrevMatch();
     }
 };
-const simpleReplaceNext = (editor: Editor, newText:string) => {
+const simpleReplaceNext = (editor: Editor, newText: string) => {
     const ctrl = hackyGetSearchCtrl(editor);
 
     // Set new text
@@ -81,7 +80,7 @@ const simpleReplacePrevious = (editor: Editor, newText: string) => {
     const ctrl = hackyGetSearchCtrl(editor);
 
     // Set new text
-    hackySetReplaceText(ctrl,newText);
+    hackySetReplaceText(ctrl, newText);
 
     // trigger the replace all
     hackyReplacePrevious(editor, ctrl, newText);
@@ -90,7 +89,7 @@ const simpleReplaceAll = (editor: Editor, newText: string) => {
     const ctrl = hackyGetSearchCtrl(editor);
 
     // Set new text
-    hackySetReplaceText(ctrl,newText);
+    hackySetReplaceText(ctrl, newText);
 
     // trigger the replace all
     ctrl.replaceAll();
@@ -105,7 +104,23 @@ const hackyGetSearchCtrl = (editor: Editor) => {
      * HACK
      * https://github.com/Microsoft/vscode/blob/814f92341aa9d3f772b17bf6d46a4e04f2c96959/src/vs/editor/contrib/find/common/findController.ts#L52-L54
      */
-    return editor.getContribution('editor.contrib.findController') as any;
+    return editor.getContribution('editor.contrib.findController') as any as {
+        replace(): void;
+        replaceAll(): void;
+        getState(): {
+            isRevealed: boolean
+        },
+        start(findStartOptions: {
+            forceRevealReplace: boolean;
+            seedSearchStringFromSelection: boolean;
+            shouldFocus: FindStartFocusAction;
+            shouldAnimate: boolean;
+        }): void,
+        setSearchString(str: string): void,
+        closeFindWidget(): void,
+        moveToNextMatch(): boolean,
+        moveToPrevMatch(): boolean,
+    };
 };
 const hackySetReplaceText = (ctrl: CommonFindController, newText: string) => {
     // HACK to inject at new text:
