@@ -10,6 +10,7 @@ const compilerOptionsValidation: simpleValidator.ValidationInfo = {
     alwaysStrict: { type: types.boolean },
     baseUrl: { type: types.string },
     charset: { type: types.string },
+    checkJs: { type: types.boolean },
     codepage: { type: types.number },
     declaration: { type: types.boolean },
     declarationDir: { type: types.string },

@@ -29,6 +29,7 @@ interface CompilerOptions {
     allowUnusedLabels?: boolean;
     baseUrl?: string;
     charset?: string;
+    checkJs?: boolean;
     codepage?: number;
     declaration?: boolean;
     declarationDir?: string;
