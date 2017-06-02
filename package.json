@@ -111,7 +111,7 @@
     "toastr": "^2.1.2",
     "typestyle": "1.1.1",
     "url-loader": "^0.5.6",
-    "viewerjs": "^0.4.0",
+    "viewerjs": "^0.7.0",
     "webpack-dev-server": "^1.10.1"
   },
   "engines": {
