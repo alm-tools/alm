@@ -102,7 +102,7 @@
     "onresize": "^1.0.1",
     "react": "15.3.2",
     "react-dom": "15.3.2",
-    "react-draggable": "2.2.2",
+    "react-draggable": "2.2.4",
     "react-modal": "1.2.1",
     "react-redux": "4.4.5",
     "react-toggle": "2.1.1",
