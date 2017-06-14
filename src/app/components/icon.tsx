@@ -4,7 +4,7 @@ import {BaseComponent} from "../ui";
 import * as ui from "../ui";
 import * as pure from "../../common/pure";
 
-export interface Props extends React.HTMLAttributes {
+export interface Props extends React.HTMLAttributes<any> {
     name: string;
     size?: any; // 1g,2x,3x,4x,5x
     rotate?: string; // '45', '90', '135', '180', '225', '270', '315'
@@ -23,7 +23,9 @@ export interface State {
 }
 
 export class Icon extends BaseComponent<Props, State>{
-    shouldComponentUpdate = pure.shouldComponentUpdate;
+    shouldComponentUpdate() {
+        return pure.shouldComponentUpdate.apply(null, arguments);
+    }
     render() {
         let {
             name, size, rotate, flip, spin, fixedWidth, stack, inverse,

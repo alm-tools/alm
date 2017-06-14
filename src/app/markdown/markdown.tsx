@@ -13,12 +13,11 @@ interface Props { markdown: string }
 /**
  * Renders markdown
  */
-export class MarkDown extends React.Component<Props, {}> {
+export class MarkDown extends React.PureComponent<Props, {}> {
     constructor(props: Props) {
         super(props);
     }
 
-    shouldComponentUpdate = pure.shouldComponentUpdate;
     render() {
         const rendered = toHtml(this.props.markdown);
 

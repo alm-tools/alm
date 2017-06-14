@@ -234,7 +234,7 @@ export function getDoctorInfo(query: Types.GetDoctorInfoQuery): Promise<Types.Ge
     // Get langHelp
     const program = project.languageService.getProgram();
     const sourceFile = program.getSourceFile(query.filePath);
-    const positionNode = ts.getTokenAtPosition(sourceFile, position);
+    const positionNode = ts.getTokenAtPosition(sourceFile, position, true);
     const langHelp = getLangHelp(positionNode)
 
     // Just collect other responses
@@ -528,7 +528,7 @@ function getInfoForQuickFixAnalysis(query: Types.GetQuickFixesQuery): QuickFixQu
         /** We want errors that are *touching* and thefore expand the query position by one */
         positionErrors = fileErrors.filter(e => ((e.start - 1) < query.position) && (e.start + e.length + 1) > query.position);
         positionErrorMessages = positionErrors.map(e => ts.flattenDiagnosticMessageText(e.messageText, '\n'));
-        positionNode = ts.getTokenAtPosition(sourceFile, query.position);
+        positionNode = ts.getTokenAtPosition(sourceFile, query.position, true);
     } else {
         sourceFileText = "";
         fileErrors = [];

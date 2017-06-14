@@ -199,7 +199,7 @@ function isIdentifierUsed(identifier: ts.Identifier, sourceFile: ts.SourceFile, 
      * E.g. `import {foo}` & `import {foo as bar}`
      * Also makes it easy to get *only* true usages (not even a single import) count ;)
      */
-    const nodes = highlights.map(h => ts.getTokenAtPosition(sourceFile, h.textSpan.start));
+    const nodes = highlights.map(h => ts.getTokenAtPosition(sourceFile, h.textSpan.start, true));
     const trueUsages = nodes.filter(n => !isNodeInAnImport(n));
 
     // console.log({trueUsages: trueUsages.length, text: identifier.text}); // DEBUG

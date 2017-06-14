@@ -24,7 +24,7 @@ export class Progress extends React.Component<Props, {}> {
         };
 
         return (
-            <div className="progressbar-container" style={parentStyle}>
+            <div className="progressbar-container" style={parentStyle as any}>
                 <div className="progressbar-progress" style={childStyle}>{this.props.children}</div>
             </div>
         );

@@ -231,7 +231,7 @@ export class RequesterResponder {
     /** Client is an optionl service provided to the responders to call back into the requestor */
     public client: any;
 
-    private responders: { [message: string]: <Query, Response>(query: Query, client?: any) => Promise<Response> } = {};
+    private responders: { [message: string]: (query: any, client?: any) => Promise<any> } = {};
 
     protected processRequest = (m: any) => {
         var parsed: Message<any> = m;

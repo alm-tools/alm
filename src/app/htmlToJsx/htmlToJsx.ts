@@ -31,7 +31,7 @@ var ELEMENT_ATTRIBUTE_MAPPING = {
   }
 };
 
-var HTMLDOMPropertyConfig = require('react/lib/HTMLDOMPropertyConfig');
+var HTMLDOMPropertyConfig = require('react-dom/lib/HTMLDOMPropertyConfig');
 
 // Populate property map with ReactJS's attribute and property mappings
 // TODO handle/use .Properties value eg: MUST_USE_PROPERTY is not HTML attr

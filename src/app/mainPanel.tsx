@@ -128,7 +128,7 @@ export class MainPanel extends BaseComponent<Props, State>{
                             </div>
                             {errorsUpdate.tooMany
                                 && <div
-                                    style={styles.errorsPanel.tooMany}
+                                    style={styles.errorsPanel.tooMany as any}
                                     className="hint--bottom-left hint--info"
                                     data-hint="We only sync the top 50 per file with a limit of 250. That ensures that live linting doesn't slow anything else down.">
                                     {errorsUpdate.totalCount} total. Showing top {errorsUpdate.syncCount}.
@@ -220,9 +220,7 @@ namespace ErrorRenders {
         errors: types.CodeError[]
     }
 
-    export class ErrorsForFilePath extends React.Component<ErrorsForFilePathProps, {}> {
-        shouldComponentUpdate = pure.shouldComponentUpdate;
-
+    export class ErrorsForFilePath extends React.PureComponent<ErrorsForFilePathProps, {}> {
         render() {
             const codeErrors = this.props.errors;
 
@@ -237,7 +235,7 @@ namespace ErrorRenders {
                     ));
 
             return <div>
-                <div style={styles.errorsPanel.filePath} onClick={() => openErrorLocation(this.props.errors[0]) }>
+                <div style={styles.errorsPanel.filePath as any} onClick={() => openErrorLocation(this.props.errors[0]) }>
                     <Icon name="file-code-o" style={{ fontSize: '.8rem' }}/>
                     &nbsp;{this.props.filePath}
                     (
@@ -254,9 +252,7 @@ namespace ErrorRenders {
         }
     }
 
-    export class SingleError extends React.Component<{error:types.CodeError},{}>{
-        shouldComponentUpdate = pure.shouldComponentUpdate;
-
+    export class SingleError extends React.PureComponent<{error:types.CodeError},{}>{
         render() {
             const e = this.props.error;
             const style = e.level === 'error'

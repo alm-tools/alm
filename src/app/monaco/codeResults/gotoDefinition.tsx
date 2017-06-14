@@ -106,7 +106,7 @@ export class GotoDefinition extends BaseComponent<Props, State>{
 
                       <input
                           defaultValue={''}
-                          style={styles.hiddenInput}
+                          style={styles.hiddenInput as any}
                           type="text"
                           ref="mainInput"
                           placeholder="Filter"

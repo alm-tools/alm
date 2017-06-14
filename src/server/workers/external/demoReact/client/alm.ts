@@ -13,7 +13,7 @@ window.onerror = function() {
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-function render(content: React.DOMElement<any>) {
+function render(content: React.DOMElement<any, any>) {
     ReactDOM.render(content, root);
 }
 (window as any).render = render;

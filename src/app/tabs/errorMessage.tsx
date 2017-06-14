@@ -8,8 +8,7 @@ import * as React from "react";
 import * as pure from "../../common/pure";
 import * as styles from "../styles/styles";
 
-export class ErrorMessage extends React.Component<{text:string},{}>{
-    shouldComponentUpdate = pure.shouldComponentUpdate;
+export class ErrorMessage extends React.PureComponent<{text:string},{}>{
     render(){
         let style = {
             padding: '20px',

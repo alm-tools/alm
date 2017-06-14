@@ -102,7 +102,7 @@ export function getPathCompletionsForImport(query: GetPathCompletions): types.Pa
  */
 export function getPathCompletionsForAutocomplete(query: GetPathCompletionsForAutocomplete): types.PathCompletionForAutocomplete[] {
     const sourceFile = query.project.languageService.getNonBoundSourceFile(query.filePath);
-    const positionNode = ts.getTokenAtPosition(sourceFile, query.position);
+    const positionNode = ts.getTokenAtPosition(sourceFile, query.position, true);
 
     /** Note: in referenceTag is not supported yet */
     const inReferenceTagPath = false;

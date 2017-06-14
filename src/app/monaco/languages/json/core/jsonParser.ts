@@ -311,7 +311,7 @@ export class ArrayASTNode extends ASTNode {
 		else if (schema.items) {
 			this.items.forEach((item) => {
 				let itemValidationResult = new ValidationResult();
-				item.validate(schema.items, itemValidationResult, matchingSchemas, offset);
+				item.validate(schema.items as any, itemValidationResult, matchingSchemas, offset);
 				validationResult.mergePropertyMatch(itemValidationResult);
 			});
 		}
@@ -631,7 +631,7 @@ export class ObjectASTNode extends ASTNode {
 				let child = seenKeys[propertyName];
 				if (child) {
 					let propertyvalidationResult = new ValidationResult();
-					child.validate(schema.additionalProperties, propertyvalidationResult, matchingSchemas, offset);
+					child.validate(schema.additionalProperties as any, propertyvalidationResult, matchingSchemas, offset);
 					validationResult.mergePropertyMatch(propertyvalidationResult);
 				}
 			});

@@ -15,7 +15,7 @@ import * as typestyle from "typestyle";
 
 import {Types} from "../../../socket/socketContract";
 
-export const noFocusOutlineClassName = typestyle.style(styles.noFocusOutlineBase);
+export const noFocusOutlineClassName = typestyle.style(styles.noFocusOutlineBase as any);
 
 type NodeDisplay = Types.NodeDisplay;
 let EOL = '\n';

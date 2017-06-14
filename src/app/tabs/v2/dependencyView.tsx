@@ -182,19 +182,19 @@ export class DependencyView extends ui.BaseComponent<Props, State> {
         });
     }
 
-    zoomIn = (e: React.SyntheticEvent) => {
+    zoomIn = (e: React.SyntheticEvent<any>) => {
         e.preventDefault();
         if (!this.graphRenderer) return;
 
         this.graphRenderer.zoomIn();
     }
-    zoomOut = (e: React.SyntheticEvent) => {
+    zoomOut = (e: React.SyntheticEvent<any>) => {
         e.preventDefault();
         if (!this.graphRenderer) return;
 
         this.graphRenderer.zoomOut();
     }
-    zoomFit = (e: React.SyntheticEvent) => {
+    zoomFit = (e: React.SyntheticEvent<any>) => {
         e.preventDefault();
         if (!this.graphRenderer) return;
 

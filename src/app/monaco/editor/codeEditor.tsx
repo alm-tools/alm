@@ -375,7 +375,7 @@ export class CodeEditor extends ui.BaseComponent<Props, { isFocused?: boolean, l
         return (
             <div className={className} style={csx.extend(csx.horizontal, csx.flex, { position: 'relative', maxWidth: '100%' })}>
                 {!this.props.readOnly && <doctor.Doctor cm={this.editor} filePath={this.props.filePath} />}
-                <div style={loadingStyle}>LOADING</div>
+                <div style={loadingStyle as any}>LOADING</div>
                 <div ref="codeEditor" style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }} />
                 {!this.props.readOnly && <semanticView.SemanticView editor={this.editor} filePath={this.props.filePath} />}
             </div>

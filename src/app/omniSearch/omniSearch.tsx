@@ -461,7 +461,7 @@ class SearchState {
             };
             return (
                 <div style={csx.content}>
-                    <div style={messageStyle}>Indexing ({this.filePaths.length})</div>
+                    <div style={messageStyle as any}>Indexing ({this.filePaths.length})</div>
                     <Robocop/>
                 </div>
             );

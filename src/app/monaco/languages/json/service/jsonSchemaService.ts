@@ -134,7 +134,7 @@ export function resolveSchemaContent(schema: JSONSchema): Thenable<ResolvedSchem
                     resolveLink(next, parentSchema, segments[1]);
                 }
             }
-            collectEntries(next.items, next.additionalProperties, next.not);
+            collectEntries(next.items as any, next.additionalProperties as any, next.not);
             collectMapEntries(next.definitions, next.properties, next.patternProperties, <JSONSchemaMap> next.dependencies);
             collectArrayEntries(next.anyOf, next.allOf, next.oneOf, <JSONSchema[]> next.items);
         }
@@ -173,10 +173,10 @@ export class ResolvedSchema {
 				}
 			});
 		} else if (schema.additionalProperties) {
-			return this.getSectionRecursive(path, schema.additionalProperties);
+			return this.getSectionRecursive(path, schema.additionalProperties as any);
 		} else if (next.match('[0-9]+')) {
 			if (schema.items) {
-				return this.getSectionRecursive(path, schema.items);
+				return this.getSectionRecursive(path, schema.items as any);
 			} else if (Array.isArray(schema.items)) {
 				try {
 					let index = parseInt(next, 10);

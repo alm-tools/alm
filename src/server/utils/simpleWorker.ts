@@ -225,7 +225,7 @@ class RequesterResponder {
 
     ////////////////////////////////// RESPONDER ////////////////////////
 
-    private responders: { [message: string]: <Query, Response>(query: Query) => Promise<Response> } = {};
+    private responders: { [message: string]: (query: any) => Promise<any> } = {};
 
     protected processRequest = (m: any) => {
         var parsed: Message<any> = m;

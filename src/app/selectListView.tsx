@@ -208,10 +208,10 @@ export class SelectListView extends BaseComponent<Props, State>{
         });
     }, 50);
     incrementSelected = debounce(() => {
-        this.setState({ selectedIndex: rangeLimited({ num: ++this.state.selectedIndex, min: 0, max: Math.min(this.maxShowCount - 1, this.filteredResults.length - 1), loopAround: true }) });
+        this.setState({ selectedIndex: rangeLimited({ num: this.state.selectedIndex + 1, min: 0, max: Math.min(this.maxShowCount - 1, this.filteredResults.length - 1), loopAround: true }) });
     }, 0, true);
     decrementSelected = debounce(() => {
-        this.setState({ selectedIndex: rangeLimited({ num: --this.state.selectedIndex, min: 0, max: Math.min(this.maxShowCount - 1, this.filteredResults.length - 1), loopAround: true }) });
+        this.setState({ selectedIndex: rangeLimited({ num: this.state.selectedIndex - 1, min: 0, max: Math.min(this.maxShowCount - 1, this.filteredResults.length - 1), loopAround: true }) });
     }, 0, true);
     onChangeSelected = (e) => {
         if (e.key == 'ArrowUp') {

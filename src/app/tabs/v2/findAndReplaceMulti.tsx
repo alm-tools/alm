@@ -356,7 +356,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
                                     tabIndex={3}
                                     ref="regex"
                                     onChange={this.handleRegexChange} />
-                                <span style={searchOptionsLabelStyle}>
+                                <span style={searchOptionsLabelStyle as any}>
                                     .*
                                 </span>
                             </label>
@@ -365,7 +365,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
                                     tabIndex={4}
                                     ref="caseInsensitive"
                                     onChange={this.handleCaseSensitiveChange} />
-                                <span style={searchOptionsLabelStyle}>
+                                <span style={searchOptionsLabelStyle as any}>
                                     Aa
                                 </span>
                             </label>
@@ -375,7 +375,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
                                     ref="fullWord"
                                     onKeyDown={this.fullWordKeyDownHandler}
                                     onChange={this.handleFullWordChange} />
-                                <span style={searchOptionsLabelStyle}>
+                                <span style={searchOptionsLabelStyle as any}>
                                     <Icon name="text-width" />
                                 </span>
                             </label>
@@ -477,7 +477,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
     /**
      * Input Change handlers
      */
-    fullWordKeyDownHandler = (e: React.SyntheticEvent) => {
+    fullWordKeyDownHandler = (e: React.SyntheticEvent<any>) => {
         let {tab, shift, enter} = ui.getKeyStates(e);
 
         if (tab && !shift) {
@@ -486,7 +486,7 @@ export class FindAndReplaceView extends ui.BaseComponent<Props, State> {
             return;
         }
     };
-    findKeyDownHandler = (e: React.SyntheticEvent) => {
+    findKeyDownHandler = (e: React.SyntheticEvent<any>) => {
         let {tab, shift, enter, mod} = ui.getKeyStates(e);
 
         if (shift && tab) {
@@ -665,9 +665,7 @@ namespace FileResults {
     }
     export interface State {
     }
-    export class FileResults extends React.Component<Props, State>{
-        shouldComponentUpdate = pure.shouldComponentUpdate;
-
+    export class FileResults extends React.PureComponent<Props, State>{
         render() {
 
             let selectedStyle = this.props.selectedRoot

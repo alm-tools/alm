@@ -158,7 +158,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
                                     tabIndex={3}
                                     ref="regex"
                                     onChange={this.handleRegexChange}/>
-                                <span style={searchOptionsLabelStyle}>
+                                <span style={searchOptionsLabelStyle as any}>
                                     .*
                                 </span>
                             </label>
@@ -167,7 +167,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
                                     tabIndex={4}
                                     ref="caseInsensitive"
                                     onChange={this.handleCaseSensitiveChange}/>
-                                <span style={searchOptionsLabelStyle}>
+                                <span style={searchOptionsLabelStyle as any}>
                                     Aa
                                 </span>
                             </label>
@@ -177,7 +177,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
                                     ref="fullWord"
                                     onKeyDown={this.fullWordKeyDownHandler}
                                     onChange={this.handleFullWordChange}/>
-                                <span style={searchOptionsLabelStyle}>
+                                <span style={searchOptionsLabelStyle as any}>
                                     <Icon name="text-width"/>
                                 </span>
                             </label>
@@ -195,7 +195,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
     }
 
     /** Tab key is only called on key down :) */
-    findKeyDownHandler = (e:React.SyntheticEvent) => {
+    findKeyDownHandler = (e:React.SyntheticEvent<any>) => {
         let {tab,shift,enter,mod} = ui.getKeyStates(e);
 
         if (shift && tab) {
@@ -224,7 +224,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         }
     };
 
-    replaceKeyDownHandler = (e:React.SyntheticEvent) => {
+    replaceKeyDownHandler = (e:React.SyntheticEvent<any>) => {
         let {tab,shift,enter,mod} = ui.getKeyStates(e);
 
         if (!state.getState().findOptions.query){
@@ -252,7 +252,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         }
     };
 
-    fullWordKeyDownHandler = (e:React.SyntheticEvent) => {
+    fullWordKeyDownHandler = (e:React.SyntheticEvent<any>) => {
         let {tab,shift,enter} = ui.getKeyStates(e);
 
         if (tab && !shift) {
@@ -262,7 +262,7 @@ export class FindAndReplace extends BaseComponent<Props, State>{
         }
     };
 
-    handleSearchKeys(e: React.SyntheticEvent) {
+    handleSearchKeys(e: React.SyntheticEvent<any>) {
 
     }
 

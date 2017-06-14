@@ -306,8 +306,8 @@ export class JSONCompletion {
 				matchingSchemas.forEach((s) => {
 					if (s.node === node && !s.inverted && s.schema) {
 						if (s.schema.items) {
-							this.addDefaultSuggestion(s.schema.items, collector);
-							this.addEnumSuggestion(s.schema.items, collector);
+							this.addDefaultSuggestion(s.schema.items as any, collector);
+							this.addEnumSuggestion(s.schema.items as any, collector);
 						}
 						if (s.schema.properties) {
 							let propertySchema = s.schema.properties[parentKey];

@@ -92,7 +92,7 @@ export function comingSoon(featureName: string) {
  * Keyboard handling
  */
 /** Utility function for keyboard handling */
-export function getKeyStates(e: React.SyntheticEvent) {
+export function getKeyStates(e: React.SyntheticEvent<any>) {
     let event: KeyboardEvent = e as any; // This is a lie .... but a convinient one as react provides the same stuff
     let nativeEvent: KeyboardEvent = e.nativeEvent as any; // This is the truth
 

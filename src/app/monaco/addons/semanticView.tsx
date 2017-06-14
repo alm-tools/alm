@@ -92,7 +92,9 @@ interface State {
     };
 })
 export class SemanticView extends ui.BaseComponent<Props, State> {
-    shouldComponentUpdate = shouldComponentUpdate;
+    shouldComponentUpdate() {
+        return shouldComponentUpdate.apply(null, arguments);
+    }
     constructor(props) {
         super(props);
         this.state = {

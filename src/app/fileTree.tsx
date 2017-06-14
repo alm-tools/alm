@@ -773,7 +773,7 @@ export class FileTree extends BaseComponent<Props, State>{
                                 className="hint--top"
                                 data-hint="Click to copy the file path to clipboard"
                                 data-clipboard-text={singlePathSelected}
-                                style={currentSelectedItemCopyStyle}
+                                style={currentSelectedItemCopyStyle as any}
                                 onClick={() => ui.notifyInfoQuickDisappear("Path copied to clipboard")}>
                                 {singlePathSelected}
                             </span>
@@ -967,7 +967,7 @@ export class FileTree extends BaseComponent<Props, State>{
         }
     }, 1000);
 
-    handleToggleDir = (evt: React.SyntheticEvent, item: TreeDirItem) => {
+    handleToggleDir = (evt: React.SyntheticEvent<any>, item: TreeDirItem) => {
         evt.stopPropagation();
         let dirPath = item.filePath;
 
@@ -979,7 +979,7 @@ export class FileTree extends BaseComponent<Props, State>{
         this.setState({ expansionState: this.state.expansionState, selectedPaths: selectedPaths });
     }
 
-    handleSelectFile = (evt: React.SyntheticEvent, item: TreeFileItem) => {
+    handleSelectFile = (evt: React.SyntheticEvent<any>, item: TreeFileItem) => {
         evt.stopPropagation();
         let filePath = item.filePath;
 
@@ -1005,16 +1005,15 @@ export class FileTree extends BaseComponent<Props, State>{
 }
 
 export namespace TreeNode {
-    export class Dir extends React.Component<
+    export class Dir extends React.PureComponent<
         {
             item: TreeDirItem,
             depth: number,
             selected: boolean,
             expanded: boolean,
-            handleToggleDir: (event: React.SyntheticEvent, item: TreeDirItem) => any;
+            handleToggleDir: (event: React.SyntheticEvent<any>, item: TreeDirItem) => any;
             activeProjectFilePathTruthTable: { [filePath: string]: boolean };
         }, {}>{
-        shouldComponentUpdate = pure.shouldComponentUpdate;
         focus(filePath: string) {
             (this.refs['root'] as any).scrollIntoViewIfNeeded(false);
         }
@@ -1036,8 +1035,7 @@ export namespace TreeNode {
     /**
      * File Name Based Icon
      */
-    class FileNameBasedIcon extends React.Component<{ fileName: string }, {}> {
-        shouldComponentUpdate = pure.shouldComponentUpdate;
+    class FileNameBasedIcon extends React.PureComponent<{ fileName: string }, {}> {
         render() {
             const fileName = this.props.fileName.toLowerCase();
             const ext = utils.getExt(fileName);
@@ -1085,14 +1083,13 @@ export namespace TreeNode {
     }
 
     /** Renders the file item */
-    export class File extends React.Component<{
+    export class File extends React.PureComponent<{
         item: TreeFileItem;
         depth: number;
         selected: boolean;
-        handleSelectFile: (event: React.SyntheticEvent, item: TreeFileItem) => any;
+        handleSelectFile: (event: React.SyntheticEvent<any>, item: TreeFileItem) => any;
         activeProjectFilePathTruthTable: { [filePath: string]: boolean };
     }, {}>{
-        shouldComponentUpdate = pure.shouldComponentUpdate;
         focus() {
             (this.refs['root'] as any).scrollIntoViewIfNeeded(false);
         }

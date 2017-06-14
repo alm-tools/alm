@@ -102,7 +102,7 @@ export class FindReferences extends ui.BaseComponent<Props, State>{
 
                       <input
                           defaultValue={''}
-                          style={styles.hiddenInput}
+                          style={styles.hiddenInput as any}
                           type="text"
                           ref="mainInput"
                           placeholder="Filter"

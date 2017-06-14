@@ -55,16 +55,16 @@ export function readFile(filePath: string): string {
 /** Will write the file and even make directories if needed */
 export function writeFile(filePath: string, content: string) {
     mkdirp.sync(path.dirname(filePath));
-    fs.writeFileSync(filePath, content, 'utf8');
+    fs.writeFileSync(filePath, content, { encoding: 'utf8' });
 }
 
-export function deleteFile(filePath:string) {
+export function deleteFile(filePath: string) {
     fs.unlinkSync(filePath);
 }
 
-export function deleteDir(dirPath:string):Promise<{}> {
+export function deleteDir(dirPath: string): Promise<{}> {
     return new Promise(resolve => {
-        rimraf(dirPath,{glob: false,maxBusyTries: 10},(e)=>{
+        rimraf(dirPath, { glob: false, maxBusyTries: 10 }, (e) => {
             if (e) {
                 console.error('Failed to delete Dir: ', dirPath);
             }

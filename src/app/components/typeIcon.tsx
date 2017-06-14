@@ -69,7 +69,9 @@ namespace TypeIconStyles {
  * Draws the icon for a type
  */
 export class TypeIcon extends ui.BaseComponent<Props, State>{
-    shouldComponentUpdate = pure.shouldComponentUpdate;
+    shouldComponentUpdate() {
+        return pure.shouldComponentUpdate.apply(null, arguments);
+    }
     render() {
         const imageLocation = iconLocations[this.props.iconType];
         const left = imageLocation.x * -TypeIconStyles.spriteSize - TypeIconStyles.iconClipWidth;
@@ -85,7 +87,9 @@ export class TypeIcon extends ui.BaseComponent<Props, State>{
  * Draws an icon for `private` visibility indication
  */
 class VisibilityIndicator extends ui.BaseComponent<{ visibility: UMLClassMemberVisibility }, State>{
-    shouldComponentUpdate = pure.shouldComponentUpdate;
+    shouldComponentUpdate() {
+        return pure.shouldComponentUpdate.apply(null, arguments);
+    }
     render() {
         // Maybe add others if needed. I doubt it though.
         const classIconColorTheme = "#4DA6FF";
@@ -103,7 +107,9 @@ class VisibilityIndicator extends ui.BaseComponent<{ visibility: UMLClassMemberV
  * Draws an icon for `override` visibility indication
  */
 class OverrideIndicator extends ui.BaseComponent<{}, State>{
-    shouldComponentUpdate = pure.shouldComponentUpdate;
+    shouldComponentUpdate() {
+        return pure.shouldComponentUpdate.apply(null, arguments);
+    }
     render() {
         // Maybe add others if needed. I doubt it though.
         const classIconColorTheme = "#4DA6FF";
@@ -114,8 +120,7 @@ class OverrideIndicator extends ui.BaseComponent<{}, State>{
 /**
  * Draws an icon for `static` indication
  */
-class LifetimeIndicator extends ui.BaseComponent<{ lifetime: UMLClassMemberLifetime }, State>{
-    shouldComponentUpdate = pure.shouldComponentUpdate;
+class LifetimeIndicator extends React.PureComponent<{ lifetime: UMLClassMemberLifetime }, State>{
     render() {
         // Maybe add others if needed. I doubt it though.
         const classIconColorTheme = "#4DA6FF";
@@ -149,8 +154,7 @@ interface DocumentedTypeHeaderProps {
     lifetime?: UMLClassMemberLifetime,
     override?: boolean,
 }
-export class DocumentedTypeHeader extends ui.BaseComponent<DocumentedTypeHeaderProps, State>{
-    shouldComponentUpdate = pure.shouldComponentUpdate;
+export class DocumentedTypeHeader extends React.PureComponent<DocumentedTypeHeaderProps, State>{
     render() {
         const hasLifetime = (this.props.lifetime != null) && this.props.lifetime !== UMLClassMemberLifetime.Instance;
         const hasVisibility = (this.props.visibility != null) && this.props.visibility !== UMLClassMemberVisibility.Public;
@@ -192,8 +196,7 @@ namespace TypeIconLegendStyles {
             padding: '10px'
         });
 }
-export class TypeIconLegend extends ui.BaseComponent<{}, {}>{
-    shouldComponentUpdate = pure.shouldComponentUpdate;
+export class TypeIconLegend extends React.PureComponent<{}, {}>{
     render() {
         return (
             <div style={TypeIconLegendStyles.root}>
@@ -236,8 +239,7 @@ export class TypeIconLegend extends ui.BaseComponent<{}, {}>{
     }
 }
 
-export class TypeIconClassDiagramLegend extends ui.BaseComponent<{}, {}>{
-    shouldComponentUpdate = pure.shouldComponentUpdate;
+export class TypeIconClassDiagramLegend extends React.PureComponent<{}, {}>{
     render() {
         return (
             <div style={TypeIconLegendStyles.root}>
