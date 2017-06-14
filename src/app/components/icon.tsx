@@ -24,7 +24,7 @@ export interface State {
 
 export class Icon extends BaseComponent<Props, State>{
     shouldComponentUpdate() {
-        return pure.shouldComponentUpdate.apply(null, arguments);
+        return pure.shouldComponentUpdate.apply(this, arguments);
     }
     render() {
         let {

@@ -70,7 +70,7 @@ namespace TypeIconStyles {
  */
 export class TypeIcon extends ui.BaseComponent<Props, State>{
     shouldComponentUpdate() {
-        return pure.shouldComponentUpdate.apply(null, arguments);
+        return pure.shouldComponentUpdate.apply(this, arguments);
     }
     render() {
         const imageLocation = iconLocations[this.props.iconType];
@@ -88,7 +88,7 @@ export class TypeIcon extends ui.BaseComponent<Props, State>{
  */
 class VisibilityIndicator extends ui.BaseComponent<{ visibility: UMLClassMemberVisibility }, State>{
     shouldComponentUpdate() {
-        return pure.shouldComponentUpdate.apply(null, arguments);
+        return pure.shouldComponentUpdate.apply(this, arguments);
     }
     render() {
         // Maybe add others if needed. I doubt it though.
@@ -108,7 +108,7 @@ class VisibilityIndicator extends ui.BaseComponent<{ visibility: UMLClassMemberV
  */
 class OverrideIndicator extends ui.BaseComponent<{}, State>{
     shouldComponentUpdate() {
-        return pure.shouldComponentUpdate.apply(null, arguments);
+        return pure.shouldComponentUpdate.apply(this, arguments);
     }
     render() {
         // Maybe add others if needed. I doubt it though.
