@@ -59,7 +59,7 @@ export function setup(editor: Editor): { dispose: () => void } {
                 marker.title = `Quick fixes available`;
                 marker.innerHTML = "💡";
                 marker.onclick = () => {
-                    editor.getAction(QuickFixAction.ID).run();
+                    runQuickFixSelector(editor);
                 }
 
                 lastWidget = {
@@ -147,70 +147,74 @@ class QuickFixAction extends EditorAction {
     }
 
     public run(accessor: ServicesAccessor, editor: ICommonCodeEditor): void | TPromise<void> {
-        const cm = editor;
-
-        if (!cm._lastQuickFixInformation) {
-            ui.notifyInfoNormalDisappear('No active quick fixes for last editor position');
-            return;
-        }
-        const fixes = cm._lastQuickFixInformation.res.fixes;
-        selectListView.selectListView.show({
-            header: '💡 Quick Fixes',
-            data: fixes,
-            render: (fix, highlighted) => {
-                return <div style={{ fontFamily: 'monospace' }}>{highlighted}</div>;
-            },
-            textify: (fix) => fix.display,
-            onSelect: (fix) => {
-                /**
-                 * For each ts code fix its expected to request formatting as well
-                 * https://github.com/Microsoft/TypeScript/issues/12249
-                 * So add them to the refactorings
-                 * The backend can't do it as the file hasn't been edited yet. Have to request from frontend :-/
-                 *
-                 * But its probably not worth too much trouble for now so ignoring.
-                 **/
-                // tsCodeFix.changes.forEach(change => {
-                //     change.textChanges.forEach(tc => {
-                //         /** The end depends on the old text vs. the new text. But always greater than start (good enough) */
-                //         let end = tc.span.start + tc.newText.length - tc.span.length;
-                //         if (end < tc.span.start) end = tc.span.start;
-
-                //         let start = tc.span.start;
-
-                //         let tsresult = formatting.formatDocumentRangeUsingPos(project, change.fileName, start, end,
-                //             /**
-                //              * This is not 100% correct as the changed file can be different.
-                //              * But the likelyhood of the *other* project file having different formatting requirements is very low
-                //              **/
-                //             query.editorOptions
-                //         );
-                //         console.log(tsresult, change.fileName, tc.span, end);
-                //         tsresult.forEach(formatting => {
-                //             refactorings.push({
-                //                 filePath: change.fileName,
-                //                 newText: formatting.newText,
-                //                 span: formatting.span
-                //             });
-                //         })
-                //     });
-                // });
-
-                server.applyQuickFix({
-                    key: fix.key,
-                    indentSize: cm.getModel().getOptions().tabSize,
-                    additionalData: null,
-                    filePath: cm.filePath,
-                    position: cm._lastQuickFixInformation.position,
-                }).then((res) => {
-                    // apply refactorings
-                    // console.log('Apply refactorings:', res.refactorings); // DEBUG
-                    uix.API.applyRefactorings(res.refactorings);
-                });
-                return '';
-            }
-        });
+        runQuickFixSelector(editor);
     }
+}
+
+function runQuickFixSelector(editor: ICommonCodeEditor) {
+    const cm = editor;
+
+    if (!cm._lastQuickFixInformation) {
+        ui.notifyInfoNormalDisappear('No active quick fixes for last editor position');
+        return;
+    }
+    const fixes = cm._lastQuickFixInformation.res.fixes;
+    selectListView.selectListView.show({
+        header: '💡 Quick Fixes',
+        data: fixes,
+        render: (fix, highlighted) => {
+            return <div style={{ fontFamily: 'monospace' }}>{highlighted}</div>;
+        },
+        textify: (fix) => fix.display,
+        onSelect: (fix) => {
+            /**
+             * For each ts code fix its expected to request formatting as well
+             * https://github.com/Microsoft/TypeScript/issues/12249
+             * So add them to the refactorings
+             * The backend can't do it as the file hasn't been edited yet. Have to request from frontend :-/
+             *
+             * But its probably not worth too much trouble for now so ignoring.
+             **/
+            // tsCodeFix.changes.forEach(change => {
+            //     change.textChanges.forEach(tc => {
+            //         /** The end depends on the old text vs. the new text. But always greater than start (good enough) */
+            //         let end = tc.span.start + tc.newText.length - tc.span.length;
+            //         if (end < tc.span.start) end = tc.span.start;
+
+            //         let start = tc.span.start;
+
+            //         let tsresult = formatting.formatDocumentRangeUsingPos(project, change.fileName, start, end,
+            //             /**
+            //              * This is not 100% correct as the changed file can be different.
+            //              * But the likelyhood of the *other* project file having different formatting requirements is very low
+            //              **/
+            //             query.editorOptions
+            //         );
+            //         console.log(tsresult, change.fileName, tc.span, end);
+            //         tsresult.forEach(formatting => {
+            //             refactorings.push({
+            //                 filePath: change.fileName,
+            //                 newText: formatting.newText,
+            //                 span: formatting.span
+            //             });
+            //         })
+            //     });
+            // });
+
+            server.applyQuickFix({
+                key: fix.key,
+                indentSize: cm.getModel().getOptions().tabSize,
+                additionalData: null,
+                filePath: cm.filePath,
+                position: cm._lastQuickFixInformation.position,
+            }).then((res) => {
+                // apply refactorings
+                // console.log('Apply refactorings:', res.refactorings); // DEBUG
+                uix.API.applyRefactorings(res.refactorings);
+            });
+            return '';
+        }
+    });
 }
 
 CommonEditorRegistry.registerEditorAction(new QuickFixAction());
