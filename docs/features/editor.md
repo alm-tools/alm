@@ -11,12 +11,13 @@ The heart of the editor is Monaco for quite a few reasons. A great thing is that
 * [Cursor History](#cursor-history)
 * [Clipboard Ring](#clipboard-ring)
 * [Blaster](#blaster)
+* [Write Code](#write-code)
 
 > Note: At any time you press `Esc` we take you to the editor. After all that is the ❤️ of your design.
 
 ## Sublime
 
-Sublime and VSCode users will feel right at home as they get to use all their favorite features as it is e.g. `Ctrl|⌘ + P` (find file), `Ctrl|⌘ + Shift + P` (find command), `Ctrl|⌘ + /` (comment uncomment code), `Ctrl|⌘ + D` (select next match) and `Ctrl|⌘ + Alt + ⇅` for column selection   
+Sublime and VSCode users will feel right at home as they get to use all their favorite features as it is e.g. `Ctrl|⌘ + P` (find file), `Ctrl|⌘ + Shift + P` (find command), `Ctrl|⌘ + /` (comment uncomment code), `Ctrl|⌘ + D` (select next match) and `Ctrl|⌘ + Alt + ⇅` for column selection
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/rectangular.gif)
 
@@ -51,3 +52,8 @@ You can cycle paste through the stuff that you copied / cut from the IDE. `Shift
 Because why not. `Ctrl|⌘ + Alt + O` to toggle.
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/blaster.gif)
+
+## Write Code
+`Ctrl|⌘ + Shift + X` with the current selection will pretend to write the code one char at a time. Great for screen recordings.
+
+![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/writeCode.gif)
