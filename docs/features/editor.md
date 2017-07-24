@@ -54,6 +54,6 @@ Because why not. `Ctrl|⌘ + Alt + O` to toggle.
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/blaster.gif)
 
 ## Write Code
-`Ctrl|⌘ + Shift + X` with the current selection will pretend to write the code one char at a time. Great for screen recordings.
+`Ctrl|⌘ + Shift + X` with the current selection will pretend to write the code one char at a time. Great for a smooth and professional touch to video tutorials.
 
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/writeCode.gif)
