@@ -52,11 +52,18 @@ class WriteCode extends EditorAction {
                 writeString({ model, str: char, pos: { lineNumber: currentPos.lineNumber, column: currentPos.column } });
 
                 /**
-                 * Wait a bit and advance pos
+                 * Wait a bit
                  */
-                if (!char.match(/\s/g)){ // don't wait for whitespace
-                    await utils.delay(100); // 160 words per minute => 10 chars per second
+                if (!char.match(/\s/g)) { // don't wait for whitespace
+                    // 160 words per minute (VERY FAST TYPING!)
+                    // => 10 chars per second
+                    // => 100ms
+                    // + personal taste tweek gives us:
+                    await utils.delay(120);
                 }
+                /**
+                 * Advance pos
+                 */
                 currentPos = model.modifyPosition(currentPos, 1);
             }
         })();
