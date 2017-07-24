@@ -48,10 +48,32 @@ export function replaceRange(config: {
     config.model.pushEditOperations([], [editOperation], null);
 }
 
+export function writeString(config: {
+    model: monaco.IModel,
+    str: string,
+    pos: {
+        lineNumber: number,
+        column: number
+    }
+}) {
+    const editOperation: monaco.editor.IIdentifiedSingleEditOperation = {
+        identifier: {
+            major: 0,
+            minor: ++editorOperationCounter,
+        },
+        text: config.str,
+        range: new monaco.Range(config.pos.lineNumber, config.pos.column, config.pos.lineNumber, config.pos.column),
+        /** Needed to change selection */
+        forceMoveMarkers: true,
+    }
+
+    config.model.pushEditOperations([], [editOperation], null);
+}
+
 /** Runs format or format selection (if any) */
 export function format(config: {
     editor: Editor,
-}){
+}) {
     const action = config.editor.getAction('editor.action.format');
     action.run();
 }
@@ -68,7 +90,7 @@ export function onlyLastCallWithDelay<T>(call: () => Promise<T>, token: monaco.C
         const later = () => {
             if (token.isCancellationRequested) reject('cancelled');
             else {
-                call().then((res)=>{
+                call().then((res) => {
                     if (token.isCancellationRequested) reject('cancelled');
                     else resolve(res);
                 });
@@ -84,7 +106,7 @@ export function onlyLastCallWithDelay<T>(call: () => Promise<T>, token: monaco.C
     return p;
 }
 
-export function setSelection(cfg:{editor: Editor, textSpan: ts.TextSpan}) {
+export function setSelection(cfg: { editor: Editor, textSpan: ts.TextSpan }) {
     const model = cfg.editor.getModel();
     let start = model.getPositionAt(cfg.textSpan.start);
     let end = model.getPositionAt(cfg.textSpan.start + cfg.textSpan.length);
@@ -96,7 +118,7 @@ export function setSelection(cfg:{editor: Editor, textSpan: ts.TextSpan}) {
     });
 }
 
-export function gotoPosition(cfg:{editor: Editor, position: EditorPosition}) {
+export function gotoPosition(cfg: { editor: Editor, position: EditorPosition }) {
     const pos = {
         lineNumber: cfg.position.line + 1,
         column: cfg.position.ch + 1,

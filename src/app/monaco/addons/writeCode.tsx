@@ -9,8 +9,7 @@ import * as monacoUtils from "../monacoUtils";
 /** Editor type */
 type Editor = monaco.editor.ICodeEditor;
 import Range = monaco.Range;
-import { replaceSelection, getSelectionOrCurrentLine } from '../monacoUtils';
-
+import { replaceSelection, getSelectionOrCurrentLine, writeString } from '../monacoUtils';
 
 
 import CommonEditorRegistry = monaco.CommonEditorRegistry;
@@ -50,22 +49,11 @@ class WriteCode extends EditorAction {
         (async function() {
             let i = 0;
             for (const char of contents.split('')) {
-                const editOperation: monaco.editor.IIdentifiedSingleEditOperation = {
-                    identifier: {
-                        major: 0,
-                        minor: ++i,
-                    },
-                    text: char,
-                    range: new monaco.Range(currentPos.lineNumber, currentPos.column, currentPos.lineNumber, currentPos.column),
-                    forceMoveMarkers: true,
-                }
-
-                editor.getModel().pushEditOperations([], [editOperation], null);
-
+                writeString({ model, str: char, pos: { lineNumber: currentPos.lineNumber, column: currentPos.column } });
                 /**
                  * Wait a bit and advance pos
                  */
-                await utils.delay(100);
+                await utils.delay(100); // 160 words per minute => 10 chars per second
                 currentPos = model.modifyPosition(currentPos, 1);
             }
         })();
