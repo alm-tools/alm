@@ -4,6 +4,7 @@ import * as utils from "../../common/utils";
 /** Addons. These must be loaded before the function below is ever called so loaded here 🌹 */
 import * as gitStatus from "../monaco/addons/gitStatus";
 import * as jumpy from "../monaco/addons/jumpy";
+import * as writeCode from "../monaco/addons/writeCode";
 import * as gitReset from "../monaco/addons/gitReset";
 import * as htmlToTsx from "../monaco/addons/htmlToTsx";
 import * as cssToTs from "../monaco/addons/cssToTs";
@@ -20,6 +21,7 @@ import * as formatBetter from '../monaco/addons/formatBetter';
 const ensureImport =
     gitStatus
     || jumpy
+    || writeCode
     || gitReset
     || htmlToTsx
     || cssToTs

@@ -630,3 +630,10 @@ export function onlyLastCall<T>(call: () => Promise<T>) {
     })
     return trueCall;
 }
+
+/**
+ * Delay given ms
+ */
+export function delay(ms: number) {
+    return new Promise(res => setTimeout(res, ms));
+}
