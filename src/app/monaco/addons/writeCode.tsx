@@ -65,6 +65,10 @@ class WriteCode extends EditorAction {
                  * Advance pos
                  */
                 currentPos = model.modifyPosition(currentPos, 1);
+                /**
+                 * Ensure position is well scrolled into
+                 */
+                editor.revealPosition(currentPos);
             }
         })();
     }
