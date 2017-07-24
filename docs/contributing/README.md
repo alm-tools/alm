@@ -34,12 +34,15 @@ You run two instances of alm, once where you dev, and one where you test what yo
 
 ## Where you dev
 
-* Run `npm run alm` to launch alm to develop alm.
+* Run `npm run malm` (master alm) to launch alm to develop alm.
 
 > You are free to use some other IDE if you want. You can run `npm run tscw` to run the TypeScript in the background in watch mode and use your favorite IDE in the foreground.
 
 ## Where you test
-* Run `npm start` in another window to start alm in live reload mode. Open the url mentioned in the console.
+* Run `npm run salm` (slave alm) in another terminal to start alm in live reload mode. Open the url mentioned in the console.
+
+> Any changes to the UI will result in UI reload
+> Any changes to the backend will result in backend restart
 
 # Webpack
 All our front-end js gets minified into `bundle.js`. This is what gets npm deployed.

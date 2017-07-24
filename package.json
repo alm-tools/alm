@@ -7,8 +7,8 @@
     "alm": "./bin/alm"
   },
   "scripts": {
-    "start": "nodemon src/server.js --debug",
-    "alm": "node ./node_modules/alm_src/server -o",
+    "malm": "node ./node_modules/alm_src/server -o",
+    "salm": "nodemon src/server.js --debug",
     "ualm": "rm -rf ./node_modules/alm_src && cp -rf ./src ./node_modules/alm_src",
     "test": "echo \"Testing is just build at the moment, run from prepublish\"",
     "clean": "rm ./src/public/build/bundle.js",
