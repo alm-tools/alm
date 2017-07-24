@@ -103,11 +103,11 @@ export class Blaster {
     // spawn particles
     PARTICLE_NUM_RANGE = { min: 5, max: 10 };
     throttledSpawnParticles = utils.throttle((effect: Effect) => {
-        let editor = this.cm;
-        var cursorPos = editor.getPosition();
+        const editor = this.cm;
+        const cursorPos = editor.getPosition();
 
         /** The position relative to dom node of editor */
-        let pos = editor.getScrolledVisiblePosition(cursorPos);
+        const pos = editor.getScrolledVisiblePosition(cursorPos);
 
         /** Get the color for the dom token */
         const editorNode = editor.getDomNode();
@@ -117,10 +117,10 @@ export class Blaster {
             y: editorNodeRect.top + pos.top,
         }
         const node = document.elementFromPoint(posForNode.x - 5, posForNode.y + 5);
-        let color = getRGBComponents(node);
+        const color = getRGBComponents(node);
 
         // Now create the particles
-        var numParticles = random(this.PARTICLE_NUM_RANGE.min, this.PARTICLE_NUM_RANGE.max);
+        const numParticles = random(this.PARTICLE_NUM_RANGE.min, this.PARTICLE_NUM_RANGE.max);
         for (var i = 0; i < numParticles; i++) {
             this.particles.push(this.createParticle(pos.left + 15, pos.top - 5, color, effect));
         }
