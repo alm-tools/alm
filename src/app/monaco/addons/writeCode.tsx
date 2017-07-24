@@ -50,10 +50,13 @@ class WriteCode extends EditorAction {
             let i = 0;
             for (const char of contents.split('')) {
                 writeString({ model, str: char, pos: { lineNumber: currentPos.lineNumber, column: currentPos.column } });
+
                 /**
                  * Wait a bit and advance pos
                  */
-                await utils.delay(100); // 160 words per minute => 10 chars per second
+                if (!char.match(/\s/g)){ // don't wait for whitespace
+                    await utils.delay(100); // 160 words per minute => 10 chars per second
+                }
                 currentPos = model.modifyPosition(currentPos, 1);
             }
         })();
