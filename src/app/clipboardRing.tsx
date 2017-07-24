@@ -12,7 +12,7 @@ import * as uix from "./uix";
 let clipboardRing: string[] = []; // New items at the head of the ring
 let maxItems = 10;
 let index = 0;
-export function addToClipboardRing(mode: 'cut' | 'copy') {
+export function addToClipboardRing() {
     let codeEditor = uix.API.getFocusedCodeEditorIfAny();
     if (!codeEditor) return;
 
@@ -90,11 +90,11 @@ export function pasteFromClipboardRing() {
 }
 
 commands.copy.on(() => {
-    addToClipboardRing('copy');
+    addToClipboardRing();
 });
 
 commands.cut.on(() => {
-    addToClipboardRing('cut');
+    addToClipboardRing();
 });
 
 commands.pasteFromRing.on(() => {
