@@ -47,6 +47,9 @@ class WriteCode extends EditorAction {
         const model = editor.getModel();
         let currentPos = editor.getSelection().getStartPosition();
         (async function() {
+            /** Wait a bit before starting. Helps us get a clean start screenshot. */
+            await utils.delay(500);
+
             let i = 0;
             for (const char of contents.split('')) {
                 writeString({ model, str: char, pos: { lineNumber: currentPos.lineNumber, column: currentPos.column } });
