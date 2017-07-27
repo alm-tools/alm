@@ -57,12 +57,15 @@ class WriteCode extends EditorAction {
                 /**
                  * Wait a bit
                  */
-                if (!char.match(/\s/g)) { // don't wait for whitespace
+                if (!char.match(/\s/g)) { // for not whitespace
                     // 160 words per minute (VERY FAST TYPING!)
                     // => 10 chars per second
                     // => 100ms
                     // + personal taste tweek gives us:
                     await utils.delay(120);
+                }
+                else { // For whitespace
+                    await utils.delay(20);
                 }
                 /**
                  * Advance pos
