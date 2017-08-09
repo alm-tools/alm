@@ -5,19 +5,7 @@ import * as cp from "child_process";
 import * as wd from "../../disk/workingDir";
 import * as fmc from "../../disk/fileModelCache";
 import * as types from "../../../common/types";
-import {stringify} from '../../../common/json';
-
-/** Main utility function to execute a command */
-let gitCmd = (...args: string[]): Promise<string> => {
-    return new Promise<string>((resolve, reject) => {
-        cp.exec(`git ${args.join(' ')}`, { cwd: wd.getProjectRoot() }, (err, stdout, stderr) => {
-            if (stderr.toString().trim().length) {
-                return resolve(stderr.toString());
-            }
-            return resolve(stdout.toString());
-        });
-    });
-}
+import { stringify } from '../../../common/json';
 
 /** Main utility function to execute a command */
 let gitCmdBetter = (...args: string[]): Promise<string> => {
@@ -47,7 +35,7 @@ let gitCmdBetter = (...args: string[]): Promise<string> => {
 }
 
 export function gitStatus(args: {}): Promise<string> {
-    return gitCmd('status');
+    return gitCmdBetter('status');
 }
 
 /** This is a soft reset. i.e. it keeps your staged changes */
@@ -57,7 +45,7 @@ export function gitReset(args: { filePath: string }): Promise<string> {
     // makes the *change* detection in file model view to ignore what happened.
     return new Promise<string>((resolve, reject) =>
         setTimeout(() => {
-            gitCmd('checkout --', args.filePath)
+            gitCmdBetter('checkout --', args.filePath)
                 .then(resolve, reject);
         }, 500)
     );
@@ -80,7 +68,7 @@ export function gitDiff(args: { filePath: string }): Promise<types.GitDiff> {
     /**
      * We diff with `HEAD` to still show staged changes (as there are still in your headspace as *area you are working on*)
      */
-    return gitCmd('diff', '-U0', '--no-color', '--no-ext-diff', 'HEAD', args.filePath).then(res => {
+    return gitCmdBetter('diff', '-U0', '--no-color', '--no-ext-diff', 'HEAD', args.filePath).then(res => {
         const added: types.GitDiffSpan[] = [];
         const removed: number[] = [];
         const modified: types.GitDiffSpan[] = [];
