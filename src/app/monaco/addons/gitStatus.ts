@@ -107,13 +107,9 @@ export function setup(editor: Editor): { dispose: () => void } {
 
     const refreshGitStatusDebounced = utils.debounce(refreshGitStatus, 2000);
 
-    const handleFocus = () => {
-        refreshGitStatus();
-    }
-
     const disposible = new CompositeDisposible();
-    disposible.add(editor.onDidFocusEditor(handleFocus));
+    disposible.add(editor.onDidFocusEditor(refreshGitStatusDebounced));
     disposible.add(editor.onDidChangeModelContent(refreshGitStatusDebounced));
-    disposible.add(commands.gitStatusNeedsRefresh.on(refreshGitStatus));
+    disposible.add(commands.gitStatusNeedsRefresh.on(refreshGitStatusDebounced));
     return disposible;
 }
