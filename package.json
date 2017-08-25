@@ -44,7 +44,7 @@
   "homepage": "https://github.com/alm-tools/alm#readme",
   "dependencies": {
     "basic-auth-connect": "^1.0.0",
-    "byots": "2.5.0-dev.20170626.4.12",
+    "byots": "2.6.0-dev.20170824.0.32",
     "chalk": "^1.1.3",
     "chokidar": "1.6.1",
     "cookie-parser": "^1.3.5",
@@ -71,9 +71,9 @@
     "socket.io": "^1.3.6",
     "source-map-support": "0.4.3",
     "ts-loader": "2.0.0",
-    "ts-node": "3.1.0",
+    "ts-node": "3.3.0",
     "tslint": "5.0.0-dev.0",
-    "typescript": "2.5.0-dev.20170627",
+    "typescript": "2.6.0-dev.20170824",
     "update-notifier": "1.0.2",
     "webpack": "^1.11.0"
   },

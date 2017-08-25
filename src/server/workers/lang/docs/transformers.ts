@@ -112,7 +112,7 @@ function transformClassConstructor(node: ts.ConstructorDeclaration, sourceFile: 
 
 /** Class Property */
 function transformClassProperty(node: ts.PropertyDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
-    const name = ts.getPropertyNameForPropertyNameNode(node.name);
+    const name = ts.unescapeLeadingUnderscores(ts.getPropertyNameForPropertyNameNode(node.name));
     const comment = getParsedComment(node, sourceFile);
     const subItems: types.DocumentedType[] = [];
     let icon = types.IconType.ClassProperty;
@@ -128,7 +128,7 @@ function transformClassProperty(node: ts.PropertyDeclaration, sourceFile: ts.Sou
 
 /** Class Method */
 function transformClassMethod(node: ts.MethodDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
-    const name = ts.getPropertyNameForPropertyNameNode(node.name);
+    const name = ts.unescapeLeadingUnderscores(ts.getPropertyNameForPropertyNameNode(node.name));
     const comment = getParsedComment(node, sourceFile);
     const subItems: types.DocumentedType[] = [];
     let icon = types.IconType.ClassMethod;
@@ -198,7 +198,7 @@ function transformInterface(node: ts.InterfaceDeclaration, sourceFile: ts.Source
 
 /** Interface Property */
 function transformInterfaceProperty(node: ts.PropertySignature, sourceFile: ts.SourceFile): types.DocumentedType {
-    const name = ts.getPropertyNameForPropertyNameNode(node.name);
+    const name = ts.unescapeLeadingUnderscores(ts.getPropertyNameForPropertyNameNode(node.name));
     const comment = getParsedComment(node, sourceFile);
     const subItems: types.DocumentedType[] = [];
     let icon = types.IconType.InterfaceProperty;
@@ -230,7 +230,7 @@ function transformInterfaceConstructor(node: ts.ConstructSignatureDeclaration, s
 
 /** Interface Method */
 function transformInterfaceMethod(node: ts.MethodSignature, sourceFile: ts.SourceFile): types.DocumentedType {
-    const name = ts.getPropertyNameForPropertyNameNode(node.name);
+    const name = ts.unescapeLeadingUnderscores(ts.getPropertyNameForPropertyNameNode(node.name));
     const comment = getParsedComment(node, sourceFile);
     const subItems: types.DocumentedType[] = [];
     let icon = types.IconType.InterfaceMethod;
@@ -305,7 +305,7 @@ function transformVariableStatement(node: ts.VariableStatement, sourceFile: ts.S
             /** destructured variable declaration */
             const names = d.name as ts.ObjectBindingPattern;
             names.elements.forEach(bindingElement => {
-                const name = ts.getPropertyNameForPropertyNameNode(bindingElement.name);
+                const name = ts.unescapeLeadingUnderscores(ts.getPropertyNameForPropertyNameNode(bindingElement.name));
                 result.push({
                     name, icon, comment, subItems,
                     location: getDocumentedTypeLocation(sourceFile, bindingElement.pos),
@@ -313,7 +313,7 @@ function transformVariableStatement(node: ts.VariableStatement, sourceFile: ts.S
             });
         }
         else {
-            let name = ts.getPropertyNameForPropertyNameNode(d.name);
+            let name = ts.unescapeLeadingUnderscores(ts.getPropertyNameForPropertyNameNode(d.name));
 
             result.push({
                 name, icon, comment, subItems,
@@ -327,7 +327,7 @@ function transformVariableStatement(node: ts.VariableStatement, sourceFile: ts.S
 
 /** Function */
 function transformFunction(node: ts.FunctionDeclaration, sourceFile: ts.SourceFile): types.DocumentedType {
-    const name = ts.getPropertyNameForPropertyNameNode(node.name);
+    const name = ts.unescapeLeadingUnderscores(ts.getPropertyNameForPropertyNameNode(node.name));
     const comment = getParsedComment(node, sourceFile);
     const subItems: types.DocumentedType[] = [];
     let icon = types.IconType.Function;
@@ -354,7 +354,7 @@ function transformModule(node: ts.ModuleDeclaration, sourceFile: ts.SourceFile):
      * Also we the *body* is were we should recurse
      */
     let icon = types.IconType.Namespace;
-    let name = ts.getPropertyNameForPropertyNameNode(node.name);
+    let name = ts.unescapeLeadingUnderscores(ts.getPropertyNameForPropertyNameNode(node.name));
 
     if (node.body.kind === ts.SyntaxKind.ModuleDeclaration) {
         name = name + '.';

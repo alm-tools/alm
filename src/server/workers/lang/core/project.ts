@@ -43,7 +43,7 @@ export class Project {
 
 
     public getAllSourceFiles(): ts.SourceFile[] {
-        return this.languageService.getProgram().getSourceFiles();
+        return this.languageService.getProgram().getSourceFiles().concat();
     }
 
     /**
@@ -91,9 +91,9 @@ export class Project {
         const program = this.languageService.getProgram();
         return new Promise<ts.Diagnostic[]>((resolve, reject) => {
             let allDiagnostics: ts.Diagnostic[] = [];
-            allDiagnostics = program.getGlobalDiagnostics();
+            allDiagnostics = program.getGlobalDiagnostics().concat();
 
-            const sourceFiles = program.getSourceFiles();
+            const sourceFiles = program.getSourceFiles().concat();
 
             utils
                 .cancellableForEach({

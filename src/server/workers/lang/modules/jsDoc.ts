@@ -15,6 +15,14 @@ export function getParsedComment(node: ts.Node, sourceFile: ts.SourceFile): stri
 }
 
 /**
+ * Resurected from
+ * https://github.com/Microsoft/TypeScript/commit/bffde588cc60c524ba120413681871c6d969274b
+ */
+export function getCommentsFromJSDoc(node: ts.Node): string[] {
+    return ts.map(ts.getAllJSDocs(node), doc => doc.comment);
+}
+
+/**
  * Return the raw comment string for the given node.
  *
  * @param node  The node whose comment should be resolved.
@@ -31,7 +39,7 @@ export function getRawComment(node: ts.Node, sourceFile: ts.SourceFile): string 
         }
     }
 
-    var comments = ts.getCommentsFromJSDoc(node);
+    var comments = getCommentsFromJSDoc(node);
     if (comments && comments.length) {
         var comment: string;
         if (node.kind == ts.SyntaxKind.SourceFile) {

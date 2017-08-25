@@ -6,7 +6,6 @@ import Path = ts.Path;
 import LineIndex = liner.LineIndex;
 let unorderedRemoveItem = ts.unorderedRemoveItem;
 interface ILineInfo extends liner.ILineInfo { }
-let createFileMap = ts.createFileMap;
 /** BAS : a function I added, useful as we are working without true fs host */
 const toSimplePath = (fileName: string): Path => toPath(fileName, '', (x) => x);
 /** our compiler settings for simple tokenization */
@@ -235,7 +234,7 @@ export class TextChange {
 
 export class LSHost implements ts.LanguageServiceHost {
     ls: ts.LanguageService;
-    filenameToScript: ts.FileMap<ScriptInfo>;
+    filenameToScript: ts.Map<ScriptInfo>;
     roots: ScriptInfo[] = [];
 
     /**
@@ -244,7 +243,7 @@ export class LSHost implements ts.LanguageServiceHost {
      * - compilerOptions
      */
     constructor(public projectDirectory: string | undefined, public compilerOptions = defaultCompilerOptions) {
-        this.filenameToScript = createFileMap<ScriptInfo>();
+        this.filenameToScript = ts.createMap<ScriptInfo>();
     }
 
     getDefaultLibFileName = () => null;
@@ -293,15 +292,15 @@ export class LSHost implements ts.LanguageServiceHost {
     }
 
     addRoot(info: ScriptInfo) {
-        if (!this.filenameToScript.contains(info.path)) {
+        if (!this.filenameToScript.has(info.path)) {
             this.filenameToScript.set(info.path, info);
             this.roots.push(info);
         }
     }
 
     removeRoot(info: ScriptInfo) {
-        if (!this.filenameToScript.contains(info.path)) {
-            this.filenameToScript.remove(info.path);
+        if (!this.filenameToScript.has(info.path)) {
+            this.filenameToScript.delete(info.path);
             unorderedRemoveItem(this.roots, info)
         }
     }
@@ -321,7 +320,7 @@ export class LSHost implements ts.LanguageServiceHost {
      */
     addScript(filePath: string, contents: string) {
         let path = toSimplePath(filePath);
-        if (!this.filenameToScript.contains(path)) {
+        if (!this.filenameToScript.has(path)) {
             let info = new ScriptInfo(filePath, contents);
             this.addRoot(info);
         }
