@@ -78,7 +78,6 @@
     "webpack": "^1.11.0"
   },
   "devDependencies": {
-    "@types/electron": "^1.4.31",
     "@types/node": "^7.0.4",
     "@types/react": "15.0.28",
     "@types/react-dom": "15.5.0",
