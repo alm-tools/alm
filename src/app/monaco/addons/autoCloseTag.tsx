@@ -11,9 +11,20 @@ import * as monacoUtils from '../monacoUtils';
 type Editor = monaco.editor.ICodeEditor;
 type TextDocumentContentChangeEvent = monaco.editor.IModelContentChangedEvent2;
 
+
+/**
+ * We want to disable it e.g. when auto writing code
+ */
+let enabled = true;
+export const disable = () => enabled = false;
+export const enable = () => enabled = true;
+
+
 export function setup(cm: Editor): { dispose: () => void } {
     const disposible = new CompositeDisposible();
     disposible.add(cm.onDidChangeModelContent((e) => {
+        if (!enabled) return;
+
         /** Close tag */
         insertAutoCloseTag(e, cm);
     }));
