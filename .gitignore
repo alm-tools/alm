@@ -8,5 +8,4 @@ src/public/build/**
 .alm
 .DS_Store
 
-package-lock.json
 *_almTestData.json
