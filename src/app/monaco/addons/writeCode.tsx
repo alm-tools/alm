@@ -5,7 +5,7 @@ import * as ReactDOM from "react-dom";
 import * as utils from "../../../common/utils";
 import * as events from "../../../common/events";
 import * as monacoUtils from "../monacoUtils";
-import { disable, enable } from './autoCloseTag';
+import { disableAutoClose, enableAutoClose } from './autoCloseTag';
 
 /** Editor type */
 type Editor = monaco.editor.ICodeEditor;
@@ -40,7 +40,6 @@ class WriteCode extends EditorAction {
     }
 
     public run(accessor: ServicesAccessor, editor: ICommonCodeEditor): void | TPromise<void> {
-        disable();
         /** Load current contents */
         const contents = getSelectionOrCurrentLine(editor);
         /** Replace with nothing */
@@ -49,6 +48,7 @@ class WriteCode extends EditorAction {
         const model = editor.getModel();
         let currentPos = editor.getSelection().getStartPosition();
         (async function() {
+            disableAutoClose();
             /** Wait a bit before starting. Helps us get a clean start screenshot. */
             await utils.delay(500);
 
@@ -78,8 +78,8 @@ class WriteCode extends EditorAction {
                  */
                 editor.revealPosition(currentPos);
             }
+            enableAutoClose();
         })();
-        enable();
     }
 }
 
