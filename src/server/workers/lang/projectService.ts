@@ -23,7 +23,7 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
     const service = project.languageService;
     const languageServiceHost = project.languageServiceHost;
 
-    const completions: ts.CompletionInfo = service.getCompletionsAtPosition(filePath, position);
+    const completions: ts.CompletionInfo = service.getCompletionsAtPosition(filePath, position, undefined);
     let completionList = completions ? completions.entries.filter(x => !!x) : [];
     const endsInPunctuation = utils.prefixEndsInPunctuation(prefix);
 
@@ -117,7 +117,7 @@ export function getCompletionEntryDetails(query: Types.GetCompletionEntryDetails
     const service = project.languageService;
     const { filePath, position, label } = query;
 
-    const completionDetails = project.languageService.getCompletionEntryDetails(filePath, position, label);
+    const completionDetails = project.languageService.getCompletionEntryDetails(filePath, position, label, undefined, undefined);
 
     /**
      * For JS Projects, TS will add all sorts of globals as members (because it cannot know for sure)

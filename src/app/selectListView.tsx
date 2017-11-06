@@ -5,14 +5,14 @@
 import React = require("react");
 var ReactDOM = require("react-dom");
 import csx = require('./base/csx');
-import {BaseComponent} from "./ui";
+import { BaseComponent } from "./ui";
 import * as ui from "./ui";
 import Modal = require('react-modal');
 import * as styles from "./styles/styles";
-import {debounce, createMap, rangeLimited, getFileName} from "../common/utils";
-import {cast, server} from "../socket/socketClient";
+import { debounce, createMap, rangeLimited, getFileName } from "../common/utils";
+import { cast, server } from "../socket/socketClient";
 import * as commands from "./commands/commands";
-import {match, filter as fuzzyFilter} from "fuzzaldrin";
+import { match, filter as fuzzyFilter } from "fuzzaldrin";
 import * as utils from "../common/utils";
 import * as typestyle from "typestyle";
 
@@ -126,7 +126,7 @@ export class SelectListView extends BaseComponent<Props, State>{
     componentDidMount() {
         selectListView = this;
 
-        commands.esc.on(()=>{
+        commands.esc.on(() => {
             this.closeOmniSearch();
         });
     }
@@ -134,7 +134,7 @@ export class SelectListView extends BaseComponent<Props, State>{
     componentDidUpdate() {
         // get the dom node that is selected
         // make sure its parent scrolls to make this visible
-        setTimeout(()=>{
+        setTimeout(() => {
             if (this.refs.selected) {
                 let selected = this.refs.selected as HTMLDivElement;
                 selected.scrollIntoViewIfNeeded(false);
@@ -154,8 +154,8 @@ export class SelectListView extends BaseComponent<Props, State>{
             } : {};
             let ref = selected && "selected";
             return (
-                <div key={i} style={csx.extend(selectedStyle, styles.padded2, styles.hand, csx.content)} onClick={()=>this.selectIndex(i)} ref={ref}>
-                        {this.state.render(item, renderMatchedSegments(this.state.textify(item), this.state.filterValue)) }
+                <div key={i} style={csx.extend(selectedStyle, styles.padded2, styles.hand, csx.content)} onClick={() => this.selectIndex(i)} ref={ref}>
+                    {this.state.render(item, renderMatchedSegments(this.state.textify(item), this.state.filterValue))}
                 </div>
             );
         });
@@ -163,31 +163,31 @@ export class SelectListView extends BaseComponent<Props, State>{
         return <Modal
             isOpen={this.state.isOpen}
             onRequestClose={this.closeOmniSearch}>
-                <div style={csx.extend(csx.vertical, csx.flex)}>
-                    <div style={csx.extend(csx.horizontal, csx.content)}>
-                        <h4>{this.state.header}</h4>
-                        <div style={csx.flex}></div>
-                        <div style={{fontSize:'0.9rem', color:'grey'} as any}><code style={styles.modal.keyStrokeStyle}>Esc</code> to exit <code style={styles.modal.keyStrokeStyle}>Enter</code> to select</div>
-                    </div>
+            <div style={csx.extend(csx.vertical, csx.flex)}>
+                <div style={csx.extend(csx.horizontal, csx.content)}>
+                    <h4>{this.state.header}</h4>
+                    <div style={csx.flex}></div>
+                    <div style={{ fontSize: '0.9rem', color: 'grey' } as any}><code style={styles.modal.keyStrokeStyle}>Esc</code> to exit <code style={styles.modal.keyStrokeStyle}>Enter</code> to select</div>
+                </div>
 
-                    <div style={csx.extend(styles.padded1TopBottom, csx.vertical, csx.content)}>
-                        <input
-                            type="text"
-                            ref="omniSearchInput"
-                            placeholder="Filter"
-                            className={inputClassName}
-                            onChange={this.onChangeFilter}
-                            onKeyDown={this.onChangeSelected}
-                            />
-                        </div>
+                <div style={csx.extend(styles.padded1TopBottom, csx.vertical, csx.content)}>
+                    <input
+                        type="text"
+                        ref="omniSearchInput"
+                        placeholder="Filter"
+                        className={inputClassName}
+                        onChange={this.onChangeFilter}
+                        onKeyDown={this.onChangeSelected}
+                    />
+                </div>
 
-                    <div style={csx.extend(csx.vertical, csx.flex, { overflow: 'auto' })}>
-                        <div style={csx.vertical}>
-                            {fileListRendered}
-                        </div>
+                <div style={csx.extend(csx.vertical, csx.flex, { overflow: 'auto' })}>
+                    <div style={csx.vertical}>
+                        {fileListRendered}
                     </div>
                 </div>
-            </Modal>
+            </div>
+        </Modal>
     }
 
     closeOmniSearch = () => {
@@ -196,7 +196,7 @@ export class SelectListView extends BaseComponent<Props, State>{
     onChangeFilter = debounce((e) => {
         let filterValue = ReactDOM.findDOMNode(this.refs.omniSearchInput).value;
 
-        this.getNewData().then(()=>{
+        this.getNewData().then(() => {
             this.filteredResults = getFilteredItems({
                 items: this.state.data,
                 textify: this.state.textify,
@@ -227,7 +227,7 @@ export class SelectListView extends BaseComponent<Props, State>{
             this.selectIndex(this.state.selectedIndex);
         }
     };
-    selectIndex = (index: number)=> {
+    selectIndex = (index: number) => {
         let result = this.filteredResults[index];
         this.state.onSelect(result);
         this.closeOmniSearch();
@@ -235,8 +235,8 @@ export class SelectListView extends BaseComponent<Props, State>{
 
     getNewData = utils.onlyLastCall(() => {
         let filterValue = ReactDOM.findDOMNode(this.refs.omniSearchInput).value;
-        return this.state.getNewData(filterValue).then((data)=>{
-            this.setState({data});
+        return this.state.getNewData(filterValue).then((data) => {
+            this.setState({ data });
         });
     });
 }
@@ -247,7 +247,7 @@ export class SelectListView extends BaseComponent<Props, State>{
 export function getFilteredItems<T>(args: { items: T[], textify: (item: T) => string, filterValue: string }): T[] {
 
     // Store the items for each text value
-    let textValueToItems:{[text:string]:T[]} = Object.create(null);
+    let textValueToItems: { [text: string]: T[] } = Object.create(null);
     args.items.forEach((item) => {
         let text = args.textify(item);
         if (!textValueToItems[text]) textValueToItems[text] = [];
@@ -323,8 +323,8 @@ export function renderMatchedSegments(result: string, query: string): JSX.Elemen
      * Rendering the matched segment data structure is trivial
      */
     let matched = getMatchedSegments(result, query);
-    let matchedStyle = {fontWeight:'bold', color:'#66d9ef'};
+    let matchedStyle = { fontWeight: 'bold' as 'bold', color: '#66d9ef' };
     return matched.map((item, i) => {
-        return <span key={i} style={item.matched?matchedStyle:{}}>{item.str}</span>;
+        return <span key={i} style={item.matched ? matchedStyle : {}}>{item.str}</span>;
     });
 }

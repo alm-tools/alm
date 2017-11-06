@@ -7,7 +7,7 @@
  * webpack.config.js // Planned
  */
 import * as utils from "../../../common/utils";
-import {Types} from "../../../socket/socketContract";
+import { Types } from "../../../socket/socketContract";
 import * as lsh from "../../../languageServiceHost/languageServiceHost";
 import fuzzaldrin = require('fuzzaldrin');
 
@@ -59,7 +59,7 @@ fmc.didEdits.on(e => {
     const config = project.isSupportedFile(e.filePath);
     if (config) {
         const prelude = config.prelude;
-        const {filePath, edits: codeEdits} = e;
+        const { filePath, edits: codeEdits } = e;
         codeEdits.forEach(codeEdit => {
             const from = { line: codeEdit.from.line + 1, ch: codeEdit.from.ch };
             const to = { line: codeEdit.to.line + 1, ch: codeEdit.to.ch };
@@ -95,10 +95,10 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
 
     /** The rest is conventional get completions logic: */
 
-    const {filePath, prefix} = query;
+    const { filePath, prefix } = query;
     const service = project.languageService;
 
-    const completions: ts.CompletionInfo = service.getCompletionsAtPosition(filePath, position);
+    const completions: ts.CompletionInfo = service.getCompletionsAtPosition(filePath, position, undefined);
     let completionList = completions ? completions.entries.filter(x => !!x) : [];
     const endsInPunctuation = utils.prefixEndsInPunctuation(prefix);
 
@@ -123,7 +123,7 @@ export function getCompletionsAtPosition(query: Types.GetCompletionsAtPositionQu
         /** The doc comment */
         comment: string;
     } {
-        const completionDetails = project.languageService.getCompletionEntryDetails(filePath, position, c.name);
+        const completionDetails = project.languageService.getCompletionEntryDetails(filePath, position, c.name, undefined, undefined);
         const comment = ts.displayPartsToString(completionDetails.documentation || []);
 
         // Show the signatures for methods / functions

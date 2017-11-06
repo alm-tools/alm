@@ -733,7 +733,7 @@ namespace FileResults {
 
         renderMatched(preview: string, queryRegex: RegExp) {
             let matched = this.getMatchedSegments(preview, queryRegex);
-            let matchedStyle = { fontWeight: 'bold', color: '#66d9ef' };
+            let matchedStyle = { fontWeight: 'bold' as 'bold', color: '#66d9ef' };
             return matched.map((item, i) => {
                 return <span key={i} style={item.matched ? matchedStyle : {}}>{item.str}</span>;
             });
