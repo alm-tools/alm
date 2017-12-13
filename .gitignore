@@ -1,6 +1,7 @@
 .tscache
 node_modules
 npm-debug.log*
+package-lock.json
 .baseDir.ts
 src/**/*.js
 src/**/*.js.map
