@@ -1,12 +1,12 @@
 .tscache
 node_modules
 npm-debug.log*
-package-lock.json
 .baseDir.ts
 src/**/*.js
 src/**/*.js.map
 src/public/build/**
 .alm
+.vscode
 .DS_Store
 
 *_almTestData.json
