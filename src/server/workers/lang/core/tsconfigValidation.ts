@@ -35,7 +35,7 @@ const compilerOptionsValidation: simpleValidator.ValidationInfo = {
     listFiles: { type: types.boolean },
     mapRoot: { type: types.string },
     maxNodeModuleJsDepth: { type: types.number },
-    module: { type: types.string, validStringValues: ['none', 'commonjs', 'amd', 'umd', 'system', 'es6', 'es2015'] },
+    module: { type: types.string, validStringValues: ["commonjs", "amd", "umd", "system", "es6", "es2015", "esnext", "none"] },
     moduleResolution: { type: types.string, validStringValues: ['classic', 'node'] },
     newLine: { type: types.string },
     noEmit: { type: types.boolean },
