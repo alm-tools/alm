@@ -19,7 +19,8 @@ export function getParsedComment(node: ts.Node, sourceFile: ts.SourceFile): stri
  * https://github.com/Microsoft/TypeScript/commit/bffde588cc60c524ba120413681871c6d969274b
  */
 export function getCommentsFromJSDoc(node: ts.Node): string[] {
-    return ts.map(ts.getAllJSDocs(node), doc => doc.comment);
+    // return ts.map(ts.getAllJSDocs(node), doc => doc.comment); // Its dead jim. Let it go.
+    return ['Feature disabled as it was deleted from TS https://github.com/Microsoft/TypeScript/pull/21119#discussion_r160754254'];
 }
 
 /**
