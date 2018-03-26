@@ -1,6 +1,6 @@
 import http = require('http');
 import https = require('https');
-import socketIo = require('socket.io');
+import SocketIO = require('socket.io');
 import {RequesterResponder, anycastMessageName, CastMessage, TypedEvent} from "./socketLib";
 
 export var resolve: typeof Promise.resolve = Promise.resolve.bind(Promise);
@@ -29,7 +29,7 @@ export function run<TClient, TCast>(config: {
 export class Server {
     io: SocketIO.Server;
     constructor(private app: http.Server | https.Server, serverImplementation: any, clientCreator: (socket: ServerInstance) => any) {
-        this.io = socketIo(app
+        this.io = SocketIO(app
             // polling is more available on hosts (e.g. azure) but it causes more socket hangups in socketIO
             /* ,{transports:['polling']} */
         );

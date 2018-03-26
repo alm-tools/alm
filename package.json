@@ -75,7 +75,7 @@
     "tslint": "5.0.0-dev.0",
     "typescript": "2.8.0-dev.20180224",
     "update-notifier": "1.0.2",
-    "webpack": "^1.11.0"
+    "webpack": "1.11.0"
   },
   "devDependencies": {
     "@types/node": "^7.0.4",
@@ -83,7 +83,6 @@
     "@types/react-dom": "15.5.0",
     "@types/socket.io": "^1.4.27",
     "@types/socket.io-client": "^1.4.29",
-    "@types/webpack": "2.1.0",
     "clipboard": "^1.4.2",
     "css-loader": "^0.24.0",
     "d3": "^3.5.12",

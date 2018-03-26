@@ -10,6 +10,7 @@
 export var anycastMessageName = 'anycast';
 
 export * from "../common/events";
+import * as SocketIO from 'socket.io';
 
 // Lets get the types straight:
 export type ServerSocket = SocketIO.Socket;
