@@ -4,7 +4,7 @@
 
 > With great languages come great development tools.
 
-Thank for you trying out [`alm.tools`](http://alm.tools). A lot of effort has gone into this project to make sure that you get the best experience possible with TypeScript.
+Thank for you trying out [`alm`](https://alm-tools.github.io). A lot of effort has gone into this project to make sure that you get the best experience possible with TypeScript.
 
 ![main](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/main.png)
 
