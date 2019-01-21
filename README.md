@@ -1,3 +1,6 @@
+# NO LONGER MAINTAINED 
+This project is just a snapshopt in history now. 
+I've moved to vscode, and have an extension to make it *okay* for me : https://marketplace.visualstudio.com/items?itemName=basarat.god 🌹
 
 
 # The best IDE for TypeScript
