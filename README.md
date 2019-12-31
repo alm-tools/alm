@@ -1,8 +1,7 @@
 # FUTURE
-This project is just a snapshopt in history now. 
+This project is archived. Building on the TypeScript developer experience (DX) offered by ALM, I’m creating a new product which offers a unique UI development experience for designers / developers. Signup for the Beta : https://designtsx.com
 
-* I've moved to vscode, and have an extension to make it *okay* for me : https://marketplace.visualstudio.com/items?itemName=basarat.god 🌹
-* Also experiementing with a small subset *most innovative value* re-write. [Tune in to twitter for news](https://twitter.com/basarat)
+[![DesignTSX](https://raw.githubusercontent.com/basarat/typescript-book/master/images/designtsx-banner.png)](https://designtsx.com)
 
 
 # The best IDE for TypeScript
