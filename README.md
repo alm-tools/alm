@@ -1,5 +1,7 @@
 # FUTURE
-This project is archived. Building on the TypeScript developer experience (DX) offered by ALM, I’m creating a new product which offers a unique UI development experience for designers / developers. Signup for the Beta : https://designtsx.com
+This project is archived. 
+
+Building on the TypeScript developer experience (DX) offered by ALM, I’m creating a new product which offers a unique UI development experience for designers / developers. Signup for the Beta : https://designtsx.com
 
 [![DesignTSX](https://raw.githubusercontent.com/basarat/typescript-book/master/images/designtsx-banner.png)](https://designtsx.com)
 
