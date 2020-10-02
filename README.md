@@ -1,7 +1,7 @@
 # FUTURE
 This project is archived. 
 
-Building on the TypeScript developer experience (DX) offered by ALM, I’m creating a new product which offers a unique UI development experience for designers / developers. Signup for the Beta : https://designtsx.com
+Building on the TypeScript developer experience (DX) offered by ALM, I’m creating a new product that offers a unique UI development experience for designers/developers. Signup for the Beta: https://designtsx.com
 
 [![DesignTSX](https://raw.githubusercontent.com/basarat/typescript-book/master/images/designtsx-banner.png)](https://designtsx.com)
 
@@ -10,7 +10,7 @@ Building on the TypeScript developer experience (DX) offered by ALM, I’m creat
 
 [![Join the chat at  gitter][gitter-image]][gitter-url]
 
-> This project is powered by github 🌟s ^ go ahead and [star it please](https://github.com/alm-tools/alm/stargazers).
+> This project is powered by GitHub 🌟s ^ go ahead and [star it please](https://github.com/alm-tools/alm/stargazers).
 
 [![Build Status][travis-image]][travis-url]
 [![NPM version][npm-image]][npm-url]
@@ -19,7 +19,7 @@ Building on the TypeScript developer experience (DX) offered by ALM, I’m creat
 
 ## Why
 
-[Checkout the website](http://alm.tools) and if you need more reasons [we have them](https://alm-tools.gitbooks.io/alm/content/contributing/why.html).
+[Check out the website](http://alm.tools) and if you need more reasons [we have them](https://alm-tools.gitbooks.io/alm/content/contributing/why.html).
 
 ## Requirements
 
@@ -35,10 +35,10 @@ npm install alm -g
 
 Run it passing in the directory you want to serve up:
 ```
-alm .
+alm.
 ```
 
-Now open it in `chrome` at the URL mentioned in your console. (**protip** use `alm -o` if your default browser is chrome)
+Now open it in `chrome` at the URL mentioned in your console. (**protip** use `alm -o` if your default browser is Chrome)
 
 ![main](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/main.png)
 
@@ -96,7 +96,7 @@ And of course my favorite:
 ![](https://raw.githubusercontent.com/alm-tools/alm-tools.github.io/master/screens/blaster.gif)
 
 ## Contributing
-A key motivation for this project is to educate the community of about creating great TypeScript tools. So we would love to help you understand how the project works. [Checkout the developer / contributor docs][contributing].
+A key motivation for this project is to educate the community about creating great TypeScript tools. So we would love to help you understand how the project works. [Checkout the developer / contributor docs][contributing].
 
 ## License
 
