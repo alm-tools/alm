@@ -5,8 +5,11 @@ Building on the TypeScript developer experience (DX) offered by ALM, I’m creat
 
 [![DesignTSX](https://raw.githubusercontent.com/basarat/typescript-book/master/images/designtsx-banner.png)](https://designtsx.com)
 
+----
 
-# The best IDE for TypeScript
+# ARCHIVE
+
+## The best IDE for TypeScript
 
 [![Join the chat at  gitter][gitter-image]][gitter-url]
 
@@ -19,7 +22,7 @@ Building on the TypeScript developer experience (DX) offered by ALM, I’m creat
 
 ## Why
 
-[Check out the website](http://alm.tools) and if you need more reasons [we have them](https://alm-tools.gitbooks.io/alm/content/contributing/why.html).
+[Check out the website](https://alm-tools.github.io/) and if you need more reasons [we have them](https://alm-tools.gitbooks.io/alm/content/contributing/why.html).
 
 ## Requirements
 
